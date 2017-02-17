@@ -254,7 +254,7 @@ public class DaisyVideoView extends SurfaceView {
         if(player == null){
             return false;
         }
-        return player.IsDownloadError();
+        return false;
     }
 
     public void bufferOnSharpS3Release(){
