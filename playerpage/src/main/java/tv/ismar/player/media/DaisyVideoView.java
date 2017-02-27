@@ -1,7 +1,5 @@
 package tv.ismar.player.media;
 
-import cn.ismartv.truetime.TrueTime;
-
 import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
@@ -16,14 +14,16 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
-import android.widget.VideoView;
 
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Map;
 
 import cn.ismartv.truetime.TrueTime;
+import tv.ismar.account.IsmartvActivator;
+import tv.ismar.app.BaseActivity;
 import tv.ismar.app.util.DeviceUtils;
+import tv.ismar.app.util.Utils;
 import tv.ismar.player.SmartPlayer;
 
 /**
@@ -161,6 +161,22 @@ public class DaisyVideoView extends SurfaceView {
     }
 
     public void setVideoPaths(String[] paths, IsmartvPlayer player) {
+        if (!BaseActivity.wasLoadSmartPlayerSo) {
+            // 只加载一次
+            int mediaPlayerType = IsmartvActivator.getInstance().getMediaPlayerType();
+            switch (mediaPlayerType) {
+                case 0:
+                    SmartPlayer.initPlayer(SmartPlayer.PlayerType.PlayerMedia);
+                    break;
+                case 1:
+                    SmartPlayer.initPlayer(SmartPlayer.PlayerType.PlayerCodec);
+                    break;
+                default:
+                    SmartPlayer.initPlayer(SmartPlayer.PlayerType.PlayerCodec);
+                    break;
+            }
+            BaseActivity.wasLoadSmartPlayerSo = true;
+        }
         this.paths = paths;
         this.mIsmartvPlayer = player;
         mUri = Uri.parse(paths[paths.length - 1]);
@@ -250,14 +266,14 @@ public class DaisyVideoView extends SurfaceView {
         }
     }
 
-    public boolean isDownloadError(){
-        if(player == null){
+    public boolean isDownloadError() {
+        if (player == null) {
             return false;
         }
         return false;
     }
 
-    public void bufferOnSharpS3Release(){
+    public void bufferOnSharpS3Release() {
         mCurrentState = STATE_IDLE;
         mTargetState = STATE_IDLE;
         player = null;
