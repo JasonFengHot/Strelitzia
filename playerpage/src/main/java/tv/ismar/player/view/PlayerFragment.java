@@ -790,8 +790,13 @@ public class PlayerFragment extends Fragment implements PlayerPageContract.View,
                         hidePanel();
                         ((BaseActivity) getActivity()).showNoNetConnectDialog();
                         Log.e(TAG, "Network error on timer runnable.");
+                        mTimerHandler.postDelayed(timerRunnable, 500);
                         return;
                     } else {
+                        ((BaseActivity) getActivity()).dismissNoNetConnectDialog();
+                        if(mIsmartvPlayer != null && !mIsmartvPlayer.isPlaying()){
+                            mIsmartvPlayer.start();
+                        }
                         if(videoBufferingCount > 4){
                             showBuffer(null);
                         } else {
