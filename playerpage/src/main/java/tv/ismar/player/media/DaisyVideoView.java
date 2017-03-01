@@ -21,6 +21,7 @@ import java.util.Map;
 import cn.ismartv.truetime.TrueTime;
 import tv.ismar.account.IsmartvActivator;
 import tv.ismar.account.core.Md5;
+import tv.ismar.app.BaseActivity;
 import tv.ismar.app.player.CallaPlay;
 import tv.ismar.app.reporter.IsmartvMedia;
 import tv.ismar.app.util.DeviceUtils;
@@ -202,6 +203,22 @@ public class DaisyVideoView extends SurfaceView {
     }
 
     public void setVideoPaths(String[] paths, int startPosition, IsmartvMedia logMedia, boolean isSwitchQuality) {
+        if (!BaseActivity.wasLoadSmartPlayerSo) {
+            // 只加载一次
+            int mediaPlayerType = IsmartvActivator.getInstance().getMediaPlayerType();
+            switch (mediaPlayerType) {
+                case 0:
+                    SmartPlayer.initPlayer(SmartPlayer.PlayerType.PlayerMedia);
+                    break;
+                case 1:
+                    SmartPlayer.initPlayer(SmartPlayer.PlayerType.PlayerCodec);
+                    break;
+                default:
+                    SmartPlayer.initPlayer(SmartPlayer.PlayerType.PlayerCodec);
+                    break;
+            }
+            BaseActivity.wasLoadSmartPlayerSo = true;
+        }
         if (mFirstOpen) {
             mPlayerOpenTime = TrueTime.now().getTime();
             String sn = IsmartvActivator.getInstance().getSnToken();
@@ -309,7 +326,7 @@ public class DaisyVideoView extends SurfaceView {
         if (player == null) {
             return false;
         }
-        return player.IsDownloadError();
+        return false;
     }
 
     public boolean isInPlaybackState() {
