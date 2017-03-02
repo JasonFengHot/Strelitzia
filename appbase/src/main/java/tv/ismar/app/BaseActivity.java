@@ -112,8 +112,9 @@ public class BaseActivity extends AppCompatActivity {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         }
         registerUpdateReceiver();
-        registerNoNetReceiver();
-
+        if(!getClass().getSimpleName().equals("PlayerActivity")){
+            registerNoNetReceiver();
+        }
 
         //checkout update
         if (isCheckoutUpdate) {
@@ -158,6 +159,14 @@ public class BaseActivity extends AppCompatActivity {
         if (updatePopupWindow != null) {
             updatePopupWindow.dismiss();
             updatePopupWindow = null;
+        }
+        try {
+            if(!getClass().getSimpleName().equals("PlayerActivity")) {
+                unregisterReceiver(onNetConnectReceiver);
+            }
+            unregisterReceiver(mUpdateReceiver);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         super.onStop();
     }
@@ -473,12 +482,6 @@ public class BaseActivity extends AppCompatActivity {
     protected void onDestroy() {
         if (updateHandler != null) {
             updateHandler.removeCallbacks(updateRunnable);
-        }
-        try {
-            unregisterReceiver(onNetConnectReceiver);
-            unregisterReceiver(mUpdateReceiver);
-        } catch (Exception e) {
-            e.printStackTrace();
         }
         super.onDestroy();
 

@@ -1,8 +1,13 @@
 package tv.ismar.player.view;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.databinding.DataBindingUtil;
 import android.graphics.drawable.AnimationDrawable;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -383,6 +388,7 @@ public class PlayerFragment extends Fragment implements PlayerPageContract.View,
     @Override
     public void onResume() {
         super.onResume();
+        registerConnectionReceiver();
         if (sharpKeyDownNotResume || mounted) {
             sharpKeyDownNotResume = false;
             mounted = false;
@@ -402,6 +408,7 @@ public class PlayerFragment extends Fragment implements PlayerPageContract.View,
 
     @Override
     public void onStop() {
+        unregisterConnectionReceiver();
         if (sharpKeyDownNotResume) {
             sharpKeyDownNotResume = false;
             super.onStop();
@@ -482,6 +489,10 @@ public class PlayerFragment extends Fragment implements PlayerPageContract.View,
     @Override
     public void onBufferEnd() {
         Log.i(TAG, "onBufferEnd");
+        if (mIsmartvPlayer == null || !mIsmartvPlayer.isPlaying()){
+            return;
+        }
+        Log.i(TAG, "onBufferEnd:" + mIsmartvPlayer.isPlaying());
         if (!isSeeking || mIsmartvPlayer.getPlayerMode() == PlayerBuilder.MODE_QIYI_PLAYER) {
             hideBuffer();
         }
@@ -786,18 +797,12 @@ public class PlayerFragment extends Fragment implements PlayerPageContract.View,
                 if (mCurrentPosition == mediaPosition && mediaPosition != historyPosition) {
                     if (!NetworkUtils.isConnected(getActivity())) {
                         addHistory(mCurrentPosition, true, false);
-                        mIsmartvPlayer.pause();
                         hidePanel();
                         ((BaseActivity) getActivity()).showNoNetConnectDialog();
                         Log.e(TAG, "Network error on timer runnable.");
-                        mTimerHandler.postDelayed(timerRunnable, 500);
                         return;
                     } else {
-                        ((BaseActivity) getActivity()).dismissNoNetConnectDialog();
-                        if(mIsmartvPlayer != null && !mIsmartvPlayer.isPlaying()){
-                            mIsmartvPlayer.start();
-                        }
-                        if(videoBufferingCount > 4){
+                        if(videoBufferingCount == 4){
                             showBuffer(null);
                         } else {
                             videoBufferingCount++;
@@ -868,6 +873,12 @@ public class PlayerFragment extends Fragment implements PlayerPageContract.View,
                     break;
                 case MSG_SHOW_BUFFERING_LONG:
                     if (getActivity() != null && !isExit) {
+                        if (!NetworkUtils.isConnected(getActivity())) {// 网络断开情况下无需显示切换分辨率
+                            addHistory(mCurrentPosition, true, false);
+                            ((BaseActivity) getActivity()).showNoNetConnectDialog();
+                            Log.e(TAG, "Network error on MSG_SHOW_BUFFERING_LONG.");
+                            return;
+                        }
                         showExitPopup(POP_TYPE_BUFFERING_LONG);
                     }
                     break;
@@ -1437,6 +1448,8 @@ public class PlayerFragment extends Fragment implements PlayerPageContract.View,
                     subItemPk = subItem.getPk();
                     isSwitchTelevision = true;
 
+                    player_logo_image.setVisibility(View.GONE);
+
                     showBuffer(PlAYSTART + mItemEntity.getTitle());
                     if (clip != null) {
                         mPresenter.fetchMediaUrl(clip.getUrl(), sign, code);
@@ -1965,6 +1978,30 @@ public class PlayerFragment extends Fragment implements PlayerPageContract.View,
             popDialog = null;
         }
 
+    }
+
+    private ConnectionChangeReceiver connectionChangeReceiver;
+
+    private  void registerConnectionReceiver(){
+        IntentFilter filter=new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
+        connectionChangeReceiver = new ConnectionChangeReceiver();
+        getActivity().registerReceiver(connectionChangeReceiver, filter);
+    }
+
+    private  void unregisterConnectionReceiver(){
+        if(connectionChangeReceiver != null){
+            getActivity().unregisterReceiver(connectionChangeReceiver);
+        }
+    }
+
+    public class ConnectionChangeReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if(NetworkUtils.isConnected(context)){
+                ((BaseActivity) getActivity()).dismissNoNetConnectDialog();
+                timerStart(0);
+            }
+        }
     }
 
 }
