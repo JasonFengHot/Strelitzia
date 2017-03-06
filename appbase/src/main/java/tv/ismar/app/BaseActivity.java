@@ -87,11 +87,6 @@ public class BaseActivity extends AppCompatActivity {
 
     private Bundle updateBundle;
 
-    /**
-     * so文件的加载，由于SmartPlayer.jar需要判断，为了不重复加载so，用此变量判断
-     */
-    public static boolean wasLoadSmartPlayerSo = false;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -112,9 +107,8 @@ public class BaseActivity extends AppCompatActivity {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         }
         registerUpdateReceiver();
-        if(!getClass().getSimpleName().equals("PlayerActivity")){
-            registerNoNetReceiver();
-        }
+        registerNoNetReceiver();
+
 
         //checkout update
         if (isCheckoutUpdate) {
@@ -150,7 +144,6 @@ public class BaseActivity extends AppCompatActivity {
         if (noNetConnectHandler != null) {
             noNetConnectHandler.removeCallbacks(noNetConnectRunnable);
         }
-        unregisterReceiver(mUpdateReceiver);
         super.onPause();
     }
 
@@ -161,9 +154,7 @@ public class BaseActivity extends AppCompatActivity {
             updatePopupWindow = null;
         }
         try {
-            if(!getClass().getSimpleName().equals("PlayerActivity")) {
-                unregisterReceiver(onNetConnectReceiver);
-            }
+            unregisterReceiver(onNetConnectReceiver);
             unregisterReceiver(mUpdateReceiver);
         } catch (Exception e) {
             e.printStackTrace();
