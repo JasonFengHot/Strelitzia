@@ -113,8 +113,6 @@ public class BaseActivity extends AppCompatActivity {
         if (getRequestedOrientation() != ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         }
-        registerUpdateReceiver();
-
         //checkout update
         if (isCheckoutUpdate) {
             checkUpgrade();
@@ -133,6 +131,16 @@ public class BaseActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Dialog样式Activity进入其它页面时，不执行onStop
+     */
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        registerUpdateReceiver();
+    }
+
     @Override
     protected void onPause() {
         activityIsAlive = false;
@@ -140,8 +148,11 @@ public class BaseActivity extends AppCompatActivity {
             expireAccessTokenPop.dismiss();
             expireAccessTokenPop = null;
         }
-
-
+        try {
+            unregisterReceiver(mUpdateReceiver);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         if (updateAgainHandler != null) {
             updateAgainHandler.removeCallbacks(updateAgainRunnable);
         }
@@ -157,11 +168,6 @@ public class BaseActivity extends AppCompatActivity {
         if (updatePopupWindow != null) {
             updatePopupWindow.dismiss();
             updatePopupWindow = null;
-        }
-        try {
-            unregisterReceiver(mUpdateReceiver);
-        } catch (Exception e) {
-            e.printStackTrace();
         }
         super.onStop();
     }
