@@ -378,6 +378,11 @@ public class IsmartvActivator {
 
     }
 
+    public int getMediaPlayerType() {
+        return mSharedPreferences.getInt("player", 1);// //0-系统，1-视云
+
+    }
+
     public String getZUserToken() {
         return mSharedPreferences.getString("zuser_token", "");
     }

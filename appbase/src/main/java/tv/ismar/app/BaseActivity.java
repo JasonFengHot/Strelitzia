@@ -87,6 +87,11 @@ public class BaseActivity extends AppCompatActivity {
 
     private Bundle updateBundle;
 
+    /**
+     * so文件的加载，由于SmartPlayer.jar需要判断，为了不重复加载so，用此变量判断
+     */
+    public static boolean wasLoadSmartPlayerSo = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -97,6 +102,8 @@ public class BaseActivity extends AppCompatActivity {
         mSpeedCallaService = SkyService.ServiceManager.getSpeedCallaService();
         mLilyHostService = SkyService.ServiceManager.getLilyHostService();
         app_start_time = TrueTime.now().getTime();
+
+        registerNoNetReceiver();
     }
 
     @Override
@@ -107,8 +114,6 @@ public class BaseActivity extends AppCompatActivity {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         }
         registerUpdateReceiver();
-        registerNoNetReceiver();
-
 
         //checkout update
         if (isCheckoutUpdate) {
@@ -144,7 +149,6 @@ public class BaseActivity extends AppCompatActivity {
         if (noNetConnectHandler != null) {
             noNetConnectHandler.removeCallbacks(noNetConnectRunnable);
         }
-        unregisterReceiver(mUpdateReceiver);
         super.onPause();
     }
 
@@ -153,6 +157,11 @@ public class BaseActivity extends AppCompatActivity {
         if (updatePopupWindow != null) {
             updatePopupWindow.dismiss();
             updatePopupWindow = null;
+        }
+        try {
+            unregisterReceiver(mUpdateReceiver);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         super.onStop();
     }
@@ -234,6 +243,12 @@ public class BaseActivity extends AppCompatActivity {
             exception.printStackTrace();
         }
 
+    }
+
+    public void dismissNoNetConnectDialog() {
+        if(dialog != null && dialog.isShowing()) {
+            dialog.dismiss();
+        }
     }
 
     public void showNoNetConnectDialog() {
@@ -465,7 +480,6 @@ public class BaseActivity extends AppCompatActivity {
         }
         try {
             unregisterReceiver(onNetConnectReceiver);
-            unregisterReceiver(mUpdateReceiver);
         } catch (Exception e) {
             e.printStackTrace();
         }
