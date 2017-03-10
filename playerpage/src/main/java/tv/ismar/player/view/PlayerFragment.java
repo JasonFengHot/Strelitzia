@@ -388,7 +388,7 @@ public class PlayerFragment extends Fragment implements PlayerPageContract.View,
     @Override
     public void onResume() {
         super.onResume();
-        registerConnectionReceiver();
+        Log.i(TAG, "onResume:" + sharpKeyDownNotResume);
         if (sharpKeyDownNotResume || mounted) {
             sharpKeyDownNotResume = false;
             mounted = false;
@@ -399,16 +399,20 @@ public class PlayerFragment extends Fragment implements PlayerPageContract.View,
             isNeedOnResume = false;
             initPlayer();
         } else {
-            // 首次进入
-            Log.i(TAG, "onResume:");
-            fetchItemData();
+            if(mIsmartvPlayer != null && mIsmartvPlayer.isPlaying()){
+                // Sharp电视Dialog设置弹窗，断开网络，点击设置网络，按返回键后
+            } else {
+                // 首次进入
+                fetchItemData();
+            }
         }
+        registerConnectionReceiver();
 
     }
 
     @Override
     public void onStop() {
-        unregisterConnectionReceiver();
+        Log.i(TAG, "onStop:" + sharpKeyDownNotResume);
         if (sharpKeyDownNotResume) {
             sharpKeyDownNotResume = false;
             super.onStop();
@@ -459,6 +463,7 @@ public class PlayerFragment extends Fragment implements PlayerPageContract.View,
             }
             mounted = false;
         }
+        unregisterConnectionReceiver();
         super.onStop();
     }
 
@@ -470,6 +475,8 @@ public class PlayerFragment extends Fragment implements PlayerPageContract.View,
             mIsmartvPlayer = null;
         }
         mModel = null;
+        player_container = null;
+        player_surface = null;
     }
 
     public void buyVipOnShowAd() {
@@ -619,6 +626,7 @@ public class PlayerFragment extends Fragment implements PlayerPageContract.View,
             player_seekBar.setMax(mIsmartvPlayer.getDuration());
             player_seekBar.setPadding(0, 0, 0, 0);
             isInit = true;
+            mCurrentQuality = mIsmartvPlayer.getCurrentQuality();
         }
         if (mItemEntity.getLiveVideo()) {
             hideBuffer();
@@ -1509,6 +1517,7 @@ public class PlayerFragment extends Fragment implements PlayerPageContract.View,
             player_seekBar.setProgress(0);
             mIsmartvPlayer.seekTo(0);
             mCurrentPosition = 0;
+            showBuffer(null);
             ret = true;
         }
         return ret;
@@ -1694,7 +1703,6 @@ public class PlayerFragment extends Fragment implements PlayerPageContract.View,
                 break;
             case POP_TYPE_PLAYER_ERROR:
                 timerStop();
-                hideBuffer();
                 hidePanel();
                 hideCancel = true;
                 break;
@@ -2077,9 +2085,13 @@ public class PlayerFragment extends Fragment implements PlayerPageContract.View,
                 }
                 if (NetworkUtils.isConnected(context)) {
                     baseActivity.dismissNoNetConnectDialog();
-                    timerStart(0);
-                    if(mIsmartvPlayer != null && mIsmartvPlayer.isInPlaybackState() && !mIsmartvPlayer.isPlaying()){
-                        mIsmartvPlayer.start();
+                    if (mItemEntity == null || mClipEntity == null) {
+                        fetchItemData();
+                    } else {
+                        timerStart(0);
+                        if(mIsmartvPlayer != null && mIsmartvPlayer.isInPlaybackState() && !mIsmartvPlayer.isPlaying() && !isSeeking){
+                            mIsmartvPlayer.start();
+                        }
                     }
                 } else if (isBufferShow() && !isPopWindowShow()) {
                     hideBuffer();
