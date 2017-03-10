@@ -365,7 +365,8 @@ public class HistoryFragment extends Fragment implements ScrollableSectionList.O
 
 					@Override
 					public void onNext(Item[] items) {
-						mLoadingDialog.dismiss();
+						if(mLoadingDialog!=null)
+							mLoadingDialog.dismiss();
 						if(items!=null&&items.length>0) {
 							for (Item i : items) {
 								addHistory(i);
