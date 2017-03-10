@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.provider.Settings;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.Gravity;
@@ -84,6 +85,7 @@ public class PlayerFragment extends Fragment implements PlayerPageContract.View,
 
     private static final byte POP_TYPE_BUFFERING_LONG = 1;// 播放过程中,缓冲时间过长
     private static final byte POP_TYPE_PLAYER_ERROR = 3;// 底层onError回调
+    private static final byte POP_TYPE_PLAYER_NET_ERROR = 4;// 首次进入，播放器初始化50S以后未见onPrepared回调
 
     private static final String ARG_PK = "ARG_PK";
     private static final String ARG_SUB_PK = "ARG_SUB_PK";
@@ -386,7 +388,7 @@ public class PlayerFragment extends Fragment implements PlayerPageContract.View,
     @Override
     public void onResume() {
         super.onResume();
-        registerConnectionReceiver();
+        Log.i(TAG, "onResume:" + sharpKeyDownNotResume);
         if (sharpKeyDownNotResume || mounted) {
             sharpKeyDownNotResume = false;
             mounted = false;
@@ -397,16 +399,20 @@ public class PlayerFragment extends Fragment implements PlayerPageContract.View,
             isNeedOnResume = false;
             initPlayer();
         } else {
-            // 首次进入
-            Log.i(TAG, "onResume:");
-            fetchItemData();
+            if(mIsmartvPlayer != null && mIsmartvPlayer.isPlaying()){
+                // Sharp电视Dialog设置弹窗，断开网络，点击设置网络，按返回键后
+            } else {
+                // 首次进入
+                fetchItemData();
+            }
         }
+        registerConnectionReceiver();
 
     }
 
     @Override
     public void onStop() {
-        unregisterConnectionReceiver();
+        Log.i(TAG, "onStop:" + sharpKeyDownNotResume);
         if (sharpKeyDownNotResume) {
             sharpKeyDownNotResume = false;
             super.onStop();
@@ -419,21 +425,22 @@ public class PlayerFragment extends Fragment implements PlayerPageContract.View,
         if (mAdvertisement != null) {
             mAdvertisement.stopSubscription();
         }
-        if (mHandler.hasMessages(MSG_SEK_ACTION)) {
-            mHandler.removeMessages(MSG_SEK_ACTION);
-        }
-        if (mHandler.hasMessages(MSG_AD_COUNTDOWN)) {
-            mHandler.removeMessages(MSG_AD_COUNTDOWN);
-        }
-        if (mHandler.hasMessages(EVENT_CLICK_VIP_BUY)) {
-            mHandler.removeMessages(EVENT_CLICK_VIP_BUY);
-        }
-        if (mHandler.hasMessages(EVENT_CLICK_KEFU)) {
-            mHandler.removeMessages(EVENT_CLICK_KEFU);
-        }
-        if (mHandler.hasMessages(EVENT_COMPLETE_BUY)) {
-            mHandler.removeMessages(EVENT_COMPLETE_BUY);
-        }
+        mHandler.removeCallbacksAndMessages(null);
+//        if (mHandler.hasMessages(MSG_SEK_ACTION)) {
+//            mHandler.removeMessages(MSG_SEK_ACTION);
+//        }
+//        if (mHandler.hasMessages(MSG_AD_COUNTDOWN)) {
+//            mHandler.removeMessages(MSG_AD_COUNTDOWN);
+//        }
+//        if (mHandler.hasMessages(EVENT_CLICK_VIP_BUY)) {
+//            mHandler.removeMessages(EVENT_CLICK_VIP_BUY);
+//        }
+//        if (mHandler.hasMessages(EVENT_CLICK_KEFU)) {
+//            mHandler.removeMessages(EVENT_CLICK_KEFU);
+//        }
+//        if (mHandler.hasMessages(EVENT_COMPLETE_BUY)) {
+//            mHandler.removeMessages(EVENT_COMPLETE_BUY);
+//        }
         if (popDialog != null && popDialog.isShowing()) {
             // 底层报错导致Activity 被销毁，如果再次显示弹出框，会报错
             popDialog.dismiss();
@@ -456,6 +463,7 @@ public class PlayerFragment extends Fragment implements PlayerPageContract.View,
             }
             mounted = false;
         }
+        unregisterConnectionReceiver();
         super.onStop();
     }
 
@@ -467,6 +475,8 @@ public class PlayerFragment extends Fragment implements PlayerPageContract.View,
             mIsmartvPlayer = null;
         }
         mModel = null;
+        player_container = null;
+        player_surface = null;
     }
 
     public void buyVipOnShowAd() {
@@ -499,10 +509,7 @@ public class PlayerFragment extends Fragment implements PlayerPageContract.View,
         if (mIsmartvPlayer.getPlayerMode() == PlayerBuilder.MODE_QIYI_PLAYER) {
             hideBuffer();
         } else {
-            if (mIsmartvPlayer == null || !mIsmartvPlayer.isPlaying()) {
-                return;
-            }
-            if (!isSeeking) {
+            if (mIsPlayingAd || (mIsmartvPlayer != null && mIsmartvPlayer.isPlaying() && !isSeeking)) {
                 hideBuffer();
             }
         }
@@ -619,6 +626,7 @@ public class PlayerFragment extends Fragment implements PlayerPageContract.View,
             player_seekBar.setMax(mIsmartvPlayer.getDuration());
             player_seekBar.setPadding(0, 0, 0, 0);
             isInit = true;
+            mCurrentQuality = mIsmartvPlayer.getCurrentQuality();
         }
         if (mItemEntity.getLiveVideo()) {
             hideBuffer();
@@ -885,6 +893,9 @@ public class PlayerFragment extends Fragment implements PlayerPageContract.View,
                     }
                     break;
                 case MSG_AD_COUNTDOWN:
+                    if (isExit || mIsmartvPlayer == null) {
+                        return;
+                    }
                     int countDownTime = mIsmartvPlayer.getAdCountDownTime() / 1000;
                     String time = String.valueOf(countDownTime);
                     if (countDownTime < 10) {
@@ -901,7 +912,12 @@ public class PlayerFragment extends Fragment implements PlayerPageContract.View,
                             Log.e(TAG, "Network error on MSG_SHOW_BUFFERING_LONG.");
                             return;
                         }
-                        showExitPopup(POP_TYPE_BUFFERING_LONG);
+                        Log.i(TAG, "Show buffering long time:" + mIsmartvPlayer);
+                        if (mIsmartvPlayer != null && mCurrentQuality != null) {
+                            showExitPopup(POP_TYPE_BUFFERING_LONG);
+                        } else {
+                            showExitPopup(POP_TYPE_PLAYER_NET_ERROR);
+                        }
                     }
                     break;
             }
@@ -1421,6 +1437,7 @@ public class PlayerFragment extends Fragment implements PlayerPageContract.View,
         if (id > MENU_QUALITY_ID_START && id <= MENU_QUALITY_ID_END) {
             if (!NetworkUtils.isConnected(getActivity())) {
                 ((BaseActivity) getActivity()).showNoNetConnectDialog();
+                mIsmartvPlayer.pause();
                 Log.e(TAG, "Network error switch quality.");
                 return true;
             }
@@ -1454,6 +1471,12 @@ public class PlayerFragment extends Fragment implements PlayerPageContract.View,
             // id值为subItem pk值
             if (id == subItemPk) {
                 return false;
+            }
+            if (!NetworkUtils.isConnected(getActivity())) {
+                ((BaseActivity) getActivity()).showNoNetConnectDialog();
+                mIsmartvPlayer.pause();
+                Log.e(TAG, "Network error switch quality.");
+                return true;
             }
             for (ItemEntity subItem : mItemEntity.getSubitems()) {
                 if (subItem.getPk() == id) {
@@ -1494,6 +1517,7 @@ public class PlayerFragment extends Fragment implements PlayerPageContract.View,
             player_seekBar.setProgress(0);
             mIsmartvPlayer.seekTo(0);
             mCurrentPosition = 0;
+            showBuffer(null);
             ret = true;
         }
         return ret;
@@ -1542,12 +1566,11 @@ public class PlayerFragment extends Fragment implements PlayerPageContract.View,
             return;
         }
 
-        if (mIsmartvPlayer != null) {// 只要显示buffer就开始计时
-            if (mHandler.hasMessages(MSG_SHOW_BUFFERING_LONG)) {
-                mHandler.removeMessages(MSG_SHOW_BUFFERING_LONG);
-            }
-            mHandler.sendEmptyMessageDelayed(MSG_SHOW_BUFFERING_LONG, 50 * 1000);
+        // 只要显示buffer就开始计时
+        if (mHandler.hasMessages(MSG_SHOW_BUFFERING_LONG)) {
+            mHandler.removeMessages(MSG_SHOW_BUFFERING_LONG);
         }
+        mHandler.sendEmptyMessageDelayed(MSG_SHOW_BUFFERING_LONG, 50 * 1000);
 
         if (mIsOnPaused || isPopWindowShow()) {
             return;
@@ -1631,7 +1654,6 @@ public class PlayerFragment extends Fragment implements PlayerPageContract.View,
 
     private void finishActivity(String to) {
         isExit = true;
-//        cancelTimer();
         if (mIsmartvPlayer != null) {
             mIsmartvPlayer.logVideoExit(mCurrentPosition, to);
         }
@@ -1663,12 +1685,8 @@ public class PlayerFragment extends Fragment implements PlayerPageContract.View,
     }
 
     private void showExitPopup(final byte popType) {
-        if (isExit) {
+        if (isExit || isPopWindowShow()) {
             return;
-        }
-        if (popDialog != null && popDialog.isShowing()) {
-            popDialog.dismiss();
-            popDialog = null;
         }
         String message = getString(R.string.player_error);
         String cancelText = getString(R.string.player_pop_cancel);
@@ -1685,9 +1703,13 @@ public class PlayerFragment extends Fragment implements PlayerPageContract.View,
                 break;
             case POP_TYPE_PLAYER_ERROR:
                 timerStop();
-                hideBuffer();
                 hidePanel();
                 hideCancel = true;
+                break;
+            case POP_TYPE_PLAYER_NET_ERROR:
+                message = getString(R.string.player_net_data_error);
+                confirmText = getString(R.string.player_pop_set_net);
+                cancelText = getString(R.string.player_pop_back);
                 break;
         }
         popDialog = new ModuleMessagePopWindow(getActivity());
@@ -1707,6 +1729,9 @@ public class PlayerFragment extends Fragment implements PlayerPageContract.View,
                     @Override
                     public void cancelClick(View view) {
                         popDialog.dismiss();
+                        if(popType == POP_TYPE_PLAYER_NET_ERROR){
+                            finishActivity("source");
+                        }
                     }
                 });
         popDialog.setOnDismissListener(new PopupWindow.OnDismissListener() {
@@ -1765,6 +1790,12 @@ public class PlayerFragment extends Fragment implements PlayerPageContract.View,
                                 mIsmartvPlayer.setStartPosition(mCurrentPosition);
                                 mIsmartvPlayer.switchQuality(mCurrentQuality);
                             }
+                        }
+                        break;
+                    case POP_TYPE_PLAYER_NET_ERROR:
+                        if (popDialog.isConfirmClick) {
+                            Intent intent = new Intent(Settings.ACTION_SETTINGS);
+                            startActivity(intent);
                         }
                         break;
                 }
@@ -1903,6 +1934,9 @@ public class PlayerFragment extends Fragment implements PlayerPageContract.View,
                         ExitToast.createToastConfig().dismiss();
                         exitPlayerWhilePlaying();
                     }
+                    return true;
+                }
+                if (isPopWindowShow()) {
                     return true;
                 }
                 Log.d(TAG, "BACK:" + adController);
@@ -2051,7 +2085,14 @@ public class PlayerFragment extends Fragment implements PlayerPageContract.View,
                 }
                 if (NetworkUtils.isConnected(context)) {
                     baseActivity.dismissNoNetConnectDialog();
-                    timerStart(0);
+                    if (mItemEntity == null || mClipEntity == null) {
+                        fetchItemData();
+                    } else {
+                        timerStart(0);
+                        if(mIsmartvPlayer != null && mIsmartvPlayer.isInPlaybackState() && !mIsmartvPlayer.isPlaying() && !isSeeking){
+                            mIsmartvPlayer.start();
+                        }
+                    }
                 } else if (isBufferShow() && !isPopWindowShow()) {
                     hideBuffer();
                     hidePanel();
