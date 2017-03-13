@@ -1,4 +1,4 @@
-package tv.ismar.subject;
+package tv.ismar.subject.fragment;
 
 import android.app.Fragment;
 import android.os.Bundle;

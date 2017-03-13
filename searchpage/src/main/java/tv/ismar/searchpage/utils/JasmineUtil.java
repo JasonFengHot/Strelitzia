@@ -41,6 +41,18 @@ public class JasmineUtil {
         animator.setTarget(view);
         animator.start();
     }
+    public static void scaleOut2(View view){
+
+        Animator animator= AnimatorInflater.loadAnimator(view.getContext(), R.animator.scaleout_subject);
+        animator.setTarget(view);
+        animator.start();
+    }
+    public static void scaleIn2(View view){
+
+        Animator animator= AnimatorInflater.loadAnimator(view.getContext(), R.animator.scalein_subject);
+        animator.setTarget(view);
+        animator.start();
+    }
     public static void showKeyboard(Context context, final View view) {
         ObjectAnimator showAnimator = ObjectAnimator.ofFloat(view, "translationX", -context.getResources().getDimensionPixelOffset(R.dimen.keyboard_width), 0);
         showAnimator.setDuration(500);
