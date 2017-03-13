@@ -1516,6 +1516,7 @@ public class PlayerFragment extends Fragment implements PlayerPageContract.View,
             showPannelDelayOut();
             player_seekBar.setProgress(0);
             mIsmartvPlayer.seekTo(0);
+            isSeeking = true;
             mCurrentPosition = 0;
             showBuffer(null);
             ret = true;
@@ -1783,10 +1784,8 @@ public class PlayerFragment extends Fragment implements PlayerPageContract.View,
                                 }
                             } else {
                                 // 重新加载
-                                if (mIsmartvPlayer.getPlayerMode() == PlayerBuilder.MODE_SMART_PLAYER) {
-                                    timerStop();
-                                    showBuffer(null);
-                                }
+                                timerStop();
+                                showBuffer(null);
                                 mIsmartvPlayer.setStartPosition(mCurrentPosition);
                                 mIsmartvPlayer.switchQuality(mCurrentQuality);
                             }
