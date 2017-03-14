@@ -750,6 +750,7 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
 
                     @Override
                     public void onError(Throwable e) {
+                        Log.i("ADBUg",isPlayingStartAd+"totalADs: "+totalAdsMills);
                         if (isPlayingStartAd) {
                             if (!NetworkUtils.isConnected(HomePageActivity.this) && !NetworkUtils.isWifi(HomePageActivity.this)) {
                                 mHandler.sendEmptyMessageDelayed(MSG_SHOW_NO_NET, totalAdsMills);
@@ -1191,7 +1192,8 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
                 e.printStackTrace();
             }
         }
-        if (!NetworkUtils.isConnected(this) && !NetworkUtils.isWifi(this))
+        Log.e(TAG, "onresume Isnetwork"+Adend);
+        if (!NetworkUtils.isConnected(this) && !NetworkUtils.isWifi(this)&&Adend)
             showNoNetConnectDelay();
     }
 
@@ -1439,7 +1441,7 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
             playLaunchAd(playIndex);
         }
     };
-
+    private boolean Adend=false;
     private Handler mHandler = new Handler(Looper.getMainLooper()) {
         @Override
         public void handleMessage(Message msg) {
@@ -1451,6 +1453,7 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
                     }
                     if (!isPlayingVideo && countAdTime == 0) {
                         mHandler.removeMessages(MSG_AD_COUNTDOWN);
+                        Adend=true;
                         goNextPage();
                         return;
                     }
