@@ -205,13 +205,6 @@ public class DaisyVideoView extends SurfaceView {
     }
 
     public void setVideoPaths(String[] paths, int startPosition, IsmartvMedia logMedia, boolean isSwitchQuality) {
-        if (mFirstOpen) {
-            mPlayerOpenTime = TrueTime.now().getTime();
-            String sn = IsmartvActivator.getInstance().getSnToken();
-            String sid = Md5.md5(sn + TrueTime.now().getTime());
-            CallaPlay callaPlay = new CallaPlay();
-            callaPlay.videoStart(mLogMedia, sn, mSpeed, sid, PLAYER_FLAG_SMART);
-        }
         this.paths = paths;
         mLogMedia = logMedia;
         if (paths.length > 1) {
@@ -221,6 +214,9 @@ public class DaisyVideoView extends SurfaceView {
         }
         mStartPosition = startPosition;
         mSeekWhenPrepared = 0;
+        mFirstOpen = true;
+        mCurrentState = STATE_IDLE;
+        mTargetState = STATE_IDLE;
         openVideo();
         requestLayout();
         invalidate();
@@ -231,6 +227,13 @@ public class DaisyVideoView extends SurfaceView {
             CallaPlay callaPlay = new CallaPlay();
             callaPlay.videoSwitchStream(mLogMedia, "manual",
                     mSpeed, sn, mMediaIp, sid, PLAYER_FLAG_SMART);
+        }
+        if (mFirstOpen) {
+            mPlayerOpenTime = TrueTime.now().getTime();
+            String sn = IsmartvActivator.getInstance().getSnToken();
+            String sid = Md5.md5(sn + TrueTime.now().getTime());
+            CallaPlay callaPlay = new CallaPlay();
+            callaPlay.videoStart(mLogMedia, sn, mSpeed, sid, PLAYER_FLAG_SMART);
         }
 
     }

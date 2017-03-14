@@ -25,6 +25,7 @@ import retrofit2.adapter.rxjava.HttpException;
 import rx.Observer;
 import tv.ismar.account.IsmartvActivator;
 import tv.ismar.app.network.SkyService;
+import tv.ismar.app.player.OnNoNetConfirmListener;
 import tv.ismar.app.update.UpdateService;
 import tv.ismar.app.util.NetworkUtils;
 import tv.ismar.app.widget.ExpireAccessTokenPop;
@@ -250,6 +251,37 @@ public class BaseActivity extends AppCompatActivity {
         if(dialog != null && dialog.isShowing()) {
             dialog.dismiss();
         }
+    }
+
+    public void showNoNetConnectDialog(final OnNoNetConfirmListener onNoNetConfirmListener) {
+        Log.i("onNoNet", "showNet!!!");
+        if(dialog==null) {
+            dialog = new NoNetConnectDialog(this, R.style.NoNetDialog);
+            dialog.setFirstMessage(getString(R.string.no_connectNet));
+            dialog.setConfirmBtn(getString(R.string.setting_network));
+            dialog.setCancelBtn(getString(R.string.exit_app));
+            dialog.setCanceledOnTouchOutside(false);
+            dialog.keyListen(new ModuleMessagePopWindow.ConfirmListener() {
+                @Override
+                public void confirmClick(View view) {
+                    dialog.dismiss();
+                    Intent intent = new Intent(Settings.ACTION_SETTINGS);
+                    startActivity(intent);
+                    if(onNoNetConfirmListener != null){
+                        onNoNetConfirmListener.onNoNetConfirm();
+                    }
+                }
+            }, new ModuleMessagePopWindow.CancelListener() {
+                @Override
+                public void cancelClick(View view) {
+                    dialog.dismiss();
+                    Intent intent = new Intent();
+                    intent.setAction(NO_NET_CONNECT_ACTION);
+                    sendBroadcast(intent);
+                }
+            });
+        }
+        dialog.show();
     }
 
     public void showNoNetConnectDialog() {
