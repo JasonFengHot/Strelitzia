@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:clipToPadding="false"
     android:clipChildren="false"
-    android:background="@drawable/bg">
+    >
 
 <FrameLayout
     android:layout_width="match_parent"
@@ -37,11 +37,11 @@
 </FrameLayout>
     <ImageView
         android:id="@+id/poster_focus"
-        android:layout_width="366dp"
-        android:layout_height="510dp"
+        android:layout_width="396dp"
+        android:layout_height="535dp"
         android:background="@drawable/vod_gv_selector"
-        android:layout_marginTop="341dp"
-        android:layout_marginLeft="138dp"/>
+        android:layout_marginTop="320dp"
+        android:layout_marginLeft="122dp"/>
     <android.support.v7.widget.RecyclerView
         android:id="@+id/tv_recyclerView"
         android:layout_width="wrap_content"

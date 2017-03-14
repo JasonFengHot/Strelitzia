@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,7 +25,7 @@ import tv.ismar.subject.view.MyRecyclerView;
  * Created by admin on 2017/3/2.
  */
 
-public class MovieTVSubjectFragment extends Fragment {
+public class MovieTVSubjectFragment extends Fragment implements View.OnFocusChangeListener {
 
     private MyRecyclerView movie_recyclerView;
     private RecyclerView tv_recyclerView;
@@ -36,6 +37,8 @@ public class MovieTVSubjectFragment extends Fragment {
     private ImageView left_layer_movie;
     private ImageView left_layer_movie1;
     private ImageView right_layer_movie;
+    private ImageView poster_focus;
+    private boolean isFocused=true;
 
     @Nullable
     @Override
@@ -49,6 +52,7 @@ public class MovieTVSubjectFragment extends Fragment {
         subject_btn_like = (Button) content.findViewById(R.id.subject_btn_like);
         left_layer_movie1 = (ImageView) content.findViewById(R.id.left_layer_movie);
         right_layer_movie = (ImageView) content.findViewById(R.id.right_layer_movie);
+        poster_focus = (ImageView) content.findViewById(R.id.poster_focus);
         return content;
     }
 
@@ -77,6 +81,13 @@ public class MovieTVSubjectFragment extends Fragment {
             @Override
             public void onItemfocused(View view, int position, boolean hasFocus) {
                 if(hasFocus) {
+                    poster_focus.setVisibility(View.VISIBLE);
+                    if(!isFocused){
+                        isFocused=true;
+                        movie_recyclerView.getChildAt(1).requestFocus();
+                        movie_recyclerView.smoothScrollBy(-1,0);
+                        return;
+                    }
                     JasmineUtil.scaleOut2(view);
                     movie_recyclerView.smoothScrollBy((int) (view.getX()-1), 0);
                     subject_actor.setText(list.get(position).title+position);
@@ -88,9 +99,12 @@ public class MovieTVSubjectFragment extends Fragment {
                     }
                 }else{
                     JasmineUtil.scaleIn2(view);
+                    poster_focus.setVisibility(View.INVISIBLE);
                 }
             }
         });
+        subject_btn_buy.setOnFocusChangeListener(this);
+        subject_btn_like.setOnFocusChangeListener(this);
 
     }
 
@@ -98,4 +112,13 @@ public class MovieTVSubjectFragment extends Fragment {
     public void onResume() {
         super.onResume();
     }
+
+    @Override
+    public void onFocusChange(View v, boolean hasFocus) {
+            if (hasFocus) {
+                isFocused=false;
+                JasmineUtil.scaleOut2(movie_recyclerView.getChildAt(1));
+            }
+    }
+
 }
