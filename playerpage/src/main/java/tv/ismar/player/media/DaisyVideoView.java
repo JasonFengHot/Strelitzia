@@ -222,13 +222,6 @@ public class DaisyVideoView extends SurfaceView {
             }
             BaseActivity.wasLoadSmartPlayerSo = true;
         }
-        if (mFirstOpen) {
-            mPlayerOpenTime = TrueTime.now().getTime();
-            String sn = IsmartvActivator.getInstance().getSnToken();
-            String sid = Md5.md5(sn + TrueTime.now().getTime());
-            CallaPlay callaPlay = new CallaPlay();
-            callaPlay.videoStart(mLogMedia, sn, mSpeed, sid, PLAYER_FLAG_SMART);
-        }
         this.paths = paths;
         mLogMedia = logMedia;
         if (paths.length > 1) {
