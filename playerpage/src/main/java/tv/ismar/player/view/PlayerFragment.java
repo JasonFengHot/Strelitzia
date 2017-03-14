@@ -59,6 +59,7 @@ import tv.ismar.app.entity.History;
 import tv.ismar.app.network.entity.AdElementEntity;
 import tv.ismar.app.network.entity.ClipEntity;
 import tv.ismar.app.network.entity.ItemEntity;
+import tv.ismar.app.player.OnNoNetConfirmListener;
 import tv.ismar.app.reporter.IsmartvMedia;
 import tv.ismar.app.util.NetworkUtils;
 import tv.ismar.app.util.Utils;
@@ -407,6 +408,7 @@ public class PlayerFragment extends Fragment implements PlayerPageContract.View,
                 fetchItemData();
             }
         }
+        isSetupNetClick = false;
         registerConnectionReceiver();
 
     }
@@ -463,6 +465,11 @@ public class PlayerFragment extends Fragment implements PlayerPageContract.View,
                 mIsmartvPlayer = null;
             }
             mounted = false;
+        } else if (mIsmartvPlayer != null && isSetupNetClick){ // 弹出设置网络提示框后，点击设置网络，出现非Dialog样式Activity,返回
+            addHistory(mCurrentPosition, false, false);
+            mIsmartvPlayer.stopPlayBack();
+            mIsmartvPlayer = null;
+            isSetupNetClick = false;
         }
         unregisterConnectionReceiver();
         super.onStop();
@@ -827,7 +834,7 @@ public class PlayerFragment extends Fragment implements PlayerPageContract.View,
                         // 断开网络，连接网络后会在广播接收中恢复
                         addHistory(mCurrentPosition, true, false);
                         hidePanel();
-                        ((BaseActivity) getActivity()).showNoNetConnectDialog();
+                        ((BaseActivity) getActivity()).showNoNetConnectDialog(onNoNetConfirmListener);
                         Log.e(TAG, "Network error on timer runnable.");
                         return;
                     } else {
@@ -901,6 +908,9 @@ public class PlayerFragment extends Fragment implements PlayerPageContract.View,
                         return;
                     }
                     int countDownTime = mIsmartvPlayer.getAdCountDownTime() / 1000;
+                    if (countDownTime < 0) {
+                        countDownTime = 0;
+                    }
                     String time = String.valueOf(countDownTime);
                     if (countDownTime < 10) {
                         time = "0" + time;
@@ -912,7 +922,7 @@ public class PlayerFragment extends Fragment implements PlayerPageContract.View,
                     if (getActivity() != null && !isExit) {
                         if (!NetworkUtils.isConnected(getActivity())) {// 网络断开情况下无需显示切换分辨率
                             addHistory(mCurrentPosition, true, false);
-                            ((BaseActivity) getActivity()).showNoNetConnectDialog();
+                            ((BaseActivity) getActivity()).showNoNetConnectDialog(onNoNetConfirmListener);
                             Log.e(TAG, "Network error on MSG_SHOW_BUFFERING_LONG.");
                             return;
                         }
@@ -1443,7 +1453,7 @@ public class PlayerFragment extends Fragment implements PlayerPageContract.View,
         boolean ret = false;
         if (id > MENU_QUALITY_ID_START && id <= MENU_QUALITY_ID_END) {
             if (!NetworkUtils.isConnected(getActivity())) {
-                ((BaseActivity) getActivity()).showNoNetConnectDialog();
+                ((BaseActivity) getActivity()).showNoNetConnectDialog(onNoNetConfirmListener);
                 mIsmartvPlayer.pause();
                 Log.e(TAG, "Network error switch quality.");
                 return true;
@@ -1481,7 +1491,7 @@ public class PlayerFragment extends Fragment implements PlayerPageContract.View,
                 return false;
             }
             if (!NetworkUtils.isConnected(getActivity())) {
-                ((BaseActivity) getActivity()).showNoNetConnectDialog();
+                ((BaseActivity) getActivity()).showNoNetConnectDialog(onNoNetConfirmListener);
                 mIsmartvPlayer.pause();
                 Log.e(TAG, "Network error switch quality.");
                 return true;
@@ -1571,7 +1581,7 @@ public class PlayerFragment extends Fragment implements PlayerPageContract.View,
             addHistory(mCurrentPosition, true, false);
             hidePanel();
             timerStop();
-            ((BaseActivity) getActivity()).showNoNetConnectDialog();
+            ((BaseActivity) getActivity()).showNoNetConnectDialog(onNoNetConfirmListener);
             return;
         }
 
@@ -2105,7 +2115,7 @@ public class PlayerFragment extends Fragment implements PlayerPageContract.View,
                     hidePanel();
                     timerStop();
                     addHistory(mCurrentPosition, true, false);
-                    baseActivity.showNoNetConnectDialog();
+                    baseActivity.showNoNetConnectDialog(onNoNetConfirmListener);
                 }
             }
         }
@@ -2130,4 +2140,13 @@ public class PlayerFragment extends Fragment implements PlayerPageContract.View,
         }
 
     }
+
+    private boolean isSetupNetClick;
+
+    private OnNoNetConfirmListener onNoNetConfirmListener = new OnNoNetConfirmListener() {
+        @Override
+        public void onNoNetConfirm() {
+            isSetupNetClick = true;
+        }
+    };
 }
