@@ -48,11 +48,13 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
+import tv.ismar.account.IsmartvActivator;
 import tv.ismar.app.core.SimpleRestClient;
 import tv.ismar.app.core.cache.CacheManager;
 import tv.ismar.app.core.cache.DownloadClient;
 import tv.ismar.app.entity.HomePagerEntity;
 import tv.ismar.app.entity.HomePagerEntity.Carousel;
+import tv.ismar.app.network.SkyService;
 import tv.ismar.app.player.CallaPlay;
 import tv.ismar.app.util.BitmapDecoder;
 import tv.ismar.app.util.HardwareUtils;
@@ -105,6 +107,7 @@ public class FilmFragment extends ChannelBaseFragment {
     private HashMap<Integer, Integer> carouselMap;
     private boolean externalStorageIsEnable = false;
     private boolean isDestroyed = false;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -266,7 +269,7 @@ public class FilmFragment extends ChannelBaseFragment {
 
     private void fetchHomePage(String url) {
         mChannelName = getChannelEntity().getChannel();
-        dataSubscription = ((HomePageActivity)getActivity()).mSkyService.fetchHomePage(url)
+        dataSubscription = ((HomePageActivity) getActivity()).mSkyService.fetchHomePage(url)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(((HomePageActivity) getActivity()).new BaseObserver<HomePagerEntity>() {
@@ -277,10 +280,10 @@ public class FilmFragment extends ChannelBaseFragment {
 
                     @Override
                     public void onNext(HomePagerEntity homePagerEntity) {
-                        if(homePagerEntity == null){
+                        if (homePagerEntity == null) {
                             super.onError(new Exception("数据异常"));
                         } else {
-                            if(!isDestroyed)
+                            if (!isDestroyed)
                                 fillLayout(homePagerEntity);
                         }
                     }
@@ -290,10 +293,10 @@ public class FilmFragment extends ChannelBaseFragment {
     private void fillLayout(HomePagerEntity homePagerEntity) {
         if (mContext == null || guideRecommmendList == null)
             return;
-        if(homePagerEntity == null){
-            new CallaPlay().exception_except("launcher","launcher",channelEntity.getChannel(),
-                    "",0,channelEntity.getHomepage_url(),
-                    SimpleRestClient.appVersion,"data",""
+        if (homePagerEntity == null) {
+            new CallaPlay().exception_except("launcher", "launcher", channelEntity.getChannel(),
+                    "", 0, channelEntity.getHomepage_url(),
+                    SimpleRestClient.appVersion, "data", ""
             );
             return;
         }
@@ -302,7 +305,12 @@ public class FilmFragment extends ChannelBaseFragment {
 
         Log.d(TAG, "posters size: " + posters.size());
         Log.d(TAG, "carousels size: " + carousels.size());
-        initPosters(posters);
+        if (TextUtils.isEmpty(homePagerEntity.getRecommend_homepage_url())) {
+            initPosters(posters);
+        } else {
+            smartRecommendPost(homePagerEntity.getRecommend_homepage_url(), posters);
+        }
+
         initCarousel(carousels);
         if (scrollFromBorder) {
             if (isRight) {//右侧移入
@@ -331,7 +339,11 @@ public class FilmFragment extends ChannelBaseFragment {
             return;
         guideRecommmendList.removeAllViews();
         posters.get(0).setPosition(0);
-        film_lefttop_image.setUrl(posters.get(0).getCustom_image());
+        String imageUrl0 = posters.get(0).getCustom_image();
+        if (TextUtils.isEmpty(imageUrl0)) {
+            imageUrl0 = posters.get(0).getVertical_url();
+        }
+        film_lefttop_image.setUrl(imageUrl0);
         film_lefttop_image.setTitle(posters.get(0).getIntroduction());
         film_lefttop_image.setOnClickListener(ItemClickListener);
         film_lefttop_image.setTag(posters.get(0));
@@ -351,7 +363,7 @@ public class FilmFragment extends ChannelBaseFragment {
         for (int i = 1; i <= posters.size(); i++) {
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(width, height);
             if (i > 1) {
-                params.setMargins((int)space, 0, 0, 0);
+                params.setMargins((int) space, 0, 0, 0);
             }
             if (i <= posters.size() - 1) {
                 posters.get(i).setPosition(i);
@@ -391,7 +403,12 @@ public class FilmFragment extends ChannelBaseFragment {
                 textView.setTag(posters.get(i));
                 frameLayout.setTag(R.id.view_position_tag, i + 7);
                 frameLayout.setOnClickListener(ItemClickListener);
-                Picasso.with(mContext).load(posters.get(i).getCustom_image()).memoryPolicy(MemoryPolicy.NO_STORE).into(postitemView);
+
+                String imageUrl = posters.get(i).getCustom_image();
+                if (TextUtils.isEmpty(imageUrl)) {
+                    imageUrl = posters.get(i).getVertical_url();
+                }
+                Picasso.with(mContext).load(imageUrl).memoryPolicy(MemoryPolicy.NO_STORE).into(postitemView);
                 frameLayout.setTag(posters.get(i));
                 frameLayout.setLayoutParams(params);
                 if (i == 1) {
@@ -435,11 +452,11 @@ public class FilmFragment extends ChannelBaseFragment {
     }
 
 
-    private void initCarousel( ArrayList<HomePagerEntity.Carousel> carousels) {
+    private void initCarousel(ArrayList<HomePagerEntity.Carousel> carousels) {
         allItem = new ArrayList<LabelImageView3>();
-        carousels = new ArrayList<>(carousels.subList(0,5));
+        carousels = new ArrayList<>(carousels.subList(0, 5));
         mCarousels = carousels;
-        carouselMap =new HashMap<>();
+        carouselMap = new HashMap<>();
 
 
         try {
@@ -481,9 +498,9 @@ public class FilmFragment extends ChannelBaseFragment {
             allItem.add(film_carous_imageView4);
             allItem.add(film_carous_imageView5);
         } catch (Exception e) {
-            new CallaPlay().exception_except("launcher","launcher",channelEntity.getChannel(),
-                    "",0,"",
-                    SimpleRestClient.appVersion,"client",""
+            new CallaPlay().exception_except("launcher", "launcher", channelEntity.getChannel(),
+                    "", 0, "",
+                    SimpleRestClient.appVersion, "client", ""
             );
         }
 
@@ -508,7 +525,7 @@ public class FilmFragment extends ChannelBaseFragment {
         Log.d(TAG, "current video path ====> " + videoPath);
         CallaPlay play = new CallaPlay();
         play.homepage_vod_trailer_play(videoPath, mChannelName);
-        if (mSurfaceView.isPlaying() &&mSurfaceView.getDataSource().equals(videoPath)) {
+        if (mSurfaceView.isPlaying() && mSurfaceView.getDataSource().equals(videoPath)) {
             return;
         }
         linkedVideoImage.setImageResource(R.drawable.guide_video_loading);
@@ -662,7 +679,7 @@ public class FilmFragment extends ChannelBaseFragment {
             film_linked_title.setVisibility(View.GONE);
         }
         final int pauseTime = Integer.parseInt(mCarousels.get(mCurrentCarouselIndex).getPause_time());
-        if(!TextUtils.isEmpty(tempCarouselUrl) && tempCarouselUrl.equals(url)){
+        if (!TextUtils.isEmpty(tempCarouselUrl) && tempCarouselUrl.equals(url)) {
             mHandler.sendEmptyMessageDelayed(CAROUSEL_NEXT, pauseTime * 1000);
             return;
         }
@@ -755,7 +772,7 @@ public class FilmFragment extends ChannelBaseFragment {
 
     private MediaPlayer.OnPreparedListener mOnPreparedListener;
 
-    private void initCallback(){
+    private void initCallback() {
         mOnCompletionListener = new MediaPlayer.OnCompletionListener() {
             @Override
             public void onCompletion(MediaPlayer mp) {
@@ -775,7 +792,7 @@ public class FilmFragment extends ChannelBaseFragment {
         mOnPreparedListener = new MediaPlayer.OnPreparedListener() {
             @Override
             public void onPrepared(MediaPlayer mp) {
-                if(mp != null && !mp.isPlaying()){
+                if (mp != null && !mp.isPlaying()) {
                     mp.start();
                 }
                 if (bitmapDecoder != null && bitmapDecoder.isAlive()) {
@@ -831,5 +848,49 @@ public class FilmFragment extends ChannelBaseFragment {
                     }
                 });
     }
+
+    private void smartRecommendPost(String url, final ArrayList<HomePagerEntity.Poster>  posters) {
+        SkyService.ServiceManager.getCacheSkyService2().smartRecommendPost(url, IsmartvActivator.getInstance().getSnToken())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<ArrayList<HomePagerEntity.Poster>>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable throwable) {
+                        initPosters(posters);
+                    }
+
+                    @Override
+                    public void onNext(ArrayList<HomePagerEntity.Poster> smartPosters) {
+                        if (smartPosters.size() < 7){
+                            initPosters(posters);
+                        }else {
+                            ArrayList<HomePagerEntity.Poster> posterArrayList = new ArrayList<>();
+                            posterArrayList.add(posters.get(0));
+                            if (smartPosters.size() - posterStartTag - 7 >= 0) {
+                                posterArrayList.addAll(smartPosters.subList(posterStartTag, posterStartTag + 7));
+                                posterStartTag = posterStartTag + 7;
+                            } else {
+                                if (smartPosters.size() <= posterStartTag){
+                                    posterArrayList.addAll(smartPosters.subList(0, 7));
+                                    posterStartTag =  7;
+                                }else {
+                                    posterArrayList.addAll(smartPosters.subList(posterStartTag, smartPosters.size()));
+                                    posterArrayList.addAll(smartPosters.subList(0, Math.abs(smartPosters.size() - posterStartTag - 7)));
+                                    posterStartTag = Math.abs(smartPosters.size() - posterStartTag - 7);
+                                }
+                            }
+                            initPosters(posterArrayList);
+                        }
+
+                    }
+                });
+    }
+
+    public static int posterStartTag = 0;
 }
 

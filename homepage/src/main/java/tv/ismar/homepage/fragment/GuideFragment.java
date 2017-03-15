@@ -32,9 +32,11 @@ import cn.ismartv.downloader.DownloadEntity;
 import cn.ismartv.downloader.DownloadStatus;
 import cn.ismartv.downloader.Md5;
 import cn.ismartv.injectdb.library.query.Select;
+import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+import tv.ismar.account.IsmartvActivator;
 import tv.ismar.app.AppConstant;
 import tv.ismar.app.core.SimpleRestClient;
 import tv.ismar.app.core.cache.CacheManager;
@@ -255,7 +257,11 @@ public class GuideFragment extends ChannelBaseFragment {
         }
 
         if (!posters.isEmpty()) {
-            initPosters(posters);
+            if (TextUtils.isEmpty(homePagerEntity.getRecommend_homepage_url())) {
+                initPosters(posters);
+            }else {
+                smartRecommendPost(homePagerEntity.getRecommend_homepage_url(), posters);
+            }
         }
         if (scrollFromBorder) {
             if (isRight) {//右侧移入
@@ -278,6 +284,48 @@ public class GuideFragment extends ChannelBaseFragment {
         }
 
     }
+
+    private void smartRecommendPost(String url, final ArrayList<HomePagerEntity.Poster>  posters) {
+        SkyService.ServiceManager.getCacheSkyService2().smartRecommendPost(url, IsmartvActivator.getInstance().getSnToken())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<ArrayList<HomePagerEntity.Poster>>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable throwable) {
+                        initPosters(posters);
+                    }
+
+                    @Override
+                    public void onNext(ArrayList<HomePagerEntity.Poster> smartPosters) {
+                        if (smartPosters.size() < 8){
+                            initPosters(posters);
+                        }else {
+                            ArrayList<HomePagerEntity.Poster> posterArrayList = new ArrayList<>();
+                            if (smartPosters.size() - posterStartTag - 8 >= 0) {
+                                posterArrayList.addAll(smartPosters.subList(posterStartTag, posterStartTag + 8));
+                                posterStartTag = posterStartTag + 8;
+                            } else {
+                                if (smartPosters.size() <= posterStartTag){
+                                    posterArrayList.addAll(smartPosters.subList(0, 8));
+                                    posterStartTag =  8;
+                                }else {
+                                    posterArrayList.addAll(smartPosters.subList(posterStartTag, smartPosters.size()));
+                                    posterArrayList.addAll(smartPosters.subList(0, Math.abs(smartPosters.size() - posterStartTag - 8)));
+                                    posterStartTag = Math.abs(smartPosters.size() - posterStartTag - 8);
+                                }
+                            }
+                            initPosters(posterArrayList);
+                        }
+                    }
+                });
+    }
+
+    public static int posterStartTag = 0;
 
     private void initPosters(ArrayList<HomePagerEntity.Poster> posters) {
         guideRecommmendList.removeAllViews();
@@ -323,8 +371,12 @@ public class GuideFragment extends ChannelBaseFragment {
                     }
                 }
             });
+            String imageUrl = posters.get(i).getCustom_image();
+            if (TextUtils.isEmpty(imageUrl)){
+                imageUrl = posters.get(i).getVertical_url();
+            }
 
-            Picasso.with(mContext).load(posters.get(i).getCustom_image()).memoryPolicy(MemoryPolicy.NO_STORE)
+            Picasso.with(mContext).load(imageUrl).memoryPolicy(MemoryPolicy.NO_STORE)
                     .into(itemView);
             posters.get(i).setPosition(i);
             textView.setTag(posters.get(i));
