@@ -1,81 +1,143 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@drawable/a1"
+    >
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="754dp"
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:id="@+id/game_list"
         >
+        <ImageView
+            android:layout_width="688dp"
+            android:layout_height="52dp"
+            android:layout_marginLeft="86dp"
+            android:layout_marginTop="152dp"
+            android:background="@drawable/up_focus"
+            />
+        <android.support.v7.widget.RecyclerView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+        </android.support.v7.widget.RecyclerView>
+        <ImageView
+            android:layout_width="688dp"
+            android:layout_height="52dp"
+            android:layout_marginLeft="86dp"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/down_focus"
+            />
 
     </LinearLayout>
+
     <LinearLayout
-        android:layout_width="match_parent"
+        android:id="@+id/game_detail"
+        android:layout_width="1126dp"
         android:layout_height="match_parent"
+        android:layout_marginLeft="40dp"
+        android:layout_marginTop="150dp"
         android:orientation="vertical"
         >
         <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_width="480dp"
+            android:layout_height="270dp">
             <tv.ismar.app.ui.view.LabelImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:id="@+id/detail_labelImage"
+                android:layout_width="480dp"
+                android:layout_height="270dp"
                 />
-            <TextView
-                android:gravity="center_horizontal"
-                android:layout_width="@dimen/filter_list_item_title_w"
-                android:layout_height="match_parent"
-                android:singleLine="true"
-                android:ellipsize="marquee"
-                android:paddingTop="@dimen/filter_list_item_title_mt"
-                android:paddingBottom="@dimen/filter_list_item_title_pb"
-                android:layout_centerHorizontal="true"
-                android:layout_below="@id/list_item_preview_img"
-                android:textSize="@dimen/h3_text_size"
-                android:id="@+id/list_item_title"
-                android:textColor="#FFF8F8FF"
-                />
-            <ImageView
-                android:layout_width="@dimen/gridview_item_quality_img_H"
-                android:layout_height="@dimen/gridview_item_quality_img_W"
-                android:layout_alignTop="@id/list_item_preview_img"
-                android:layout_alignRight="@id/list_item_preview_img"
-                android:layout_marginTop="@dimen/gridview_item_quality_img_marginT"
-                android:layout_marginRight="@dimen/gridview_item_quality_img_marginR"
-                android:id="@+id/list_item_quality_label"
-                android:visibility="gone"/>
-            <TextView
-                android:id="@+id/ItemBeanScore"
-                android:layout_width="@dimen/list_vip_score_w"
-                android:layout_height="@dimen/list_vip_score_h"
+            <tv.ismar.searchpage.weight.RotateTextView
+                android:layout_width="109dp"
+                android:layout_height="109dp"
+                android:textSize="18sp"
                 android:layout_alignParentRight="true"
-                android:layout_marginRight="@dimen/list_vip_score_mr"
-                android:layout_marginTop="@dimen/list_vip_score_mt"
-                android:gravity="center"
-                android:textColor="@android:color/transparent"
-                android:textSize="@dimen/score_tag_txt_size"
+                android:layout_alignParentTop="true"
+                />
+            <TextView
+                android:id="@+id/price"
+                android:layout_width="216dp"
+                android:layout_height="28dp"
+                android:textColor="@color/_ffffff"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentLeft="true"
+                android:textSize="@dimen/text_size_18sp"
+                android:background="@drawable/price"
                 android:textStyle="bold"
-                android:visibility="gone" />
-            <ImageView
-                android:id="@+id/expense_txt"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:visibility="gone" >
-            </ImageView>
+                android:visibility="visible" />
+            <TextView
+                android:id="@+id/havebuy"
+                android:layout_width="232dp"
+                android:layout_height="33dp"
+                android:background="@drawable/have_buy"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentLeft="true"
+                android:layout_marginLeft="-5dp"
+                android:layout_marginBottom="-2dp"
+                />
         </RelativeLayout>
+
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/tiem"
-            />
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/title"
+            android:layout_width="543dp"
+            android:layout_height="43dp"
+            android:id="@+id/game_time"
+            android:layout_marginTop="23dp"
             />
 
+        <TextView
+            android:layout_width="543dp"
+            android:layout_height="43dp"
+            android:id="@+id/title"
+            android:layout_marginTop="5dp"
+            />
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="72dp"
+                android:layout_marginTop="27dp"
+                >
+                <Button
+                    android:id="@+id/buy"
+                    android:layout_width="216dp"
+                    android:layout_height="72dp"
+                    android:background="@drawable/buy_normal"
+                    android:layout_alignParentLeft="true"
+                    />
+                <Button
+                    android:id="@+id/play"
+                    android:layout_width="216dp"
+                    android:layout_height="72dp"
+                    android:background="@drawable/play_normal"
+                    android:visibility="gone"
+                    />
+                <Button
+                    android:id="@+id/subscribe"
+                    android:layout_width="216dp"
+                    android:layout_height="72dp"
+                    android:layout_marginLeft="266dp"
+                    android:background="@drawable/subscribe_normal"
+                    />
+            </RelativeLayout>
+        <TextView
+            android:layout_width="127dp"
+            android:layout_height="43dp"
+            android:textSize="30sp"
+            android:layout_marginTop="50dp"
+            android:text="相关视频"
+            />
+        <TextView
+            android:layout_width="1040dp"
+            android:layout_height="2dp"
+            android:alpha="0.75"
+            android:textColor="@color/_ffffff"
+            android:layout_marginTop="5dp"
+            />
+        <LinearLayout
+            android:id="@+id/relate_list"
+            android:layout_width="1040dp"
+            android:layout_height="259dp"
+            android:orientation="horizontal"
+            >
+        </LinearLayout>
     </LinearLayout>
 </LinearLayout>
