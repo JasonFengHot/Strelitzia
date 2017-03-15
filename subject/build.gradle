@@ -29,4 +29,5 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile project(':appbase')
     compile project(':searchpage')
+    compile project(path: ':searchpage')
 }

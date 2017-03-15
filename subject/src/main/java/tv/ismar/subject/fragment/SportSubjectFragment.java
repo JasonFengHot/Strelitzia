@@ -7,6 +7,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import tv.ismar.subject.R;
+
 /**
  * Created by liucan on 2017/3/1.
  */

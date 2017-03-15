@@ -26,7 +26,7 @@ public class SubjectActivity extends BaseActivity{
         fragmentTransaction.add(R.id.subject_frame,sportSubjectFragment);
         fragmentTransaction.commit();
      //   setContentView(R.layout.activity_subject);
-        initView();
+     //   initView();
     }
 
     private void initView() {

@@ -12,18 +12,21 @@
         android:id="@+id/game_list"
         >
         <ImageView
-            android:layout_width="688dp"
+            android:id="@+id/up_image"
+            android:layout_width="668dp"
             android:layout_height="52dp"
             android:layout_marginLeft="86dp"
             android:layout_marginTop="152dp"
             android:background="@drawable/up_focus"
             />
         <android.support.v7.widget.RecyclerView
+            android:id="@+id/sport_list"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
         </android.support.v7.widget.RecyclerView>
         <ImageView
-            android:layout_width="688dp"
+            android:id="@+id/down_image"
+            android:layout_width="668dp"
             android:layout_height="52dp"
             android:layout_marginLeft="86dp"
             android:layout_marginTop="20dp"
