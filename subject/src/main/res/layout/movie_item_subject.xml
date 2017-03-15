@@ -18,19 +18,23 @@
             />
         <TextView
             android:id="@+id/movie_item_score"
-            android:layout_width="64dp"
-            android:layout_height="43dp"
+            android:layout_width="56dp"
+            android:layout_height="34dp"
             android:background="@drawable/score"
             android:textSize="30dp"
             android:gravity="center"
             android:textColor="@color/_ffffff"
+            android:layout_marginTop="9dp"
+            android:layout_marginLeft="13dp"
             />
 
-        <ImageView
+        <tv.ismar.searchpage.weight.RotateTextView
             android:id="@+id/movie_item_mark"
             android:layout_width="109dp"
             android:layout_height="109dp"
-            android:layout_alignParentRight="true"/>
+            android:layout_alignParentRight="true"
+            android:textSize="20dp"
+            android:textColor="@color/_ffffff"/>
 
         <TextView
             android:id="@+id/movie_item_title"

@@ -171,8 +171,9 @@ public class PageIntent implements PageIntentInterface {
 
     public void toSearch(Context context) {
         Intent intent = new Intent();
-        intent.setAction("tv.ismar.searchpage.search");
-        intent.putExtra("frompage","search");
+        intent.setAction("tv.ismar.daisy.subject");
+//        intent.setAction("tv.ismar.searchpage.search");
+//        intent.putExtra("frompage","search");
         context.startActivity(intent);
     }
 

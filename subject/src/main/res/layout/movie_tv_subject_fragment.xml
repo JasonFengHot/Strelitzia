@@ -4,17 +4,20 @@
     android:layout_height="match_parent"
     android:clipToPadding="false"
     android:clipChildren="false"
+    android:background="@drawable/tv_bg"
     >
 
 <FrameLayout
+    android:id="@+id/subject_movie"
     android:layout_width="match_parent"
     android:layout_height="411dp"
     android:layout_marginTop="382dp"
     android:clipToPadding="false"
     android:clipChildren="false"
+    android:visibility="gone"
     >
 
-    <tv.ismar.subject.view.MyRecyclerView
+    <android.support.v7.widget.RecyclerView
         android:id="@+id/movie_recyclerView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -27,7 +30,8 @@
         android:id="@+id/left_layer_movie"
         android:layout_width="144dp"
         android:layout_height="match_parent"
-        android:src="@drawable/left_layer_movie" />
+        android:src="@drawable/left_layer_movie"
+        android:visibility="invisible"/>
     <ImageView
         android:id="@+id/right_layer_movie"
         android:layout_width="138dp"
@@ -35,22 +39,57 @@
         android:src="@drawable/right_layer_movie"
         android:layout_gravity="right"/>
 </FrameLayout>
+
+
     <ImageView
         android:id="@+id/poster_focus"
         android:layout_width="396dp"
         android:layout_height="535dp"
         android:background="@drawable/vod_gv_selector"
         android:layout_marginTop="320dp"
-        android:layout_marginLeft="122dp"/>
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/tv_recyclerView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_marginLeft="122dp"
+        android:visibility="gone"/>
+    <FrameLayout
+        android:id="@+id/subject_tv"
+        android:layout_width="match_parent"
+        android:layout_height="224dp"
         android:layout_marginTop="580dp"
-        android:layout_marginLeft="147dp"
         android:clipToPadding="false"
         android:clipChildren="false"
-        android:visibility="gone"/>
+        >
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/tv_recyclerView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="186dp"
+            android:paddingRight="1334dp"
+            android:clipToPadding="false"
+            android:clipChildren="false"
+            />
+        <ImageView
+            android:id="@+id/left_layer_tv"
+            android:layout_width="130dp"
+            android:layout_height="match_parent"
+            android:src="@drawable/left_layer_tv"
+            android:visibility="visible"/>
+        <ImageView
+            android:id="@+id/right_layer_tv"
+            android:layout_width="370dp"
+            android:layout_height="match_parent"
+            android:src="@drawable/right_layer_tv"
+            android:layout_gravity="right"/>
+    </FrameLayout>
+
+    <ImageView
+        android:id="@+id/tv_poster_focus"
+        android:layout_width="520dp"
+        android:layout_height="310dp"
+        android:background="@drawable/vod_gv_selector"
+        android:layout_marginTop="537dp"
+        android:layout_marginLeft="125dp"
+        android:visibility="visible"/>
+
     <LinearLayout
         android:layout_width="1107dp"
         android:layout_height="wrap_content"
@@ -89,13 +128,7 @@
            android:layout_width="254dp"
            android:layout_height="110dp"
            android:background="@drawable/buy_btn_selector"
-           android:text="购买"
-           android:gravity="center_vertical"
-           android:textColor="@color/_ffffff"
-           android:textSize="36dp"
-           android:paddingLeft="120dp"
            android:focusable="true"
-           android:focusableInTouchMode="true"
            android:layout_marginBottom="87dp"
            />
         <Button
@@ -103,13 +136,7 @@
             android:layout_width="254dp"
             android:layout_height="110dp"
             android:background="@drawable/like_btn_selector"
-            android:text="收藏"
-            android:gravity="center_vertical"
-            android:textColor="@color/_ffffff"
-            android:textSize="36dp"
             android:layout_marginLeft="7dp"
-            android:paddingLeft="120dp"
-            android:focusableInTouchMode="true"
             android:focusable="true"
             android:layout_marginBottom="87dp"
             />
