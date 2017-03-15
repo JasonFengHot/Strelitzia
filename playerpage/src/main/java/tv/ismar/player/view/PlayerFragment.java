@@ -401,7 +401,7 @@ public class PlayerFragment extends Fragment implements PlayerPageContract.View,
             isNeedOnResume = false;
             initPlayer();
         } else {
-            if(mIsmartvPlayer != null && mIsmartvPlayer.isPlaying()){
+            if (mIsmartvPlayer != null && mIsmartvPlayer.isPlaying()) {
                 // Sharp电视Dialog设置弹窗，断开网络，点击设置网络，按返回键后
             } else {
                 // 首次进入
@@ -465,7 +465,7 @@ public class PlayerFragment extends Fragment implements PlayerPageContract.View,
                 mIsmartvPlayer = null;
             }
             mounted = false;
-        } else if (mIsmartvPlayer != null && isSetupNetClick){ // 弹出设置网络提示框后，点击设置网络，出现非Dialog样式Activity,返回
+        } else if (mIsmartvPlayer != null && isSetupNetClick) { // 弹出设置网络提示框后，点击设置网络，出现非Dialog样式Activity,返回
             addHistory(mCurrentPosition, false, false);
             mIsmartvPlayer.stopPlayBack();
             mIsmartvPlayer = null;
@@ -867,7 +867,7 @@ public class PlayerFragment extends Fragment implements PlayerPageContract.View,
                         mTimerHandler.postDelayed(timerRunnable, 2000);
                         return;
                     }
-                    if(hasHistoryToStart){
+                    if (hasHistoryToStart) {
                         hasHistoryToStart = false;
                     }
                 } else {
@@ -1748,7 +1748,7 @@ public class PlayerFragment extends Fragment implements PlayerPageContract.View,
                     @Override
                     public void cancelClick(View view) {
                         popDialog.dismiss();
-                        if(popType == POP_TYPE_PLAYER_NET_ERROR){
+                        if (popType == POP_TYPE_PLAYER_NET_ERROR) {
                             finishActivity("source");
                         }
                     }
@@ -1945,7 +1945,7 @@ public class PlayerFragment extends Fragment implements PlayerPageContract.View,
                         };
                         quitTimer.schedule(task, 5000);
                     } else {
-                        if (mIsPreview){
+                        if (mIsPreview) {
                             expenseVideoPreview("cancel");
                         }
                         ExitToast.createToastConfig().dismiss();
@@ -2106,7 +2106,7 @@ public class PlayerFragment extends Fragment implements PlayerPageContract.View,
                         fetchItemData();
                     } else {
                         timerStart(0);
-                        if(mIsmartvPlayer != null && mIsmartvPlayer.isInPlaybackState() && !mIsmartvPlayer.isPlaying() && !isSeeking){
+                        if (mIsmartvPlayer != null && mIsmartvPlayer.isInPlaybackState() && !mIsmartvPlayer.isPlaying() && !isSeeking) {
                             mIsmartvPlayer.start();
                         }
                     }
@@ -2120,9 +2120,10 @@ public class PlayerFragment extends Fragment implements PlayerPageContract.View,
             }
         }
     }
-    public void expenseVideoPreview(String result){
+
+    public void expenseVideoPreview(String result) {
         try {
-            String player = mIsmartvPlayer.getPlayerMode() == PlayerBuilder.MODE_QIYI_PLAYER?"qiyi":"bestv";
+            String player = mIsmartvPlayer.getPlayerMode() == PlayerBuilder.MODE_QIYI_PLAYER ? "qiyi" : "bestv";
             new PurchaseStatistics().expenseVideoPreview(
                     mItemEntity.getItemPk(),
                     mItemEntity.getClip().getPk(),
@@ -2135,7 +2136,7 @@ public class PlayerFragment extends Fragment implements PlayerPageContract.View,
                     mIsmartvPlayer.getDuration(),
                     TrueTime.now().getTime()
             );
-        }catch (Exception e){
+        } catch (Exception e) {
             Log.e(TAG, "expenseVideoPreview: " + e.getMessage());
         }
 
