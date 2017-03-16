@@ -3,6 +3,7 @@ package tv.ismar.homepage.fragment;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -23,8 +24,10 @@ import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+import tv.ismar.account.IsmartvActivator;
 import tv.ismar.app.core.SimpleRestClient;
 import tv.ismar.app.entity.HomePagerEntity;
+import tv.ismar.app.network.SkyService;
 import tv.ismar.app.player.CallaPlay;
 import tv.ismar.homepage.R;
 import tv.ismar.homepage.view.HomePageActivity;
@@ -163,7 +166,12 @@ public class ChildFragment extends ChannelBaseFragment implements Flag.ChangeCal
                         }
                         ArrayList<HomePagerEntity.Poster> posters = homePagerEntity.getPosters();
                         ArrayList<HomePagerEntity.Carousel> carousels = homePagerEntity.getCarousels();
-                        initPosters(posters);
+                        if (TextUtils.isEmpty(homePagerEntity.getRecommend_homepage_url())) {
+                            initPosters(posters);
+                        }else {
+                            smartRecommendPost(homePagerEntity.getRecommend_homepage_url(), posters);
+                        }
+
                         initCarousel(carousels);
                         if(scrollFromBorder){
                             if(isRight){//右侧移入
@@ -226,7 +234,11 @@ public class ChildFragment extends ChannelBaseFragment implements Flag.ChangeCal
 
             if(mContext==null)
                 return;
-            Picasso.with(mContext).load(posters.get(i).getCustom_image()).memoryPolicy(MemoryPolicy.NO_STORE).into(itemImg);
+            String imageUrl = posters.get(i).getCustom_image();
+            if (TextUtils.isEmpty(imageUrl)){
+                imageUrl = posters.get(i).getPoster_url();
+            }
+            Picasso.with(mContext).load(imageUrl).memoryPolicy(MemoryPolicy.NO_STORE).into(itemImg);
             itemText.setText(posters.get(i).getTitle());
 
             /**
@@ -405,7 +417,48 @@ public class ChildFragment extends ChannelBaseFragment implements Flag.ChangeCal
             playCarousel();
         }
     }
+    private void smartRecommendPost(String url, final ArrayList<HomePagerEntity.Poster>  posters) {
+        SkyService.ServiceManager.getCacheSkyService2().smartRecommendPost(url, IsmartvActivator.getInstance().getSnToken())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<ArrayList<HomePagerEntity.Poster>>() {
+                    @Override
+                    public void onCompleted() {
 
+                    }
+
+                    @Override
+                    public void onError(Throwable throwable) {
+                        initPosters(posters);
+                    }
+
+                    @Override
+                    public void onNext(ArrayList<HomePagerEntity.Poster> smartPosters) {
+                        if (smartPosters.size() < 7){
+                            initPosters(posters);
+                        }else {
+                            ArrayList<HomePagerEntity.Poster> posterArrayList = new ArrayList<>();
+                            if (smartPosters.size() - posterStartTag - 7 >= 0) {
+                                posterArrayList.addAll(smartPosters.subList(posterStartTag, posterStartTag + 7));
+                                posterStartTag = posterStartTag + 7;
+                            } else {
+                                if (smartPosters.size() <= posterStartTag){
+                                    posterArrayList.addAll(smartPosters.subList(0, 7));
+                                    posterStartTag =  7;
+                                }else {
+                                    posterArrayList.addAll(smartPosters.subList(posterStartTag, smartPosters.size()));
+                                    posterArrayList.addAll(smartPosters.subList(0, Math.abs(smartPosters.size() - posterStartTag - 7)));
+                                    posterStartTag = Math.abs(smartPosters.size() - posterStartTag - 7);
+                                }
+                            }
+                            initPosters(posterArrayList);
+                        }
+
+                    }
+                });
+    }
+
+    public static int posterStartTag = 0;
 }
 
 
