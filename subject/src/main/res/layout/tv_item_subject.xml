@@ -4,10 +4,10 @@
     android:layout_height="match_parent"
     android:focusable="true"
     android:focusableInTouchMode="true"
-    android:layout_marginRight="54dp">
+    android:layout_marginRight="@dimen/subject_tv_item_mr">
     <RelativeLayout
-        android:layout_width="400dp"
-        android:layout_height="225dp"
+        android:layout_width="@dimen/subject_tv_item_w"
+        android:layout_height="@dimen/subject_tv_item_h"
         >
         <ImageView
             android:id="@+id/movie_item_poster"
@@ -17,32 +17,32 @@
             />
         <TextView
             android:id="@+id/movie_item_score"
-            android:layout_width="56dp"
-            android:layout_height="34dp"
+            android:layout_width="@dimen/subject_item_score_w"
+            android:layout_height="@dimen/subject_item_score_h"
             android:background="@drawable/score"
-            android:textSize="30dp"
+            android:textSize="@dimen/subject_item_textsize"
             android:gravity="center"
             android:textColor="@color/_ffffff"
-            android:layout_marginTop="9dp"
-            android:layout_marginLeft="13dp"
+            android:layout_marginTop="@dimen/subject_item_score_mt"
+            android:layout_marginLeft="@dimen/subject_item_score_ml"
             />
 
         <tv.ismar.searchpage.weight.RotateTextView
             android:id="@+id/movie_item_mark"
-            android:layout_width="109dp"
-            android:layout_height="109dp"
+            android:layout_width="@dimen/subject_item_mark_w"
+            android:layout_height="@dimen/subject_item_mark_w"
             android:layout_alignParentRight="true"
-            android:textSize="20dp"
+            android:textSize="@dimen/subject_item_mark_textsize"
             android:textColor="@color/_ffffff"/>
 
         <TextView
             android:id="@+id/movie_item_title"
             android:layout_width="match_parent"
-            android:layout_height="72dp"
+            android:layout_height="@dimen/subject_item_tv_title_h"
             android:background="@drawable/bottom_layer_tv_item"
             android:layout_alignParentBottom="true"
             android:gravity="center"
-            android:textSize="36dp"
+            android:textSize="@dimen/subject_item_tv_title_ts"
             android:textColor="#ffffff"
             android:alpha="0.8"/>
     </RelativeLayout>
