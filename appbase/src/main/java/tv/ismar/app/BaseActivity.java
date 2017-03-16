@@ -88,6 +88,11 @@ public class BaseActivity extends AppCompatActivity {
 
     private Bundle updateBundle;
 
+    /**
+     * so文件的加载，由于SmartPlayer.jar需要判断，为了不重复加载so，用此变量判断
+     */
+    public static boolean wasLoadSmartPlayerSo = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

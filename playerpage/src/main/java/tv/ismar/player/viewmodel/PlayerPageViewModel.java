@@ -115,6 +115,7 @@ public class PlayerPageViewModel extends BaseObservable {
     @Bindable
     public Drawable getPlayPauseBackgroundRes() {
         if (mIsmartvPlayer != null && mIsmartvPlayer.isInPlaybackState()) {
+            Log.d("LH/", "updatePlayPause:" + mIsmartvPlayer.isPlaying());
             if (mIsmartvPlayer.isPlaying()) {
                 return mContext.getResources().getDrawable(R.drawable.selector_player_pause);
             } else {

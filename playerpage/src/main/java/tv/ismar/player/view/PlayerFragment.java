@@ -482,6 +482,7 @@ public class PlayerFragment extends Fragment implements PlayerPageContract.View,
             mIsmartvPlayer.stopPlayBack();
             mIsmartvPlayer = null;
         }
+        BaseActivity.wasLoadSmartPlayerSo = false;// 退出播放器后，再次进入可能需要切换播放器
         mModel = null;
         player_container = null;
         player_surface = null;
@@ -547,6 +548,19 @@ public class PlayerFragment extends Fragment implements PlayerPageContract.View,
         mModel.setPanelData(mIsmartvPlayer, mItemEntity.getTitle());
         if (mIsmartvPlayer != null && !mIsmartvPlayer.isPlaying()) {
             mIsmartvPlayer.start();
+        }
+        int mediaPlayerType = IsmartvActivator.getInstance().getMediaPlayerType();
+        TextView player_type = mBinding.playerType;
+        switch (mediaPlayerType) {
+            case 0:
+                player_type.setText("MediaPlayer");
+                break;
+            case 1:
+                player_type.setText("MediaCodec");
+                break;
+            default:
+                player_type.setText("MediaCodec");
+                break;
         }
 
     }

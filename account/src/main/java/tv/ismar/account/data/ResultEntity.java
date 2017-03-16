@@ -10,6 +10,7 @@ public class ResultEntity {
     private String upgrade_domain = "1.1.1.3";
     private String zdevice_token = "";
     private String carnation = "1.1.1.1";
+    private int player;
 
 
     public String getCarnation() {
@@ -74,5 +75,13 @@ public class ResultEntity {
 
     public void setAd_domain(String ad_domain) {
         this.ad_domain = ad_domain;
+    }
+
+    public int getPlayer() {
+        return player;
+    }
+
+    public void setPlayer(int player) {
+        this.player = player;
     }
 }
