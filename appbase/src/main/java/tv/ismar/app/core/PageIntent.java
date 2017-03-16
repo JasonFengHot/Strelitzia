@@ -170,10 +170,11 @@ public class PageIntent implements PageIntentInterface {
     }
 
     public void toSearch(Context context) {
-        Intent intent = new Intent();
-        intent.setAction("tv.ismar.searchpage.search");
-        intent.putExtra("frompage","search");
-        context.startActivity(intent);
+//        Intent intent = new Intent();
+//        intent.setAction("tv.ismar.searchpage.search");
+//        intent.putExtra("frompage","search");
+//        context.startActivity(intent);
+        toSubject(context,"moviegather",367861,"launcher");
     }
 
     @Override
@@ -219,6 +220,16 @@ public class PageIntent implements PageIntentInterface {
                     }
                 }, null);
 
+    }
+
+    @Override
+    public void toSubject(Context context, String gather_type, int id, String frompage) {
+        Intent intent = new Intent();
+        intent.setAction("tv.ismar.daisy.subject");
+        intent.putExtra("gather_type", gather_type);
+        intent.putExtra("itemid", id);
+        intent.putExtra("frompage", frompage);
+        context.startActivity(intent);
     }
 
 

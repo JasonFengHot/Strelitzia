@@ -67,6 +67,7 @@ import tv.ismar.app.models.PersonEntitiy;
 import tv.ismar.app.models.Recommend;
 import tv.ismar.app.models.SemanticSearchResponseEntity;
 import tv.ismar.app.models.Sport;
+import tv.ismar.app.models.SubjectEntity;
 import tv.ismar.app.models.VodFacetEntity;
 import tv.ismar.app.models.VodSearchRequestEntity;
 import tv.ismar.app.network.entity.AccountBalanceEntity;
@@ -620,6 +621,12 @@ public interface SkyService {
     @GET("api/agreement/")
     Observable<AgreementEntity> agreement(
             @Query("source") String source
+    );
+
+    @GET("api/{gather_type}/{itemid}/")
+    Observable<SubjectEntity> apiFetchSubject(
+            @Path("gather_type") String gather_type,
+            @Path("itemid") int itemid
     );
 
     class ServiceManager {

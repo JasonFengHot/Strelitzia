@@ -1,9 +1,8 @@
 package tv.ismar.subject;
 
-import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 
 import tv.ismar.app.BaseActivity;
 import tv.ismar.subject.fragment.MovieTVSubjectFragment;
@@ -16,21 +15,30 @@ import tv.ismar.subject.fragment.SportSubjectFragment;
 public class SubjectActivity extends BaseActivity{
 
 
+    public String gather_type;
+    public int itemid;
+    public String frompage;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.subject_main_activity);
-        FragmentManager fragmentManager = getFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        SportSubjectFragment sportSubjectFragment=new SportSubjectFragment();
-        fragmentTransaction.add(R.id.subject_frame,sportSubjectFragment);
+        Intent intent=getIntent();
+        gather_type = intent.getStringExtra("gather_type");
+        itemid = intent.getIntExtra("itemid",0);
+        frompage = intent.getStringExtra("frompage");
+        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+        switch (gather_type){
+            case "sportgather":
+                fragmentTransaction.replace(R.id.subject_frame,new SportSubjectFragment());
+                break;
+            case "moviegather":
+                fragmentTransaction.replace(R.id.subject_frame,new MovieTVSubjectFragment());
+                break;
+            case "teleplaygather":
+                fragmentTransaction.replace(R.id.subject_frame,new MovieTVSubjectFragment());
+                break;
+        }
         fragmentTransaction.commit();
-     //   setContentView(R.layout.activity_subject);
-     //   initView();
-    }
-
-    private void initView() {
-        MovieTVSubjectFragment movieTVSubjectFragment=new MovieTVSubjectFragment();
-        getSupportFragmentManager().beginTransaction().replace(R.id.container,movieTVSubjectFragment).commit();
     }
 }
