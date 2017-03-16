@@ -1,21 +1,23 @@
 package tv.ismar.subject.adapter;
 
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.view.View;
+import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import java.util.ArrayList;
 
 import tv.ismar.app.entity.Item;
+import tv.ismar.subject.R;
 
 /**
  * Created by liucan on 2017/3/15.
  */
 
-public class SubjectSportAdapter extends RecyclerView.Adapter {
+public class SubjectSportAdapter extends RecyclerView.Adapter<SportViewHolder> {
     private ArrayList<Item> itemList;
-
+    private Context mContext;
 
     @Override
     public int getItemCount() {
@@ -26,13 +28,14 @@ public class SubjectSportAdapter extends RecyclerView.Adapter {
         return super.getItemViewType(position);
     }
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return null;
+    public SportViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        SportViewHolder viewHolder=new SportViewHolder(LayoutInflater.from(mContext).inflate(R.layout.sport_list_item,parent,false));
+        return viewHolder;
     }
+
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(SportViewHolder holder, int position) {
 
     }
-
 
 }
