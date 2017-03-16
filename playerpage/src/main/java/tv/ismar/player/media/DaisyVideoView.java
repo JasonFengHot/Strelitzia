@@ -217,7 +217,7 @@ public class DaisyVideoView extends SurfaceView {
                     SmartPlayer.initPlayer(SmartPlayer.PlayerType.PlayerCodec);
                     break;
                 default:
-                    SmartPlayer.initPlayer(SmartPlayer.PlayerType.PlayerCodec);
+                    SmartPlayer.initPlayer(SmartPlayer.PlayerType.PlayerMedia);
                     break;
             }
             BaseActivity.wasLoadSmartPlayerSo = true;

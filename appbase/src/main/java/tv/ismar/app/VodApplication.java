@@ -100,7 +100,6 @@ public class VodApplication extends Application {
         if (NetworkUtils.isConnected(this)) {
             new Thread(new InitializeProcess(this)).start();
         }
-        BaseActivity.wasLoadSmartPlayerSo = false;
         Log.i("LH/", "applicationOnCreateEnd:" + TrueTime.now().getTime());
     }
 

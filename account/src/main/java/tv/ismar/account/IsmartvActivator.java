@@ -379,7 +379,7 @@ public class IsmartvActivator {
     }
 
     public int getMediaPlayerType() {
-        return mSharedPreferences.getInt("player", 1);// //0-系统，1-视云
+        return mSharedPreferences.getInt("player", 0);// //0-系统，1-视云
 
     }
 
