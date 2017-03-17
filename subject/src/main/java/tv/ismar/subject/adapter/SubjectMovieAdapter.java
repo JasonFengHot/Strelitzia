@@ -22,6 +22,7 @@ public class SubjectMovieAdapter extends RecyclerView.Adapter<MovieViewHolder> {
 
     private Context mContext;
     private ArrayList<Item> mList;
+    private boolean isFirst=true;
 
     private OnItemClickListener mOnItemClickListener;
 
@@ -78,8 +79,9 @@ public class SubjectMovieAdapter extends RecyclerView.Adapter<MovieViewHolder> {
                 }
             });
         }
-        if(position==0){
+        if(isFirst){
             holder.itemView.requestFocus();
+            isFirst=false;
         }
     }
 
