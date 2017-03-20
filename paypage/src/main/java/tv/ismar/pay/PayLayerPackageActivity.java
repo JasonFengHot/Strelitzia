@@ -73,7 +73,7 @@ public class PayLayerPackageActivity extends BaseActivity implements View.OnHove
 
     @Override
     protected void onResume() {
-        mPageStatistics.packageDetailIn(packageId + "", "detail");
+        mPageStatistics.packageDetailIn(packageId + "",title.getText().toString(), "detail");
         super.onResume();
     }
 

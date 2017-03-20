@@ -37,8 +37,9 @@ public class DetailPageStatistics {
         properties.put(EventProperty.TO_SUBITEM, relatedItemEntity.getItemPk());
         new NetworkUtils.DataCollectionTask().execute(NetworkUtils.VIDEO_RELATE, properties);
     }
-    public void packageDetailIn(String  title, String source) {
+    public void packageDetailIn(String id,String  title, String source) {
         HashMap<String, Object> dataCollectionProperties = new HashMap<>();
+        dataCollectionProperties.put(EventProperty.ID, id);
         dataCollectionProperties.put(EventProperty.TITLE, title);
         dataCollectionProperties.put(EventProperty.SOURCE, source);
         new NetworkUtils.DataCollectionTask().execute(NetworkUtils.PACKAGE_DETAIL_IN, dataCollectionProperties);

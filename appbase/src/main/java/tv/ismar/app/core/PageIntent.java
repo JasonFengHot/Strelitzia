@@ -117,6 +117,7 @@ public class PageIntent implements PageIntentInterface {
                 intent.setAction("tv.ismar.pay.payvip");
                 intent.putExtra("cpid", paymentInfo.getCpid());
                 intent.putExtra("item_id", paymentInfo.getPk());
+                intent.putExtra("title", paymentInfo.getTitle());
                 break;
             default:
                 throw new IllegalArgumentException();
