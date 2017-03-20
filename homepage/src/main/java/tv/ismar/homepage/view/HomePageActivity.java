@@ -338,6 +338,7 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
         super.onCreate(savedInstanceState);
 
         Log.i("LH/", "homepageOnCreate:" + TrueTime.now().getTime());
+        BaseActivity.wasLoadSmartPlayerSo = false;// 退出应用再进入时可能需要切换播放器模式
         startTrueTimeService();
         contentView = LayoutInflater.from(this).inflate(R.layout.activity_tv_guide, null);
         setContentView(contentView);
@@ -1543,7 +1544,11 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
                 totalAdTime += launchAds.get(i).duration;
             }
         }
-        return totalAdTime - home_ad_video.getCurrentPosition() / 1000 - 1;
+        int countTime = totalAdTime - home_ad_video.getCurrentPosition() / 1000 - 1;
+        if (countTime < 0) {
+            countTime = 0;
+        }
+        return countTime;
     }
 
     private void startAdsService() {

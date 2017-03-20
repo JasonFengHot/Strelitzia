@@ -146,14 +146,14 @@ public class DaisyPlayer extends IsmartvPlayer implements DaisyVideoView.AdError
     }
 
     @Override
-    public void switchQuality(ClipEntity.Quality quality) {
+    public void switchQuality(int position, ClipEntity.Quality quality) {
         String mediaUrl = getSmartQualityUrl(quality);
         if (!Utils.isEmptyText(mediaUrl)) {
             mQuality = quality;
             mPaths = new String[]{mediaUrl};
 
             if (mItemEntity != null && !mItemEntity.getLiveVideo()) {
-                mStartPosition = getCurrentPosition();
+                mStartPosition = position;
             }
             mDaisyVideoView.release(true);
             mLogMedia.setQuality(getQualityIndex(mQuality));

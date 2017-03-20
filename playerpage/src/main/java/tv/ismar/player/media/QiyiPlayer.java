@@ -129,7 +129,7 @@ public class QiyiPlayer extends IsmartvPlayer {
     }
 
     @Override
-    public void switchQuality(ClipEntity.Quality quality) {
+    public void switchQuality(int position, ClipEntity.Quality quality) {
         if (videoSurfaceView == null) {
             return;
         }

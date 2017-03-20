@@ -23,7 +23,7 @@ public class PlayerPageViewModel extends BaseObservable {
     private PlayerPagePresenter mPresenter;
     public ObservableField<String> itemTitle;
 
-    private IsmartvPlayer mIsmartvPlayer;
+    private ClipEntity.Quality mQuality;
     private int mCurrentPosition = 0;
     private int mClipLength = 0;
 
@@ -34,9 +34,9 @@ public class PlayerPageViewModel extends BaseObservable {
         itemTitle = new ObservableField<>();
     }
 
-    public void setPanelData(IsmartvPlayer ismartvPlayer, String title) {
+    public void setPanelData(ClipEntity.Quality quality, String title) {
         itemTitle.set(title);
-        mIsmartvPlayer = ismartvPlayer;
+        mQuality = quality;
 
         updateQuality();
     }
@@ -52,10 +52,6 @@ public class PlayerPageViewModel extends BaseObservable {
         notifyPropertyChanged(BR.qualityResource);
     }
 
-    public void updatePlayerPause() {
-        notifyPropertyChanged(BR.playPauseBackgroundRes);
-    }
-
     @Bindable
     public String getTimer() {
         String text = getTimeString(mCurrentPosition) + "/"
@@ -65,10 +61,10 @@ public class PlayerPageViewModel extends BaseObservable {
 
     @Bindable
     public String getQuality() {
-        if (mIsmartvPlayer == null || !mIsmartvPlayer.isInPlaybackState()) {
+        if (mQuality == null) {
             return "";
         }
-        switch (mIsmartvPlayer.getCurrentQuality()) {
+        switch (mQuality) {
             case QUALITY_LOW:// 已弃用
                 return ClipEntity.Quality.getString(ClipEntity.Quality.QUALITY_LOW);
             case QUALITY_ADAPTIVE:// 自适应
@@ -86,11 +82,11 @@ public class PlayerPageViewModel extends BaseObservable {
 
     @Bindable
     public Drawable getQualityResource() {
-        if (mIsmartvPlayer == null || !mIsmartvPlayer.isInPlaybackState()) {
+        if (mQuality == null) {
             return new ColorDrawable(0);
         }
-        Log.i("LH/", "quality:" + mIsmartvPlayer.getCurrentQuality());
-        switch (mIsmartvPlayer.getCurrentQuality()) {
+        Log.i("LH/", "quality:" + mQuality);
+        switch (mQuality) {
             case QUALITY_LOW:// 已弃用
                 return mContext.getResources().getDrawable(R.drawable.player_quality_back);
             case QUALITY_ADAPTIVE:// 自适应
@@ -110,29 +106,6 @@ public class PlayerPageViewModel extends BaseObservable {
             default:
                 return mContext.getResources().getDrawable(R.drawable.player_quality_back);
         }
-    }
-
-    @Bindable
-    public Drawable getPlayPauseBackgroundRes() {
-        if (mIsmartvPlayer != null && mIsmartvPlayer.isInPlaybackState()) {
-            if (mIsmartvPlayer.isPlaying()) {
-                return mContext.getResources().getDrawable(R.drawable.selector_player_pause);
-            } else {
-                return mContext.getResources().getDrawable(R.drawable.selector_player_play);
-            }
-        }
-        return mContext.getResources().getDrawable(R.drawable.selector_player_pause);
-    }
-
-    public void onPlayPause() {
-        if (mIsmartvPlayer != null && mIsmartvPlayer.isInPlaybackState()) {
-            if (mIsmartvPlayer.isPlaying()) {
-                mIsmartvPlayer.pause();
-            } else {
-                mIsmartvPlayer.start();
-            }
-        }
-
     }
 
     private String getTimeString(int ms) {

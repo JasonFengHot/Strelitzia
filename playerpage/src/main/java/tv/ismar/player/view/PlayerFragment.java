@@ -139,7 +139,7 @@ public class PlayerFragment extends Fragment implements PlayerPageContract.View,
     private LinearLayout player_buffer_layout;
     private ImageView player_buffer_img;
     private TextView player_buffer_text;
-    private ImageView previous, forward;
+    private ImageView previous, forward, player_PP;
     private AnimationDrawable animationDrawable;
 
     // 播放器相关操作逻辑
@@ -256,6 +256,7 @@ public class PlayerFragment extends Fragment implements PlayerPageContract.View,
     }
 
     private void initView(View contentView) {
+        player_PP = (ImageView) contentView.findViewById(R.id.player_PP);
         player_container = (FrameLayout) contentView.findViewById(R.id.player_container);
         player_surface = (DaisyVideoView) contentView.findViewById(R.id.player_surface);
         panel_layout = (LinearLayout) contentView.findViewById(R.id.panel_layout);
@@ -271,6 +272,18 @@ public class PlayerFragment extends Fragment implements PlayerPageContract.View,
         previous = (ImageView) contentView.findViewById(R.id.previous);
         forward = (ImageView) contentView.findViewById(R.id.forward);
         shadowview = (ImageView) contentView.findViewById(R.id.shadowview);
+        player_PP.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mIsmartvPlayer != null && mIsmartvPlayer.isInPlaybackState()) {
+                    if (mIsmartvPlayer.isPlaying()) {
+                        mIsmartvPlayer.pause();
+                    } else {
+                        mIsmartvPlayer.start();
+                    }
+                }
+            }
+        });
         previous.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -544,9 +557,14 @@ public class PlayerFragment extends Fragment implements PlayerPageContract.View,
             return;
         }
         Log.i(TAG, "onPrepared:" + mCurrentPosition + " playingAd:" + mIsPlayingAd);
-        mModel.setPanelData(mIsmartvPlayer, mItemEntity.getTitle());
+        mModel.setPanelData(mIsmartvPlayer.getCurrentQuality(), mItemEntity.getTitle());
         if (mIsmartvPlayer != null && !mIsmartvPlayer.isPlaying()) {
             mIsmartvPlayer.start();
+        }
+        int mediaPlayerType = IsmartvActivator.getInstance().getMediaPlayerType();
+        TextView player_type = mBinding.playerType;
+        if (mediaPlayerType == 1) {
+            player_type.setText("MediaCodec");
         }
 
     }
@@ -640,7 +658,7 @@ public class PlayerFragment extends Fragment implements PlayerPageContract.View,
             hideBuffer();
         }
         if (!mIsPlayingAd) {
-            mModel.updatePlayerPause();
+            updatePlayerPause();
             Log.i(TAG, "onStarted-seeking:" + isSeeking);
             if (!isSeeking) {
                 timerStart(0);
@@ -657,7 +675,7 @@ public class PlayerFragment extends Fragment implements PlayerPageContract.View,
     public void onPaused() {
         Log.i(TAG, "onPaused");
         timerStop();
-        mModel.updatePlayerPause();
+        updatePlayerPause();
         showPannelDelayOut();
 
     }
@@ -1473,9 +1491,8 @@ public class PlayerFragment extends Fragment implements PlayerPageContract.View,
             }
             if (!mItemEntity.getLiveVideo()) {
                 mCurrentPosition = mIsmartvPlayer.getCurrentPosition();
-                mIsmartvPlayer.setStartPosition(mCurrentPosition);
             }
-            mIsmartvPlayer.switchQuality(clickQuality);
+            mIsmartvPlayer.switchQuality(mCurrentPosition, clickQuality);
 
             mCurrentQuality = clickQuality;
             mModel.updateQuality();
@@ -1804,8 +1821,7 @@ public class PlayerFragment extends Fragment implements PlayerPageContract.View,
                                 // 重新加载
                                 timerStop();
                                 showBuffer(null);
-                                mIsmartvPlayer.setStartPosition(mCurrentPosition);
-                                mIsmartvPlayer.switchQuality(mCurrentQuality);
+                                mIsmartvPlayer.switchQuality(mCurrentPosition, mCurrentQuality);
                             }
                         }
                         break;
@@ -2150,4 +2166,17 @@ public class PlayerFragment extends Fragment implements PlayerPageContract.View,
             isSetupNetClick = true;
         }
     };
+
+    // UI Update
+    private void updatePlayerPause() {
+        if (player_PP != null && mIsmartvPlayer != null && mIsmartvPlayer.isInPlaybackState()) {
+            Log.d("LH/", "updatePlayPause:" + mIsmartvPlayer.isPlaying());
+            if (mIsmartvPlayer.isPlaying()) {
+                player_PP.setImageResource(R.drawable.selector_player_pause);
+            } else {
+                player_PP.setImageResource(R.drawable.selector_player_play);
+            }
+        }
+    }
+
 }
