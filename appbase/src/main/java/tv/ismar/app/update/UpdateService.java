@@ -246,6 +246,7 @@ public class UpdateService extends Service implements Loader.OnLoadCompleteListe
                                     Bundle bundle = new Bundle();
                                     bundle.putStringArrayList("msgs", applicationEntity.getUpdate());
                                     bundle.putString("path", apkFile.getAbsolutePath());
+                                    bundle.putBoolean("force_upgrade", applicationEntity.getForce_upgrade());
                                     sendUpdateBroadcast(bundle);
                                 }
                             }
