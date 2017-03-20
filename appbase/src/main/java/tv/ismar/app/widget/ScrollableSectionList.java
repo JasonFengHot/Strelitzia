@@ -129,7 +129,7 @@ public class ScrollableSectionList extends HorizontalScrollView {
     }
 
     public HGridView mGridView;
-
+    private int counts=0;
     public void init(SectionList sectionLists, int totalWidth, boolean isChangeBarStyle,int initTab) {
      //   rate = DaisyUtils.getVodApplication(getContext()).getRate(getContext());
         mContainer = new LinearLayout(getContext());
@@ -175,7 +175,7 @@ public class ScrollableSectionList extends HorizontalScrollView {
                 sectionHolder.setNextFocusRightId(-1);
             }
         }
-
+        counts=sectionList.size();
         this.addView(mContainer);
         this.initTab = initTab;
         View childView = mContainer.getChildAt(initTab);
@@ -825,7 +825,7 @@ public class ScrollableSectionList extends HorizontalScrollView {
                     shade_arrow_left.setVisibility(View.VISIBLE);
                 }
             }
-            if (arrow_right != null && arrow_right.getVisibility() != View.VISIBLE) {
+            if (arrow_right != null && arrow_right.getVisibility() != View.VISIBLE&&counts>9) {
                 arrow_right.setVisibility(View.VISIBLE);
                 shade_arrow_right.setVisibility(View.VISIBLE);
             }
