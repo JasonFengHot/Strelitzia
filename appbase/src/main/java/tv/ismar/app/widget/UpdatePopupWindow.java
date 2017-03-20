@@ -2,6 +2,7 @@ package tv.ismar.app.widget;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -19,6 +20,8 @@ import java.util.ArrayList;
 
 import tv.ismar.app.R;
 
+import static android.widget.RelativeLayout.CENTER_IN_PARENT;
+
 /**
  * Created by huibin on 11/17/16.
  */
@@ -28,7 +31,7 @@ public class UpdatePopupWindow extends PopupWindow implements View.OnHoverListen
     private View tmp;
 
     public UpdatePopupWindow(final Context context, Bundle bundle) {
-        super(context);
+        super(null, 0, 0);
         WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         int screenWidth = wm.getDefaultDisplay().getWidth();
         int screenHeight = wm.getDefaultDisplay().getHeight();
@@ -54,6 +57,8 @@ public class UpdatePopupWindow extends PopupWindow implements View.OnHoverListen
         final String path = bundle.getString("path");
 
         final ArrayList<String> msgs = bundle.getStringArrayList("msgs");
+        final Boolean force_upgrade = bundle.getBoolean("force_upgrade");
+
 
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT,
@@ -70,18 +75,34 @@ public class UpdatePopupWindow extends PopupWindow implements View.OnHoverListen
 
         RelativeLayout relativeLayout = new RelativeLayout(context);
         RelativeLayout.LayoutParams contentLayoutParams = new RelativeLayout.LayoutParams(width, height);
-        contentLayoutParams.addRule(RelativeLayout.CENTER_IN_PARENT);
+        contentLayoutParams.addRule(CENTER_IN_PARENT);
+        if (force_upgrade){
+            relativeLayout.setBackground(contentView.getResources().getDrawable(R.drawable.pop_bg_drawable));
+            updateLater.setVisibility(View.GONE);
+            updateNow.setNextFocusRightId(updateNow.getId());
+            RelativeLayout.LayoutParams l = new RelativeLayout.LayoutParams(
+                    context.getResources().getDimensionPixelSize(R.dimen.update_confirm_button_width),
+                    context.getResources().getDimensionPixelSize(R.dimen.update_confirm_button_height)
+                    );
+            l.addRule(CENTER_IN_PARENT);
+            updateNow.setLayoutParams(l);
+
+        }else {
+
+            setBackgroundDrawable(contentView.getResources().getDrawable(R.drawable.pop_bg_drawable));
+        }
 
         relativeLayout.addView(contentView, contentLayoutParams);
         setContentView(relativeLayout);
-        setBackgroundDrawable(contentView.getResources().getDrawable(R.drawable.pop_bg_drawable));
+
         setFocusable(true);
 
         updateNow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dismiss();
-
+                if (!force_upgrade) {
+                    dismiss();
+                }
                 try {
                     String[] args2 = {"chmod", "604", path};
                     Runtime.getRuntime().exec(args2);
