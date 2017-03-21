@@ -407,8 +407,6 @@ public class NetworkUtils {
     public static Boolean LogSender(String Content) {
         try {
             String jsonContent = base64Code(Content);
-//            String url = "http://ismartv.calla.tvxio.com/log";
-//            String url = "http://192.168.1.119:8099/m3u8parse/parseM3u8";
             String url = appendProtocol(IsmartvActivator.getInstance().getLogDomain()) + "log";
             java.net.URL connURL = new URL(url);
             HttpURLConnection httpConn = (HttpURLConnection) connURL
@@ -417,15 +415,11 @@ public class NetworkUtils {
             httpConn.setConnectTimeout(CONNET_TIME_OUT);
             httpConn.setReadTimeout(READ_TIME_OUT);
             httpConn.setDoOutput(true);
-
             httpConn.setDoInput(true);
             httpConn.setRequestProperty("Accept", "*/*");
             httpConn.setRequestProperty("Content-Type",
                     "application/x-www-form-urlencoded");
-//            httpConn.setRequestProperty("Host", host);
             httpConn.setRequestProperty("Connection", "Keep-Alive");
-            // httpConn.setRequestProperty("User-Agent",
-            // "ideatv_A21/S0054.38 TD04007053");
             httpConn.setRequestProperty("User-Agent",
                     VodUserAgent.getHttpUserAgent());
             httpConn.setRequestProperty("Pragma:", "no-cache");
@@ -441,17 +435,13 @@ public class NetworkUtils {
                     + URLEncoder.encode(jsonContent, "UTF-8") + "&deviceToken="
                     + IsmartvActivator.getInstance().getDeviceToken() + "&acessToken="
                     + IsmartvActivator.getInstance().getAuthToken();
-            Log.i("logsender",IsmartvActivator.getInstance().getSnToken()+"");
             out.writeBytes(content);
-            // ///gzip
-            // out.write(MessageGZIP.compressToByte(content));
             out.flush();
-            out.close(); // flush and close
+            out.close();
             BufferedReader reader = new BufferedReader(new InputStreamReader(
                     httpConn.getInputStream(), "UTF-8"));
             String line;
             int code = httpConn.getResponseCode();
-            Log.i("LogSender", "LogSender code==" + code);
             while ((line = reader.readLine()) != null) {
                 System.out.println(line);
             }
@@ -513,110 +503,6 @@ public class NetworkUtils {
         return isSupport;
     }
 
-    /**
-     * LogSender 上报日志文件
-     *
-     * @return true、false 是否成功
-     */
-    public static Boolean LogUpLoad(Context context) {
-        HttpURLConnection httpConn = null;
-        try {
-            String jsonContent = getFileToString();
-            if (jsonContent == null) {
-                return false;
-            }
-            Log.d(TAG, "base64 ==" + jsonContent);
-            String url = SimpleRestClient.log_domain + "/log";
-            // String url = "http://192.168.1.185:8099/shipinkefu/22.mp4";
-            java.net.URL connURL = new URL(url);
-            httpConn = (HttpURLConnection) connURL.openConnection();
-            httpConn.setRequestMethod("POST");
-            httpConn.setConnectTimeout(CONNET_TIME_OUT);
-            httpConn.setReadTimeout(READ_TIME_OUT);
-            httpConn.setDoOutput(true);
-
-            httpConn.setDoInput(true);
-            httpConn.setRequestProperty("Accept", "*/*");
-            httpConn.setRequestProperty("Content-Type",
-                    "application/x-www-form-urlencoded");
-            // httpConn.setRequestProperty("Host", "a21.calla.tvxio.com");
-            httpConn.setRequestProperty("Connection", "Keep-Alive");
-            // httpConn.setRequestProperty("User-Agent",
-            // "ideatv_A21/S0054.38 TD04007053");
-            httpConn.setRequestProperty("User-Agent",
-                    VodUserAgent.getHttpUserAgent());
-            httpConn.setRequestProperty("Pragma:", "no-cache");
-            httpConn.setRequestProperty("Cache-Control", "no-cache");
-            // boolean isSupport = isSupportGzip();
-            // if(isSupport)
-            // httpConn.setRequestProperty("Accept-Encoding","gzip");
-            httpConn.setUseCaches(false);
-            // String gzip1 = httpConn.getContentEncoding();
-            // Log.i("zjq", "gzip1=="+gzip1);
-            httpConn.connect();
-
-            DataOutputStream out = new DataOutputStream(
-                    httpConn.getOutputStream());
-            String content = "sn=" + SimpleRestClient.sn_token + "&modelname="
-                    + VodUserAgent.getModelName() + "&data="
-                    + URLEncoder.encode(jsonContent, "UTF-8") + "&deviceToken="
-                    + SimpleRestClient.device_token + "&acessToken="
-                    + IsmartvActivator.getInstance().getAuthToken();
-            Log.d(TAG, content);
-            byte[] datas = content.getBytes();
-
-            byte[] b = new byte[BUFFERSIZE * BUFFERSIZE];
-            if (datas.length <= b.length)
-                out.writeBytes(content);
-            else {
-                // out.write(buffer, offset, count)
-                int mod = datas.length % b.length;
-                int count = datas.length / b.length;
-                int i = 1;
-                for (i = 1; i <= count; i++) {
-                    // byte[] c = new byte[1024*1024];
-                    // System.arraycopy(datas, (i-1)*1024*1024, c, 0, c.length);
-                    out.write(datas, (i - 1) * BUFFERSIZE * BUFFERSIZE,
-                            BUFFERSIZE * BUFFERSIZE);
-                }
-                out.write(datas, (i - 1) * BUFFERSIZE * BUFFERSIZE, mod);
-            }
-
-            out.flush();
-            out.close(); // flush and close
-            BufferedReader reader = new BufferedReader(new InputStreamReader(
-                    httpConn.getInputStream(), "UTF-8"));
-            String line;
-            int code = httpConn.getResponseCode();
-            String response = httpConn.getResponseMessage();
-            String gzip2 = httpConn.getContentEncoding();
-            Log.i("zjq", "gzip2==" + gzip2);
-            while ((line = reader.readLine()) != null) {
-                System.out.println(line);
-            }
-            SystemFileUtil.delete();
-            reader.close();
-            httpConn.disconnect();
-            return true;
-        } catch (MalformedURLException e) {
-            Log.e(TAG, "event" + " MalformedURLException " + e.toString());
-            if (httpConn != null)
-                httpConn.disconnect();
-            return false;
-        } catch (IOException e) {
-            Log.e(TAG, "event" + " IOException " + e.toString());
-            if (httpConn != null)
-                httpConn.disconnect();
-            return false;
-        } catch (Exception e) {
-            e.printStackTrace();
-            if (httpConn != null)
-                httpConn.disconnect();
-            Log.e(TAG, "event" + " Exception " + e.toString());
-            return false;
-        }
-
-    }
 
     // 把文件转换成字节数组
     private static String getFileToString() throws Exception {

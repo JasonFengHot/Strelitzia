@@ -310,14 +310,9 @@ public class VodApplication extends Application {
         @Override
         public void run() {
 
-            // TODO Auto-generated method stub
             while (isFinish) {
                 try {
                     Thread.sleep(1 * 30 * 1000);
-//                    synchronized (MessageQueue.async) {
-                    // Thread.sleep(900000);
-
-
                     ArrayList<String> list = MessageQueue.getQueueList();
                     int i;
                     JSONArray s = new JSONArray();
@@ -325,11 +320,9 @@ public class VodApplication extends Application {
                         for (i = 0; i < list.size(); i++) {
                             JSONObject obj;
                             try {
-                                Log.i("qazwsx", "json item==" + list.get(i).toString());
                                 obj = new JSONObject(list.get(i).toString());
                                 s.put(obj);
                             } catch (JSONException e) {
-                                // TODO Auto-generated catch block
                                 e.printStackTrace();
                             }
 
@@ -337,15 +330,8 @@ public class VodApplication extends Application {
                         if (i == list.size()) {
                             MessageQueue.remove();
                             tv.ismar.app.core.client.NetworkUtils.LogSender(s.toString());
-                            Log.i("qazwsx", "json array==" + s.toString());
-                            Log.i("qazwsx", "remove");
                         }
-                    } else {
-                        Log.i("qazwsx", "queue is no elements");
                     }
-//                    }
-
-                    //NetworkUtils.LogUpLoad(getApplicationContext());
                 } catch (InterruptedException e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
@@ -354,7 +340,6 @@ public class VodApplication extends Application {
                     e.printStackTrace();
                 }
             }
-            Log.i("qazwsx", "Thread is finished!!!");
         }
 
     };
