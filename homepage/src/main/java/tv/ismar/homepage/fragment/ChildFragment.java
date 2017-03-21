@@ -62,6 +62,7 @@ public class ChildFragment extends ChannelBaseFragment implements Flag.ChangeCal
     private View leftBottom;
     private View righttop;
     private Subscription dataSubscription;
+    private Subscription smartRecommendPostSub;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -128,6 +129,9 @@ public class ChildFragment extends ChannelBaseFragment implements Flag.ChangeCal
         super.onPause();
         if (dataSubscription != null && !dataSubscription.isUnsubscribed()) {
             dataSubscription.unsubscribe();
+        }
+        if (smartRecommendPostSub != null && !smartRecommendPostSub.isUnsubscribed()) {
+            smartRecommendPostSub.unsubscribe();
         }
     }
 
@@ -418,7 +422,7 @@ public class ChildFragment extends ChannelBaseFragment implements Flag.ChangeCal
         }
     }
     private void smartRecommendPost(String url, final ArrayList<HomePagerEntity.Poster>  posters) {
-        SkyService.ServiceManager.getCacheSkyService2().smartRecommendPost(url, IsmartvActivator.getInstance().getSnToken())
+        smartRecommendPostSub =   SkyService.ServiceManager.getCacheSkyService2().smartRecommendPost(url, IsmartvActivator.getInstance().getSnToken())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<ArrayList<HomePagerEntity.Poster>>() {

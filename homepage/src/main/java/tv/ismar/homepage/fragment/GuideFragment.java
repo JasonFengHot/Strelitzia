@@ -84,6 +84,7 @@ public class GuideFragment extends ChannelBaseFragment {
     private HashMap<Integer, Integer> carouselMap;
     private Subscription homePageSub;
     private boolean isDestroyed = false;
+    private Subscription smartRecommendPostSub;
 
     @Override
     public void onAttach(Activity activity) {
@@ -194,6 +195,9 @@ public class GuideFragment extends ChannelBaseFragment {
         if (homePageSub != null && homePageSub.isUnsubscribed()) {
             homePageSub.unsubscribe();
         }
+        if (smartRecommendPostSub != null && smartRecommendPostSub.isUnsubscribed()) {
+            smartRecommendPostSub.unsubscribe();
+        }
     }
 
     @Override
@@ -286,7 +290,7 @@ public class GuideFragment extends ChannelBaseFragment {
     }
 
     private void smartRecommendPost(String url, final ArrayList<HomePagerEntity.Poster>  posters) {
-        SkyService.ServiceManager.getCacheSkyService2().smartRecommendPost(url, IsmartvActivator.getInstance().getSnToken())
+        smartRecommendPostSub =   SkyService.ServiceManager.getCacheSkyService2().smartRecommendPost(url, IsmartvActivator.getInstance().getSnToken())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<ArrayList<HomePagerEntity.Poster>>() {

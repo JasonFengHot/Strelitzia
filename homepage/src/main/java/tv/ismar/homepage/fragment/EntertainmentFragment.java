@@ -80,6 +80,7 @@ public class EntertainmentFragment extends ChannelBaseFragment {
     private int loopindex = 0;
 
     private Subscription dataSubscription;
+    private Subscription smartRecommendPostSub;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -207,6 +208,9 @@ public class EntertainmentFragment extends ChannelBaseFragment {
         super.onPause();
         if (dataSubscription != null && !dataSubscription.isUnsubscribed()) {
             dataSubscription.unsubscribe();
+        }
+        if (smartRecommendPostSub != null && !smartRecommendPostSub.isUnsubscribed()) {
+            smartRecommendPostSub.unsubscribe();
         }
     }
 
@@ -532,7 +536,7 @@ public class EntertainmentFragment extends ChannelBaseFragment {
 
 
     private void smartRecommendPost(String url, final ArrayList<HomePagerEntity.Poster>  posters,final ArrayList<Carousel> carousellist) {
-        SkyService.ServiceManager.getCacheSkyService2().smartRecommendPost(url, IsmartvActivator.getInstance().getSnToken())
+        smartRecommendPostSub = SkyService.ServiceManager.getCacheSkyService2().smartRecommendPost(url, IsmartvActivator.getInstance().getSnToken())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<ArrayList<HomePagerEntity.Poster>>() {

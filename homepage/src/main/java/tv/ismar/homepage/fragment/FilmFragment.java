@@ -107,6 +107,7 @@ public class FilmFragment extends ChannelBaseFragment {
     private HashMap<Integer, Integer> carouselMap;
     private boolean externalStorageIsEnable = false;
     private boolean isDestroyed = false;
+    private Subscription smartRecommendPostSub;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -250,6 +251,9 @@ public class FilmFragment extends ChannelBaseFragment {
         super.onPause();
         if (dataSubscription != null && dataSubscription.isUnsubscribed()) {
             dataSubscription.unsubscribe();
+        }
+        if (smartRecommendPostSub != null && smartRecommendPostSub.isUnsubscribed()) {
+            smartRecommendPostSub.unsubscribe();
         }
     }
 
@@ -850,7 +854,7 @@ public class FilmFragment extends ChannelBaseFragment {
     }
 
     private void smartRecommendPost(String url, final ArrayList<HomePagerEntity.Poster>  posters) {
-        SkyService.ServiceManager.getCacheSkyService2().smartRecommendPost(url, IsmartvActivator.getInstance().getSnToken())
+        smartRecommendPostSub =   SkyService.ServiceManager.getCacheSkyService2().smartRecommendPost(url, IsmartvActivator.getInstance().getSnToken())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<ArrayList<HomePagerEntity.Poster>>() {
