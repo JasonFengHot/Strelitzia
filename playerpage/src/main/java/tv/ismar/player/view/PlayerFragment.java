@@ -527,7 +527,7 @@ public class PlayerFragment extends Fragment implements PlayerPageContract.View,
     @Override
     public void onBufferEnd() {
         Log.i(TAG, "onBufferEnd");
-        if (mIsmartvPlayer.getPlayerMode() == PlayerBuilder.MODE_QIYI_PLAYER) {
+        if (mIsmartvPlayer != null && mIsmartvPlayer.getPlayerMode() == PlayerBuilder.MODE_QIYI_PLAYER) {
             hideBuffer();
         } else {
             if (mIsPlayingAd || (mIsmartvPlayer != null && mIsmartvPlayer.isPlaying() && !isSeeking && !hasHistoryToStart)) {
