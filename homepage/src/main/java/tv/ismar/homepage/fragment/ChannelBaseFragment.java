@@ -52,6 +52,8 @@ public class ChannelBaseFragment extends Fragment {
         this.channelEntity = channelEntity;
         AppConstant.purchase_page = "homepage";
         AppConstant.purchase_channel = channelEntity.getChannel();
+        AppConstant.purchase_entrance_channel = channelEntity.getChannel();
+        AppConstant.purchase_entrance_page = "homepage";
     }
 
     @Override

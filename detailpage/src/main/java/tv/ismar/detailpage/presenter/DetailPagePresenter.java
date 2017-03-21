@@ -16,6 +16,7 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import tv.ismar.account.IsmartvActivator;
+import tv.ismar.app.AppConstant;
 import tv.ismar.app.BaseActivity;
 import tv.ismar.app.VodApplication;
 import tv.ismar.app.core.DaisyUtils;
@@ -281,13 +282,16 @@ public class DetailPagePresenter implements DetailPageContract.Presenter {
         if (mItemEntity.getClip() != null) {
             clip = String.valueOf(mItemEntity.getClip().getPk());
         }
-        new PurchaseStatistics().expenseVideoClick(String.valueOf(pk), userName, title, clip, String.valueOf(TrueTime.now().getTime()));
+        new PurchaseStatistics().expenseVideoClick(String.valueOf(pk), userName, title, clip);
         new PageIntent().toPaymentForResult(mDetailView.getActivity(), unknown.name(), paymentInfo);
     }
 
 
     @Override
     public void handleMoreRelate() {
+        AppConstant.purchase_entrance_related_item = String.valueOf(mItemEntity.getItemPk());
+        AppConstant.purchase_entrance_related_title = mItemEntity.getTitle();
+        AppConstant.purchase_entrance_related_channel = AppConstant.purchase_channel;
         Intent intent = new Intent();
         if (relatedItemList != null && relatedItemList.length > 0) {
             intent.putExtra("related_item_json", new Gson().toJson(relatedItemList));

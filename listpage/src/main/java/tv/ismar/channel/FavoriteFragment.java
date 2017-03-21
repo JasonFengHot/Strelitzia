@@ -446,7 +446,9 @@ public class FavoriteFragment extends Fragment implements ScrollableSectionList.
 	public void onResume() {
 		AppConstant.purchase_referer = "favorite";
 		AppConstant.purchase_page = "favorite";
+		AppConstant.purchase_entrance_page = "favorite";
 		AppConstant.purchase_channel = "";
+		AppConstant.purchase_entrance_channel = "";
 		BaseActivity.baseChannel="";
 		BaseActivity.baseSection="";
 		((ChannelListActivity)getActivity()).registerOnMenuToggleListener(this);

@@ -122,6 +122,7 @@ public class ProductFragment extends BaseFragment implements ProductContract.Vie
     public void onResume() {
         super.onResume();
         AppConstant.purchase_page = "expense";
+        AppConstant.purchase_entrance_page = "expense";
         fragmentIsPause = false;
         Log.d(TAG, "onResume");
 

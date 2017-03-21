@@ -26,6 +26,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import tv.ismar.Utils.LogUtils;
+import tv.ismar.app.AppConstant;
 import tv.ismar.app.BaseActivity;
 import tv.ismar.app.core.DaisyUtils;
 import tv.ismar.app.core.PageIntent;
@@ -450,6 +451,7 @@ public class FilterResultFragment extends BackHandledFragment implements Adapter
     }
     private void doFilterRequest(){
         if(!isNoData) {
+            Log.d("tag", filterCondition);
             skyService.getFilterRequest(content_model, filterCondition).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                     .subscribe(((BaseActivity) getActivity()).new BaseObserver<ItemList>() {
                         @Override

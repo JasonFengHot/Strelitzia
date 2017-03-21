@@ -187,6 +187,7 @@ public class WordSearchActivity extends BaseActivity implements View.OnClickList
     protected void onResume() {
         super.onResume();
         AppConstant.purchase_referer = "search";
+        AppConstant.purchase_entrance_page = "search";
     }
 
     public void appstart() {
@@ -647,6 +648,8 @@ public class WordSearchActivity extends BaseActivity implements View.OnClickList
                                                }
                                                handler.sendEmptyMessageDelayed(1, 15000);
                                                type_now = tags[selectedTab];
+                                               AppConstant.purchase_tab = type_now;
+
                                                fetchSearchResult(keyWord_now, tags[selectedTab], page);
 
                                            }
@@ -1136,6 +1139,7 @@ public class WordSearchActivity extends BaseActivity implements View.OnClickList
      */
 
     public void fetchSearchResult(String keywords, final String type, int page) {
+        AppConstant.purchase_entrance_keyword = keywords;
         if(type!=null)
         JasmineUtil.video_search(type, keywords);
         VodSearchRequestEntity requestEntity = new VodSearchRequestEntity();
@@ -1268,7 +1272,6 @@ public class WordSearchActivity extends BaseActivity implements View.OnClickList
     }
 
     private void fetchkeyWord(final String args) {
-
         mSkyService.apiSearchSuggest(args)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -1423,6 +1426,7 @@ public class WordSearchActivity extends BaseActivity implements View.OnClickList
                             final int finalJ = j;
                             firstTab = j;
                             type_now=tags[firstTab];
+                            AppConstant.purchase_tab = type_now;
                             if (selectedTab != -1) {
                                 ((TextView) ((ViewGroup) top_tabs.getChildAt(selectedTab)).getChildAt(0)).setTextColor(getResources().getColor(R.color.word_nomal));
                             }

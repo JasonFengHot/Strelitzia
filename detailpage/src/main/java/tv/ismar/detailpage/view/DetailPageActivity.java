@@ -513,6 +513,9 @@ public class DetailPageActivity extends BaseActivity{
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+        if(mPackageDetailFragment!=null){
+            mPackageDetailFragment.onActivityBackPressed();
+        }
     }
 
     @Override

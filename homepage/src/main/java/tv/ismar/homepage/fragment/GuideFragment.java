@@ -178,6 +178,7 @@ public class GuideFragment extends ChannelBaseFragment {
     public void onResume() {
         super.onResume();
         AppConstant.purchase_channel = "homepage";
+        AppConstant.purchase_entrance_channel = "homepage";
         AppConstant.purchase_page = "homepage";
         if (mCarousels == null) {
             fetchHomePage();

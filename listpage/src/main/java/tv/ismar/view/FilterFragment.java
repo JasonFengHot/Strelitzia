@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.os.PowerManager;
 import android.support.v4.widget.SlidingPaneLayout;
 import android.text.Layout;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -36,6 +37,7 @@ import okhttp3.ResponseBody;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import tv.ismar.Utils.LogUtils;
+import tv.ismar.app.AppConstant;
 import tv.ismar.app.BaseActivity;
 import tv.ismar.app.core.DaisyUtils;
 import tv.ismar.app.core.SimpleRestClient;
@@ -76,6 +78,18 @@ public class FilterFragment extends BackHandledFragment {
     public boolean isPortrait = false;
     private SkyService skyService;
     private float rate;
+
+    private HashMap<String, String> keyTag;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        keyTag = new HashMap<>();
+        keyTag.put("genre", "不限");
+        keyTag.put("air_date", "不限");
+        keyTag.put("area", "不限");
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rate = DaisyUtils.getVodApplication(getActivity()).getRate(getActivity());
@@ -123,6 +137,10 @@ public class FilterFragment extends BackHandledFragment {
                 for(String str: realNames){
                     realFilterStr += str + "!";
                 }
+                String logKeyTag = keyTag.get("genre") + ";" + keyTag.get("air_date") + ";" + keyTag.get("area") + ";";
+                AppConstant.purchase_entrance_keyword = logKeyTag.replace("不限", "");
+
+
                 if(!"".equals(submitFilteStr)&&conditions.size()>0){
                     submitFilteStr = submitFilteStr.substring(0,submitFilteStr.length()-1);
                 }
@@ -307,7 +325,12 @@ public class FilterFragment extends BackHandledFragment {
                          String s = ((FilterItem)compoundButton.getTag()).name;
                          if(!"不限".equals(s))
                             realNames.add(s);
+
                      }
+
+                     String type = ((FilterItem)compoundButton.getTag()).type;
+                     String name = ((FilterItem)compoundButton.getTag()).name;
+                     keyTag.put(type, name);
                  }
                  else{
 //                    compoundButton.setTextSize(36/rate);

@@ -28,6 +28,7 @@ import java.util.TimeZone;
 
 import cn.ismartv.truetime.TrueTime;
 import tv.ismar.account.IsmartvActivator;
+import tv.ismar.app.AppConstant;
 import tv.ismar.app.BaseActivity;
 import tv.ismar.app.core.DaisyUtils;
 import tv.ismar.app.core.InitializeProcess;
@@ -451,7 +452,11 @@ public class DetailPageFragment extends Fragment implements DetailPageContract.V
     private View.OnClickListener relateItemOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+            AppConstant.purchase_entrance_page = "related";
             ItemEntity item = relateItems[(int) v.getTag()];
+            AppConstant.purchase_entrance_related_item = String.valueOf(mItemEntity.getItemPk());
+            AppConstant.purchase_entrance_related_title = mItemEntity.getTitle();
+            AppConstant.purchase_entrance_related_channel = AppConstant.purchase_channel;
             mPageStatistics.videoRelateClick(mItemEntity.getPk(), item);
             new PageIntent().toDetailPage(getContext(), Source.RELATED.getValue(), item.getPk());
             to="relate";

@@ -184,9 +184,15 @@ public class PackageDetailFragment extends BaseFragment {
         vod_payment_buyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                new PurchaseStatistics().expensePacketDetail(
+                        mItemEntity.getPk(),
+                        mItemEntity.getTitle(),
+                        mItemEntity.getExpense().getPrice(),
+                        "enter");
                 PageIntent pageIntent = new PageIntent();
                 PaymentInfo paymentInfo = new PaymentInfo(Package, mItemEntity.getPk(), PAYMENT);
                 pageIntent.toPaymentForResult(getActivity(), "package", paymentInfo);
+
             }
         });
         vod_payment_item_more.setOnClickListener(new View.OnClickListener() {
@@ -205,12 +211,7 @@ public class PackageDetailFragment extends BaseFragment {
         super.onResume();
         requestPlayCheck(String.valueOf(mItemEntity.getPk()));
         mPageStatistics.packageDetailIn(mItemEntity.getPk()+"", source==null?frompage:source);
-        new PurchaseStatistics().expensePacketDetail(
-                mItemEntity.getPk(),
-                mItemEntity.getTitle(),
-                mItemEntity.getExpense().getPrice(),
-                "enter",
-                TrueTime.now().getTime());
+
 
     }
 
@@ -520,12 +521,7 @@ public class PackageDetailFragment extends BaseFragment {
     public void onPause() {
         firstIn=false;
         super.onPause();
-        new PurchaseStatistics().expensePacketDetail(
-                mItemEntity.getPk(),
-                mItemEntity.getTitle(),
-                mItemEntity.getExpense().getPrice(),
-                "cancel",
-                TrueTime.now().getTime());
+
     }
 
     private View.OnHoverListener onHoverListener = new View.OnHoverListener() {
@@ -561,5 +557,13 @@ public class PackageDetailFragment extends BaseFragment {
                 }
                 break;
         }
+    }
+
+    public void onActivityBackPressed(){
+        new PurchaseStatistics().expensePacketDetail(
+                mItemEntity.getPk(),
+                mItemEntity.getTitle(),
+                mItemEntity.getExpense().getPrice(),
+                "cancel");
     }
 }

@@ -119,6 +119,7 @@ public class PurchaseHistoryFragment extends BaseFragment implements PurchaseHis
     public void onResume() {
         super.onResume();
         AppConstant.purchase_page = "history";
+        AppConstant.purchase_entrance_page = "expense_history";
         fragmentIsPause = false;
         Log.d(TAG, "onResume");
 

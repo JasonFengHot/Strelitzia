@@ -715,6 +715,7 @@ public class ChannelFragment extends Fragment implements OnItemSelectedListener,
     public void onResume() {
         AppConstant.purchase_referer = "channel";
         AppConstant.purchase_page = "list";
+        AppConstant.purchase_entrance_page = "list";
         mIsBusy = false;
 //        ((ChannelListActivity) getActivity()).registerOnMenuToggleListener(this);
         super.onResume();
