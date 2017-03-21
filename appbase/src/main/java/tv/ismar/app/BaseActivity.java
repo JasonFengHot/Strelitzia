@@ -120,6 +120,9 @@ public class BaseActivity extends AppCompatActivity {
             isCheckoutUpdate = false;
         } else {
             if (!updateInfo.isEmpty()) {
+                if (updatePopupWindow!=null && updatePopupWindow.isShowing()){
+                    return;
+                }
                 updateAgainHandler = new Handler();
                 updateAgainRunnable = (new Runnable() {
                     @Override
