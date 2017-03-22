@@ -60,6 +60,8 @@ public class FilterActivity extends BaseActivity implements BackHandledInterface
         AppConstant.purchase_referer = "channel";
         AppConstant.purchase_page = "result";
         AppConstant.purchase_entrance_page = "filtered";
+        BaseActivity.baseChannel="";
+        BaseActivity.baseSection="";
     }
 
     private void initView() {

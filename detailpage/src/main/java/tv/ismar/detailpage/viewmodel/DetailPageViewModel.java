@@ -126,9 +126,12 @@ public class DetailPageViewModel extends BaseObservable {
 
     @BindingAdapter({"imageUrl"})
     public static void loadImage(ImageView view, String imageUrl) {
-        Picasso.with(view.getContext())
-                .load(imageUrl).memoryPolicy(MemoryPolicy.NO_CACHE).memoryPolicy(MemoryPolicy.NO_STORE)
-                .into(view);
+        if(!"".equals(imageUrl)&&imageUrl!=null) {
+            Picasso.with(view.getContext())
+                    .load(imageUrl)
+                    .memoryPolicy(MemoryPolicy.NO_CACHE).memoryPolicy(MemoryPolicy.NO_STORE)
+                    .into(view);
+        }
     }
 
     @BindingAdapter({"vipMark"})

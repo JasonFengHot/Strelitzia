@@ -656,6 +656,8 @@ public class PlayerFragment extends Fragment implements PlayerPageContract.View,
         }
         if (mItemEntity.getLiveVideo()) {
             hideBuffer();
+            hasHistoryToStart = false;
+            isSeeking = false;
         }
         if (!mIsPlayingAd) {
             updatePlayerPause();
@@ -1260,7 +1262,7 @@ public class PlayerFragment extends Fragment implements PlayerPageContract.View,
 
         Log.i(TAG, "mCurrentPosition:" + mCurrentPosition);
         historyPosition = mCurrentPosition;
-        if (mCurrentPosition > 0 && playerMode == PlayerBuilder.MODE_SMART_PLAYER) {
+        if (mCurrentPosition > 0 && playerMode == PlayerBuilder.MODE_SMART_PLAYER && !mItemEntity.getLiveVideo()) {
             hasHistoryToStart = true;
         }
         mIsmartvPlayer = PlayerBuilder.getInstance()
@@ -1487,7 +1489,9 @@ public class PlayerFragment extends Fragment implements PlayerPageContract.View,
             if (mIsmartvPlayer.getPlayerMode() == PlayerBuilder.MODE_SMART_PLAYER) {
                 timerStop();
                 showBuffer(null);
-                hasHistoryToStart = true;
+                if (!mItemEntity.getLiveVideo()) {
+                    hasHistoryToStart = true;
+                }
             }
             if (!mItemEntity.getLiveVideo()) {
                 mCurrentPosition = mIsmartvPlayer.getCurrentPosition();
