@@ -4,6 +4,8 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.DisplayMetrics;
@@ -115,6 +117,19 @@ public class DetailPageFragment extends Fragment implements DetailPageContract.V
         // Required empty public constructor
     }
 
+    private Handler handler=new Handler(new Handler.Callback() {
+        @Override
+        public boolean handleMessage(Message msg) {
+            if (videoIsStart()) {
+                palyBtnView.requestFocus();
+                palyBtnView.requestFocusFromTouch();
+            } else {
+                purchaseBtnView.requestFocus();
+                purchaseBtnView.requestFocusFromTouch();
+            }
+            return false;
+        }
+    });
 
     public static DetailPageFragment newInstance(String fromPage, String itemJson) {
         DetailPageFragment fragment = new DetailPageFragment();
@@ -187,14 +202,6 @@ public class DetailPageFragment extends Fragment implements DetailPageContract.V
         mPresenter.start();
 //        mPresenter.fetchItem(String.valueOf(mItemEntity.getPk()));
 //        loadItem(mItemEntity);
-        mPresenter.fetchItemRelate(String.valueOf(mItemEntity.getPk()));
-        if (videoIsStart()) {
-            palyBtnView.requestFocus();
-            palyBtnView.requestFocusFromTouch();
-        } else {
-            purchaseBtnView.requestFocus();
-            purchaseBtnView.requestFocusFromTouch();
-        }
 
     }
 
@@ -214,6 +221,14 @@ public class DetailPageFragment extends Fragment implements DetailPageContract.V
         mPageStatistics.videoDetailIn(mItemEntity, fromPage);
 
         mModel.notifyBookmark(true);
+        mPresenter.fetchItemRelate(String.valueOf(mItemEntity.getPk()));
+        if (videoIsStart()) {
+            palyBtnView.requestFocus();
+            palyBtnView.requestFocusFromTouch();
+        } else {
+            purchaseBtnView.requestFocus();
+            purchaseBtnView.requestFocusFromTouch();
+        }
     }
 
     @Override
@@ -359,6 +374,7 @@ public class DetailPageFragment extends Fragment implements DetailPageContract.V
         }
         relateIsLoad = true;
         hideLoading();
+        handler.sendEmptyMessage(0);
         if (mMovieBinding != null && mMovieBinding.detailBtnLinear != null)
             mMovieBinding.detailBtnLinear.setVisibility(View.VISIBLE);
     }
