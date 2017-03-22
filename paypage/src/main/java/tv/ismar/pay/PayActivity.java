@@ -93,7 +93,7 @@ public class PayActivity extends BaseActivity implements View.OnHoverListener, V
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         int margin = (int) getResources().getDimension(R.dimen.newip_payitem_margin);
         layoutParams.setMargins(margin, 0, margin, 0);
-        PayLayerEntity.Vip vip = payLayerEntity.getVip();
+        final PayLayerEntity.Vip vip = payLayerEntity.getVip();
         if (vip != null) {
             RelativeLayout vipItem;
             if (payLayerEntity.getCpname().startsWith("ismar")) {
@@ -117,7 +117,7 @@ public class PayActivity extends BaseActivity implements View.OnHoverListener, V
             vipItem.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    PaymentInfo paymentInfo = new PaymentInfo(mItemId, PAYVIP, payLayerEntity.getCpid());
+                    PaymentInfo paymentInfo = new PaymentInfo(mItemId, PAYVIP, payLayerEntity.getCpid(),vip.getTitle());
                     new PageIntent().toPaymentForResult(PayActivity.this, unknown.toString(), paymentInfo);
                 }
             });

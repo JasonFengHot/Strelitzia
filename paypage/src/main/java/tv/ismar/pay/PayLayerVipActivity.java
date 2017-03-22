@@ -44,6 +44,7 @@ public class PayLayerVipActivity extends BaseActivity implements OnHoverListener
     private int itemId;
     private Subscription paylayerVipSub;
     private int cpid;
+    private String title;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,12 +55,13 @@ public class PayLayerVipActivity extends BaseActivity implements OnHoverListener
         Intent intent = getIntent();
         cpid = intent.getIntExtra("cpid", -1);
         itemId = intent.getIntExtra("item_id", -1);
+        title = intent.getStringExtra("title");
         payLayerVip(String.valueOf(cpid), String.valueOf(itemId));
     }
 
     @Override
     protected void onResume() {
-        mPageStatistics.packageDetailIn(itemId + "", "detail");
+        mPageStatistics.packageDetailIn(itemId + "",title, "detail");
         super.onResume();
     }
 
