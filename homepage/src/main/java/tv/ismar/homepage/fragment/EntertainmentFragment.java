@@ -5,6 +5,7 @@ import android.content.DialogInterface.OnCancelListener;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,12 +19,15 @@ import android.widget.TextView;
 import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 
 import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+import tv.ismar.account.IsmartvActivator;
 import tv.ismar.app.core.SimpleRestClient;
 import tv.ismar.app.entity.HomePagerEntity;
 import tv.ismar.app.entity.HomePagerEntity.Carousel;
@@ -76,6 +80,7 @@ public class EntertainmentFragment extends ChannelBaseFragment {
     private int loopindex = 0;
 
     private Subscription dataSubscription;
+    private Subscription smartRecommendPostSub;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -204,6 +209,9 @@ public class EntertainmentFragment extends ChannelBaseFragment {
         if (dataSubscription != null && !dataSubscription.isUnsubscribed()) {
             dataSubscription.unsubscribe();
         }
+        if (smartRecommendPostSub != null && !smartRecommendPostSub.isUnsubscribed()) {
+            smartRecommendPostSub.unsubscribe();
+        }
     }
 
     @Override
@@ -312,7 +320,12 @@ public class EntertainmentFragment extends ChannelBaseFragment {
         imageswitch.sendEmptyMessage(IMAGE_SWITCH_KEY);
         vaiety_fouce_label.setText(carousellist.get(0).getTitle());
         postlist.get(0).setPosition(0);
-        Picasso.with(mContext).load(postlist.get(0).getCustom_image()).memoryPolicy(MemoryPolicy.NO_STORE).into(vaiety_card1_image);
+
+        String imageUrl0 = postlist.get(0).getCustom_image();
+        if (TextUtils.isEmpty(imageUrl0)){
+            imageUrl0 = postlist.get(0).getPoster_url();
+        }
+        Picasso.with(mContext).load(imageUrl0).memoryPolicy(MemoryPolicy.NO_STORE).into(vaiety_card1_image);
         vaiety_card1_image.setTitle(postlist.get(0).getIntroduction());
         vaiety_card1_image.setTag(postlist.get(0));
         vaiety_card1_subtitle.setText(postlist.get(0).getTitle());
@@ -323,7 +336,12 @@ public class EntertainmentFragment extends ChannelBaseFragment {
             vaiety_card1_image.setModeType(2);
         }
         postlist.get(1).setPosition(1);
-        Picasso.with(mContext).load(postlist.get(1).getCustom_image()).memoryPolicy(MemoryPolicy.NO_STORE).into(vaiety_card2_image);
+        String imageUrl1 = postlist.get(1).getCustom_image();
+        if (TextUtils.isEmpty(imageUrl1)){
+            imageUrl1 = postlist.get(1).getPoster_url();
+        }
+        Picasso.with(mContext).load(imageUrl1).memoryPolicy(MemoryPolicy.NO_STORE).into(vaiety_card2_image);
+
         vaiety_card2_image.setTitle(postlist.get(1).getIntroduction());
         vaiety_card2_image.setTag(postlist.get(1));
         vaiety_card2_subtitle.setText(postlist.get(1).getTitle());
@@ -334,7 +352,12 @@ public class EntertainmentFragment extends ChannelBaseFragment {
             vaiety_card2_image.setModeType(2);
         }
         postlist.get(2).setPosition(2);
-        Picasso.with(mContext).load(postlist.get(2).getCustom_image()).memoryPolicy(MemoryPolicy.NO_STORE).into(vaiety_card3_image);
+
+        String imageUrl2 = postlist.get(2).getCustom_image();
+        if (TextUtils.isEmpty(imageUrl2)){
+            imageUrl2 = postlist.get(2).getPoster_url();
+        }
+        Picasso.with(mContext).load(imageUrl2).memoryPolicy(MemoryPolicy.NO_STORE).into(vaiety_card3_image);
         vaiety_card3_image.setTitle(postlist.get(2).getIntroduction());
         vaiety_card3_subtitle.setText(postlist.get(2).getTitle());
         vaiety_card3_image.setTag(postlist.get(2));
@@ -345,7 +368,12 @@ public class EntertainmentFragment extends ChannelBaseFragment {
             vaiety_card3_image.setModeType(2);
         }
         postlist.get(3).setPosition(3);
-        Picasso.with(mContext).load(postlist.get(3).getCustom_image()).memoryPolicy(MemoryPolicy.NO_STORE).into(vaiety_card4_image);
+
+        String imageUrl3 = postlist.get(3).getCustom_image();
+        if (TextUtils.isEmpty(imageUrl3)){
+            imageUrl3 = postlist.get(3).getPoster_url();
+        }
+        Picasso.with(mContext).load(imageUrl3).memoryPolicy(MemoryPolicy.NO_STORE).into(vaiety_card4_image);
         vaiety_card4_image.setTitle(postlist.get(3).getIntroduction());
         vaiety_card4_subtitle.setText(postlist.get(3).getTitle());
         vaiety_card4_image.setTag(postlist.get(3));
@@ -356,7 +384,11 @@ public class EntertainmentFragment extends ChannelBaseFragment {
             vaiety_card4_image.setModeType(2);
         }
         postlist.get(4).setPosition(4);
-        Picasso.with(mContext).load(postlist.get(4).getCustom_image()).memoryPolicy(MemoryPolicy.NO_STORE).into(vaiety_channel1_image);
+        String imageUrl4 = postlist.get(4).getCustom_image();
+        if (TextUtils.isEmpty(imageUrl4)){
+            imageUrl4 = postlist.get(4).getPoster_url();
+        }
+        Picasso.with(mContext).load(imageUrl4).memoryPolicy(MemoryPolicy.NO_STORE).into(vaiety_channel1_image);
         vaiety_channel1_image.setTitle(postlist.get(4).getIntroduction());
         vaiety_channel1_subtitle.setText(postlist.get(4).getTitle());
         vaiety_channel1_image.setTag(postlist.get(4));
@@ -367,7 +399,11 @@ public class EntertainmentFragment extends ChannelBaseFragment {
             vaiety_channel1_image.setModeType(2);
         }
         postlist.get(5).setPosition(5);
-        Picasso.with(mContext).load(postlist.get(5).getCustom_image()).memoryPolicy(MemoryPolicy.NO_STORE).into(vaiety_channel2_image);
+        String imageUrl5 = postlist.get(5).getCustom_image();
+        if (TextUtils.isEmpty(imageUrl5)){
+            imageUrl5 = postlist.get(5).getPoster_url();
+        }
+        Picasso.with(mContext).load(imageUrl5).memoryPolicy(MemoryPolicy.NO_STORE).into(vaiety_channel2_image);
         vaiety_channel2_image.setTitle(postlist.get(5).getIntroduction());
         vaiety_channel2_subtitle.setText(postlist.get(5).getTitle());
         vaiety_channel2_image.setTag(postlist.get(5));
@@ -378,7 +414,12 @@ public class EntertainmentFragment extends ChannelBaseFragment {
             vaiety_channel2_image.setModeType(2);
         }
         postlist.get(6).setPosition(6);
-        Picasso.with(mContext).load(postlist.get(6).getCustom_image()).memoryPolicy(MemoryPolicy.NO_STORE).into(vaiety_channel3_image);
+
+        String imageUrl6 = postlist.get(6).getCustom_image();
+        if (TextUtils.isEmpty(imageUrl6)){
+            imageUrl6 = postlist.get(6).getPoster_url();
+        }
+        Picasso.with(mContext).load(imageUrl6).memoryPolicy(MemoryPolicy.NO_STORE).into(vaiety_channel3_image);
         vaiety_channel3_image.setTitle(postlist.get(6).getIntroduction());
         vaiety_channel3_subtitle.setText(postlist.get(6).getTitle());
         vaiety_channel3_image.setTag(postlist.get(6));
@@ -389,7 +430,12 @@ public class EntertainmentFragment extends ChannelBaseFragment {
             vaiety_channel3_image.setModeType(2);
         }
         postlist.get(7).setPosition(7);
-        Picasso.with(mContext).load(postlist.get(7).getCustom_image()).memoryPolicy(MemoryPolicy.NO_STORE).into(vaiety_channel4_image);
+
+        String imageUrl7 = postlist.get(7).getCustom_image();
+        if (TextUtils.isEmpty(imageUrl7)){
+            imageUrl7 = postlist.get(7).getPoster_url();
+        }
+        Picasso.with(mContext).load(imageUrl7).memoryPolicy(MemoryPolicy.NO_STORE).into(vaiety_channel4_image);
         vaiety_channel4_image.setTitle(postlist.get(7).getIntroduction());
         vaiety_channel4_subtitle.setText(postlist.get(7).getTitle());
         vaiety_channel4_image.setTag(postlist.get(7));
@@ -479,8 +525,56 @@ public class EntertainmentFragment extends ChannelBaseFragment {
                         }
                         ArrayList<Carousel> carousellist = entity.getCarousels();
                         ArrayList<Poster> postlist = entity.getPosters();
-                        fillData(carousellist, postlist);
+                        if (TextUtils.isEmpty(homePagerEntity.getRecommend_homepage_url())){
+                            fillData(carousellist, postlist);
+                        }else {
+                            smartRecommendPost(homePagerEntity.getRecommend_homepage_url(), postlist, carousellist);
+                        }
                     }
                 });
     }
+
+
+    private void smartRecommendPost(String url, final ArrayList<HomePagerEntity.Poster>  posters,final ArrayList<Carousel> carousellist) {
+        smartRecommendPostSub = SkyService.ServiceManager.getCacheSkyService2().smartRecommendPost(url, IsmartvActivator.getInstance().getSnToken())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<ArrayList<HomePagerEntity.Poster>>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable throwable) {
+                        fillData(carousellist, posters);
+                    }
+
+                    @Override
+                    public void onNext(ArrayList<HomePagerEntity.Poster> smartPosters) {
+                        if (smartPosters.size() < 8){
+                            fillData(carousellist, posters);
+                        }else {
+                            ArrayList<HomePagerEntity.Poster> posterArrayList = new ArrayList<>();
+                            if (smartPosters.size() - posterStartTag - 8 >= 0) {
+                                posterArrayList.addAll(smartPosters.subList(posterStartTag, posterStartTag + 8));
+                                posterStartTag = posterStartTag + 8;
+                            } else {
+                                if (smartPosters.size() <= posterStartTag){
+                                    posterArrayList.addAll(smartPosters.subList(0, 8));
+                                    posterStartTag =  8;
+                                }else {
+                                    posterArrayList.addAll(smartPosters.subList(posterStartTag, smartPosters.size()));
+                                    posterArrayList.addAll(smartPosters.subList(0, Math.abs(smartPosters.size() - posterStartTag - 8)));
+                                    posterStartTag = Math.abs(smartPosters.size() - posterStartTag - 8);
+                                }
+                            }
+                            fillData(carousellist, posterArrayList);
+                        }
+
+                    }
+                });
+    }
+
+    public static int posterStartTag = 0;
 }

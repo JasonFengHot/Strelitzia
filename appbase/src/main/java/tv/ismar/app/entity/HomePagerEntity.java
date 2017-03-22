@@ -8,6 +8,15 @@ import java.util.ArrayList;
 public class HomePagerEntity {
     private ArrayList<Carousel> carousels;
     private ArrayList<Poster> posters;
+    private String recommend_homepage_url;
+
+    public String getRecommend_homepage_url() {
+        return recommend_homepage_url;
+    }
+
+    public void setRecommend_homepage_url(String recommend_homepage_url) {
+        this.recommend_homepage_url = recommend_homepage_url;
+    }
 
     public ArrayList<Carousel> getCarousels() {
         return carousels;

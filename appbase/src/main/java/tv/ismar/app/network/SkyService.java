@@ -510,6 +510,12 @@ public interface SkyService {
     @GET("api/tv/channels/")
     Observable<ChannelEntity[]> apiTvChannels();
 
+    @GET
+    Observable<ArrayList<HomePagerEntity.Poster>> smartRecommendPost(
+            @Url String url,
+            @Query("sn") String snCode
+    );
+
     @GET("api/tv/hotwords/")
     Observable<ArrayList<HotWords>> apiSearchHotwords();
 
@@ -640,6 +646,7 @@ public interface SkyService {
         private SkyService speedCallaService;
         private SkyService lilyHostService;
         private SkyService mCacheSkyService;
+        private SkyService mCacheSkyService2;
 
         public static boolean executeActive = true;
 
@@ -800,6 +807,24 @@ public interface SkyService {
                     .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                     .build();
             mCacheSkyService = cacheSkyRetrofit.create(SkyService.class);
+
+
+            File cacheFile2 = new File(VodApplication.getModuleAppContext().getCacheDir(), "okhttp_cache");
+            Cache cache2 = new Cache(cacheFile2, 1024 * 1024 * 100); //100Mb
+            OkHttpClient cacheClient2 = new OkHttpClient.Builder()
+                    .connectTimeout(DEFAULT_CONNECT_TIMEOUT, TimeUnit.SECONDS)
+                    .readTimeout(DEFAULT_READ_TIMEOUT, TimeUnit.SECONDS)
+                    .addInterceptor(VodApplication.getHttpParamsInterceptor())
+                    .addInterceptor(interceptor)
+                    .cache(cache2)
+                    .build();
+            Retrofit cacheSkyRetrofit2 = new Retrofit.Builder()
+                    .client(cacheClient2)
+                    .baseUrl(appendProtocol(domain[0]))
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                    .build();
+            mCacheSkyService2 = cacheSkyRetrofit2.create(SkyService.class);
         }
 
 
@@ -868,6 +893,10 @@ public interface SkyService {
 
         public static SkyService getCacheSkyService() {
             return getInstance().mCacheSkyService;
+        }
+
+        public static SkyService getCacheSkyService2() {
+            return getInstance().mCacheSkyService2;
         }
     }
 
