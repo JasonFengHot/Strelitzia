@@ -45,6 +45,15 @@ public class VersionInfoV2Entity {
         private String summary;
         private String version;
         private String md5;
+        private boolean force_upgrade;
+
+        public Boolean getForce_upgrade() {
+            return force_upgrade;
+        }
+
+        public void setForce_upgrade(Boolean force_upgrade) {
+            this.force_upgrade = force_upgrade;
+        }
 
         public boolean isCheckUpgrade() {
             return checkUpgrade;
