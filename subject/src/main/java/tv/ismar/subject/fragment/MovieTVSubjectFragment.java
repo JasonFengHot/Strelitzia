@@ -1,19 +1,33 @@
 package tv.ismar.subject.fragment;
 
 import android.app.Fragment;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.ColorFilter;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.squareup.picasso.MemoryPolicy;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
+
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -54,8 +68,7 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnFocusChan
     private ImageView right_layer_tv;
     private ImageView tv_poster_focus;
     private ImageView poster_focus;
-    private boolean isFocused=true;
-    private ArrayList<Item> list;
+    private List<SubjectEntity.ObjectsBean> list;
     private SubjectTvAdapter tvAdapter;
     private String type;
     private int id;
@@ -64,11 +77,12 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnFocusChan
     private String isnet="no";
     final SimpleRestClient simpleRest = new SimpleRestClient();
     private FavoriteManager mFavoriteManager;
+    private int focusedIndex=0;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View content=inflater.inflate(R.layout.movie_tv_subject_fragment,null);
+        View content = inflater.inflate(R.layout.movie_tv_subject_fragment,null);
         initView(content);
         return content;
     }
@@ -94,74 +108,28 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnFocusChan
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initData();
-        type = ((SubjectActivity)getActivity()).gather_type;
-        id = ((SubjectActivity)getActivity()).itemid;
-        if(type.contains("movie")){
-            //电影专题
-            subject_movie.setVisibility(View.VISIBLE);
-            getView().setBackgroundResource(R.drawable.bg);
-            movieAdapter = new SubjectMovieAdapter(getActivity(), list);
-            movie_recyclerView.setLayoutManager(new StaggeredGridLayoutManager(1,StaggeredGridLayoutManager.HORIZONTAL));
-            movie_recyclerView.setAdapter(movieAdapter);
-            movieAdapter.setOnItemClickListener(this);
-            movieAdapter.setOnItemFocusedListener(new OnItemFocusedListener() {
-                @Override
-                public void onItemfocused(View view, int position, boolean hasFocus) {
-                    if(hasFocus) {
-                        checkLayerIsShow(position);
-                        poster_focus.setVisibility(View.VISIBLE);
-                        if(!isFocused){
-                            isFocused=true;
-                            movie_recyclerView.getChildAt(1).requestFocus();
-                            movie_recyclerView.smoothScrollBy(-1,0);
-                            return;
-                        }
-                        movie_recyclerView.smoothScrollBy((int) (view.getX() - 1), 0);
-                        JasmineUtil.scaleOut2(view);
-                        subject_actor.setText(list.get(position).title+position);
-                        subject_description.setText(list.get(position).title+position);
-                    }else{
-                        JasmineUtil.scaleIn2(view);
-                        poster_focus.setVisibility(View.INVISIBLE);
-                    }
-                }
-            });
-        }else{
-            //电视剧专题
-            subject_tv.setVisibility(View.VISIBLE);
-            tvAdapter = new SubjectTvAdapter(getActivity(),list);
-            tv_recyclerView.setLayoutManager(new StaggeredGridLayoutManager(1,StaggeredGridLayoutManager.HORIZONTAL));
-            tv_recyclerView.setAdapter(tvAdapter);
-            tvAdapter.setOnItemClickListener(this);
-            tvAdapter.setOnItemFocusedListener(new OnItemFocusedListener() {
-                @Override
-                public void onItemfocused(View view, int position, boolean hasFocus) {
-                    if(hasFocus) {
-                        checkLayerIsShow(position);
-                        if(!isFocused){
-                            isFocused=true;
-                            tv_recyclerView.getChildAt(1).requestFocus();
-                            tv_recyclerView.smoothScrollBy(-1,0);
-                            return;
-                        }
-                        JasmineUtil.scaleOut2(view);
-                        tv_recyclerView.smoothScrollBy((int) (view.getX() - 1), 0);
-                        Log.e("position",view.getX()+"");
-                        subject_actor.setText(list.get(position).title+position);
-                        subject_description.setText(list.get(position).title+position);
-                    }else{
-                        JasmineUtil.scaleIn2(view);
-                        poster_focus.setVisibility(View.INVISIBLE);
-                    }
-                }
-            });
-        }
-
         subject_btn_buy.setOnFocusChangeListener(this);
         subject_btn_like.setOnFocusChangeListener(this);
         subject_btn_buy.setOnClickListener(this);
         subject_btn_like.setOnClickListener(this);
-
+        movie_recyclerView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(hasFocus){
+                    movie_recyclerView.getChildAt(focusedIndex).requestFocus();
+                    movie_recyclerView.smoothScrollBy((int) (movie_recyclerView.getChildAt(focusedIndex).getX()-2),0);
+                }
+            }
+        });
+        tv_recyclerView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(hasFocus){
+                    tv_recyclerView.getChildAt(focusedIndex).requestFocus();
+                    tv_recyclerView.smoothScrollBy((int) (tv_recyclerView.getChildAt(focusedIndex).getX()-2),0);
+                }
+            }
+        });
     }
 
     private void initData() {
@@ -171,16 +139,7 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnFocusChan
         } else {
             isnet = "no";
         }
-        list = new ArrayList<>();
-        Item item;
-        for (int i = 0; i <20 ; i++) {
-            item=new Item();
-            item.bean_score=5.3f;
-            item.poster_url="http://res.tvxio.bestv.com.cn/media/upload/20140922/2016hyhsd160119shuban_list.jpg";
-            item.title="三打白骨精";
-            list.add(item);
-        }
-        ((SubjectActivity)getActivity()).mSkyService.apiFetchSubject(type,id)
+        ((SubjectActivity)getActivity()).mSkyService.apiSubject(709759+"")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(((SubjectActivity)getActivity()).new BaseObserver<SubjectEntity>(){
@@ -192,9 +151,79 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnFocusChan
 
                     @Override
                     public void onNext(SubjectEntity subjectEntity) {
+                        processData(subjectEntity);
+                    }
 
+                    @Override
+                    public void onError(Throwable e) {
+                        super.onError(e);
                     }
                 });
+    }
+
+    private void processData(SubjectEntity subjectEntity) {
+        if(subjectEntity.isIs_buy()){
+            subject_btn_buy.setEnabled(false);
+            subject_btn_buy.setFocusable(false);
+        }else{
+            subject_btn_buy.setEnabled(true);
+            subject_btn_buy.setFocusable(true);
+        }
+        list=subjectEntity.getObjects();
+        type = ((SubjectActivity)getActivity()).gather_type;
+        id = ((SubjectActivity)getActivity()).itemid;
+        if(type.contains("movie")){
+            //电影专题
+            movieAdapter=new SubjectMovieAdapter(getActivity(),list);
+            subject_movie.setVisibility(View.VISIBLE);
+            subject_btn_buy.setNextFocusUpId(R.id.movie_recyclerView);
+            subject_btn_like.setNextFocusUpId(R.id.movie_recyclerView);
+            movie_recyclerView.setLayoutManager(new StaggeredGridLayoutManager(1,StaggeredGridLayoutManager.HORIZONTAL));
+            movie_recyclerView.setAdapter(movieAdapter);
+            movieAdapter.setOnItemClickListener(this);
+            movieAdapter.setOnItemFocusedListener(new OnItemFocusedListener() {
+                @Override
+                public void onItemfocused(View view, int position, boolean hasFocus) {
+                    if(hasFocus) {
+                        checkLayerIsShow(position);
+                        poster_focus.setVisibility(View.VISIBLE);
+                        movie_recyclerView.smoothScrollBy((int) (view.getX() - 1), 0);
+                        JasmineUtil.scaleOut2(view);
+                        subject_actor.setText(list.get(position).getMsg1());
+                        subject_description.setText(list.get(position).getMsg2());
+                    }else{
+                        JasmineUtil.scaleIn2(view);
+                        poster_focus.setVisibility(View.INVISIBLE);
+                    }
+                }
+            });
+        }else {
+            //电视剧专题
+            tvAdapter=new SubjectTvAdapter(getActivity(),list);
+            subject_tv.setVisibility(View.VISIBLE);
+            subject_btn_buy.setNextFocusUpId(R.id.tv_recyclerView);
+            subject_btn_like.setNextFocusUpId(R.id.tv_recyclerView);
+            tv_recyclerView.setLayoutManager(new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.HORIZONTAL));
+            tv_recyclerView.setAdapter(tvAdapter);
+            tvAdapter.setOnItemClickListener(this);
+            tvAdapter.setOnItemFocusedListener(new OnItemFocusedListener() {
+                @Override
+                public void onItemfocused(View view, int position, boolean hasFocus) {
+                    if (hasFocus) {
+                        checkLayerIsShow(position);
+                        tv_poster_focus.setVisibility(View.VISIBLE);
+                        JasmineUtil.scaleOut2(view);
+                        tv_recyclerView.smoothScrollBy((int) (view.getX() - 1), 0);
+                        Log.e("position", view.getX() + "");
+                        subject_actor.setText(list.get(position).getMsg1());
+                        subject_description.setText(list.get(position).getMsg2());
+                    } else {
+                        JasmineUtil.scaleIn2(view);
+                        tv_poster_focus.setVisibility(View.INVISIBLE);
+                    }
+                }
+            });
+        }
     }
 
     private void checkLayerIsShow(int position) {
@@ -236,11 +265,20 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnFocusChan
     @Override
     public void onFocusChange(View v, boolean hasFocus) {
             if (hasFocus) {
-                isFocused=false;
                 if(type.contains("movie")) {
-                    JasmineUtil.scaleOut2(movie_recyclerView.getChildAt(1));
+                    if(left_layer_movie.getVisibility()==View.VISIBLE) {
+                        focusedIndex=1;
+                    }else{
+                        focusedIndex=0;
+                    }
+                    JasmineUtil.scaleOut2(movie_recyclerView.getChildAt(focusedIndex));
                 }else{
-                    JasmineUtil.scaleOut2(tv_recyclerView.getChildAt(1));
+                    if(left_layer_tv.getVisibility()==View.VISIBLE) {
+                        focusedIndex=1;
+                    }else{
+                        focusedIndex=0;
+                    }
+                    JasmineUtil.scaleOut2(tv_recyclerView.getChildAt(focusedIndex));
                 }
 
             }
@@ -269,6 +307,7 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnFocusChan
                 }
                 mFavoriteManager.addFavorite(favorite, isnet);
                 subject_btn_like.setBackgroundResource(R.drawable.liked_btn_selector);
+                Toast.makeText(getActivity(), "收藏成功", Toast.LENGTH_SHORT).show();
             }else{
                 String url = IsmartvActivator.getInstance().getApiDomain() + "/api/item/" + id + "/";
                 if (IsmartvActivator.getInstance().isLogin()) {
@@ -278,6 +317,7 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnFocusChan
                     mFavoriteManager.deleteFavoriteByUrl(url, "no");
                 }
                 subject_btn_like.setBackgroundResource(R.drawable.like_btn_selector);
+                Toast.makeText(getActivity(), "取消收藏成功", Toast.LENGTH_SHORT).show();
             }
         } else if (i == R.id.subject_btn_buy) {
             subject_btn_buy.setEnabled(false);
@@ -288,7 +328,7 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnFocusChan
     @Override
     public void onItemClick(View view, int position) {
         PageIntent intent=new PageIntent();
-        intent.toPlayPage(getActivity(),421263,421263, Source.LAUNCHER);
+        intent.toPlayPage(getActivity(),list.get(position).getPk(),list.get(position).getItem_pk(), Source.LAUNCHER);
     }
 
     private boolean isFavorite() {
