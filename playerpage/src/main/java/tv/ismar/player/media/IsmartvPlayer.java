@@ -207,7 +207,7 @@ public abstract class IsmartvPlayer implements IPlayer {
                 mClipEntity.setIs_vip(clipEntity.is_vip());
 
                 mDrmType = DrmType.DRM_NONE;
-                if (mClipEntity.is_drm()) {
+                if (mClipEntity.getDrm() != null && mClipEntity.getDrm().equals("2")) {
                     mDrmType = DrmType.DRM_INTERTRUST;
                 }
                 if (isQiyiSdkInit) {
