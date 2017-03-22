@@ -56,6 +56,7 @@ public class BalancePayFragment extends Fragment implements View.OnClickListener
         public boolean handleMessage(Message msg) {
             float result = (float) msg.obj;
             balanceTv.setText(String.format(getString(R.string.pay_card_balance_title_label), result));
+            activity.sendLog();
             activity.finish();
             return false;
         }

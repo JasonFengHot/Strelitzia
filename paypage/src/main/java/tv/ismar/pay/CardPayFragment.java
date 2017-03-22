@@ -129,6 +129,7 @@ public class CardPayFragment extends Fragment implements View.OnClickListener, O
                                 rechargeMsgTextView.setText("充值成功");
                                 rechargeMsgTextView.setVisibility(View.VISIBLE);
                                 if (!TextUtils.isEmpty(flag) && "usercenter_charge".equals(flag)) {
+                                    mPaymentActivity.sendLog();
                                     getActivity().setResult(CHARGE_MONEY_SUCCESS);
                                     getActivity().finish();
                                 }
@@ -138,6 +139,7 @@ public class CardPayFragment extends Fragment implements View.OnClickListener, O
                                 rechargeMsgTextView.setText("充值成功");
                                 rechargeMsgTextView.setVisibility(View.VISIBLE);
                                 if (!TextUtils.isEmpty(flag) && "usercenter_charge".equals(flag)) {
+                                    mPaymentActivity.sendLog();
                                     getActivity().setResult(CHARGE_MONEY_SUCCESS);
                                     getActivity().finish();
                                 }
