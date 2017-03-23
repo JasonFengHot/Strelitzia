@@ -628,6 +628,12 @@ public interface SkyService {
             @Path("pk") String pk
     );
 
+    @GET("api/paylayer/vip/{cpid}/")
+    Observable<PayLayerVipEntity> apiPaylayerVipSubject(
+            @Path("cpid") String cpid,
+            @Query("gather_id") String gather_id
+    );
+
     class ServiceManager {
         private volatile static ServiceManager serviceManager;
         private static final int DEFAULT_CONNECT_TIMEOUT = 6;

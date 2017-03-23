@@ -14,6 +14,8 @@ public class PayLayerVipEntity {
 
     private int cpid;
 
+    public boolean gather_per;
+
     public void setVip_list(List<Vip_list> vip_list) {
         this.vip_list = vip_list;
     }

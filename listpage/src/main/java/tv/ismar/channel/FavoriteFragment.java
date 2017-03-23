@@ -426,10 +426,14 @@ public class FavoriteFragment extends Fragment implements ScrollableSectionList.
 			mDataCollectionProperties.put("to_item", id);
 		}
 		mDataCollectionProperties.put("to_title", item.title);
-		if(item.is_complex) {
-			pageIntent.toDetailPage(getActivity(),"favorite",id);
-		} else {
-			pageIntent.toPlayPage(getActivity(),id,0,Source.FAVORITE);
+		if(item.content_model.contains("gather")){
+			pageIntent.toSubject(getActivity(),item.content_model,id,"favorite");
+		}else {
+			if (item.is_complex) {
+				pageIntent.toDetailPage(getActivity(), "favorite", id);
+			} else {
+				pageIntent.toPlayPage(getActivity(), id, 0, Source.FAVORITE);
+			}
 		}
 		if(mLoadingDialog!=null && mLoadingDialog.isShowing()) {
 			mLoadingDialog.dismiss();

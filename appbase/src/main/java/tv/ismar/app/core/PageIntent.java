@@ -174,7 +174,7 @@ public class PageIntent implements PageIntentInterface {
 //        intent.setAction("tv.ismar.searchpage.search");
 //        intent.putExtra("frompage","search");
 //        context.startActivity(intent);
-        toSubject(context,"teleplaygather",709759,"launcher");
+        toSubject(context,"moviegather",709759,"launcher");
     }
 
     @Override

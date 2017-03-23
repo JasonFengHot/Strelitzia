@@ -5,7 +5,10 @@
     android:clipToPadding="false"
     android:clipChildren="false"
     >
-
+<ImageView
+    android:id="@+id/subject_bg"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" />
 <FrameLayout
     android:id="@+id/subject_movie"
     android:layout_width="match_parent"

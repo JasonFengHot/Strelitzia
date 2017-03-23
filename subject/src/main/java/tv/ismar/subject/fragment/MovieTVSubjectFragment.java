@@ -34,20 +34,26 @@ import rx.schedulers.Schedulers;
 import tv.ismar.account.IsmartvActivator;
 import tv.ismar.app.core.DaisyUtils;
 import tv.ismar.app.core.PageIntent;
+import tv.ismar.app.core.PageIntentInterface;
 import tv.ismar.app.core.SimpleRestClient;
 import tv.ismar.app.core.Source;
 import tv.ismar.app.db.FavoriteManager;
 import tv.ismar.app.entity.Favorite;
 import tv.ismar.app.entity.Item;
 import tv.ismar.app.models.SubjectEntity;
+import tv.ismar.app.network.entity.PayLayerVipEntity;
 import tv.ismar.app.util.Utils;
 import tv.ismar.searchpage.utils.JasmineUtil;
+import tv.ismar.statistics.PurchaseStatistics;
 import tv.ismar.subject.R;
 import tv.ismar.subject.SubjectActivity;
 import tv.ismar.subject.adapter.OnItemClickListener;
 import tv.ismar.subject.adapter.OnItemFocusedListener;
 import tv.ismar.subject.adapter.SubjectMovieAdapter;
 import tv.ismar.subject.adapter.SubjectTvAdapter;
+
+import static tv.ismar.app.core.PageIntentInterface.FromPage.unknown;
+import static tv.ismar.app.core.PageIntentInterface.ProductCategory.item;
 
 /**
  * Created by admin on 2017/3/2.
@@ -78,6 +84,8 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnFocusChan
     final SimpleRestClient simpleRest = new SimpleRestClient();
     private FavoriteManager mFavoriteManager;
     private int focusedIndex=0;
+    private ImageView subject_bg;
+    private SubjectEntity mSubjectEntity;
 
     @Nullable
     @Override
@@ -102,6 +110,7 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnFocusChan
         left_layer_tv= (ImageView) content.findViewById(R.id.left_layer_tv);
         right_layer_tv = (ImageView) content.findViewById(R.id.right_layer_tv);
         tv_poster_focus= (ImageView) content.findViewById(R.id.tv_poster_focus);
+        subject_bg = (ImageView) content.findViewById(R.id.subject_bg);
     }
 
     @Override
@@ -133,6 +142,8 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnFocusChan
     }
 
     private void initData() {
+        type = ((SubjectActivity)getActivity()).gather_type;
+        id = ((SubjectActivity)getActivity()).itemid;
         mFavoriteManager = DaisyUtils.getFavoriteManager(getActivity());
         if (!Utils.isEmptyText(IsmartvActivator.getInstance().getAuthToken())) {
             isnet = "yes";
@@ -144,6 +155,7 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnFocusChan
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(((SubjectActivity)getActivity()).new BaseObserver<SubjectEntity>(){
 
+
                     @Override
                     public void onCompleted() {
 
@@ -151,6 +163,7 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnFocusChan
 
                     @Override
                     public void onNext(SubjectEntity subjectEntity) {
+                        mSubjectEntity = subjectEntity;
                         processData(subjectEntity);
                     }
 
@@ -163,15 +176,13 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnFocusChan
 
     private void processData(SubjectEntity subjectEntity) {
         if(subjectEntity.isIs_buy()){
-            subject_btn_buy.setEnabled(false);
-            subject_btn_buy.setFocusable(false);
+            subject_btn_buy.setVisibility(View.VISIBLE);
         }else{
-            subject_btn_buy.setEnabled(true);
-            subject_btn_buy.setFocusable(true);
+            subject_btn_buy.setVisibility(View.GONE);
         }
+        if(subjectEntity.getBg_url()!=null&&!"".equals(subjectEntity.getBg_url()))
+        Picasso.with(getActivity()).load(subjectEntity.getBg_url()).memoryPolicy(MemoryPolicy.NO_CACHE).memoryPolicy(MemoryPolicy.NO_STORE).into(subject_bg);
         list=subjectEntity.getObjects();
-        type = ((SubjectActivity)getActivity()).gather_type;
-        id = ((SubjectActivity)getActivity()).itemid;
         if(type.contains("movie")){
             //电影专题
             movieAdapter=new SubjectMovieAdapter(getActivity(),list);
@@ -291,9 +302,9 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnFocusChan
             if(!isFavorite()){
                 String url = IsmartvActivator.getInstance().getApiDomain() + "/api/item/" + id+ "/";
                 Favorite favorite = new Favorite();
-                favorite.title = "专题页";
-                favorite.adlet_url = "getAdletUrl()";
-                favorite.content_model = "getContentModel()";
+                favorite.title = mSubjectEntity.getTitle();
+                favorite.adlet_url = mSubjectEntity.getBg_url();
+                favorite.content_model = type;
                 favorite.url = url;
                 favorite.quality = 0;
                 favorite.is_complex = true;
@@ -320,9 +331,51 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnFocusChan
                 Toast.makeText(getActivity(), "取消收藏成功", Toast.LENGTH_SHORT).show();
             }
         } else if (i == R.id.subject_btn_buy) {
-            subject_btn_buy.setEnabled(false);
-            subject_btn_buy.setFocusable(false);
+
+                buySubject();
         }
+    }
+
+    //购买专题页
+    private void buySubject() {
+//        int jumpTo = mItemEntity.getExpense().getJump_to();
+//        int cpid = mItemEntity.getExpense().getCpid();
+        //判断用户是否有最高的观影权限
+        ((SubjectActivity)getActivity()).mSkyService.apiPaylayerVipSubject(3+"",709759+"")
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(((SubjectActivity)getActivity()).new BaseObserver<PayLayerVipEntity>(){
+
+
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onNext(PayLayerVipEntity payLayerVipEntity) {
+                        if(payLayerVipEntity.gather_per){
+                            Toast.makeText(getActivity(),"您已拥有本专题所有影片观看权限",Toast.LENGTH_SHORT).show();
+                        }else{
+                            PageIntentInterface.PaymentInfo paymentInfo = new PageIntentInterface.PaymentInfo(item, id, PageIntent.PAYVIP, 3);
+                            String userName = IsmartvActivator.getInstance().getUsername();
+                            String title = mSubjectEntity.getTitle();
+
+                            String clip = "";
+//        if (mItemEntity.getClip() != null) {
+//            clip = String.valueOf(mItemEntity.getClip().getPk());
+//        }
+                            new PurchaseStatistics().videoExpenseClick(String.valueOf(id), userName, title, clip);
+                            new PageIntent().toPayment(getActivity(), unknown.name(), paymentInfo);
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        super.onError(e);
+                    }
+                });
+
     }
 
     @Override
@@ -332,11 +385,8 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnFocusChan
     }
 
     private boolean isFavorite() {
-//        if (mItemEntity != null) {
-//            String url = mItemEntity.getItem_url();
-//            if (url == null && mItemEntity.getItemPk() != 0) {
-                String url = IsmartvActivator.getInstance().getApiDomain() + "/api/item/" + id + "/";
-//            }
+
+            String url = IsmartvActivator.getInstance().getApiDomain() + "/api/item/" + id + "/";
             Favorite favorite;
             if (IsmartvActivator.getInstance().isLogin()) {
                 favorite = mFavoriteManager.getFavoriteByUrl(url, "yes");
@@ -346,7 +396,6 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnFocusChan
             if (favorite != null) {
                 return true;
             }
-//        }
         return false;
     }
 
