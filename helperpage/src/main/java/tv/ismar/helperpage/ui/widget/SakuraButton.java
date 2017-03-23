@@ -60,7 +60,7 @@ public class SakuraButton extends Button {
             switch (event.getAction()) {
                 case MotionEvent.ACTION_DOWN:
                     performClick();
-                    break;
+                    return  true;
             }
         }
 
