@@ -240,6 +240,7 @@ public class ChannelFragment extends Fragment implements OnItemSelectedListener,
             right_shadow.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    mScrollableSectionList.currentState=mScrollableSectionList.STATE_GOTO_GRIDVIEW;
                     mHGridView.pageScroll(View.FOCUS_RIGHT);
                     view.requestFocus();
                     mHGridView.setFocusableInTouchMode(true);
