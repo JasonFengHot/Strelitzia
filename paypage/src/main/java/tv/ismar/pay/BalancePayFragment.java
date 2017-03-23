@@ -110,6 +110,7 @@ public class BalancePayFragment extends Fragment implements View.OnClickListener
         if (i == R.id.card_balance_submit) {
             createOrder();
         } else if (i == R.id.card_balance_cancel) {
+            activity.sendExpenseCancleLog();
             activity.finish();
         }
     }
