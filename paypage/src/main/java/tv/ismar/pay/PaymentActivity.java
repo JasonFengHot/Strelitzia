@@ -36,6 +36,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import tv.ismar.account.IsmartvActivator;
+import tv.ismar.app.AppConstant;
 import tv.ismar.app.BaseActivity;
 import tv.ismar.app.core.PageIntent;
 import tv.ismar.app.core.PageIntentInterface;
@@ -323,21 +324,7 @@ public class PaymentActivity extends BaseActivity implements View.OnClickListene
 
     @Override
     public void onBackPressed() {
-        if (mItemEntity!=null) {
-            if (category.equals("package")) {
-                new PurchaseStatistics().expensePageExit("", "", IsmartvActivator.getInstance().getUsername(),
-                        "package", String.valueOf(mItemEntity.getPk()), mItemEntity.getTitle(), "cancel", "", uuid);
-            } else {
-                String type = "";
-                if (mItemEntity.getExpense().getPay_type() == 1) {
-                    type = "independent";
-                } else if (mItemEntity.getExpense().getPay_type() == 2) {
-                    type = "vip";
-                }
-                new PurchaseStatistics().expensePageExit(String.valueOf(mItemEntity.getPk()), mItemEntity.getTitle(),
-                        IsmartvActivator.getInstance().getUsername(), type, "", "", "cancel", "", uuid);
-            }
-        }
+       sendExpenseCancleLog();
         super.onBackPressed();
     }
 
@@ -743,5 +730,26 @@ public class PaymentActivity extends BaseActivity implements View.OnClickListene
                         type, "", "", "allow", "", uuid);
             }
         }
+
+        Log.d(TAG, "view position: " + AppConstant.purchase_tab);
+    }
+
+    public void sendExpenseCancleLog(){
+        if (mItemEntity!=null) {
+            if (category.equals("package")) {
+                new PurchaseStatistics().expensePageExit("", "", IsmartvActivator.getInstance().getUsername(),
+                        "package", String.valueOf(mItemEntity.getPk()), mItemEntity.getTitle(), "cancel", "", uuid);
+            } else {
+                String type = "";
+                if (mItemEntity.getExpense().getPay_type() == 1) {
+                    type = "independent";
+                } else if (mItemEntity.getExpense().getPay_type() == 2) {
+                    type = "vip";
+                }
+                new PurchaseStatistics().expensePageExit(String.valueOf(mItemEntity.getPk()), mItemEntity.getTitle(),
+                        IsmartvActivator.getInstance().getUsername(), type, "", "", "cancel", "", uuid);
+            }
+        }
+        Log.d(TAG, "view position: " + AppConstant.purchase_tab);
     }
 }

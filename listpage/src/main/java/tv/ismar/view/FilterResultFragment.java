@@ -451,7 +451,6 @@ public class FilterResultFragment extends BackHandledFragment implements Adapter
     }
     private void doFilterRequest(){
         if(!isNoData) {
-            Log.d("tag", filterCondition);
             skyService.getFilterRequest(content_model, filterCondition).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                     .subscribe(((BaseActivity) getActivity()).new BaseObserver<ItemList>() {
                         @Override
