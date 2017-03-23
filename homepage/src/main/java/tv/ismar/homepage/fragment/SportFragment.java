@@ -150,9 +150,9 @@ public class SportFragment extends ChannelBaseFragment {
 		});
         sports_live1.setTag(R.id.view_position_tag, 3);
         sports_live1.setOnClickListener(arrowClickListener);
-        sports_live1.setTag(R.id.view_position_tag, 5);
+        sports_live2.setTag(R.id.view_position_tag, 5);
         sports_live2.setOnClickListener(arrowClickListener);
-        sports_live1.setTag(R.id.view_position_tag, 7);
+        sports_live3.setTag(R.id.view_position_tag, 7);
         sports_live3.setOnClickListener(arrowClickListener);
         sports_live1.setOnFocusChangeListener(new View.OnFocusChangeListener() {
 
