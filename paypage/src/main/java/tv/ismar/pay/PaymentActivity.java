@@ -36,6 +36,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import tv.ismar.account.IsmartvActivator;
+import tv.ismar.app.AppConstant;
 import tv.ismar.app.BaseActivity;
 import tv.ismar.app.core.PageIntent;
 import tv.ismar.app.core.PageIntentInterface;
@@ -729,6 +730,8 @@ public class PaymentActivity extends BaseActivity implements View.OnClickListene
                         type, "", "", "allow", "", uuid);
             }
         }
+
+        Log.d(TAG, "view position: " + AppConstant.purchase_tab);
     }
 
     public void sendExpenseCancleLog(){
@@ -747,5 +750,6 @@ public class PaymentActivity extends BaseActivity implements View.OnClickListene
                         IsmartvActivator.getInstance().getUsername(), type, "", "", "cancel", "", uuid);
             }
         }
+        Log.d(TAG, "view position: " + AppConstant.purchase_tab);
     }
 }
