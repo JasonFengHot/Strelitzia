@@ -209,7 +209,7 @@ public class PackageDetailFragment extends BaseFragment {
     public void onResume() {
         super.onResume();
         requestPlayCheck(String.valueOf(mItemEntity.getPk()));
-        mPageStatistics.packageDetailIn(mItemEntity.getPk()+"", source==null?frompage:source);
+        mPageStatistics.packageDetailIn(mItemEntity.getPk()+"", mItemEntity.getTitle(),source==null?frompage:source);
 
 
     }
