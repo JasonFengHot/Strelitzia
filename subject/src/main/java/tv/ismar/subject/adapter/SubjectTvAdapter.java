@@ -9,9 +9,11 @@ import android.view.ViewGroup;
 import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import tv.ismar.app.entity.Item;
+import tv.ismar.app.models.SubjectEntity;
+import tv.ismar.searchpage.model.Expense;
 import tv.ismar.subject.R;
 
 /**
@@ -21,7 +23,7 @@ import tv.ismar.subject.R;
 public class SubjectTvAdapter extends RecyclerView.Adapter<MovieViewHolder> {
 
     private Context mContext;
-    private ArrayList<Item> mList;
+    private List<SubjectEntity.ObjectsBean> mList;
     private boolean isFirst=true;
 
     private OnItemClickListener mOnItemClickListener;
@@ -36,7 +38,7 @@ public class SubjectTvAdapter extends RecyclerView.Adapter<MovieViewHolder> {
         this.mOnItemFocusedListener = mOnItemFocusedListener;
     }
 
-    public SubjectTvAdapter(Context mContext, ArrayList<Item> mList) {
+    public SubjectTvAdapter(Context mContext, List<SubjectEntity.ObjectsBean> mList) {
         this.mContext = mContext;
         this.mList = mList;
     }
@@ -54,14 +56,25 @@ public class SubjectTvAdapter extends RecyclerView.Adapter<MovieViewHolder> {
 
     @Override
     public void onBindViewHolder(final MovieViewHolder holder, int position) {
-        Item item = mList.get(position);
-//        Picasso.with(mContext).load(item.poster_url).memoryPolicy(MemoryPolicy.NO_CACHE).memoryPolicy(MemoryPolicy.NO_STORE).into(holder.movie_item_poster);
-        if (item.bean_score > 0) {
-            holder.movie_item_score.setText(item.bean_score + "");
+        SubjectEntity.ObjectsBean item = mList.get(position);
+        if (item.getBean_score() > 0) {
+            holder.movie_item_score.setText(item.getBean_score() + "");
+            holder.movie_item_score.setVisibility(View.VISIBLE);
         }
-        holder.movie_item_title.setText(item.title);
-        holder.movie_item_mark.setText("视云VIP");
-        holder.movie_item_mark.setBackgroundResource(R.drawable.ismartv);
+        holder.movie_item_title.setText(item.getTitle());
+        Picasso.with(mContext).load(item.getPoster_url()).memoryPolicy(MemoryPolicy.NO_CACHE).memoryPolicy(MemoryPolicy.NO_STORE).into(holder.movie_item_poster);
+        if(item.getExpense()!=null){
+            if(item.getExpense().cptitle!=null){
+                holder.movie_item_mark.setText(item.getExpense().cptitle);
+            }
+            if(item.getExpense().pay_type== Expense.SEPARATE_CHARGE){
+                holder.movie_item_mark.setBackgroundResource(R.drawable.ismartv);
+            }else if((item.getExpense().cpid == Expense.ISMARTV_CPID)){
+                holder.movie_item_mark.setBackgroundResource(R.drawable.ismartv);
+            }else if((item.getExpense().cpid == Expense.IQIYI_CPID)){
+                holder.movie_item_mark.setBackgroundResource(R.drawable.vip);
+            }
+        }
         // 如果设置了回调，则设置点击事件
         if (mOnItemClickListener != null) {
             holder.itemView.setOnClickListener(new View.OnClickListener() {

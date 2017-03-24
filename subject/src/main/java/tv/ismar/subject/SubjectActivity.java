@@ -25,7 +25,7 @@ public class SubjectActivity extends BaseActivity{
         setContentView(R.layout.subject_main_activity);
         Intent intent=getIntent();
         gather_type = intent.getStringExtra("gather_type");
-        itemid = intent.getIntExtra("itemid",0);
+        itemid = intent.getIntExtra("itemid",709759);
         frompage = intent.getStringExtra("frompage");
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
         switch (gather_type){

@@ -25,6 +25,7 @@
             android:textColor="@color/_ffffff"
             android:layout_marginTop="@dimen/subject_item_score_mt"
             android:layout_marginLeft="@dimen/subject_item_score_ml"
+            android:visibility="gone"
             />
 
         <tv.ismar.searchpage.weight.RotateTextView
@@ -44,7 +45,8 @@
             android:gravity="center"
             android:textSize="@dimen/subject_item_tv_title_ts"
             android:textColor="#ffffff"
-            android:alpha="0.8"/>
+            android:alpha="0.8"
+            android:singleLine="true"/>
     </RelativeLayout>
 
 </RelativeLayout>

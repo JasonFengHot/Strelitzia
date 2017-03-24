@@ -623,10 +623,15 @@ public interface SkyService {
             @Query("source") String source
     );
 
-    @GET("api/{gather_type}/{itemid}/")
-    Observable<SubjectEntity> apiFetchSubject(
-            @Path("gather_type") String gather_type,
-            @Path("itemid") int itemid
+    @GET("api/item/{pk}/")
+    Observable<SubjectEntity> apiSubject(
+            @Path("pk") String pk
+    );
+
+    @GET("api/paylayer/vip/{cpid}/")
+    Observable<PayLayerVipEntity> apiPaylayerVipSubject(
+            @Path("cpid") String cpid,
+            @Query("gather_id") String gather_id
     );
 
     class ServiceManager {

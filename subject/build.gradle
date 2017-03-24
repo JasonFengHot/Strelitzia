@@ -30,4 +30,5 @@ dependencies {
     compile project(':appbase')
     compile project(':searchpage')
     compile project(path: ':searchpage')
+    compile project(path: ':statistics')
 }
