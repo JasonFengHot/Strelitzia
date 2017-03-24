@@ -1413,14 +1413,34 @@ public class ZGridView extends AdapterView<ListAdapter> {
 			mSelectorPosition = position;
 		}
 
+		String TAG = "positionSelector";
+		int myPosition  = getPositionForView(sel);
+		Log.d(TAG, "position: " + getPositionForView(sel));
+		View selectedView = sel;
+		Log.d(TAG, "view: " + selectedView);
+		Rect rect = new Rect();
+		selectedView.getGlobalVisibleRect(rect);
+		Log.d(TAG, "getGlobalVisibleRect: " + rect);
+		Rect drawingRect = new Rect();
+//		selectedView.getDrawingRect(drawingRect);
+//		Log.d(TAG, "getDrawingRect: " + rect);
+		selectedView.getFocusedRect(drawingRect);
+		Log.d(TAG, "getFocusedRect: " + drawingRect);
+		selectedView.getLocalVisibleRect(rect);
+		Log.d(TAG, "getLocalVisibleRect: " + rect);
+
+		if (rect.top != 0){
+			scrollBy(0, - (rect.top - drawingRect.top + mSelectionTopPadding));
+		}
+
 		final Rect selectorRect = mSelectorRect;
 		selectorRect.set(sel.getLeft(), sel.getTop(), sel.getRight(),
 				sel.getBottom());
 		positionSelector(selectorRect.left, selectorRect.top,
 				selectorRect.right, selectorRect.bottom);
 
-		refreshDrawableState();
 
+		refreshDrawableState();
 	}
 
 	private void positionSelector(int l, int t, int r, int b) {
@@ -2517,9 +2537,6 @@ public class ZGridView extends AdapterView<ListAdapter> {
 				.isEmpty())
 				|| (hover && mSelector != null && !mSelectorRect.isEmpty())) {
 			final Drawable selector = mSelector;
-			if(mSelectorRect.top <= -22){
-			   mSelectorRect.top += 16;
-			 }
 			selector.setBounds(mSelectorRect);
 			selector.draw(canvas);
 		}
