@@ -85,6 +85,7 @@ public class ChannelBaseFragment extends Fragment {
             if (o !=null){
                 int viewPosition = (int) o;
                 AppConstant.purchase_tab = String.valueOf(viewPosition);
+                Log.d("ChannelBaseFragment", "view position: " + AppConstant.purchase_tab);
             }
 
 

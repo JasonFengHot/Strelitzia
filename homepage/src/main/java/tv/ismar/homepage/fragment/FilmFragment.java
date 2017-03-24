@@ -351,6 +351,7 @@ public class FilmFragment extends ChannelBaseFragment {
         film_lefttop_image.setTitle(posters.get(0).getIntroduction());
         film_lefttop_image.setOnClickListener(ItemClickListener);
         film_lefttop_image.setTag(posters.get(0));
+        film_lefttop_image.setTag(R.id.view_position_tag, 1);
         film_lefttop_image.setOnFocusChangeListener(new View.OnFocusChangeListener() {
 
             @Override
