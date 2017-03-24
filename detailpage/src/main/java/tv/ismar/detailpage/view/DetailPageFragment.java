@@ -121,7 +121,7 @@ public class DetailPageFragment extends Fragment implements DetailPageContract.V
     private Handler handler=new Handler(new Handler.Callback() {
         @Override
         public boolean handleMessage(Message msg) {
-            if (videoIsStart()) {
+            if (videoIsStart()&&palyBtnView.getVisibility()==View.VISIBLE) {
                 palyBtnView.requestFocus();
                 palyBtnView.requestFocusFromTouch();
             } else {
@@ -223,13 +223,6 @@ public class DetailPageFragment extends Fragment implements DetailPageContract.V
 
         mModel.notifyBookmark(true);
         mPresenter.fetchItemRelate(String.valueOf(mItemEntity.getPk()));
-        if (videoIsStart()) {
-            palyBtnView.requestFocus();
-            palyBtnView.requestFocusFromTouch();
-        } else {
-            purchaseBtnView.requestFocus();
-            purchaseBtnView.requestFocusFromTouch();
-        }
     }
 
     @Override
@@ -375,7 +368,6 @@ public class DetailPageFragment extends Fragment implements DetailPageContract.V
         }
         relateIsLoad = true;
         hideLoading();
-        handler.sendEmptyMessage(0);
         if (mMovieBinding != null && mMovieBinding.detailBtnLinear != null)
             mMovieBinding.detailBtnLinear.setVisibility(View.VISIBLE);
     }
@@ -431,38 +423,41 @@ public class DetailPageFragment extends Fragment implements DetailPageContract.V
     }
 
     private void hideLoading() {
-        if (((DetailPageActivity) getActivity()).mLoadingDialog != null && ((DetailPageActivity) getActivity()).mLoadingDialog.isShowing() && itemIsLoad && relateIsLoad) {
-            ((DetailPageActivity) getActivity()).mLoadingDialog.dismiss();
-            HashMap<String, Object> dataCollectionProperties = new HashMap<>();
-            dataCollectionProperties.put(EventProperty.CLIP, mItemEntity.getClip().getPk());
-            dataCollectionProperties.put(EventProperty.DURATION, (int)((System.currentTimeMillis()-((DetailPageActivity) getActivity()).start_time)/1000));
-            String quality="";
-            switch (mItemEntity.getQuality()){
-                case 2:
-                    quality="normal";
-                    break;
-                case 3:
-                    quality="medium";
-                    break;
-                case 4:
-                    quality="high";
-                    break;
-                case 5:
-                    quality="ultra";
-                    break;
-                default:
-                    quality="adaptive";
-                    break;
+        if(itemIsLoad&&relateIsLoad) {
+            handler.sendEmptyMessage(0);
+            if (((DetailPageActivity) getActivity()).mLoadingDialog != null && ((DetailPageActivity) getActivity()).mLoadingDialog.isShowing() && itemIsLoad && relateIsLoad) {
+                ((DetailPageActivity) getActivity()).mLoadingDialog.dismiss();
+                HashMap<String, Object> dataCollectionProperties = new HashMap<>();
+                dataCollectionProperties.put(EventProperty.CLIP, mItemEntity.getClip().getPk());
+                dataCollectionProperties.put(EventProperty.DURATION, (int) ((System.currentTimeMillis() - ((DetailPageActivity) getActivity()).start_time) / 1000));
+                String quality = "";
+                switch (mItemEntity.getQuality()) {
+                    case 2:
+                        quality = "normal";
+                        break;
+                    case 3:
+                        quality = "medium";
+                        break;
+                    case 4:
+                        quality = "high";
+                        break;
+                    case 5:
+                        quality = "ultra";
+                        break;
+                    default:
+                        quality = "adaptive";
+                        break;
+                }
+                dataCollectionProperties.put(EventProperty.QUALITY, quality);
+                dataCollectionProperties.put(EventProperty.TITLE, mItemEntity.getTitle());
+                dataCollectionProperties.put(EventProperty.ITEM, mItemEntity.getPk());
+                dataCollectionProperties.put(EventProperty.SUBITEM, mItemEntity.getItemPk());
+                dataCollectionProperties.put(EventProperty.LOCATION, "detail");
+                new NetworkUtils.DataCollectionTask().execute(NetworkUtils.DETAIL_PLAY_LOAD, dataCollectionProperties);
             }
-            dataCollectionProperties.put(EventProperty.QUALITY, quality);
-            dataCollectionProperties.put(EventProperty.TITLE, mItemEntity.getTitle());
-            dataCollectionProperties.put(EventProperty.ITEM, mItemEntity.getPk());
-            dataCollectionProperties.put(EventProperty.SUBITEM, mItemEntity.getItemPk());
-            dataCollectionProperties.put(EventProperty.LOCATION,"detail");
-            new NetworkUtils.DataCollectionTask().execute(NetworkUtils.DETAIL_PLAY_LOAD, dataCollectionProperties);
-        }
 
-        mModel.showLayout();
+            mModel.showLayout();
+        }
     }
 
     private View.OnClickListener relateItemOnClickListener = new View.OnClickListener() {
