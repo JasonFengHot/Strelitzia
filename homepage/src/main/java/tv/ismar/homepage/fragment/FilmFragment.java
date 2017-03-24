@@ -406,6 +406,7 @@ public class FilmFragment extends ChannelBaseFragment {
                 });
                 textView.setOnClickListener(ItemClickListener);
                 textView.setTag(posters.get(i));
+                textView.setTag(R.id.view_position_tag, i + 5);
                 frameLayout.setTag(R.id.view_position_tag, i + 7);
                 frameLayout.setOnClickListener(ItemClickListener);
 
