@@ -338,10 +338,20 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnFocusChan
 
     //购买专题页
     private void buySubject() {
-//        int jumpTo = mItemEntity.getExpense().getJump_to();
-//        int cpid = mItemEntity.getExpense().getCpid();
+        final int jumpTo =PageIntent.PAYVIP;
+        int cpid = 3;
+        for (int i = 0; i <mSubjectEntity.getObjects().size() ; i++) {
+            SubjectEntity.ObjectsBean item=mSubjectEntity.getObjects().get(i);
+            if(item.getExpense()!=null){
+                if(item.getExpense().cpid==2) {
+                    cpid = 2;
+                    break;
+                }
+
+            }
+        }
         //判断用户是否有最高的观影权限
-        ((SubjectActivity)getActivity()).mSkyService.apiPaylayerVipSubject(3+"",709759+"")
+        ((SubjectActivity)getActivity()).mSkyService.apiPaylayerVipSubject(cpid+"",709759+"")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(((SubjectActivity)getActivity()).new BaseObserver<PayLayerVipEntity>(){
@@ -357,14 +367,11 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnFocusChan
                         if(payLayerVipEntity.gather_per){
                             Toast.makeText(getActivity(),"您已拥有本专题所有影片观看权限",Toast.LENGTH_SHORT).show();
                         }else{
-                            PageIntentInterface.PaymentInfo paymentInfo = new PageIntentInterface.PaymentInfo(item, id, PageIntent.PAYVIP, 3);
+                            PageIntentInterface.PaymentInfo paymentInfo = new PageIntentInterface.PaymentInfo(item, id, jumpTo, 3);
                             String userName = IsmartvActivator.getInstance().getUsername();
                             String title = mSubjectEntity.getTitle();
 
                             String clip = "";
-//        if (mItemEntity.getClip() != null) {
-//            clip = String.valueOf(mItemEntity.getClip().getPk());
-//        }
                             new PurchaseStatistics().videoExpenseClick(String.valueOf(id), userName, title, clip);
                             new PageIntent().toPayment(getActivity(), unknown.name(), paymentInfo);
                         }
