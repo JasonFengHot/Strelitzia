@@ -8,6 +8,7 @@ import android.graphics.ColorFilter;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
@@ -28,6 +29,7 @@ import com.squareup.picasso.Target;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.zip.Inflater;
 
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -169,6 +171,7 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnFocusChan
 
                     @Override
                     public void onError(Throwable e) {
+//                        hideLoading();
                         super.onError(e);
                     }
                 });
@@ -185,6 +188,7 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnFocusChan
         list=subjectEntity.getObjects();
         if(type.contains("movie")){
             //电影专题
+            subject_btn_buy.setNextFocusLeftId(R.id.movie_recyclerView);
             movieAdapter=new SubjectMovieAdapter(getActivity(),list);
             subject_movie.setVisibility(View.VISIBLE);
             subject_btn_buy.setNextFocusUpId(R.id.movie_recyclerView);
@@ -197,9 +201,9 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnFocusChan
                 public void onItemfocused(View view, int position, boolean hasFocus) {
                     if(hasFocus) {
                         checkLayerIsShow(position);
+                        JasmineUtil.scaleOut2(view);
                         poster_focus.setVisibility(View.VISIBLE);
                         movie_recyclerView.smoothScrollBy((int) (view.getX() - 1), 0);
-                        JasmineUtil.scaleOut2(view);
                         subject_actor.setText(list.get(position).getMsg1());
                         subject_description.setText(list.get(position).getMsg2());
                     }else{
@@ -210,6 +214,7 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnFocusChan
             });
         }else {
             //电视剧专题
+            subject_btn_buy.setNextFocusLeftId(R.id.tv_recyclerView);
             tvAdapter=new SubjectTvAdapter(getActivity(),list);
             subject_tv.setVisibility(View.VISIBLE);
             subject_btn_buy.setNextFocusUpId(R.id.tv_recyclerView);
@@ -234,6 +239,13 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnFocusChan
                     }
                 }
             });
+        }
+        hideLoading();
+    }
+
+    private void hideLoading() {
+        if(((SubjectActivity)getActivity()).mLoadingDialog!=null&&((SubjectActivity)getActivity()).mLoadingDialog.isShowing()){
+            ((SubjectActivity)getActivity()).mLoadingDialog.dismiss();
         }
     }
 
@@ -318,7 +330,7 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnFocusChan
                 }
                 mFavoriteManager.addFavorite(favorite, isnet);
                 subject_btn_like.setBackgroundResource(R.drawable.liked_btn_selector);
-                Toast.makeText(getActivity(), "收藏成功", Toast.LENGTH_SHORT).show();
+                showToast("收藏成功");
             }else{
                 String url = IsmartvActivator.getInstance().getApiDomain() + "/api/item/" + id + "/";
                 if (IsmartvActivator.getInstance().isLogin()) {
@@ -328,7 +340,7 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnFocusChan
                     mFavoriteManager.deleteFavoriteByUrl(url, "no");
                 }
                 subject_btn_like.setBackgroundResource(R.drawable.like_btn_selector);
-                Toast.makeText(getActivity(), "取消收藏成功", Toast.LENGTH_SHORT).show();
+                showToast("取消收藏成功");
             }
         } else if (i == R.id.subject_btn_buy) {
 
@@ -365,7 +377,7 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnFocusChan
                     @Override
                     public void onNext(PayLayerVipEntity payLayerVipEntity) {
                         if(payLayerVipEntity.gather_per){
-                            Toast.makeText(getActivity(),"您已拥有本专题所有影片观看权限",Toast.LENGTH_SHORT).show();
+                            showToast("您已拥有本专题所有影片观看权限");
                         }else{
                             PageIntentInterface.PaymentInfo paymentInfo = new PageIntentInterface.PaymentInfo(item, id, jumpTo, 3);
                             String userName = IsmartvActivator.getInstance().getUsername();
@@ -453,5 +465,17 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnFocusChan
 
             }
         });
+    }
+
+    private void showToast(String text) {
+        LayoutInflater inflater = getActivity().getLayoutInflater();
+        View layout = inflater.inflate(R.layout.toast, (ViewGroup) getActivity().findViewById(R.id.simple_toast_root));
+        TextView toastText = (TextView) layout.findViewById(R.id.toast_text);
+        toastText.setText(text);
+        Toast toast = new Toast(getActivity());
+        toast.setGravity(Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
+        toast.setDuration(Toast.LENGTH_SHORT);
+        toast.setView(layout);
+        toast.show();
     }
 }

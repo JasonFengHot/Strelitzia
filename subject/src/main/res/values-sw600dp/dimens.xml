@@ -48,4 +48,13 @@
 <dimen name="subject_movie_item_h">228.33dp</dimen>
 <dimen name="subject_item_movie_title_h">48.89dp</dimen>
 <dimen name="subject_item_movie_title_ts">22.78dp</dimen>
+<!--toast-->
+<dimen name="toast_layout_W">295.56dip</dimen>
+<dimen name="toast_layout_H">95.56dip</dimen>
+<dimen name="toast_textsize">22.22sp</dimen>
+<dimen name="toast_padding">22.22dip</dimen>
+<dimen name="movie_relate_width">566.67dp</dimen>
+<dimen name="normal_linespacingextra">9.44dp</dimen>
+<dimen name="detail_text_mt4">11.11dp</dimen>
+<dimen name="detail_header_height">55.56dp</dimen>
 </resources>
