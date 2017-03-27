@@ -352,6 +352,7 @@ public class GuideFragment extends ChannelBaseFragment {
             frameLayout.setFocusable(true);
             frameLayout.setClickable(true);
             textView.setOnClickListener(ItemClickListener);
+            textView.setTag(R.id.view_position_tag, i + 5);
             frameLayout.setTag(R.id.view_position_tag, i + 5);
             frameLayout.setOnClickListener(ItemClickListener);
             textView.setTag(R.id.poster_title, i);

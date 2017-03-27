@@ -72,7 +72,7 @@ public class ChildFragment extends ChannelBaseFragment implements Flag.ChangeCal
         rightLayout = (LinearLayout) mView.findViewById(R.id.right_layout);
         image_switcher_focus = (LabelImageView3) mView.findViewById(R.id.image_switcher_focus);
         imageSwitcher = (ImageView) mView.findViewById(R.id.image_switcher);
-        imageSwitcher.setTag(R.id.view_position_tag, 2);
+
         indicatorImgs = new ChildThumbImageView[]{
                 (ChildThumbImageView) mView.findViewById(R.id.indicator_1),
                 (ChildThumbImageView) mView.findViewById(R.id.indicator_2),
@@ -81,6 +81,7 @@ public class ChildFragment extends ChannelBaseFragment implements Flag.ChangeCal
         indicatorTitle = (TextView) mView.findViewById(R.id.indicator_title);
         childMore = (ImageButton) mView.findViewById(R.id.child_more);
         childMore.setOnClickListener(ItemClickListener);
+        image_switcher_focus.setTag(R.id.view_position_tag, 2);
         image_switcher_focus.setOnClickListener(ItemClickListener);
         image_switcher_focus.setOnHoverListener(new View.OnHoverListener() {
 			

@@ -423,8 +423,6 @@ public class DetailPageFragment extends Fragment implements DetailPageContract.V
     }
 
     private void hideLoading() {
-        if(itemIsLoad&&relateIsLoad) {
-            handler.sendEmptyMessage(0);
             if (((DetailPageActivity) getActivity()).mLoadingDialog != null && ((DetailPageActivity) getActivity()).mLoadingDialog.isShowing() && itemIsLoad && relateIsLoad) {
                 ((DetailPageActivity) getActivity()).mLoadingDialog.dismiss();
                 HashMap<String, Object> dataCollectionProperties = new HashMap<>();
@@ -454,10 +452,10 @@ public class DetailPageFragment extends Fragment implements DetailPageContract.V
                 dataCollectionProperties.put(EventProperty.SUBITEM, mItemEntity.getItemPk());
                 dataCollectionProperties.put(EventProperty.LOCATION, "detail");
                 new NetworkUtils.DataCollectionTask().execute(NetworkUtils.DETAIL_PLAY_LOAD, dataCollectionProperties);
+                handler.sendEmptyMessageDelayed(0,300);
             }
 
             mModel.showLayout();
-        }
     }
 
     private View.OnClickListener relateItemOnClickListener = new View.OnClickListener() {

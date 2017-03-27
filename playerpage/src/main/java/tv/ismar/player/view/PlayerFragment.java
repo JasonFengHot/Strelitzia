@@ -2153,7 +2153,7 @@ public class PlayerFragment extends Fragment implements PlayerPageContract.View,
                     mItemEntity.getExpense().getPrice(),
                     player,
                     result,
-                    mIsmartvPlayer.getDuration()
+                    mIsmartvPlayer == null ? 0 : mIsmartvPlayer.getCurrentPosition() / 1000
             );
         } catch (Exception e) {
             Log.e(TAG, "expenseVideoPreview: " + e.getMessage());

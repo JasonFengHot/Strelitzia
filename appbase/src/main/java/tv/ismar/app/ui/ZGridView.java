@@ -2517,9 +2517,6 @@ public class ZGridView extends AdapterView<ListAdapter> {
 				.isEmpty())
 				|| (hover && mSelector != null && !mSelectorRect.isEmpty())) {
 			final Drawable selector = mSelector;
-			if(mSelectorRect.top <= -22){
-			   mSelectorRect.top += 16;
-			 }
 			selector.setBounds(mSelectorRect);
 			selector.draw(canvas);
 		}
