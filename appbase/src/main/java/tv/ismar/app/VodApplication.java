@@ -80,7 +80,6 @@ public class VodApplication extends Application {
         appInstance = this;
         ActiveAndroid.initialize(this);
         AccountSharedPrefs.initialize(this);
-        CacheManager.initialize(this);// 首页导视相关
         load(this);
         ExecutorService executorService = Executors.newSingleThreadExecutor();
 

@@ -1,19 +1,20 @@
 package tv.ismar.app.core.cache;
 
-import android.content.Context;
 import android.util.Log;
 
 import java.io.BufferedInputStream;
+import java.io.Closeable;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.URL;
-import java.net.URLConnection;
+import java.io.RandomAccessFile;
+import java.util.concurrent.TimeUnit;
 
 import cn.ismartv.injectdb.library.query.Select;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+import okhttp3.ResponseBody;
 import tv.ismar.app.db.DownloadTable;
 import tv.ismar.app.util.FileUtils;
 import tv.ismar.app.util.HardwareUtils;
@@ -24,130 +25,130 @@ import tv.ismar.app.util.HardwareUtils;
 public class DownloadClient implements Runnable {
     private static final String TAG = "LH/DownloadClient";
 
-    private String urlStr;
-    private File downloadFile;
-    private String mServerMD5;
-    private String mSaveName;
+    private OkHttpClient mClient;
+    private String mDownloadUrl;
+    private File mDownloadFile;
 
-    private StoreType mStoreType;
-    private Context mContext;
+    public DownloadClient(String downloadUrl, File downloadFile) {
+        mDownloadUrl = downloadUrl;
+        mDownloadFile = downloadFile;
 
-
-    public DownloadClient(Context context, String downloadUrl, String saveName, StoreType storeType) {
-        mContext = context;
-        urlStr = downloadUrl;
-        mServerMD5 = FileUtils.getFileByUrl(downloadUrl).split("\\.")[0];
-        mStoreType = storeType;
-        mSaveName = saveName;
-
-        switch (mStoreType) {
-            case Internal:
-                downloadFile = mContext.getFileStreamPath(mSaveName);
-                break;
-            case External:
-                downloadFile = new File(HardwareUtils.getSDCardCachePath(), mSaveName);
-                break;
-        }
+        OkHttpClient.Builder okBuilder = new OkHttpClient.Builder();
+        okBuilder.connectTimeout(10, TimeUnit.SECONDS);
+        okBuilder.readTimeout(10, TimeUnit.SECONDS);
+        okBuilder.writeTimeout(10, TimeUnit.SECONDS);
+        mClient = okBuilder.build();
     }
-
 
     @Override
     public void run() {
-        OutputStream outputStream = null;
-        switch (mStoreType) {
-            case Internal:
-                try {
-                    outputStream = mContext.openFileOutput(mSaveName, Context.MODE_WORLD_READABLE | Context.MODE_WORLD_WRITEABLE);
-                } catch (FileNotFoundException e) {
-                    Log.e(TAG, e.getMessage());
-                    return;
-                }
-                break;
-            case External:
-                try {
-                    if (!downloadFile.exists()) {
-                        downloadFile.getParentFile().mkdirs();
-                        downloadFile.createNewFile();
-                    }
-                    outputStream = new FileOutputStream(downloadFile, false);
-                } catch (FileNotFoundException e) {
-                    Log.e(TAG, e.getMessage());
-                    return;
-                } catch (IOException e) {
-                    Log.e(TAG, e.getMessage());
-                    return;
-                }
-                break;
+        RandomAccessFile randomAccessFile = null;
+        InputStream inputStream = null;
+        BufferedInputStream bis = null;
+        long currentLocation = 0;
+        long contentLength = 0;
+        boolean downloadComplete = false;
+        DownloadTable downloadTable = new Select()
+                .from(DownloadTable.class)
+                .where(DownloadTable.DOWNLOAD_PATH + " =? ", mDownloadFile.getAbsolutePath())
+                .executeSingle();
+        if (downloadTable != null) {
+            currentLocation = downloadTable.start_position;
+            contentLength = downloadTable.content_length;
         }
-        Log.d(TAG, "DownloadUrl: " + urlStr);
-
-        boolean isDownload = false;
-        //database
-        DownloadTable downloadTable = new Select().from(DownloadTable.class).where(DownloadTable.DOWNLOAD_PATH + " =? ", downloadFile.getAbsolutePath()).executeSingle();
-        InputStream input = null;
+        Log.d(TAG, "线程_" + mDownloadUrl + "_正在下载【" + "开始位置 : " + currentLocation + " contentLength : " + contentLength + "】");
+        if (contentLength != 0 && currentLocation == contentLength) {
+            CacheManager.getInstance().mFutureMap.remove(mDownloadUrl);
+            saveToDb(downloadTable, true, currentLocation, contentLength);
+            return;
+        }
         try {
-//            OkHttpClient client = new OkHttpClient.Builder()
-//                    .connectTimeout(6, TimeUnit.SECONDS)
-//                    .readTimeout(15, TimeUnit.SECONDS)
-//                    .build();
-//            Request request = new Request.Builder().url(url).build();
-//            Response response = client.newCall(request).execute();
-//            long total = response.body().contentLength();
-//            long current = 0;
-//            if (response.body() != null) {
-//                inputStream = response.body().byteStream();
-//                byte[] buffer = new byte[1024];
-//                int byteRead;
-//                while ((byteRead = inputStream.read(buffer)) != -1) {
-//                    Log.i(TAG, "byteRead:" + byteRead);
-//                    current += byteRead;
-//                    fileOutputStream.write(buffer, 0, byteRead);
-//                }
-//                isDownload = true;
-//                fileOutputStream.flush();
-//            }
-            URL url = new URL(urlStr);
-            URLConnection conexion = url.openConnection();
-            conexion.connect();
-            int lenghtOfFile = conexion.getContentLength();
-            Log.d(TAG, "Lenght of file: " + lenghtOfFile);
-            input = new BufferedInputStream(url.openStream());
-            byte data[] = new byte[1024];
-            long total = 0;
-            int count;
-            while ((count = input.read(data)) != -1) {
-                total += count;
-                outputStream.write(data, 0, count);
+            randomAccessFile = new RandomAccessFile(mDownloadFile, "rwd");
+            // 开始下载
+            Request request = new Request.Builder().url(mDownloadUrl)
+                    .header("RANGE", "bytes=" + currentLocation + "-") // Http value set breakpoints RANGE
+                    .build();
+            // 文件跳转到指定位置开始写入
+            randomAccessFile.seek(currentLocation);
+            Response response = mClient.newCall(request).execute();
+            ResponseBody responseBody = response.body();
+            if (responseBody != null) {
+                Log.d(TAG, "Download ContentLength : " + responseBody.contentLength());
+                if (contentLength <= 0) {
+                    contentLength = responseBody.contentLength();
+                }
+                inputStream = responseBody.byteStream();
+                bis = new BufferedInputStream(inputStream);
+                byte[] buffer = new byte[2 * 1024];
+                int length;
+                while ((length = bis.read(buffer)) > 0) {
+                    if (Thread.currentThread().isInterrupted()) {
+                        Log.d(TAG, "+++++ thread stopped +++++");
+                        break;
+                    }
+                    randomAccessFile.write(buffer, 0, length);
+                    currentLocation += length;
+                    if (currentLocation == contentLength) {
+                        downloadComplete = true;
+                    }
+                }
+            } else {
+                Log.e(TAG, "ResponseBody null.");
             }
-            outputStream.flush();
-            isDownload = true;
         } catch (IOException e) {
-            Log.e(TAG, "IOException: " + e.getMessage());
-        } catch (IllegalArgumentException e) {
-            Log.e(TAG, "IllegalArgumentException: " + e.getMessage());
+            Log.e(TAG, "Download error : " + e.getMessage());
+            e.printStackTrace();
         } finally {
-            try {
-                if (outputStream != null){
-                    outputStream.close();
-                }
-                if (input != null){
-                    input.close();
-                }
-            } catch (IOException e) {
-                Log.e(TAG, "Close stream: " + e.getMessage());
+            if (bis != null) {
+                close(bis);
+            }
+            if (inputStream != null) {
+                close(inputStream);
+            }
+            if (randomAccessFile != null) {
+                close(randomAccessFile);
             }
         }
-        if(isDownload){
-            downloadTable.download_path = downloadFile.getAbsolutePath();
+        CacheManager.getInstance().mFutureMap.remove(mDownloadUrl);
+        saveToDb(downloadTable, downloadComplete, currentLocation, contentLength);
+        Log.d(TAG, "downloadTable saved : " +
+                "\ndownloadComplete : " + downloadComplete +
+                "\ndownload_state   : " + downloadTable.download_state +
+                "\ncurrentLocation  : " + currentLocation +
+                "\ncontentLength    : " + contentLength +
+                "\nlocalMd5         : " + downloadTable.local_md5);
+    }
+
+    private void saveToDb(DownloadTable downloadTable, boolean downloadComplete, long currentLocation, long contentLength) {
+        if (downloadTable == null) {
+            downloadTable = new DownloadTable();
+            downloadTable.file_name = mDownloadFile.getName();
+            downloadTable.download_path = mDownloadFile.getAbsolutePath();
+            downloadTable.url = mDownloadUrl;
+            downloadTable.server_md5 = FileUtils.getFileByUrl(mDownloadUrl).split("\\.")[0];
+        }
+        if (downloadComplete) {
             downloadTable.download_state = DownloadState.complete.name();
-            downloadTable.local_md5 = HardwareUtils.getMd5ByFile(downloadFile);
+            downloadTable.start_position = contentLength;
+            downloadTable.content_length = contentLength;
+            downloadTable.local_md5 = HardwareUtils.getMd5ByFile(mDownloadFile);
+            downloadTable.save();
+        } else {
+            downloadTable.download_state = DownloadState.pause.name();
+            downloadTable.start_position = currentLocation;
+            downloadTable.content_length = contentLength;
+            downloadTable.local_md5 = "";
             downloadTable.save();
         }
-        Log.d(TAG, "url is: " + urlStr + " mStoreType:" + mStoreType);
-        Log.d(TAG, "server md5 is: " + mServerMD5);
-        Log.d(TAG, "local md5 is: " + downloadTable.local_md5);
-        Log.d(TAG, "download complete!!!");
 
+    }
+
+    private void close(Closeable closeable) {
+        try {
+            closeable.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public enum StoreType {
@@ -155,39 +156,10 @@ public class DownloadClient implements Runnable {
         External
     }
 
-    public enum DownloadState {
+    enum DownloadState {
         run,
         pause,
         complete
     }
 
-    public String getUrl() {
-        return urlStr;
-    }
-
-    public File getDownloadFile() {
-        return downloadFile;
-    }
-
-    public String getmServerMD5() {
-        return mServerMD5;
-    }
-
-    public StoreType getmStoreType() {
-        return mStoreType;
-    }
-
-    public String getmSaveName() {
-        return mSaveName;
-    }
-
-
 }
-
-//                    Request request = new Request.Builder()
-//                            .url(url)
-//                            .addHeader("RANGE", "bytes=" + localFile.length() + "-")
-//                            .build();
-//                    response = client.newCall(request).execute();
-//                    fileOutputStream = new FileOutputStream(localFile, true);
-//
