@@ -452,7 +452,7 @@ public class DetailPageFragment extends Fragment implements DetailPageContract.V
                 dataCollectionProperties.put(EventProperty.SUBITEM, mItemEntity.getItemPk());
                 dataCollectionProperties.put(EventProperty.LOCATION, "detail");
                 new NetworkUtils.DataCollectionTask().execute(NetworkUtils.DETAIL_PLAY_LOAD, dataCollectionProperties);
-                handler.sendEmptyMessage(0);
+                handler.sendEmptyMessageDelayed(0,300);
             }
 
             mModel.showLayout();
