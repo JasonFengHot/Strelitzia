@@ -36,9 +36,7 @@ public class PlayerPageViewModel extends BaseObservable {
 
     public void setPanelData(ClipEntity.Quality quality, String title) {
         itemTitle.set(title);
-        mQuality = quality;
-
-        updateQuality();
+        updateQuality(quality);
     }
 
     public void updateTimer(int position, int length) {
@@ -47,7 +45,8 @@ public class PlayerPageViewModel extends BaseObservable {
         notifyPropertyChanged(BR.timer);
     }
 
-    public void updateQuality() {
+    public void updateQuality(ClipEntity.Quality quality) {
+        mQuality = quality;
         notifyPropertyChanged(BR.quality);
         notifyPropertyChanged(BR.qualityResource);
     }

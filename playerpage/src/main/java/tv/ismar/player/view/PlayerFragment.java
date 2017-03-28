@@ -1499,7 +1499,7 @@ public class PlayerFragment extends Fragment implements PlayerPageContract.View,
             mIsmartvPlayer.switchQuality(mCurrentPosition, clickQuality);
 
             mCurrentQuality = clickQuality;
-            mModel.updateQuality();
+            mModel.updateQuality(mCurrentQuality);
             // 写入数据库
             if (historyManager == null) {
                 historyManager = VodApplication.getModuleAppContext().getModuleHistoryManager();
