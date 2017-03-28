@@ -1,14 +1,7 @@
 package tv.ismar.subject.fragment;
 
 import android.app.Fragment;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.ColorFilter;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
@@ -24,12 +17,9 @@ import android.widget.Toast;
 
 import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.zip.Inflater;
 
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -41,7 +31,6 @@ import tv.ismar.app.core.SimpleRestClient;
 import tv.ismar.app.core.Source;
 import tv.ismar.app.db.FavoriteManager;
 import tv.ismar.app.entity.Favorite;
-import tv.ismar.app.entity.Item;
 import tv.ismar.app.models.SubjectEntity;
 import tv.ismar.app.network.entity.PayLayerVipEntity;
 import tv.ismar.app.util.Utils;
@@ -127,8 +116,10 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnFocusChan
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if(hasFocus){
-                    movie_recyclerView.getChildAt(focusedIndex).requestFocus();
-                    movie_recyclerView.smoothScrollBy((int) (movie_recyclerView.getChildAt(focusedIndex).getX()-2),0);
+                    if(movie_recyclerView.getChildAt(focusedIndex)!=null) {
+                        movie_recyclerView.getChildAt(focusedIndex).requestFocus();
+                        movie_recyclerView.smoothScrollBy((int) (movie_recyclerView.getChildAt(focusedIndex).getX() - 2), 0);
+                    }
                 }
             }
         });
@@ -136,8 +127,10 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnFocusChan
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if(hasFocus){
-                    tv_recyclerView.getChildAt(focusedIndex).requestFocus();
-                    tv_recyclerView.smoothScrollBy((int) (tv_recyclerView.getChildAt(focusedIndex).getX()-2),0);
+                    if(tv_recyclerView.getChildAt(focusedIndex)!=null) {
+                        tv_recyclerView.getChildAt(focusedIndex).requestFocus();
+                        tv_recyclerView.smoothScrollBy((int) (tv_recyclerView.getChildAt(focusedIndex).getX() - 2), 0);
+                    }
                 }
             }
         });
@@ -171,7 +164,7 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnFocusChan
 
                     @Override
                     public void onError(Throwable e) {
-//                        hideLoading();
+                        hideLoading();
                         super.onError(e);
                     }
                 });
@@ -201,9 +194,9 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnFocusChan
                 public void onItemfocused(View view, int position, boolean hasFocus) {
                     if(hasFocus) {
                         checkLayerIsShow(position);
-                        JasmineUtil.scaleOut2(view);
                         poster_focus.setVisibility(View.VISIBLE);
                         movie_recyclerView.smoothScrollBy((int) (view.getX() - 1), 0);
+                        JasmineUtil.scaleOut2(view);
                         subject_actor.setText(list.get(position).getMsg1());
                         subject_description.setText(list.get(position).getMsg2());
                     }else{
@@ -399,8 +392,8 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnFocusChan
 
     @Override
     public void onItemClick(View view, int position) {
-        PageIntent intent=new PageIntent();
-        intent.toPlayPage(getActivity(),list.get(position).getPk(),list.get(position).getItem_pk(), Source.LAUNCHER);
+            PageIntent intent = new PageIntent();
+            intent.toPlayPage(getActivity(), list.get(position).getPk(), list.get(position).getItem_pk(), Source.LAUNCHER);
     }
 
     private boolean isFavorite() {
