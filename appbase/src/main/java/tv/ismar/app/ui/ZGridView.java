@@ -3978,31 +3978,31 @@ public class ZGridView extends AdapterView<ListAdapter> {
 			break;
 		}
 
-		case MotionEvent.ACTION_MOVE: {
-			int pointerIndex = ev.findPointerIndex(mActivePointerId);
-			if (pointerIndex == -1) {
-				pointerIndex = 0;
-				mActivePointerId = ev.getPointerId(pointerIndex);
-			}
-			final int y = (int) ev.getY(pointerIndex);
-
-			if (mDataChanged) {
-				layoutChildren();
-			}
-
-			switch (mTouchMode) {
-			case TOUCH_MODE_DOWN:
-			case TOUCH_MODE_TAP:
-			case TOUCH_MODE_DONE_WAITING:
-				startScrollIfNeeded(y);
-				break;
-			case TOUCH_MODE_SCROLL:
-			case TOUCH_MODE_OVERSCROLL:
-				scrollIfNeeded(y);
-				break;
-			}
-			break;
-		}
+//		case MotionEvent.ACTION_MOVE: {
+//			int pointerIndex = ev.findPointerIndex(mActivePointerId);
+//			if (pointerIndex == -1) {
+//				pointerIndex = 0;
+//				mActivePointerId = ev.getPointerId(pointerIndex);
+//			}
+//			final int y = (int) ev.getY(pointerIndex);
+//
+//			if (mDataChanged) {
+//				layoutChildren();
+//			}
+//
+//			switch (mTouchMode) {
+//			case TOUCH_MODE_DOWN:
+//			case TOUCH_MODE_TAP:
+//			case TOUCH_MODE_DONE_WAITING:
+//				startScrollIfNeeded(y);
+//				break;
+//			case TOUCH_MODE_SCROLL:
+//			case TOUCH_MODE_OVERSCROLL:
+//				scrollIfNeeded(y);
+//				break;
+//			}
+//			break;
+//		}
 
 		case MotionEvent.ACTION_UP: {
 			switch (mTouchMode) {
