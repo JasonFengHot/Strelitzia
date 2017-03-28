@@ -1165,7 +1165,7 @@ public class HGridView extends AdapterView<HGridAdapter> {
 			case LAYOUT_MOVE_SELECTION:
 				delta = mNextSelectedPosition - mSelectedPosition;
                 Log.i("zxcvbnm","mNextSelectedPosition=="+mNextSelectedPosition+"//mSelectedPosition=="+mSelectedPosition);
-				if(mNextSelectedPosition==1)
+				if(mNextSelectedPosition==1||mNextSelectedPosition==0||mNextSelectedPosition==2)
 					leftbtn.setVisibility(INVISIBLE);
 				break;
 			default:
