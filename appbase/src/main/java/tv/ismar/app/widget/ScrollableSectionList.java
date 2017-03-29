@@ -460,20 +460,23 @@ public class ScrollableSectionList extends HorizontalScrollView {
                     v.getLocationOnScreen(currentPos);
                     int currentWidth = v.getWidth();
                     Log.i("ScrollHover","currentPos[0]: "+currentPos[0]+"  currentWidth: "+currentWidth+"  tabRightx: "+tabRightX+"  index: "+index+" tabmarg: "+tabMargin);
-                    if (currentPos[0] + currentWidth > tabRightX+168 || currentPos[0] + 113 < tabMargin) {
-                        if (index == 0 || index == mContainer.getChildCount() - 1) {
-                           Log.i("LH/","currentPos:"+currentPos[0]+" tabMargin:"+tabMargin);
-                            // TODO
-                            new Handler().postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    autoScroll(index);
-                                    onHoverSet(v, label, section_image, index);
-                                }
-                            }, 500);
+                        if (currentPos[0] + currentWidth > tabRightX + 168 || currentPos[0] + 113 < tabMargin) {
+                            if (index == 0 || index == mContainer.getChildCount() - 1) {
+                                Log.i("LH/", "currentPos:" + currentPos[0] + " tabMargin:" + tabMargin);
+                                // TODO
+                                new Handler().postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        autoScroll(index);
+                                        onHoverSet(v, label, section_image, index);
+                                    }
+                                }, 500);
+                            }
+                            if(title.equals("商城")){
+                                onHoverSet(v, label, section_image, index);
+                            }
+                            return true;
                         }
-                        return true;
-                    }
                     onHoverSet(v, label, section_image, index);
 
                     break;
@@ -539,6 +542,7 @@ public class ScrollableSectionList extends HorizontalScrollView {
 
     private void setsectionview(View v) {
         int index = (Integer) v.getTag();
+        Log.i("sgfsgsg",index+"");
         if (index == 0) {
             percentageBar.setProgress(0);
             View lastSelectedView = mContainer.getChildAt(mSelectPosition);
@@ -744,7 +748,7 @@ public class ScrollableSectionList extends HorizontalScrollView {
         if (mContainer.getChildCount() <= 2 || currentPosition < 0) {
             return;
         }
-//        Log.i("LH/", "autoScroll:" + currentPosition);
+        Log.i("LH/", "autoScroll:" + mContainer.getChildCount());
         int tabRightX = tabMargin + tabWidth;
 
         if (currentPosition == 0) {
@@ -766,6 +770,12 @@ public class ScrollableSectionList extends HorizontalScrollView {
                 arrow_right.setVisibility(View.INVISIBLE);
                 shade_arrow_right.setVisibility(View.INVISIBLE);
             }
+            if(title.equals("商城")){
+                if(arrow_left!=null){
+                    arrow_left.setVisibility(VISIBLE);
+                    shade_arrow_left.setVisibility(VISIBLE);
+                }
+            }
             View currentView = mContainer.getChildAt(currentPosition);
             int[] currentPos = new int[2];
             currentView.getLocationOnScreen(currentPos);
@@ -779,7 +789,7 @@ public class ScrollableSectionList extends HorizontalScrollView {
         int[] currentPos = new int[2];
         currentView.getLocationOnScreen(currentPos);
         int currentWidth = currentView.getWidth();
-//        Log.i("LH/", "currentPos:" + currentPos[0] + "-" + currentWidth);
+       Log.i("autoscroll/", "currentPos:" + currentPos[0] + "-" + currentWidth+"tabRight="+tabRightX+" tabspace="+tabSpace+"tabmargin:"+tabMargin+"  currposition:"+currentPosition);
 
         if (currentPos[0] + currentWidth >= tabRightX-tabSpace) {
             View nextView = mContainer.getChildAt(currentPosition + 1);
@@ -832,7 +842,7 @@ public class ScrollableSectionList extends HorizontalScrollView {
                     shade_arrow_left.setVisibility(View.VISIBLE);
                 }
             }
-            if (arrow_right != null && arrow_right.getVisibility() != View.VISIBLE&&counts>9) {
+            if (arrow_right != null && arrow_right.getVisibility() != View.VISIBLE&&counts>=9) {
                 arrow_right.setVisibility(View.VISIBLE);
                 shade_arrow_right.setVisibility(View.VISIBLE);
             }
