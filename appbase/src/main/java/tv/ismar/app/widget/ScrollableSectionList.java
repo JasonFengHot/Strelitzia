@@ -175,7 +175,7 @@ public class ScrollableSectionList extends HorizontalScrollView {
             mContainer.addView(sectionHolder, i + 1);
 
             if (i == sectionList.size() - 1) {
-                sectionHolder.setNextFocusRightId(-1);
+                sectionHolder.setNextFocusRightId(R.layout.section_list_item + 2 + i);
             }
         }
         counts=sectionList.size();
@@ -766,7 +766,7 @@ public class ScrollableSectionList extends HorizontalScrollView {
                 arrow_right.setVisibility(View.INVISIBLE);
                 shade_arrow_right.setVisibility(View.INVISIBLE);
             }
-            if(title.equals("商城")||channel.equals("payment")){
+            if(title.equals("商城")){
                 if(arrow_left!=null){
                     arrow_left.setVisibility(VISIBLE);
                     shade_arrow_left.setVisibility(VISIBLE);
