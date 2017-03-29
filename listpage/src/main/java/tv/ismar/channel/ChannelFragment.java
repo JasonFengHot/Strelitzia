@@ -705,6 +705,7 @@ public class ChannelFragment extends Fragment implements OnItemSelectedListener,
 
         @Override
         public void onSectionSelectChanged(int index) {
+            Log.i("tabchange","index:"+index);
             getItemlistHandler.removeCallbacks(getItemlistRunnable);
             checkSectionChanged(index);
             mHGridView.jumpToSection(index);
