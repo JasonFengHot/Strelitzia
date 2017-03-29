@@ -95,7 +95,6 @@ import tv.ismar.homepage.fragment.MessageDialogFragment;
 import tv.ismar.homepage.fragment.SportFragment;
 import tv.ismar.homepage.fragment.UpdateSlienceLoading;
 import tv.ismar.homepage.widget.DaisyVideoView;
-import tv.ismar.homepage.widget.Position;
 
 /**
  * Created by huaijie on 5/18/15.
@@ -179,36 +178,18 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
         pageIntent.toSearch(this);
     }
 
-    private Position mCurrentChannelPosition = new Position(new Position.PositioinChangeCallback() {
-        @Override
-        public void onChange(int position) {
-            if (channelEntityList.isEmpty()) {
-                return;
-            }
-            if (position == 0) {
-                home_scroll_left.setVisibility(View.GONE);
-                large_layout.requestFocus();
-            } else {
-                home_scroll_left.setVisibility(View.VISIBLE);
-            }
-
-            if (position == channelEntityList.size() - 1) {
-                home_scroll_right.setVisibility(View.GONE);
-                large_layout.requestFocus();
-            } else {
-                home_scroll_right.setVisibility(View.VISIBLE);
-            }
-            Message msg = fragmentSwitch.obtainMessage();
-            msg.arg1 = position;
-            msg.what = SWITCH_PAGE;
-            if (fragmentSwitch.hasMessages(SWITCH_PAGE))
-                fragmentSwitch.removeMessages(SWITCH_PAGE);
-            fragmentSwitch.sendMessageDelayed(msg, 300);
-            if (!scrollFromBorder) {
-                home_tab_list.requestFocus();
-            }
+    private void handlerSwitchPage(int position){
+        if (channelEntityList.isEmpty()) {
+            return;
         }
-    });
+        if (fragmentSwitch.hasMessages(SWITCH_PAGE))
+            fragmentSwitch.removeMessages(SWITCH_PAGE);
+
+        Message msg = fragmentSwitch.obtainMessage();
+        msg.arg1 = position;
+        msg.what = SWITCH_PAGE;
+        fragmentSwitch.sendMessageDelayed(msg, 300);
+    }
 
     private View.OnFocusChangeListener scrollViewListener = new View.OnFocusChangeListener() {
         @Override
@@ -280,9 +261,10 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
     }
 
     private void checkScroll(int position, long delay) {
-//        Log.i("LH/","checkPosition:"+position+" isSendMessage:"+isSendMessage);
         View view = home_tab_list.getLayoutManager().findViewByPosition(position);
+//        Log.i("LH/","checkPosition:" + position + " view : " + view);
         if (view == null) {
+            home_tab_list.smoothScrollToPosition(position);
             return;
         }
         int tabMargin = getResources().getDimensionPixelSize(R.dimen.tv_guide_channel_margin_lr) - mTabSpace;
@@ -535,16 +517,13 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
             @Override
             public void onItemClickListener(View v, int position) {
                 checkScroll(position, 0);
-                mCurrentChannelPosition.setPosition(position);
-
-
+                handlerSwitchPage(position);
             }
 
             @Override
             public void onItemSelectedListener(int position) {
                 checkScroll(position, 0);
-
-                mCurrentChannelPosition.setPosition(position);
+                handlerSwitchPage(position);
             }
         });
 
@@ -604,13 +583,13 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
                                     if (selectedPosition > 0) {
                                         recyclerAdapter.setLastSelectedPosition(selectedPosition);
                                         recyclerAdapter.setSelectedPosition(0);
-                                        mCurrentChannelPosition.setPosition(0);
+                                        handlerSwitchPage(0);
                                         recyclerAdapter.changeStatus();
                                     }
                                 } else {
                                     recyclerAdapter.setLastSelectedPosition(selectedPosition);
                                     recyclerAdapter.setSelectedPosition(recyclerAdapter.getOnHoveredPosition() - 1);
-                                    mCurrentChannelPosition.setPosition(recyclerAdapter.getOnHoveredPosition() - 1);
+                                    handlerSwitchPage(recyclerAdapter.getOnHoveredPosition() - 1);
                                     recyclerAdapter.changeStatus();
                                 }
                                 recyclerAdapter.setOnHoveredPosition(-1);
@@ -619,9 +598,8 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
                                     recyclerAdapter.setLastSelectedPosition(selectedPosition);
                                     selectedPosition -= 1;
                                     recyclerAdapter.setSelectedPosition(selectedPosition);
-                                    mCurrentChannelPosition.setPosition(selectedPosition);
+                                    handlerSwitchPage(selectedPosition);
                                     recyclerAdapter.changeStatus();
-
                                 }
                             }
                             checkScroll(recyclerAdapter.getSelectedPosition(), 0);
@@ -640,13 +618,13 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
                                     if (selectedPosition < recyclerAdapter.getItemCount() - 1) {
                                         recyclerAdapter.setLastSelectedPosition(selectedPosition);
                                         recyclerAdapter.setSelectedPosition(recyclerAdapter.getItemCount() - 1);
-                                        mCurrentChannelPosition.setPosition(recyclerAdapter.getItemCount() - 1);
+                                        handlerSwitchPage(recyclerAdapter.getItemCount() - 1);
                                         recyclerAdapter.changeStatus();
                                     }
                                 } else {
                                     recyclerAdapter.setLastSelectedPosition(selectedPosition);
                                     recyclerAdapter.setSelectedPosition(recyclerAdapter.getOnHoveredPosition() + 1);
-                                    mCurrentChannelPosition.setPosition(recyclerAdapter.getOnHoveredPosition() + 1);
+                                    handlerSwitchPage(recyclerAdapter.getOnHoveredPosition() + 1);
                                     recyclerAdapter.changeStatus();
                                 }
                                 recyclerAdapter.setOnHoveredPosition(-1);
@@ -655,7 +633,7 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
                                     recyclerAdapter.setLastSelectedPosition(selectedPosition);
                                     selectedPosition += 1;
                                     recyclerAdapter.setSelectedPosition(selectedPosition);
-                                    mCurrentChannelPosition.setPosition(selectedPosition);
+                                    handlerSwitchPage(selectedPosition);
                                     recyclerAdapter.changeStatus();
                                 }
                             }
@@ -805,7 +783,7 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
                         channelscrollIndex = i + 1;
                         scrollType = ScrollType.none;
                         recyclerAdapter.setSelectedPosition(channelscrollIndex);
-                        mCurrentChannelPosition.setPosition(channelscrollIndex);
+                        handlerSwitchPage(channelscrollIndex);
                         headFragment.setSubTitle(mChannelEntitys[i].getName());
                     }
                 } else {
@@ -815,7 +793,7 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
                         if (channelscrollIndex > 0 && !fragmentSwitch.hasMessages(SWITCH_PAGE_FROMLAUNCH)) {
                             scrollType = ScrollType.none;
                             recyclerAdapter.setSelectedPosition(channelscrollIndex);
-                            mCurrentChannelPosition.setPosition(channelscrollIndex);
+                            handlerSwitchPage(channelscrollIndex);
                         }
                         headFragment.setSubTitle(mChannelEntitys[i].getName());
                         break;
@@ -1338,7 +1316,29 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
                 switch (msg.what) {
                     case SWITCH_PAGE:
                         if (!activity.isFinishing()) {
-                            activity.selectChannelByPosition(msg.arg1);
+                            int position = msg.arg1;
+                            if (position == 0) {
+                                activity.home_scroll_left.setVisibility(View.GONE);
+                                if (activity.scrollFromBorder) {
+                                    activity.large_layout.requestFocus();
+                                }
+                            } else {
+                                activity.home_scroll_left.setVisibility(View.VISIBLE);
+                            }
+
+                            if (position == activity.channelEntityList.size() - 1) {
+                                activity.home_scroll_right.setVisibility(View.GONE);
+                                if (activity.scrollFromBorder) {
+                                    activity.large_layout.requestFocus();
+                                }
+                            } else {
+                                activity.home_scroll_right.setVisibility(View.VISIBLE);
+                            }
+                            if (!activity.scrollFromBorder) {
+                                activity.home_tab_list.requestFocus();
+                            }
+
+                            activity.selectChannelByPosition(position);
                         }
                         break;
                     case SWITCH_PAGE_FROMLAUNCH:
