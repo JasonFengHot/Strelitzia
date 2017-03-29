@@ -149,11 +149,11 @@ public class EpisodeActivity extends BaseActivity implements View.OnHoverListene
 
 
     private void initLayout() {
-        if (mItemEntity.getExpense() != null) {
-            String expensevalue = getResources().getString(R.string.one_drama_order_info);
-            one_drama_order_info.setText(String.format(expensevalue, mItemEntity.getExpense().getSubprice(), mItemEntity.getExpense().getDuration()));
-            one_drama_order_info.setVisibility(View.VISIBLE);
-        }
+//        if (mItemEntity.getExpense() != null) {
+//            String expensevalue = getResources().getString(R.string.one_drama_order_info);
+//            one_drama_order_info.setText(String.format(expensevalue, mItemEntity.getExpense().getSubprice(), mItemEntity.getExpense().getDuration()));
+//            one_drama_order_info.setVisibility(View.VISIBLE);
+//        }
         if (mItemEntity.getPosterUrl() != null) {
             Picasso.with(this).load(mItemEntity.getPosterUrl()).into(mImageBackground);
         }
