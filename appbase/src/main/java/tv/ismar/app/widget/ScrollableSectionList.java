@@ -161,6 +161,9 @@ public class ScrollableSectionList extends HorizontalScrollView {
         sectionFilter.setTag(0);
         sectionFilter.setId(R.layout.section_list_item + 1);
         mContainer.addView(sectionFilter, 0);
+        if(title.equals("商城"))
+            sectionFilter.setVisibility(GONE);
+
 
         for (int i = 0; i < sectionList.size(); i++) {
             FrameLayout sectionHolder = getSectionLabelLayout(sectionList.get(i));
@@ -169,7 +172,11 @@ public class ScrollableSectionList extends HorizontalScrollView {
             sectionHolder.setOnHoverListener(mOnTouchListener);
             sectionHolder.setId(R.layout.section_list_item + 2 + i);
             sectionHolder.setTag(i + 1);
-            mContainer.addView(sectionHolder, i + 1);
+//            if(!title.equals("商城")) {
+                mContainer.addView(sectionHolder, i + 1);
+//            }else{
+//                mContainer.addView(sectionHolder,i);
+//            }
 
             if (i == sectionList.size() - 1) {
                 sectionHolder.setNextFocusRightId(-1);
