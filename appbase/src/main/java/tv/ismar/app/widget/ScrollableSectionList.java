@@ -173,7 +173,8 @@ public class ScrollableSectionList extends HorizontalScrollView {
             sectionHolder.setId(R.layout.section_list_item + 2 + i);
             sectionHolder.setTag(i + 1);
             mContainer.addView(sectionHolder, i + 1);
-
+//            sectionHolder.setNextFocusRightId(R.layout.section_list_item+i+3);
+//            sectionHolder.setNextFocusLeftId(R.layout.section_list_item +i+1);
             if (i == sectionList.size() - 1) {
                 sectionHolder.setNextFocusRightId(R.layout.section_list_item + 2 + i);
             }
@@ -200,6 +201,7 @@ public class ScrollableSectionList extends HorizontalScrollView {
 //        sectionHolder.setPadding(tabSpace, 0, tabSpace, 0);
         sectionHolder.setLayoutParams(layoutParams);
         sectionHolder.setFocusable(true);
+//        sectionHolder.setFocusableInTouchMode(true);
         TextView label = (TextView) sectionHolder.findViewById(R.id.section_label);
         ((LayoutParams) label.getLayoutParams()).setMargins(tabSpace, 0, tabSpace, 0);
         label.setText(section.title);
@@ -254,6 +256,7 @@ public class ScrollableSectionList extends HorizontalScrollView {
            //   ((LayoutParams) section_image.getLayoutParams()).height = textHeight*2;
             }
             if (hasFocus) {
+                Log.i("focuschangea","Tag:"+v.getTag()+"   mselection:"+mSelectPosition+"currentState: "+currentState);
                 if (isFromArrow) {
                     isFromArrow = false;
                 } else {
@@ -272,6 +275,7 @@ public class ScrollableSectionList extends HorizontalScrollView {
                     label.setTextColor(LABEL_TEXT_COLOR_NOFOCUSED);
                     section_image.setImageResource(R.drawable.sectionfocus);
                      v.startAnimation(scaleBigAnimation);
+
                     Log.i("Scrollsection","focus scaleBig");
                     return;
                 } else {
@@ -351,6 +355,7 @@ public class ScrollableSectionList extends HorizontalScrollView {
     int temp = 0;
     // 切换tab时调用
     private void setSectionTabProperty(View currentView, View lastSelectedView) {
+        Log.i("scrollchange","TabPro____"+"currentViewID: "+currentView.getTag()+"  lastSelectedView: "+lastSelectedView.getTag());
         TextView lastLabel = (TextView) lastSelectedView.findViewById(R.id.section_label);
         ImageView last_section_image = (ImageView) lastSelectedView.findViewById(R.id.section_image);
         lastLabel.setTextColor(LABEL_TEXT_COLOR_NOFOCUSED);
@@ -477,6 +482,8 @@ public class ScrollableSectionList extends HorizontalScrollView {
 
                     break;
                 case MotionEvent.ACTION_HOVER_EXIT:
+                    isOnHovered = false;
+                    sectionhovered = null;
                     if (index == mSelectPosition) {
                         section_image.setImageResource(R.drawable.gotogridview);
                         return false;
