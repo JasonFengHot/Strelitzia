@@ -93,7 +93,7 @@ public class ChannelBaseFragment extends Fragment {
             String contentMode = null;
             String title = null;
             String mode_name = null;
-            String channel = "top";
+            String channel = "homepage";
             String type;
             int pk;
             boolean expense = false;
@@ -102,7 +102,7 @@ public class ChannelBaseFragment extends Fragment {
                 if (channelEntity.getChannel() != null && !("".equals(channelEntity.getChannel()))) {
                     channel = channelEntity.getChannel();
                     if ("launcher".equals(channelEntity.getChannel())) {
-                        channel = "top";
+                        channel = "homepage";
                     }
                 }
             BaseActivity.baseChannel = channel;
