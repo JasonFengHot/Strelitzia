@@ -324,7 +324,7 @@ public class RelatedActivity extends BaseActivity implements RelateScrollableSec
     @Override
     protected void onResume() {
         // TODO Auto-generated method stub
-        BaseActivity.baseChannel="";
+     //   BaseActivity.baseChannel="";
         BaseActivity.baseSection="";
         super.onResume();
     }

@@ -705,6 +705,7 @@ public class ChannelFragment extends Fragment implements OnItemSelectedListener,
 
         @Override
         public void onSectionSelectChanged(int index) {
+            Log.i("tabchange","index:"+index);
             getItemlistHandler.removeCallbacks(getItemlistRunnable);
             checkSectionChanged(index);
             mHGridView.jumpToSection(index);
@@ -972,6 +973,7 @@ public class ChannelFragment extends Fragment implements OnItemSelectedListener,
         int columnOfX = (position - itemCount) / rows + 1;
         int totalColumnOfSectionX = (int) (Math.ceil((float) mHGridAdapter.getSectionCount(sectionIndex) / (float) rows));
         int percentage = (int) ((float) columnOfX / (float) totalColumnOfSectionX * 100f);
+        Log.i("scrollchange","sectionIndex :"+sectionIndex+"  Percentage: "+percentage);
         mScrollableSectionList.setPercentage(sectionIndex + 1, percentage);
         checkSectionChanged(sectionIndex + 1);
         if (percentage == 100 && sectionIndex == mSectionList.size() - 1) {
