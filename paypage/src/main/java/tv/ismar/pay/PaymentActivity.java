@@ -324,7 +324,7 @@ public class PaymentActivity extends BaseActivity implements View.OnClickListene
 
     @Override
     public void onBackPressed() {
-       sendExpenseCancleLog();
+        sendExpenseCancleLog();
         super.onBackPressed();
     }
 
@@ -700,51 +700,67 @@ public class PaymentActivity extends BaseActivity implements View.OnClickListene
         alipayChooseWay(OderType.alipay_renewal);
     }
 
-    public void sendLog(){
+    public void sendLog() {
         if (!login_tag) {
             if (category.equals("package")) {
                 new PurchaseStatistics().expensePageExit("", "", IsmartvActivator.getInstance().getUsername(),
                         "package", String.valueOf(mItemEntity.getPk()), mItemEntity.getTitle(), "success", "", uuid);
             } else {
-                String type ="";
-                if (mItemEntity.getExpense().getPay_type() == 1){
-                    type = "independent";
-                }else if (mItemEntity.getExpense().getPay_type() == 2){
-                    type = "vip";
+                if (mItemEntity != null) {
+                    String type = "";
+                    if (mItemEntity.getExpense() != null) {
+                        if (mItemEntity.getExpense().getPay_type() == 1) {
+                            type = "independent";
+                        } else if (mItemEntity.getExpense().getPay_type() == 2) {
+                            type = "vip";
+                        }
+                    }
+                    new PurchaseStatistics().expensePageExit(String.valueOf(mItemEntity.getPk()), mItemEntity.getTitle(), IsmartvActivator.getInstance().getUsername(),
+                            type, "", "", "success", "", uuid);
+                } else {
+                    new PurchaseStatistics().expensePageExit("", "", IsmartvActivator.getInstance().getUsername(),
+                            "", "", "", "success", "", uuid);
                 }
-                new PurchaseStatistics().expensePageExit(String.valueOf(mItemEntity.getPk()), mItemEntity.getTitle(), IsmartvActivator.getInstance().getUsername(),
-                        type, "", "", "success", "", uuid);
             }
         } else {
             if (category.equals("package")) {
                 new PurchaseStatistics().expensePageExit("", "", IsmartvActivator.getInstance().getUsername(),
                         "", String.valueOf(mItemEntity.getPk()), mItemEntity.getTitle(), "allow", "", uuid);
             } else {
-                String type = "";
-                if (mItemEntity.getExpense().getPay_type() == 1){
-                    type = "independent";
-                }else if (mItemEntity.getExpense().getPay_type() == 2){
-                    type = "vip";
+                if (mItemEntity != null) {
+                    String type = "";
+                    if (mItemEntity.getExpense() != null) {
+                        if (mItemEntity.getExpense().getPay_type() == 1) {
+                            type = "independent";
+                        } else if (mItemEntity.getExpense().getPay_type() == 2) {
+                            type = "vip";
+                        }
+                    }
+                    new PurchaseStatistics().expensePageExit(String.valueOf(mItemEntity.getPk()), mItemEntity.getTitle(), IsmartvActivator.getInstance().getUsername(),
+                            type, "", "", "allow", "", uuid);
+                }else {
+                    new PurchaseStatistics().expensePageExit("", "", IsmartvActivator.getInstance().getUsername(),
+                            "", "", "", "allow", "", uuid);
                 }
-                new PurchaseStatistics().expensePageExit(String.valueOf(mItemEntity.getPk()), mItemEntity.getTitle(), IsmartvActivator.getInstance().getUsername(),
-                        type, "", "", "allow", "", uuid);
             }
         }
 
         Log.d(TAG, "view position: " + AppConstant.purchase_tab);
     }
 
-    public void sendExpenseCancleLog(){
-        if (mItemEntity!=null) {
+    public void sendExpenseCancleLog() {
+        if (mItemEntity != null) {
             if (category.equals("package")) {
                 new PurchaseStatistics().expensePageExit("", "", IsmartvActivator.getInstance().getUsername(),
                         "package", String.valueOf(mItemEntity.getPk()), mItemEntity.getTitle(), "cancel", "", uuid);
             } else {
                 String type = "";
-                if (mItemEntity.getExpense().getPay_type() == 1) {
-                    type = "independent";
-                } else if (mItemEntity.getExpense().getPay_type() == 2) {
-                    type = "vip";
+                if (mItemEntity.getExpense() != null) {
+                    if (mItemEntity.getExpense().getPay_type() == 1) {
+                        type = "independent";
+                    } else if (mItemEntity.getExpense().getPay_type() == 2) {
+                        type = "vip";
+                    }
                 }
                 new PurchaseStatistics().expensePageExit(String.valueOf(mItemEntity.getPk()), mItemEntity.getTitle(),
                         IsmartvActivator.getInstance().getUsername(), type, "", "", "cancel", "", uuid);
