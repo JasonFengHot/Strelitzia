@@ -1719,6 +1719,7 @@ public class PlayerFragment extends Fragment implements PlayerPageContract.View,
     }
 
     private ModuleMessagePopWindow popDialog;
+    private int popShowType;
 
     private boolean isPopWindowShow() {
         return popDialog != null && popDialog.isShowing();
@@ -1728,6 +1729,7 @@ public class PlayerFragment extends Fragment implements PlayerPageContract.View,
         if (isExit || isPopWindowShow()) {
             return;
         }
+        popShowType = popType;
         String message = getString(R.string.player_error);
         String cancelText = getString(R.string.player_pop_cancel);
         String confirmText = getString(R.string.player_pop_ok);
@@ -2090,7 +2092,7 @@ public class PlayerFragment extends Fragment implements PlayerPageContract.View,
         if (mHandler.hasMessages(MSG_SHOW_BUFFERING_LONG)) {
             mHandler.removeMessages(MSG_SHOW_BUFFERING_LONG);
         }
-        if (popDialog != null && popDialog.isShowing()) {
+        if (popDialog != null && popDialog.isShowing() && popShowType == POP_TYPE_BUFFERING_LONG) {
             closePopup = true;
             popDialog.dismiss();
             popDialog = null;
