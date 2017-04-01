@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -21,6 +22,7 @@ import com.blankj.utilcode.utils.StringUtils;
 
 import java.util.ArrayList;
 
+import cn.ismartv.truetime.TrueTime;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -241,17 +243,17 @@ public class SportFragment extends ChannelBaseFragment {
     @Override
     public void onPause() {
         super.onPause();
-        if (dataSubscription != null && !dataSubscription.isUnsubscribed()) {
+        if (dataSubscription != null && dataSubscription.isUnsubscribed()) {
             dataSubscription.unsubscribe();
         }
-        if (sportSubscription != null && !sportSubscription.isUnsubscribed()) {
+        if (sportSubscription != null && sportSubscription.isUnsubscribed()) {
             sportSubscription.unsubscribe();
         }
-        if (gameSubscription != null && !gameSubscription.isUnsubscribed()) {
+        if (gameSubscription != null && gameSubscription.isUnsubscribed()) {
             gameSubscription.unsubscribe();
         }
 
-        if (smartRecommendPostSub != null && !smartRecommendPostSub.isUnsubscribed()) {
+        if (smartRecommendPostSub != null && smartRecommendPostSub.isUnsubscribed()) {
             smartRecommendPostSub.unsubscribe();
         }
     }
@@ -297,7 +299,12 @@ public class SportFragment extends ChannelBaseFragment {
 
                             fillData(carousels, postlist);
                         }else {
-                            smartRecommendPost( homePagerEntity.getRecommend_homepage_url(), postlist, carousels);
+                            if (TrueTime.now().getTime() -  getSmartPostErrorTime()> AppConstant.SMART_POST_NEXT_REQUEST_TIME){
+                                smartRecommendPost( homePagerEntity.getRecommend_homepage_url(), postlist, carousels);
+                            }else {
+                                fillData(carousels, postlist);
+                            }
+
                         }
                     }
                 });
@@ -703,6 +710,8 @@ public class SportFragment extends ChannelBaseFragment {
 
                     @Override
                     public void onError(Throwable throwable) {
+                        throwable.printStackTrace();
+                        setSmartPostErrorTime();
                         fillData(carousellist, posters);
                     }
 

@@ -2,11 +2,14 @@ package tv.ismar.homepage.fragment;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 
+import cn.ismartv.truetime.TrueTime;
 import tv.ismar.app.AppConstant;
 import tv.ismar.app.BaseActivity;
 import tv.ismar.app.core.PageIntent;
@@ -22,6 +25,7 @@ import tv.ismar.homepage.R;
 import tv.ismar.homepage.view.HomePageActivity;
 
 public class ChannelBaseFragment extends Fragment {
+    private static long smart_post_occour_error_time = 0;
     protected ChannelEntity channelEntity;
     protected HomePageActivity mContext;
     protected boolean scrollFromBorder;
@@ -31,6 +35,7 @@ public class ChannelBaseFragment extends Fragment {
     protected View mRightBottomView;
     protected boolean isRight;
     protected String bottomFlag;
+
 
     public void setRight(boolean isRight) {
         this.isRight = isRight;
@@ -177,5 +182,13 @@ public class ChannelBaseFragment extends Fragment {
     }
 
     public void refreshData() {
+    }
+
+    protected static void setSmartPostErrorTime(){
+        smart_post_occour_error_time = TrueTime.now().getTime();
+    }
+
+    protected static long getSmartPostErrorTime(){
+        return  smart_post_occour_error_time;
     }
 }

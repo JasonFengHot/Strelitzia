@@ -3,6 +3,7 @@ package tv.ismar.homepage.fragment;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -20,11 +21,13 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
+import cn.ismartv.truetime.TrueTime;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import tv.ismar.account.IsmartvActivator;
+import tv.ismar.app.AppConstant;
 import tv.ismar.app.core.SimpleRestClient;
 import tv.ismar.app.entity.HomePagerEntity;
 import tv.ismar.app.network.SkyService;
@@ -174,7 +177,12 @@ public class ChildFragment extends ChannelBaseFragment implements Flag.ChangeCal
                         if (TextUtils.isEmpty(homePagerEntity.getRecommend_homepage_url())) {
                             initPosters(posters);
                         }else {
-                            smartRecommendPost(homePagerEntity.getRecommend_homepage_url(), posters);
+                            if (TrueTime.now().getTime() -  getSmartPostErrorTime()> AppConstant.SMART_POST_NEXT_REQUEST_TIME){
+                                smartRecommendPost(homePagerEntity.getRecommend_homepage_url(), posters);
+                            }else {
+                                initPosters(posters);
+                            }
+
                         }
 
                         initCarousel(carousels);
@@ -461,6 +469,8 @@ public class ChildFragment extends ChannelBaseFragment implements Flag.ChangeCal
 
                     @Override
                     public void onError(Throwable throwable) {
+                        throwable.printStackTrace();
+                        setSmartPostErrorTime();
                         initPosters(posters);
                     }
 

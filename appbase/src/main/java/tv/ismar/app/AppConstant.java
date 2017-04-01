@@ -29,4 +29,6 @@ public class AppConstant {
     public static String purchase_entrance_tab;
     public static String purchase_entrance_location;
 
+    public static final int SMART_POST_NEXT_REQUEST_TIME = 30 * 1000;
+
 }

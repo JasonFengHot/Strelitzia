@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -37,6 +38,7 @@ import cn.ismartv.downloader.DownloadEntity;
 import cn.ismartv.downloader.DownloadStatus;
 import cn.ismartv.downloader.Md5;
 import cn.ismartv.injectdb.library.query.Select;
+import cn.ismartv.truetime.TrueTime;
 import okhttp3.HttpUrl;
 import okhttp3.Response;
 import retrofit2.adapter.rxjava.HttpException;
@@ -49,6 +51,7 @@ import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import tv.ismar.account.IsmartvActivator;
+import tv.ismar.app.AppConstant;
 import tv.ismar.app.core.SimpleRestClient;
 import tv.ismar.app.core.cache.CacheManager;
 import tv.ismar.app.core.cache.DownloadClient;
@@ -312,7 +315,11 @@ public class FilmFragment extends ChannelBaseFragment {
         if (TextUtils.isEmpty(homePagerEntity.getRecommend_homepage_url())) {
             initPosters(posters);
         } else {
-            smartRecommendPost(homePagerEntity.getRecommend_homepage_url(), posters);
+            if (TrueTime.now().getTime() -  getSmartPostErrorTime()> AppConstant.SMART_POST_NEXT_REQUEST_TIME){
+                smartRecommendPost(homePagerEntity.getRecommend_homepage_url(), posters);
+            }else {
+                initPosters(posters);
+            }
         }
 
         initCarousel(carousels);
@@ -867,6 +874,8 @@ public class FilmFragment extends ChannelBaseFragment {
 
                     @Override
                     public void onError(Throwable throwable) {
+                        throwable.printStackTrace();
+                        setSmartPostErrorTime();
                         initPosters(posters);
                     }
 
