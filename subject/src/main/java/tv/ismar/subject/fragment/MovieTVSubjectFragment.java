@@ -50,7 +50,7 @@ import static tv.ismar.app.core.PageIntentInterface.ProductCategory.item;
  * Created by admin on 2017/3/2.
  */
 
-public class MovieTVSubjectFragment extends Fragment implements View.OnFocusChangeListener, View.OnClickListener, OnItemClickListener {
+public class MovieTVSubjectFragment extends Fragment implements View.OnClickListener, OnItemClickListener {
 
     private RecyclerView movie_recyclerView;
     private RecyclerView tv_recyclerView;
@@ -74,8 +74,8 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnFocusChan
     private String isnet="no";
     final SimpleRestClient simpleRest = new SimpleRestClient();
     private FavoriteManager mFavoriteManager;
-    private int focusedIndex=0;
     private ImageView subject_bg;
+    private View focusView;
     private SubjectEntity mSubjectEntity;
 
     @Nullable
@@ -108,29 +108,21 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnFocusChan
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initData();
-        subject_btn_buy.setOnFocusChangeListener(this);
-        subject_btn_like.setOnFocusChangeListener(this);
         subject_btn_buy.setOnClickListener(this);
         subject_btn_like.setOnClickListener(this);
         movie_recyclerView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                if(hasFocus){
-                    if(movie_recyclerView.getChildAt(focusedIndex)!=null) {
-                        movie_recyclerView.getChildAt(focusedIndex).requestFocus();
-                        movie_recyclerView.smoothScrollBy((int) (movie_recyclerView.getChildAt(focusedIndex).getX() - 2), 0);
-                    }
+                if(hasFocus&&focusView!=null){
+                      focusView.requestFocus();
                 }
             }
         });
         tv_recyclerView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                if(hasFocus){
-                    if(tv_recyclerView.getChildAt(focusedIndex)!=null) {
-                        tv_recyclerView.getChildAt(focusedIndex).requestFocus();
-                        tv_recyclerView.smoothScrollBy((int) (tv_recyclerView.getChildAt(focusedIndex).getX() - 2), 0);
-                    }
+                if(hasFocus&&focusView!=null){
+                    focusView.requestFocus();
                 }
             }
         });
@@ -169,7 +161,6 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnFocusChan
                     }
                 });
     }
-
     private void processData(SubjectEntity subjectEntity) {
         if(subjectEntity.isIs_buy()){
             subject_btn_buy.setVisibility(View.VISIBLE);
@@ -190,17 +181,23 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnFocusChan
             movie_recyclerView.setAdapter(movieAdapter);
             movieAdapter.setOnItemClickListener(this);
             movieAdapter.setOnItemFocusedListener(new OnItemFocusedListener() {
+
+
                 @Override
                 public void onItemfocused(View view, int position, boolean hasFocus) {
                     if(hasFocus) {
                         checkLayerIsShow(position);
                         poster_focus.setVisibility(View.VISIBLE);
-                        movie_recyclerView.smoothScrollBy((int) (view.getX() - 1), 0);
+                        movie_recyclerView.smoothScrollBy((int) (view.getX()-getResources().getDimensionPixelOffset(R.dimen.subject_movie_recycleview_ml)), 0);
                         JasmineUtil.scaleOut2(view);
                         subject_actor.setText(list.get(position).getMsg1());
                         subject_description.setText(list.get(position).getMsg2());
                     }else{
-                        JasmineUtil.scaleIn2(view);
+                        if(subject_btn_like.isFocused()||subject_btn_buy.isFocused()){
+                            focusView = view;
+                        }else{
+                            JasmineUtil.scaleIn2(view);
+                        }
                         poster_focus.setVisibility(View.INVISIBLE);
                     }
                 }
@@ -222,12 +219,16 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnFocusChan
                         checkLayerIsShow(position);
                         tv_poster_focus.setVisibility(View.VISIBLE);
                         JasmineUtil.scaleOut2(view);
-                        tv_recyclerView.smoothScrollBy((int) (view.getX() - 1), 0);
+                        tv_recyclerView.smoothScrollBy((int) (view.getX()-getResources().getDimensionPixelOffset(R.dimen.subject_movie_recycleview_ml)), 0);
                         Log.e("position", view.getX() + "");
                         subject_actor.setText(list.get(position).getMsg1());
                         subject_description.setText(list.get(position).getMsg2());
                     } else {
-                        JasmineUtil.scaleIn2(view);
+                        if(subject_btn_like.isFocused()||subject_btn_buy.isFocused()){
+                            focusView = view;
+                        }else{
+                            JasmineUtil.scaleIn2(view);
+                        }
                         tv_poster_focus.setVisibility(View.INVISIBLE);
                     }
                 }
@@ -278,27 +279,6 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnFocusChan
         }
     }
 
-    @Override
-    public void onFocusChange(View v, boolean hasFocus) {
-            if (hasFocus) {
-                if(type.contains("movie")) {
-                    if(left_layer_movie.getVisibility()==View.VISIBLE) {
-                        focusedIndex=1;
-                    }else{
-                        focusedIndex=0;
-                    }
-                    JasmineUtil.scaleOut2(movie_recyclerView.getChildAt(focusedIndex));
-                }else{
-                    if(left_layer_tv.getVisibility()==View.VISIBLE) {
-                        focusedIndex=1;
-                    }else{
-                        focusedIndex=0;
-                    }
-                    JasmineUtil.scaleOut2(tv_recyclerView.getChildAt(focusedIndex));
-                }
-
-            }
-    }
 
     @Override
     public void onClick(View v) {

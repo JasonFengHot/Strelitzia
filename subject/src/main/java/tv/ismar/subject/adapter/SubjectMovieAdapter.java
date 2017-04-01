@@ -56,7 +56,7 @@ public class SubjectMovieAdapter extends RecyclerView.Adapter<MovieViewHolder> {
     @Override
     public void onBindViewHolder(final MovieViewHolder holder, int position) {
         SubjectEntity.ObjectsBean item = mList.get(position);
-        Picasso.with(mContext).load(item.getPoster_url()).memoryPolicy(MemoryPolicy.NO_CACHE).memoryPolicy(MemoryPolicy.NO_STORE).into(holder.movie_item_poster);
+        Picasso.with(mContext).load(item.getPoster_url()).memoryPolicy(MemoryPolicy.NO_CACHE).memoryPolicy(MemoryPolicy.NO_STORE).placeholder(mContext.getResources().getDrawable(R.drawable.vertical_preview_bg)).into(holder.movie_item_poster);
         if (item.getBean_score() > 0) {
             holder.movie_item_score.setText(item.getBean_score()+"");
             holder.movie_item_score.setVisibility(View.VISIBLE);

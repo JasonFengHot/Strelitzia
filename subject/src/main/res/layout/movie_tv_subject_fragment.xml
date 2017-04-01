@@ -23,7 +23,7 @@
         android:id="@+id/movie_recyclerView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/subject_movie_recycleview_ml"
+        android:paddingLeft="@dimen/subject_movie_recycleview_ml"
         android:clipToPadding="false"
         android:clipChildren="false"
         android:paddingRight="@dimen/subject_movie_recycleview_pr"
