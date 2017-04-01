@@ -11,7 +11,7 @@ public class HomePagerEntity {
     private String recommend_homepage_url;
 
     public String getRecommend_homepage_url() {
-        return "http://172.162.11.253/";
+        return recommend_homepage_url;
     }
 
     public void setRecommend_homepage_url(String recommend_homepage_url) {
