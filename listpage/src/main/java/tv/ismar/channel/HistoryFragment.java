@@ -511,6 +511,9 @@ public class HistoryFragment extends Fragment implements ScrollableSectionList.O
 		AppConstant.purchase_entrance_page = "history";
         BaseActivity.baseChannel="";
         BaseActivity.baseSection="";
+		if(left_shadow!=null){
+			left_shadow.setVisibility(View.INVISIBLE);
+		}
 		if(IsmartvActivator.getInstance().isLogin()){
 			//登录，网络获取
 			Log.i("onResum","onreusm");

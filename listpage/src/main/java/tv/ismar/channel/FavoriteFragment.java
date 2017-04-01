@@ -451,6 +451,9 @@ public class FavoriteFragment extends Fragment implements ScrollableSectionList.
 		AppConstant.purchase_entrance_channel = "";
 		BaseActivity.baseChannel="";
 		BaseActivity.baseSection="";
+		if(left_shadow!=null){
+			left_shadow.setVisibility(View.INVISIBLE);
+		}
 		((ChannelListActivity)getActivity()).registerOnMenuToggleListener(this);
 		if(!IsmartvActivator.getInstance().isLogin()){
 					getFavoriteTask = new GetFavoriteTask();
