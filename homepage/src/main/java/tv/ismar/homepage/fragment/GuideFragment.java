@@ -38,6 +38,7 @@ import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+import tv.ismar.account.C;
 import tv.ismar.account.IsmartvActivator;
 import tv.ismar.app.AppConstant;
 import tv.ismar.app.core.SimpleRestClient;
@@ -269,7 +270,7 @@ public class GuideFragment extends ChannelBaseFragment {
             if (TextUtils.isEmpty(homePagerEntity.getRecommend_homepage_url())) {
                 initPosters(posters);
             }else {
-                if (TrueTime.now().getTime() -  getSmartPostErrorTime()> AppConstant.SMART_POST_NEXT_REQUEST_TIME){
+                if (TrueTime.now().getTime() -  getSmartPostErrorTime()> C.SMART_POST_NEXT_REQUEST_TIME){
                     smartRecommendPost(homePagerEntity.getRecommend_homepage_url(), posters);
                 }else {
                     initPosters(posters);

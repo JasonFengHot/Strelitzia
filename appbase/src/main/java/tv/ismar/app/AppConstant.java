@@ -1,5 +1,9 @@
 package tv.ismar.app;
 
+import android.app.Application;
+import android.content.Context;
+import android.content.SharedPreferences;
+
 /**
  * Created by huaijie on 3/9/15.
  */
@@ -28,7 +32,4 @@ public class AppConstant {
     public static String purchase_entrance_related_channel;
     public static String purchase_entrance_tab;
     public static String purchase_entrance_location;
-
-    public static final int SMART_POST_NEXT_REQUEST_TIME = 30 * 1000;
-
 }

@@ -11,7 +11,15 @@ public class ResultEntity {
     private String zdevice_token = "";
     private String carnation = "1.1.1.1";
     private int player;
+    private long smart_post_next_request_time = 30;
 
+    public long getSmart_post_next_request_time() {
+        return smart_post_next_request_time * 1000;
+    }
+
+    public void setSmart_post_next_request_time(long smart_post_next_request_time) {
+        this.smart_post_next_request_time = smart_post_next_request_time;
+    }
 
     public String getCarnation() {
         return carnation;

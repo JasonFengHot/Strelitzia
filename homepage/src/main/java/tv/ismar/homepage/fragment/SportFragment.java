@@ -27,6 +27,7 @@ import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+import tv.ismar.account.C;
 import tv.ismar.account.IsmartvActivator;
 import tv.ismar.app.AppConstant;
 import tv.ismar.app.BaseActivity;
@@ -299,7 +300,7 @@ public class SportFragment extends ChannelBaseFragment {
 
                             fillData(carousels, postlist);
                         }else {
-                            if (TrueTime.now().getTime() -  getSmartPostErrorTime()> AppConstant.SMART_POST_NEXT_REQUEST_TIME){
+                            if (TrueTime.now().getTime() -  getSmartPostErrorTime()> C.SMART_POST_NEXT_REQUEST_TIME){
                                 smartRecommendPost( homePagerEntity.getRecommend_homepage_url(), postlist, carousels);
                             }else {
                                 fillData(carousels, postlist);

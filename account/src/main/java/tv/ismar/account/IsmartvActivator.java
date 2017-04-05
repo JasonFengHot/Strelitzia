@@ -122,7 +122,7 @@ public class IsmartvActivator {
 
         SKY_Retrofit = new Retrofit.Builder()
                 .client(client)
-                .baseUrl(SKY_HOST)
+                .baseUrl(SKY_HOST_TEST)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
     }
@@ -420,6 +420,8 @@ public class IsmartvActivator {
         editor.putString("ad_domain", resultEntity.getAd_domain());
         editor.putString("upgrade_domain", resultEntity.getUpgrade_domain());
         editor.putString("zdevice_token", resultEntity.getZdevice_token());
+        editor.putLong("smart_post_next_request_time", resultEntity.getSmart_post_next_request_time());
+        C.SMART_POST_NEXT_REQUEST_TIME = resultEntity.getSmart_post_next_request_time();
         editor.putInt("player", resultEntity.getPlayer());
         editor.commit();
     }
