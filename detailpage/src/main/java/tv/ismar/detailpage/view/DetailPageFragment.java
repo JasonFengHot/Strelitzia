@@ -124,9 +124,12 @@ public class DetailPageFragment extends Fragment implements DetailPageContract.V
             if (videoIsStart()&&palyBtnView.getVisibility()==View.VISIBLE) {
                 palyBtnView.requestFocus();
                 palyBtnView.requestFocusFromTouch();
-            } else {
+            } else if(purchaseBtnView.getVisibility()== View.VISIBLE){
                 purchaseBtnView.requestFocus();
                 purchaseBtnView.requestFocusFromTouch();
+            }else{
+                favoriteBtnView.requestFocus();
+                favoriteBtnView.requestFocusFromTouch();
             }
             return false;
         }
