@@ -59,6 +59,7 @@ import tv.ismar.app.entity.HomePagerEntity;
 import tv.ismar.app.entity.Item;
 import tv.ismar.app.entity.ItemList;
 import tv.ismar.app.entity.SectionList;
+import tv.ismar.app.entity.Subject;
 import tv.ismar.app.entity.VideoEntity;
 import tv.ismar.app.models.ActorRelateRequestParams;
 import tv.ismar.app.models.Game;
@@ -622,6 +623,10 @@ public interface SkyService {
     Observable<AgreementEntity> agreement(
             @Query("source") String source
     );
+    @GET("api/item/{pk}/")
+    Observable<Subject> getSportSubjectInfo(
+            @Path("pk") int pk
+    );
 
     @GET("api/item/{pk}/")
     Observable<SubjectEntity> apiSubject(
@@ -633,6 +638,12 @@ public interface SkyService {
             @Path("cpid") String cpid,
             @Query("gather_id") String gather_id
     );
+    @GET("accounts/sports/subscribe/{item_id}/{type}/")
+    Observable<ResponseBody> getSubscribeImage(
+            @Path("item_id") int pk,
+            @Path("type") String type
+    );
+
 
     class ServiceManager {
         private volatile static ServiceManager serviceManager;

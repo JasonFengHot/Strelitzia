@@ -261,6 +261,7 @@ public class HistoryFragment extends Fragment implements ScrollableSectionList.O
 //				}
 				Intent intent=new Intent();
 				intent.setAction("tv.ismar.daisy.subject");
+				intent.putExtra("gather_type","sportgather");
 				startActivity(intent);
 			}
 		});

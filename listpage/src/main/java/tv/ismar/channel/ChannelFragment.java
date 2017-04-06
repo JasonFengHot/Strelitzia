@@ -918,6 +918,9 @@ public class ChannelFragment extends Fragment implements OnItemSelectedListener,
                 intent.setAction("tv.ismar.daisy.Topic");
                 intent.putExtra("url", item.url);
                 startActivity(intent);
+            }else if(item.model_name.contains("gather")){
+                PageIntent intent=new PageIntent();
+                intent.toSubject(getActivity(),item.model_name,item.pk,"list");
             } else {
                 if (item != null) {
                     mSectionProperties.put(EventProperty.TO_ITEM, item.pk);

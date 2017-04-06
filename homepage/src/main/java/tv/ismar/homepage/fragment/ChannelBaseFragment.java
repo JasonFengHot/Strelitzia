@@ -152,6 +152,10 @@ public class ChannelBaseFragment extends Fragment {
 //                    tool.channel = channelEntity.getChannel();
 //                    tool.fromPage = "homepage";
 //                    tool.initClipInfo(url, InitPlayerTool.FLAG_URL);
+                }else if(mode_name.contains("gather")){
+                    int itemPk = Utils.getItemPk(url);
+                    PageIntent intent1=new PageIntent();
+                    intent1.toSubject(mContext,mode_name,itemPk,"homepage");
                 }
             }
             CallaPlay play = new CallaPlay();
