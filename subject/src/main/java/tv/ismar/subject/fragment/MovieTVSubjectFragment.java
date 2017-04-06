@@ -137,7 +137,7 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnClickList
         } else {
             isnet = "no";
         }
-        ((SubjectActivity)getActivity()).mSkyService.apiSubject(709759+"")
+        ((SubjectActivity)getActivity()).mSkyService.apiSubject(709764+"")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(((SubjectActivity)getActivity()).new BaseObserver<SubjectEntity>(){
@@ -336,7 +336,7 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnClickList
             }
         }
         //判断用户是否有最高的观影权限
-        ((SubjectActivity)getActivity()).mSkyService.apiPaylayerVipSubject(cpid+"",709759+"")
+        ((SubjectActivity)getActivity()).mSkyService.apiPaylayerVipSubject(cpid+"",709764+"")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(((SubjectActivity)getActivity()).new BaseObserver<PayLayerVipEntity>(){

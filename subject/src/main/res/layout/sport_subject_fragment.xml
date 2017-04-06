@@ -126,6 +126,7 @@
                     android:focusable="true"
                     android:background="@drawable/buy_selector"
                     android:layout_alignParentLeft="true"
+                    android:nextFocusUp="@id/buy"
                     />
                 <Button
                     android:id="@+id/play"
@@ -139,6 +140,7 @@
                     android:textSize="36sp"
                     android:text="播 放"
                     android:visibility="gone"
+                    android:nextFocusUp="@id/play"
                     />
                 <Button
                     android:id="@+id/subscribe"
@@ -151,6 +153,7 @@
                     android:paddingLeft="94dp"
                     android:paddingTop="10dp"
                     android:background="@drawable/subscribe_selector"
+                    android:nextFocusUp="@id/subscribe"
                     />
             </RelativeLayout>
         <TextView
