@@ -34,6 +34,7 @@ public class SubjectSportAdapter extends RecyclerView.Adapter<SportViewHolder> {
     private OnItemFocusedListener mOnItemFocusedListener;
     private String TAG="subjectSportAdapter";
     private String type="NBA";
+    private boolean isFirst=true;
     public SubjectSportAdapter(Context context){
         mContext=context;
 
@@ -71,10 +72,10 @@ public class SubjectSportAdapter extends RecyclerView.Adapter<SportViewHolder> {
         holder.itemView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                int pos = position;
+                int pos =holder.getLayoutPosition();
                 mOnItemFocusedListener.onItemfocused(v, pos, hasFocus);
                 if (hasFocus) {
-                    if (lastview != null&&lastindex!=position) {
+                    if (lastview != null&&lastindex!=pos) {
                         lastview.nomarl.setVisibility(View.VISIBLE);
                         lastview.focus_tobig.setVisibility(View.GONE);
                     }
@@ -84,8 +85,8 @@ public class SubjectSportAdapter extends RecyclerView.Adapter<SportViewHolder> {
 
                 } else {
                     lastview=holder;
-                    lastindex=position;
-                    Log.i("sportlist0","adapter false : "+lastindex);
+                    lastindex=pos;
+//                    Log.i("sportlist0","adapter false : "+lastindex);
                 }
             }
         });
@@ -95,12 +96,9 @@ public class SubjectSportAdapter extends RecyclerView.Adapter<SportViewHolder> {
                 v.requestFocus();
             }
         });
-        if(position==0){
-            holder.itemView.requestFocus();
-        }
-        if(position==itemList.size()-1){
-            holder.itemView.setNextFocusDownId(holder.itemView.getId());
-        }
+//        if(position==itemList.size()-1){
+//            holder.itemView.setNextFocusDownId(holder.itemView.getId());
+//        }
         if(type.equals("NBA")) {
             Picasso.with(mContext).load(objects.at_home_logo).into(holder.home_logo);
             Picasso.with(mContext).load(objects.at_home_logo).into(holder.big_home_logo);

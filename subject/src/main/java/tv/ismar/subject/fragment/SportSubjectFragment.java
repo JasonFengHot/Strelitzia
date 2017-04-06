@@ -84,6 +84,7 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
     private String subject_type="NBA";
     private int lastselect=0;
     private int mselect=0;
+    private View lastSelectView;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -116,8 +117,11 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
         skyService=SkyService.ServiceManager.getService();
         madpter=new SubjectSportAdapter(getActivity());
         madpter.setOnItemFocusedListener(this);
-        buy.setOnFocusChangeListener(this);
-        play.setOnFocusChangeListener(this);
+//        buy.setOnFocusChangeListener(this);
+//        play.setOnFocusChangeListener(this);
+        buy.setNextFocusLeftId(R.id.sport_list);
+        relate_image1.setNextFocusLeftId(R.id.sport_list);
+        sportlist.setOnFocusChangeListener(this);
         getData();
         setScrollListen(sportlist);
         return view;
@@ -153,6 +157,7 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
     public void onItemfocused(View view, int position, boolean hasFocus) {
         if(!hasFocus){
             lastselect=position;
+            lastSelectView=view;
             Log.i("sportlist0","onItemfocus false : "+lastselect);
         }else{
             mselect=position;
@@ -252,9 +257,9 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
     @Override
     public void onFocusChange(View v, boolean hasFocus) {
         if(hasFocus){
-            Log.i("sportlist0","btn focus :"+lastselect);
-        }else{
-         //    sportlist.getChildAt(lastselect).requestFocus();
+            if(lastSelectView!=null){
+                sportlist.getChildViewHolder(lastSelectView).itemView.requestFocus();
+            }
         }
     }
     private boolean subscribeIsShow(Date time) {
