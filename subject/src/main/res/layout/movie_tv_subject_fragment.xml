@@ -65,7 +65,7 @@
             android:id="@+id/tv_recyclerView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/subject_tv_recycleview_ml"
+            android:paddingLeft="@dimen/subject_tv_recycleview_ml"
             android:paddingRight="@dimen/subject_tv_recycleview_pr"
             android:clipToPadding="false"
             android:clipChildren="false"

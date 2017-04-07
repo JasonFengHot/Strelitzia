@@ -220,7 +220,7 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnClickList
                         checkLayerIsShow(position);
                         tv_poster_focus.setVisibility(View.VISIBLE);
                         JasmineUtil.scaleOut2(view);
-                        tv_recyclerView.smoothScrollBy((int) (view.getX()-getResources().getDimensionPixelOffset(R.dimen.subject_movie_recycleview_ml)), 0);
+                        tv_recyclerView.smoothScrollBy((int) (view.getX()-getResources().getDimensionPixelOffset(R.dimen.subject_tv_recycleview_ml)), 0);
                         Log.e("position", view.getX() + "");
                         subject_actor.setText(list.get(position).getMsg1());
                         subject_description.setText(list.get(position).getMsg2());
