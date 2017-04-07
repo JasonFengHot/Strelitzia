@@ -92,6 +92,7 @@ import tv.ismar.app.network.entity.PayLayerVipEntity;
 import tv.ismar.app.network.entity.PayVerifyEntity;
 import tv.ismar.app.network.entity.PayWhStatusEntity;
 import tv.ismar.app.network.entity.ProblemEntity;
+import tv.ismar.app.network.entity.SubjectPayLayerEntity;
 import tv.ismar.app.network.entity.TeleEntity;
 import tv.ismar.app.network.entity.UpgradeRequestEntity;
 import tv.ismar.app.network.entity.VersionInfoV2Entity;
@@ -633,10 +634,9 @@ public interface SkyService {
             @Path("pk") String pk
     );
 
-    @GET("api/paylayer/vip/{cpid}/")
-    Observable<PayLayerVipEntity> apiPaylayerVipSubject(
-            @Path("cpid") String cpid,
-            @Query("gather_id") String gather_id
+    @GET("api/paylayer/{item_id}/")
+    Observable<SubjectPayLayerEntity> apiPaylayerVipSubject(
+            @Path("item_id") String item_id
     );
     @GET("accounts/sports/subscribe/{item_id}/{type}/")
     Observable<ResponseBody> getSubscribeImage(
