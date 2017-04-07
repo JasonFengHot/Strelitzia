@@ -157,7 +157,7 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnClickList
 
                     @Override
                     public void onError(Throwable e) {
-                        hideLoading();
+//                        hideLoading();
                         super.onError(e);
                     }
                 });
@@ -235,7 +235,7 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnClickList
                 }
             });
         }
-        hideLoading();
+//        hideLoading();
     }
 
     private void hideLoading() {
