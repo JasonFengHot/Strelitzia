@@ -766,6 +766,7 @@ public class PlayerFragment extends Fragment implements PlayerPageContract.View,
         if (isPopWindowShow()) {
             return true;
         }
+        addHistory(mCurrentPosition, true, false);
         showExitPopup(POP_TYPE_PLAYER_ERROR);
         return true;
     }
