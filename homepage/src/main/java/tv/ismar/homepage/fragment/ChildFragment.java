@@ -67,6 +67,7 @@ public class ChildFragment extends ChannelBaseFragment implements Flag.ChangeCal
     private View righttop;
     private Subscription dataSubscription;
     private Subscription smartRecommendPostSub;
+    private boolean isDestroyed = false;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -148,6 +149,7 @@ public class ChildFragment extends ChannelBaseFragment implements Flag.ChangeCal
     	leftLayout = null;
     	bottomLayout = null;
     	rightLayout = null;
+        isDestroyed = true;
         super.onDestroyView();
 
     }
@@ -163,7 +165,7 @@ public class ChildFragment extends ChannelBaseFragment implements Flag.ChangeCal
 
                     @Override
                     public void onNext(HomePagerEntity homePagerEntity) {
-                        if(mContext == null || leftLayout == null || rightLayout == null && bottomLayout ==null)
+                        if(isDestroyed || mContext == null || leftLayout == null || rightLayout == null || bottomLayout ==null)
                             return;
                         if (homePagerEntity == null) {
                             new CallaPlay().exception_except("launcher", "launcher", channelEntity.getChannel(),
@@ -187,24 +189,6 @@ public class ChildFragment extends ChannelBaseFragment implements Flag.ChangeCal
                         }
 
                         initCarousel(carousels);
-                        if(scrollFromBorder){
-                            if(isRight){//右侧移入
-                                if("bottom".equals(bottomFlag)){//下边界移入
-                                    childMore.requestFocus();
-                                }else{//上边界边界移入
-                                    righttop.requestFocus();
-                                }
-//                  		}
-                            }else{//左侧移入
-                                if("bottom".equals(bottomFlag)){
-                                    leftBottom.requestFocus();
-                                }else{
-                                    lefttop.requestFocus();
-                                }
-//                  	}
-                            }
-                            ((HomePageActivity)getActivity()).resetBorderFocus();
-                        }
                     }
                 });
     }
@@ -370,6 +354,9 @@ public class ChildFragment extends ChannelBaseFragment implements Flag.ChangeCal
             }
         }
         rightLayout.requestLayout();
+
+        isPosterInit = true;
+        resetBorder();
     }
 
     private void initCarousel(ArrayList<HomePagerEntity.Carousel> carousels) {
@@ -403,8 +390,37 @@ public class ChildFragment extends ChannelBaseFragment implements Flag.ChangeCal
         }
 
         flag.setPosition(0);
+
+        isCarouselInit = true;
+        resetBorder();
+
         playCarousel();
 
+    }
+
+    private boolean isPosterInit, isCarouselInit;
+
+    private void resetBorder(){
+        if (isPosterInit && isCarouselInit) {
+            if(scrollFromBorder){
+                if(isRight){//右侧移入
+                    if("bottom".equals(bottomFlag)){//下边界移入
+                        childMore.requestFocus();
+                    }else{//上边界边界移入
+                        righttop.requestFocus();
+                    }
+//                  		}
+                }else{//左侧移入
+                    if("bottom".equals(bottomFlag)){
+                        leftBottom.requestFocus();
+                    }else{
+                        lefttop.requestFocus();
+                    }
+//                  	}
+                }
+                ((HomePageActivity)getActivity()).resetBorderFocus();
+            }
+        }
     }
 
     private void playCarousel() {
@@ -470,6 +486,8 @@ public class ChildFragment extends ChannelBaseFragment implements Flag.ChangeCal
 
                     @Override
                     public void onError(Throwable throwable) {
+                        if (isDestroyed)
+                            return;
                         throwable.printStackTrace();
                         setSmartPostErrorTime();
                         initPosters(posters);
@@ -477,6 +495,8 @@ public class ChildFragment extends ChannelBaseFragment implements Flag.ChangeCal
 
                     @Override
                     public void onNext(ArrayList<HomePagerEntity.Poster> smartPosters) {
+                        if (isDestroyed)
+                            return;
                         if (smartPosters.size() < 7){
                             initPosters(posters);
                         }else {

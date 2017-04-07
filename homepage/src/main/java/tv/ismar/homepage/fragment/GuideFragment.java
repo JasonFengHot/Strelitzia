@@ -278,25 +278,6 @@ public class GuideFragment extends ChannelBaseFragment {
 
             }
         }
-        if (scrollFromBorder) {
-            if (isRight) {//右侧移入
-                if ("bottom".equals(bottomFlag)) {//下边界移入
-                    lastpostview.findViewById(R.id.poster_title).requestFocus();
-                } else {//上边界边界移入
-                    toppage_carous_imageView1.requestFocus();
-                }
-//                		}
-            } else {//左侧移入
-                if (!StringUtils.isEmpty(bottomFlag)) {
-                    if ("bottom".equals(bottomFlag)) {
-
-                    } else {
-
-                    }
-                }
-            }
-            ((HomePageActivity) getActivity()).resetBorderFocus();
-        }
 
     }
 
@@ -312,6 +293,9 @@ public class GuideFragment extends ChannelBaseFragment {
 
                     @Override
                     public void onError(Throwable throwable) {
+                        if (isDestroyed){
+                            return;
+                        }
                         throwable.printStackTrace();
                         setSmartPostErrorTime();
                         initPosters(posters);
@@ -319,6 +303,9 @@ public class GuideFragment extends ChannelBaseFragment {
 
                     @Override
                     public void onNext(ArrayList<HomePagerEntity.Poster> smartPosters) {
+                        if (isDestroyed){
+                            return;
+                        }
                         if (smartPosters.size() < 8){
                             initPosters(posters);
                         }else {
@@ -424,6 +411,9 @@ public class GuideFragment extends ChannelBaseFragment {
         guideRecommmendList.setFocusableInTouchMode(true);
         guideRecommmendList.addAllViews(imageViews);
 
+        isPosterInit = true;
+        resetBorder();
+
     }
 
     private void initCarousel(ArrayList<HomePagerEntity.Carousel> carousels) {
@@ -477,6 +467,9 @@ public class GuideFragment extends ChannelBaseFragment {
             );
         }
 
+        isCarouselInit = true;
+        resetBorder();
+
         carouselMap = new HashMap<>();
         carouselMap.put(0, toppage_carous_imageView1.getId());
         if (carousels.size() > 1) {
@@ -493,6 +486,32 @@ public class GuideFragment extends ChannelBaseFragment {
             mHandler.removeMessages(START_PLAYBACK);
         }
 
+    }
+
+    private boolean isPosterInit, isCarouselInit;
+
+    private void resetBorder(){
+        if (isPosterInit && isCarouselInit) {
+            if (scrollFromBorder) {
+                if (isRight) {//右侧移入
+                    if ("bottom".equals(bottomFlag)) {//下边界移入
+                        lastpostview.findViewById(R.id.poster_title).requestFocus();
+                    } else {//上边界边界移入
+                        toppage_carous_imageView1.requestFocus();
+                    }
+//                		}
+                } else {//左侧移入
+                    if (!StringUtils.isEmpty(bottomFlag)) {
+                        if ("bottom".equals(bottomFlag)) {
+
+                        } else {
+
+                        }
+                    }
+                }
+                ((HomePageActivity) getActivity()).resetBorderFocus();
+            }
+        }
     }
 
     @Override

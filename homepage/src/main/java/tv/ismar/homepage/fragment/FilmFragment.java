@@ -188,17 +188,6 @@ public class FilmFragment extends ChannelBaseFragment {
     @Override
     public void onDestroyView() {
         isDestroyed = true;
-        if (playSubscription != null && !playSubscription.isUnsubscribed()) {
-            playSubscription.unsubscribe();
-        }
-
-        if (dataSubscription != null && !dataSubscription.isUnsubscribed()) {
-            dataSubscription.unsubscribe();
-        }
-
-        if (checkSubscription != null && !checkSubscription.isUnsubscribed()) {
-            checkSubscription.unsubscribe();
-        }
 
         playSubscription = null;
         dataSubscription = null;
@@ -258,6 +247,12 @@ public class FilmFragment extends ChannelBaseFragment {
         }
         if (smartRecommendPostSub != null && smartRecommendPostSub.isUnsubscribed()) {
             smartRecommendPostSub.unsubscribe();
+        }
+        if (playSubscription != null && !playSubscription.isUnsubscribed()) {
+            playSubscription.unsubscribe();
+        }
+        if (checkSubscription != null && !checkSubscription.isUnsubscribed()) {
+            checkSubscription.unsubscribe();
         }
     }
 
@@ -324,24 +319,7 @@ public class FilmFragment extends ChannelBaseFragment {
         }
 
         initCarousel(carousels);
-        if (scrollFromBorder) {
-            if (isRight) {//右侧移入
-                if ("bottom".equals(bottomFlag)) {//下边界移入
-                    morelayout.requestFocus();
-                } else {//上边界边界移入
-                    firstcarousel.requestFocus();
-                }
-//                		}
-            } else {//左侧移入
-                if ("bottom".equals(bottomFlag)) {
-                    firstpost.requestFocus();
-                } else {
-                    film_lefttop_image.requestFocus();
-                }
-//                	}
-            }
-            ((HomePageActivity) getActivity()).resetBorderFocus();
-        }
+
     }
 
     private HomeItemContainer focusView;
@@ -463,6 +441,9 @@ public class FilmFragment extends ChannelBaseFragment {
                 });
             }
         }
+
+        isPosterInit = true;
+        resetBorder();
     }
 
 
@@ -519,6 +500,10 @@ public class FilmFragment extends ChannelBaseFragment {
         }
 
         firstcarousel = film_carous_imageView1;
+
+        isCarouselInit = true;
+        resetBorder();
+
         carouselMap = new HashMap<>();
         carouselMap.put(0, film_carous_imageView1.getId());
         carouselMap.put(1, film_carous_imageView2.getId());
@@ -526,6 +511,31 @@ public class FilmFragment extends ChannelBaseFragment {
         carouselMap.put(3, film_carous_imageView4.getId());
         carouselMap.put(4, film_carous_imageView5.getId());
         playCarousel(0);
+    }
+
+    private boolean isPosterInit, isCarouselInit;
+
+    private void resetBorder(){
+        if (isPosterInit && isCarouselInit) {
+            if (scrollFromBorder) {
+                if (isRight) {//右侧移入
+                    if ("bottom".equals(bottomFlag)) {//下边界移入
+                        morelayout.requestFocus();
+                    } else {//上边界边界移入
+                        firstcarousel.requestFocus();
+                    }
+//                		}
+                } else {//左侧移入
+                    if ("bottom".equals(bottomFlag)) {
+                        firstpost.requestFocus();
+                    } else {
+                        film_lefttop_image.requestFocus();
+                    }
+//                	}
+                }
+                ((HomePageActivity) getActivity()).resetBorderFocus();
+            }
+        }
     }
 
 
@@ -875,6 +885,9 @@ public class FilmFragment extends ChannelBaseFragment {
 
                     @Override
                     public void onError(Throwable throwable) {
+                        if (isDestroyed){
+                            return;
+                        }
                         throwable.printStackTrace();
                         setSmartPostErrorTime();
                         initPosters(posters);
@@ -882,6 +895,9 @@ public class FilmFragment extends ChannelBaseFragment {
 
                     @Override
                     public void onNext(ArrayList<HomePagerEntity.Poster> smartPosters) {
+                        if (isDestroyed){
+                            return;
+                        }
                         if (smartPosters.size() < 7){
                             initPosters(posters);
                         }else {

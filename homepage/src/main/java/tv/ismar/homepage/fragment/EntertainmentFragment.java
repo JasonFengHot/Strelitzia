@@ -85,6 +85,7 @@ public class EntertainmentFragment extends ChannelBaseFragment {
 
     private Subscription dataSubscription;
     private Subscription smartRecommendPostSub;
+    private boolean isDestroyed = false;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -292,24 +293,6 @@ public class EntertainmentFragment extends ChannelBaseFragment {
 
     private void fillData(ArrayList<Carousel> carousellist,
                           ArrayList<Poster> postlist) {
-        if (scrollFromBorder) {
-            if (isRight) {//右侧移入
-                if ("bottom".equals(bottomFlag)) {//下边界移入
-                    vaiety_channel5.requestFocus();
-                } else {//上边界边界移入
-                    vaiety_card2_image.requestFocus();
-                }
-//        		}
-            } else {//左侧移入
-                if ("bottom".equals(bottomFlag)) {
-                    vaiety_channel1_image.requestFocus();
-                } else {
-                    vaiety_post.requestFocus();
-                }
-//        	}
-            }
-            ((HomePageActivity) getActivity()).resetBorderFocus();
-        }
         ImageView[] vaietys = new ImageView[]{vaiety_thumb1, vaiety_thumb2, vaiety_thumb3};
         looppost.clear();
         for (int i = 0; i < carousellist.size() && i < 3; i++) {
@@ -449,6 +432,25 @@ public class EntertainmentFragment extends ChannelBaseFragment {
         } else if (postlist.get(7).getCorner() == 3) {
             vaiety_channel4_image.setModeType(2);
         }
+
+        if (scrollFromBorder) {
+            if (isRight) {//右侧移入
+                if ("bottom".equals(bottomFlag)) {//下边界移入
+                    vaiety_channel5.requestFocus();
+                } else {//上边界边界移入
+                    vaiety_card2_image.requestFocus();
+                }
+//        		}
+            } else {//左侧移入
+                if ("bottom".equals(bottomFlag)) {
+                    vaiety_channel1_image.requestFocus();
+                } else {
+                    vaiety_post.requestFocus();
+                }
+//        	}
+            }
+            ((HomePageActivity) getActivity()).resetBorderFocus();
+        }
     }
 
     private Handler imageswitch = new Handler() {
@@ -504,6 +506,7 @@ public class EntertainmentFragment extends ChannelBaseFragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        isDestroyed = true;
     }
 
     private void fetchPage(String url) {
@@ -518,6 +521,9 @@ public class EntertainmentFragment extends ChannelBaseFragment {
 
                     @Override
                     public void onNext(HomePagerEntity homePagerEntity) {
+                        if (isDestroyed){
+                            return;
+                        }
                         entity = homePagerEntity;
                         if (mContext == null || entity == null) {
                             new CallaPlay().exception_except("launcher", "launcher", channelEntity.getChannel(),
@@ -555,6 +561,9 @@ public class EntertainmentFragment extends ChannelBaseFragment {
 
                     @Override
                     public void onError(Throwable throwable) {
+                        if (isDestroyed){
+                            return;
+                        }
                         throwable.printStackTrace();
                         setSmartPostErrorTime();
                         fillData(carousellist, posters);
@@ -562,6 +571,9 @@ public class EntertainmentFragment extends ChannelBaseFragment {
 
                     @Override
                     public void onNext(ArrayList<HomePagerEntity.Poster> smartPosters) {
+                        if (isDestroyed){
+                            return;
+                        }
                         if (smartPosters.size() < 8){
                             fillData(carousellist, posters);
                         }else {

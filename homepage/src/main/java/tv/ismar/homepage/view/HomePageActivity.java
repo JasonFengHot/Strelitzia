@@ -1265,7 +1265,18 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
     }
 
     @Override
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
+        if (scrollFromBorder) {
+            return true;
+        }
+        return super.onKeyUp(keyCode, event);
+    }
+
+    @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (scrollFromBorder) {
+            return true;
+        }
         if ("lcd_s3a01".equals(VodUserAgent.getModelName())) {
             if (keyCode == 707 || keyCode == 774 || keyCode == 253) {
                 isneedpause = false;

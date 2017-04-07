@@ -84,6 +84,7 @@ public class SportFragment extends ChannelBaseFragment {
     private Subscription sportSubscription;
     private Subscription gameSubscription;
     private Subscription smartRecommendPostSub;
+    private boolean isDestroyed = false;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -260,6 +261,12 @@ public class SportFragment extends ChannelBaseFragment {
     }
 
     @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        isDestroyed = true;
+    }
+
+    @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         games = new ArrayList<SportGame>();
         if(channelEntity != null) {
@@ -280,6 +287,9 @@ public class SportFragment extends ChannelBaseFragment {
 
                     @Override
                     public void onNext(HomePagerEntity homePagerEntity) {
+                        if (isDestroyed) {
+                            return;
+                        }
                         if (homePagerEntity == null) {
                             new CallaPlay().exception_except("launcher", "launcher", channelEntity.getChannel(),
                                     "", 0, channelEntity.getHomepage_url(),
@@ -325,6 +335,9 @@ public class SportFragment extends ChannelBaseFragment {
 
                     @Override
                     public void onNext(Sport sport) {
+                        if (isDestroyed) {
+                            return;
+                        }
                         if (sport == null) {
                             new CallaPlay().exception_except("launcher", "launcher", channelEntity.getChannel(),
                                     "", 0, "api/tv/living_video/sport/",
@@ -354,6 +367,9 @@ public class SportFragment extends ChannelBaseFragment {
 
                     @Override
                     public void onNext(Game game) {
+                        if (isDestroyed) {
+                            return;
+                        }
                         if (game == null) {
                             new CallaPlay().exception_except("launcher", "launcher", channelEntity.getChannel(),
                                     "", 0, "api/tv/living_video/game/",
@@ -440,24 +456,8 @@ public class SportFragment extends ChannelBaseFragment {
             }
         });
 
-        if (scrollFromBorder) {
-            if (isRight) {//右侧移入
-                if ("bottom".equals(bottomFlag)) {//下边界移入
-                    sport_channel5.requestFocus();
-                } else {//上边界边界移入
-                    sports_live1.requestFocus();
-                }
-//	        		}
-            } else {//左侧移入
-                if ("bottom".equals(bottomFlag)) {
-                    sport_channel1_image.requestFocus();
-                } else {
-                    sport_card1.requestFocus();
-                }
-//	        	}
-            }
-            ((HomePageActivity) getActivity()).resetBorderFocus();
-        }
+        isPosterInit = true;
+        resetBorder();
     }
 
     private View.OnFocusChangeListener ItemOnFocusListener = new View.OnFocusChangeListener() {
@@ -656,6 +656,34 @@ public class SportFragment extends ChannelBaseFragment {
         if (arrowUp.getVisibility() == View.VISIBLE) {
             arrowUp.bringToFront();
         }
+
+        isLiveInit = true;
+        resetBorder();
+    }
+
+    private boolean isPosterInit, isLiveInit;
+
+    private void resetBorder(){
+        if (isPosterInit && isLiveInit) {
+            if (scrollFromBorder) {
+                if (isRight) {//右侧移入
+                    if ("bottom".equals(bottomFlag)) {//下边界移入
+                        sport_channel5.requestFocus();
+                    } else {//上边界边界移入
+                        sports_live1.requestFocus();
+                    }
+//	        		}
+                } else {//左侧移入
+                    if ("bottom".equals(bottomFlag)) {
+                        sport_channel1_image.requestFocus();
+                    } else {
+                        sport_card1.requestFocus();
+                    }
+//	        	}
+                }
+                ((HomePageActivity) getActivity()).resetBorderFocus();
+            }
+        }
     }
 
     private Handler test = new Handler() {
@@ -711,6 +739,9 @@ public class SportFragment extends ChannelBaseFragment {
 
                     @Override
                     public void onError(Throwable throwable) {
+                        if (isDestroyed) {
+                            return;
+                        }
                         throwable.printStackTrace();
                         setSmartPostErrorTime();
                         fillData(carousellist, posters);
@@ -718,6 +749,9 @@ public class SportFragment extends ChannelBaseFragment {
 
                     @Override
                     public void onNext(ArrayList<HomePagerEntity.Poster> smartPosters) {
+                        if (isDestroyed) {
+                            return;
+                        }
                         if (smartPosters.size() < 4){
                             fillData(carousellist, posters);
                         }else {
