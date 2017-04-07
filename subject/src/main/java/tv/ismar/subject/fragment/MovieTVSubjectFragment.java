@@ -33,6 +33,7 @@ import tv.ismar.app.db.FavoriteManager;
 import tv.ismar.app.entity.Favorite;
 import tv.ismar.app.models.SubjectEntity;
 import tv.ismar.app.network.entity.PayLayerVipEntity;
+import tv.ismar.app.network.entity.SubjectPayLayerEntity;
 import tv.ismar.app.util.Utils;
 import tv.ismar.searchpage.utils.JasmineUtil;
 import tv.ismar.statistics.PurchaseStatistics;
@@ -324,22 +325,22 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnClickList
     //购买专题页
     private void buySubject() {
         final int jumpTo =PageIntent.PAYVIP;
-        int cpid = 3;
-        for (int i = 0; i <mSubjectEntity.getObjects().size() ; i++) {
-            SubjectEntity.ObjectsBean item=mSubjectEntity.getObjects().get(i);
-            if(item.getExpense()!=null){
-                if(item.getExpense().cpid==2) {
-                    cpid = 2;
-                    break;
-                }
-
-            }
-        }
+//        int cpid = 3;
+//        for (int i = 0; i <mSubjectEntity.getObjects().size() ; i++) {
+//            SubjectEntity.ObjectsBean item=mSubjectEntity.getObjects().get(i);
+//            if(item.getExpense()!=null){
+//                if(item.getExpense().cpid==2) {
+//                    cpid = 2;
+//                    break;
+//                }
+//
+//            }
+//        }
         //判断用户是否有最高的观影权限
-        ((SubjectActivity)getActivity()).mSkyService.apiPaylayerVipSubject(cpid+"",709764+"")
+        ((SubjectActivity)getActivity()).mSkyService.apiPaylayerVipSubject(709764+"")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(((SubjectActivity)getActivity()).new BaseObserver<PayLayerVipEntity>(){
+                .subscribe(((SubjectActivity)getActivity()).new BaseObserver<SubjectPayLayerEntity>(){
 
 
                     @Override
@@ -348,11 +349,11 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnClickList
                     }
 
                     @Override
-                    public void onNext(PayLayerVipEntity payLayerVipEntity) {
-                        if(payLayerVipEntity.gather_per){
+                    public void onNext(SubjectPayLayerEntity subjectPayLayerEntity) {
+                        if(subjectPayLayerEntity.gather_per){
                             showToast("您已拥有本专题所有影片观看权限");
                         }else{
-                            PageIntentInterface.PaymentInfo paymentInfo = new PageIntentInterface.PaymentInfo(item, id, jumpTo, 3);
+                            PageIntentInterface.PaymentInfo paymentInfo = new PageIntentInterface.PaymentInfo(item, subjectPayLayerEntity.getPk(), jumpTo, subjectPayLayerEntity.getCpid());
                             String userName = IsmartvActivator.getInstance().getUsername();
                             String title = mSubjectEntity.getTitle();
 
