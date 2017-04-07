@@ -1,20 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#333333"
+    android:alpha="0.75"
+    >
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/subject_601"
+        android:layout_height="@dimen/subject_83"
         android:textColor="@color/_ff9c3c"
         android:text="请使用微信扫描二维码"
-        android:textSize="36px"
+        android:textSize="@dimen/text_size_60sp"
+        android:gravity="center"
+        android:layout_marginLeft="@dimen/subject_659"
+        android:layout_marginTop="@dimen/subject_144"
         />
     <ImageView
         android:id="@+id/code_image"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_width="@dimen/subject_512"
+        android:layout_height="@dimen/subject_512"
+        android:layout_marginTop="@dimen/subject_43"
+        android:layout_gravity="center_horizontal"
+        />
     <Button
         android:id="@+id/subscribe_back"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_width="@dimen/subject_216"
+        android:layout_height="@dimen/subject_72"
+        android:background="@drawable/subcribe_back"
+        android:layout_marginTop="@dimen/subject_44"
+        android:layout_gravity="center_horizontal"
+        />
 </LinearLayout>

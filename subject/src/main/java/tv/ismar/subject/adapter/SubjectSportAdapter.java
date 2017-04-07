@@ -4,6 +4,7 @@ package tv.ismar.subject.adapter;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,9 +33,10 @@ public class SubjectSportAdapter extends RecyclerView.Adapter<SportViewHolder> {
     private ArrayList<Objects> itemList;
     private Context mContext;
     private OnItemFocusedListener mOnItemFocusedListener;
+    private OnItemClickListener mOnItemClickListener;
+    private OnItemKeyListener onItemKeyListener;
     private String TAG="subjectSportAdapter";
     private String type="NBA";
-    private boolean isFirst=true;
     public SubjectSportAdapter(Context context){
         mContext=context;
 
@@ -46,7 +48,12 @@ public class SubjectSportAdapter extends RecyclerView.Adapter<SportViewHolder> {
     public void setOnItemFocusedListener(OnItemFocusedListener mOnItemFocusedListener) {
         this.mOnItemFocusedListener = mOnItemFocusedListener;
     }
-
+    public void setOnItemClickListener(OnItemClickListener mOnItemClickListener) {
+        this.mOnItemClickListener = mOnItemClickListener;
+    }
+    public  void setOnItemKeyListener(OnItemKeyListener onItemKeyListener){
+        this.onItemKeyListener=onItemKeyListener;
+    }
 
     @Override
     public long getItemId(int position) {
@@ -72,33 +79,40 @@ public class SubjectSportAdapter extends RecyclerView.Adapter<SportViewHolder> {
         holder.itemView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                int pos =holder.getLayoutPosition();
+                int pos = position;
                 mOnItemFocusedListener.onItemfocused(v, pos, hasFocus);
-                if (hasFocus) {
-                    if (lastview != null&&lastindex!=pos) {
-                        lastview.nomarl.setVisibility(View.VISIBLE);
-                        lastview.focus_tobig.setVisibility(View.GONE);
-                    }
-                        holder.nomarl.setVisibility(View.GONE);
-                        holder.focus_tobig.setVisibility(View.VISIBLE);
-
-
-                } else {
-                    lastview=holder;
-                    lastindex=pos;
+//                if (hasFocus) {
+//                    if (lastview != null&&lastindex!=position) {
+//                        lastview.nomarl.setVisibility(View.VISIBLE);
+//                        lastview.focus_tobig.setVisibility(View.GONE);
+//                    }
+//                        holder.nomarl.setVisibility(View.GONE);
+//                        holder.focus_tobig.setVisibility(View.VISIBLE);
+//                } else {
+//                    lastview=holder;
+//                    lastindex=position;
 //                    Log.i("sportlist0","adapter false : "+lastindex);
-                }
+//                }
+            }
+        });
+        holder.itemView.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                onItemKeyListener.onItemKeyListener(v,keyCode,event);
+                return false;
             }
         });
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                v.requestFocus();
+                int pos = holder.getLayoutPosition();
+                mOnItemClickListener.onItemClick(v,pos);
             }
         });
-//        if(position==itemList.size()-1){
-//            holder.itemView.setNextFocusDownId(holder.itemView.getId());
-//        }
+        if(position==0){
+            holder.itemView.requestFocusFromTouch();
+            holder.itemView.requestFocus();
+        }
         if(type.equals("NBA")) {
             Picasso.with(mContext).load(objects.at_home_logo).into(holder.home_logo);
             Picasso.with(mContext).load(objects.at_home_logo).into(holder.big_home_logo);
@@ -106,6 +120,8 @@ public class SubjectSportAdapter extends RecyclerView.Adapter<SportViewHolder> {
             Picasso.with(mContext).load(objects.be_away_logo).into(holder.big_away_logo);
             holder.away_name.setText(objects.be_away_name);
             holder.home_name.setText(objects.at_home_name);
+            holder.big_away_name.setText(objects.be_away_name);
+            holder.big_home_name.setText(objects.at_home_name);
         }else{
             holder.big_home.setText("(客)");
             holder.big_away.setText("(主)");
@@ -115,6 +131,8 @@ public class SubjectSportAdapter extends RecyclerView.Adapter<SportViewHolder> {
             Picasso.with(mContext).load(objects.be_away_logo).into(holder.big_home_logo);
             holder.away_name.setText(objects.at_home_name);
             holder.home_name.setText(objects.be_away_name);
+            holder.big_away_name.setText(objects.at_home_name);
+            holder.big_home_name.setText(objects.be_away_name);
         }
         Boolean is_alive=videoIsStart(objects.start_time);
         Log.i("subject",is_alive+"");
@@ -143,6 +161,7 @@ public class SubjectSportAdapter extends RecyclerView.Adapter<SportViewHolder> {
             holder.nomarl.setBackgroundResource(R.drawable.emphasis_game_normal);
             holder.focus_tobig.setBackgroundResource(R.drawable.emphasis_game_focus);
         }
+
     }
 
     @Override

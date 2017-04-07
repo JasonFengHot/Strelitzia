@@ -638,10 +638,11 @@ public interface SkyService {
     Observable<SubjectPayLayerEntity> apiPaylayerVipSubject(
             @Path("item_id") String item_id
     );
-    @GET("accounts/sports/subscribe/{item_id}/{type}/")
+
+    @GET("accounts/sports/subscribe/")
     Observable<ResponseBody> getSubscribeImage(
-            @Path("item_id") int pk,
-            @Path("type") String type
+            @Query("item_id") int pk,
+            @Query("type") String type
     );
 
 
