@@ -40,12 +40,10 @@ public class ConnectivityChangeReceiver extends BroadcastReceiver {
                 startIntervalActive(context);
             }
 
-            if (BootUpdateReceiver.checkUpdate = true) {
+            if (BootUpdateReceiver.checkUpdate == true) {
                 BootUpdateReceiver.checkUpdate = false;
                 checkUpdate(context);
             }
-
-
         }
 
         NetworkInfo tmpInfo = (NetworkInfo) intent.getExtras().get(ConnectivityManager.EXTRA_NETWORK_INFO);
