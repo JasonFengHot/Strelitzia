@@ -908,7 +908,10 @@ public class ChannelFragment extends Fragment implements OnItemSelectedListener,
         currentposition = position;
         if (item != null) {
             try{
-            if (item.model_name.equals("package")) {
+               if(item.content_model.contains("gather")){
+                    PageIntent intent=new PageIntent();
+                    intent.toSubject(getActivity(),item.content_model,item.pk,"list");
+                }else if (item.model_name.equals("package")) {
                 int sectionIndex = mHGridAdapter.getSectionIndex(position);
                 final Section s = mSectionList.get(sectionIndex);
                 PageIntent intent =new PageIntent();
@@ -918,10 +921,7 @@ public class ChannelFragment extends Fragment implements OnItemSelectedListener,
                 intent.setAction("tv.ismar.daisy.Topic");
                 intent.putExtra("url", item.url);
                 startActivity(intent);
-            }else if(item.model_name.contains("gather")){
-                PageIntent intent=new PageIntent();
-                intent.toSubject(getActivity(),item.model_name,item.pk,"list");
-            } else {
+            }else {
                 if (item != null) {
                     mSectionProperties.put(EventProperty.TO_ITEM, item.pk);
                     mSectionProperties.put(EventProperty.TO_TITLE, item.title);

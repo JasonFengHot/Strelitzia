@@ -170,11 +170,10 @@ public class PageIntent implements PageIntentInterface {
     }
 
     public void toSearch(Context context) {
-//        Intent intent = new Intent();
-//        intent.setAction("tv.ismar.searchpage.search");
-//        intent.putExtra("frompage","search");
-//        context.startActivity(intent);
-        toSubject(context,"moviegather",709764,"launcher");
+        Intent intent = new Intent();
+        intent.setAction("tv.ismar.searchpage.search");
+        intent.putExtra("frompage","search");
+        context.startActivity(intent);
     }
 
     @Override

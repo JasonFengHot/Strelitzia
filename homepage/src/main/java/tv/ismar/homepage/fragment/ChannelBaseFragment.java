@@ -124,7 +124,11 @@ public class ChannelBaseFragment extends Fragment {
             } else {
                 pk = SimpleRestClient.getItemId(url, new boolean[1]);
                 Log.i("basefragment",url);
-                if ("item".equals(mode_name)) {
+                if(contentMode.contains("gather")){
+                    int itemPk = Utils.getItemPk(url);
+                    PageIntent intent1=new PageIntent();
+                    intent1.toSubject(mContext,contentMode,itemPk,"homepage");
+                }else if ("item".equals(mode_name)) {
                     pk = SimpleRestClient.getItemId(url, new boolean[1]);
                     PageIntent pageIntent = new PageIntent();
                     pageIntent.toDetailPage(mContext, "homepage", pk);
@@ -152,10 +156,6 @@ public class ChannelBaseFragment extends Fragment {
 //                    tool.channel = channelEntity.getChannel();
 //                    tool.fromPage = "homepage";
 //                    tool.initClipInfo(url, InitPlayerTool.FLAG_URL);
-                }else if(mode_name.contains("gather")){
-                    int itemPk = Utils.getItemPk(url);
-                    PageIntent intent1=new PageIntent();
-                    intent1.toSubject(mContext,mode_name,itemPk,"homepage");
                 }
             }
             CallaPlay play = new CallaPlay();

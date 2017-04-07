@@ -138,7 +138,7 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnClickList
         } else {
             isnet = "no";
         }
-        ((SubjectActivity)getActivity()).mSkyService.apiSubject(709764+"")
+        ((SubjectActivity)getActivity()).mSkyService.apiSubject(id+"")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(((SubjectActivity)getActivity()).new BaseObserver<SubjectEntity>(){
@@ -325,19 +325,8 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnClickList
     //购买专题页
     private void buySubject() {
         final int jumpTo =PageIntent.PAYVIP;
-//        int cpid = 3;
-//        for (int i = 0; i <mSubjectEntity.getObjects().size() ; i++) {
-//            SubjectEntity.ObjectsBean item=mSubjectEntity.getObjects().get(i);
-//            if(item.getExpense()!=null){
-//                if(item.getExpense().cpid==2) {
-//                    cpid = 2;
-//                    break;
-//                }
-//
-//            }
-//        }
         //判断用户是否有最高的观影权限
-        ((SubjectActivity)getActivity()).mSkyService.apiPaylayerVipSubject(709764+"")
+        ((SubjectActivity)getActivity()).mSkyService.apiPaylayerVipSubject(id+"")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(((SubjectActivity)getActivity()).new BaseObserver<SubjectPayLayerEntity>(){

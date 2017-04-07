@@ -62,7 +62,7 @@ public class SubjectTvAdapter extends RecyclerView.Adapter<MovieViewHolder> {
             holder.movie_item_score.setVisibility(View.VISIBLE);
         }
         holder.movie_item_title.setText(item.getTitle());
-        Picasso.with(mContext).load(item.getPoster_url()).memoryPolicy(MemoryPolicy.NO_CACHE).memoryPolicy(MemoryPolicy.NO_STORE).into(holder.movie_item_poster);
+        Picasso.with(mContext).load(item.getPoster_url()).memoryPolicy(MemoryPolicy.NO_CACHE).memoryPolicy(MemoryPolicy.NO_STORE).placeholder(R.drawable.list_item_preview_bg).into(holder.movie_item_poster);
         if(item.getExpense()!=null){
             if(item.getExpense().cptitle!=null){
                 holder.movie_item_mark.setText(item.getExpense().cptitle);
