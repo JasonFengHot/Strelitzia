@@ -70,7 +70,7 @@ public class DetailPageActivity extends BaseActivity{
         itemPK = intent.getIntExtra(EXTRA_PK, -1);
         String itemJson = intent.getStringExtra(EXTRA_ITEM_JSON);
         source = intent.getStringExtra(EXTRA_SOURCE);
-        if (source.equals("launcher")){
+        if (source!=null&&source.equals("launcher")){
             AppConstant.purchase_entrance_page = "launcher";
         }
         int type = intent.getIntExtra(EXTRA_TYPE, 0);
