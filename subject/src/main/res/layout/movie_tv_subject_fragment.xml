@@ -141,6 +141,7 @@
             android:layout_marginLeft="@dimen/subject_btn_ml"
             android:focusable="true"
             android:layout_marginBottom="@dimen/subject_btn_mb"
+            android:nextFocusRight="@id/subject_btn_like"
             />
     </LinearLayout>
 </RelativeLayout>
