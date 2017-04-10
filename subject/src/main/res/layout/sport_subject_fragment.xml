@@ -21,6 +21,8 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:id="@+id/game_list"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
         >
         <ImageView
             android:id="@+id/up_image"
@@ -34,6 +36,7 @@
             android:id="@+id/sport_list"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/sport_list_H"
+            android:clickable="false"
             android:layout_marginTop="@dimen/sport_list_MT"
             >
         </android.support.v7.widget.RecyclerView>
@@ -57,6 +60,7 @@
         android:clipToPadding="false"
         android:clipChildren="false"
         android:layout_toRightOf="@+id/game_list"
+        android:focusableInTouchMode="false"
         >
         <RelativeLayout
             android:layout_width="@dimen/sport_right_rel_W"

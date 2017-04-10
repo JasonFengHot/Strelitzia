@@ -30,7 +30,7 @@ import tv.ismar.subject.R;
  */
 
 public class SubjectSportAdapter extends RecyclerView.Adapter<SportViewHolder> {
-    private ArrayList<Objects> itemList;
+    private ArrayList<Objects> itemList=new ArrayList<Objects>();
     private Context mContext;
     private OnItemFocusedListener mOnItemFocusedListener;
     private OnItemClickListener mOnItemClickListener;
@@ -81,24 +81,17 @@ public class SubjectSportAdapter extends RecyclerView.Adapter<SportViewHolder> {
             public void onFocusChange(View v, boolean hasFocus) {
                 int pos = position;
                 mOnItemFocusedListener.onItemfocused(v, pos, hasFocus);
-//                if (hasFocus) {
-//                    if (lastview != null&&lastindex!=position) {
-//                        lastview.nomarl.setVisibility(View.VISIBLE);
-//                        lastview.focus_tobig.setVisibility(View.GONE);
-//                    }
-//                        holder.nomarl.setVisibility(View.GONE);
-//                        holder.focus_tobig.setVisibility(View.VISIBLE);
-//                } else {
-//                    lastview=holder;
-//                    lastindex=position;
-//                    Log.i("sportlist0","adapter false : "+lastindex);
-//                }
             }
         });
         holder.itemView.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 onItemKeyListener.onItemKeyListener(v,keyCode,event);
+                if(keyCode==20){
+                    if(position==itemList.size()-1){
+                            return true;
+                    }
+                }
                 return false;
             }
         });

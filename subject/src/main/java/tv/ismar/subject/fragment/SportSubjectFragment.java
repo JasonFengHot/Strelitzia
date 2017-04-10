@@ -92,7 +92,7 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
     private TextView game_time,title;
     private Objects objects;
     private String subject_type="NBA";
-    private int mSelectPosition=0;
+    private int mSelectPosition=-1;
     private PopupWindow popupWindow;
     private View lastSelectView,currentSelectView;
     private boolean live_list=false;
@@ -100,6 +100,14 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view=inflater.inflate(R.layout.sport_subject_fragment,null);
+        view.getViewTreeObserver().addOnGlobalFocusChangeListener(new ViewTreeObserver.OnGlobalFocusChangeListener() {
+            @Override
+            public void onGlobalFocusChanged(View oldFocus, View newFocus) {
+                if(newFocus!=null){
+                    Log.i("ss",newFocus.toString());
+                }
+            }
+        });
         sportlist= (RecyclerView) view.findViewById(R.id.sport_list);
         price= (TextView) view.findViewById(R.id.price);
         bg= (ImageView) view.findViewById(R.id.bg_fragment);
@@ -134,6 +142,7 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
         detail_labelImage= (LabelImageView) view.findViewById(R.id.detail_labelImage);
         sportlist.setLayoutManager(new LinearLayoutManager(getActivity()));
         sportlist.addItemDecoration(new SpacesItemDecoration(20));
+        sportlist.setHovered(false);
         skyService=SkyService.ServiceManager.getService();
         madpter=new SubjectSportAdapter(getActivity());
         madpter.setOnItemFocusedListener(this);
@@ -184,13 +193,13 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
     @Override
     public void onItemfocused(View view, int position, boolean hasFocus) {
         if(!hasFocus){
-            Log.i("live_list","liv  "+live_list);
+            Log.i("live_list","onItemfocus  "+live_list);
             lastSelectView=view;
             if(!live_list){
                 listItemToNormal(view);
             }
         }else{
-            Log.i("scolllist","onItemFocus "+mSelectPosition);
+            Log.i("relate","onItemFocus "+mSelectPosition+"  position:"+position);
             mSelectPosition=position;
             currentSelectView=view;
             listItemToBig(view);
@@ -266,12 +275,15 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
             }else{
                 subscribe.setVisibility(View.GONE);
             }
-           getRelateData(objects.pk);
+            Log.i("pkkk","lastpk: "+lastpk+"  pk:"+objects.pk);
+            if(lastpk!=objects.pk)
+                getRelateData(objects.pk);
 
         }
     }
-
+    private int lastpk=0;
     private void getRelateData(int pk){
+        lastpk=pk;
         skyService.getRelatedArray(pk).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread()).subscribe(((BaseActivity) getActivity()).new BaseObserver<Item[]>() {
             @Override
@@ -322,9 +334,11 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
     }
     @Override
     public void onFocusChange(View v, boolean hasFocus) {
+        Log.i("live_list","sportlist focus:"+hasFocus);
         if(hasFocus){
             if(lastSelectView!=null){
-                sportlist.getChildViewHolder(lastSelectView).itemView.requestFocus();
+                Log.i("live_list","lastview: "+lastSelectView.toString());
+                sportlist.getChildViewHolder(lastSelectView).itemView.requestFocusFromTouch();
             }
         }
     }
@@ -346,7 +360,7 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
 
     @Override
     public boolean onHover(View v, MotionEvent event) {
-
+        Log.i("live_list"," onhover "+event.getAction());
         switch (event.getAction()){
             case MotionEvent.ACTION_HOVER_ENTER:
                 case MotionEvent.ACTION_HOVER_MOVE:
@@ -482,7 +496,7 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
     public void onItemClick(View view, int position) {
         Log.i("live_list","onclick"+position);
         if(position!=mSelectPosition) {
-            view.requestFocusFromTouch();
+           view.requestFocusFromTouch();
             live_list=false;
         }else {
             live_list=true;
@@ -493,11 +507,6 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
     public void onItemKeyListener(View v, int keyCode, KeyEvent event) {
         Log.i("eventss","  "+keyCode);
         switch (keyCode){
-            case 20:
-                if(mSelectPosition==list.size()-1){
-
-                }
-                break;
             case 22:
                 live_list=true;
                 break;
