@@ -47,7 +47,8 @@ public class SubjectActivity extends BaseActivity{
         frompage = intent.getStringExtra("frompage");
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
         switch (gather_type){
-            case "sportgather":
+            case "nbagather":
+            case "premierLeaguegather":
                 fragmentTransaction.replace(R.id.subject_frame,new SportSubjectFragment());
                 break;
             case "moviegather":

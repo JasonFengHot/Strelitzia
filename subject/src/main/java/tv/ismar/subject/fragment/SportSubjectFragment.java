@@ -122,9 +122,15 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
 
         buy= (Button) view.findViewById(R.id.buy);
         play= (Button) view.findViewById(R.id.play);
-        cp_title= (ImageView) view.findViewById(R.id.cp_title);
         subscribe= (Button) view.findViewById(R.id.subscribe);
+        buy.setOnClickListener(this);
+        play.setOnClickListener(this);
         subscribe.setOnClickListener(this);
+        buy.setOnHoverListener(this);
+        play.setOnHoverListener(this);
+        subscribe.setOnHoverListener(this);
+
+        cp_title= (ImageView) view.findViewById(R.id.cp_title);
         detail_labelImage= (LabelImageView) view.findViewById(R.id.detail_labelImage);
         sportlist.setLayoutManager(new LinearLayoutManager(getActivity()));
         sportlist.addItemDecoration(new SpacesItemDecoration(20));
@@ -160,7 +166,6 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
             public void onNext(Subject subject) {
                 if(subject!=null){
                     list=subject.objects;
-                    list.addAll(subject.objects);
                     if(subject.content_model.contains("nba")){
                         subject_type="NBA";
                     }else{
@@ -178,7 +183,6 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
     }
     @Override
     public void onItemfocused(View view, int position, boolean hasFocus) {
-
         if(!hasFocus){
             Log.i("live_list","liv  "+live_list);
             lastSelectView=view;
@@ -208,7 +212,7 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
                 if (playCheckSubsc != null && !playCheckSubsc.isUnsubscribed()) {
                     playCheckSubsc.unsubscribe();
                 }
-                playCheckSubsc=skyService.apiPlayCheck(String.valueOf(objects.pk), null, null)
+                playCheckSubsc=skyService.apiPlayCheck(String.valueOf(objects.item_pk), null, null)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(((BaseActivity) getActivity()).new BaseObserver<ResponseBody>() {
@@ -262,7 +266,7 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
             }else{
                 subscribe.setVisibility(View.GONE);
             }
-     //      getRelateData(objects.pk);
+           getRelateData(objects.pk);
 
         }
     }
@@ -277,7 +281,9 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
 
             @Override
             public void onNext(Item[] items) {
-                buildRelateList(items);
+                if(items!=null&&items.length>=3) {
+                    buildRelateList(items);
+                }
             }
         });
     }
@@ -289,6 +295,9 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
         relate_text1.setText(items[0].title);
         relate_text2.setText(items[1].title);
         relate_text3.setText(items[2].title);
+        relate_image1.setOnHoverListener(this);
+        relate_image2.setOnHoverListener(this);
+        relate_image3.setOnHoverListener(this);
 
         final PageIntent intent=new PageIntent();
         relate_image1.setOnClickListener(new View.OnClickListener() {
@@ -337,7 +346,17 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
 
     @Override
     public boolean onHover(View v, MotionEvent event) {
-        live_list=true;
+
+        switch (event.getAction()){
+            case MotionEvent.ACTION_HOVER_ENTER:
+                case MotionEvent.ACTION_HOVER_MOVE:
+                    live_list=true;
+                    v.requestFocus();
+                    break;
+                default:
+                    break;
+        }
+
         return false;
     }
     private boolean click_arrow=false;
@@ -417,6 +436,7 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
 
     @Override
     public void onClick(View v) {
+        live_list=true;
         int i = v.getId();
         if (i == R.id.buy) {
             PayCheckUtil pay=new PayCheckUtil();
@@ -460,14 +480,27 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
 
     @Override
     public void onItemClick(View view, int position) {
-        view.requestFocusFromTouch();
+        Log.i("live_list","onclick"+position);
+        if(position!=mSelectPosition) {
+            view.requestFocusFromTouch();
+            live_list=false;
+        }else {
+            live_list=true;
+        }
     }
 
     @Override
     public void onItemKeyListener(View v, int keyCode, KeyEvent event) {
         Log.i("eventss","  "+keyCode);
-        if(keyCode==22){
-            live_list=true;
+        switch (keyCode){
+            case 20:
+                if(mSelectPosition==list.size()-1){
+
+                }
+                break;
+            case 22:
+                live_list=true;
+                break;
         }
     }
 }

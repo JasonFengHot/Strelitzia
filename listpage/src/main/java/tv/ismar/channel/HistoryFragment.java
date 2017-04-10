@@ -247,22 +247,18 @@ public class HistoryFragment extends Fragment implements ScrollableSectionList.O
 		clerHistory.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-//				if(mHGridAdapter!=null) {
-//					if(!isInGetHistoryTask) {
-//						if(!IsmartvActivator.getInstance().isLogin()){
-//							DaisyUtils.getHistoryManager(getActivity()).deleteAll("no");
-//							reset();
-//						}
-//						else{
-//							DaisyUtils.getHistoryManager(getActivity()).deleteAll("yes");
-//							EmptyAllHistory();
-//						}
-//					}
-//				}
-				Intent intent=new Intent();
-				intent.setAction("tv.ismar.daisy.subject");
-				intent.putExtra("gather_type","sportgather");
-				startActivity(intent);
+				if(mHGridAdapter!=null) {
+					if(!isInGetHistoryTask) {
+						if(!IsmartvActivator.getInstance().isLogin()){
+							DaisyUtils.getHistoryManager(getActivity()).deleteAll("no");
+							reset();
+						}
+						else{
+							DaisyUtils.getHistoryManager(getActivity()).deleteAll("yes");
+							EmptyAllHistory();
+						}
+					}
+				}
 			}
 		});
 		clerHistory.setOnFocusChangeListener(new View.OnFocusChangeListener() {

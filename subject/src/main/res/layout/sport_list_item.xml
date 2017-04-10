@@ -98,7 +98,7 @@
                 android:layout_height="@dimen/subject_60"
                 android:layout_toRightOf="@+id/home_name"
                 android:layout_marginLeft="@dimen/subject_5"
-                android:layout_marginTop="@dimen/subject_1146"
+                android:layout_marginTop="@dimen/subject_11"
                 />
     </RelativeLayout>
     <RelativeLayout
