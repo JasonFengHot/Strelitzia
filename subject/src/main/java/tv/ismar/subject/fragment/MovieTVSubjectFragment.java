@@ -289,6 +289,11 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnClickList
     @Override
     public void onClick(View v) {
         int i = v.getId();
+        if(type.contains("movie")){
+            focusView=movie_recyclerView.getFocusedChild();
+        }else{
+            focusView=tv_recyclerView.getFocusedChild();
+        }
         if (i == R.id.subject_btn_like) {
             if(!isFavorite()){
                 String url = IsmartvActivator.getInstance().getApiDomain() + "/api/item/" + id+ "/";
@@ -367,6 +372,7 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnClickList
 
     @Override
     public void onItemClick(View view, int position) {
+            focusView=view;
             PageIntent intent = new PageIntent();
             intent.toPlayPage(getActivity(), list.get(position).getPk(), list.get(position).getItem_pk(), Source.LAUNCHER);
     }
