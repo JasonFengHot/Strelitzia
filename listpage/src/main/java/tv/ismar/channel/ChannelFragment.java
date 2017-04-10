@@ -43,6 +43,7 @@ import java.util.regex.Pattern;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import tv.ismar.Utils.LogUtils;
+import tv.ismar.app.AppConstant;
 import tv.ismar.app.BaseActivity;
 import tv.ismar.app.core.PageIntent;
 import tv.ismar.app.core.SimpleRestClient;
@@ -239,6 +240,7 @@ public class ChannelFragment extends Fragment implements OnItemSelectedListener,
             right_shadow.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    mScrollableSectionList.currentState=mScrollableSectionList.STATE_GOTO_GRIDVIEW;
                     mHGridView.pageScroll(View.FOCUS_RIGHT);
                     view.requestFocus();
                     mHGridView.setFocusableInTouchMode(true);
@@ -595,7 +597,7 @@ public class ChannelFragment extends Fragment implements OnItemSelectedListener,
                                     percentage.setVisibility(View.VISIBLE);
 
                                         if (mSectionList != null) {
-                                            if (mSectionList.size() > 9) {
+                                            if (mSectionList.size() >= 9) {
                                                 arrow_right.setVisibility(View.VISIBLE);
                                             }
 
@@ -703,6 +705,7 @@ public class ChannelFragment extends Fragment implements OnItemSelectedListener,
 
         @Override
         public void onSectionSelectChanged(int index) {
+            Log.i("tabchange","index:"+index);
             getItemlistHandler.removeCallbacks(getItemlistRunnable);
             checkSectionChanged(index);
             mHGridView.jumpToSection(index);
@@ -712,6 +715,9 @@ public class ChannelFragment extends Fragment implements OnItemSelectedListener,
 
     @Override
     public void onResume() {
+        AppConstant.purchase_referer = "channel";
+        AppConstant.purchase_page = "list";
+        AppConstant.purchase_entrance_page = "list";
         mIsBusy = false;
 //        ((ChannelListActivity) getActivity()).registerOnMenuToggleListener(this);
         super.onResume();
@@ -908,10 +914,7 @@ public class ChannelFragment extends Fragment implements OnItemSelectedListener,
         currentposition = position;
         if (item != null) {
             try{
-               if(item.content_model.contains("gather")){
-                    PageIntent intent=new PageIntent();
-                    intent.toSubject(getActivity(),item.content_model,item.pk,"list");
-                }else if (item.model_name.equals("package")) {
+            if (item.model_name.equals("package")) {
                 int sectionIndex = mHGridAdapter.getSectionIndex(position);
                 final Section s = mSectionList.get(sectionIndex);
                 PageIntent intent =new PageIntent();
@@ -921,7 +924,7 @@ public class ChannelFragment extends Fragment implements OnItemSelectedListener,
                 intent.setAction("tv.ismar.daisy.Topic");
                 intent.putExtra("url", item.url);
                 startActivity(intent);
-            }else {
+            } else {
                 if (item != null) {
                     mSectionProperties.put(EventProperty.TO_ITEM, item.pk);
                     mSectionProperties.put(EventProperty.TO_TITLE, item.title);
@@ -970,6 +973,7 @@ public class ChannelFragment extends Fragment implements OnItemSelectedListener,
         int columnOfX = (position - itemCount) / rows + 1;
         int totalColumnOfSectionX = (int) (Math.ceil((float) mHGridAdapter.getSectionCount(sectionIndex) / (float) rows));
         int percentage = (int) ((float) columnOfX / (float) totalColumnOfSectionX * 100f);
+        Log.i("scrollchange","sectionIndex :"+sectionIndex+"  Percentage: "+percentage);
         mScrollableSectionList.setPercentage(sectionIndex + 1, percentage);
         checkSectionChanged(sectionIndex + 1);
         if (percentage == 100 && sectionIndex == mSectionList.size() - 1) {
@@ -1003,6 +1007,7 @@ public class ChannelFragment extends Fragment implements OnItemSelectedListener,
                 newSection = mSectionList.get(newSectionIndex);
             mSectionProperties.put(EventProperty.SECTION, newSection.slug);
             mSectionProperties.put(EventProperty.TITLE, newSection.title);
+            AppConstant.purchase_tab = newSection.title;
             mSectionProperties.put(EventProperty.SOURCE,"list");
 
             BaseActivity.baseSection = newSection.slug;

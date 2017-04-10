@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.preference.PreferenceManager;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -20,10 +22,14 @@ import com.blankj.utilcode.utils.StringUtils;
 
 import java.util.ArrayList;
 
+import cn.ismartv.truetime.TrueTime;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+import tv.ismar.account.C;
+import tv.ismar.account.IsmartvActivator;
+import tv.ismar.app.AppConstant;
 import tv.ismar.app.BaseActivity;
 import tv.ismar.app.core.PageIntent;
 import tv.ismar.app.core.SimpleRestClient;
@@ -34,6 +40,7 @@ import tv.ismar.app.entity.HomePagerEntity.Poster;
 import tv.ismar.app.models.Game;
 import tv.ismar.app.models.Sport;
 import tv.ismar.app.models.SportGame;
+import tv.ismar.app.network.SkyService;
 import tv.ismar.app.player.CallaPlay;
 import tv.ismar.app.player.InitPlayerTool;
 import tv.ismar.app.util.PicassoUtils;
@@ -76,6 +83,8 @@ public class SportFragment extends ChannelBaseFragment {
     private Subscription dataSubscription;
     private Subscription sportSubscription;
     private Subscription gameSubscription;
+    private Subscription smartRecommendPostSub;
+    private boolean isDestroyed = false;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -143,8 +152,11 @@ public class SportFragment extends ChannelBaseFragment {
                  test.sendMessage(msg);
 			}
 		});
+        sports_live1.setTag(R.id.view_position_tag, 3);
         sports_live1.setOnClickListener(arrowClickListener);
+        sports_live2.setTag(R.id.view_position_tag, 5);
         sports_live2.setOnClickListener(arrowClickListener);
+        sports_live3.setTag(R.id.view_position_tag, 7);
         sports_live3.setOnClickListener(arrowClickListener);
         sports_live1.setOnFocusChangeListener(new View.OnFocusChangeListener() {
 
@@ -233,15 +245,25 @@ public class SportFragment extends ChannelBaseFragment {
     @Override
     public void onPause() {
         super.onPause();
-        if (dataSubscription != null && !dataSubscription.isUnsubscribed()) {
+        if (dataSubscription != null && dataSubscription.isUnsubscribed()) {
             dataSubscription.unsubscribe();
         }
-        if (sportSubscription != null && !sportSubscription.isUnsubscribed()) {
+        if (sportSubscription != null && sportSubscription.isUnsubscribed()) {
             sportSubscription.unsubscribe();
         }
-        if (gameSubscription != null && !gameSubscription.isUnsubscribed()) {
+        if (gameSubscription != null && gameSubscription.isUnsubscribed()) {
             gameSubscription.unsubscribe();
         }
+
+        if (smartRecommendPostSub != null && smartRecommendPostSub.isUnsubscribed()) {
+            smartRecommendPostSub.unsubscribe();
+        }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        isDestroyed = true;
     }
 
     @Override
@@ -265,6 +287,9 @@ public class SportFragment extends ChannelBaseFragment {
 
                     @Override
                     public void onNext(HomePagerEntity homePagerEntity) {
+                        if (isDestroyed) {
+                            return;
+                        }
                         if (homePagerEntity == null) {
                             new CallaPlay().exception_except("launcher", "launcher", channelEntity.getChannel(),
                                     "", 0, channelEntity.getHomepage_url(),
@@ -281,7 +306,17 @@ public class SportFragment extends ChannelBaseFragment {
                         }else if("game".equals(channelEntity.getChannel())){
                             getGame();
                         }
-                        fillData(carousels, postlist);
+                        if (TextUtils.isEmpty(homePagerEntity.getRecommend_homepage_url())){
+
+                            fillData(carousels, postlist);
+                        }else {
+                            if (TrueTime.now().getTime() -  getSmartPostErrorTime()> C.SMART_POST_NEXT_REQUEST_TIME){
+                                smartRecommendPost( homePagerEntity.getRecommend_homepage_url(), postlist, carousels);
+                            }else {
+                                fillData(carousels, postlist);
+                            }
+
+                        }
                     }
                 });
     }
@@ -300,6 +335,9 @@ public class SportFragment extends ChannelBaseFragment {
 
                     @Override
                     public void onNext(Sport sport) {
+                        if (isDestroyed) {
+                            return;
+                        }
                         if (sport == null) {
                             new CallaPlay().exception_except("launcher", "launcher", channelEntity.getChannel(),
                                     "", 0, "api/tv/living_video/sport/",
@@ -329,6 +367,9 @@ public class SportFragment extends ChannelBaseFragment {
 
                     @Override
                     public void onNext(Game game) {
+                        if (isDestroyed) {
+                            return;
+                        }
                         if (game == null) {
                             new CallaPlay().exception_except("launcher", "launcher", channelEntity.getChannel(),
                                     "", 0, "api/tv/living_video/game/",
@@ -363,6 +404,15 @@ public class SportFragment extends ChannelBaseFragment {
             sportCards[i].setOnFocusChangeListener(ItemOnFocusListener);
             sportCards[i].setOnClickListener(ItemClickListener);
             looppost.add(carousels.get(i));
+
+            if (i == 0){
+                sportCards[i].setTag(R.id.view_position_tag, 1);
+            }else if (i ==1){
+                sportCards[i].setTag(R.id.view_position_tag, 4);
+            }else if (i ==2){
+                sportCards[i].setTag(R.id.view_position_tag, 6);
+            }
+
         }
         imageswitch.sendEmptyMessage(IMAGE_SWITCH_KEY);
 
@@ -370,16 +420,31 @@ public class SportFragment extends ChannelBaseFragment {
         TextView[] sportChannleSubtitles = {sport_channel1_subtitle, sport_channel2_subtitle, sport_channel3_subtitle, sport_channel4_subtitle};
         for (int i = 0; i < 4; i++) {
         	postlist.get(i).setPosition(i);
-            PicassoUtils.load(mContext, postlist.get(i).getCustom_image(), sportChannelImages[i]);
+            String imageUrl = postlist.get(i).getCustom_image();
+            if (TextUtils.isEmpty(imageUrl)){
+                imageUrl = postlist.get(i).getPoster_url();
+            }
+            PicassoUtils.load(mContext, imageUrl, sportChannelImages[i]);
             sportChannelImages[i].setTitle(postlist.get(i).getIntroduction());
             sportChannleSubtitles[i].setText(postlist.get(i).getTitle());
             sportChannelImages[i].setTag(postlist.get(i));
             sportChannelImages[i].setOnClickListener(ItemClickListener);
 
+            if (i == 0){
+                sportChannelImages[i].setTag(R.id.view_position_tag, 8);
+            }else if (i ==1){
+                sportChannelImages[i].setTag(R.id.view_position_tag, 9);
+            }else if (i == 2){
+                sportChannelImages[i].setTag(R.id.view_position_tag, 10);
+            }else if (i == 3){
+                sportChannelImages[i].setTag(R.id.view_position_tag, 11);
+            }
+
         }
 
         sport_channel5.setOnClickListener(ItemClickListener);
         sportspost.setOnClickListener(ItemClickListener);
+        sportspost.setTag(R.id.view_position_tag, 2);
 
         sportspost.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
@@ -391,24 +456,8 @@ public class SportFragment extends ChannelBaseFragment {
             }
         });
 
-        if (scrollFromBorder) {
-            if (isRight) {//右侧移入
-                if ("bottom".equals(bottomFlag)) {//下边界移入
-                    sport_channel5.requestFocus();
-                } else {//上边界边界移入
-                    sports_live1.requestFocus();
-                }
-//	        		}
-            } else {//左侧移入
-                if ("bottom".equals(bottomFlag)) {
-                    sport_channel1_image.requestFocus();
-                } else {
-                    sport_card1.requestFocus();
-                }
-//	        	}
-            }
-            ((HomePageActivity) getActivity()).resetBorderFocus();
-        }
+        isPosterInit = true;
+        resetBorder();
     }
 
     private View.OnFocusChangeListener ItemOnFocusListener = new View.OnFocusChangeListener() {
@@ -495,6 +544,12 @@ public class SportFragment extends ChannelBaseFragment {
 
         @Override
         public void onClick(View arg0) {
+            Object o = arg0.getTag(R.id.view_position_tag);
+            if (o !=null){
+                int viewPosition = (int) o;
+                AppConstant.purchase_tab = String.valueOf(viewPosition);
+            }
+
             SportGame data = (SportGame) arg0.getTag();
             if(data == null)
             	return;
@@ -553,6 +608,7 @@ public class SportFragment extends ChannelBaseFragment {
                         sports_live1.setModeType(6);
                     }
                     sports_live1.setTitle(games.get(position).getName());
+                    sports_live1.setTag(R.id.view_position_tag, 3);
                     break;
                 case 1:
                     PicassoUtils.load(mContext, games.get(position).getPoster_url(), sports_live2);
@@ -563,6 +619,7 @@ public class SportFragment extends ChannelBaseFragment {
                         sports_live2.setModeType(6);
                     }
                     sports_live2.setTitle(games.get(position).getName());
+                    sports_live2.setTag(R.id.view_position_tag, 5);
                     break;
                 case 2:
                     PicassoUtils.load(mContext, games.get(position).getPoster_url(), sports_live3);
@@ -574,6 +631,7 @@ public class SportFragment extends ChannelBaseFragment {
                         sports_live3.setModeType(6);
                     }
                     sports_live3.setTitle(games.get(position).getName());
+                    sports_live3.setTag(R.id.view_position_tag, 7);
                     break;
             }
         }
@@ -597,6 +655,34 @@ public class SportFragment extends ChannelBaseFragment {
         }
         if (arrowUp.getVisibility() == View.VISIBLE) {
             arrowUp.bringToFront();
+        }
+
+        isLiveInit = true;
+        resetBorder();
+    }
+
+    private boolean isPosterInit, isLiveInit;
+
+    private void resetBorder(){
+        if (isPosterInit && isLiveInit) {
+            if (scrollFromBorder) {
+                if (isRight) {//右侧移入
+                    if ("bottom".equals(bottomFlag)) {//下边界移入
+                        sport_channel5.requestFocus();
+                    } else {//上边界边界移入
+                        sports_live1.requestFocus();
+                    }
+//	        		}
+                } else {//左侧移入
+                    if ("bottom".equals(bottomFlag)) {
+                        sport_channel1_image.requestFocus();
+                    } else {
+                        sport_card1.requestFocus();
+                    }
+//	        	}
+                }
+                ((HomePageActivity) getActivity()).resetBorderFocus();
+            }
         }
     }
 
@@ -640,4 +726,55 @@ public class SportFragment extends ChannelBaseFragment {
             if(channelEntity != null)
               fetchSportGame(channelEntity.getHomepage_url());
 	    }
+
+    private void smartRecommendPost(String url, final ArrayList<HomePagerEntity.Poster>  posters,final ArrayList<Carousel> carousellist) {
+        smartRecommendPostSub = SkyService.ServiceManager.getCacheSkyService2().smartRecommendPost(url, IsmartvActivator.getInstance().getSnToken())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<ArrayList<HomePagerEntity.Poster>>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable throwable) {
+                        if (isDestroyed) {
+                            return;
+                        }
+                        throwable.printStackTrace();
+                        setSmartPostErrorTime();
+                        fillData(carousellist, posters);
+                    }
+
+                    @Override
+                    public void onNext(ArrayList<HomePagerEntity.Poster> smartPosters) {
+                        if (isDestroyed) {
+                            return;
+                        }
+                        if (smartPosters.size() < 4){
+                            fillData(carousellist, posters);
+                        }else {
+                            ArrayList<HomePagerEntity.Poster> posterArrayList = new ArrayList<>();
+                            if (smartPosters.size() - posterStartTag - 4 >= 0) {
+                                posterArrayList.addAll(smartPosters.subList(posterStartTag, posterStartTag + 4));
+                                posterStartTag = posterStartTag + 4;
+                            } else {
+                                if (smartPosters.size() <= posterStartTag){
+                                    posterArrayList.addAll(smartPosters.subList(0, 4));
+                                    posterStartTag =  4;
+                                }else {
+                                    posterArrayList.addAll(smartPosters.subList(posterStartTag, smartPosters.size()));
+                                    posterArrayList.addAll(smartPosters.subList(0, Math.abs(smartPosters.size() - posterStartTag - 4)));
+                                    posterStartTag = Math.abs(smartPosters.size() - posterStartTag - 4);
+                                }
+                            }
+                            fillData(carousellist, posterArrayList);
+                        }
+
+                    }
+                });
+    }
+
+    public static int posterStartTag = 0;
 }

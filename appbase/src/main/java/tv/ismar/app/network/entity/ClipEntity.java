@@ -110,9 +110,9 @@ public class ClipEntity {
      */
     private boolean is_vip;
     /**
-     * 奇艺2.1SDK需要新传入字段
+     * 奇艺2.1SDK需要新传入drm字段
      */
-    private boolean is_drm;
+    private String drm;
 
     public String getLow() {
         return low;
@@ -194,12 +194,12 @@ public class ClipEntity {
         this.is_vip = is_vip;
     }
 
-    public boolean is_drm() {
-        return is_drm;
+    public String getDrm() {
+        return drm;
     }
 
-    public void setIs_drm(boolean is_drm) {
-        this.is_drm = is_drm;
+    public void setDrm(String drm) {
+        this.drm = drm;
     }
 
     @Override
@@ -214,6 +214,6 @@ public class ClipEntity {
                 + "\n_4k:" + _4k
                 + "\niqiyi_4_0:" + iqiyi_4_0
                 + "\nis_vip:" + is_vip
-                + "\nis_drm:" + is_drm;
+                + "\nis_drm:" + drm;
     }
 }

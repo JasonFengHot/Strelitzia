@@ -7,6 +7,7 @@ import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -32,9 +33,14 @@ import cn.ismartv.downloader.DownloadEntity;
 import cn.ismartv.downloader.DownloadStatus;
 import cn.ismartv.downloader.Md5;
 import cn.ismartv.injectdb.library.query.Select;
+import cn.ismartv.truetime.TrueTime;
+import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+import tv.ismar.account.C;
+import tv.ismar.account.IsmartvActivator;
+import tv.ismar.app.AppConstant;
 import tv.ismar.app.core.SimpleRestClient;
 import tv.ismar.app.core.cache.CacheManager;
 import tv.ismar.app.core.cache.DownloadClient;
@@ -81,6 +87,7 @@ public class GuideFragment extends ChannelBaseFragment {
     private HashMap<Integer, Integer> carouselMap;
     private Subscription homePageSub;
     private boolean isDestroyed = false;
+    private Subscription smartRecommendPostSub;
 
     @Override
     public void onAttach(Activity activity) {
@@ -93,6 +100,7 @@ public class GuideFragment extends ChannelBaseFragment {
         super.onCreate(savedInstanceState);
 
     }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -121,6 +129,7 @@ public class GuideFragment extends ChannelBaseFragment {
                 film_post_layout.performClick();
             }
         });
+        film_post_layout.setTag(R.id.view_position_tag, 1);
         film_post_layout.setOnClickListener(ItemClickListener);
 
         mLeftTopView = mSurfaceView;
@@ -133,6 +142,7 @@ public class GuideFragment extends ChannelBaseFragment {
                 linkedVideoLoadingImage.setBackgroundDrawable(bitmapDrawable);
             }
         });
+
         return mView;
     }
 
@@ -145,8 +155,10 @@ public class GuideFragment extends ChannelBaseFragment {
     public void onDestroyView() {
         isDestroyed = true;
         mHandler.removeCallbacksAndMessages(null);
-        guideRecommmendList.removeAllViews();
-        guideRecommmendList = null;
+        if (guideRecommmendList!=null) {
+            guideRecommmendList.removeAllViews();
+            guideRecommmendList = null;
+        }
         mSurfaceView.setOnFocusChangeListener(null);
         mSurfaceView = null;
         itemFocusChangeListener = null;
@@ -170,6 +182,9 @@ public class GuideFragment extends ChannelBaseFragment {
     @Override
     public void onResume() {
         super.onResume();
+        AppConstant.purchase_channel = "homepage";
+        AppConstant.purchase_entrance_channel = "homepage";
+        AppConstant.purchase_page = "homepage";
         if (mCarousels == null) {
             fetchHomePage();
         } else {
@@ -185,6 +200,9 @@ public class GuideFragment extends ChannelBaseFragment {
         super.onPause();
         if (homePageSub != null && homePageSub.isUnsubscribed()) {
             homePageSub.unsubscribe();
+        }
+        if (smartRecommendPostSub != null && smartRecommendPostSub.isUnsubscribed()) {
+            smartRecommendPostSub.unsubscribe();
         }
     }
 
@@ -250,31 +268,74 @@ public class GuideFragment extends ChannelBaseFragment {
         }
 
         if (!posters.isEmpty()) {
-            initPosters(posters);
-        }
-        if (scrollFromBorder) {
-            if (isRight) {//右侧移入
-                if ("bottom".equals(bottomFlag)) {//下边界移入
-                    lastpostview.findViewById(R.id.poster_title).requestFocus();
-                } else {//上边界边界移入
-                    toppage_carous_imageView1.requestFocus();
+            if (TextUtils.isEmpty(homePagerEntity.getRecommend_homepage_url())) {
+                initPosters(posters);
+            }else {
+                if (TrueTime.now().getTime() -  getSmartPostErrorTime()> C.SMART_POST_NEXT_REQUEST_TIME){
+                    smartRecommendPost(homePagerEntity.getRecommend_homepage_url(), posters);
+                }else {
+                    initPosters(posters);
                 }
-//                		}
-            } else {//左侧移入
-                if (!StringUtils.isEmpty(bottomFlag)) {
-                    if ("bottom".equals(bottomFlag)) {
 
-                    } else {
-
-                    }
-                }
             }
-            ((HomePageActivity) getActivity()).resetBorderFocus();
         }
 
     }
 
+    private void smartRecommendPost(String url, final ArrayList<HomePagerEntity.Poster>  posters) {
+        smartRecommendPostSub =   SkyService.ServiceManager.getCacheSkyService2().smartRecommendPost(url, IsmartvActivator.getInstance().getSnToken())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<ArrayList<HomePagerEntity.Poster>>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable throwable) {
+                        if (isDestroyed){
+                            return;
+                        }
+                        throwable.printStackTrace();
+                        setSmartPostErrorTime();
+                        initPosters(posters);
+                    }
+
+                    @Override
+                    public void onNext(ArrayList<HomePagerEntity.Poster> smartPosters) {
+                        if (isDestroyed){
+                            return;
+                        }
+                        if (smartPosters.size() < 8){
+                            initPosters(posters);
+                        }else {
+                            ArrayList<HomePagerEntity.Poster> posterArrayList = new ArrayList<>();
+                            if (smartPosters.size() - posterStartTag - 8 >= 0) {
+                                posterArrayList.addAll(smartPosters.subList(posterStartTag, posterStartTag + 8));
+                                posterStartTag = posterStartTag + 8;
+                            } else {
+                                if (smartPosters.size() <= posterStartTag){
+                                    posterArrayList.addAll(smartPosters.subList(0, 8));
+                                    posterStartTag =  8;
+                                }else {
+                                    posterArrayList.addAll(smartPosters.subList(posterStartTag, smartPosters.size()));
+                                    posterArrayList.addAll(smartPosters.subList(0, Math.abs(smartPosters.size() - posterStartTag - 8)));
+                                    posterStartTag = Math.abs(smartPosters.size() - posterStartTag - 8);
+                                }
+                            }
+                            initPosters(posterArrayList);
+                        }
+                    }
+                });
+    }
+
+    public static int posterStartTag = 0;
+
     private void initPosters(ArrayList<HomePagerEntity.Poster> posters) {
+        if (guideRecommmendList==null){
+            return;
+        }
         guideRecommmendList.removeAllViews();
         ArrayList<FrameLayout> imageViews = new ArrayList<FrameLayout>();
         for (int i = 0; i < 8; i++) {
@@ -294,6 +355,8 @@ public class GuideFragment extends ChannelBaseFragment {
             frameLayout.setFocusable(true);
             frameLayout.setClickable(true);
             textView.setOnClickListener(ItemClickListener);
+            textView.setTag(R.id.view_position_tag, i + 5);
+            frameLayout.setTag(R.id.view_position_tag, i + 5);
             frameLayout.setOnClickListener(ItemClickListener);
             textView.setTag(R.id.poster_title, i);
             textView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
@@ -317,8 +380,12 @@ public class GuideFragment extends ChannelBaseFragment {
                     }
                 }
             });
+            String imageUrl = posters.get(i).getCustom_image();
+            if (TextUtils.isEmpty(imageUrl)){
+                imageUrl = posters.get(i).getVertical_url();
+            }
 
-            Picasso.with(mContext).load(posters.get(i).getCustom_image()).memoryPolicy(MemoryPolicy.NO_STORE)
+            Picasso.with(mContext).load(imageUrl).memoryPolicy(MemoryPolicy.NO_STORE)
                     .into(itemView);
             posters.get(i).setPosition(i);
             textView.setTag(posters.get(i));
@@ -344,6 +411,9 @@ public class GuideFragment extends ChannelBaseFragment {
         guideRecommmendList.setFocusable(true);
         guideRecommmendList.setFocusableInTouchMode(true);
         guideRecommmendList.addAllViews(imageViews);
+
+        isPosterInit = true;
+        resetBorder();
 
     }
 
@@ -380,6 +450,10 @@ public class GuideFragment extends ChannelBaseFragment {
             allItem.add(toppage_carous_imageView1);
             allItem.add(toppage_carous_imageView2);
             allItem.add(toppage_carous_imageView3);
+            toppage_carous_imageView1.setTag(R.id.view_position_tag, 2);
+            toppage_carous_imageView2.setTag(R.id.view_position_tag, 3);
+            toppage_carous_imageView3.setTag(R.id.view_position_tag, 4);
+
             allVideoUrl.add(carousels.get(0).getVideo_url());
             if (carousels.size() > 1) {
                 allVideoUrl.add(carousels.get(1).getVideo_url());
@@ -393,6 +467,9 @@ public class GuideFragment extends ChannelBaseFragment {
                     SimpleRestClient.appVersion, "client", ""
             );
         }
+
+        isCarouselInit = true;
+        resetBorder();
 
         carouselMap = new HashMap<>();
         carouselMap.put(0, toppage_carous_imageView1.getId());
@@ -410,6 +487,32 @@ public class GuideFragment extends ChannelBaseFragment {
             mHandler.removeMessages(START_PLAYBACK);
         }
 
+    }
+
+    private boolean isPosterInit, isCarouselInit;
+
+    private void resetBorder(){
+        if (isPosterInit && isCarouselInit) {
+            if (scrollFromBorder) {
+                if (isRight) {//右侧移入
+                    if ("bottom".equals(bottomFlag)) {//下边界移入
+                        lastpostview.findViewById(R.id.poster_title).requestFocus();
+                    } else {//上边界边界移入
+                        toppage_carous_imageView1.requestFocus();
+                    }
+//                		}
+                } else {//左侧移入
+                    if (!StringUtils.isEmpty(bottomFlag)) {
+                        if ("bottom".equals(bottomFlag)) {
+
+                        } else {
+
+                        }
+                    }
+                }
+                ((HomePageActivity) getActivity()).resetBorderFocus();
+            }
+        }
     }
 
     @Override
@@ -491,7 +594,7 @@ public class GuideFragment extends ChannelBaseFragment {
             String videoPath = CacheManager.getInstance().doRequest(mCarousels.get(mCurrentCarouselIndex).getVideo_url(), videoName, DownloadClient.StoreType.Internal);
             Log.d(TAG, "current video path ====> " + videoPath);
             CallaPlay play = new CallaPlay();
-            play.homepage_vod_trailer_play(videoPath, "launcher");
+            play.homepage_vod_trailer_play(videoPath, "homepage");
             if (mSurfaceView.isPlaying() && mSurfaceView.getDataSource().equals(videoPath)) {
                 return;
             }
@@ -618,6 +721,8 @@ class Flag {
     public interface ChangeCallback {
         void change(int position);
     }
+
+
 }
 
 

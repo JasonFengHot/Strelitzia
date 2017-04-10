@@ -93,11 +93,12 @@ public class UpdateService extends Service implements Loader.OnLoadCompleteListe
         Log.d(TAG, "onStartCommand: " + installType);
         if (INSTALL_SILENT == installType) {
             isInstallSilent = true;
+        }else if (0 == installType){
+            isInstallSilent = false;
         }
         fetchAppUpgrade();
         return super.onStartCommand(intent, flags, startId);
     }
-
 
     private void fetchAppUpgrade() {
         isMD5Error = false;
@@ -230,7 +231,7 @@ public class UpdateService extends Service implements Loader.OnLoadCompleteListe
                                 Log.d(TAG, "install apk path: " + path);
                                 Log.d(TAG, "isInstallSilent: " + isInstallSilent);
                                 if (isInstallSilent) {
-                                    installAppLoading = true;
+//                                    installAppLoading = true;
                                     try {
                                         String[] args2 = {"chmod", "604", path};
                                         Runtime.getRuntime().exec(args2);
@@ -239,7 +240,7 @@ public class UpdateService extends Service implements Loader.OnLoadCompleteListe
                                     }
                                     boolean installSilentSuccess = installAppSilent(path, getApplicationContext());
                                     if (!installSilentSuccess) {
-                                        installAppLoading = false;
+//                                        installAppLoading = false;
                                     }
                                     Log.d(TAG, "installSilentSuccess: " + installSilentSuccess);
                                 } else {

@@ -129,7 +129,7 @@ public class ScrollableSectionList extends HorizontalScrollView {
     }
 
     public HGridView mGridView;
-
+    private int counts=0;
     public void init(SectionList sectionLists, int totalWidth, boolean isChangeBarStyle,int initTab) {
      //   rate = DaisyUtils.getVodApplication(getContext()).getRate(getContext());
         mContainer = new LinearLayout(getContext());
@@ -161,6 +161,9 @@ public class ScrollableSectionList extends HorizontalScrollView {
         sectionFilter.setTag(0);
         sectionFilter.setId(R.layout.section_list_item + 1);
         mContainer.addView(sectionFilter, 0);
+        if(title.equals("商城"))
+            sectionFilter.setVisibility(GONE);
+
 
         for (int i = 0; i < sectionList.size(); i++) {
             FrameLayout sectionHolder = getSectionLabelLayout(sectionList.get(i));
@@ -170,12 +173,13 @@ public class ScrollableSectionList extends HorizontalScrollView {
             sectionHolder.setId(R.layout.section_list_item + 2 + i);
             sectionHolder.setTag(i + 1);
             mContainer.addView(sectionHolder, i + 1);
-
+//            sectionHolder.setNextFocusRightId(R.layout.section_list_item+i+3);
+//            sectionHolder.setNextFocusLeftId(R.layout.section_list_item +i+1);
             if (i == sectionList.size() - 1) {
-                sectionHolder.setNextFocusRightId(-1);
+                sectionHolder.setNextFocusRightId(R.layout.section_list_item + 2 + i);
             }
         }
-
+        counts=sectionList.size();
         this.addView(mContainer);
         this.initTab = initTab;
         View childView = mContainer.getChildAt(initTab);
@@ -197,6 +201,7 @@ public class ScrollableSectionList extends HorizontalScrollView {
 //        sectionHolder.setPadding(tabSpace, 0, tabSpace, 0);
         sectionHolder.setLayoutParams(layoutParams);
         sectionHolder.setFocusable(true);
+//        sectionHolder.setFocusableInTouchMode(true);
         TextView label = (TextView) sectionHolder.findViewById(R.id.section_label);
         ((LayoutParams) label.getLayoutParams()).setMargins(tabSpace, 0, tabSpace, 0);
         label.setText(section.title);
@@ -251,6 +256,7 @@ public class ScrollableSectionList extends HorizontalScrollView {
            //   ((LayoutParams) section_image.getLayoutParams()).height = textHeight*2;
             }
             if (hasFocus) {
+                Log.i("focuschangea","Tag:"+v.getTag()+"   mselection:"+mSelectPosition+"currentState: "+currentState);
                 if (isFromArrow) {
                     isFromArrow = false;
                 } else {
@@ -269,6 +275,7 @@ public class ScrollableSectionList extends HorizontalScrollView {
                     label.setTextColor(LABEL_TEXT_COLOR_NOFOCUSED);
                     section_image.setImageResource(R.drawable.sectionfocus);
                      v.startAnimation(scaleBigAnimation);
+
                     Log.i("Scrollsection","focus scaleBig");
                     return;
                 } else {
@@ -348,6 +355,7 @@ public class ScrollableSectionList extends HorizontalScrollView {
     int temp = 0;
     // 切换tab时调用
     private void setSectionTabProperty(View currentView, View lastSelectedView) {
+        Log.i("scrollchange","TabPro____"+"currentViewID: "+currentView.getTag()+"  lastSelectedView: "+lastSelectedView.getTag());
         TextView lastLabel = (TextView) lastSelectedView.findViewById(R.id.section_label);
         ImageView last_section_image = (ImageView) lastSelectedView.findViewById(R.id.section_image);
         lastLabel.setTextColor(LABEL_TEXT_COLOR_NOFOCUSED);
@@ -453,24 +461,29 @@ public class ScrollableSectionList extends HorizontalScrollView {
                     v.getLocationOnScreen(currentPos);
                     int currentWidth = v.getWidth();
                     Log.i("ScrollHover","currentPos[0]: "+currentPos[0]+"  currentWidth: "+currentWidth+"  tabRightx: "+tabRightX+"  index: "+index+" tabmarg: "+tabMargin);
-                    if (currentPos[0] + currentWidth > tabRightX+168 || currentPos[0] + 113 < tabMargin) {
-                        if (index == 0 || index == mContainer.getChildCount() - 1) {
-                           Log.i("LH/","currentPos:"+currentPos[0]+" tabMargin:"+tabMargin);
-                            // TODO
-                            new Handler().postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    autoScroll(index);
-                                    onHoverSet(v, label, section_image, index);
-                                }
-                            }, 500);
+                        if (currentPos[0] + currentWidth > tabRightX + 168 || currentPos[0] + 113 < tabMargin) {
+                            if (index == 0 || index == mContainer.getChildCount() - 1) {
+                                Log.i("LH/", "currentPos:" + currentPos[0] + " tabMargin:" + tabMargin);
+                                // TODO
+                                new Handler().postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        autoScroll(index);
+                                        onHoverSet(v, label, section_image, index);
+                                    }
+                                }, 500);
+                            }
+                            if(title.equals("商城")||channel.equals("payment")){
+                                onHoverSet(v, label, section_image, index);
+                            }
+                            return true;
                         }
-                        return true;
-                    }
                     onHoverSet(v, label, section_image, index);
 
                     break;
                 case MotionEvent.ACTION_HOVER_EXIT:
+                    isOnHovered = false;
+                    sectionhovered = null;
                     if (index == mSelectPosition) {
                         section_image.setImageResource(R.drawable.gotogridview);
                         return false;
@@ -532,6 +545,7 @@ public class ScrollableSectionList extends HorizontalScrollView {
 
     private void setsectionview(View v) {
         int index = (Integer) v.getTag();
+        Log.i("sgfsgsg",index+"");
         if (index == 0) {
             percentageBar.setProgress(0);
             View lastSelectedView = mContainer.getChildAt(mSelectPosition);
@@ -737,7 +751,7 @@ public class ScrollableSectionList extends HorizontalScrollView {
         if (mContainer.getChildCount() <= 2 || currentPosition < 0) {
             return;
         }
-//        Log.i("LH/", "autoScroll:" + currentPosition);
+        Log.i("LH/", "autoScroll:" + mContainer.getChildCount());
         int tabRightX = tabMargin + tabWidth;
 
         if (currentPosition == 0) {
@@ -759,6 +773,12 @@ public class ScrollableSectionList extends HorizontalScrollView {
                 arrow_right.setVisibility(View.INVISIBLE);
                 shade_arrow_right.setVisibility(View.INVISIBLE);
             }
+            if(title.equals("商城")){
+                if(arrow_left!=null){
+                    arrow_left.setVisibility(VISIBLE);
+                    shade_arrow_left.setVisibility(VISIBLE);
+                }
+            }
             View currentView = mContainer.getChildAt(currentPosition);
             int[] currentPos = new int[2];
             currentView.getLocationOnScreen(currentPos);
@@ -772,7 +792,7 @@ public class ScrollableSectionList extends HorizontalScrollView {
         int[] currentPos = new int[2];
         currentView.getLocationOnScreen(currentPos);
         int currentWidth = currentView.getWidth();
-//        Log.i("LH/", "currentPos:" + currentPos[0] + "-" + currentWidth);
+       Log.i("autoscroll/", "currentPos:" + currentPos[0] + "-" + currentWidth+"tabRight="+tabRightX+" tabspace="+tabSpace+"tabmargin:"+tabMargin+"  currposition:"+currentPosition);
 
         if (currentPos[0] + currentWidth >= tabRightX-tabSpace) {
             View nextView = mContainer.getChildAt(currentPosition + 1);
@@ -825,7 +845,7 @@ public class ScrollableSectionList extends HorizontalScrollView {
                     shade_arrow_left.setVisibility(View.VISIBLE);
                 }
             }
-            if (arrow_right != null && arrow_right.getVisibility() != View.VISIBLE) {
+            if (arrow_right != null && arrow_right.getVisibility() != View.VISIBLE&&counts>=9) {
                 arrow_right.setVisibility(View.VISIBLE);
                 shade_arrow_right.setVisibility(View.VISIBLE);
             }

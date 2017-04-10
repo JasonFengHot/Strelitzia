@@ -52,7 +52,7 @@
 <dimen name="usercenter_storefragment_packagelist_item_image_height">70.00dp</dimen>
 <dimen name="h2_text_size">13.33sp</dimen>
 <dimen name="usercenter_storefragment_packagelist_item_layout_marginRight">2.59dp</dimen>
-<dimen name="usercenter_storefragment_packagelist_item_text_height">22.96dp</dimen>
+<dimen name="usercenter_storefragment_packagelist_item_text_height">20.00dp</dimen>
 <dimen name="usercenter_storefragment_packagelist_item_text_width">124.44dp</dimen>
 
 
@@ -80,7 +80,7 @@
 <dimen name="weather_city_layout_spac">22.22dp</dimen>
 
 <dimen name="usercenter_header_height">37.04dp</dimen>
-<dimen name="product_recycler_mt">3.70dp</dimen>
+<dimen name="product_recycler_mt">4.07dp</dimen>
 <dimen name="product_recycler_item_spacing">-1.48dp</dimen>
 <dimen name="product_item_mt">-2.22dp</dimen>
 <dimen name="userinfo_layout_pb">22.22dp</dimen>
@@ -124,11 +124,11 @@
 <dimen name="usercenter_vertical_divider_line_mt">5.56dp</dimen>
 <dimen name="prompt_layout_mb">55.56dp</dimen>
 <dimen name="prompt_layout_mt">163.70dp</dimen>
-<dimen name="product_gridview_bp">-13.33dp</dimen>
+<dimen name="product_gridview_bp">-10.37dp</dimen>
 <dimen name="product_gridview_lp">8.15dp</dimen>
 <dimen name="product_gridview_rp">7.78dp</dimen>
 <dimen name="product_gridview_tp">8.15dp</dimen>
-<dimen name="product_gridview_vertical_space">-1.85dp</dimen>
+<dimen name="product_gridview_vertical_space">0.00dp</dimen>
 <dimen name="product_gridview_ml">0.37dp</dimen>
 <dimen name="usercenter_fragment_indicator_mt">1.48dp</dimen>
 <dimen name="today_weather_info_mt">-3.70dp</dimen>

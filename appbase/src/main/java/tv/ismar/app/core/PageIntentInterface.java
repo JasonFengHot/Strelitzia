@@ -44,7 +44,7 @@ public interface PageIntentInterface {
 
     void toPackageDetail(Context context, String source, String json);
 
-    void toPayment(Context context, String fromPage, PaymentInfo paymentInfo);
+//    void toPayment(Context context, String fromPage, PaymentInfo paymentInfo);
 
     void toPaymentForResult(Activity context, String fromPage, PaymentInfo paymentInfo);
 
@@ -70,6 +70,7 @@ public interface PageIntentInterface {
         private int pk;
         private int jumpTo;
         private int cpid;
+        private String title;
 
         public PaymentInfo(ProductCategory category, int pk, int jumpTo, int cpid) {
             this.category = category;
@@ -84,10 +85,11 @@ public interface PageIntentInterface {
             this.jumpTo = jumpTo;
         }
 
-        public PaymentInfo(int pk, int jumpTo, int cpid) {
+        public PaymentInfo(int pk, int jumpTo, int cpid,String title) {
             this.pk = pk;
             this.jumpTo = jumpTo;
             this.cpid = cpid;
+            this.title=title;
         }
 
         public ProductCategory getCategory() {
@@ -104,6 +106,10 @@ public interface PageIntentInterface {
 
         public int getCpid() {
             return cpid;
+        }
+
+        public String getTitle() {
+            return title;
         }
     }
 

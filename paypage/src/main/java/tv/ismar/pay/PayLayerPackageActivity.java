@@ -73,7 +73,7 @@ public class PayLayerPackageActivity extends BaseActivity implements View.OnHove
 
     @Override
     protected void onResume() {
-        mPageStatistics.packageDetailIn(packageId + "", "detail");
+        mPageStatistics.packageDetailIn(packageId + "",title.getText().toString(), "detail");
         super.onResume();
     }
 
@@ -198,6 +198,11 @@ public class PayLayerPackageActivity extends BaseActivity implements View.OnHove
         if (!purchaseBtn.isFocusable()) {
             scrollViewLayout.getChildAt(0).findViewById(R.id.pay_layer_item).requestFocus();
         }
+
+        if (scrollViewLayout.getChildCount() <= 4) {
+            mTvHorizontalScrollView.setLeftArrow(new ImageView(this));
+            mTvHorizontalScrollView.setRightArrow(new ImageView(this));
+        }
     }
 
     @Override
@@ -305,6 +310,6 @@ public class PayLayerPackageActivity extends BaseActivity implements View.OnHove
         if (paylayerPackageSub != null && paylayerPackageSub.isUnsubscribed()) {
             paylayerPackageSub.unsubscribe();
         }
-        super.onStop();
+        super.onPause();
     }
 }

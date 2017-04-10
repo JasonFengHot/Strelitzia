@@ -1,6 +1,7 @@
 package tv.ismar.detailpage.view;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.os.Bundle;
@@ -26,6 +27,7 @@ import java.text.ParseException;
 import java.util.Arrays;
 import java.util.List;
 
+import cn.ismartv.truetime.TrueTime;
 import okhttp3.ResponseBody;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -48,11 +50,16 @@ import tv.ismar.app.util.SPUtils;
 import tv.ismar.app.util.SystemFileUtil;
 import tv.ismar.app.util.Utils;
 import tv.ismar.detailpage.R;
+import tv.ismar.pay.PaymentActivity;
 import tv.ismar.statistics.DetailPageStatistics;
+import tv.ismar.statistics.PurchaseStatistics;
 
 import static tv.ismar.app.core.PageIntentInterface.EXTRA_ITEM_JSON;
 import static tv.ismar.app.core.PageIntentInterface.EXTRA_SOURCE;
 import static tv.ismar.app.core.PageIntentInterface.PAYMENT;
+import static tv.ismar.app.core.PageIntentInterface.PAYMENT_FAILURE_CODE;
+import static tv.ismar.app.core.PageIntentInterface.PAYMENT_REQUEST_CODE;
+import static tv.ismar.app.core.PageIntentInterface.PAYMENT_SUCCESS_CODE;
 import static tv.ismar.app.core.PageIntentInterface.POSITION;
 import static tv.ismar.app.core.PageIntentInterface.ProductCategory.Package;
 
@@ -177,9 +184,14 @@ public class PackageDetailFragment extends BaseFragment {
         vod_payment_buyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                new PurchaseStatistics().expensePacketDetail(
+                        mItemEntity.getPk(),
+                        mItemEntity.getTitle(),
+                        mItemEntity.getExpense().getPrice(),
+                        "enter");
                 PageIntent pageIntent = new PageIntent();
                 PaymentInfo paymentInfo = new PaymentInfo(Package, mItemEntity.getPk(), PAYMENT);
-                pageIntent.toPayment(getContext(), "package", paymentInfo);
+                pageIntent.toPaymentForResult(getActivity(), "package", paymentInfo);
             }
         });
         vod_payment_item_more.setOnClickListener(new View.OnClickListener() {
@@ -197,7 +209,8 @@ public class PackageDetailFragment extends BaseFragment {
     public void onResume() {
         super.onResume();
         requestPlayCheck(String.valueOf(mItemEntity.getPk()));
-        mPageStatistics.packageDetailIn(mItemEntity.getPk()+"", source==null?frompage:source);
+        mPageStatistics.packageDetailIn(mItemEntity.getPk()+"", mItemEntity.getTitle(),source==null?frompage:source);
+
 
     }
 
@@ -507,6 +520,7 @@ public class PackageDetailFragment extends BaseFragment {
     public void onPause() {
         firstIn=false;
         super.onPause();
+
     }
 
     private View.OnHoverListener onHoverListener = new View.OnHoverListener() {
@@ -526,4 +540,29 @@ public class PackageDetailFragment extends BaseFragment {
             return false;
         }
     };
+
+
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode){
+            case PAYMENT_REQUEST_CODE:
+                switch (resultCode){
+                    case PAYMENT_SUCCESS_CODE:
+//                        expensePacketExit();
+                        break;
+                    case PAYMENT_FAILURE_CODE:
+                        break;
+                }
+                break;
+        }
+    }
+
+    public void onActivityBackPressed(){
+        new PurchaseStatistics().expensePacketDetail(
+                mItemEntity.getPk(),
+                mItemEntity.getTitle(),
+                mItemEntity.getExpense().getPrice(),
+                "cancel");
+    }
 }

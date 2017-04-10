@@ -9,12 +9,14 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
 
+import cn.ismartv.truetime.TrueTime;
 import okhttp3.ResponseBody;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import tv.ismar.account.IsmartvActivator;
+import tv.ismar.app.AppConstant;
 import tv.ismar.app.BaseActivity;
 import tv.ismar.app.VodApplication;
 import tv.ismar.app.core.DaisyUtils;
@@ -68,7 +70,7 @@ public class DetailPagePresenter implements DetailPageContract.Presenter {
 
     @Override
     public void start() {
-        mSkyService = ((BaseActivity) mDetailView.getContext()).mSkyService;
+        mSkyService = ((BaseActivity) mDetailView.getActivity()).mSkyService;
     }
 
     @Override
@@ -280,20 +282,23 @@ public class DetailPagePresenter implements DetailPageContract.Presenter {
         if (mItemEntity.getClip() != null) {
             clip = String.valueOf(mItemEntity.getClip().getPk());
         }
-        new PurchaseStatistics().videoExpenseClick(String.valueOf(pk), userName, title, clip);
-        new PageIntent().toPayment(mDetailView.getContext(), unknown.name(), paymentInfo);
+        new PurchaseStatistics().expenseVideoClick(String.valueOf(pk), userName, title, clip);
+        new PageIntent().toPaymentForResult(mDetailView.getActivity(), unknown.name(), paymentInfo);
     }
 
 
     @Override
     public void handleMoreRelate() {
+        AppConstant.purchase_entrance_related_item = String.valueOf(mItemEntity.getItemPk());
+        AppConstant.purchase_entrance_related_title = mItemEntity.getTitle();
+        AppConstant.purchase_entrance_related_channel = AppConstant.purchase_channel;
         Intent intent = new Intent();
         if (relatedItemList != null && relatedItemList.length > 0) {
             intent.putExtra("related_item_json", new Gson().toJson(relatedItemList));
         }
         intent.putExtra("item_json", new Gson().toJson(mItemEntity));
         intent.setAction("tv.ismar.daisy.relateditem");
-        mDetailView.getContext().startActivity(intent);
+        mDetailView.getActivity().startActivity(intent);
     }
 
     @Override
@@ -302,7 +307,7 @@ public class DetailPagePresenter implements DetailPageContract.Presenter {
         intent.setAction("tv.ismar.daisy.episode");
         intent.putExtra(EXTRA_ITEM_JSON, new Gson().toJson(mItemEntity));
         intent.putExtra(EXTRA_SOURCE, "detail");
-        mDetailView.getContext().startActivity(intent);
+        mDetailView.getActivity().startActivity(intent);
 
     }
 
@@ -344,7 +349,7 @@ public class DetailPagePresenter implements DetailPageContract.Presenter {
             } else {
                 favorite.isnet = "no";
             }
-            ArrayList<Favorite> favorites = DaisyUtils.getFavoriteManager(mDetailView.getContext()).getAllFavorites("no");
+            ArrayList<Favorite> favorites = DaisyUtils.getFavoriteManager(mDetailView.getActivity()).getAllFavorites("no");
             if (favorites.size() > 49) {
                 favoriteManager.deleteFavoriteByUrl(favorites.get(favorites.size() - 1).url, "no");
 

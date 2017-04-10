@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -117,6 +118,8 @@ public class CardPayFragment extends Fragment implements View.OnClickListener, O
 
                     @Override
                     public void onError(Throwable e) {
+                        Log.d("apiPayVerifySub", e.getMessage());
+                        e.printStackTrace();
                         rechargeMsgTextView.setText("充值失败");
                         rechargeMsgTextView.setVisibility(View.VISIBLE);
                     }
@@ -129,6 +132,7 @@ public class CardPayFragment extends Fragment implements View.OnClickListener, O
                                 rechargeMsgTextView.setText("充值成功");
                                 rechargeMsgTextView.setVisibility(View.VISIBLE);
                                 if (!TextUtils.isEmpty(flag) && "usercenter_charge".equals(flag)) {
+                                    mPaymentActivity.sendLog();
                                     getActivity().setResult(CHARGE_MONEY_SUCCESS);
                                     getActivity().finish();
                                 }
@@ -138,6 +142,7 @@ public class CardPayFragment extends Fragment implements View.OnClickListener, O
                                 rechargeMsgTextView.setText("充值成功");
                                 rechargeMsgTextView.setVisibility(View.VISIBLE);
                                 if (!TextUtils.isEmpty(flag) && "usercenter_charge".equals(flag)) {
+                                    mPaymentActivity.sendLog();
                                     getActivity().setResult(CHARGE_MONEY_SUCCESS);
                                     getActivity().finish();
                                 }

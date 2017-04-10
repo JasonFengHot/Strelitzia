@@ -3,6 +3,8 @@ package tv.ismar.homepage.fragment;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.preference.PreferenceManager;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -19,12 +21,17 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
+import cn.ismartv.truetime.TrueTime;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+import tv.ismar.account.C;
+import tv.ismar.account.IsmartvActivator;
+import tv.ismar.app.AppConstant;
 import tv.ismar.app.core.SimpleRestClient;
 import tv.ismar.app.entity.HomePagerEntity;
+import tv.ismar.app.network.SkyService;
 import tv.ismar.app.player.CallaPlay;
 import tv.ismar.homepage.R;
 import tv.ismar.homepage.view.HomePageActivity;
@@ -59,6 +66,8 @@ public class ChildFragment extends ChannelBaseFragment implements Flag.ChangeCal
     private View leftBottom;
     private View righttop;
     private Subscription dataSubscription;
+    private Subscription smartRecommendPostSub;
+    private boolean isDestroyed = false;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -68,6 +77,7 @@ public class ChildFragment extends ChannelBaseFragment implements Flag.ChangeCal
         rightLayout = (LinearLayout) mView.findViewById(R.id.right_layout);
         image_switcher_focus = (LabelImageView3) mView.findViewById(R.id.image_switcher_focus);
         imageSwitcher = (ImageView) mView.findViewById(R.id.image_switcher);
+
         indicatorImgs = new ChildThumbImageView[]{
                 (ChildThumbImageView) mView.findViewById(R.id.indicator_1),
                 (ChildThumbImageView) mView.findViewById(R.id.indicator_2),
@@ -76,6 +86,7 @@ public class ChildFragment extends ChannelBaseFragment implements Flag.ChangeCal
         indicatorTitle = (TextView) mView.findViewById(R.id.indicator_title);
         childMore = (ImageButton) mView.findViewById(R.id.child_more);
         childMore.setOnClickListener(ItemClickListener);
+        image_switcher_focus.setTag(R.id.view_position_tag, 2);
         image_switcher_focus.setOnClickListener(ItemClickListener);
         image_switcher_focus.setOnHoverListener(new View.OnHoverListener() {
 			
@@ -125,6 +136,9 @@ public class ChildFragment extends ChannelBaseFragment implements Flag.ChangeCal
         if (dataSubscription != null && !dataSubscription.isUnsubscribed()) {
             dataSubscription.unsubscribe();
         }
+        if (smartRecommendPostSub != null && !smartRecommendPostSub.isUnsubscribed()) {
+            smartRecommendPostSub.unsubscribe();
+        }
     }
 
     @Override
@@ -135,6 +149,7 @@ public class ChildFragment extends ChannelBaseFragment implements Flag.ChangeCal
     	leftLayout = null;
     	bottomLayout = null;
     	rightLayout = null;
+        isDestroyed = true;
         super.onDestroyView();
 
     }
@@ -150,7 +165,7 @@ public class ChildFragment extends ChannelBaseFragment implements Flag.ChangeCal
 
                     @Override
                     public void onNext(HomePagerEntity homePagerEntity) {
-                        if(mContext == null || leftLayout == null || rightLayout == null && bottomLayout ==null)
+                        if(isDestroyed || mContext == null || leftLayout == null || rightLayout == null || bottomLayout ==null)
                             return;
                         if (homePagerEntity == null) {
                             new CallaPlay().exception_except("launcher", "launcher", channelEntity.getChannel(),
@@ -162,26 +177,18 @@ public class ChildFragment extends ChannelBaseFragment implements Flag.ChangeCal
                         }
                         ArrayList<HomePagerEntity.Poster> posters = homePagerEntity.getPosters();
                         ArrayList<HomePagerEntity.Carousel> carousels = homePagerEntity.getCarousels();
-                        initPosters(posters);
-                        initCarousel(carousels);
-                        if(scrollFromBorder){
-                            if(isRight){//右侧移入
-                                if("bottom".equals(bottomFlag)){//下边界移入
-                                    childMore.requestFocus();
-                                }else{//上边界边界移入
-                                    righttop.requestFocus();
-                                }
-//                  		}
-                            }else{//左侧移入
-                                if("bottom".equals(bottomFlag)){
-                                    leftBottom.requestFocus();
-                                }else{
-                                    lefttop.requestFocus();
-                                }
-//                  	}
+                        if (TextUtils.isEmpty(homePagerEntity.getRecommend_homepage_url())) {
+                            initPosters(posters);
+                        }else {
+                            if (TrueTime.now().getTime() -  getSmartPostErrorTime()> C.SMART_POST_NEXT_REQUEST_TIME){
+                                smartRecommendPost(homePagerEntity.getRecommend_homepage_url(), posters);
+                            }else {
+                                initPosters(posters);
                             }
-                            ((HomePageActivity)getActivity()).resetBorderFocus();
+
                         }
+
+                        initCarousel(carousels);
                     }
                 });
     }
@@ -209,7 +216,35 @@ public class ChildFragment extends ChannelBaseFragment implements Flag.ChangeCal
 
             posters.get(i).setPosition(i);
             item_img_focus.setTag(posters.get(i));
+
             item_img_focus.setOnClickListener(ItemClickListener);
+            if (i == 0){
+                item_img_focus.setTag(R.id.view_position_tag, 1);
+            }
+
+            if (i == 1){
+                item_img_focus.setTag(R.id.view_position_tag, 4);
+            }
+
+            if (i == 2){
+                item_img_focus.setTag(R.id.view_position_tag, 6);
+            }
+
+            if (i == 3){
+                item_img_focus.setTag(R.id.view_position_tag, 7);
+            }
+
+            if (i == 4){
+                item_img_focus.setTag(R.id.view_position_tag, 8);
+            }
+
+            if (i == 5){
+                item_img_focus.setTag(R.id.view_position_tag, 3);
+            }
+
+            if (i == 6){
+                item_img_focus.setTag(R.id.view_position_tag, 5);
+            }
 //            item_img_focus.setOnHoverListener(new View.OnHoverListener() {
 //
 //				@Override
@@ -224,7 +259,11 @@ public class ChildFragment extends ChannelBaseFragment implements Flag.ChangeCal
 
             if(mContext==null)
                 return;
-            Picasso.with(mContext).load(posters.get(i).getCustom_image()).memoryPolicy(MemoryPolicy.NO_STORE).into(itemImg);
+            String imageUrl = posters.get(i).getCustom_image();
+            if (TextUtils.isEmpty(imageUrl)){
+                imageUrl = posters.get(i).getPoster_url();
+            }
+            Picasso.with(mContext).load(imageUrl).memoryPolicy(MemoryPolicy.NO_STORE).into(itemImg);
             itemText.setText(posters.get(i).getTitle());
 
             /**
@@ -315,6 +354,9 @@ public class ChildFragment extends ChannelBaseFragment implements Flag.ChangeCal
             }
         }
         rightLayout.requestLayout();
+
+        isPosterInit = true;
+        resetBorder();
     }
 
     private void initCarousel(ArrayList<HomePagerEntity.Carousel> carousels) {
@@ -348,8 +390,37 @@ public class ChildFragment extends ChannelBaseFragment implements Flag.ChangeCal
         }
 
         flag.setPosition(0);
+
+        isCarouselInit = true;
+        resetBorder();
+
         playCarousel();
 
+    }
+
+    private boolean isPosterInit, isCarouselInit;
+
+    private void resetBorder(){
+        if (isPosterInit && isCarouselInit) {
+            if(scrollFromBorder){
+                if(isRight){//右侧移入
+                    if("bottom".equals(bottomFlag)){//下边界移入
+                        childMore.requestFocus();
+                    }else{//上边界边界移入
+                        righttop.requestFocus();
+                    }
+//                  		}
+                }else{//左侧移入
+                    if("bottom".equals(bottomFlag)){
+                        leftBottom.requestFocus();
+                    }else{
+                        lefttop.requestFocus();
+                    }
+//                  	}
+                }
+                ((HomePageActivity)getActivity()).resetBorderFocus();
+            }
+        }
     }
 
     private void playCarousel() {
@@ -403,7 +474,54 @@ public class ChildFragment extends ChannelBaseFragment implements Flag.ChangeCal
             playCarousel();
         }
     }
+    private void smartRecommendPost(String url, final ArrayList<HomePagerEntity.Poster>  posters) {
+        smartRecommendPostSub =   SkyService.ServiceManager.getCacheSkyService2().smartRecommendPost(url, IsmartvActivator.getInstance().getSnToken())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<ArrayList<HomePagerEntity.Poster>>() {
+                    @Override
+                    public void onCompleted() {
 
+                    }
+
+                    @Override
+                    public void onError(Throwable throwable) {
+                        if (isDestroyed)
+                            return;
+                        throwable.printStackTrace();
+                        setSmartPostErrorTime();
+                        initPosters(posters);
+                    }
+
+                    @Override
+                    public void onNext(ArrayList<HomePagerEntity.Poster> smartPosters) {
+                        if (isDestroyed)
+                            return;
+                        if (smartPosters.size() < 7){
+                            initPosters(posters);
+                        }else {
+                            ArrayList<HomePagerEntity.Poster> posterArrayList = new ArrayList<>();
+                            if (smartPosters.size() - posterStartTag - 7 >= 0) {
+                                posterArrayList.addAll(smartPosters.subList(posterStartTag, posterStartTag + 7));
+                                posterStartTag = posterStartTag + 7;
+                            } else {
+                                if (smartPosters.size() <= posterStartTag){
+                                    posterArrayList.addAll(smartPosters.subList(0, 7));
+                                    posterStartTag =  7;
+                                }else {
+                                    posterArrayList.addAll(smartPosters.subList(posterStartTag, smartPosters.size()));
+                                    posterArrayList.addAll(smartPosters.subList(0, Math.abs(smartPosters.size() - posterStartTag - 7)));
+                                    posterStartTag = Math.abs(smartPosters.size() - posterStartTag - 7);
+                                }
+                            }
+                            initPosters(posterArrayList);
+                        }
+
+                    }
+                });
+    }
+
+    public static int posterStartTag = 0;
 }
 
 

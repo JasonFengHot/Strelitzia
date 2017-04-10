@@ -17,12 +17,14 @@ import retrofit2.adapter.rxjava.HttpException;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+import tv.ismar.app.AppConstant;
 import tv.ismar.app.BaseActivity;
 import tv.ismar.app.core.PageIntent;
 import tv.ismar.app.core.PageIntentInterface;
 import tv.ismar.app.network.entity.ItemEntity;
 import tv.ismar.app.widget.LoadingDialog;
 import tv.ismar.detailpage.R;
+import tv.ismar.pay.PaymentActivity;
 
 import static tv.ismar.app.core.PageIntentInterface.DETAIL_TYPE_ITEM;
 import static tv.ismar.app.core.PageIntentInterface.DETAIL_TYPE_PKG;
@@ -57,6 +59,7 @@ public class DetailPageActivity extends BaseActivity{
         }
     });
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,6 +70,9 @@ public class DetailPageActivity extends BaseActivity{
         itemPK = intent.getIntExtra(EXTRA_PK, -1);
         String itemJson = intent.getStringExtra(EXTRA_ITEM_JSON);
         source = intent.getStringExtra(EXTRA_SOURCE);
+        if (source!=null&&source.equals("launcher")){
+            AppConstant.purchase_entrance_page = "launcher";
+        }
         int type = intent.getIntExtra(EXTRA_TYPE, 0);
         String url = intent.getStringExtra("url");
 
@@ -212,6 +218,8 @@ public class DetailPageActivity extends BaseActivity{
 //        isActivityStoped = false;
 //        mHasPreLoad = false;
         super.onResume();
+        AppConstant.purchase_referer = "video";
+        AppConstant.purchase_page = "detail";
 
     }
 
@@ -504,6 +512,14 @@ public class DetailPageActivity extends BaseActivity{
 //        return qualityUrl;
 //    }
 
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        if(mPackageDetailFragment!=null){
+            mPackageDetailFragment.onActivityBackPressed();
+        }
+    }
 
     @Override
     protected void onDestroy() {

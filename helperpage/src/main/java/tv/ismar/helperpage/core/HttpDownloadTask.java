@@ -38,19 +38,22 @@ public class HttpDownloadTask extends AsyncTask<List<Integer>, String, Long> {
     private final Context mContext;
 
     private OnCompleteListener completeListener;
+    private boolean isOccurException = false;
 
     public interface OnCompleteListener {
         /**
          * 单个节点测速完成
          */
-        public void onSingleComplete(String cndId, String nodeName, String speed);
+        void onSingleComplete(String cndId, String nodeName, String speed);
 
         /**
          * 所有节点测速完成
          */
-        public void onAllComplete();
+        void onAllComplete();
 
-        public void onCancel();
+        void onCancel();
+
+        void onIoException();
     }
 
 
@@ -134,6 +137,8 @@ public class HttpDownloadTask extends AsyncTask<List<Integer>, String, Long> {
                     Log.e(TAG, "MalformedURLException ---> " + e.getMessage());
                 } catch (IOException e) {
                     Log.e(TAG, "IOException ---> " + e.getMessage());
+                    isOccurException = true;
+                    completeListener.onIoException();
                 }
             }
         }
@@ -144,6 +149,7 @@ public class HttpDownloadTask extends AsyncTask<List<Integer>, String, Long> {
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
+        isOccurException = false;
     }
 
     @Override
@@ -152,7 +158,9 @@ public class HttpDownloadTask extends AsyncTask<List<Integer>, String, Long> {
          * 所有节点测速完成
          */
         try {
-            completeListener.onAllComplete();
+            if (!isOccurException) {
+                completeListener.onAllComplete();
+            }
         } catch (NullPointerException e) {
             Log.e(TAG, "Please set HttpDownload Listener!!!");
         }

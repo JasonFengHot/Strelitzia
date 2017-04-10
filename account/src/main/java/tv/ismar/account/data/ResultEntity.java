@@ -10,7 +10,16 @@ public class ResultEntity {
     private String upgrade_domain = "1.1.1.3";
     private String zdevice_token = "";
     private String carnation = "1.1.1.1";
+    private int player;
+    private long smart_post_next_request_time = 30;
 
+    public long getSmart_post_next_request_time() {
+        return smart_post_next_request_time * 1000;
+    }
+
+    public void setSmart_post_next_request_time(long smart_post_next_request_time) {
+        this.smart_post_next_request_time = smart_post_next_request_time;
+    }
 
     public String getCarnation() {
         return carnation;
@@ -74,5 +83,13 @@ public class ResultEntity {
 
     public void setAd_domain(String ad_domain) {
         this.ad_domain = ad_domain;
+    }
+
+    public int getPlayer() {
+        return player;
+    }
+
+    public void setPlayer(int player) {
+        this.player = player;
     }
 }

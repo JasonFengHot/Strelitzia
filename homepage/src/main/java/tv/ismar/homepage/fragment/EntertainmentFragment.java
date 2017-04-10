@@ -5,6 +5,8 @@ import android.content.DialogInterface.OnCancelListener;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.preference.PreferenceManager;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,12 +20,18 @@ import android.widget.TextView;
 import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 
+import cn.ismartv.truetime.TrueTime;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+import tv.ismar.account.C;
+import tv.ismar.account.IsmartvActivator;
+import tv.ismar.app.AppConstant;
 import tv.ismar.app.core.SimpleRestClient;
 import tv.ismar.app.entity.HomePagerEntity;
 import tv.ismar.app.entity.HomePagerEntity.Carousel;
@@ -76,6 +84,8 @@ public class EntertainmentFragment extends ChannelBaseFragment {
     private int loopindex = 0;
 
     private Subscription dataSubscription;
+    private Subscription smartRecommendPostSub;
+    private boolean isDestroyed = false;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -182,6 +192,12 @@ public class EntertainmentFragment extends ChannelBaseFragment {
                 }
             }
         });
+
+        View[] views = {vaiety_post,vaiety_card1_image,vaiety_card2_image,vaiety_card3_image,
+                vaiety_card4_image,vaiety_channel1_image,vaiety_channel2_image,vaiety_channel3_image,vaiety_channel4_image};
+        for (int i = 0; i < views.length; i++){
+            views[i].setTag(R.id.view_position_tag, i + 1);
+        }
         return view;
     }
 
@@ -195,8 +211,11 @@ public class EntertainmentFragment extends ChannelBaseFragment {
     public void onPause() {
         imageswitch.removeMessages(IMAGE_SWITCH_KEY);
         super.onPause();
-        if (dataSubscription != null && !dataSubscription.isUnsubscribed()) {
+        if (dataSubscription != null && dataSubscription.isUnsubscribed()) {
             dataSubscription.unsubscribe();
+        }
+        if (smartRecommendPostSub != null && smartRecommendPostSub.isUnsubscribed()) {
+            smartRecommendPostSub.unsubscribe();
         }
     }
 
@@ -274,6 +293,146 @@ public class EntertainmentFragment extends ChannelBaseFragment {
 
     private void fillData(ArrayList<Carousel> carousellist,
                           ArrayList<Poster> postlist) {
+        ImageView[] vaietys = new ImageView[]{vaiety_thumb1, vaiety_thumb2, vaiety_thumb3};
+        looppost.clear();
+        for (int i = 0; i < carousellist.size() && i < 3; i++) {
+            carousellist.get(i).setPosition(i);
+            Picasso.with(mContext).load(carousellist.get(i).getThumb_image()).memoryPolicy(MemoryPolicy.NO_STORE).into(vaietys[i]);
+            vaietys[i].setTag(carousellist.get(i).getVideo_image());
+            vaietys[i].setTag(R.id.vaiety_post, carousellist.get(i).getTitle());
+            vaietys[i].setTag(R.drawable.launcher_selector, carousellist.get(i));
+            looppost.add(carousellist.get(i).getVideo_image());
+        }
+
+        imageswitch.sendEmptyMessage(IMAGE_SWITCH_KEY);
+        vaiety_fouce_label.setText(carousellist.get(0).getTitle());
+        postlist.get(0).setPosition(0);
+
+        String imageUrl0 = postlist.get(0).getCustom_image();
+        if (TextUtils.isEmpty(imageUrl0)){
+            imageUrl0 = postlist.get(0).getPoster_url();
+        }
+        Picasso.with(mContext).load(imageUrl0).memoryPolicy(MemoryPolicy.NO_STORE).into(vaiety_card1_image);
+        vaiety_card1_image.setTitle(postlist.get(0).getIntroduction());
+        vaiety_card1_image.setTag(postlist.get(0));
+        vaiety_card1_subtitle.setText(postlist.get(0).getTitle());
+        vaiety_card1_image.setModeType(0);
+        if (postlist.get(0).getCorner() == 2) {
+            vaiety_card1_image.setModeType(1);
+        } else if (postlist.get(0).getCorner() == 3) {
+            vaiety_card1_image.setModeType(2);
+        }
+        postlist.get(1).setPosition(1);
+        String imageUrl1 = postlist.get(1).getCustom_image();
+        if (TextUtils.isEmpty(imageUrl1)){
+            imageUrl1 = postlist.get(1).getPoster_url();
+        }
+        Picasso.with(mContext).load(imageUrl1).memoryPolicy(MemoryPolicy.NO_STORE).into(vaiety_card2_image);
+
+        vaiety_card2_image.setTitle(postlist.get(1).getIntroduction());
+        vaiety_card2_image.setTag(postlist.get(1));
+        vaiety_card2_subtitle.setText(postlist.get(1).getTitle());
+        vaiety_card2_image.setModeType(0);
+        if (postlist.get(1).getCorner() == 2) {
+            vaiety_card2_image.setModeType(1);
+        } else if (postlist.get(1).getCorner() == 3) {
+            vaiety_card2_image.setModeType(2);
+        }
+        postlist.get(2).setPosition(2);
+
+        String imageUrl2 = postlist.get(2).getCustom_image();
+        if (TextUtils.isEmpty(imageUrl2)){
+            imageUrl2 = postlist.get(2).getPoster_url();
+        }
+        Picasso.with(mContext).load(imageUrl2).memoryPolicy(MemoryPolicy.NO_STORE).into(vaiety_card3_image);
+        vaiety_card3_image.setTitle(postlist.get(2).getIntroduction());
+        vaiety_card3_subtitle.setText(postlist.get(2).getTitle());
+        vaiety_card3_image.setTag(postlist.get(2));
+        vaiety_card3_image.setModeType(0);
+        if (postlist.get(2).getCorner() == 2) {
+            vaiety_card3_image.setModeType(1);
+        } else if (postlist.get(2).getCorner() == 3) {
+            vaiety_card3_image.setModeType(2);
+        }
+        postlist.get(3).setPosition(3);
+
+        String imageUrl3 = postlist.get(3).getCustom_image();
+        if (TextUtils.isEmpty(imageUrl3)){
+            imageUrl3 = postlist.get(3).getPoster_url();
+        }
+        Picasso.with(mContext).load(imageUrl3).memoryPolicy(MemoryPolicy.NO_STORE).into(vaiety_card4_image);
+        vaiety_card4_image.setTitle(postlist.get(3).getIntroduction());
+        vaiety_card4_subtitle.setText(postlist.get(3).getTitle());
+        vaiety_card4_image.setTag(postlist.get(3));
+        vaiety_card4_image.setModeType(0);
+        if (postlist.get(3).getCorner() == 2) {
+            vaiety_card4_image.setModeType(1);
+        } else if (postlist.get(3).getCorner() == 3) {
+            vaiety_card4_image.setModeType(2);
+        }
+        postlist.get(4).setPosition(4);
+        String imageUrl4 = postlist.get(4).getCustom_image();
+        if (TextUtils.isEmpty(imageUrl4)){
+            imageUrl4 = postlist.get(4).getPoster_url();
+        }
+        Picasso.with(mContext).load(imageUrl4).memoryPolicy(MemoryPolicy.NO_STORE).into(vaiety_channel1_image);
+        vaiety_channel1_image.setTitle(postlist.get(4).getIntroduction());
+        vaiety_channel1_subtitle.setText(postlist.get(4).getTitle());
+        vaiety_channel1_image.setTag(postlist.get(4));
+        vaiety_channel1_image.setModeType(0);
+        if (postlist.get(4).getCorner() == 2) {
+            vaiety_channel1_image.setModeType(1);
+        } else if (postlist.get(4).getCorner() == 3) {
+            vaiety_channel1_image.setModeType(2);
+        }
+        postlist.get(5).setPosition(5);
+        String imageUrl5 = postlist.get(5).getCustom_image();
+        if (TextUtils.isEmpty(imageUrl5)){
+            imageUrl5 = postlist.get(5).getPoster_url();
+        }
+        Picasso.with(mContext).load(imageUrl5).memoryPolicy(MemoryPolicy.NO_STORE).into(vaiety_channel2_image);
+        vaiety_channel2_image.setTitle(postlist.get(5).getIntroduction());
+        vaiety_channel2_subtitle.setText(postlist.get(5).getTitle());
+        vaiety_channel2_image.setTag(postlist.get(5));
+        vaiety_channel2_image.setModeType(0);
+        if (postlist.get(5).getCorner() == 2) {
+            vaiety_channel2_image.setModeType(1);
+        } else if (postlist.get(5).getCorner() == 3) {
+            vaiety_channel2_image.setModeType(2);
+        }
+        postlist.get(6).setPosition(6);
+
+        String imageUrl6 = postlist.get(6).getCustom_image();
+        if (TextUtils.isEmpty(imageUrl6)){
+            imageUrl6 = postlist.get(6).getPoster_url();
+        }
+        Picasso.with(mContext).load(imageUrl6).memoryPolicy(MemoryPolicy.NO_STORE).into(vaiety_channel3_image);
+        vaiety_channel3_image.setTitle(postlist.get(6).getIntroduction());
+        vaiety_channel3_subtitle.setText(postlist.get(6).getTitle());
+        vaiety_channel3_image.setTag(postlist.get(6));
+        vaiety_channel3_image.setModeType(0);
+        if (postlist.get(6).getCorner() == 2) {
+            vaiety_channel3_image.setModeType(1);
+        } else if (postlist.get(6).getCorner() == 3) {
+            vaiety_channel3_image.setModeType(2);
+        }
+        postlist.get(7).setPosition(7);
+
+        String imageUrl7 = postlist.get(7).getCustom_image();
+        if (TextUtils.isEmpty(imageUrl7)){
+            imageUrl7 = postlist.get(7).getPoster_url();
+        }
+        Picasso.with(mContext).load(imageUrl7).memoryPolicy(MemoryPolicy.NO_STORE).into(vaiety_channel4_image);
+        vaiety_channel4_image.setTitle(postlist.get(7).getIntroduction());
+        vaiety_channel4_subtitle.setText(postlist.get(7).getTitle());
+        vaiety_channel4_image.setTag(postlist.get(7));
+        vaiety_channel4_image.setModeType(0);
+        if (postlist.get(7).getCorner() == 2) {
+            vaiety_channel4_image.setModeType(1);
+        } else if (postlist.get(7).getCorner() == 3) {
+            vaiety_channel4_image.setModeType(2);
+        }
+
         if (scrollFromBorder) {
             if (isRight) {//右侧移入
                 if ("bottom".equals(bottomFlag)) {//下边界移入
@@ -291,107 +450,6 @@ public class EntertainmentFragment extends ChannelBaseFragment {
 //        	}
             }
             ((HomePageActivity) getActivity()).resetBorderFocus();
-        }
-        ImageView[] vaietys = new ImageView[]{vaiety_thumb1, vaiety_thumb2, vaiety_thumb3};
-        looppost.clear();
-        for (int i = 0; i < carousellist.size() && i < 3; i++) {
-            carousellist.get(i).setPosition(i);
-            Picasso.with(mContext).load(carousellist.get(i).getThumb_image()).memoryPolicy(MemoryPolicy.NO_STORE).into(vaietys[i]);
-            vaietys[i].setTag(carousellist.get(i).getVideo_image());
-            vaietys[i].setTag(R.id.vaiety_post, carousellist.get(i).getTitle());
-            vaietys[i].setTag(R.drawable.launcher_selector, carousellist.get(i));
-            looppost.add(carousellist.get(i).getVideo_image());
-        }
-
-        imageswitch.sendEmptyMessage(IMAGE_SWITCH_KEY);
-        vaiety_fouce_label.setText(carousellist.get(0).getTitle());
-        postlist.get(0).setPosition(0);
-        Picasso.with(mContext).load(postlist.get(0).getCustom_image()).memoryPolicy(MemoryPolicy.NO_STORE).into(vaiety_card1_image);
-        vaiety_card1_image.setTitle(postlist.get(0).getIntroduction());
-        vaiety_card1_image.setTag(postlist.get(0));
-        vaiety_card1_subtitle.setText(postlist.get(0).getTitle());
-        vaiety_card1_image.setModeType(0);
-        if (postlist.get(0).getCorner() == 2) {
-            vaiety_card1_image.setModeType(1);
-        } else if (postlist.get(0).getCorner() == 3) {
-            vaiety_card1_image.setModeType(2);
-        }
-        postlist.get(1).setPosition(1);
-        Picasso.with(mContext).load(postlist.get(1).getCustom_image()).memoryPolicy(MemoryPolicy.NO_STORE).into(vaiety_card2_image);
-        vaiety_card2_image.setTitle(postlist.get(1).getIntroduction());
-        vaiety_card2_image.setTag(postlist.get(1));
-        vaiety_card2_subtitle.setText(postlist.get(1).getTitle());
-        vaiety_card2_image.setModeType(0);
-        if (postlist.get(1).getCorner() == 2) {
-            vaiety_card2_image.setModeType(1);
-        } else if (postlist.get(1).getCorner() == 3) {
-            vaiety_card2_image.setModeType(2);
-        }
-        postlist.get(2).setPosition(2);
-        Picasso.with(mContext).load(postlist.get(2).getCustom_image()).memoryPolicy(MemoryPolicy.NO_STORE).into(vaiety_card3_image);
-        vaiety_card3_image.setTitle(postlist.get(2).getIntroduction());
-        vaiety_card3_subtitle.setText(postlist.get(2).getTitle());
-        vaiety_card3_image.setTag(postlist.get(2));
-        vaiety_card3_image.setModeType(0);
-        if (postlist.get(2).getCorner() == 2) {
-            vaiety_card3_image.setModeType(1);
-        } else if (postlist.get(2).getCorner() == 3) {
-            vaiety_card3_image.setModeType(2);
-        }
-        postlist.get(3).setPosition(3);
-        Picasso.with(mContext).load(postlist.get(3).getCustom_image()).memoryPolicy(MemoryPolicy.NO_STORE).into(vaiety_card4_image);
-        vaiety_card4_image.setTitle(postlist.get(3).getIntroduction());
-        vaiety_card4_subtitle.setText(postlist.get(3).getTitle());
-        vaiety_card4_image.setTag(postlist.get(3));
-        vaiety_card4_image.setModeType(0);
-        if (postlist.get(3).getCorner() == 2) {
-            vaiety_card4_image.setModeType(1);
-        } else if (postlist.get(3).getCorner() == 3) {
-            vaiety_card4_image.setModeType(2);
-        }
-        postlist.get(4).setPosition(4);
-        Picasso.with(mContext).load(postlist.get(4).getCustom_image()).memoryPolicy(MemoryPolicy.NO_STORE).into(vaiety_channel1_image);
-        vaiety_channel1_image.setTitle(postlist.get(4).getIntroduction());
-        vaiety_channel1_subtitle.setText(postlist.get(4).getTitle());
-        vaiety_channel1_image.setTag(postlist.get(4));
-        vaiety_channel1_image.setModeType(0);
-        if (postlist.get(4).getCorner() == 2) {
-            vaiety_channel1_image.setModeType(1);
-        } else if (postlist.get(4).getCorner() == 3) {
-            vaiety_channel1_image.setModeType(2);
-        }
-        postlist.get(5).setPosition(5);
-        Picasso.with(mContext).load(postlist.get(5).getCustom_image()).memoryPolicy(MemoryPolicy.NO_STORE).into(vaiety_channel2_image);
-        vaiety_channel2_image.setTitle(postlist.get(5).getIntroduction());
-        vaiety_channel2_subtitle.setText(postlist.get(5).getTitle());
-        vaiety_channel2_image.setTag(postlist.get(5));
-        vaiety_channel2_image.setModeType(0);
-        if (postlist.get(5).getCorner() == 2) {
-            vaiety_channel2_image.setModeType(1);
-        } else if (postlist.get(5).getCorner() == 3) {
-            vaiety_channel2_image.setModeType(2);
-        }
-        postlist.get(6).setPosition(6);
-        Picasso.with(mContext).load(postlist.get(6).getCustom_image()).memoryPolicy(MemoryPolicy.NO_STORE).into(vaiety_channel3_image);
-        vaiety_channel3_image.setTitle(postlist.get(6).getIntroduction());
-        vaiety_channel3_subtitle.setText(postlist.get(6).getTitle());
-        vaiety_channel3_image.setTag(postlist.get(6));
-        vaiety_channel3_image.setModeType(0);
-        if (postlist.get(6).getCorner() == 2) {
-            vaiety_channel3_image.setModeType(1);
-        } else if (postlist.get(6).getCorner() == 3) {
-            vaiety_channel3_image.setModeType(2);
-        }
-        postlist.get(7).setPosition(7);
-        Picasso.with(mContext).load(postlist.get(7).getCustom_image()).memoryPolicy(MemoryPolicy.NO_STORE).into(vaiety_channel4_image);
-        vaiety_channel4_image.setTitle(postlist.get(7).getIntroduction());
-        vaiety_channel4_subtitle.setText(postlist.get(7).getTitle());
-        vaiety_channel4_image.setTag(postlist.get(7));
-        vaiety_channel4_image.setModeType(0);
-        if (postlist.get(7).getCorner() == 2) {
-            vaiety_channel4_image.setModeType(1);
-        } else if (postlist.get(7).getCorner() == 3) {
-            vaiety_channel4_image.setModeType(2);
         }
     }
 
@@ -448,6 +506,7 @@ public class EntertainmentFragment extends ChannelBaseFragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        isDestroyed = true;
     }
 
     private void fetchPage(String url) {
@@ -462,6 +521,9 @@ public class EntertainmentFragment extends ChannelBaseFragment {
 
                     @Override
                     public void onNext(HomePagerEntity homePagerEntity) {
+                        if (isDestroyed){
+                            return;
+                        }
                         entity = homePagerEntity;
                         if (mContext == null || entity == null) {
                             new CallaPlay().exception_except("launcher", "launcher", channelEntity.getChannel(),
@@ -473,8 +535,68 @@ public class EntertainmentFragment extends ChannelBaseFragment {
                         }
                         ArrayList<Carousel> carousellist = entity.getCarousels();
                         ArrayList<Poster> postlist = entity.getPosters();
-                        fillData(carousellist, postlist);
+                        if (TextUtils.isEmpty(homePagerEntity.getRecommend_homepage_url())){
+                            fillData(carousellist, postlist);
+                        }else {
+                            if (TrueTime.now().getTime() -  getSmartPostErrorTime()> C.SMART_POST_NEXT_REQUEST_TIME){
+                                smartRecommendPost(homePagerEntity.getRecommend_homepage_url(), postlist, carousellist);
+                            }else {
+                                fillData(carousellist, postlist);
+                            }
+                        }
                     }
                 });
     }
+
+
+    private void smartRecommendPost(String url, final ArrayList<HomePagerEntity.Poster>  posters,final ArrayList<Carousel> carousellist) {
+        smartRecommendPostSub = SkyService.ServiceManager.getCacheSkyService2().smartRecommendPost(url, IsmartvActivator.getInstance().getSnToken())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<ArrayList<HomePagerEntity.Poster>>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable throwable) {
+                        if (isDestroyed){
+                            return;
+                        }
+                        throwable.printStackTrace();
+                        setSmartPostErrorTime();
+                        fillData(carousellist, posters);
+                    }
+
+                    @Override
+                    public void onNext(ArrayList<HomePagerEntity.Poster> smartPosters) {
+                        if (isDestroyed){
+                            return;
+                        }
+                        if (smartPosters.size() < 8){
+                            fillData(carousellist, posters);
+                        }else {
+                            ArrayList<HomePagerEntity.Poster> posterArrayList = new ArrayList<>();
+                            if (smartPosters.size() - posterStartTag - 8 >= 0) {
+                                posterArrayList.addAll(smartPosters.subList(posterStartTag, posterStartTag + 8));
+                                posterStartTag = posterStartTag + 8;
+                            } else {
+                                if (smartPosters.size() <= posterStartTag){
+                                    posterArrayList.addAll(smartPosters.subList(0, 8));
+                                    posterStartTag =  8;
+                                }else {
+                                    posterArrayList.addAll(smartPosters.subList(posterStartTag, smartPosters.size()));
+                                    posterArrayList.addAll(smartPosters.subList(0, Math.abs(smartPosters.size() - posterStartTag - 8)));
+                                    posterStartTag = Math.abs(smartPosters.size() - posterStartTag - 8);
+                                }
+                            }
+                            fillData(carousellist, posterArrayList);
+                        }
+
+                    }
+                });
+    }
+
+    public static int posterStartTag = 0;
 }

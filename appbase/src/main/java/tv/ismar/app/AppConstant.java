@@ -1,5 +1,9 @@
 package tv.ismar.app;
 
+import android.app.Application;
+import android.content.Context;
+import android.content.SharedPreferences;
+
 /**
  * Created by huaijie on 3/9/15.
  */
@@ -15,4 +19,17 @@ public class AppConstant {
     public static final boolean DEBUG = true;
 
 
+    public static String purchase_referer = "launcher";
+    public static String purchase_page = "launcher";
+    public static String purchase_channel;
+    public static String purchase_tab;
+
+    public static String purchase_entrance_page = "launcher";
+    public static String purchase_entrance_channel;
+    public static String purchase_entrance_keyword;
+    public static String purchase_entrance_related_item;
+    public static String purchase_entrance_related_title;
+    public static String purchase_entrance_related_channel;
+    public static String purchase_entrance_tab;
+    public static String purchase_entrance_location;
 }

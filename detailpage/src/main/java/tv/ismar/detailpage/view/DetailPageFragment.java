@@ -4,6 +4,8 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.DisplayMetrics;
@@ -28,6 +30,7 @@ import java.util.TimeZone;
 
 import cn.ismartv.truetime.TrueTime;
 import tv.ismar.account.IsmartvActivator;
+import tv.ismar.app.AppConstant;
 import tv.ismar.app.BaseActivity;
 import tv.ismar.app.core.DaisyUtils;
 import tv.ismar.app.core.InitializeProcess;
@@ -115,6 +118,22 @@ public class DetailPageFragment extends Fragment implements DetailPageContract.V
         // Required empty public constructor
     }
 
+    private Handler handler=new Handler(new Handler.Callback() {
+        @Override
+        public boolean handleMessage(Message msg) {
+            if (videoIsStart()&&palyBtnView.getVisibility()==View.VISIBLE) {
+                palyBtnView.requestFocus();
+                palyBtnView.requestFocusFromTouch();
+            } else if(purchaseBtnView.getVisibility()== View.VISIBLE){
+                purchaseBtnView.requestFocus();
+                purchaseBtnView.requestFocusFromTouch();
+            }else{
+                favoriteBtnView.requestFocus();
+                favoriteBtnView.requestFocusFromTouch();
+            }
+            return false;
+        }
+    });
 
     public static DetailPageFragment newInstance(String fromPage, String itemJson) {
         DetailPageFragment fragment = new DetailPageFragment();
@@ -187,14 +206,6 @@ public class DetailPageFragment extends Fragment implements DetailPageContract.V
         mPresenter.start();
 //        mPresenter.fetchItem(String.valueOf(mItemEntity.getPk()));
 //        loadItem(mItemEntity);
-        mPresenter.fetchItemRelate(String.valueOf(mItemEntity.getPk()));
-        if (videoIsStart()) {
-            palyBtnView.requestFocus();
-            palyBtnView.requestFocusFromTouch();
-        } else {
-            purchaseBtnView.requestFocus();
-            purchaseBtnView.requestFocusFromTouch();
-        }
 
     }
 
@@ -205,10 +216,16 @@ public class DetailPageFragment extends Fragment implements DetailPageContract.V
         if (!Utils.isEmptyText(IsmartvActivator.getInstance().getAuthToken())) {
             isLogin = "yes";
         }
-        loadItem(mItemEntity);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                loadItem(mItemEntity);
+            }
+        }).start();
         mPageStatistics.videoDetailIn(mItemEntity, fromPage);
 
         mModel.notifyBookmark(true);
+        mPresenter.fetchItemRelate(String.valueOf(mItemEntity.getPk()));
     }
 
     @Override
@@ -409,44 +426,49 @@ public class DetailPageFragment extends Fragment implements DetailPageContract.V
     }
 
     private void hideLoading() {
-        if (((DetailPageActivity) getActivity()).mLoadingDialog != null && ((DetailPageActivity) getActivity()).mLoadingDialog.isShowing() && itemIsLoad && relateIsLoad) {
-            ((DetailPageActivity) getActivity()).mLoadingDialog.dismiss();
-            HashMap<String, Object> dataCollectionProperties = new HashMap<>();
-            dataCollectionProperties.put(EventProperty.CLIP, mItemEntity.getClip().getPk());
-            dataCollectionProperties.put(EventProperty.DURATION, (int)((System.currentTimeMillis()-((DetailPageActivity) getActivity()).start_time)/1000));
-            String quality="";
-            switch (mItemEntity.getQuality()){
-                case 2:
-                    quality="normal";
-                    break;
-                case 3:
-                    quality="medium";
-                    break;
-                case 4:
-                    quality="high";
-                    break;
-                case 5:
-                    quality="ultra";
-                    break;
-                default:
-                    quality="adaptive";
-                    break;
+            if (((DetailPageActivity) getActivity()).mLoadingDialog != null && ((DetailPageActivity) getActivity()).mLoadingDialog.isShowing() && itemIsLoad && relateIsLoad) {
+                ((DetailPageActivity) getActivity()).mLoadingDialog.dismiss();
+                HashMap<String, Object> dataCollectionProperties = new HashMap<>();
+                dataCollectionProperties.put(EventProperty.CLIP, mItemEntity.getClip().getPk());
+                dataCollectionProperties.put(EventProperty.DURATION, (int) ((System.currentTimeMillis() - ((DetailPageActivity) getActivity()).start_time) / 1000));
+                String quality = "";
+                switch (mItemEntity.getQuality()) {
+                    case 2:
+                        quality = "normal";
+                        break;
+                    case 3:
+                        quality = "medium";
+                        break;
+                    case 4:
+                        quality = "high";
+                        break;
+                    case 5:
+                        quality = "ultra";
+                        break;
+                    default:
+                        quality = "adaptive";
+                        break;
+                }
+                dataCollectionProperties.put(EventProperty.QUALITY, quality);
+                dataCollectionProperties.put(EventProperty.TITLE, mItemEntity.getTitle());
+                dataCollectionProperties.put(EventProperty.ITEM, mItemEntity.getPk());
+                dataCollectionProperties.put(EventProperty.SUBITEM, mItemEntity.getItemPk());
+                dataCollectionProperties.put(EventProperty.LOCATION, "detail");
+                new NetworkUtils.DataCollectionTask().execute(NetworkUtils.DETAIL_PLAY_LOAD, dataCollectionProperties);
+                handler.sendEmptyMessageDelayed(0,300);
             }
-            dataCollectionProperties.put(EventProperty.QUALITY, quality);
-            dataCollectionProperties.put(EventProperty.TITLE, mItemEntity.getTitle());
-            dataCollectionProperties.put(EventProperty.ITEM, mItemEntity.getPk());
-            dataCollectionProperties.put(EventProperty.SUBITEM, mItemEntity.getItemPk());
-            dataCollectionProperties.put(EventProperty.LOCATION,"detail");
-            new NetworkUtils.DataCollectionTask().execute(NetworkUtils.DETAIL_PLAY_LOAD, dataCollectionProperties);
-        }
 
-        mModel.showLayout();
+            mModel.showLayout();
     }
 
     private View.OnClickListener relateItemOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+            AppConstant.purchase_entrance_page = "related";
             ItemEntity item = relateItems[(int) v.getTag()];
+            AppConstant.purchase_entrance_related_item = String.valueOf(mItemEntity.getItemPk());
+            AppConstant.purchase_entrance_related_title = mItemEntity.getTitle();
+            AppConstant.purchase_entrance_related_channel = AppConstant.purchase_channel;
             mPageStatistics.videoRelateClick(mItemEntity.getPk(), item);
             new PageIntent().toDetailPage(getContext(), Source.RELATED.getValue(), item.getPk());
             to="relate";

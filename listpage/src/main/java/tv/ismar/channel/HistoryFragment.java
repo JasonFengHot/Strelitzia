@@ -37,6 +37,7 @@ import rx.schedulers.Schedulers;
 import tv.ismar.Utils.LogUtils;
 import tv.ismar.account.IsmartvActivator;
 import tv.ismar.adapter.RecommecdItemAdapter;
+import tv.ismar.app.AppConstant;
 import tv.ismar.app.BaseActivity;
 import tv.ismar.app.core.DaisyUtils;
 import tv.ismar.app.core.PageIntent;
@@ -364,7 +365,8 @@ public class HistoryFragment extends Fragment implements ScrollableSectionList.O
 
 					@Override
 					public void onNext(Item[] items) {
-						mLoadingDialog.dismiss();
+						if(mLoadingDialog!=null)
+							mLoadingDialog.dismiss();
 						if(items!=null&&items.length>0) {
 							for (Item i : items) {
 								addHistory(i);
@@ -502,8 +504,16 @@ public class HistoryFragment extends Fragment implements ScrollableSectionList.O
 
 	@Override
 	public void onResume() {
+		AppConstant.purchase_referer = "history";
+		AppConstant.purchase_page = "history";
+		AppConstant.purchase_channel = "";
+		AppConstant.purchase_entrance_channel = "";
+		AppConstant.purchase_entrance_page = "history";
         BaseActivity.baseChannel="";
         BaseActivity.baseSection="";
+		if(left_shadow!=null){
+			left_shadow.setVisibility(View.INVISIBLE);
+		}
 		if(IsmartvActivator.getInstance().isLogin()){
 			//登录，网络获取
 			Log.i("onResum","onreusm");

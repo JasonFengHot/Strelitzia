@@ -1165,6 +1165,8 @@ public class HGridView extends AdapterView<HGridAdapter> {
 			case LAYOUT_MOVE_SELECTION:
 				delta = mNextSelectedPosition - mSelectedPosition;
                 Log.i("zxcvbnm","mNextSelectedPosition=="+mNextSelectedPosition+"//mSelectedPosition=="+mSelectedPosition);
+				if(mNextSelectedPosition==1||mNextSelectedPosition==0||mNextSelectedPosition==2)
+					leftbtn.setVisibility(INVISIBLE);
 				break;
 			default:
 				// Remember the previously selected view.
@@ -2649,6 +2651,7 @@ public class HGridView extends AdapterView<HGridAdapter> {
 //	}
 
 	public boolean pageScroll(int direction) {
+		Log.i("pagescroll",direction+"");
 		int count = getChildCount();
 		int nextPage = -1;
 		int rightEdge = getRight() - mListPadding.right;

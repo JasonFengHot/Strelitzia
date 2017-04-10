@@ -7,12 +7,12 @@ import android.content.DialogInterface;
 import android.database.Cursor;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
-import android.text.TextUtils;
-import android.util.Base64;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -26,24 +26,10 @@ import android.widget.AdapterView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
-
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import tv.ismar.app.util.BitmapDecoder;
-import tv.ismar.helperpage.R;
-import tv.ismar.helperpage.core.CdnCacheLoader;
-import tv.ismar.helperpage.core.HttpDownloadTask;
-import tv.ismar.helperpage.ui.activity.HomeActivity;
-import tv.ismar.helperpage.ui.adapter.IspSpinnerAdapter;
-import tv.ismar.helperpage.ui.adapter.NodeListAdapter;
-import tv.ismar.helperpage.ui.adapter.ProvinceSpinnerAdapter;
-import tv.ismar.helperpage.ui.widget.IspSpinnerPopWindow;
-import tv.ismar.helperpage.ui.widget.ProvinceSpinnerPopWindow;
-import tv.ismar.helperpage.ui.widget.SakuraButton;
-import tv.ismar.helperpage.ui.widget.SakuraListView;
-import tv.ismar.helperpage.utils.StringUtils;
 import cn.ismartv.injectdb.library.ActiveAndroid;
 import cn.ismartv.injectdb.library.content.ContentProvider;
 import cn.ismartv.injectdb.library.query.Select;
@@ -52,7 +38,6 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import tv.ismar.app.core.DaisyUtils;
 import tv.ismar.app.core.SimpleRestClient;
-import tv.ismar.app.core.VodUserAgent;
 import tv.ismar.app.core.preferences.AccountSharedPrefs;
 import tv.ismar.app.db.location.CdnTable;
 import tv.ismar.app.db.location.IspTable;
@@ -61,12 +46,23 @@ import tv.ismar.app.network.entity.BindedCdnEntity;
 import tv.ismar.app.network.entity.Empty;
 import tv.ismar.app.network.entity.SpeedLogEntity;
 import tv.ismar.app.ui.MessageDialogFragment;
+import tv.ismar.app.util.BitmapDecoder;
+import tv.ismar.helperpage.R;
+import tv.ismar.helperpage.core.CdnCacheLoader;
+import tv.ismar.helperpage.core.HttpDownloadTask;
+import tv.ismar.helperpage.ui.activity.HomeActivity;
+import tv.ismar.helperpage.ui.adapter.NodeListAdapter;
+import tv.ismar.helperpage.ui.widget.IspSpinnerPopWindow;
+import tv.ismar.helperpage.ui.widget.ProvinceSpinnerPopWindow;
+import tv.ismar.helperpage.ui.widget.SakuraButton;
+import tv.ismar.helperpage.ui.widget.SakuraListView;
+import tv.ismar.helperpage.utils.StringUtils;
 
 /**
  * Created by huaijie on 2015/4/8.
  */
 public class NodeFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>,
-        HttpDownloadTask.OnCompleteListener, View.OnHoverListener,View.OnClickListener, AdapterView.OnItemClickListener {
+        HttpDownloadTask.OnCompleteListener, View.OnHoverListener, View.OnClickListener, AdapterView.OnItemClickListener {
     private static final String TAG = "NodeFragment";
 
     private static String NORMAL_SELECTION = CdnTable.DISTRICT_ID + "=? and " + CdnTable.ISP_ID + "=?" + " or " + CdnTable.CDN_FLAG + "  <> ?" + " ORDER BY " + CdnTable.ISP_ID + " DESC," + CdnTable.SPEED + " DESC";
@@ -102,10 +98,6 @@ public class NodeFragment extends Fragment implements LoaderManager.LoaderCallba
      * 传入下载中的 CDN 节点 ID
      */
     private List<Integer> cdnCollections;
-
-    private String snCode = TextUtils.isEmpty(SimpleRestClient.sn_token) ? "sn is null" : SimpleRestClient.sn_token;
-
-
     private Context mContext;
 
     private HttpDownloadTask httpDownloadTask;
@@ -113,6 +105,9 @@ public class NodeFragment extends Fragment implements LoaderManager.LoaderCallba
 
     private float rate;
     private BitmapDecoder bitmapDecoder;
+    private Runnable speedTestRunnable;
+    private Handler speedTestHandler;
+
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
@@ -163,12 +158,7 @@ public class NodeFragment extends Fragment implements LoaderManager.LoaderCallba
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-
-        List<ProvinceTable> provinceTables = new Select().from(ProvinceTable.class).execute();
-        ProvinceSpinnerAdapter provinceSpinnerAdapter = new ProvinceSpinnerAdapter(mContext, provinceTables);
-      //  provinceSpinner.setAdapter(provinceSpinnerAdapter);
         String accountProvince = AccountSharedPrefs.getInstance().getSharedPrefs(AccountSharedPrefs.PROVINCE);
-
         ProvinceTable provinceTable = new Select().from(ProvinceTable.class).
                 where(ProvinceTable.PROVINCE_NAME + " = ?", accountProvince).executeSingle();
         if (provinceTable != null) {
@@ -181,12 +171,6 @@ public class NodeFragment extends Fragment implements LoaderManager.LoaderCallba
             notifiySourceChanged();
         }
 
-
-
-        List<IspTable> ispTables = new Select().from(IspTable.class).execute();
-        IspSpinnerAdapter ispSpinnerAdapter = new IspSpinnerAdapter(mContext, ispTables);
-     //   ispSpinner.setAdapter(ispSpinnerAdapter);
-
         String accountIsp = AccountSharedPrefs.getInstance().getSharedPrefs(AccountSharedPrefs.ISP);
         IspTable ispTable = new Select().from(IspTable.class).where(IspTable.ISP_NAME + " = ?", accountIsp).executeSingle();
         if (ispTable != null) {
@@ -198,12 +182,8 @@ public class NodeFragment extends Fragment implements LoaderManager.LoaderCallba
             mIspId = "f6f77a498c2b2c7e04ead59fbeec5128";
             notifiySourceChanged();
         }
-    //    setSpinnerItemSelectedListener();
         getLoaderManager().initLoader(NORMAL_ISP_FLAG, null, this);
-
         speedTestButton.requestFocus();
-
-
     }
 
     @Override
@@ -216,9 +196,6 @@ public class NodeFragment extends Fragment implements LoaderManager.LoaderCallba
         switch (event.getAction()) {
             case MotionEvent.ACTION_HOVER_ENTER:
             case MotionEvent.ACTION_HOVER_MOVE:
-//                if (nodeListView.getSelectedView() != null) {
-//                    nodeListView.getSelectedView().setSelected(false);
-//                }
                 if (!v.isFocused()) {
                     v.requestFocusFromTouch();
                     v.requestFocus();
@@ -229,6 +206,7 @@ public class NodeFragment extends Fragment implements LoaderManager.LoaderCallba
         }
         return true;
     }
+
     @Override
     public Loader onCreateLoader(int flag, Bundle args) {
         CursorLoader cacheLoader = new CdnCacheLoader(mContext, ContentProvider.createUri(CdnTable.class, null),
@@ -261,43 +239,6 @@ public class NodeFragment extends Fragment implements LoaderManager.LoaderCallba
         nodeListAdapter.swapCursor(null);
     }
 
- //   private void setSpinnerItemSelectedListener() {
-//        provinceSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-//            @Override
-//            public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
-//                ProvinceTable provinceTable = new Select().from(ProvinceTable.class).where("_id = ?", position + 1).executeSingle();
-//                if (provinceTable != null) {
-//                    mDistrictId = provinceTable.district_id;
-//                    notifiySourceChanged();
-//                }
-//
-//            }
-//
-//            @Override
-//            public void onNothingSelected(AdapterView<?> adapterView) {
-//
-//            }
-//        });
-
-//        ispSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-//            @Override
-//            public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
-//                IspTable ispTable = new Select().from(IspTable.class).where("_id = ?", position + 1).executeSingle();
-//                if (ispTable != null) {
-//                    mIspId = ispTable.isp_id;
-//                    notifiySourceChanged();
-//                }
-//
-//            }
-//
-//            @Override
-//            public void onNothingSelected(AdapterView<?> adapterView) {
-//
-//            }
-//        });
-  //  }
-
-
     private void notifiySourceChanged() {
         if (mIspId.equals(TIE_TONG)) {
 
@@ -312,6 +253,14 @@ public class NodeFragment extends Fragment implements LoaderManager.LoaderCallba
             getLoaderManager().restartLoader(NORMAL_ISP_FLAG, null, NodeFragment.this).forceLoad();
         }
 
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (speedTestHandler != null && speedTestRunnable != null) {
+            speedTestHandler.removeCallbacks(speedTestRunnable);
+        }
     }
 
     @Override
@@ -331,6 +280,7 @@ public class NodeFragment extends Fragment implements LoaderManager.LoaderCallba
 
     IspSpinnerPopWindow ispSpinnerPopWindow;
     ProvinceSpinnerPopWindow spinnerPopWindow;
+
     @Override
     public void onClick(View view) {
         int i = view.getId();
@@ -381,7 +331,7 @@ public class NodeFragment extends Fragment implements LoaderManager.LoaderCallba
 //     * @param snCode
 //     */
     private void fetchBindedCdn(final String snCode) {
-        ((HomeActivity)getActivity()).mWxApiService.GetBindCdn(snCode)
+        ((HomeActivity) getActivity()).mWxApiService.GetBindCdn(snCode)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<BindedCdnEntity>() {
@@ -410,7 +360,7 @@ public class NodeFragment extends Fragment implements LoaderManager.LoaderCallba
     }
 
     private void bindCdn(final String snCode, final int cdnId) {
-        ((HomeActivity)getActivity()).mWxApiService.BindCdn(snCode,cdnId)
+        ((HomeActivity) getActivity()).mWxApiService.BindCdn(snCode, cdnId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<Empty>() {
@@ -436,7 +386,7 @@ public class NodeFragment extends Fragment implements LoaderManager.LoaderCallba
     }
 
     private void unbindNode(final String snCode) {
-        ((HomeActivity)getActivity()).mWxApiService.UnbindNode(snCode)
+        ((HomeActivity) getActivity()).mWxApiService.UnbindNode(snCode)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<Empty>() {
@@ -485,6 +435,7 @@ public class NodeFragment extends Fragment implements LoaderManager.LoaderCallba
             ActiveAndroid.endTransaction();
         }
     }
+
     /**
      * clearCheck
      */
@@ -574,7 +525,7 @@ public class NodeFragment extends Fragment implements LoaderManager.LoaderCallba
                  */
                 httpDownloadTask = new HttpDownloadTask(mContext);
                 httpDownloadTask.setCompleteListener(NodeFragment.this);
-                if(cdnCollections!=null){
+                if (cdnCollections != null) {
                     httpDownloadTask.execute(cdnCollections);
                 }
             }
@@ -582,8 +533,8 @@ public class NodeFragment extends Fragment implements LoaderManager.LoaderCallba
         cdnTestDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override
             public void onDismiss(DialogInterface dialog) {
-                if(httpDownloadTask != null)
-                httpDownloadTask.cancel(true);
+                if (httpDownloadTask != null)
+                    httpDownloadTask.cancel(true);
                 httpDownloadTask = null;
             }
         });
@@ -631,15 +582,6 @@ public class NodeFragment extends Fragment implements LoaderManager.LoaderCallba
 
         speedLog.setLocation(AccountSharedPrefs.getInstance().getSharedPrefs(AccountSharedPrefs.CITY));
         speedLog.setLocation(AccountSharedPrefs.getInstance().getSharedPrefs(AccountSharedPrefs.ISP));
-
-
-        Gson gson = new Gson();
-        String data = gson.toJson(speedLog, SpeedLogEntity.class);
-        String base64Data = Base64.encodeToString(data.getBytes(), Base64.DEFAULT);
-
-
-      //  uploadTestResult(cndId, speed);
-     //   uploadCdnTestLog(base64Data, snCode, VodUserAgent.getModelName());
     }
 
     @Override
@@ -656,53 +598,30 @@ public class NodeFragment extends Fragment implements LoaderManager.LoaderCallba
 
     }
 
+    @Override
+    public void onIoException() {
+        speedTestRunnable = new Runnable() {
+            @Override
+            public void run() {
+                if (cdnTestDialog != null) {
+                    cdnTestDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                        @Override
+                        public void onDismiss(DialogInterface dialog) {
+                            ((HomeActivity) getActivity()).showPop(new IOException());
+                        }
+                    });
+                    cdnTestDialog.dismiss();
+                }
 
-    private void uploadCdnTestLog(String data, String snCode, String model) {
-        ((HomeActivity)getActivity()).mWxApiService.DeviceLog(data,snCode,model)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<Empty>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                    }
-
-
-                    @Override
-                    public void onNext(Empty empty) {
-                        Log.d(TAG, "uploadCdnTestLog success");
-                    }
-                });
+            }
+        };
+        speedTestHandler = new Handler(Looper.getMainLooper());
+        speedTestHandler.post(speedTestRunnable);
     }
 
-
-    public void uploadTestResult(String cdnId, String speed) {
-        String ACTION_TYPE = "submitTestData";
-        ((HomeActivity)getActivity()).mWxApiService.UploadResult(ACTION_TYPE,snCode,cdnId,speed)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<Empty>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        Log.e(TAG, "uploadTestResult");
-                        ((HomeActivity) getActivity()).showPop(e);
-                    }
-
-
-                    @Override
-                    public void onNext(Empty empty) {
-                        Log.i(TAG, "uploadTestResult success");
-                    }
-                });
+    @Override
+    public void onPause() {
+        super.onPause();
     }
 
     /**

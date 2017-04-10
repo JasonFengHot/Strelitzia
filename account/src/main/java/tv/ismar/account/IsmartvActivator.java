@@ -379,7 +379,7 @@ public class IsmartvActivator {
     }
 
     public int getMediaPlayerType() {
-        return mSharedPreferences.getInt("player", 1);// //0-系统，1-视云
+        return mSharedPreferences.getInt("player", 0);// //0-系统，1-视云
 
     }
 
@@ -420,6 +420,9 @@ public class IsmartvActivator {
         editor.putString("ad_domain", resultEntity.getAd_domain());
         editor.putString("upgrade_domain", resultEntity.getUpgrade_domain());
         editor.putString("zdevice_token", resultEntity.getZdevice_token());
+        editor.putLong("smart_post_next_request_time", resultEntity.getSmart_post_next_request_time());
+        C.SMART_POST_NEXT_REQUEST_TIME = resultEntity.getSmart_post_next_request_time();
+        editor.putInt("player", resultEntity.getPlayer());
         editor.commit();
     }
 

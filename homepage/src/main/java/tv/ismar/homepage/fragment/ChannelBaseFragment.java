@@ -2,11 +2,15 @@ package tv.ismar.homepage.fragment;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 
+import cn.ismartv.truetime.TrueTime;
+import tv.ismar.app.AppConstant;
 import tv.ismar.app.BaseActivity;
 import tv.ismar.app.core.PageIntent;
 import tv.ismar.app.core.SimpleRestClient;
@@ -21,6 +25,7 @@ import tv.ismar.homepage.R;
 import tv.ismar.homepage.view.HomePageActivity;
 
 public class ChannelBaseFragment extends Fragment {
+    private static long smart_post_occour_error_time = 0;
     protected ChannelEntity channelEntity;
     protected HomePageActivity mContext;
     protected boolean scrollFromBorder;
@@ -30,6 +35,7 @@ public class ChannelBaseFragment extends Fragment {
     protected View mRightBottomView;
     protected boolean isRight;
     protected String bottomFlag;
+
 
     public void setRight(boolean isRight) {
         this.isRight = isRight;
@@ -49,6 +55,10 @@ public class ChannelBaseFragment extends Fragment {
 
     public void setChannelEntity(ChannelEntity channelEntity) {
         this.channelEntity = channelEntity;
+        AppConstant.purchase_page = "homepage";
+        AppConstant.purchase_channel = channelEntity.getChannel();
+        AppConstant.purchase_entrance_channel = channelEntity.getChannel();
+        AppConstant.purchase_entrance_page = "homepage";
     }
 
     @Override
@@ -76,11 +86,19 @@ public class ChannelBaseFragment extends Fragment {
     protected View.OnClickListener ItemClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
+            Object o = view.getTag(R.id.view_position_tag);
+            if (o !=null){
+                int viewPosition = (int) o;
+                AppConstant.purchase_tab = String.valueOf(viewPosition);
+                Log.d("ChannelBaseFragment", "view position: " + AppConstant.purchase_tab);
+            }
+
+
             String url = null;
             String contentMode = null;
             String title = null;
             String mode_name = null;
-            String channel = "top";
+            String channel = "homepage";
             String type;
             int pk;
             boolean expense = false;
@@ -89,7 +107,7 @@ public class ChannelBaseFragment extends Fragment {
                 if (channelEntity.getChannel() != null && !("".equals(channelEntity.getChannel()))) {
                     channel = channelEntity.getChannel();
                     if ("launcher".equals(channelEntity.getChannel())) {
-                        channel = "top";
+                        channel = "homepage";
                     }
                 }
             BaseActivity.baseChannel = channel;
@@ -168,5 +186,13 @@ public class ChannelBaseFragment extends Fragment {
     }
 
     public void refreshData() {
+    }
+
+    protected static void setSmartPostErrorTime(){
+        smart_post_occour_error_time = TrueTime.now().getTime();
+    }
+
+    protected static long getSmartPostErrorTime(){
+        return  smart_post_occour_error_time;
     }
 }

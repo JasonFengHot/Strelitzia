@@ -400,6 +400,7 @@ public interface SkyService {
     @POST("api/order/{type}/")
     Observable<ResponseBody> apiOrderCreate(
             @Path("type") String type,
+            @Field("event_id") String  eventId,
             @Field("wares_id") String waresId,
             @Field("wares_type") String waresType,
             @Field("source") String source,
@@ -511,6 +512,12 @@ public interface SkyService {
     @Headers("Cache-Control: public, max-age=5")
     @GET("api/tv/channels/")
     Observable<ChannelEntity[]> apiTvChannels();
+
+    @GET
+    Observable<ArrayList<HomePagerEntity.Poster>> smartRecommendPost(
+            @Url String url,
+            @Query("sn") String snCode
+    );
 
     @GET("api/tv/hotwords/")
     Observable<ArrayList<HotWords>> apiSearchHotwords();
@@ -663,6 +670,7 @@ public interface SkyService {
         private SkyService speedCallaService;
         private SkyService lilyHostService;
         private SkyService mCacheSkyService;
+        private SkyService mCacheSkyService2;
 
         public static boolean executeActive = true;
 
@@ -707,33 +715,6 @@ public interface SkyService {
                     .addInterceptor(interceptor)
                     .sslSocketFactory(sc.getSocketFactory())
                     .build();
-
-//            if (executeActive) {
-//                final CountDownLatch latch = new CountDownLatch(1);
-//
-//                new Thread() {
-//                    @Override
-//                    public void run() {
-//                        domain[0] = IsmartvActivator.getInstance().getApiDomain();
-//                        if (domain[0].equals("1.1.1.1")) {
-//                            executeActive = false;
-//                            latch.countDown();
-//                        }
-//                        domain[1] = IsmartvActivator.getInstance().getAdDomain();
-//                        domain[2] = IsmartvActivator.getInstance().getUpgradeDomain();
-//                        if (latch.getCount() > 0) {
-//                            latch.getCount();
-//                        }
-//                    }
-//                }.start();
-//
-//                try {
-//                    latch.await(3, TimeUnit.SECONDS);
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-
 
             Gson gson = new GsonBuilder()
                     .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
@@ -823,6 +804,24 @@ public interface SkyService {
                     .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                     .build();
             mCacheSkyService = cacheSkyRetrofit.create(SkyService.class);
+
+
+            File cacheFile2 = new File(VodApplication.getModuleAppContext().getCacheDir(), "okhttp_cache");
+            Cache cache2 = new Cache(cacheFile2, 1024 * 1024 * 100); //100Mb
+            OkHttpClient cacheClient2 = new OkHttpClient.Builder()
+                    .connectTimeout(DEFAULT_CONNECT_TIMEOUT, TimeUnit.SECONDS)
+                    .readTimeout(DEFAULT_READ_TIMEOUT, TimeUnit.SECONDS)
+                    .addInterceptor(VodApplication.getHttpParamsInterceptor())
+                    .addInterceptor(interceptor)
+                    .cache(cache2)
+                    .build();
+            Retrofit cacheSkyRetrofit2 = new Retrofit.Builder()
+                    .client(cacheClient2)
+                    .baseUrl(appendProtocol(domain[0]))
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                    .build();
+            mCacheSkyService2 = cacheSkyRetrofit2.create(SkyService.class);
         }
 
 
@@ -891,6 +890,10 @@ public interface SkyService {
 
         public static SkyService getCacheSkyService() {
             return getInstance().mCacheSkyService;
+        }
+
+        public static SkyService getCacheSkyService2() {
+            return getInstance().mCacheSkyService2;
         }
     }
 

@@ -14,7 +14,6 @@ Java_tv_ismar_account_IsmartvActivator_stringFromJNI(JNIEnv *env, jobject instan
     memset(macaddress, 0, 64);
     char  buf[64];
     if ((fp = fopen(filename, "r")) == NULL) {
-//        LOGVFINGERPRINT("不能打开文件\n");
         memset(buf, 0, 64);
         memcpy(buf, "noaddress", strlen("noaddress"));
     } else {
@@ -23,7 +22,6 @@ Java_tv_ismar_account_IsmartvActivator_stringFromJNI(JNIEnv *env, jobject instan
                 break;
             macaddress[i++] = ch;
         }
-//        LOGVFINGERPRINT("macaddress = %s", macaddress);
         memset(buf, 0, 64);
         memcpy(buf, macaddress, strlen(macaddress));
         fclose(fp);

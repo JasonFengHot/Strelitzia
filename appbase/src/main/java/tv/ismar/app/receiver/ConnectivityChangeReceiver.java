@@ -24,6 +24,7 @@ import static tv.ismar.app.update.UpdateService.INSTALL_SILENT;
 
 public class ConnectivityChangeReceiver extends BroadcastReceiver {
     private static final String TAG = ConnectivityChangeReceiver.class.getSimpleName();
+    private static boolean checkUpdate = true;
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -40,12 +41,10 @@ public class ConnectivityChangeReceiver extends BroadcastReceiver {
                 startIntervalActive(context);
             }
 
-            if (BootUpdateReceiver.checkUpdate = true) {
-                BootUpdateReceiver.checkUpdate = false;
+            if (checkUpdate) {
+                checkUpdate = false;
                 checkUpdate(context);
             }
-
-
         }
 
         NetworkInfo tmpInfo = (NetworkInfo) intent.getExtras().get(ConnectivityManager.EXTRA_NETWORK_INFO);

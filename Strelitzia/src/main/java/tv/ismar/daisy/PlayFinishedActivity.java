@@ -26,6 +26,7 @@ import com.google.gson.Gson;
 import java.util.ArrayList;
 
 import tv.ismar.account.IsmartvActivator;
+import tv.ismar.app.AppConstant;
 import tv.ismar.app.BaseActivity;
 import tv.ismar.app.core.DaisyUtils;
 import tv.ismar.app.core.PageIntent;
@@ -114,6 +115,12 @@ public class PlayFinishedActivity extends BaseActivity implements OnFocusChangeL
     protected void onResume() {
         // TODO Auto-generated method stub
         super.onResume();
+        AppConstant.purchase_referer = "video";
+        AppConstant.purchase_page = "finished";
+        AppConstant.purchase_entrance_page = "finished";
+        AppConstant.purchase_entrance_related_item = String.valueOf(mItemEntity.getItemPk());
+        AppConstant.purchase_entrance_related_title = mItemEntity.getTitle();
+        AppConstant.purchase_entrance_related_channel = AppConstant.purchase_channel;
         if (isFavorite()) {
             btnFavorites.setPadding(getResources().getDimensionPixelSize(R.dimen.play_finished_btn_fav_pl), 0, 0, 0);
             btnFavorites.setText(getResources().getString(R.string.favorited));

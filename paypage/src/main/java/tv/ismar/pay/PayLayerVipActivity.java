@@ -16,6 +16,7 @@ import android.widget.TextView;
 import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
 
+import cn.ismartv.truetime.TrueTime;
 import cn.ismartv.tvhorizontalscrollview.TvHorizontalScrollView;
 import rx.Observer;
 import rx.Subscription;
@@ -26,6 +27,7 @@ import tv.ismar.app.core.PageIntent;
 import tv.ismar.app.core.PageIntentInterface;
 import tv.ismar.app.network.entity.PayLayerVipEntity;
 import tv.ismar.statistics.DetailPageStatistics;
+import tv.ismar.statistics.PurchaseStatistics;
 
 /**
  * Created by huaijie on 4/12/16.
@@ -42,6 +44,7 @@ public class PayLayerVipActivity extends BaseActivity implements OnHoverListener
     private int itemId;
     private Subscription paylayerVipSub;
     private int cpid;
+    private String title;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,12 +55,13 @@ public class PayLayerVipActivity extends BaseActivity implements OnHoverListener
         Intent intent = getIntent();
         cpid = intent.getIntExtra("cpid", -1);
         itemId = intent.getIntExtra("item_id", -1);
+        title = intent.getStringExtra("title");
         payLayerVip(String.valueOf(cpid), String.valueOf(itemId));
     }
 
     @Override
     protected void onResume() {
-        mPageStatistics.packageDetailIn(itemId + "", "detail");
+        mPageStatistics.packageDetailIn(itemId + "",title, "detail");
         super.onResume();
     }
 
@@ -145,6 +149,11 @@ public class PayLayerVipActivity extends BaseActivity implements OnHoverListener
                 @Override
                 public void onClick(View v) {
                     buyVideo(vipList.getPk(), payLayerVipEntity.getType(), Float.parseFloat(vipList.getPrice()), Integer.parseInt(vipList.getDuration()), vipList.getTitle());
+                    new PurchaseStatistics().expensePacketChoose(
+                            vipList.getPk(),
+                            vipList.getTitle(),
+                            vipList.getPrice(),
+                            "enter");
                 }
             });
             scrollViewLayout.addView(itemView, layoutParams);
@@ -202,6 +211,12 @@ public class PayLayerVipActivity extends BaseActivity implements OnHoverListener
 
     @Override
     public void onBackPressed() {
+        new PurchaseStatistics().expensePacketChoose(
+                0,
+                "",
+                "",
+                "cancel"
+               );
         setResult(PaymentActivity.PAYMENT_FAILURE_CODE);
         super.onBackPressed();
     }
@@ -211,6 +226,6 @@ public class PayLayerVipActivity extends BaseActivity implements OnHoverListener
         if (paylayerVipSub != null && paylayerVipSub.isUnsubscribed()) {
             paylayerVipSub.unsubscribe();
         }
-        super.onStop();
+        super.onPause();
     }
 }
