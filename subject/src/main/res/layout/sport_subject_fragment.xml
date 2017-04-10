@@ -5,15 +5,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/sport_bg"
-    android:focusableInTouchMode="false"
-    android:clickable="false"
     >
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/bg_fragment"
-        android:focusable="false"
-        android:focusableInTouchMode="false"
         />
 
     <LinearLayout
@@ -21,8 +17,6 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:id="@+id/game_list"
-        android:focusable="false"
-        android:focusableInTouchMode="false"
         >
         <ImageView
             android:id="@+id/up_image"
@@ -36,7 +30,6 @@
             android:id="@+id/sport_list"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/sport_list_H"
-            android:clickable="false"
             android:layout_marginTop="@dimen/sport_list_MT"
             >
         </android.support.v7.widget.RecyclerView>
@@ -60,7 +53,6 @@
         android:clipToPadding="false"
         android:clipChildren="false"
         android:layout_toRightOf="@+id/game_list"
-        android:focusableInTouchMode="false"
         >
         <RelativeLayout
             android:layout_width="@dimen/sport_right_rel_W"
@@ -71,7 +63,6 @@
                 android:id="@+id/detail_labelImage"
                 android:layout_width="@dimen/sport_right_rel_W"
                 android:layout_height="@dimen/sport_right_rel_H"
-                android:src="@drawable/a2"
                 />
             <ImageView
                 android:id="@+id/cp_title"

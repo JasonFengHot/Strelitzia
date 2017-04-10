@@ -92,7 +92,7 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
     private TextView game_time,title;
     private Objects objects;
     private String subject_type="NBA";
-    private int mSelectPosition=-1;
+    private int mSelectPosition=0;
     private PopupWindow popupWindow;
     private View lastSelectView,currentSelectView;
     private boolean live_list=false;
@@ -142,7 +142,6 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
         detail_labelImage= (LabelImageView) view.findViewById(R.id.detail_labelImage);
         sportlist.setLayoutManager(new LinearLayoutManager(getActivity()));
         sportlist.addItemDecoration(new SpacesItemDecoration(20));
-        sportlist.setHovered(false);
         skyService=SkyService.ServiceManager.getService();
         madpter=new SubjectSportAdapter(getActivity());
         madpter.setOnItemFocusedListener(this);
@@ -193,13 +192,12 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
     @Override
     public void onItemfocused(View view, int position, boolean hasFocus) {
         if(!hasFocus){
-            Log.i("live_list","onItemfocus  "+live_list);
+            Log.i("sportlist","list "+hasFocus);
             lastSelectView=view;
             if(!live_list){
                 listItemToNormal(view);
             }
         }else{
-            Log.i("relate","onItemFocus "+mSelectPosition+"  position:"+position);
             mSelectPosition=position;
             currentSelectView=view;
             listItemToBig(view);
@@ -275,15 +273,11 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
             }else{
                 subscribe.setVisibility(View.GONE);
             }
-            Log.i("pkkk","lastpk: "+lastpk+"  pk:"+objects.pk);
-            if(lastpk!=objects.pk)
-                getRelateData(objects.pk);
+            getRelateData(objects.pk);
 
         }
     }
-    private int lastpk=0;
     private void getRelateData(int pk){
-        lastpk=pk;
         skyService.getRelatedArray(pk).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread()).subscribe(((BaseActivity) getActivity()).new BaseObserver<Item[]>() {
             @Override
@@ -334,10 +328,10 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
     }
     @Override
     public void onFocusChange(View v, boolean hasFocus) {
-        Log.i("live_list","sportlist focus:"+hasFocus);
         if(hasFocus){
+            Log.i("sportlist","sport "+hasFocus);
             if(lastSelectView!=null){
-                Log.i("live_list","lastview: "+lastSelectView.toString());
+                Log.i("sportlist","  lastview"+lastSelectView.toString());
                 sportlist.getChildViewHolder(lastSelectView).itemView.requestFocusFromTouch();
             }
         }
@@ -360,7 +354,6 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
 
     @Override
     public boolean onHover(View v, MotionEvent event) {
-        Log.i("live_list"," onhover "+event.getAction());
         switch (event.getAction()){
             case MotionEvent.ACTION_HOVER_ENTER:
                 case MotionEvent.ACTION_HOVER_MOVE:
@@ -505,7 +498,6 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
 
     @Override
     public void onItemKeyListener(View v, int keyCode, KeyEvent event) {
-        Log.i("eventss","  "+keyCode);
         switch (keyCode){
             case 22:
                 live_list=true;

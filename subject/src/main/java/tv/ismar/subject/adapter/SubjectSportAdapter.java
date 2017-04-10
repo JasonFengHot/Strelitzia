@@ -30,7 +30,7 @@ import tv.ismar.subject.R;
  */
 
 public class SubjectSportAdapter extends RecyclerView.Adapter<SportViewHolder> {
-    private ArrayList<Objects> itemList=new ArrayList<Objects>();
+    private ArrayList<Objects> itemList;
     private Context mContext;
     private OnItemFocusedListener mOnItemFocusedListener;
     private OnItemClickListener mOnItemClickListener;
