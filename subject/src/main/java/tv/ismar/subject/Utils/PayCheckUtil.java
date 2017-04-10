@@ -65,7 +65,7 @@ public class PayCheckUtil {
 //        if (objects.getClip() != null) {
 //            clip = String.valueOf(objects.getClip().getPk());
 //        }
-        new PurchaseStatistics().videoExpenseClick(String.valueOf(pk), userName, title, clip);
-        new PageIntent().toPayment(context, unknown.name(), paymentInfo);
+        new PurchaseStatistics().expenseVideoClick(String.valueOf(pk), userName, title, clip);
+        new PageIntent().toPaymentForResult((Activity) context, unknown.name(), paymentInfo);
     }
 }

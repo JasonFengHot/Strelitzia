@@ -352,8 +352,8 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnClickList
                             String title = mSubjectEntity.getTitle();
 
                             String clip = "";
-                            new PurchaseStatistics().videoExpenseClick(String.valueOf(id), userName, title, clip);
-                            new PageIntent().toPayment(getActivity(), unknown.name(), paymentInfo);
+                            new PurchaseStatistics().expenseVideoClick(String.valueOf(id), userName, title, clip);
+                            new PageIntent().toPaymentForResult(getActivity(), unknown.name(), paymentInfo);
                         }
                     }
 
