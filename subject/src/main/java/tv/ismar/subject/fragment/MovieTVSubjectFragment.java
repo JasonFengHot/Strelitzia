@@ -273,6 +273,11 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnClickList
     @Override
     public void onResume() {
         super.onResume();
+        if(type.contains("movie")) {
+            movie_recyclerView.requestFocus();
+        }else{
+            tv_recyclerView.requestFocus();
+        }
         if(isFavorite()){
             subject_btn_like.setBackgroundResource(R.drawable.liked_btn_selector);
         }else{
