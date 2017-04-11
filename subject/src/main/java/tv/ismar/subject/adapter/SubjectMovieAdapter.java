@@ -90,6 +90,11 @@ public class SubjectMovieAdapter extends RecyclerView.Adapter<MovieViewHolder> {
                 public void onFocusChange(View v, boolean hasFocus) {
                     int pos = holder.getLayoutPosition();
                     mOnItemFocusedListener.onItemfocused(v, pos, hasFocus);
+                    if(hasFocus){
+                        holder.movie_item_title.setSelected(true);
+                    }else{
+                        holder.movie_item_title.setSelected(false);
+                    }
                 }
             });
         }

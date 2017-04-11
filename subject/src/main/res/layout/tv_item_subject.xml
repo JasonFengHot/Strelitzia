@@ -46,6 +46,7 @@
             android:textSize="@dimen/subject_item_tv_title_ts"
             android:textColor="#ffffff"
             android:alpha="0.8"
+            android:ellipsize="marquee"
             android:singleLine="true"/>
     </RelativeLayout>
 
