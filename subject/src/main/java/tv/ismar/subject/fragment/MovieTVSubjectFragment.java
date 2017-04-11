@@ -387,7 +387,7 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnClickList
     public void onItemClick(View view, int position) {
             focusView=view;
             PageIntent intent = new PageIntent();
-            intent.toPlayPage(getActivity(), list.get(position).getPk(), list.get(position).getItem_pk(), Source.LAUNCHER);
+            intent.toPlayPage(getActivity(), list.get(position).getPk(), 0, Source.LAUNCHER);
     }
 
     private boolean isFavorite() {
