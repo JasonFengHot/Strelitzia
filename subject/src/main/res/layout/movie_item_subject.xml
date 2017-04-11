@@ -29,14 +29,13 @@
             android:visibility="gone"
             />
 
-        <tv.ismar.searchpage.weight.RotateTextView
+        <ImageView
             android:id="@+id/movie_item_mark"
             android:layout_width="@dimen/subject_item_mark_w"
             android:layout_height="@dimen/subject_item_mark_w"
             android:layout_alignParentRight="true"
-            android:textSize="@dimen/subject_item_mark_textsize"
-            android:textColor="@color/_ffffff"
-            android:visibility="gone"/>
+            android:visibility="gone"
+            android:rotation="90"/>
 
         <TextView
             android:id="@+id/movie_item_title"

@@ -1,5 +1,6 @@
 package tv.ismar.subject.adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -11,6 +12,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
+import tv.ismar.app.core.VipMark;
 import tv.ismar.app.entity.Item;
 import tv.ismar.app.models.SubjectEntity;
 import tv.ismar.searchpage.model.Expense;
@@ -66,16 +68,7 @@ public class SubjectTvAdapter extends RecyclerView.Adapter<MovieViewHolder> {
         holder.movie_item_title.setText(item.getTitle());
         Picasso.with(mContext).load(item.getPoster_url()).memoryPolicy(MemoryPolicy.NO_CACHE).memoryPolicy(MemoryPolicy.NO_STORE).placeholder(R.drawable.list_item_preview_bg).into(holder.movie_item_poster);
         if(item.getExpense()!=null){
-            if(item.getExpense().cptitle!=null){
-                holder.movie_item_mark.setText(item.getExpense().cptitle);
-            }
-            if(item.getExpense().pay_type== Expense.SEPARATE_CHARGE){
-                holder.movie_item_mark.setBackgroundResource(R.drawable.single_buy);
-            }else if((item.getExpense().cpid == Expense.ISMARTV_CPID)){
-                holder.movie_item_mark.setBackgroundResource(R.drawable.ismartv);
-            }else if((item.getExpense().cpid == Expense.IQIYI_CPID)){
-                holder.movie_item_mark.setBackgroundResource(R.drawable.vip);
-            }
+            Picasso.with(mContext).load(VipMark.getInstance().getImage((Activity) mContext,item.getExpense().pay_type,item.getExpense().cpid)).memoryPolicy(MemoryPolicy.NO_STORE).memoryPolicy(MemoryPolicy.NO_CACHE).into(holder.movie_item_mark);
             holder.movie_item_mark.setVisibility(View.VISIBLE);
         }else{
             holder.movie_item_mark.setVisibility(View.GONE);
