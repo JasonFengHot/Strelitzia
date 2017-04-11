@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clipToPadding="false"
+    android:clipChildren="false"
+    >
+<ImageView
+    android:id="@+id/subject_bg"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" />
+<FrameLayout
+    android:id="@+id/subject_movie"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/subject_movie_hight"
+    android:layout_marginTop="@dimen/subject_movie_hight_mt"
+    android:clipToPadding="false"
+    android:clipChildren="false"
+    android:visibility="gone"
+    >
+
+    <tv.ismar.subject.views.MyRecyclerView
+        android:id="@+id/movie_recyclerView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/subject_movie_recycleview_ml"
+        android:clipToPadding="false"
+        android:clipChildren="false"
+        android:paddingRight="@dimen/subject_movie_recycleview_pr"
+        />
+    <ImageView
+        android:id="@+id/left_layer_movie"
+        android:layout_width="@dimen/subject_movie_layer_left_w"
+        android:layout_height="match_parent"
+        android:src="@drawable/left_layer_movie"
+        android:visibility="invisible"/>
+    <ImageView
+        android:id="@+id/right_layer_movie"
+        android:layout_width="@dimen/subject_movie_layer_right_w"
+        android:layout_height="match_parent"
+        android:src="@drawable/right_layer_movie"
+        android:layout_gravity="right"/>
+</FrameLayout>
+
+
+    <ImageView
+        android:id="@+id/poster_focus"
+        android:layout_width="@dimen/subject_movie_focus_w"
+        android:layout_height="@dimen/subject_movie_focus_h"
+        android:background="@drawable/vod_gv_selector"
+        android:layout_marginTop="@dimen/subject_movie_focus_mt"
+        android:layout_marginLeft="@dimen/subject_movie_focus_ml"
+        android:visibility="gone"/>
+    <FrameLayout
+        android:id="@+id/subject_tv"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/subject_tv_hight"
+        android:layout_marginTop="@dimen/subject_tv_mt"
+        android:clipToPadding="false"
+        android:clipChildren="false"
+        android:visibility="gone"
+        >
+
+        <tv.ismar.subject.views.MyRecyclerView
+            android:id="@+id/tv_recyclerView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/subject_tv_recycleview_ml"
+            android:paddingRight="@dimen/subject_tv_recycleview_pr"
+            android:clipToPadding="false"
+            android:clipChildren="false"
+            />
+        <ImageView
+            android:id="@+id/left_layer_tv"
+            android:layout_width="@dimen/subject_tv_layer_left_w"
+            android:layout_height="match_parent"
+            android:src="@drawable/left_layer_tv"
+            android:visibility="invisible"/>
+        <ImageView
+            android:id="@+id/right_layer_tv"
+            android:layout_width="@dimen/subject_tv_layer_right_w"
+            android:layout_height="match_parent"
+            android:src="@drawable/right_layer_tv"
+            android:layout_gravity="right"/>
+    </FrameLayout>
+
+    <ImageView
+        android:id="@+id/tv_poster_focus"
+        android:layout_width="@dimen/subject_tv_poster_w"
+        android:layout_height="@dimen/subject_tv_poster_h"
+        android:background="@drawable/vod_gv_selector"
+        android:layout_marginTop="@dimen/subject_tv_poster_mt"
+        android:layout_marginLeft="@dimen/subject_tv_poster_ml"
+        android:visibility="gone"/>
+
+    <LinearLayout
+        android:layout_width="@dimen/subject_description_w"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginTop="@dimen/subject_description_mt"
+        android:layout_marginLeft="@dimen/subject_description_ml"
+        >
+        <TextView
+            android:id="@+id/subject_actor"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/subject_actor_h"
+            android:textColor="@color/_ffffff"
+            android:textSize="@dimen/subject_actor_textsize"
+            android:singleLine="true"
+            />
+        <TextView
+            android:id="@+id/subject_description"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/subject_description_h"
+            android:textColor="@color/_ffffff"
+            android:textSize="@dimen/subject_actor_textsize"
+            android:maxLines="2"
+            />
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="@dimen/subject_btn_mr">
+       <Button
+           android:id="@+id/subject_btn_buy"
+           android:layout_width="@dimen/subject_btn_w"
+           android:layout_height="@dimen/subject_btn_h"
+           android:background="@drawable/buy_btn_selector"
+           android:focusable="true"
+           android:layout_marginBottom="@dimen/subject_btn_mb"
+           />
+        <Button
+            android:id="@+id/subject_btn_like"
+            android:layout_width="@dimen/subject_btn_w"
+            android:layout_height="@dimen/subject_btn_h"
+            android:background="@drawable/like_btn_selector"
+            android:layout_marginLeft="@dimen/subject_btn_ml"
+            android:focusable="true"
+            android:layout_marginBottom="@dimen/subject_btn_mb"
+            android:nextFocusRight="@id/subject_btn_like"
+            />
+    </LinearLayout>
+</RelativeLayout>

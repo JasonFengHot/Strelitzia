@@ -59,6 +59,7 @@ import tv.ismar.app.entity.HomePagerEntity;
 import tv.ismar.app.entity.Item;
 import tv.ismar.app.entity.ItemList;
 import tv.ismar.app.entity.SectionList;
+import tv.ismar.app.entity.Subject;
 import tv.ismar.app.entity.VideoEntity;
 import tv.ismar.app.models.ActorRelateRequestParams;
 import tv.ismar.app.models.Game;
@@ -67,6 +68,7 @@ import tv.ismar.app.models.PersonEntitiy;
 import tv.ismar.app.models.Recommend;
 import tv.ismar.app.models.SemanticSearchResponseEntity;
 import tv.ismar.app.models.Sport;
+import tv.ismar.app.models.SubjectEntity;
 import tv.ismar.app.models.VodFacetEntity;
 import tv.ismar.app.models.VodSearchRequestEntity;
 import tv.ismar.app.network.entity.AccountBalanceEntity;
@@ -90,6 +92,7 @@ import tv.ismar.app.network.entity.PayLayerVipEntity;
 import tv.ismar.app.network.entity.PayVerifyEntity;
 import tv.ismar.app.network.entity.PayWhStatusEntity;
 import tv.ismar.app.network.entity.ProblemEntity;
+import tv.ismar.app.network.entity.SubjectPayLayerEntity;
 import tv.ismar.app.network.entity.TeleEntity;
 import tv.ismar.app.network.entity.UpgradeRequestEntity;
 import tv.ismar.app.network.entity.VersionInfoV2Entity;
@@ -628,6 +631,27 @@ public interface SkyService {
     Observable<AgreementEntity> agreement(
             @Query("source") String source
     );
+    @GET("api/item/{pk}/")
+    Observable<Subject> getSportSubjectInfo(
+            @Path("pk") int pk
+    );
+
+    @GET("api/item/{pk}/")
+    Observable<SubjectEntity> apiSubject(
+            @Path("pk") String pk
+    );
+
+    @GET("api/paylayer/{item_id}/")
+    Observable<SubjectPayLayerEntity> apiPaylayerVipSubject(
+            @Path("item_id") String item_id
+    );
+
+    @GET("accounts/sports/subscribe/")
+    Observable<ResponseBody> getSubscribeImage(
+            @Query("item_id") int pk,
+            @Query("type") String type
+    );
+
 
     class ServiceManager {
         private volatile static ServiceManager serviceManager;

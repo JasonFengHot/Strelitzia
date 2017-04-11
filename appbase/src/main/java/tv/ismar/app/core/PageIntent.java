@@ -118,6 +118,7 @@ public class PageIntent implements PageIntentInterface {
                 intent.putExtra("cpid", paymentInfo.getCpid());
                 intent.putExtra("item_id", paymentInfo.getPk());
                 intent.putExtra("title", paymentInfo.getTitle());
+                intent.putExtra("source", fromPage);
                 break;
             default:
                 throw new IllegalArgumentException();
@@ -220,6 +221,16 @@ public class PageIntent implements PageIntentInterface {
                     }
                 }, null);
 
+    }
+
+    @Override
+    public void toSubject(Context context, String gather_type, int id, String frompage) {
+        Intent intent = new Intent();
+        intent.setAction("tv.ismar.daisy.subject");
+        intent.putExtra("gather_type", gather_type);
+        intent.putExtra("itemid", id);
+        intent.putExtra("frompage", frompage);
+        context.startActivity(intent);
     }
 
 

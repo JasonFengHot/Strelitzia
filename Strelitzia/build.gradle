@@ -65,6 +65,7 @@ dependencies {
     compile project(':listpage')
     compile project(':homepage')
     compile project(':searchpage')
+    compile project(':subject')
 }
 tasks.withType(JavaCompile) {
     options.encoding = "UTF-8"

@@ -17,11 +17,6 @@
         <service android:name=".ad.AdsUpdateService" />
         <service android:name=".service.TrueTimeService" />
 
-        <receiver android:name=".receiver.BootUpdateReceiver">
-            <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-            </intent-filter>
-        </receiver>
         <receiver android:name=".receiver.ConnectivityChangeReceiver">
             <intent-filter>
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />

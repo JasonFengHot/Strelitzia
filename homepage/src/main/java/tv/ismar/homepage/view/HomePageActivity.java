@@ -328,7 +328,13 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
             getSupportFragmentManager().beginTransaction().replace(android.R.id.content, new UpdateSlienceLoading()).commit();
             return;
         }
-//
+
+        try {
+            System.setProperty("http.keepAlive", "false");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         fragmentSwitch = new FragmentSwitchHandler(this);
         homepage_template = getIntent().getStringExtra("homepage_template");
         homepage_url = getIntent().getStringExtra("homepage_url");

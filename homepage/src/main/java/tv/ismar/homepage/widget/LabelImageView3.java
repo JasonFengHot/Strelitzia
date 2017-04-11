@@ -168,6 +168,7 @@ public class LabelImageView3 extends AsyncImageView {
                                   Rect previouslyFocusedRect) {
         super.onFocusChanged(gainFocus, direction, previouslyFocusedRect);
         if (needZoom) {
+            Log.i("33333","needZoom"+needZoom+"  gain:"+gainFocus);
             if (gainFocus) {
                 if (getId() != R.id.vaiety_post && getId() != R.id.image_switcher) {
                     bringToFront();

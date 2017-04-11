@@ -142,7 +142,11 @@ public class ChannelBaseFragment extends Fragment {
             } else {
                 pk = SimpleRestClient.getItemId(url, new boolean[1]);
                 Log.i("basefragment",url);
-                if ("item".equals(mode_name)) {
+                if(contentMode.contains("gather")){
+                    int itemPk = Utils.getItemPk(url);
+                    PageIntent intent1=new PageIntent();
+                    intent1.toSubject(mContext,contentMode,itemPk,"homepage");
+                }else if ("item".equals(mode_name)) {
                     pk = SimpleRestClient.getItemId(url, new boolean[1]);
                     PageIntent pageIntent = new PageIntent();
                     pageIntent.toDetailPage(mContext, "homepage", pk);

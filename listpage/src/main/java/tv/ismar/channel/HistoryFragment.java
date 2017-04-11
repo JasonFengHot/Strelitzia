@@ -239,7 +239,7 @@ public class HistoryFragment extends Fragment implements ScrollableSectionList.O
 		mChannelLabel = (TextView) fragmentView.findViewById(R.id.channel_label);
 		mChannelLabel.setText(getResources().getString(R.string.vod_movielist_title_history));
 		clerHistory.setText(getResources().getString(R.string.claer_histories));
-		clerHistory.setVisibility(View.GONE);
+		clerHistory.setVisibility(View.VISIBLE);
 		mNoVideoContainer = (RelativeLayout) fragmentView.findViewById(R.id.no_video_container);
 		collect_or_history_txt = (TextView)fragmentView.findViewById(R.id.collect_or_history_txt);
 		recommend_gridview = (ZGridView)fragmentView.findViewById(R.id.recommend_gridview);
@@ -630,7 +630,7 @@ public class HistoryFragment extends Fragment implements ScrollableSectionList.O
 		mScrollableSectionList.setVisibility(View.GONE);
 		mHGridView.setVisibility(View.GONE);
 		collect_or_history_txt.setText(getResources().getString(R.string.no_history_record));
-		clerHistory.setVisibility(View.GONE);
+	//	clerHistory.setVisibility(View.GONE);
 		getTvHome();
 	}
 	public void showData(){

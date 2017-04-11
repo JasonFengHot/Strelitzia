@@ -133,7 +133,7 @@ public class ModuleMessagePopWindow extends PopupWindow implements View.OnClickL
     public void hideCancelBtn() {
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
                 mContext.getResources().getDimensionPixelSize(R.dimen.pop_btn_width),
-                LinearLayout.LayoutParams.MATCH_PARENT
+                mContext.getResources().getDimensionPixelSize(R.dimen.pop_btn_height)
         );
         lp.rightMargin = 0;
         confirmBtn.setLayoutParams(lp);

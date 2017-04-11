@@ -19,6 +19,7 @@ public enum Source {
     TVHOME("tvhome"),//首页五个推荐,其余为unknow
     TOPVIDEO("topvideo"),//首页上方的视频,其余为unknow
     HOMEPAGE("homepage"),//首页五个推荐,其余为unknow
+    SUBJECT("subject"),
     UNKNOWN("unknown");
 
     private String source;
