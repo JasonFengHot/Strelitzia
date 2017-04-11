@@ -302,6 +302,19 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnClickList
         }
     }
 
+    @Override
+    public void onPause() {
+        if(subject_btn_buy.isFocused()){
+            btn_buy_focused=true;
+        }else {
+            if (type.contains("movie")) {
+                focusView = movie_recyclerView.getFocusedChild();
+            } else {
+                focusView = tv_recyclerView.getFocusedChild();
+            }
+        }
+        super.onPause();
+    }
 
     @Override
     public void onClick(View v) {
