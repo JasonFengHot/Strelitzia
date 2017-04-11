@@ -32,7 +32,6 @@ import tv.ismar.app.core.Source;
 import tv.ismar.app.db.FavoriteManager;
 import tv.ismar.app.entity.Favorite;
 import tv.ismar.app.models.SubjectEntity;
-import tv.ismar.app.network.entity.PayLayerVipEntity;
 import tv.ismar.app.network.entity.SubjectPayLayerEntity;
 import tv.ismar.app.util.Utils;
 import tv.ismar.searchpage.utils.JasmineUtil;
@@ -43,6 +42,7 @@ import tv.ismar.subject.adapter.OnItemClickListener;
 import tv.ismar.subject.adapter.OnItemFocusedListener;
 import tv.ismar.subject.adapter.SubjectMovieAdapter;
 import tv.ismar.subject.adapter.SubjectTvAdapter;
+import tv.ismar.subject.views.MyRecyclerView;
 
 import static tv.ismar.app.core.PageIntentInterface.FromPage.unknown;
 import static tv.ismar.app.core.PageIntentInterface.ProductCategory.item;
@@ -53,8 +53,8 @@ import static tv.ismar.app.core.PageIntentInterface.ProductCategory.item;
 
 public class MovieTVSubjectFragment extends Fragment implements View.OnClickListener, OnItemClickListener {
 
-    private RecyclerView movie_recyclerView;
-    private RecyclerView tv_recyclerView;
+    private MyRecyclerView movie_recyclerView;
+    private MyRecyclerView tv_recyclerView;
     private TextView subject_actor;
     private TextView subject_description;
     private Button subject_btn_buy;
@@ -91,9 +91,9 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnClickList
 
     private void initView(View content) {
         subject_movie = content.findViewById(R.id.subject_movie);
-        movie_recyclerView = (RecyclerView) content.findViewById(R.id.movie_recyclerView);
+        movie_recyclerView = (MyRecyclerView) content.findViewById(R.id.movie_recyclerView);
         subject_tv = content.findViewById(R.id.subject_tv);
-        tv_recyclerView = (RecyclerView) content.findViewById(R.id.tv_recyclerView);
+        tv_recyclerView = (MyRecyclerView) content.findViewById(R.id.tv_recyclerView);
         subject_actor = (TextView) content.findViewById(R.id.subject_actor);
         subject_description = (TextView) content.findViewById(R.id.subject_description);
         subject_btn_buy = (Button) content.findViewById(R.id.subject_btn_buy);
