@@ -22,12 +22,17 @@ import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+import tv.ismar.account.IsmartvActivator;
 import tv.ismar.app.BaseActivity;
 import tv.ismar.app.core.PageIntent;
 import tv.ismar.app.core.PageIntentInterface;
+import tv.ismar.app.core.Source;
 import tv.ismar.app.network.entity.PayLayerVipEntity;
+import tv.ismar.app.network.entity.SubjectPayLayerEntity;
 import tv.ismar.statistics.DetailPageStatistics;
 import tv.ismar.statistics.PurchaseStatistics;
+
+import static tv.ismar.app.core.PageIntentInterface.ProductCategory.item;
 
 /**
  * Created by huaijie on 4/12/16.
@@ -45,6 +50,7 @@ public class PayLayerVipActivity extends BaseActivity implements OnHoverListener
     private Subscription paylayerVipSub;
     private int cpid;
     private String title;
+    private String fromPage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +62,7 @@ public class PayLayerVipActivity extends BaseActivity implements OnHoverListener
         cpid = intent.getIntExtra("cpid", -1);
         itemId = intent.getIntExtra("item_id", -1);
         title = intent.getStringExtra("title");
+        fromPage = intent.getStringExtra("source");
         payLayerVip(String.valueOf(cpid), String.valueOf(itemId));
     }
 
@@ -96,20 +103,49 @@ public class PayLayerVipActivity extends BaseActivity implements OnHoverListener
 
 
     private void payLayerVip(String cpid, String itemId) {
-        paylayerVipSub = mSkyService.apiPaylayerVip(cpid, itemId)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new BaseObserver<PayLayerVipEntity>() {
-                    @Override
-                    public void onCompleted() {
+        if(fromPage.equals(Source.SUBJECT.getValue())){
+            mSkyService.apiPaylayerVipSubject(itemId+"")
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new BaseObserver<SubjectPayLayerEntity>(){
 
-                    }
 
-                    @Override
-                    public void onNext(PayLayerVipEntity payLayerVipEntity) {
-                        fillLayout(payLayerVipEntity);
-                    }
-                });
+                        @Override
+                        public void onCompleted() {
+
+                        }
+
+                        @Override
+                        public void onNext(SubjectPayLayerEntity subjectPayLayerEntity) {
+                            PayLayerVipEntity payLayerVipEntity=new PayLayerVipEntity();
+                            payLayerVipEntity.setCpid(subjectPayLayerEntity.getCpid());
+                            payLayerVipEntity.setCpname(subjectPayLayerEntity.getCpname());
+                            payLayerVipEntity.setType(subjectPayLayerEntity.getPay_type());
+                            payLayerVipEntity.setVip_list(subjectPayLayerEntity.getGather_vip_list());
+                            fillLayout(payLayerVipEntity);
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            super.onError(e);
+                        }
+                    });
+        }else {
+            paylayerVipSub = mSkyService.apiPaylayerVip(cpid, itemId)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new BaseObserver<PayLayerVipEntity>() {
+                        @Override
+                        public void onCompleted() {
+
+                        }
+
+                        @Override
+                        public void onNext(PayLayerVipEntity payLayerVipEntity) {
+                            fillLayout(payLayerVipEntity);
+                        }
+                    });
+        }
 
     }
 

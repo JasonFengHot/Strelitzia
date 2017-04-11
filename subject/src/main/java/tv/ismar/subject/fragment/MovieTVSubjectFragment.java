@@ -384,7 +384,7 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnClickList
 
                             String clip = "";
                             new PurchaseStatistics().expenseVideoClick(String.valueOf(id), userName, title, clip);
-                            new PageIntent().toPaymentForResult(getActivity(), unknown.name(), paymentInfo);
+                            new PageIntent().toPaymentForResult(getActivity(), Source.SUBJECT.getValue(), paymentInfo);
                         }
                     }
 

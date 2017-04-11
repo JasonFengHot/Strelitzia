@@ -118,6 +118,7 @@ public class PageIntent implements PageIntentInterface {
                 intent.putExtra("cpid", paymentInfo.getCpid());
                 intent.putExtra("item_id", paymentInfo.getPk());
                 intent.putExtra("title", paymentInfo.getTitle());
+                intent.putExtra("source", fromPage);
                 break;
             default:
                 throw new IllegalArgumentException();
