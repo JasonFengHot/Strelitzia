@@ -60,6 +60,8 @@ public class SubjectTvAdapter extends RecyclerView.Adapter<MovieViewHolder> {
         if (item.getBean_score() > 0) {
             holder.movie_item_score.setText(item.getBean_score() + "");
             holder.movie_item_score.setVisibility(View.VISIBLE);
+        }else{
+            holder.movie_item_score.setVisibility(View.GONE);
         }
         holder.movie_item_title.setText(item.getTitle());
         Picasso.with(mContext).load(item.getPoster_url()).memoryPolicy(MemoryPolicy.NO_CACHE).memoryPolicy(MemoryPolicy.NO_STORE).placeholder(R.drawable.list_item_preview_bg).into(holder.movie_item_poster);
@@ -68,12 +70,15 @@ public class SubjectTvAdapter extends RecyclerView.Adapter<MovieViewHolder> {
                 holder.movie_item_mark.setText(item.getExpense().cptitle);
             }
             if(item.getExpense().pay_type== Expense.SEPARATE_CHARGE){
-                holder.movie_item_mark.setBackgroundResource(R.drawable.ismartv);
+                holder.movie_item_mark.setBackgroundResource(R.drawable.single_buy);
             }else if((item.getExpense().cpid == Expense.ISMARTV_CPID)){
                 holder.movie_item_mark.setBackgroundResource(R.drawable.ismartv);
             }else if((item.getExpense().cpid == Expense.IQIYI_CPID)){
                 holder.movie_item_mark.setBackgroundResource(R.drawable.vip);
             }
+            holder.movie_item_mark.setVisibility(View.VISIBLE);
+        }else{
+            holder.movie_item_mark.setVisibility(View.GONE);
         }
         // 如果设置了回调，则设置点击事件
         if (mOnItemClickListener != null) {

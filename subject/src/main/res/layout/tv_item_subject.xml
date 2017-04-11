@@ -34,7 +34,8 @@
             android:layout_height="@dimen/subject_item_mark_w"
             android:layout_alignParentRight="true"
             android:textSize="@dimen/subject_item_mark_textsize"
-            android:textColor="@color/_ffffff"/>
+            android:textColor="@color/_ffffff"
+            android:visibility="gone"/>
 
         <TextView
             android:id="@+id/movie_item_title"
