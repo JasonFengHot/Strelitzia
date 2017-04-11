@@ -77,7 +77,9 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnClickList
     private FavoriteManager mFavoriteManager;
     private ImageView subject_bg;
     private View focusView;
+    private boolean btn_buy_focused=false;
     private SubjectEntity mSubjectEntity;
+    private boolean isScaledIn=true;
 
     @Nullable
     @Override
@@ -184,9 +186,13 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnClickList
             movieAdapter.setOnItemFocusedListener(new OnItemFocusedListener() {
 
 
+
                 @Override
                 public void onItemfocused(View view, int position, boolean hasFocus) {
                     if(hasFocus) {
+                        if(!isScaledIn){
+                            JasmineUtil.scaleIn2(focusView);
+                        }
                         checkLayerIsShow(position);
                         poster_focus.setVisibility(View.VISIBLE);
                         movie_recyclerView.smoothScrollBy((int) (view.getX()-getResources().getDimensionPixelOffset(R.dimen.subject_movie_recycleview_ml)), 0);
@@ -196,7 +202,9 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnClickList
                     }else{
                         if(subject_btn_like.isFocused()||subject_btn_buy.isFocused()){
                             focusView = view;
+                            isScaledIn = false;
                         }else{
+                            isScaledIn = true;
                             JasmineUtil.scaleIn2(view);
                         }
                         poster_focus.setVisibility(View.INVISIBLE);
@@ -217,6 +225,9 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnClickList
                 @Override
                 public void onItemfocused(View view, int position, boolean hasFocus) {
                     if (hasFocus) {
+                        if(!isScaledIn){
+                            JasmineUtil.scaleIn2(focusView);
+                        }
                         checkLayerIsShow(position);
                         tv_poster_focus.setVisibility(View.VISIBLE);
                         JasmineUtil.scaleOut2(view);
@@ -227,8 +238,10 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnClickList
                     } else {
                         if(subject_btn_like.isFocused()||subject_btn_buy.isFocused()){
                             focusView = view;
+                            isScaledIn = false;
                         }else{
                             JasmineUtil.scaleIn2(view);
+                            isScaledIn = true;
                         }
                         tv_poster_focus.setVisibility(View.INVISIBLE);
                     }
@@ -273,10 +286,14 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnClickList
     @Override
     public void onResume() {
         super.onResume();
-        if(type.contains("movie")) {
-            movie_recyclerView.requestFocus();
-        }else{
-            tv_recyclerView.requestFocus();
+        if(btn_buy_focused){
+            subject_btn_buy.requestFocus();
+        }else {
+            if (type.contains("movie")) {
+                movie_recyclerView.requestFocus();
+            } else {
+                tv_recyclerView.requestFocus();
+            }
         }
         if(isFavorite()){
             subject_btn_like.setBackgroundResource(R.drawable.liked_btn_selector);
@@ -289,11 +306,7 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnClickList
     @Override
     public void onClick(View v) {
         int i = v.getId();
-        if(type.contains("movie")){
-            focusView=movie_recyclerView.getFocusedChild();
-        }else{
-            focusView=tv_recyclerView.getFocusedChild();
-        }
+        btn_buy_focused=true;
         if (i == R.id.subject_btn_like) {
             if(!isFavorite()){
                 String url = IsmartvActivator.getInstance().getApiDomain() + "/api/item/" + id+ "/";
