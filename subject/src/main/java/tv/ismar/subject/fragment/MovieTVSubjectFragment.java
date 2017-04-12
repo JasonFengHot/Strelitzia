@@ -3,7 +3,6 @@ package tv.ismar.subject.fragment;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
 import android.view.Gravity;
@@ -44,14 +43,13 @@ import tv.ismar.subject.adapter.SubjectMovieAdapter;
 import tv.ismar.subject.adapter.SubjectTvAdapter;
 import tv.ismar.subject.views.MyRecyclerView;
 
-import static tv.ismar.app.core.PageIntentInterface.FromPage.unknown;
 import static tv.ismar.app.core.PageIntentInterface.ProductCategory.item;
 
 /**
  * Created by admin on 2017/3/2.
  */
 
-public class MovieTVSubjectFragment extends Fragment implements View.OnClickListener, OnItemClickListener {
+public class MovieTVSubjectFragment extends Fragment implements View.OnClickListener, OnItemClickListener, View.OnFocusChangeListener {
 
     private MyRecyclerView movie_recyclerView;
     private MyRecyclerView tv_recyclerView;
@@ -78,6 +76,7 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnClickList
     private ImageView subject_bg;
     private View focusView;
     private boolean btn_buy_focused=false;
+    private boolean btn_like_focused=false;
     private SubjectEntity mSubjectEntity;
     private boolean isScaledIn=true;
 
@@ -113,6 +112,8 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnClickList
         initData();
         subject_btn_buy.setOnClickListener(this);
         subject_btn_like.setOnClickListener(this);
+        subject_btn_buy.setOnFocusChangeListener(this);
+        subject_btn_like.setOnFocusChangeListener(this);
         movie_recyclerView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
@@ -288,6 +289,8 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnClickList
         super.onResume();
         if(btn_buy_focused){
             subject_btn_buy.requestFocus();
+        }else if(btn_like_focused) {
+            subject_btn_like.requestFocus();
         }else {
             if (type.contains("movie")) {
                 movie_recyclerView.requestFocus();
@@ -306,7 +309,13 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnClickList
     public void onPause() {
         if(subject_btn_buy.isFocused()){
             btn_buy_focused=true;
+            btn_like_focused=false;
+        }else if(subject_btn_like.isFocused()){
+            btn_like_focused=true;
+            btn_buy_focused=false;
         }else {
+            btn_like_focused=false;
+            btn_buy_focused=false;
             if (type.contains("movie")) {
                 focusView = movie_recyclerView.getFocusedChild();
             } else {
@@ -319,7 +328,6 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnClickList
     @Override
     public void onClick(View v) {
         int i = v.getId();
-        btn_buy_focused=true;
         if (i == R.id.subject_btn_like) {
             if(!isFavorite()){
                 String url = IsmartvActivator.getInstance().getApiDomain() + "/api/item/" + id+ "/";
@@ -353,14 +361,12 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnClickList
                 showToast("取消收藏成功");
             }
         } else if (i == R.id.subject_btn_buy) {
-
                 buySubject();
         }
     }
 
     //购买专题页
     private void buySubject() {
-        final int jumpTo =PageIntent.PAYVIP;
         //判断用户是否有最高的观影权限
         ((SubjectActivity)getActivity()).mSkyService.apiPaylayerVipSubject(id+"")
                 .subscribeOn(Schedulers.io())
@@ -378,7 +384,7 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnClickList
                         if(subjectPayLayerEntity.gather_per){
                             showToast("您已拥有本专题所有影片观看权限");
                         }else{
-                            PageIntentInterface.PaymentInfo paymentInfo = new PageIntentInterface.PaymentInfo(item, subjectPayLayerEntity.getPk(), jumpTo, subjectPayLayerEntity.getCpid());
+                            PageIntentInterface.PaymentInfo paymentInfo = new PageIntentInterface.PaymentInfo(item, subjectPayLayerEntity.getPk(), PageIntent.PAYVIP, subjectPayLayerEntity.getCpid());
                             String userName = IsmartvActivator.getInstance().getUsername();
                             String title = mSubjectEntity.getTitle();
 
@@ -477,5 +483,22 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnClickList
         toast.setDuration(Toast.LENGTH_SHORT);
         toast.setView(layout);
         toast.show();
+    }
+
+    @Override
+    public void onFocusChange(View v, boolean hasFocus) {
+//        int i = v.getId();
+//        if(hasFocus) {
+//            if (i == R.id.subject_btn_buy) {
+//                btn_buy_focused = true;
+//
+//            } else if (i == R.id.subject_btn_like) {
+//                btn_like_focused = true;
+//
+//            }
+//        }else{
+//            btn_like_focused = false;
+//            btn_buy_focused = false;
+//        }
     }
 }
