@@ -1,6 +1,7 @@
 package tv.ismar.subject.fragment;
 
 import android.app.Fragment;
+import android.app.PendingIntent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.StaggeredGridLayoutManager;
@@ -19,19 +20,23 @@ import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import tv.ismar.account.IsmartvActivator;
+import tv.ismar.app.AppConstant;
 import tv.ismar.app.core.DaisyUtils;
 import tv.ismar.app.core.PageIntent;
 import tv.ismar.app.core.PageIntentInterface;
 import tv.ismar.app.core.SimpleRestClient;
 import tv.ismar.app.core.Source;
+import tv.ismar.app.core.client.NetworkUtils;
 import tv.ismar.app.db.FavoriteManager;
 import tv.ismar.app.entity.Favorite;
 import tv.ismar.app.models.SubjectEntity;
+import tv.ismar.app.network.entity.EventProperty;
 import tv.ismar.app.network.entity.SubjectPayLayerEntity;
 import tv.ismar.app.util.Utils;
 import tv.ismar.searchpage.utils.JasmineUtil;
@@ -140,6 +145,7 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnClickList
                     @Override
                     public void onNext(SubjectEntity subjectEntity) {
                         mSubjectEntity = subjectEntity;
+                        video_gather_in(mSubjectEntity.getTitle(),((SubjectActivity)getActivity()).frompage,"");
                         processData(subjectEntity);
                     }
 
@@ -288,6 +294,8 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnClickList
         }else{
             subject_btn_like.setBackgroundResource(R.drawable.like_btn_selector);
         }
+        if(mSubjectEntity!=null)
+        video_gather_in(mSubjectEntity.getTitle(),((SubjectActivity)getActivity()).frompage,"");
     }
 
     @Override
@@ -369,13 +377,13 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnClickList
                         if(subjectPayLayerEntity.gather_per){
                             showToast("您已拥有本专题所有影片观看权限");
                         }else{
+                            AppConstant.purchase_entrance_page="gather";
                             PageIntentInterface.PaymentInfo paymentInfo = new PageIntentInterface.PaymentInfo(item, subjectPayLayerEntity.getPk(), PageIntent.PAYVIP, subjectPayLayerEntity.getCpid());
                             String userName = IsmartvActivator.getInstance().getUsername();
                             String title = mSubjectEntity.getTitle();
-
-                            String clip = "";
-                            new PurchaseStatistics().expenseVideoClick(String.valueOf(id), userName, title, clip);
-                            new PageIntent().toPaymentForResult(getActivity(), Source.SUBJECT.getValue(), paymentInfo);
+                            new PurchaseStatistics().expenseVideoClick(String.valueOf(id), userName, title, String.valueOf(id));
+                            new PageIntent().toPaymentForResult(getActivity(), Source.GATHER.getValue(), paymentInfo);
+                            video_gather_out(mSubjectEntity.getTitle(),"expense","","");
                         }
                     }
 
@@ -391,7 +399,8 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnClickList
     public void onItemClick(View view, int position) {
             focusView=view;
             PageIntent intent = new PageIntent();
-            intent.toPlayPage(getActivity(), list.get(position).getPk(), 0, Source.LAUNCHER);
+            intent.toPlayPage(getActivity(), list.get(position).getPk(), 0, Source.GATHER);
+            video_gather_out(mSubjectEntity.getTitle(),"player",mSubjectEntity.getObjects().get(position).getPk()+"",mSubjectEntity.getObjects().get(position).getTitle());
     }
 
     private boolean isFavorite() {
@@ -475,5 +484,44 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnClickList
         if(hasFocus&&focusView!=null){
             focusView.requestFocus();
         }
+    }
+
+    /**
+     * 进入专题页日志
+     */
+    public static void video_gather_in(String title,String from,String channel){
+        HashMap<String, Object> tempMap = new HashMap<String, Object>();
+        tempMap.put(EventProperty.TITLE, title);
+        tempMap.put(EventProperty.FROM, from);
+        if(channel!=null&&!"".equals(channel)) {
+            tempMap.put(EventProperty.CHANNEL, channel);
+        }
+        String eventName = NetworkUtils.VIDEO_GATHER_IN;
+        HashMap<String, Object> properties = tempMap;
+        new NetworkUtils.DataCollectionTask().execute(eventName, properties);
+    }
+
+    /**
+     * 退出专题页日志
+     */
+    public static void video_gather_out(String title,String to,String to_item,String to_title){
+        HashMap<String, Object> tempMap = new HashMap<String, Object>();
+        tempMap.put(EventProperty.TITLE, title);
+        tempMap.put(EventProperty.TO, to);
+        if(to_item!=null&&!"".equals(to_item)) {
+            tempMap.put(EventProperty.TO_ITEM, to_item);
+        }
+        if(to_title!=null&&!"".equals(to_title)) {
+            tempMap.put(EventProperty.TO_TITLE, to_title);
+        }
+        String eventName = NetworkUtils.VIDEO_GATHER_OUT;
+        HashMap<String, Object> properties = tempMap;
+        new NetworkUtils.DataCollectionTask().execute(eventName, properties);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        video_gather_out(mSubjectEntity.getTitle(),"exit","","");
     }
 }
