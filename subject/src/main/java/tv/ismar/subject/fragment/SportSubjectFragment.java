@@ -150,6 +150,16 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
         buy.setNextFocusLeftId(R.id.sport_list);
         relate_image1.setNextFocusLeftId(R.id.sport_list);
         sportlist.setOnFocusChangeListener(this);
+        sportlist.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if(event.getAction()==MotionEvent.ACTION_MOVE) {
+                    return true;
+                }else{
+                    return false;
+                }
+            }
+        });
         getData();
         setScrollListen(sportlist);
         new Handler().postDelayed(new Runnable() {
@@ -189,6 +199,13 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
             }
         });
     }
+    private Handler relateHandler=new Handler();
+    private Runnable runnable=new Runnable() {
+        @Override
+        public void run() {
+            getRelateData(objects.pk);
+        }
+    };
     @Override
     public void onItemfocused(View view, int position, boolean hasFocus) {
         if(!hasFocus){
@@ -273,8 +290,8 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
             }else{
                 subscribe.setVisibility(View.GONE);
             }
-            getRelateData(objects.pk);
-
+            relateHandler.removeCallbacks(runnable);
+            relateHandler.postDelayed(runnable,2000);
         }
     }
     private void getRelateData(int pk){
@@ -489,10 +506,9 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
     public void onItemClick(View view, int position) {
         Log.i("live_list","onclick"+position);
         if(position!=mSelectPosition) {
-           view.requestFocusFromTouch();
             live_list=false;
-        }else {
-            live_list=true;
+           view.requestFocus();
+
         }
     }
 
@@ -504,4 +520,5 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
                 break;
         }
     }
+
 }

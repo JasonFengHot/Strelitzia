@@ -17,6 +17,8 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:id="@+id/game_list"
+        android:focusableInTouchMode="false"
+        android:focusable="false"
         >
         <ImageView
             android:id="@+id/up_image"
@@ -53,6 +55,8 @@
         android:clipToPadding="false"
         android:clipChildren="false"
         android:layout_toRightOf="@+id/game_list"
+        android:focusableInTouchMode="false"
+        android:focusable="false"
         >
         <RelativeLayout
             android:layout_width="@dimen/sport_right_rel_W"

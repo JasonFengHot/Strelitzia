@@ -239,7 +239,7 @@ public class HistoryFragment extends Fragment implements ScrollableSectionList.O
 		mChannelLabel = (TextView) fragmentView.findViewById(R.id.channel_label);
 		mChannelLabel.setText(getResources().getString(R.string.vod_movielist_title_history));
 		clerHistory.setText(getResources().getString(R.string.claer_histories));
-		clerHistory.setVisibility(View.VISIBLE);
+		clerHistory.setVisibility(View.GONE);
 		mNoVideoContainer = (RelativeLayout) fragmentView.findViewById(R.id.no_video_container);
 		collect_or_history_txt = (TextView)fragmentView.findViewById(R.id.collect_or_history_txt);
 		recommend_gridview = (ZGridView)fragmentView.findViewById(R.id.recommend_gridview);
@@ -248,7 +248,7 @@ public class HistoryFragment extends Fragment implements ScrollableSectionList.O
 		clerHistory.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				if(mHGridAdapter!=null) {
+					if(mHGridAdapter!=null) {
 					if(!isInGetHistoryTask) {
 						if(!IsmartvActivator.getInstance().isLogin()){
 							DaisyUtils.getHistoryManager(getActivity()).deleteAll("no");

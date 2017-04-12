@@ -52,7 +52,7 @@ public class PayCheckUtil {
         }
         return playCheckEntity;
     }
-    public void handlePurchase(Context context, Objects objects) {
+    public void handlePurchase(Activity context, Objects objects) {
         int pk = objects.pk;
         int jumpTo = objects.expense.jump_to;
         int cpid = objects.expense.cpid;
@@ -66,6 +66,6 @@ public class PayCheckUtil {
 //            clip = String.valueOf(objects.getClip().getPk());
 //        }
         new PurchaseStatistics().expenseVideoClick(String.valueOf(pk), userName, title, clip);
-        new PageIntent().toPaymentForResult((Activity) context, unknown.name(), paymentInfo);
+        new PageIntent().toPaymentForResult(context, unknown.name(), paymentInfo);
     }
 }
