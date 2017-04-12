@@ -7,6 +7,7 @@ import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -112,24 +113,8 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnClickList
         initData();
         subject_btn_buy.setOnClickListener(this);
         subject_btn_like.setOnClickListener(this);
-        subject_btn_buy.setOnFocusChangeListener(this);
-        subject_btn_like.setOnFocusChangeListener(this);
-        movie_recyclerView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if(hasFocus&&focusView!=null){
-                      focusView.requestFocus();
-                }
-            }
-        });
-        tv_recyclerView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if(hasFocus&&focusView!=null){
-                    focusView.requestFocus();
-                }
-            }
-        });
+        movie_recyclerView.setOnFocusChangeListener(this);
+        tv_recyclerView.setOnFocusChangeListener(this);
     }
 
     private void initData() {
@@ -487,18 +472,8 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnClickList
 
     @Override
     public void onFocusChange(View v, boolean hasFocus) {
-//        int i = v.getId();
-//        if(hasFocus) {
-//            if (i == R.id.subject_btn_buy) {
-//                btn_buy_focused = true;
-//
-//            } else if (i == R.id.subject_btn_like) {
-//                btn_like_focused = true;
-//
-//            }
-//        }else{
-//            btn_like_focused = false;
-//            btn_buy_focused = false;
-//        }
+        if(hasFocus&&focusView!=null){
+            focusView.requestFocus();
+        }
     }
 }
