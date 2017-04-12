@@ -189,7 +189,11 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
                     sportlist.setAdapter(madpter);
                     madpter.notifyDataSetChanged();
                     Picasso.with(getActivity()).load(subject.bg_url).memoryPolicy(MemoryPolicy.NO_CACHE).memoryPolicy(MemoryPolicy.NO_STORE).into(bg);
-
+                    if(list.size()>6){
+                        down_arrow.setBackground(getActivity().getResources().getDrawable(R.drawable.down_have_data));
+                    }else {
+                        down_arrow.setBackground(getActivity().getResources().getDrawable(R.drawable.down_normal));
+                    }
 
                 }
             }
@@ -225,17 +229,6 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
             currentSelectView=view;
             listItemToBig(view);
             live_list=false;
-            if(list.size()-position>1){
-                down_arrow.setBackground(getActivity().getResources().getDrawable(R.drawable.down_have_data));
-            }else{
-                down_arrow.setBackground(getActivity().getResources().getDrawable(R.drawable.down_normal));
-            }
-            if(mSelectPosition>5){
-                up_arrow.setBackground(getActivity().getResources().getDrawable(R.drawable.up_have_data));
-            }else{
-                up_arrow.setBackground(getActivity().getResources().getDrawable(R.drawable.up_nomral));
-            }
-
             objects=list.get(position);
             Picasso.with(getActivity()).load(objects.poster_url).into(detail_labelImage);
             if(objects.expense!=null){
@@ -470,13 +463,25 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
                 View lastItemView= recyclerView.getLayoutManager().getChildAt(recyclerView.getLayoutManager().getChildCount()-1);
+                View firstItemView= recyclerView.getLayoutManager().getChildAt(recyclerView.getLayoutManager().getChildCount()-5);
                 int lastChildBottom = lastItemView.getBottom();
+            //    int firstChildHead=firstItemView.getBottom();
                 Log.i("Bootm","lastChildBottom  "+lastChildBottom+"  "+list.size());
                 if(dy>0) {
                     if (lastChildBottom != 692) {
                         recyclerView.smoothScrollBy(0, lastChildBottom - 692);
                     }
                 }
+                Log.i("arrowScroll","mSelectiong"+mSelectPosition+"    "+mSelectPosition%6);
+                if(mSelectPosition==0){
+                    up_arrow.setBackground(getActivity().getResources().getDrawable(R.drawable.up_nomral));
+                }else if(mSelectPosition==list.size()-1){
+                    down_arrow.setBackground(getActivity().getResources().getDrawable(R.drawable.down_normal));
+                } else{
+                    down_arrow.setBackground(getActivity().getResources().getDrawable(R.drawable.down_have_data));
+                    up_arrow.setBackground(getActivity().getResources().getDrawable(R.drawable.up_have_data));
+                }
+
             }
         });
     }
