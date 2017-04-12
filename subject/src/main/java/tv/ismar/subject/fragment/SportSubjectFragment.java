@@ -218,6 +218,9 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
                 listItemToNormal(view);
             }
         }else{
+            if(live_list){
+                listItemToNormal(lastSelectView);
+            }
             mSelectPosition=position;
             currentSelectView=view;
             listItemToBig(view);
@@ -396,7 +399,8 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
     }
     @Override
     public void OnItemOnhoverlistener(View v, MotionEvent event) {
-        live_list=false;
+        Log.i("OnItemHover","listview"+live_list);
+       // live_list=false;
     }
     private boolean click_arrow=false;
     private void arrowListent(){
