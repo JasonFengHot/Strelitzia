@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -35,6 +36,7 @@ public class SubjectSportAdapter extends RecyclerView.Adapter<SportViewHolder> {
     private OnItemFocusedListener mOnItemFocusedListener;
     private OnItemClickListener mOnItemClickListener;
     private OnItemKeyListener onItemKeyListener;
+    private OnItemOnhoverlistener onItemOnhoverlistener;
     private String TAG="subjectSportAdapter";
     private String type="NBA";
     public SubjectSportAdapter(Context context){
@@ -54,6 +56,9 @@ public class SubjectSportAdapter extends RecyclerView.Adapter<SportViewHolder> {
     public  void setOnItemKeyListener(OnItemKeyListener onItemKeyListener){
         this.onItemKeyListener=onItemKeyListener;
     }
+    public  void setmOnHoverListener(OnItemOnhoverlistener onHoverListener){
+        this.onItemOnhoverlistener=onHoverListener;
+    }
 
     @Override
     public long getItemId(int position) {
@@ -65,8 +70,6 @@ public class SubjectSportAdapter extends RecyclerView.Adapter<SportViewHolder> {
         return itemList.size();
     }
 
-    SportViewHolder  lastview;
-    int lastindex=0;
     @Override
     public SportViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         SportViewHolder holder=new SportViewHolder(LayoutInflater.from(mContext).inflate(R.layout.sport_list_item,parent,false));
@@ -102,6 +105,14 @@ public class SubjectSportAdapter extends RecyclerView.Adapter<SportViewHolder> {
                 mOnItemClickListener.onItemClick(v,pos);
             }
         });
+        holder.itemView.setOnHoverListener(new View.OnHoverListener() {
+            @Override
+            public boolean onHover(View v, MotionEvent event) {
+                onItemOnhoverlistener.OnItemOnhoverlistener(v,event);
+                return false;
+            }
+        });
+
         if(position==0){
             holder.itemView.requestFocusFromTouch();
             holder.itemView.requestFocus();

@@ -28,13 +28,23 @@
             android:layout_marginTop="@dimen/sport_left_up_image_MT"
             android:background="@drawable/arrow_hover_select"
             />
-        <android.support.v7.widget.RecyclerView
+        <tv.ismar.subject.views.MyRecyclerView
             android:id="@+id/sport_list"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/sport_list_H"
-            android:layout_marginTop="@dimen/sport_list_MT"
-            >
-        </android.support.v7.widget.RecyclerView>
+            android:layout_marginTop="@dimen/sport_list_MT">
+        </tv.ismar.subject.views.MyRecyclerView>
+        <!--<ListView-->
+            <!--android:id="@+id/sport_list"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="@dimen/sport_list_H"-->
+            <!--android:layout_marginTop="@dimen/sport_list_MT"-->
+            <!--android:divider="@drawable/transparent"-->
+            <!--android:dividerHeight="@dimen/subject_20"-->
+            <!--android:scrollbars="none"-->
+            <!--android:listSelector="@drawable/transparent"-->
+            <!--&gt;-->
+        <!--</ListView>-->
         <ImageView
             android:id="@+id/down_image"
             android:layout_width="@dimen/sport_left_up_imageW"
@@ -74,6 +84,7 @@
                 android:layout_height="@dimen/sport_right_image_title_W"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentTop="true"
+                android:visibility="gone"
                 />
             <TextView
                 android:id="@+id/price"

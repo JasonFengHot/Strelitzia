@@ -65,8 +65,10 @@ import tv.ismar.subject.Utils.SpacesItemDecoration;
 import tv.ismar.subject.adapter.OnItemClickListener;
 import tv.ismar.subject.adapter.OnItemFocusedListener;
 import tv.ismar.subject.adapter.OnItemKeyListener;
+import tv.ismar.subject.adapter.OnItemOnhoverlistener;
 import tv.ismar.subject.adapter.SportViewHolder;
 import tv.ismar.subject.adapter.SubjectSportAdapter;
+import tv.ismar.subject.views.MyRecyclerView;
 
 import static android.support.v7.widget.RecyclerView.SCROLL_STATE_IDLE;
 import static tv.ismar.app.core.PageIntentInterface.FromPage.unknown;
@@ -76,8 +78,8 @@ import static tv.ismar.app.core.PageIntentInterface.ProductCategory.item;
  */
 
 public class SportSubjectFragment extends Fragment implements OnItemFocusedListener,View.OnFocusChangeListener,View.OnHoverListener,View.OnClickListener,OnItemClickListener
-,OnItemKeyListener{
-    private RecyclerView sportlist;
+,OnItemKeyListener,OnItemOnhoverlistener{
+    private MyRecyclerView sportlist;
     private SubjectSportAdapter madpter;
     private ArrayList<Objects> list=new ArrayList<>();
     private Button buy,play,subscribe;
@@ -108,9 +110,10 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
                 }
             }
         });
-        sportlist= (RecyclerView) view.findViewById(R.id.sport_list);
+        sportlist= (MyRecyclerView) view.findViewById(R.id.sport_list);
         price= (TextView) view.findViewById(R.id.price);
         bg= (ImageView) view.findViewById(R.id.bg_fragment);
+        bg.setOnHoverListener(this);
         game_time= (TextView) view.findViewById(R.id.game_time);
         title= (TextView) view.findViewById(R.id.title);
         hasbuy= (TextView) view.findViewById(R.id.havebuy);
@@ -147,19 +150,10 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
         madpter.setOnItemFocusedListener(this);
         madpter.setOnItemClickListener(this);
         madpter.setOnItemKeyListener(this);
+        madpter.setmOnHoverListener(this);
         buy.setNextFocusLeftId(R.id.sport_list);
         relate_image1.setNextFocusLeftId(R.id.sport_list);
         sportlist.setOnFocusChangeListener(this);
-        sportlist.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if(event.getAction()==MotionEvent.ACTION_MOVE) {
-                    return true;
-                }else{
-                    return false;
-                }
-            }
-        });
         getData();
         setScrollListen(sportlist);
         new Handler().postDelayed(new Runnable() {
@@ -219,7 +213,7 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
             currentSelectView=view;
             listItemToBig(view);
             live_list=false;
-            if(list.size()-position>6){
+            if(list.size()-position>1){
                 down_arrow.setBackground(getActivity().getResources().getDrawable(R.drawable.down_have_data));
             }else{
                 down_arrow.setBackground(getActivity().getResources().getDrawable(R.drawable.down_normal));
@@ -273,13 +267,13 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
                                 super.onError(e);
                             }
                         });
-                if(objects.expense.cptitle!=null){
-                    cp_title.setVisibility(View.VISIBLE);
-                    String imageUrl= VipMark.getInstance().getImage(getActivity(),3,3);
-                    Picasso.with(getActivity()).load(imageUrl).rotate(90).into(cp_title);
-                }else{
-                    cp_title.setVisibility(View.GONE);
-                }
+//                if(objects.expense.cptitle!=null){
+//                    cp_title.setVisibility(View.VISIBLE);
+//                    String imageUrl= VipMark.getInstance().getImage(getActivity(),3,3);
+//                    Picasso.with(getActivity()).load(imageUrl).rotate(90).into(cp_title);
+//                }else{
+//                    cp_title.setVisibility(View.GONE);
+//                }
             }else{
                 play.setVisibility(View.VISIBLE);
                 hasbuy.setVisibility(View.INVISIBLE);
@@ -290,6 +284,9 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
             }else{
                 subscribe.setVisibility(View.GONE);
             }
+            String[] titles=objects.title.split("-");
+            game_time.setText(titles[0]);
+            title.setText(titles[1]);
             relateHandler.removeCallbacks(runnable);
             relateHandler.postDelayed(runnable,2000);
         }
@@ -371,6 +368,7 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
 
     @Override
     public boolean onHover(View v, MotionEvent event) {
+        live_list=true;
         switch (event.getAction()){
             case MotionEvent.ACTION_HOVER_ENTER:
                 case MotionEvent.ACTION_HOVER_MOVE:
@@ -383,6 +381,10 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
 
         return false;
     }
+    @Override
+    public void OnItemOnhoverlistener(View v, MotionEvent event) {
+        live_list=false;
+    }
     private boolean click_arrow=false;
     private void arrowListent(){
         up_arrow.setOnClickListener(new View.OnClickListener() {
@@ -394,7 +396,7 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
                     sportlist.smoothScrollBy(0,-681);
                 }else{
                     sportlist.smoothScrollToPosition(mSelectPosition-1);
-                    sportlist.getChildAt(mSelectPosition-1).requestFocusFromTouch();
+                    sportlist.getChildAt(mSelectPosition%6-1).requestFocusFromTouch();
                 }
             }
         });
@@ -407,8 +409,12 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
                     listItemToNormal(currentSelectView);
                     sportlist.smoothScrollBy(0,681);
                 }else{
+                    click_arrow=false;
                     sportlist.smoothScrollToPosition(mSelectPosition+1);
-                    sportlist.getChildAt(mSelectPosition%6+1).requestFocusFromTouch();
+                    Log.i("sportArrow","mselcetion"+mSelectPosition);
+                    if(sportlist.getChildAt(mSelectPosition%6+1)!=null) {
+                        sportlist.getChildAt(mSelectPosition % 6 + 1).requestFocusFromTouch();
+                    }
                 }
 
             }
@@ -507,8 +513,7 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
         Log.i("live_list","onclick"+position);
         if(position!=mSelectPosition) {
             live_list=false;
-           view.requestFocus();
-
+            view.requestFocusFromTouch();
         }
     }
 
