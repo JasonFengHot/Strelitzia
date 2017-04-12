@@ -4,6 +4,7 @@ import android.app.Fragment;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -166,6 +167,7 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
         },1000);
         return view;
     }
+
     private void getData(){
         skyService.getSportSubjectInfo(709763).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread()).subscribe(((BaseActivity) getActivity()).new BaseObserver<Subject>() {
@@ -194,10 +196,17 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
         });
     }
     private Handler relateHandler=new Handler();
+    private Handler payHandler=new Handler();
     private Runnable runnable=new Runnable() {
         @Override
         public void run() {
             getRelateData(objects.pk);
+        }
+    };
+    private Runnable payRunnable=new Runnable() {
+        @Override
+        public void run() {
+            payCheck();
         }
     };
     @Override
@@ -230,43 +239,6 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
                 if (playCheckSubsc != null && !playCheckSubsc.isUnsubscribed()) {
                     playCheckSubsc.unsubscribe();
                 }
-                playCheckSubsc=skyService.apiPlayCheck(String.valueOf(objects.item_pk), null, null)
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(((BaseActivity) getActivity()).new BaseObserver<ResponseBody>() {
-                            @Override
-                            public void onCompleted() {
-
-                            }
-
-                            @Override
-                            public void onNext(ResponseBody responseBody) {
-                                try {
-                                    PayCheckUtil payCheck=new PayCheckUtil();
-                                    PlayCheckEntity  playCheckEntity =payCheck.calculateRemainDay(responseBody.string());
-                                    if (playCheckEntity.getRemainDay() == 0) {
-                                        buy.setVisibility(View.VISIBLE);
-                                        play.setVisibility(View.GONE);
-                                        hasbuy.setVisibility(View.GONE);
-                                        price.setVisibility(View.VISIBLE);
-                                        price.setText(objects.expense.price+"¥");                           // 过期了。认为没购买
-                                    } else {
-                                        buy.setVisibility(View.GONE);
-                                        play.setVisibility(View.VISIBLE);
-                                        price.setVisibility(View.GONE);
-                                        hasbuy.setVisibility(View.VISIBLE);
-                                        hasbuy.setText("已付费：有效期"+objects.expense.duration+"天");                 // 购买了，剩余天数大于0
-                                    }
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
-                            }
-
-                            @Override
-                            public void onError(Throwable e) {
-                                super.onError(e);
-                            }
-                        });
 //                if(objects.expense.cptitle!=null){
 //                    cp_title.setVisibility(View.VISIBLE);
 //                    String imageUrl= VipMark.getInstance().getImage(getActivity(),3,3);
@@ -288,8 +260,49 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
             game_time.setText(titles[0]);
             title.setText(titles[1]);
             relateHandler.removeCallbacks(runnable);
+            payHandler.removeCallbacks(payRunnable);
             relateHandler.postDelayed(runnable,2000);
+            payHandler.postDelayed(payRunnable,2000);
         }
+    }
+    private void payCheck (){
+        playCheckSubsc=skyService.apiPlayCheck(String.valueOf(objects.item_pk), null, null)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(((BaseActivity) getActivity()).new BaseObserver<ResponseBody>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onNext(ResponseBody responseBody) {
+                        try {
+                            PayCheckUtil payCheck=new PayCheckUtil();
+                            PlayCheckEntity  playCheckEntity =payCheck.calculateRemainDay(responseBody.string());
+                            if (playCheckEntity.getRemainDay() == 0) {
+                                buy.setVisibility(View.VISIBLE);
+                                play.setVisibility(View.GONE);
+                                hasbuy.setVisibility(View.GONE);
+                                price.setVisibility(View.VISIBLE);
+                                price.setText(objects.expense.price+"¥");                           // 过期了。认为没购买
+                            } else {
+                                buy.setVisibility(View.GONE);
+                                play.setVisibility(View.VISIBLE);
+                                price.setVisibility(View.GONE);
+                                hasbuy.setVisibility(View.VISIBLE);
+                                hasbuy.setText("已付费：有效期"+objects.expense.duration+"天");                 // 购买了，剩余天数大于0
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        super.onError(e);
+                    }
+                });
     }
     private void getRelateData(int pk){
         skyService.getRelatedArray(pk).subscribeOn(Schedulers.io())
@@ -482,6 +495,9 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
         View contentView = LayoutInflater.from(getActivity()).inflate(R.layout.subscribe_dialog, null);
         popupWindow = new PopupWindow(contentView, LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT, true);
         popupWindow.setContentView(contentView);
+        ColorDrawable dw = new ColorDrawable(getActivity().getResources().getColor(R.color._333333));
+        dw.setAlpha(7);
+        popupWindow.setBackgroundDrawable(dw);
         View rootview = LayoutInflater.from(getActivity()).inflate(R.layout.sport_subject_fragment, null);
         popupWindow.showAtLocation(rootview, Gravity.CENTER, 0, 0);
         final ImageView code = (ImageView) contentView.findViewById(R.id.code_image);
@@ -507,6 +523,7 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
             }
         });
     }
+
 
     @Override
     public void onItemClick(View view, int position) {
