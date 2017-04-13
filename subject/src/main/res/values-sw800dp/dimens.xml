@@ -150,6 +150,8 @@
 <dimen name="subject_120">88.89dp</dimen>
 <dimen name="subject_42">31.11dp</dimen>
 <dimen name="subject_754">558.52dp</dimen>
+<dimen name="subject_704">521.48dp</dimen>
+<dimen name="subject_852">631.11dp</dimen>
 
 
 </resources>

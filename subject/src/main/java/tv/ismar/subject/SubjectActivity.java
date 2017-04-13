@@ -48,8 +48,11 @@ public class SubjectActivity extends BaseActivity{
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
         switch (gather_type){
             case "nbagather":
-            case "premierLeaguegather":
-                fragmentTransaction.replace(R.id.subject_frame,new SportSubjectFragment());
+            case "premierleaguegather":
+                SportSubjectFragment sportSubjectFragment=new SportSubjectFragment();
+                sportSubjectFragment.pk=itemid;
+                sportSubjectFragment.channel=frompage;
+                fragmentTransaction.replace(R.id.subject_frame,sportSubjectFragment);
                 break;
             case "moviegather":
                 fragmentTransaction.replace(R.id.subject_frame,new MovieTVSubjectFragment());

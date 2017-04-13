@@ -108,6 +108,7 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
     private LinearLayoutManager mLinearLayoutManager;
     public String channel;
     public String from;
+    public int pk;
     private  HashMap<String, Object> out = new HashMap<String, Object>();
     @Nullable
     @Override
@@ -180,7 +181,7 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
     }
 
     private void getData(){
-        skyService.getSportSubjectInfo(709763).subscribeOn(Schedulers.io())
+        skyService.getSportSubjectInfo(pk).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread()).subscribe(((BaseActivity) getActivity()).new BaseObserver<Subject>() {
             @Override
             public void onCompleted() {
@@ -576,9 +577,7 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
         View contentView = LayoutInflater.from(getActivity()).inflate(R.layout.subscribe_dialog, null);
         popupWindow = new PopupWindow(contentView, LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT, true);
         popupWindow.setContentView(contentView);
-        ColorDrawable dw = new ColorDrawable(getActivity().getResources().getColor(R.color._333333));
-        dw.setAlpha(7);
-        popupWindow.setBackgroundDrawable(dw);
+        popupWindow.setBackgroundDrawable(getResources().getDrawable(R.drawable.transparent));
         View rootview = LayoutInflater.from(getActivity()).inflate(R.layout.sport_subject_fragment, null);
         popupWindow.showAtLocation(rootview, Gravity.CENTER, 0, 0);
         final ImageView code = (ImageView) contentView.findViewById(R.id.code_image);
