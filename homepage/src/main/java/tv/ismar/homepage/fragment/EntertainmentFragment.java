@@ -312,6 +312,9 @@ public class EntertainmentFragment extends ChannelBaseFragment {
         if (TextUtils.isEmpty(imageUrl0)){
             imageUrl0 = postlist.get(0).getPoster_url();
         }
+        if (TextUtils.isEmpty(imageUrl0)){
+            imageUrl0 = "error";
+        }
         Picasso.with(mContext).load(imageUrl0).memoryPolicy(MemoryPolicy.NO_STORE).into(vaiety_card1_image);
         vaiety_card1_image.setTitle(postlist.get(0).getIntroduction());
         vaiety_card1_image.setTag(postlist.get(0));
@@ -326,6 +329,9 @@ public class EntertainmentFragment extends ChannelBaseFragment {
         String imageUrl1 = postlist.get(1).getCustom_image();
         if (TextUtils.isEmpty(imageUrl1)){
             imageUrl1 = postlist.get(1).getPoster_url();
+        }
+        if (TextUtils.isEmpty(imageUrl1)){
+            imageUrl1 = "error";
         }
         Picasso.with(mContext).load(imageUrl1).memoryPolicy(MemoryPolicy.NO_STORE).into(vaiety_card2_image);
 
@@ -344,6 +350,9 @@ public class EntertainmentFragment extends ChannelBaseFragment {
         if (TextUtils.isEmpty(imageUrl2)){
             imageUrl2 = postlist.get(2).getPoster_url();
         }
+        if (TextUtils.isEmpty(imageUrl2)){
+            imageUrl2 = "error";
+        }
         Picasso.with(mContext).load(imageUrl2).memoryPolicy(MemoryPolicy.NO_STORE).into(vaiety_card3_image);
         vaiety_card3_image.setTitle(postlist.get(2).getIntroduction());
         vaiety_card3_subtitle.setText(postlist.get(2).getTitle());
@@ -360,6 +369,9 @@ public class EntertainmentFragment extends ChannelBaseFragment {
         if (TextUtils.isEmpty(imageUrl3)){
             imageUrl3 = postlist.get(3).getPoster_url();
         }
+        if (TextUtils.isEmpty(imageUrl3)){
+            imageUrl3 = "error";
+        }
         Picasso.with(mContext).load(imageUrl3).memoryPolicy(MemoryPolicy.NO_STORE).into(vaiety_card4_image);
         vaiety_card4_image.setTitle(postlist.get(3).getIntroduction());
         vaiety_card4_subtitle.setText(postlist.get(3).getTitle());
@@ -375,6 +387,9 @@ public class EntertainmentFragment extends ChannelBaseFragment {
         if (TextUtils.isEmpty(imageUrl4)){
             imageUrl4 = postlist.get(4).getPoster_url();
         }
+        if (TextUtils.isEmpty(imageUrl4)){
+            imageUrl4 = "error";
+        }
         Picasso.with(mContext).load(imageUrl4).memoryPolicy(MemoryPolicy.NO_STORE).into(vaiety_channel1_image);
         vaiety_channel1_image.setTitle(postlist.get(4).getIntroduction());
         vaiety_channel1_subtitle.setText(postlist.get(4).getTitle());
@@ -389,6 +404,9 @@ public class EntertainmentFragment extends ChannelBaseFragment {
         String imageUrl5 = postlist.get(5).getCustom_image();
         if (TextUtils.isEmpty(imageUrl5)){
             imageUrl5 = postlist.get(5).getPoster_url();
+        }
+        if (TextUtils.isEmpty(imageUrl5)){
+            imageUrl5 = "error";
         }
         Picasso.with(mContext).load(imageUrl5).memoryPolicy(MemoryPolicy.NO_STORE).into(vaiety_channel2_image);
         vaiety_channel2_image.setTitle(postlist.get(5).getIntroduction());
@@ -406,6 +424,9 @@ public class EntertainmentFragment extends ChannelBaseFragment {
         if (TextUtils.isEmpty(imageUrl6)){
             imageUrl6 = postlist.get(6).getPoster_url();
         }
+        if (TextUtils.isEmpty(imageUrl6)){
+            imageUrl6 = "error";
+        }
         Picasso.with(mContext).load(imageUrl6).memoryPolicy(MemoryPolicy.NO_STORE).into(vaiety_channel3_image);
         vaiety_channel3_image.setTitle(postlist.get(6).getIntroduction());
         vaiety_channel3_subtitle.setText(postlist.get(6).getTitle());
@@ -421,6 +442,9 @@ public class EntertainmentFragment extends ChannelBaseFragment {
         String imageUrl7 = postlist.get(7).getCustom_image();
         if (TextUtils.isEmpty(imageUrl7)){
             imageUrl7 = postlist.get(7).getPoster_url();
+        }
+        if (TextUtils.isEmpty(imageUrl7)){
+            imageUrl7 = "error";
         }
         Picasso.with(mContext).load(imageUrl7).memoryPolicy(MemoryPolicy.NO_STORE).into(vaiety_channel4_image);
         vaiety_channel4_image.setTitle(postlist.get(7).getIntroduction());
