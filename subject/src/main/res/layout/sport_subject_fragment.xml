@@ -178,8 +178,8 @@
             android:layout_width="@dimen/subject_1040"
             android:layout_height="@dimen/subject_2"
             android:layout_marginLeft="@dimen/subject_20"
-            android:alpha="0.25"
-            android:textColor="@color/_ffffff"
+            android:alpha="0.75"
+            android:background="@color/_ffffff"
             android:layout_marginTop="@dimen/subject_5"
             />
         <LinearLayout

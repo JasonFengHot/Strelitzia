@@ -411,11 +411,17 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
             public void onClick(View v) {
                 int firstItem = mLinearLayoutManager.findFirstVisibleItemPosition();
                 int top=mSelectPosition-firstItem;
+                Log.i("arrowListen","firstitem: "+firstItem+" top: "+top+"  mselecttion: "+mSelectPosition);
                 if(mSelectPosition-top-6>=0){
                     click_arrow=true;
                     listItemToNormal(currentSelectView);
                     sportlist.smoothScrollToPosition(mSelectPosition-top-6);
                 }else{
+                    if(mSelectPosition>5){
+                        click_arrow=false;
+                    }else{
+                        click_arrow=true;
+                    }
                     sportlist.smoothScrollToPosition(0);
                 }
             }
@@ -425,13 +431,17 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
             public void onClick(View v) {
                 int lastItem = mLinearLayoutManager.findLastVisibleItemPosition();
                 int bootom=lastItem-mSelectPosition;
-                Log.i("scolllist",mSelectPosition+"=mSelectPosition");
+                Log.i("arrowListen","lastItem: "+lastItem+" bootom: "+bootom+"  mselecttion: "+mSelectPosition);
                 if(mSelectPosition+bootom+7<=list.size()){
                     click_arrow=true;
                     listItemToNormal(currentSelectView);
                     sportlist.smoothScrollToPosition(mSelectPosition+bootom+7);
                 }else{
-                    click_arrow=false;
+                    if(list.size()-6>mSelectPosition){
+                        click_arrow=true;
+                    }else{
+                        click_arrow=false;
+                    }
                     sportlist.smoothScrollToPosition(list.size()-1);
                     down_arrow.setBackground(getActivity().getResources().getDrawable(R.drawable.down_normal));
                 }
@@ -460,10 +470,22 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
                 Log.i("scolllist",newState+" msle  "+ mSelectPosition);
+                int firstItem = mLinearLayoutManager.findFirstVisibleItemPosition();
+                int lastItem = mLinearLayoutManager.findLastVisibleItemPosition();
                 if(newState==SCROLL_STATE_IDLE){
                     if(click_arrow){
                        sportlist.getChildAt(0).requestFocusFromTouch();
                         click_arrow=false;
+                    }
+                    if(firstItem!=0){
+                        up_arrow.setBackground(getActivity().getResources().getDrawable(R.drawable.up_have_data));
+                    }else{
+                        up_arrow.setBackground(getActivity().getResources().getDrawable(R.drawable.up_nomral));
+                    }
+                    if(lastItem!=list.size()-1){
+                        down_arrow.setBackground(getActivity().getResources().getDrawable(R.drawable.down_have_data));
+                    }else{
+                        down_arrow.setBackground(getActivity().getResources().getDrawable(R.drawable.down_normal));
                     }
                 }
             }
@@ -480,15 +502,6 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
                     if (lastChildBottom != 692) {
                         recyclerView.smoothScrollBy(0, lastChildBottom - 692);
                     }
-                }
-                Log.i("arrowScroll","mSelectiong"+mSelectPosition+"    "+mSelectPosition%6);
-                if(mSelectPosition==0){
-                    up_arrow.setBackground(getActivity().getResources().getDrawable(R.drawable.up_nomral));
-                }else if(mSelectPosition==list.size()-1){
-                    down_arrow.setBackground(getActivity().getResources().getDrawable(R.drawable.down_normal));
-                } else{
-                    down_arrow.setBackground(getActivity().getResources().getDrawable(R.drawable.down_have_data));
-                    up_arrow.setBackground(getActivity().getResources().getDrawable(R.drawable.up_have_data));
                 }
             }
         });
