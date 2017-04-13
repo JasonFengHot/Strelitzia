@@ -12,7 +12,6 @@ import java.util.concurrent.TimeoutException;
 import tv.ismar.app.BaseActivity;
 import tv.ismar.app.widget.LoadingDialog;
 import tv.ismar.subject.fragment.MovieTVSubjectFragment;
-import tv.ismar.subject.fragment.SportFragment;
 import tv.ismar.subject.fragment.SportSubjectFragment;
 
 /**
