@@ -50,7 +50,7 @@
             android:layout_width="@dimen/sport_left_up_imageW"
             android:layout_height="@dimen/sport_left_up_imageH"
             android:layout_marginLeft="@dimen/sport_left_up_image_MF"
-            android:background="@drawable/down_focus"
+            android:background="@drawable/arrow_down_hover"
             />
 
     </LinearLayout>
