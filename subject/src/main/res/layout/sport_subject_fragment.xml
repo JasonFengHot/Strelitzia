@@ -34,17 +34,6 @@
             android:layout_height="@dimen/sport_list_H"
             android:layout_marginTop="@dimen/sport_list_MT">
         </tv.ismar.subject.views.MyRecyclerView>
-        <!--<ListView-->
-            <!--android:id="@+id/sport_list"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="@dimen/sport_list_H"-->
-            <!--android:layout_marginTop="@dimen/sport_list_MT"-->
-            <!--android:divider="@drawable/transparent"-->
-            <!--android:dividerHeight="@dimen/subject_20"-->
-            <!--android:scrollbars="none"-->
-            <!--android:listSelector="@drawable/transparent"-->
-            <!--&gt;-->
-        <!--</ListView>-->
         <ImageView
             android:id="@+id/down_image"
             android:layout_width="@dimen/sport_left_up_imageW"

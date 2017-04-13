@@ -143,7 +143,7 @@ public class SubjectSportAdapter extends RecyclerView.Adapter<SportViewHolder> {
         if(objects.start_time!=null) {
             if (is_alive) {
                 holder.big_time.setText("直播中");
-                holder.big_time.setTextColor(mContext.getResources().getColor(R.color._ff9c3c));
+                holder.big_time.setTextColor(mContext.getResources().getColor(R.color._cc0033));
                 holder.start_time_layout.setVisibility(View.GONE);
                 holder.isalive.setText("直播中");
             } else {
