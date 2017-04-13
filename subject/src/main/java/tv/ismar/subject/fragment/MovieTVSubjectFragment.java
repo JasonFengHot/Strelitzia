@@ -1,7 +1,6 @@
 package tv.ismar.subject.fragment;
 
 import android.app.Fragment;
-import android.app.PendingIntent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.StaggeredGridLayoutManager;
@@ -56,7 +55,7 @@ import static tv.ismar.app.core.PageIntentInterface.ProductCategory.item;
  * Created by admin on 2017/3/2.
  */
 
-public class MovieTVSubjectFragment extends Fragment implements View.OnClickListener, OnItemClickListener, View.OnFocusChangeListener {
+public class MovieTVSubjectFragment extends Fragment implements View.OnClickListener, OnItemClickListener, View.OnFocusChangeListener, View.OnHoverListener {
 
     private MyRecyclerView movie_recyclerView;
     private MyRecyclerView tv_recyclerView;
@@ -120,6 +119,8 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnClickList
         initData();
         subject_btn_buy.setOnClickListener(this);
         subject_btn_like.setOnClickListener(this);
+        subject_btn_buy.setOnHoverListener(this);
+        subject_btn_like.setOnHoverListener(this);
         movie_recyclerView.setOnFocusChangeListener(this);
         tv_recyclerView.setOnFocusChangeListener(this);
     }
@@ -528,5 +529,19 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnClickList
     public void onDestroy() {
         super.onDestroy();
         video_gather_out(mSubjectEntity.getTitle(),"exit","","");
+    }
+
+    @Override
+    public boolean onHover(View v, MotionEvent event) {
+        switch (event.getAction()){
+            case MotionEvent.ACTION_HOVER_ENTER:
+            case MotionEvent.ACTION_HOVER_MOVE:
+                v.requestFocus();
+                v.requestFocusFromTouch();
+                break;
+            default:
+                break;
+        }
+        return false;
     }
 }

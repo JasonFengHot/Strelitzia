@@ -107,7 +107,7 @@ public class PayLayerVipActivity extends BaseActivity implements OnHoverListener
 
 
     private void payLayerVip(String cpid, String itemId) {
-        if(fromPage.equals(Source.GATHER.getValue())){
+        if(fromPage!=null&&fromPage.equals(Source.GATHER.getValue())){
             mSkyService.apiPaylayerVipSubject(itemId+"")
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
