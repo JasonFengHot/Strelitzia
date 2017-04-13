@@ -86,18 +86,18 @@ public class SubjectSportAdapter extends RecyclerView.Adapter<SportViewHolder> {
                 mOnItemFocusedListener.onItemfocused(v, pos, hasFocus);
             }
         });
-        if(position==itemList.size()-1){
-              holder.itemView.setOnKeyListener(new View.OnKeyListener() {
-                    @Override
-                    public boolean onKey(View v, int keyCode, KeyEvent event) {
-                        onItemKeyListener.onItemKeyListener(v,keyCode,event);
-                    if(keyCode==20){
-                        return true;
+        holder.itemView.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                onItemKeyListener.onItemKeyListener(v,keyCode,event);
+                if(keyCode==20){
+                    if(position==itemList.size()-1){
+                            return true;
                     }
-                    return false;
-                 }
-             });
-         }
+                }
+                return false;
+            }
+        });
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -112,6 +112,7 @@ public class SubjectSportAdapter extends RecyclerView.Adapter<SportViewHolder> {
                 return false;
             }
         });
+
         if(type.equals("NBA")) {
             Picasso.with(mContext).load(objects.at_home_logo).into(holder.home_logo);
             Picasso.with(mContext).load(objects.at_home_logo).into(holder.big_home_logo);
