@@ -1,12 +1,14 @@
 package tv.ismar.subject.fragment;
 
 import android.app.Fragment;
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
@@ -41,6 +43,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
+import java.util.concurrent.TimeoutException;
 
 import cn.ismartv.truetime.TrueTime;
 import okhttp3.ResponseBody;
@@ -63,6 +66,7 @@ import tv.ismar.app.network.entity.PlayCheckEntity;
 import tv.ismar.app.network.entity.YouHuiDingGouEntity;
 import tv.ismar.app.ui.view.AsyncImageView;
 import tv.ismar.app.ui.view.LabelImageView;
+import tv.ismar.app.widget.LoadingDialog;
 import tv.ismar.homepage.widget.HomeItemContainer;
 import tv.ismar.homepage.widget.LabelImageView3;
 import tv.ismar.statistics.PurchaseStatistics;
@@ -109,7 +113,18 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
     public String channel;
     public String from;
     public int pk;
+    private LoadingDialog mLoadingDialog;
     private  HashMap<String, Object> out = new HashMap<String, Object>();
+    private Handler dialogHandler=new Handler(new Handler.Callback() {
+        @Override
+        public boolean handleMessage(Message msg) {
+            if(mLoadingDialog.isShowing()) {
+                mLoadingDialog.dismiss();
+                ((BaseActivity)getActivity()).showNetWorkErrorDialog(new TimeoutException());
+            }
+            return false;
+        }
+    });
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -122,6 +137,17 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
 //                }
 //            }
 //        });
+        mLoadingDialog = new LoadingDialog(getActivity(), tv.ismar.listpage.R.style.PageIntentDialog);
+        mLoadingDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface dialog) {
+                dialogHandler.sendEmptyMessageDelayed(1,15000);
+            }
+        });
+        mLoadingDialog.setTvText(getResources().getString(tv.ismar.listpage.R.string.loading));
+        mLoadingDialog.setOnCancelListener(mLoadingCancelListener);
+        //    mLoadingDialog.show();
+        mLoadingDialog.showDialog();
         sportlist= (MyRecyclerView) view.findViewById(R.id.sport_list);
         price= (TextView) view.findViewById(R.id.price);
         bg= (ImageView) view.findViewById(R.id.bg_fragment);
@@ -174,6 +200,7 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
             public void run() {
                 if(sportlist.getChildAt(0)!=null){
                     sportlist.getChildAt(0).requestFocusFromTouch();
+                    mLoadingDialog.dismiss();
                 }
             }
         },1000);
@@ -217,6 +244,7 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
                     }else {
                         down_arrow.setBackground(getActivity().getResources().getDrawable(R.drawable.down_normal));
                     }
+
                     HashMap<String, Object> properties = new HashMap<String, Object>();
                     properties.put(EventProperty.CHANNEL, channel);
                     properties.put(EventProperty.TITLE, subject_type);
@@ -224,6 +252,12 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
 
                     new NetworkUtils.DataCollectionTask().execute(NetworkUtils.VIDEO_GATHER_IN, properties);
                 }
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                mLoadingDialog.dismiss();
+                super.onError(e);
             }
         });
     }
@@ -633,4 +667,12 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
         new NetworkUtils.DataCollectionTask().execute(NetworkUtils.VIDEO_GATHER_OUT, out);
         super.onPause();
     }
+    private DialogInterface.OnCancelListener mLoadingCancelListener = new DialogInterface.OnCancelListener() {
+
+        @Override
+        public void onCancel(DialogInterface dialog) {
+            getActivity().finish();
+            dialog.dismiss();
+        }
+    };
 }

@@ -40,7 +40,7 @@ public class SubjectActivity extends BaseActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.subject_main_activity);
-//        showDialog();
+    //    showDialog();
         Intent intent=getIntent();
         gather_type = intent.getStringExtra("gather_type");
         itemid = intent.getIntExtra("itemid",709759);
