@@ -27,6 +27,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import tv.ismar.account.IsmartvActivator;
 import tv.ismar.app.AppConstant;
+import tv.ismar.app.BaseActivity;
 import tv.ismar.app.core.DaisyUtils;
 import tv.ismar.app.core.PageIntent;
 import tv.ismar.app.core.PageIntentInterface;
@@ -85,6 +86,7 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnClickList
     private boolean btn_like_focused=false;
     private SubjectEntity mSubjectEntity;
     private boolean isScaledIn=true;
+    private String channel="";
 
     @Nullable
     @Override
@@ -125,6 +127,9 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnClickList
     private void initData() {
         type = ((SubjectActivity)getActivity()).gather_type;
         id = ((SubjectActivity)getActivity()).itemid;
+        if(((SubjectActivity)getActivity()).frompage.equals(Source.LIST.getValue())){
+            channel= BaseActivity.baseChannel;
+        }
         mFavoriteManager = DaisyUtils.getFavoriteManager(getActivity());
         if (!Utils.isEmptyText(IsmartvActivator.getInstance().getAuthToken())) {
             isnet = "yes";
@@ -145,7 +150,7 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnClickList
                     @Override
                     public void onNext(SubjectEntity subjectEntity) {
                         mSubjectEntity = subjectEntity;
-                        video_gather_in(mSubjectEntity.getTitle(),((SubjectActivity)getActivity()).frompage,"");
+                        video_gather_in(mSubjectEntity.getTitle(),((SubjectActivity)getActivity()).frompage,channel);
                         processData(subjectEntity);
                     }
 
@@ -295,7 +300,7 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnClickList
             subject_btn_like.setBackgroundResource(R.drawable.like_btn_selector);
         }
         if(mSubjectEntity!=null)
-        video_gather_in(mSubjectEntity.getTitle(),((SubjectActivity)getActivity()).frompage,"");
+        video_gather_in(mSubjectEntity.getTitle(),((SubjectActivity)getActivity()).frompage,channel);
     }
 
     @Override
