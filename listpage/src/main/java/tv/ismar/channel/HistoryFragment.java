@@ -630,7 +630,7 @@ public class HistoryFragment extends Fragment implements ScrollableSectionList.O
 		mScrollableSectionList.setVisibility(View.GONE);
 		mHGridView.setVisibility(View.GONE);
 		collect_or_history_txt.setText(getResources().getString(R.string.no_history_record));
-	//	clerHistory.setVisibility(View.GONE);
+		clerHistory.setVisibility(View.GONE);
 		getTvHome();
 	}
 	public void showData(){

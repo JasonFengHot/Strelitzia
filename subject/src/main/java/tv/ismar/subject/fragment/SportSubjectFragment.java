@@ -99,18 +99,19 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
     private PopupWindow popupWindow;
     private View lastSelectView,currentSelectView;
     private boolean live_list=false;
+    private LinearLayoutManager mLinearLayoutManager;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view=inflater.inflate(R.layout.sport_subject_fragment,null);
-        view.getViewTreeObserver().addOnGlobalFocusChangeListener(new ViewTreeObserver.OnGlobalFocusChangeListener() {
-            @Override
-            public void onGlobalFocusChanged(View oldFocus, View newFocus) {
-                if(newFocus!=null){
-                    Log.i("ss",newFocus.toString());
-                }
-            }
-        });
+//        view.getViewTreeObserver().addOnGlobalFocusChangeListener(new ViewTreeObserver.OnGlobalFocusChangeListener() {
+//            @Override
+//            public void onGlobalFocusChanged(View oldFocus, View newFocus) {
+//                if(newFocus!=null){
+//                    Log.i("ss",newFocus.toString());
+//                }
+//            }
+//        });
         sportlist= (MyRecyclerView) view.findViewById(R.id.sport_list);
         price= (TextView) view.findViewById(R.id.price);
         bg= (ImageView) view.findViewById(R.id.bg_fragment);
@@ -144,7 +145,8 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
 
         cp_title= (ImageView) view.findViewById(R.id.cp_title);
         detail_labelImage= (LabelImageView) view.findViewById(R.id.detail_labelImage);
-        sportlist.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mLinearLayoutManager=new LinearLayoutManager(getActivity());
+        sportlist.setLayoutManager(mLinearLayoutManager);
         sportlist.addItemDecoration(new SpacesItemDecoration(20));
         skyService=SkyService.ServiceManager.getService();
         madpter=new SubjectSportAdapter(getActivity());
@@ -229,6 +231,13 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
             currentSelectView=view;
             listItemToBig(view);
             live_list=false;
+//            View lastItemView= sportlist.getLayoutManager().getChildAt(sportlist.getLayoutManager().getChildCount()-1);
+//            if(lastItemView!=null) {
+//                int lastChildBottom = lastItemView.getBottom();
+//                if (lastChildBottom != 692) {
+//                    sportlist.smoothScrollBy(0, lastChildBottom - 692);
+//                }
+//            }
             objects=list.get(position);
             Picasso.with(getActivity()).load(objects.poster_url).into(detail_labelImage);
             if(objects.expense!=null){
@@ -400,31 +409,31 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
         up_arrow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(mSelectPosition-6>=0){
+                int firstItem = mLinearLayoutManager.findFirstVisibleItemPosition();
+                int top=mSelectPosition-firstItem;
+                if(mSelectPosition-top-6>=0){
                     click_arrow=true;
                     listItemToNormal(currentSelectView);
-                    sportlist.smoothScrollBy(0,-681);
+                    sportlist.smoothScrollToPosition(mSelectPosition-top-6);
                 }else{
-                    sportlist.smoothScrollToPosition(mSelectPosition-1);
-                    sportlist.getChildAt(mSelectPosition%6-1).requestFocusFromTouch();
+                    sportlist.smoothScrollToPosition(0);
                 }
             }
         });
         down_arrow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                int lastItem = mLinearLayoutManager.findLastVisibleItemPosition();
+                int bootom=lastItem-mSelectPosition;
                 Log.i("scolllist",mSelectPosition+"=mSelectPosition");
-                if(list.size()-mSelectPosition>=6){
+                if(mSelectPosition+bootom+7<=list.size()){
                     click_arrow=true;
                     listItemToNormal(currentSelectView);
-                    sportlist.smoothScrollBy(0,681);
+                    sportlist.smoothScrollToPosition(mSelectPosition+bootom+7);
                 }else{
                     click_arrow=false;
-                    sportlist.smoothScrollToPosition(mSelectPosition+1);
-                    Log.i("sportArrow","mselcetion"+mSelectPosition);
-                    if(sportlist.getChildAt(mSelectPosition%6+1)!=null) {
-                        sportlist.getChildAt(mSelectPosition % 6 + 1).requestFocusFromTouch();
-                    }
+                    sportlist.smoothScrollToPosition(list.size()-1);
+                    down_arrow.setBackground(getActivity().getResources().getDrawable(R.drawable.down_normal));
                 }
 
             }
@@ -453,7 +462,7 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
                 Log.i("scolllist",newState+" msle  "+ mSelectPosition);
                 if(newState==SCROLL_STATE_IDLE){
                     if(click_arrow){
-                        sportlist.getChildAt(mSelectPosition%6).requestFocusFromTouch();
+                       sportlist.getChildAt(0).requestFocusFromTouch();
                         click_arrow=false;
                     }
                 }
@@ -462,11 +471,11 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                View lastItemView= recyclerView.getLayoutManager().getChildAt(recyclerView.getLayoutManager().getChildCount()-1);
-                View firstItemView= recyclerView.getLayoutManager().getChildAt(recyclerView.getLayoutManager().getChildCount()-5);
+                     View lastItemView= recyclerView.getLayoutManager().getChildAt(recyclerView.getLayoutManager().getChildCount()-1);
+//                View firstItemView= recyclerView.getLayoutManager().getChildAt(0);
                 int lastChildBottom = lastItemView.getBottom();
-            //    int firstChildHead=firstItemView.getBottom();
-                Log.i("Bootm","lastChildBottom  "+lastChildBottom+"  "+list.size());
+//               int firstChildHead=firstItemView.getBottom();
+//                Log.i("Bootm","lastChildBottom  "+firstChildHead+"  list size:"+list.size());
                 if(dy>0) {
                     if (lastChildBottom != 692) {
                         recyclerView.smoothScrollBy(0, lastChildBottom - 692);
@@ -481,11 +490,9 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
                     down_arrow.setBackground(getActivity().getResources().getDrawable(R.drawable.down_have_data));
                     up_arrow.setBackground(getActivity().getResources().getDrawable(R.drawable.up_have_data));
                 }
-
             }
         });
     }
-
     @Override
     public void onClick(View v) {
         live_list=true;
@@ -552,4 +559,10 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
         }
     }
 
+    @Override
+    public void onPause() {
+        relateHandler.removeCallbacks(runnable);
+        payHandler.removeCallbacks(payRunnable);
+        super.onPause();
+    }
 }
