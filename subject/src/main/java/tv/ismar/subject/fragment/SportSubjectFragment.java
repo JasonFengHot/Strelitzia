@@ -30,10 +30,14 @@ import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
@@ -49,10 +53,12 @@ import tv.ismar.app.core.PageIntent;
 import tv.ismar.app.core.PageIntentInterface;
 import tv.ismar.app.core.Source;
 import tv.ismar.app.core.VipMark;
+import tv.ismar.app.core.client.NetworkUtils;
 import tv.ismar.app.entity.Item;
 import tv.ismar.app.entity.Subject;
 import tv.ismar.app.entity.Objects;
 import tv.ismar.app.network.SkyService;
+import tv.ismar.app.network.entity.EventProperty;
 import tv.ismar.app.network.entity.PlayCheckEntity;
 import tv.ismar.app.network.entity.YouHuiDingGouEntity;
 import tv.ismar.app.ui.view.AsyncImageView;
@@ -100,6 +106,9 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
     private View lastSelectView,currentSelectView;
     private boolean live_list=false;
     private LinearLayoutManager mLinearLayoutManager;
+    public String channel;
+    public String from;
+    private  HashMap<String, Object> out = new HashMap<String, Object>();
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -182,6 +191,17 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
             public void onNext(Subject subject) {
                 if(subject!=null){
                     list=subject.objects;
+                    Collections.sort(list, new Comparator<Objects>() {
+                        @Override
+                        public int compare(Objects lhs, Objects rhs) {
+                            if(lhs.start_time.getTime()!=rhs.start_time.getTime()){
+                                Log.i("comapre","sss  "+(lhs.start_time.getTime()-rhs.start_time.getTime()));
+                                    return (int) (lhs.start_time.getTime()-rhs.start_time.getTime());
+                            }else{
+                                    return -(lhs.recommend_status-rhs.recommend_status);
+                            }
+                        }
+                    });
                     if(subject.content_model.contains("nba")){
                         subject_type="NBA";
                     }else{
@@ -196,7 +216,12 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
                     }else {
                         down_arrow.setBackground(getActivity().getResources().getDrawable(R.drawable.down_normal));
                     }
+                    HashMap<String, Object> properties = new HashMap<String, Object>();
+                    properties.put(EventProperty.CHANNEL, channel);
+                    properties.put(EventProperty.TITLE, subject_type);
+                    properties.put(EventProperty.FROM,from);
 
+                    new NetworkUtils.DataCollectionTask().execute(NetworkUtils.VIDEO_GATHER_IN, properties);
                 }
             }
         });
@@ -293,10 +318,18 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
                                 price.setText(objects.expense.price+"¥");                           // 过期了。认为没购买
                             } else {
                                 buy.setVisibility(View.GONE);
-                                play.setVisibility(View.VISIBLE);
                                 price.setVisibility(View.GONE);
                                 hasbuy.setVisibility(View.VISIBLE);
-                                hasbuy.setText("已付费：有效期"+objects.expense.duration+"天");                 // 购买了，剩余天数大于0
+                                hasbuy.setText("已付费：有效期"+objects.expense.duration+"天");  // 购买了，剩余天数大于0
+                                if(playIsShow(objects.start_time)){
+                                    play.setClickable(true);
+                                    play.setFocusable(true);
+                                    play.setVisibility(View.VISIBLE);
+                                }else{
+                                   play.setClickable(false);
+                                   play.setFocusable(false);
+                                   play.setVisibility(View.VISIBLE);
+                                }
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -375,6 +408,21 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
             Calendar startCalendar = new GregorianCalendar(TimeZone.getTimeZone("Asia/Shanghai"), Locale.CHINA);
             startCalendar.setTime(time);
             if(startCalendar.getTimeInMillis()-currentCalendar.getTimeInMillis()>900000){
+                return true;
+            }else{
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
+    private boolean playIsShow(Date time){
+        if (time != null) {
+            Calendar currentCalendar = new GregorianCalendar(TimeZone.getTimeZone("Asia/Shanghai"), Locale.CHINA);
+            currentCalendar.setTime(TrueTime.now());
+            Calendar startCalendar = new GregorianCalendar(TimeZone.getTimeZone("Asia/Shanghai"), Locale.CHINA);
+            startCalendar.setTime(time);
+            if(currentCalendar.after(startCalendar)){
                 return true;
             }else{
                 return false;
@@ -513,9 +561,13 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
         if (i == R.id.buy) {
             PayCheckUtil pay=new PayCheckUtil();
             pay.handlePurchase(getActivity(),objects);
+            out.put("to","expense");
         }else if(i==R.id.play){
             PageIntent intent=new PageIntent();
-            intent.toPlayPage(getActivity(),objects.pk,objects.item_pk, Source.LIST);
+            intent.toPlayPage(getActivity(),objects.pk,objects.item_pk, Source.GATHER);
+            out.put("to","to_player");
+            out.put("to_item",objects.pk);
+            out.put("to_item",objects.title);
         }else if(i==R.id.subscribe){
             showDialog(objects.pk,subject_type);
         }
@@ -576,6 +628,10 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
     public void onPause() {
         relateHandler.removeCallbacks(runnable);
         payHandler.removeCallbacks(payRunnable);
+        if(out.get("to")==null){
+            out.put("to","exit");
+        }
+        new NetworkUtils.DataCollectionTask().execute(NetworkUtils.VIDEO_GATHER_OUT, out);
         super.onPause();
     }
 }
