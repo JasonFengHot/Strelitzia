@@ -240,7 +240,7 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
                     madpter.notifyDataSetChanged();
                     Picasso.with(getActivity()).load(subject.bg_url).memoryPolicy(MemoryPolicy.NO_CACHE).memoryPolicy(MemoryPolicy.NO_STORE).into(bg);
                     if(list.size()>6){
-                        down_arrow.setBackground(getActivity().getResources().getDrawable(R.drawable.down_have_data));
+                        down_arrow.setBackground(getActivity().getResources().getDrawable(R.drawable.arrow_down_hover));
                     }else {
                         down_arrow.setBackground(getActivity().getResources().getDrawable(R.drawable.down_normal));
                     }
@@ -561,12 +561,12 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
                         click_arrow=false;
                     }
                     if(firstItem!=0){
-                        up_arrow.setBackground(getActivity().getResources().getDrawable(R.drawable.up_have_data));
+                        up_arrow.setBackground(getActivity().getResources().getDrawable(R.drawable.arrow_hover_select));
                     }else{
                         up_arrow.setBackground(getActivity().getResources().getDrawable(R.drawable.up_nomral));
                     }
                     if(lastItem!=list.size()-1){
-                        down_arrow.setBackground(getActivity().getResources().getDrawable(R.drawable.down_have_data));
+                        down_arrow.setBackground(getActivity().getResources().getDrawable(R.drawable.arrow_down_hover));
                     }else{
                         down_arrow.setBackground(getActivity().getResources().getDrawable(R.drawable.down_normal));
                     }
