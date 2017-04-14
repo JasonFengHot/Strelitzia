@@ -3,12 +3,17 @@ package tv.ismar.library.util;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.text.TextUtils;
 
 /**
  * Created by LongHai on 17-4-11.
  */
 
 public class AppUtils {
+
+    public static boolean isEmptyText(String str) {
+        return TextUtils.isEmpty(str) || str.equalsIgnoreCase("null");
+    }
 
     public static int getVersionCode(Context context) {
         PackageManager manager = context.getPackageManager();

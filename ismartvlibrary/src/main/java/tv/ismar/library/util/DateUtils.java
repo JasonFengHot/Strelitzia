@@ -1,7 +1,8 @@
 package tv.ismar.library.util;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import cn.ismartv.truetime.TrueTime;
 
 /**
  * Created by LongHai on 17-4-10.
@@ -9,10 +10,16 @@ import java.text.SimpleDateFormat;
 
 public class DateUtils {
 
-    private static final ThreadLocal<DateFormat> df = new ThreadLocal<DateFormat>() {
-        @ Override
-        protected DateFormat initialValue() {
-            return new SimpleDateFormat("yyyy-MM-dd");
-        }
-    };
+    public static void initTimeZone() {
+        System.setProperty("user.timezone", "Asia/Shanghai");
+    }
+
+    public static Date getDateToday() {
+        return TrueTime.now();
+    }
+
+    public static long currentTimeMillis() {
+        return TrueTime.now().getTime();
+    }
+
 }

@@ -1,6 +1,5 @@
 package tv.ismar.library.network;
 
-import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -34,10 +33,7 @@ public class HttpParamsInterceptor implements Interceptor {
     private Map<String, String> headerParamsMap = new HashMap<>();
     private List<String> headerLinesList = new ArrayList<>();
 
-    private String accessToken, deviceToken;
-
     private HttpParamsInterceptor() {
-
     }
 
     @Override
@@ -50,10 +46,10 @@ public class HttpParamsInterceptor implements Interceptor {
 //        requestBuilder.url(hostBuilder.build());
 
         paramsMap = new HashMap<>();
-        paramsMap.put("device_token", deviceToken);
+        paramsMap.put("device_token", HttpManager.DEVICE_TOKEN);
         paramsMap.put("token_check", "1");
-        if (!TextUtils.isEmpty(accessToken)) {
-            paramsMap.put("access_token", accessToken);
+        if (!TextUtils.isEmpty(HttpManager.ACCESS_TOKEN)) {
+            paramsMap.put("access_token", HttpManager.ACCESS_TOKEN);
         }
 
         // process header params inject
@@ -209,20 +205,6 @@ public class HttpParamsInterceptor implements Interceptor {
         }
 
     }
-
-    private String appendProtocol(String host) {
-        Uri uri = Uri.parse(host);
-        String url = uri.toString();
-        if (!uri.toString().startsWith("http://") && !uri.toString().startsWith("https://")) {
-            url = "http://" + host;
-        }
-
-        if (!url.endsWith("/")) {
-            url = url + "/";
-        }
-        return url;
-    }
-
 
 //    public void refactorRequest(Request request, HttpUrl.Builder httpUrlBuilder) {
 //        String domain;
