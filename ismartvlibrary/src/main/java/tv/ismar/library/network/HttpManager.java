@@ -158,13 +158,19 @@ public class HttpManager {
         return (T) getInstance().irisService;
     }
 
+    /**
+     * @param context    Application Context
+     * @param url        Url Address
+     * @param requestTag Tag值，取消请求时用到
+     * @param callback   异步回调
+     */
     public static void asyncCacheRequest(Context context, String url, String requestTag, Callback callback) {
-        File cacheFile = new File(context.getCacheDir(), "okhttp_disk_cache");
+        File cacheFile = new File(context.getApplicationContext().getCacheDir(), "okhttp_disk_cache");
         Cache cache = new Cache(cacheFile, 1024 * 1024 * 100);
         OkHttpClient cacheClient = getInstance().okHttpClient.newBuilder()
                 .cache(cache)
-                .addInterceptor(new HttpCacheInterceptor(context))
-                .addNetworkInterceptor(new HttpCacheInterceptor(context))
+                .addInterceptor(new HttpCacheInterceptor(context.getApplicationContext()))
+                .addNetworkInterceptor(new HttpCacheInterceptor(context.getApplicationContext()))
                 .build();
         Request request = new Request.Builder()
                 .url(url)
@@ -187,16 +193,16 @@ public class HttpManager {
         return resultString;
     }
 
-    public static void asyncGetRequest(String urlString, String requestTag, Callback okHttpCallback) {
+    public static void asyncGetRequest(String url, String requestTag, Callback callback) {
         Request request = new Request.Builder()
-                .url(urlString)
+                .url(url)
                 .tag(requestTag)
                 .build();
         Call call = getInstance().okHttpClient.newCall(request);
-        call.enqueue(okHttpCallback);
+        call.enqueue(callback);
     }
 
-    public static void asyncPostRequest(String url, String params, String requestTag, Callback okHttpCallback) {
+    public static void asyncPostRequest(String url, String params, String requestTag, Callback callback) {
         RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), params);
         Request request = new Request.Builder()
                 .url(url)
@@ -204,10 +210,10 @@ public class HttpManager {
                 .tag(requestTag)
                 .build();
         Call call = getInstance().okHttpClient.newCall(request);
-        call.enqueue(okHttpCallback);
+        call.enqueue(callback);
     }
 
-    public static void asyncFormPostRequest(String url, Map<String, Object> params, String requestTag, Callback okHttpCallback) {
+    public static void asyncFormPostRequest(String url, Map<String, Object> params, String requestTag, Callback callback) {
         FormBody.Builder formBuilder = new FormBody.Builder();
         if (params != null) {
             for (Map.Entry<String, Object> entry : params.entrySet()) {
@@ -220,7 +226,7 @@ public class HttpManager {
                 .tag(requestTag)
                 .build();
         Call call = getInstance().okHttpClient.newCall(request);
-        call.enqueue(okHttpCallback);
+        call.enqueue(callback);
     }
 
     private static String appendProtocol(String host) {
