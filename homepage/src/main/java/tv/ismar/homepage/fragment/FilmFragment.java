@@ -352,12 +352,13 @@ public class FilmFragment extends ChannelBaseFragment {
         int width = getResources().getDimensionPixelOffset(R.dimen.guide_bottom_item_w);
         int height = getResources().getDimensionPixelOffset(R.dimen.guide_bottom_h);
         float space = getResources().getDimensionPixelSize(R.dimen.guide_bottom_space);
-        for (int i = 1; i <= posters.size(); i++) {
+        int posterCount=posters.size()>8?8:posters.size();
+        for (int i = 1; i <= posterCount; i++) {
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(width, height);
             if (i > 1) {
                 params.setMargins((int) space, 0, 0, 0);
             }
-            if (i <= posters.size() - 1) {
+            if (i <= posterCount - 1) {
                 posters.get(i).setPosition(i);
                 HomeItemContainer frameLayout = (HomeItemContainer) LayoutInflater.from(mContext).inflate(R.layout.item_poster, null);
                 frameLayout.setLayoutParams(params);
