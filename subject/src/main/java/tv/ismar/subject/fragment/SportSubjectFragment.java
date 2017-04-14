@@ -26,6 +26,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.squareup.picasso.MemoryPolicy;
@@ -110,6 +111,7 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
     private View lastSelectView,currentSelectView;
     private boolean live_list=false;
     private LinearLayoutManager mLinearLayoutManager;
+    private TextView divider,relate_title;
     public String channel;
     public String from;
     public int pk;
@@ -148,6 +150,8 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
         mLoadingDialog.setOnCancelListener(mLoadingCancelListener);
         //    mLoadingDialog.show();
         mLoadingDialog.showDialog();
+        relate_title= (TextView) view.findViewById(R.id.relate_title);
+        divider= (TextView) view.findViewById(R.id.divider);
         sportlist= (MyRecyclerView) view.findViewById(R.id.sport_list);
         price= (TextView) view.findViewById(R.id.price);
         bg= (ImageView) view.findViewById(R.id.bg_fragment);
@@ -239,6 +243,10 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
                     sportlist.setAdapter(madpter);
                     madpter.notifyDataSetChanged();
                     Picasso.with(getActivity()).load(subject.bg_url).memoryPolicy(MemoryPolicy.NO_CACHE).memoryPolicy(MemoryPolicy.NO_STORE).into(bg);
+                    down_arrow.setVisibility(View.VISIBLE);
+                    up_arrow.setVisibility(View.VISIBLE);
+                    divider.setVisibility(View.VISIBLE);
+                    relate_title.setVisibility(View.VISIBLE);
                     if(list.size()>6){
                         down_arrow.setBackground(getActivity().getResources().getDrawable(R.drawable.arrow_down_hover));
                     }else {
@@ -397,6 +405,7 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
         Picasso.with(getActivity()).load(items[0].adlet_url).memoryPolicy(MemoryPolicy.NO_CACHE).into(relate_image1);
         Picasso.with(getActivity()).load(items[1].adlet_url).memoryPolicy(MemoryPolicy.NO_CACHE).into(relate_image2);
         Picasso.with(getActivity()).load(items[2].adlet_url).memoryPolicy(MemoryPolicy.NO_CACHE).into(relate_image3);
+        relate_list.setVisibility(View.VISIBLE);
 
         relate_text1.setText(items[0].title);
         relate_text2.setText(items[1].title);
@@ -483,9 +492,8 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
         return false;
     }
     @Override
-    public void OnItemOnhoverlistener(View v, MotionEvent event) {
+    public void OnItemOnhoverlistener(View v, MotionEvent event,int position) {
         Log.i("OnItemHover","listview"+live_list);
-       // live_list=false;
     }
     private boolean click_arrow=false;
     private void arrowListent(){

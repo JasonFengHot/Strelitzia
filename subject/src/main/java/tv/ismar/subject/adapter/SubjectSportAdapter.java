@@ -101,14 +101,13 @@ public class SubjectSportAdapter extends RecyclerView.Adapter<SportViewHolder> {
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int pos = holder.getLayoutPosition();
-                mOnItemClickListener.onItemClick(v,pos);
+                mOnItemClickListener.onItemClick(v,position);
             }
         });
         holder.itemView.setOnHoverListener(new View.OnHoverListener() {
             @Override
             public boolean onHover(View v, MotionEvent event) {
-                onItemOnhoverlistener.OnItemOnhoverlistener(v,event);
+                onItemOnhoverlistener.OnItemOnhoverlistener(v,event,position);
                 return false;
             }
         });
@@ -155,11 +154,11 @@ public class SubjectSportAdapter extends RecyclerView.Adapter<SportViewHolder> {
             }
         }
         if(objects.recommend_status==1){
-            holder.nomarl.setBackgroundResource(R.drawable.normal_game);
-            holder.focus_tobig.setBackgroundResource(R.drawable.normal_game_focus);
+            holder.nomarl.setBackgroundResource(R.drawable.item_normal_selector);
+            holder.focus_tobig.setBackgroundResource(R.drawable.item_bg_selector);
         }else{
-            holder.nomarl.setBackgroundResource(R.drawable.emphasis_game_normal);
-            holder.focus_tobig.setBackgroundResource(R.drawable.emphasis_game_focus);
+            holder.nomarl.setBackgroundResource(R.drawable.item_recommend_normal_hovered);
+            holder.focus_tobig.setBackgroundResource(R.drawable.item_recommend_big_hoverd);
         }
 
     }

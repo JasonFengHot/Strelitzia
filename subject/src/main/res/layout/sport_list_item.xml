@@ -11,8 +11,8 @@
         android:layout_width="@dimen/subject_667"
         android:layout_height="@dimen/subject_78"
         android:layout_marginLeft="@dimen/subject_56"
-        android:background="@drawable/emphasis_game_normal"
         android:visibility="visible"
+        android:background="@drawable/item_normal_selector"
         >
             <TextView
                 android:id="@+id/isalive"
@@ -107,8 +107,8 @@
         android:layout_width="@dimen/subject_731"
         android:layout_height="@dimen/subject_202"
         android:layout_marginLeft="@dimen/subject_23"
-        android:background="@drawable/emphasis_game_focus"
         android:visibility="gone"
+        android:background="@drawable/item_bg_selector"
         >
             <ImageView
                 android:id="@+id/big_away_logo"

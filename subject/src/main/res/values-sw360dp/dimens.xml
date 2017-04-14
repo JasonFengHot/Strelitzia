@@ -95,7 +95,7 @@
 <dimen name="subject_27">9.00dp</dimen>
 <dimen name="subject_20">6.67dp</dimen>
 <dimen name="subject_216">72.00dp</dimen>
-<dimen name="subject_94">31.33dp</dimen>
+<dimen name="subject_74">24.67dp</dimen>
 <dimen name="subject_10">3.33dp</dimen>
 <dimen name="subject_127">42.33dp</dimen>
 <dimen name="subject_43">14.33dp</dimen>
@@ -152,6 +152,9 @@
 <dimen name="subject_754">251.33dp</dimen>
 <dimen name="subject_704">234.67dp</dimen>
 <dimen name="subject_852">284.00dp</dimen>
-
+<dimen name="subject_63">21.00dp</dimen>
+<dimen name="subject_111">37.00dp</dimen>
+<dimen name="subject_61">20.33dp</dimen>
+<dimen name="subject_606">202.00dp</dimen>
 
 </resources>
