@@ -3,11 +3,11 @@ package tv.ismar.subject.fragment;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -19,19 +19,24 @@ import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import tv.ismar.account.IsmartvActivator;
+import tv.ismar.app.AppConstant;
+import tv.ismar.app.BaseActivity;
 import tv.ismar.app.core.DaisyUtils;
 import tv.ismar.app.core.PageIntent;
 import tv.ismar.app.core.PageIntentInterface;
 import tv.ismar.app.core.SimpleRestClient;
 import tv.ismar.app.core.Source;
+import tv.ismar.app.core.client.NetworkUtils;
 import tv.ismar.app.db.FavoriteManager;
 import tv.ismar.app.entity.Favorite;
 import tv.ismar.app.models.SubjectEntity;
+import tv.ismar.app.network.entity.EventProperty;
 import tv.ismar.app.network.entity.SubjectPayLayerEntity;
 import tv.ismar.app.util.Utils;
 import tv.ismar.searchpage.utils.JasmineUtil;
@@ -44,14 +49,13 @@ import tv.ismar.subject.adapter.SubjectMovieAdapter;
 import tv.ismar.subject.adapter.SubjectTvAdapter;
 import tv.ismar.subject.views.MyRecyclerView;
 
-import static tv.ismar.app.core.PageIntentInterface.FromPage.unknown;
 import static tv.ismar.app.core.PageIntentInterface.ProductCategory.item;
 
 /**
  * Created by admin on 2017/3/2.
  */
 
-public class MovieTVSubjectFragment extends Fragment implements View.OnClickListener, OnItemClickListener {
+public class MovieTVSubjectFragment extends Fragment implements View.OnClickListener, OnItemClickListener, View.OnFocusChangeListener, View.OnHoverListener {
 
     private MyRecyclerView movie_recyclerView;
     private MyRecyclerView tv_recyclerView;
@@ -78,8 +82,10 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnClickList
     private ImageView subject_bg;
     private View focusView;
     private boolean btn_buy_focused=false;
+    private boolean btn_like_focused=false;
     private SubjectEntity mSubjectEntity;
     private boolean isScaledIn=true;
+    private String channel="";
 
     @Nullable
     @Override
@@ -113,27 +119,18 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnClickList
         initData();
         subject_btn_buy.setOnClickListener(this);
         subject_btn_like.setOnClickListener(this);
-        movie_recyclerView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if(hasFocus&&focusView!=null){
-                      focusView.requestFocus();
-                }
-            }
-        });
-        tv_recyclerView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if(hasFocus&&focusView!=null){
-                    focusView.requestFocus();
-                }
-            }
-        });
+        subject_btn_buy.setOnHoverListener(this);
+        subject_btn_like.setOnHoverListener(this);
+        movie_recyclerView.setOnFocusChangeListener(this);
+        tv_recyclerView.setOnFocusChangeListener(this);
     }
 
     private void initData() {
         type = ((SubjectActivity)getActivity()).gather_type;
         id = ((SubjectActivity)getActivity()).itemid;
+        if(((SubjectActivity)getActivity()).frompage.equals(Source.LIST.getValue())){
+            channel= BaseActivity.baseChannel;
+        }
         mFavoriteManager = DaisyUtils.getFavoriteManager(getActivity());
         if (!Utils.isEmptyText(IsmartvActivator.getInstance().getAuthToken())) {
             isnet = "yes";
@@ -154,6 +151,7 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnClickList
                     @Override
                     public void onNext(SubjectEntity subjectEntity) {
                         mSubjectEntity = subjectEntity;
+                        video_gather_in(mSubjectEntity.getTitle(),((SubjectActivity)getActivity()).frompage,channel);
                         processData(subjectEntity);
                     }
 
@@ -288,6 +286,8 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnClickList
         super.onResume();
         if(btn_buy_focused){
             subject_btn_buy.requestFocus();
+        }else if(btn_like_focused) {
+            subject_btn_like.requestFocus();
         }else {
             if (type.contains("movie")) {
                 movie_recyclerView.requestFocus();
@@ -300,13 +300,21 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnClickList
         }else{
             subject_btn_like.setBackgroundResource(R.drawable.like_btn_selector);
         }
+        if(mSubjectEntity!=null)
+        video_gather_in(mSubjectEntity.getTitle(),((SubjectActivity)getActivity()).frompage,channel);
     }
 
     @Override
     public void onPause() {
         if(subject_btn_buy.isFocused()){
             btn_buy_focused=true;
+            btn_like_focused=false;
+        }else if(subject_btn_like.isFocused()){
+            btn_like_focused=true;
+            btn_buy_focused=false;
         }else {
+            btn_like_focused=false;
+            btn_buy_focused=false;
             if (type.contains("movie")) {
                 focusView = movie_recyclerView.getFocusedChild();
             } else {
@@ -319,7 +327,6 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnClickList
     @Override
     public void onClick(View v) {
         int i = v.getId();
-        btn_buy_focused=true;
         if (i == R.id.subject_btn_like) {
             if(!isFavorite()){
                 String url = IsmartvActivator.getInstance().getApiDomain() + "/api/item/" + id+ "/";
@@ -353,14 +360,12 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnClickList
                 showToast("取消收藏成功");
             }
         } else if (i == R.id.subject_btn_buy) {
-
                 buySubject();
         }
     }
 
     //购买专题页
     private void buySubject() {
-        final int jumpTo =PageIntent.PAYVIP;
         //判断用户是否有最高的观影权限
         ((SubjectActivity)getActivity()).mSkyService.apiPaylayerVipSubject(id+"")
                 .subscribeOn(Schedulers.io())
@@ -378,13 +383,13 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnClickList
                         if(subjectPayLayerEntity.gather_per){
                             showToast("您已拥有本专题所有影片观看权限");
                         }else{
-                            PageIntentInterface.PaymentInfo paymentInfo = new PageIntentInterface.PaymentInfo(item, subjectPayLayerEntity.getPk(), jumpTo, subjectPayLayerEntity.getCpid());
+                            AppConstant.purchase_entrance_page="gather";
+                            PageIntentInterface.PaymentInfo paymentInfo = new PageIntentInterface.PaymentInfo(item, subjectPayLayerEntity.getPk(), PageIntent.PAYVIP, subjectPayLayerEntity.getCpid());
                             String userName = IsmartvActivator.getInstance().getUsername();
                             String title = mSubjectEntity.getTitle();
-
-                            String clip = "";
-                            new PurchaseStatistics().expenseVideoClick(String.valueOf(id), userName, title, clip);
-                            new PageIntent().toPaymentForResult(getActivity(), Source.SUBJECT.getValue(), paymentInfo);
+                            new PurchaseStatistics().expenseVideoClick(String.valueOf(id), userName, title, String.valueOf(id));
+                            new PageIntent().toPaymentForResult(getActivity(), Source.GATHER.getValue(), paymentInfo);
+                            video_gather_out(mSubjectEntity.getTitle(),"expense","","");
                         }
                     }
 
@@ -400,7 +405,8 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnClickList
     public void onItemClick(View view, int position) {
             focusView=view;
             PageIntent intent = new PageIntent();
-            intent.toPlayPage(getActivity(), list.get(position).getPk(), 0, Source.LAUNCHER);
+            intent.toPlayPage(getActivity(), list.get(position).getPk(), 0, Source.GATHER);
+            video_gather_out(mSubjectEntity.getTitle(),"player",mSubjectEntity.getObjects().get(position).getPk()+"",mSubjectEntity.getObjects().get(position).getTitle());
     }
 
     private boolean isFavorite() {
@@ -477,5 +483,65 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnClickList
         toast.setDuration(Toast.LENGTH_SHORT);
         toast.setView(layout);
         toast.show();
+    }
+
+    @Override
+    public void onFocusChange(View v, boolean hasFocus) {
+        if(hasFocus&&focusView!=null){
+            focusView.requestFocus();
+        }
+    }
+
+    /**
+     * 进入专题页日志
+     */
+    public static void video_gather_in(String title,String from,String channel){
+        HashMap<String, Object> tempMap = new HashMap<String, Object>();
+        tempMap.put(EventProperty.TITLE, title);
+        tempMap.put(EventProperty.FROM, from);
+        if(channel!=null&&!"".equals(channel)) {
+            tempMap.put(EventProperty.CHANNEL, channel);
+        }
+        String eventName = NetworkUtils.VIDEO_GATHER_IN;
+        HashMap<String, Object> properties = tempMap;
+        new NetworkUtils.DataCollectionTask().execute(eventName, properties);
+    }
+
+    /**
+     * 退出专题页日志
+     */
+    public static void video_gather_out(String title,String to,String to_item,String to_title){
+        HashMap<String, Object> tempMap = new HashMap<String, Object>();
+        tempMap.put(EventProperty.TITLE, title);
+        tempMap.put(EventProperty.TO, to);
+        if(to_item!=null&&!"".equals(to_item)) {
+            tempMap.put(EventProperty.TO_ITEM, to_item);
+        }
+        if(to_title!=null&&!"".equals(to_title)) {
+            tempMap.put(EventProperty.TO_TITLE, to_title);
+        }
+        String eventName = NetworkUtils.VIDEO_GATHER_OUT;
+        HashMap<String, Object> properties = tempMap;
+        new NetworkUtils.DataCollectionTask().execute(eventName, properties);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        video_gather_out(mSubjectEntity.getTitle(),"exit","","");
+    }
+
+    @Override
+    public boolean onHover(View v, MotionEvent event) {
+        switch (event.getAction()){
+            case MotionEvent.ACTION_HOVER_ENTER:
+            case MotionEvent.ACTION_HOVER_MOVE:
+                v.requestFocus();
+                v.requestFocusFromTouch();
+                break;
+            default:
+                break;
+        }
+        return false;
     }
 }

@@ -35,13 +35,13 @@ public class HomePagerEntity {
     }
 
     public class Carousel {
-        private String video_image;
+        private String video_image = "error";
         private String pause_time;
         private String url;
         private String video_url;
 		private String title;
         private String introduction;
-        private String thumb_image;
+        private String thumb_image ="error";
         private String model_name;
         private String content_model;
         private int corner;
@@ -146,13 +146,13 @@ public class HomePagerEntity {
 
 
     public class Poster {
-        private String vertical_url;
+        private String vertical_url = "error";
         private String title;
         private String introduction;
         private String url;
-        private String poster_url;
+        private String poster_url = "error";
         private String model_name;
-        private String custom_image;
+        private String custom_image = "error";
         private String content_model;
         private int corner;
         private boolean expense;

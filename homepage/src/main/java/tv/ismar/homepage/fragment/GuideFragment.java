@@ -385,6 +385,10 @@ public class GuideFragment extends ChannelBaseFragment {
                 imageUrl = posters.get(i).getVertical_url();
             }
 
+            if (TextUtils.isEmpty(imageUrl)){
+                imageUrl = "error";
+            }
+
             Picasso.with(mContext).load(imageUrl).memoryPolicy(MemoryPolicy.NO_STORE)
                     .into(itemView);
             posters.get(i).setPosition(i);

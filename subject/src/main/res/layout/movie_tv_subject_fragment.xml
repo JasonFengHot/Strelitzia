@@ -131,6 +131,7 @@
            android:layout_height="@dimen/subject_btn_h"
            android:background="@drawable/buy_btn_selector"
            android:focusable="true"
+           android:focusableInTouchMode="true"
            android:layout_marginBottom="@dimen/subject_btn_mb"
            />
         <Button
@@ -140,6 +141,7 @@
             android:background="@drawable/like_btn_selector"
             android:layout_marginLeft="@dimen/subject_btn_ml"
             android:focusable="true"
+            android:focusableInTouchMode="true"
             android:layout_marginBottom="@dimen/subject_btn_mb"
             android:nextFocusRight="@id/subject_btn_like"
             />

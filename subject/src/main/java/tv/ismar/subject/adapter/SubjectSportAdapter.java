@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -35,6 +36,7 @@ public class SubjectSportAdapter extends RecyclerView.Adapter<SportViewHolder> {
     private OnItemFocusedListener mOnItemFocusedListener;
     private OnItemClickListener mOnItemClickListener;
     private OnItemKeyListener onItemKeyListener;
+    private OnItemOnhoverlistener onItemOnhoverlistener;
     private String TAG="subjectSportAdapter";
     private String type="NBA";
     public SubjectSportAdapter(Context context){
@@ -54,6 +56,9 @@ public class SubjectSportAdapter extends RecyclerView.Adapter<SportViewHolder> {
     public  void setOnItemKeyListener(OnItemKeyListener onItemKeyListener){
         this.onItemKeyListener=onItemKeyListener;
     }
+    public  void setmOnHoverListener(OnItemOnhoverlistener onHoverListener){
+        this.onItemOnhoverlistener=onHoverListener;
+    }
 
     @Override
     public long getItemId(int position) {
@@ -65,8 +70,6 @@ public class SubjectSportAdapter extends RecyclerView.Adapter<SportViewHolder> {
         return itemList.size();
     }
 
-    SportViewHolder  lastview;
-    int lastindex=0;
     @Override
     public SportViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         SportViewHolder holder=new SportViewHolder(LayoutInflater.from(mContext).inflate(R.layout.sport_list_item,parent,false));
@@ -98,14 +101,17 @@ public class SubjectSportAdapter extends RecyclerView.Adapter<SportViewHolder> {
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int pos = holder.getLayoutPosition();
-                mOnItemClickListener.onItemClick(v,pos);
+                mOnItemClickListener.onItemClick(v,position);
             }
         });
-        if(position==0){
-            holder.itemView.requestFocusFromTouch();
-            holder.itemView.requestFocus();
-        }
+        holder.itemView.setOnHoverListener(new View.OnHoverListener() {
+            @Override
+            public boolean onHover(View v, MotionEvent event) {
+                onItemOnhoverlistener.OnItemOnhoverlistener(v,event,position);
+                return false;
+            }
+        });
+
         if(type.equals("NBA")) {
             Picasso.with(mContext).load(objects.at_home_logo).into(holder.home_logo);
             Picasso.with(mContext).load(objects.at_home_logo).into(holder.big_home_logo);
@@ -132,7 +138,7 @@ public class SubjectSportAdapter extends RecyclerView.Adapter<SportViewHolder> {
         if(objects.start_time!=null) {
             if (is_alive) {
                 holder.big_time.setText("直播中");
-                holder.big_time.setTextColor(mContext.getResources().getColor(R.color._ff9c3c));
+                holder.big_time.setTextColor(mContext.getResources().getColor(R.color._cc0033));
                 holder.start_time_layout.setVisibility(View.GONE);
                 holder.isalive.setText("直播中");
             } else {
@@ -148,11 +154,11 @@ public class SubjectSportAdapter extends RecyclerView.Adapter<SportViewHolder> {
             }
         }
         if(objects.recommend_status==1){
-            holder.nomarl.setBackgroundResource(R.drawable.normal_game);
-            holder.focus_tobig.setBackgroundResource(R.drawable.normal_game_focus);
+            holder.nomarl.setBackgroundResource(R.drawable.item_normal_selector);
+            holder.focus_tobig.setBackgroundResource(R.drawable.item_bg_selector);
         }else{
-            holder.nomarl.setBackgroundResource(R.drawable.emphasis_game_normal);
-            holder.focus_tobig.setBackgroundResource(R.drawable.emphasis_game_focus);
+            holder.nomarl.setBackgroundResource(R.drawable.item_recommend_normal_hovered);
+            holder.focus_tobig.setBackgroundResource(R.drawable.item_recommend_big_hoverd);
         }
 
     }

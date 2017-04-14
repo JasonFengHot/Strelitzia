@@ -899,4 +899,12 @@ public class NetworkUtils {
      * 详情页缓冲完成
      */
     public static final String DETAIL_PLAY_LOAD = "detail_play_load";
+    /**
+     * 进入专题页
+     */
+    public static final String VIDEO_GATHER_IN = "video_gather_in";
+    /**
+     * 退出专题页
+     */
+    public static final String VIDEO_GATHER_OUT = "video_gather_out";
 }

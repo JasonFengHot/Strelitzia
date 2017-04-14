@@ -122,7 +122,7 @@ public class IsmartvActivator {
 
         SKY_Retrofit = new Retrofit.Builder()
                 .client(client)
-                .baseUrl(SKY_HOST_TEST)
+                .baseUrl(SKY_HOST)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
     }
@@ -218,7 +218,7 @@ public class IsmartvActivator {
                 isactive = true;
                 Response<ResultEntity> resultResponse = SKY_Retrofit.create(HttpService.class).
                         trustSecurityActive(sn, manufacture, kind, version, rsaEncryptResult,
-                                fingerprint, "v3_0", getAndroidDevicesInfo())
+                                fingerprint, "v4_0", getAndroidDevicesInfo())
                         .execute();
                 if (resultResponse.errorBody() == null) {
                     mResult = resultResponse.body();

@@ -91,10 +91,11 @@
 <dimen name="sport_game_time_MT">11.50dp</dimen>
 <dimen name="sport_game_title_MT">2.50dp</dimen>
 <dimen name="subject_72">36.00dp</dimen>
+<dimen name="subject_77">38.50dp</dimen>
 <dimen name="subject_27">13.50dp</dimen>
 <dimen name="subject_20">10.00dp</dimen>
 <dimen name="subject_216">108.00dp</dimen>
-<dimen name="subject_94">47.00dp</dimen>
+<dimen name="subject_74">37.00dp</dimen>
 <dimen name="subject_10">5.00dp</dimen>
 <dimen name="subject_127">63.50dp</dimen>
 <dimen name="subject_43">21.50dp</dimen>
@@ -149,6 +150,11 @@
 <dimen name="subject_120">60.00dp</dimen>
 <dimen name="subject_42">21.00dp</dimen>
 <dimen name="subject_754">377.00dp</dimen>
-
+<dimen name="subject_704">352.00dp</dimen>
+<dimen name="subject_852">426.00dp</dimen>
+<dimen name="subject_63">31.50dp</dimen>
+<dimen name="subject_111">55.50dp</dimen>
+<dimen name="subject_61">30.50dp</dimen>
+<dimen name="subject_606">303.00dp</dimen>
 
 </resources>

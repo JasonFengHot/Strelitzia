@@ -1175,6 +1175,8 @@ public class PlayerFragment extends Fragment implements PlayerPageContract.View,
                             mIsPreview = true;
                             mItemEntity.setLiveVideo(false);
                             mPresenter.fetchMediaUrl(preview.getUrl(), sign, code);
+                        }else{
+                            goOtherPage(EVENT_COMPLETE_BUY);
                         }
 
 
