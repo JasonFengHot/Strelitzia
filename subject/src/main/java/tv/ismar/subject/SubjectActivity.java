@@ -9,6 +9,7 @@ import android.os.Message;
 
 import java.util.concurrent.TimeoutException;
 
+import tv.ismar.app.AppConstant;
 import tv.ismar.app.BaseActivity;
 import tv.ismar.app.widget.LoadingDialog;
 import tv.ismar.subject.fragment.MovieTVSubjectFragment;
@@ -23,6 +24,7 @@ public class SubjectActivity extends BaseActivity{
 
     public String gather_type;
     public int itemid;
+    private String title;
     public String frompage;
     public LoadingDialog mLoadingDialog;
     private Handler handler=new Handler(new Handler.Callback() {
@@ -44,6 +46,13 @@ public class SubjectActivity extends BaseActivity{
         Intent intent=getIntent();
         gather_type = intent.getStringExtra("gather_type");
         itemid = intent.getIntExtra("itemid",709759);
+        title = intent.getStringExtra("itemtitle");
+        AppConstant.purchase_page = "gather";
+        AppConstant.purchase_entrance_page = "gather";
+        AppConstant.purchase_entrance_related_item = String.valueOf(itemid);
+        AppConstant.purchase_entrance_related_title = title;
+        AppConstant.purchase_entrance_keyword = gather_type;
+
         frompage = intent.getStringExtra("frompage");
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
         switch (gather_type){
