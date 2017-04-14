@@ -148,6 +148,7 @@ public class SubjectSportAdapter extends RecyclerView.Adapter<SportViewHolder> {
                 String time = formatter.format(objects.start_time);
                 String times[] = time.split(" ");
                 String month[]=times[0].split("-");
+                holder.big_time.setTextColor(mContext.getResources().getColor(R.color._333333));
                 holder.big_time.setText(month[0]+"月"+month[1]+"日"+" "+times[1]+" 未开始");
                 holder.start_time_ym.setText(month[0]+"月"+month[1]+"日");
                 holder.start_time.setText(times[1]);

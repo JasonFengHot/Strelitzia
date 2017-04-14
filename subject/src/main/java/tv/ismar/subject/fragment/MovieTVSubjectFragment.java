@@ -83,7 +83,7 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnClickList
     private View focusView;
     private boolean btn_buy_focused=false;
     private boolean btn_like_focused=false;
-    private SubjectEntity mSubjectEntity;
+    private SubjectEntity mSubjectEntity=new SubjectEntity();
     private boolean isScaledIn=true;
     private String channel="";
 
@@ -157,7 +157,7 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnClickList
 
                     @Override
                     public void onError(Throwable e) {
-//                        hideLoading();
+                        hideLoading();
                         super.onError(e);
                     }
                 });
@@ -246,7 +246,7 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnClickList
                 }
             });
         }
-//        hideLoading();
+        hideLoading();
     }
 
     private void hideLoading() {
@@ -384,7 +384,7 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnClickList
                             showToast("您已拥有本专题所有影片观看权限");
                         }else{
                             AppConstant.purchase_entrance_page="gather";
-                            PageIntentInterface.PaymentInfo paymentInfo = new PageIntentInterface.PaymentInfo(item, subjectPayLayerEntity.getPk(), PageIntent.PAYVIP, subjectPayLayerEntity.getCpid());
+                            PageIntentInterface.PaymentInfo paymentInfo = new PageIntentInterface.PaymentInfo(item, subjectPayLayerEntity.getPk(), PageIntent.PAYVIP, subjectPayLayerEntity.getCpid(),mSubjectEntity.getTitle());
                             String userName = IsmartvActivator.getInstance().getUsername();
                             String title = mSubjectEntity.getTitle();
                             new PurchaseStatistics().expenseVideoClick(String.valueOf(id), userName, title, String.valueOf(id));
