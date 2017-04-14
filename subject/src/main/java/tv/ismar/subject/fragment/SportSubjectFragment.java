@@ -367,10 +367,12 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
                                 if(playIsShow(objects.start_time)){
                                     play.setClickable(true);
                                     play.setFocusable(true);
+                                    play.setBackground(getResources().getDrawable(R.drawable.play_selector));
                                     play.setVisibility(View.VISIBLE);
                                 }else{
                                    play.setClickable(false);
                                    play.setFocusable(false);
+                                   play.setBackground(getResources().getDrawable(R.drawable.play_disable));
                                    play.setVisibility(View.VISIBLE);
                                 }
                             }
