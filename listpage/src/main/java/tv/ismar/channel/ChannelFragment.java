@@ -916,7 +916,7 @@ public class ChannelFragment extends Fragment implements OnItemSelectedListener,
             try{
                 if(item.content_model.contains("gather")){
                     PageIntent intent =new PageIntent();
-                    intent.toSubject(getActivity(),item.content_model,item.pk,"list");
+                    intent.toSubject(getActivity(),item.content_model,item.pk,Source.LIST.getValue());
                 }else if (item.model_name.equals("package")) {
                 int sectionIndex = mHGridAdapter.getSectionIndex(position);
                 final Section s = mSectionList.get(sectionIndex);

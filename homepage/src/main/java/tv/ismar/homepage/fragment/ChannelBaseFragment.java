@@ -145,7 +145,7 @@ public class ChannelBaseFragment extends Fragment {
                 if(contentMode.contains("gather")){
                     int itemPk = Utils.getItemPk(url);
                     PageIntent intent1=new PageIntent();
-                    intent1.toSubject(mContext,contentMode,itemPk,"homepage");
+                    intent1.toSubject(mContext,contentMode,itemPk,BaseActivity.baseChannel);
                 }else if ("item".equals(mode_name)) {
                     pk = SimpleRestClient.getItemId(url, new boolean[1]);
                     PageIntent pageIntent = new PageIntent();
