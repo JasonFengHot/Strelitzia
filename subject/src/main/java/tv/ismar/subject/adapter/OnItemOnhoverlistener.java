@@ -8,5 +8,5 @@ import android.view.View;
  */
 
 public interface OnItemOnhoverlistener {
-    void OnItemOnhoverlistener(View v, MotionEvent event,int position);
+    void OnItemOnhoverlistener(View v, MotionEvent event,int position,int recommend);
 }

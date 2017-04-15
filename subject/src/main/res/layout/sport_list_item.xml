@@ -110,6 +110,7 @@
         android:visibility="gone"
         android:background="@drawable/item_bg_selector"
         >
+
             <ImageView
                 android:id="@+id/big_away_logo"
                 android:layout_width="@dimen/subject_120"

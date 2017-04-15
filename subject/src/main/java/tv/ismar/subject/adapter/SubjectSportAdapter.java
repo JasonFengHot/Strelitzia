@@ -78,24 +78,36 @@ public class SubjectSportAdapter extends RecyclerView.Adapter<SportViewHolder> {
 
     @Override
     public void onBindViewHolder(final SportViewHolder holder, final int position) {
-        Objects objects=itemList.get(position);
+        final Objects objects=itemList.get(position);
         holder.itemView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 int pos = position;
                 mOnItemFocusedListener.onItemfocused(v, pos, hasFocus);
+                if(hasFocus){
+                    if(objects.recommend_status==1){
+                        holder.focus_tobig.setBackgroundResource(R.drawable.big_game_hover);
+                    }else {
+                        holder.focus_tobig.setBackgroundResource(R.drawable.emphasis_focus_hover);
+                    }
+                }else{
+                    if(objects.recommend_status==1){
+                        holder.focus_tobig.setBackgroundResource(R.drawable.normal_game_focus);
+                    }else {
+                        holder.focus_tobig.setBackgroundResource(R.drawable.emphasis_game_focus);
+                    }
+                }
             }
         });
         holder.itemView.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
-                onItemKeyListener.onItemKeyListener(v,keyCode,event);
-                if(keyCode==20){
-                    if(position==itemList.size()-1){
-                            return true;
-                    }
+                if(keyCode==20&&position==itemList.size()-1){
+                    return true;
+                }else {
+                    onItemKeyListener.onItemKeyListener(v,keyCode,event);
+                    return false;
                 }
-                return false;
             }
         });
         holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -107,7 +119,41 @@ public class SubjectSportAdapter extends RecyclerView.Adapter<SportViewHolder> {
         holder.itemView.setOnHoverListener(new View.OnHoverListener() {
             @Override
             public boolean onHover(View v, MotionEvent event) {
-                onItemOnhoverlistener.OnItemOnhoverlistener(v,event,position);
+                int recommed=objects.recommend_status;
+                onItemOnhoverlistener.OnItemOnhoverlistener(v,event,position,recommed);
+                switch (event.getAction()){
+                    case MotionEvent.ACTION_HOVER_MOVE:
+                    case MotionEvent.ACTION_HOVER_ENTER:
+                        if(holder.focus_tobig.getVisibility()==View.VISIBLE){
+                            if(recommed==1){
+                                holder.focus_tobig.setBackgroundResource(R.drawable.big_game_hover);
+                            }else {
+                                holder.focus_tobig.setBackgroundResource(R.drawable.emphasis_focus_hover);
+                            }
+                        }else{
+                            if(recommed==1){
+                                holder.nomarl.setBackgroundResource(R.drawable.normal_game_hover);
+                            }else {
+                                holder.nomarl.setBackgroundResource(R.drawable.emphasis_hover);
+                            }
+                        }
+                        break;
+                    case MotionEvent.ACTION_HOVER_EXIT:
+                        if(holder.focus_tobig.getVisibility()==View.VISIBLE){
+                            if(objects.recommend_status==1){
+                                holder.focus_tobig.setBackgroundResource(R.drawable.normal_game_focus);
+                            }else {
+                                holder.focus_tobig.setBackgroundResource(R.drawable.emphasis_game_focus);
+                            }
+                        }else{
+                            if(recommed==1){
+                                holder.nomarl.setBackgroundResource(R.drawable.normal_game);
+                            }else {
+                                holder.nomarl.setBackgroundResource(R.drawable.emphasis_game_normal);
+                            }
+                        }
+                        break;
+                }
                 return false;
             }
         });

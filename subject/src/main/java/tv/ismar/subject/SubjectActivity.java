@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.view.KeyEvent;
 
 import java.util.concurrent.TimeoutException;
 
@@ -61,6 +62,8 @@ public class SubjectActivity extends BaseActivity{
                 SportSubjectFragment sportSubjectFragment=new SportSubjectFragment();
                 sportSubjectFragment.pk=itemid;
                 sportSubjectFragment.channel=frompage;
+                sportSubjectFragment.from=frompage;
+                sportSubjectFragment.subjectTitle=title;
                 fragmentTransaction.replace(R.id.subject_frame,sportSubjectFragment);
                 break;
             case "moviegather":

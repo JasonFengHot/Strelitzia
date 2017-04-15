@@ -56,8 +56,6 @@
         android:clipToPadding="false"
         android:clipChildren="false"
         android:layout_toRightOf="@+id/game_list"
-        android:focusableInTouchMode="false"
-        android:focusable="false"
         >
         <RelativeLayout
             android:layout_width="@dimen/sport_right_rel_W"
@@ -140,7 +138,7 @@
                     android:layout_alignParentLeft="true"
                     android:nextFocusUp="@id/buy"
                     android:paddingLeft="@dimen/subject_74"
-                    android:paddingTop="@dimen/subject_10"
+                    android:paddingTop="@dimen/subject_7"
                     android:visibility="invisible"
                     android:text="购 买"
                     />
@@ -152,7 +150,7 @@
                     android:focusableInTouchMode="true"
                     android:focusable="true"
                     android:paddingLeft="@dimen/subject_74"
-                    android:paddingTop="@dimen/subject_10"
+                    android:paddingTop="@dimen/subject_7"
                     android:textSize="@dimen/text_size_36sp"
                     android:text="播 放"
                     android:visibility="gone"
@@ -165,11 +163,11 @@
                     android:focusableInTouchMode="true"
                     android:focusable="true"
                     android:layout_marginLeft="@dimen/subject_266"
-                    android:text="订 阅"
+                    android:text="预 约"
                     android:textSize="@dimen/text_size_36sp"
                     android:paddingLeft="@dimen/subject_74"
-                    android:paddingTop="@dimen/subject_10"
                     android:background="@drawable/subscribe_selector"
+                    android:paddingTop="@dimen/subject_7"
                     android:nextFocusUp="@id/subscribe"
                     android:visibility="invisible"
                     />
@@ -182,6 +180,7 @@
             android:textSize="@dimen/text_size_30sp"
             android:layout_marginTop="@dimen/subject_50"
             android:text="相关视频"
+            android:gravity="center_vertical"
             android:visibility="invisible"
             />
         <TextView
