@@ -300,7 +300,7 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnClickList
         }else{
             subject_btn_like.setBackgroundResource(R.drawable.like_btn_selector);
         }
-        if(mSubjectEntity!=null)
+        if(mSubjectEntity.getTitle()!=null)
         video_gather_in(mSubjectEntity.getTitle(),((SubjectActivity)getActivity()).frompage,channel);
     }
 
