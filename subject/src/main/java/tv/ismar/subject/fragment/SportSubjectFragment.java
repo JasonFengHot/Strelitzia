@@ -119,6 +119,9 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
     public String from;
     public int pk;
     public String subjectTitle;
+    private int firstVisibleItemPosition=-1;
+    private int lastVisibleItemPosition=-1;
+    private int childConut=6;
     private LoadingDialog mLoadingDialog;
     private  HashMap<String, Object> out = new HashMap<String, Object>();
     private Handler dialogHandler=new Handler(new Handler.Callback() {
@@ -212,6 +215,16 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
                 }
             }
         },1000);
+        sportlist.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                firstVisibleItemPosition=mLinearLayoutManager.findFirstVisibleItemPosition();
+                lastVisibleItemPosition=mLinearLayoutManager.findLastVisibleItemPosition();
+                childConut=sportlist.getChildCount();
+
+                Log.i("onGlobalLayout","firstposition"+firstVisibleItemPosition+" bottom: "+ lastVisibleItemPosition+" chiledcount: "+childConut);
+            }
+        });
         return view;
     }
 
@@ -238,6 +251,7 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
                             }
                         }
                     });
+             //       list.addAll(list);
                     if(subject.content_model.contains("nba")){
                         subject_type="NBA";
                     }else{
@@ -304,16 +318,14 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
             currentSelectView=view;
             listItemToBig(view);
             live_list=false;
-
-            int firstComplete=mLinearLayoutManager.findFirstCompletelyVisibleItemPosition();
-            int first=mLinearLayoutManager.findFirstVisibleItemPosition();
-            Log.i("firstComplete","firstComplete: "+firstComplete+"   first: "+first);
-            View lastItemView= sportlist.getLayoutManager().getChildAt(sportlist.getLayoutManager().getChildCount()-1);
+            Log.i("firstComplete","firstComplete: "+firstVisibleItemPosition+" count?" +sportlist.getChildCount());
+//            View lastItemView= sportlist.getLayoutManager().getChildAt(childConut-1);
 //            if(lastItemView!=null) {
 //                int lastChildBottom = lastItemView.getBottom();
 //                Log.i("lastChildBootom",lastChildBottom+" sx"+lastItemView.getScrollX()+" sy"+lastItemView.getScrollY());
-//                if (lastChildBottom != 692) {
-//                    sportlist.smoothScrollBy(0, 1);
+//
+//                if (mSelectPosition!=0&&lastChildBottom != 692) {
+//                   sportlist.smoothScrollBy(0, lastChildBottom-692);
 //                }
 //            }
             objects=list.get(position);
@@ -498,6 +510,8 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
                     live_list=true;
                     v.requestFocus();
                     break;
+                case MotionEvent.ACTION_HOVER_EXIT:
+
                 default:
                     break;
         }
@@ -507,11 +521,9 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
     @Override
     public void OnItemOnhoverlistener(View v, MotionEvent event,int position,int recommend) {
         Log.i("OnItemHover","listview"+live_list);
-        RelativeLayout big= (RelativeLayout) v.findViewById(R.id.focus_tobig);
-        RelativeLayout normal= (RelativeLayout) v.findViewById(nomarl);
 
     }
-    private boolean click_arrow=false;
+    private int scroll_state=0;
     private void arrowListent(){
         up_arrow.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -520,16 +532,14 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
                 int top=mSelectPosition-firstItem;
                 Log.i("arrowListen","firstitem: "+firstItem+" top: "+top+"  mselecttion: "+mSelectPosition);
                 if(mSelectPosition-top-6>=0){
-                    click_arrow=true;
-                    if(currentSelectView!=null)
-                        listItemToNormal(currentSelectView);
+                    scroll_state=1;
+                    madpter.setSelectPosition(mSelectPosition-top-6);
+                    madpter.notifyDataSetChanged();
                     sportlist.smoothScrollToPosition(mSelectPosition-top-6);
                 }else{
-                    if(mSelectPosition>5){
-                        click_arrow=false;
-                    }else{
-                        click_arrow=true;
-                    }
+                    scroll_state=2;
+                    madpter.setSelectPosition(0);
+                    madpter.notifyDataSetChanged();
                     sportlist.smoothScrollToPosition(0);
                 }
             }
@@ -541,16 +551,14 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
                 int bootom=lastItem-mSelectPosition;
                 Log.i("arrowListen","lastItem: "+lastItem+" bootom: "+bootom+"  mselecttion: "+mSelectPosition);
                 if(mSelectPosition+bootom+7<=list.size()){
-                    click_arrow=true;
-                    if(currentSelectView!=null)
-                    listItemToNormal(currentSelectView);
-                    ((LinearLayoutManager)sportlist.getLayoutManager()).scrollToPositionWithOffset(mSelectPosition+bootom+7,0);
+                    scroll_state=3;
+                    madpter.setSelectPosition(mSelectPosition+bootom+7);
+                    madpter.notifyDataSetChanged();
+                    sportlist.smoothScrollToPosition(mSelectPosition+bootom+7);
                 }else{
-                    if(list.size()-6>mSelectPosition){
-                        click_arrow=true;
-                    }else{
-                        click_arrow=false;
-                    }
+                    scroll_state=4;
+                    madpter.setSelectPosition(list.size()-1);
+                    madpter.notifyDataSetChanged();
                     sportlist.smoothScrollToPosition(list.size()-1);
                 }
 
@@ -574,34 +582,36 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
         }
     }
 
-    private void setScrollListen(RecyclerView scrollListen) {
+    private void setScrollListen(final RecyclerView scrollListen) {
         scrollListen.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
                 Log.i("scolllist",newState+" msle  "+ mSelectPosition);
-                int firstItem = mLinearLayoutManager.findFirstVisibleItemPosition();
-                int lastItem = mLinearLayoutManager.findLastVisibleItemPosition();
                 if(newState==SCROLL_STATE_IDLE){
-                    if(click_arrow){
-
-                       sportlist.getChildAt(0).requestFocusFromTouch();
-                        click_arrow=false;
-                    }
-                    if(lastItem==list.size()-1){
-                       // sportlist.invalidate();
-                        sportlist.getChildAt(sportlist.getChildCount()-1).performClick();
-                    }
-                    Log.i("arrow","firstitem: "+firstItem+"  lastItem: "+lastItem);
-                    if(firstItem!=0){
-                        up_arrow.setBackground(getActivity().getResources().getDrawable(R.drawable.arrow_hover_select));
-                    }else{
-                        up_arrow.setBackground(getActivity().getResources().getDrawable(R.drawable.up_nomral));
-                    }
-                    if(lastItem!=list.size()-1){
-                        down_arrow.setBackground(getActivity().getResources().getDrawable(R.drawable.arrow_down_hover));
-                    }else{
-                        down_arrow.setBackground(getActivity().getResources().getDrawable(R.drawable.down_normal));
+                    switch (scroll_state){
+                        case 1:
+                            sportlist.getChildAt(0).requestFocusFromTouch();
+                            down_arrow.setBackground(getActivity().getResources().getDrawable(R.drawable.arrow_down_hover));
+                            up_arrow.setBackground(getActivity().getResources().getDrawable(R.drawable.arrow_hover_select));
+                            break;
+                        case 2:
+                            sportlist.getChildAt(0).requestFocusFromTouch();
+                            up_arrow.setBackground(getActivity().getResources().getDrawable(R.drawable.up_nomral));
+                            down_arrow.setBackground(getActivity().getResources().getDrawable(R.drawable.arrow_down_hover));
+                            break;
+                        case 3:
+                            sportlist.getChildAt(sportlist.getChildCount()-1).requestFocusFromTouch();
+                            down_arrow.setBackground(getActivity().getResources().getDrawable(R.drawable.arrow_down_hover));
+                            up_arrow.setBackground(getActivity().getResources().getDrawable(R.drawable.arrow_hover_select));
+                            break;
+                        case 4:
+                            sportlist.getChildAt(sportlist.getChildCount()-1).requestFocusFromTouch();
+                            down_arrow.setBackground(getActivity().getResources().getDrawable(R.drawable.down_normal));
+                            up_arrow.setBackground(getActivity().getResources().getDrawable(R.drawable.arrow_hover_select));
+                            break;
+                        default:
+                            break;
                     }
                 }
             }
@@ -610,14 +620,13 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
                      View lastItemView= recyclerView.getLayoutManager().getChildAt(recyclerView.getLayoutManager().getChildCount()-1);
-                Log.i("lastChildBootom","onscroll");
                 View firstItemView= recyclerView.getLayoutManager().getChildAt(0);
                 int lastChildBottom = lastItemView.getBottom();
                int firstChildHead=firstItemView.getBottom();
-                Log.i("Bootm","lastChildBottom  "+firstChildHead+"  list size:"+list.size());
+                Log.i("Bootm","lastChildBottom  "+firstChildHead+"  list size:"+list.size()+" dy:"+dy);
                 if(dy>0) {
                     if (lastChildBottom != 692) {
-                        recyclerView.smoothScrollBy(0, lastChildBottom - 692);
+                       // recyclerView.smoothScrollBy(0, lastChildBottom - 692);
                     }
                 }
             }
@@ -638,6 +647,11 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
             out.put("to_item",objects.pk);
             out.put("to_item",objects.title);
         }else if(i==R.id.subscribe){
+            HashMap<String, Object> properties = new HashMap<String, Object>();
+            properties.put(EventProperty.TITLE, objects.title);
+            properties.put(EventProperty.ITEM,objects.pk);
+            properties.put(EventProperty.USER_ID,IsmartvActivator.getInstance().getUsername());
+            new NetworkUtils.DataCollectionTask().execute(NetworkUtils.VIDEO_RESERVE, properties);
             showDialog(objects.pk,subject_type);
         }
     }
@@ -678,6 +692,9 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
         Log.i("live_list","onclick"+position);
         if(position!=mSelectPosition) {
             live_list=false;
+//            listItemToNormal(lastSelectView);
+            madpter.setSelectPosition(position);
+            madpter.notifyDataSetChanged();
             view.requestFocusFromTouch();
         }
     }
@@ -689,14 +706,6 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
                 live_list=true;
                 break;
             case 20:
-//                View lastItemView= sportlist.getLayoutManager().getChildAt(sportlist.getLayoutManager().getChildCount()-2);
-//                View bottomview= sportlist.getLayoutManager().getChildAt(sportlist.getLayoutManager().getChildCount()-2);
-//                int lastChildBottom = bottomview.getBottom();
-//                if(currentSelectView==lastItemView) {
-//                    if (lastChildBottom != 692) {
-//                        sportlist.smoothScrollBy(0, lastChildBottom - 692);
-//                    }
-//                }
                 break;
         }
     }

@@ -39,6 +39,7 @@ public class SubjectSportAdapter extends RecyclerView.Adapter<SportViewHolder> {
     private OnItemOnhoverlistener onItemOnhoverlistener;
     private String TAG="subjectSportAdapter";
     private String type="NBA";
+    private int selectPosition=-1;
     public SubjectSportAdapter(Context context){
         mContext=context;
 
@@ -157,7 +158,6 @@ public class SubjectSportAdapter extends RecyclerView.Adapter<SportViewHolder> {
                 return false;
             }
         });
-
         if(type.equals("NBA")) {
             Picasso.with(mContext).load(objects.at_home_logo).into(holder.home_logo);
             Picasso.with(mContext).load(objects.at_home_logo).into(holder.big_home_logo);
@@ -207,9 +207,17 @@ public class SubjectSportAdapter extends RecyclerView.Adapter<SportViewHolder> {
             holder.nomarl.setBackgroundResource(R.drawable.item_recommend_normal_hovered);
             holder.focus_tobig.setBackgroundResource(R.drawable.item_recommend_big_hoverd);
         }
-
+        if(selectPosition==position){
+            holder.nomarl.setVisibility(View.GONE);
+            holder.focus_tobig.setVisibility(View.VISIBLE);
+        }else{
+            holder.focus_tobig.setVisibility(View.GONE);
+            holder.nomarl.setVisibility(View.VISIBLE);
+        }
     }
-
+    public void setSelectPosition(int index){
+        selectPosition=index;
+    }
     @Override
     public int getItemViewType(int position) {
         return super.getItemViewType(position);

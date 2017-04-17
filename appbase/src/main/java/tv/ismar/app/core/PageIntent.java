@@ -224,13 +224,14 @@ public class PageIntent implements PageIntentInterface {
     }
 
     @Override
-    public void toSubject(Context context, String gather_type, int id, String title, String frompage) {
+    public void toSubject(Context context, String gather_type, int id, String title, String frompage,String channel) {
         Intent intent = new Intent();
         intent.setAction("tv.ismar.daisy.subject");
         intent.putExtra("gather_type", gather_type);
         intent.putExtra("itemid", id);
         intent.putExtra("itemtitle", title);
         intent.putExtra("frompage", frompage);
+        intent.putExtra("channel",channel);
         context.startActivity(intent);
     }
 

@@ -907,4 +907,8 @@ public class NetworkUtils {
      * 退出专题页
      */
     public static final String VIDEO_GATHER_OUT = "video_gather_out";
+    /**
+     * 专题页预约
+     */
+    public static final String VIDEO_RESERVE="video_reserve";
 }

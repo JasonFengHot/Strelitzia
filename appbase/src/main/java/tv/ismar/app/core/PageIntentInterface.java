@@ -63,7 +63,7 @@ public interface PageIntentInterface {
 
     void toHelpPage(Context context);
 
-    void toSubject(Context context, String gather_type, int id, String title, String frompage);
+    void toSubject(Context context, String gather_type, int id, String title, String frompage,String channel);
 
     class PaymentInfo {
         private ProductCategory category;
