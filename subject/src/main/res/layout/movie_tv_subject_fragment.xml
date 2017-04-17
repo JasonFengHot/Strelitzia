@@ -39,7 +39,8 @@
         android:layout_width="@dimen/subject_movie_layer_right_w"
         android:layout_height="match_parent"
         android:src="@drawable/right_layer_movie"
-        android:layout_gravity="right"/>
+        android:layout_gravity="right"
+        android:visibility="invisible"/>
 </FrameLayout>
 
 

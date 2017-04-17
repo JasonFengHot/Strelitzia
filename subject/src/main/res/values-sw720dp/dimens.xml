@@ -6,7 +6,7 @@
 <dimen name="subject_movie_recycleview_pr">972.00dp</dimen>
 <dimen name="subject_movie_layer_left_w">96.00dp</dimen>
 <dimen name="subject_movie_layer_right_w">92.00dp</dimen>
-<dimen name="subject_movie_focus_w">264.00dp</dimen>
+<dimen name="subject_movie_focus_w">262.67dp</dimen>
 <dimen name="subject_movie_focus_h">356.67dp</dimen>
 <dimen name="subject_movie_focus_mt">213.33dp</dimen>
 <dimen name="subject_movie_focus_ml">81.33dp</dimen>
