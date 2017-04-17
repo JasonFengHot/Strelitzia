@@ -10,7 +10,7 @@ import tv.ismar.library.injectdb.annotation.Table;
  */
 
 @Table(name = "db_test", id = "_id")
-public class AccountDao {
+public class AccountDao extends Model {
 
     @Column(unique = true, onUniqueConflict = Column.ConflictAction.IGNORE)
     @JsonProperty("account")

@@ -47,5 +47,5 @@ dependencies {
         exclude module: 'xpp3'
     }
     compile 'com.squareup.retrofit2:adapter-rxjava:2.2.0'
-    compile(name: 'ismartv_truetime', ext: 'aar')
+//    compile(name: 'ismartv_truetime', ext: 'aar')
 }
