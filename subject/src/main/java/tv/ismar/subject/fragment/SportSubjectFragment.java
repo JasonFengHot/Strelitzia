@@ -543,7 +543,6 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
                 int firstItem = mLinearLayoutManager.findFirstVisibleItemPosition();
                 int top=mSelectPosition-firstItem;
                 ishoverd=false;
-                lastSelectView=null;
                 Log.i("arrowListen","firstitem: "+firstItem+" top: "+top+"  mselecttion: "+mSelectPosition);
                 if(mSelectPosition-top-6>=0){
                     scroll_state=1;
@@ -565,7 +564,6 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
                 int lastItem = mLinearLayoutManager.findLastVisibleItemPosition();
                 int bootom=lastItem-mSelectPosition;
                 ishoverd=false;
-                lastSelectView=null;
                 Log.i("arrowListen","lastItem: "+lastItem+" bootom: "+bootom+"  mselecttion: "+mSelectPosition);
                 if(mSelectPosition+bootom+7<=list.size()){
                     scroll_state=3;
@@ -631,7 +629,7 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
                                 break;
                             case 4:
                                 sportlist.getChildAt(sportlist.getChildCount() - 1).requestFocusFromTouch();
-                                lastSelectView=sportlist.getChildAt(0);
+                                lastSelectView=sportlist.getChildAt(sportlist.getChildCount() - 1);
                                 down_arrow.setBackground(getActivity().getResources().getDrawable(R.drawable.down_normal));
                                 up_arrow.setBackground(getActivity().getResources().getDrawable(R.drawable.arrow_hover_select));
                                 scroll_state=0;
@@ -666,14 +664,14 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
         }else if(i==R.id.play){
             PageIntent intent=new PageIntent();
             intent.toPlayPage(getActivity(),objects.pk,objects.item_pk, Source.GATHER);
-            out.put("to","to_player");
+            out.put("to","player");
             out.put("to_item",objects.pk);
-            out.put("to_item",objects.title);
+            out.put("to_title",objects.title);
         }else if(i==R.id.subscribe){
             HashMap<String, Object> properties = new HashMap<String, Object>();
             properties.put(EventProperty.TITLE, objects.title);
             properties.put(EventProperty.ITEM,objects.pk);
-            properties.put(EventProperty.USER_ID,IsmartvActivator.getInstance().getUsername());
+            properties.put(EventProperty.USER,IsmartvActivator.getInstance().getUsername());
             new NetworkUtils.DataCollectionTask().execute(NetworkUtils.VIDEO_RESERVE, properties);
             showDialog(objects.pk,subject_type);
         }
