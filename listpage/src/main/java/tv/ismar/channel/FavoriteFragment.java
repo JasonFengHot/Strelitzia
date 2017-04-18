@@ -286,8 +286,10 @@ public class FavoriteFragment extends Fragment implements ScrollableSectionList.
 
 					@Override
 					public void onNext(Item[] items) {
-						mLoadingDialog.dismiss();
 						try{
+							if(mLoadingDialog!=null&&mLoadingDialog.isShowing()){
+								mLoadingDialog.dismiss();
+							}
 						if(items!=null&&items.length>0){
 							mItemCollections = new ArrayList<ItemCollection>();
 							int num_pages = (int) Math.ceil((float)items.length / (float)ItemCollection.NUM_PER_PAGE);

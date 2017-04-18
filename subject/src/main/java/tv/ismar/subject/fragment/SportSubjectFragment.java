@@ -108,7 +108,7 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
     private TextView relate_text1,relate_text2,relate_text3;
     private TextView game_time,title;
     private Objects objects;
-    private String subject_type="NBA";
+    private String subject_type="null";
     private int mSelectPosition=0;
     private PopupWindow popupWindow;
     private View lastSelectView,currentSelectView;
@@ -138,14 +138,6 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view=inflater.inflate(R.layout.sport_subject_fragment,null);
-//        view.getViewTreeObserver().addOnGlobalFocusChangeListener(new ViewTreeObserver.OnGlobalFocusChangeListener() {
-//            @Override
-//            public void onGlobalFocusChanged(View oldFocus, View newFocus) {
-//                if(newFocus!=null){
-//                    Log.i("ss",newFocus.toString());
-//                }
-//            }
-//        });
         mLoadingDialog = new LoadingDialog(getActivity(), tv.ismar.listpage.R.style.PageIntentDialog);
         mLoadingDialog.setOnShowListener(new DialogInterface.OnShowListener() {
             @Override
@@ -206,6 +198,14 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
         sportlist.setOnFocusChangeListener(this);
         getData();
         setScrollListen(sportlist);
+        sportlist.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                firstVisibleItemPosition=mLinearLayoutManager.findFirstVisibleItemPosition();
+                lastVisibleItemPosition=mLinearLayoutManager.findLastVisibleItemPosition();
+                childConut=sportlist.getChildCount();
+            }
+        });
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -215,17 +215,15 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
                 }
             }
         },1000);
-        sportlist.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                firstVisibleItemPosition=mLinearLayoutManager.findFirstVisibleItemPosition();
-                lastVisibleItemPosition=mLinearLayoutManager.findLastVisibleItemPosition();
-                childConut=sportlist.getChildCount();
-
-                Log.i("onGlobalLayout","firstposition"+firstVisibleItemPosition+" bottom: "+ lastVisibleItemPosition+" chiledcount: "+childConut);
-            }
-        });
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        if(!subject_type.equals("null")){
+            sendLog();
+        }
+        super.onResume();
     }
 
     private void getData(){
@@ -270,13 +268,7 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
                     }else {
                         down_arrow.setBackground(getActivity().getResources().getDrawable(R.drawable.down_normal));
                     }
-                    HashMap<String, Object> properties = new HashMap<String, Object>();
-                    properties.put(EventProperty.CHANNEL,channel );
-                    properties.put(EventProperty.TITLE, subject_type);
-                    properties.put(EventProperty.FROM,from);
-                    properties.put(EventProperty.TITLE,subjectTitle);
-
-                    new NetworkUtils.DataCollectionTask().execute(NetworkUtils.VIDEO_GATHER_IN, properties);
+                    sendLog();
                 }
             }
 
@@ -482,21 +474,21 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
         relate_image1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                intent.toDetailPage(getActivity(),"subject",items[0].pk);
+                intent.toDetailPage(getActivity(),"gather",items[0].pk);
                 out.put("to","detail");
             }
         });
         relate_image2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                intent.toDetailPage(getActivity(),"subject",items[1].pk);
+                intent.toDetailPage(getActivity(),"gather",items[1].pk);
                 out.put("to","detail");
             }
         });
         relate_image3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                intent.toDetailPage(getActivity(),"subject",items[2].pk);
+                intent.toDetailPage(getActivity(),"gather",items[2].pk);
                 out.put("to","detail");
             }
         });
@@ -799,4 +791,13 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
         }
     };
 
+    private void sendLog(){
+        HashMap<String, Object> properties = new HashMap<String, Object>();
+        properties.put(EventProperty.CHANNEL,channel );
+        properties.put(EventProperty.TITLE, subject_type);
+        properties.put(EventProperty.FROM,from);
+        properties.put(EventProperty.TITLE,subjectTitle);
+
+        new NetworkUtils.DataCollectionTask().execute(NetworkUtils.VIDEO_GATHER_IN, properties);
+    }
 }
