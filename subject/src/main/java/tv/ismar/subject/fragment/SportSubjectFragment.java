@@ -448,18 +448,21 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
             @Override
             public void onClick(View v) {
                 intent.toDetailPage(getActivity(),"subject",items[0].pk);
+                out.put("to","detail");
             }
         });
         relate_image2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 intent.toDetailPage(getActivity(),"subject",items[1].pk);
+                out.put("to","detail");
             }
         });
         relate_image3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 intent.toDetailPage(getActivity(),"subject",items[2].pk);
+                out.put("to","detail");
             }
         });
 
@@ -637,12 +640,12 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
                             default:
                                 break;
                         }
-                    View firstItemView= recyclerView.getLayoutManager().getChildAt(0);
-                    int position=mLinearLayoutManager.getPosition(firstItemView);
-                    int top=firstItemView.getTop();
-                    Log.i("onscroll",top+" -top"+" selectuion :"+position);
-                    if(top!=0){
-                    }
+                        if(firstVisibleItemPosition!=0){
+                            up_arrow.setBackground(getActivity().getResources().getDrawable(R.drawable.arrow_hover_select));
+                        }
+                        if (lastVisibleItemPosition!=list.size()-1){
+                            down_arrow.setBackground(getActivity().getResources().getDrawable(R.drawable.arrow_down_hover));
+                        }
                 }
             }
 
