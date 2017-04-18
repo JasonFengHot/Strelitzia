@@ -763,7 +763,7 @@ public class PaymentActivity extends BaseActivity implements View.OnClickListene
                     }
                 }
                 new PurchaseStatistics().expensePageExit(String.valueOf(mItemEntity.getPk()), mItemEntity.getTitle(),
-                        IsmartvActivator.getInstance().getUsername(), type, "", "", "cancel", "", uuid);
+                        IsmartvActivator.getInstance().getUsername(), type, "", mItemEntity.getTitle(), "cancel", "", uuid);
             }
         }
         Log.d(TAG, "view position: " + AppConstant.purchase_tab);
