@@ -331,13 +331,49 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
             if(position==list.size()-1){
                 down_arrow.setBackground(getActivity().getResources().getDrawable(R.drawable.down_normal));
             }
+            if(!ishoverd){
+                buildDetail();
+            }
 
-            objects=list.get(position);
-            Picasso.with(getActivity()).load(objects.poster_url).into(detail_labelImage);
-            if(objects.expense!=null){
-                if (playCheckSubsc != null && !playCheckSubsc.isUnsubscribed()) {
-                    playCheckSubsc.unsubscribe();
-                }
+//            objects=list.get(position);
+//            Picasso.with(getActivity()).load(objects.poster_url).into(detail_labelImage);
+//            if(objects.expense!=null){
+//                if (playCheckSubsc != null && !playCheckSubsc.isUnsubscribed()) {
+//                    playCheckSubsc.unsubscribe();
+//                }
+////                if(objects.expense.cptitle!=null){
+////                    cp_title.setVisibility(View.VISIBLE);
+////                    String imageUrl= VipMark.getInstance().getImage(getActivity(),3,3);
+////                    Picasso.with(getActivity()).load(imageUrl).rotate(90).into(cp_title);
+////                }else{
+////                    cp_title.setVisibility(View.GONE);
+////                }
+//                payHandler.removeCallbacks(payRunnable);
+//                payHandler.postDelayed(payRunnable,2000);
+//            }else{
+//                play.setVisibility(View.VISIBLE);
+//                hasbuy.setVisibility(View.INVISIBLE);
+//                price.setVisibility(View.INVISIBLE);
+//            }
+//            if(subscribeIsShow(objects.start_time)){
+//                subscribe.setVisibility(View.VISIBLE);
+//            }else{
+//                subscribe.setVisibility(View.GONE);
+//            }
+//            String[] titles=objects.title.split("-");
+//            game_time.setText(titles[0]);
+//            title.setText(titles[1]);
+//            relateHandler.removeCallbacks(runnable);
+//            relateHandler.postDelayed(runnable,2000);
+        }
+    }
+    private void buildDetail(){
+        objects=list.get(mSelectPosition);
+        Picasso.with(getActivity()).load(objects.poster_url).into(detail_labelImage);
+        if(objects.expense!=null){
+            if (playCheckSubsc != null && !playCheckSubsc.isUnsubscribed()) {
+                playCheckSubsc.unsubscribe();
+            }
 //                if(objects.expense.cptitle!=null){
 //                    cp_title.setVisibility(View.VISIBLE);
 //                    String imageUrl= VipMark.getInstance().getImage(getActivity(),3,3);
@@ -345,24 +381,23 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
 //                }else{
 //                    cp_title.setVisibility(View.GONE);
 //                }
-                payHandler.removeCallbacks(payRunnable);
-                payHandler.postDelayed(payRunnable,2000);
-            }else{
-                play.setVisibility(View.VISIBLE);
-                hasbuy.setVisibility(View.INVISIBLE);
-                price.setVisibility(View.INVISIBLE);
-            }
-            if(subscribeIsShow(objects.start_time)){
-                subscribe.setVisibility(View.VISIBLE);
-            }else{
-                subscribe.setVisibility(View.GONE);
-            }
-            String[] titles=objects.title.split("-");
-            game_time.setText(titles[0]);
-            title.setText(titles[1]);
-            relateHandler.removeCallbacks(runnable);
-            relateHandler.postDelayed(runnable,2000);
+            payHandler.removeCallbacks(payRunnable);
+            payHandler.postDelayed(payRunnable,2000);
+        }else{
+            play.setVisibility(View.VISIBLE);
+            hasbuy.setVisibility(View.INVISIBLE);
+            price.setVisibility(View.INVISIBLE);
         }
+        if(subscribeIsShow(objects.start_time)){
+            subscribe.setVisibility(View.VISIBLE);
+        }else{
+            subscribe.setVisibility(View.GONE);
+        }
+        String[] titles=objects.title.split("-");
+        game_time.setText(titles[0]);
+        title.setText(titles[1]);
+        relateHandler.removeCallbacks(runnable);
+        relateHandler.postDelayed(runnable,2000);
     }
     private void payCheck (){
         playCheckSubsc=skyService.apiPlayCheck(String.valueOf(objects.item_pk), null, null)
@@ -719,6 +754,7 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
             listItemToNormal(lastSelectView);
             lastSelectView=view;
             listItemToBig(view);
+            buildDetail();
     }
     private boolean onkey=false;
     @Override
