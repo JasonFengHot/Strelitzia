@@ -94,7 +94,9 @@ public class SubjectSportAdapter extends RecyclerView.Adapter<SportViewHolder> {
                 }else{
                     if(objects.recommend_status==1){
                         holder.focus_tobig.setBackgroundResource(R.drawable.normal_game_focus);
+                        holder.nomarl.setBackgroundResource(R.drawable.normal_game);
                     }else {
+                        holder.nomarl.setBackgroundResource(R.drawable.emphasis_game_normal);
                         holder.focus_tobig.setBackgroundResource(R.drawable.emphasis_game_focus);
                     }
                 }
