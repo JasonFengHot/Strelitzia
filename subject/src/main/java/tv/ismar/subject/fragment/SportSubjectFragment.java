@@ -244,14 +244,13 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
                         @Override
                         public int compare(Objects lhs, Objects rhs) {
                             if(lhs.start_time.getTime()!=rhs.start_time.getTime()){
-                                Log.i("comapre","sss  "+(lhs.start_time.getTime()-rhs.start_time.getTime()));
                                     return (int) (lhs.start_time.getTime()-rhs.start_time.getTime());
                             }else{
                                     return -(lhs.recommend_status-rhs.recommend_status);
                             }
                         }
                     });
-             //       list.addAll(list);
+                 //   list.addAll(list);
                     if(subject.content_model.contains("nba")){
                         subject_type="NBA";
                     }else{
@@ -272,7 +271,7 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
                         down_arrow.setBackground(getActivity().getResources().getDrawable(R.drawable.down_normal));
                     }
                     HashMap<String, Object> properties = new HashMap<String, Object>();
-                    properties.put(EventProperty.CHANNEL, "");
+                    properties.put(EventProperty.CHANNEL,channel );
                     properties.put(EventProperty.TITLE, subject_type);
                     properties.put(EventProperty.FROM,from);
                     properties.put(EventProperty.TITLE,subjectTitle);
@@ -306,28 +305,33 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
     public void onItemfocused(View view, int position, boolean hasFocus) {
         if(!hasFocus){
             Log.i("sportlist","list "+hasFocus);
-            lastSelectView=view;
-            if(!live_list){
+            if(lastSelectView==null){
+                lastSelectView=view;
+            }else{
+                if(!ishoverd||onkey){
+                    lastSelectView=view;
+                }
+            }
+            if(!live_list&&!ishoverd){
                 listItemToNormal(view);
             }
         }else{
-            if(live_list){
+            if(live_list&&!ishoverd){
                 listItemToNormal(lastSelectView);
             }
             mSelectPosition=position;
             currentSelectView=view;
+            if(!ishoverd)
             listItemToBig(view);
             live_list=false;
             Log.i("firstComplete","firstComplete: "+firstVisibleItemPosition+" count?" +sportlist.getChildCount());
-//            View lastItemView= sportlist.getLayoutManager().getChildAt(childConut-1);
-//            if(lastItemView!=null) {
-//                int lastChildBottom = lastItemView.getBottom();
-//                Log.i("lastChildBootom",lastChildBottom+" sx"+lastItemView.getScrollX()+" sy"+lastItemView.getScrollY());
-//
-//                if (mSelectPosition!=0&&lastChildBottom != 692) {
-//                   sportlist.smoothScrollBy(0, lastChildBottom-692);
-//                }
-//            }
+            if(position==0){
+                up_arrow.setBackground(getActivity().getResources().getDrawable(R.drawable.up_nomral));
+            }
+            if(position==list.size()-1){
+                down_arrow.setBackground(getActivity().getResources().getDrawable(R.drawable.down_normal));
+            }
+
             objects=list.get(position);
             Picasso.with(getActivity()).load(objects.poster_url).into(detail_labelImage);
             if(objects.expense!=null){
@@ -463,9 +467,7 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
     @Override
     public void onFocusChange(View v, boolean hasFocus) {
         if(hasFocus){
-            Log.i("sportlist","sport "+hasFocus);
             if(lastSelectView!=null){
-                Log.i("sportlist","  lastview"+lastSelectView.toString());
                 sportlist.getChildViewHolder(lastSelectView).itemView.requestFocusFromTouch();
             }
         }
@@ -507,7 +509,6 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
         switch (event.getAction()){
             case MotionEvent.ACTION_HOVER_ENTER:
                 case MotionEvent.ACTION_HOVER_MOVE:
-                    live_list=true;
                     v.requestFocus();
                     break;
                 case MotionEvent.ACTION_HOVER_EXIT:
@@ -518,9 +519,20 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
 
         return false;
     }
+    private boolean ishoverd=false;
     @Override
     public void OnItemOnhoverlistener(View v, MotionEvent event,int position,int recommend) {
         Log.i("OnItemHover","listview"+live_list);
+        switch (event.getAction()){
+            case MotionEvent.ACTION_HOVER_ENTER:
+            case MotionEvent.ACTION_HOVER_MOVE:
+                live_list=false;
+                ishoverd=true;
+                v.requestFocusFromTouch();
+                onkey=false;
+                case MotionEvent.ACTION_HOVER_EXIT:
+                    break;
+        }
 
     }
     private int scroll_state=0;
@@ -530,6 +542,8 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
             public void onClick(View v) {
                 int firstItem = mLinearLayoutManager.findFirstVisibleItemPosition();
                 int top=mSelectPosition-firstItem;
+                ishoverd=false;
+                lastSelectView=null;
                 Log.i("arrowListen","firstitem: "+firstItem+" top: "+top+"  mselecttion: "+mSelectPosition);
                 if(mSelectPosition-top-6>=0){
                     scroll_state=1;
@@ -542,6 +556,7 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
                     madpter.notifyDataSetChanged();
                     sportlist.smoothScrollToPosition(0);
                 }
+
             }
         });
         down_arrow.setOnClickListener(new View.OnClickListener() {
@@ -549,10 +564,12 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
             public void onClick(View v) {
                 int lastItem = mLinearLayoutManager.findLastVisibleItemPosition();
                 int bootom=lastItem-mSelectPosition;
+                ishoverd=false;
+                lastSelectView=null;
                 Log.i("arrowListen","lastItem: "+lastItem+" bootom: "+bootom+"  mselecttion: "+mSelectPosition);
                 if(mSelectPosition+bootom+7<=list.size()){
                     scroll_state=3;
-                    madpter.setSelectPosition(mSelectPosition+bootom+7);
+                    madpter.setSelectPosition(mSelectPosition+bootom+1);
                     madpter.notifyDataSetChanged();
                     sportlist.smoothScrollToPosition(mSelectPosition+bootom+7);
                 }else{
@@ -561,6 +578,7 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
                     madpter.notifyDataSetChanged();
                     sportlist.smoothScrollToPosition(list.size()-1);
                 }
+
 
             }
         });
@@ -589,29 +607,43 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
                 super.onScrollStateChanged(recyclerView, newState);
                 Log.i("scolllist",newState+" msle  "+ mSelectPosition);
                 if(newState==SCROLL_STATE_IDLE){
-                    switch (scroll_state){
-                        case 1:
-                            sportlist.getChildAt(0).requestFocusFromTouch();
-                            down_arrow.setBackground(getActivity().getResources().getDrawable(R.drawable.arrow_down_hover));
-                            up_arrow.setBackground(getActivity().getResources().getDrawable(R.drawable.arrow_hover_select));
-                            break;
-                        case 2:
-                            sportlist.getChildAt(0).requestFocusFromTouch();
-                            up_arrow.setBackground(getActivity().getResources().getDrawable(R.drawable.up_nomral));
-                            down_arrow.setBackground(getActivity().getResources().getDrawable(R.drawable.arrow_down_hover));
-                            break;
-                        case 3:
-                            sportlist.getChildAt(sportlist.getChildCount()-1).requestFocusFromTouch();
-                            down_arrow.setBackground(getActivity().getResources().getDrawable(R.drawable.arrow_down_hover));
-                            up_arrow.setBackground(getActivity().getResources().getDrawable(R.drawable.arrow_hover_select));
-                            break;
-                        case 4:
-                            sportlist.getChildAt(sportlist.getChildCount()-1).requestFocusFromTouch();
-                            down_arrow.setBackground(getActivity().getResources().getDrawable(R.drawable.down_normal));
-                            up_arrow.setBackground(getActivity().getResources().getDrawable(R.drawable.arrow_hover_select));
-                            break;
-                        default:
-                            break;
+                        switch (scroll_state) {
+                            case 1:
+                                sportlist.getChildAt(0).requestFocusFromTouch();
+                                lastSelectView=sportlist.getChildAt(0);
+                                down_arrow.setBackground(getActivity().getResources().getDrawable(R.drawable.arrow_down_hover));
+                                up_arrow.setBackground(getActivity().getResources().getDrawable(R.drawable.arrow_hover_select));
+                                scroll_state=0;
+                                break;
+                            case 2:
+                                sportlist.getChildAt(0).requestFocusFromTouch();
+                                lastSelectView=sportlist.getChildAt(0);
+                                up_arrow.setBackground(getActivity().getResources().getDrawable(R.drawable.up_nomral));
+                                down_arrow.setBackground(getActivity().getResources().getDrawable(R.drawable.arrow_down_hover));
+                                scroll_state=0;
+                                break;
+                            case 3:
+                                sportlist.getChildAt(0).requestFocusFromTouch();
+                                lastSelectView=sportlist.getChildAt(0);
+                                down_arrow.setBackground(getActivity().getResources().getDrawable(R.drawable.arrow_down_hover));
+                                up_arrow.setBackground(getActivity().getResources().getDrawable(R.drawable.arrow_hover_select));
+                                scroll_state=0;
+                                break;
+                            case 4:
+                                sportlist.getChildAt(sportlist.getChildCount() - 1).requestFocusFromTouch();
+                                lastSelectView=sportlist.getChildAt(0);
+                                down_arrow.setBackground(getActivity().getResources().getDrawable(R.drawable.down_normal));
+                                up_arrow.setBackground(getActivity().getResources().getDrawable(R.drawable.arrow_hover_select));
+                                scroll_state=0;
+                                break;
+                            default:
+                                break;
+                        }
+                    View firstItemView= recyclerView.getLayoutManager().getChildAt(0);
+                    int position=mLinearLayoutManager.getPosition(firstItemView);
+                    int top=firstItemView.getTop();
+                    Log.i("onscroll",top+" -top"+" selectuion :"+position);
+                    if(top!=0){
                     }
                 }
             }
@@ -619,16 +651,7 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                     View lastItemView= recyclerView.getLayoutManager().getChildAt(recyclerView.getLayoutManager().getChildCount()-1);
-                View firstItemView= recyclerView.getLayoutManager().getChildAt(0);
-                int lastChildBottom = lastItemView.getBottom();
-               int firstChildHead=firstItemView.getBottom();
-                Log.i("Bootm","lastChildBottom  "+firstChildHead+"  list size:"+list.size()+" dy:"+dy);
-                if(dy>0) {
-                    if (lastChildBottom != 692) {
-                       // recyclerView.smoothScrollBy(0, lastChildBottom - 692);
-                    }
-                }
+
             }
         });
     }
@@ -689,16 +712,14 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
 
     @Override
     public void onItemClick(View view, int position) {
-        Log.i("live_list","onclick"+position);
-        if(position!=mSelectPosition) {
+        Log.i("sportlist","onclick"+position+" mselect"+ mSelectPosition);
             live_list=false;
-//            listItemToNormal(lastSelectView);
-            madpter.setSelectPosition(position);
-            madpter.notifyDataSetChanged();
-            view.requestFocusFromTouch();
-        }
+            ishoverd=false;
+            listItemToNormal(lastSelectView);
+            lastSelectView=view;
+            listItemToBig(view);
     }
-
+    private boolean onkey=false;
     @Override
     public void onItemKeyListener(View v, int keyCode, KeyEvent event) {
         switch (keyCode){
@@ -706,6 +727,17 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
                 live_list=true;
                 break;
             case 20:
+                if(ishoverd&&lastSelectView!=null){
+                    lastSelectView.requestFocus();
+                }
+                onkey=true;
+                ishoverd=false;
+            case 19:
+                if(ishoverd&&lastSelectView!=null){
+                    lastSelectView.requestFocus();
+                }
+                onkey=true;
+                ishoverd=false;
                 break;
         }
     }
