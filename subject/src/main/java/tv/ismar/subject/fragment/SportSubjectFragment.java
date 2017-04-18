@@ -374,7 +374,7 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
 //                    cp_title.setVisibility(View.GONE);
 //                }
             payHandler.removeCallbacks(payRunnable);
-            payHandler.postDelayed(payRunnable,2000);
+            payHandler.postDelayed(payRunnable,500);
         }else{
             play.setVisibility(View.VISIBLE);
             hasbuy.setVisibility(View.INVISIBLE);
@@ -384,6 +384,16 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
             subscribe.setVisibility(View.VISIBLE);
         }else{
             subscribe.setVisibility(View.GONE);
+        }
+        if(playIsShow(objects.start_time)){
+            play.setClickable(true);
+            play.setFocusable(true);
+            play.setFocusableInTouchMode(true);
+            play.setBackground(getResources().getDrawable(R.drawable.play_selector));
+        }else{
+            play.setClickable(false);
+            play.setFocusable(false);
+            play.setBackground(getResources().getDrawable(R.drawable.play_disable));
         }
         String[] titles=objects.title.split("-");
         game_time.setText(titles[0]);
@@ -413,22 +423,11 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
                                 price.setVisibility(View.VISIBLE);
                                 price.setText(objects.expense.price+"¥");                           // 过期了。认为没购买
                             } else {
+                                play.setVisibility(View.VISIBLE);
                                 buy.setVisibility(View.GONE);
                                 price.setVisibility(View.GONE);
                                 hasbuy.setVisibility(View.VISIBLE);
                                 hasbuy.setText("已付费：有效期"+objects.expense.duration+"天");  // 购买了，剩余天数大于0
-                                if(playIsShow(objects.start_time)){
-                                    play.setClickable(true);
-                                    play.setFocusable(true);
-                                    play.setFocusableInTouchMode(true);
-                                    play.setBackground(getResources().getDrawable(R.drawable.play_selector));
-                                    play.setVisibility(View.VISIBLE);
-                                }else{
-                                   play.setClickable(false);
-                                   play.setFocusable(false);
-                                   play.setBackground(getResources().getDrawable(R.drawable.play_disable));
-                                   play.setVisibility(View.VISIBLE);
-                                }
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
