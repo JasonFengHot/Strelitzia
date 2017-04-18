@@ -12,6 +12,7 @@ import java.util.concurrent.TimeoutException;
 
 import tv.ismar.app.AppConstant;
 import tv.ismar.app.BaseActivity;
+import tv.ismar.app.entity.Channel;
 import tv.ismar.app.widget.LoadingDialog;
 import tv.ismar.subject.fragment.MovieTVSubjectFragment;
 import tv.ismar.subject.fragment.SportSubjectFragment;
@@ -27,6 +28,7 @@ public class SubjectActivity extends BaseActivity{
     public int itemid;
     private String title;
     public String frompage;
+    public String channel;
     public LoadingDialog mLoadingDialog;
     private Handler handler=new Handler(new Handler.Callback() {
         @Override
@@ -48,6 +50,7 @@ public class SubjectActivity extends BaseActivity{
         gather_type = intent.getStringExtra("gather_type");
         itemid = intent.getIntExtra("itemid",709759);
         title = intent.getStringExtra("itemtitle");
+        channel=intent.getStringExtra("channel");
         AppConstant.purchase_page = "gather";
         AppConstant.purchase_entrance_page = "gather";
         AppConstant.purchase_entrance_related_item = String.valueOf(itemid);
@@ -61,7 +64,7 @@ public class SubjectActivity extends BaseActivity{
             case "premierleaguegather":
                 SportSubjectFragment sportSubjectFragment=new SportSubjectFragment();
                 sportSubjectFragment.pk=itemid;
-                sportSubjectFragment.channel=frompage;
+                sportSubjectFragment.channel=channel;
                 sportSubjectFragment.from=frompage;
                 sportSubjectFragment.subjectTitle=title;
                 fragmentTransaction.replace(R.id.subject_frame,sportSubjectFragment);
