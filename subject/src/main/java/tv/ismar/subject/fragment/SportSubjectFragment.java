@@ -311,10 +311,12 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
             if(live_list&&!ishoverd){
                 listItemToNormal(lastSelectView);
             }
-            mSelectPosition=position;
+
             currentSelectView=view;
-            if(!ishoverd)
-            listItemToBig(view);
+            if(!ishoverd) {
+                listItemToBig(view);
+                mSelectPosition=position;
+            }
             live_list=false;
             Log.i("firstComplete","firstComplete: "+firstVisibleItemPosition+" count?" +sportlist.getChildCount());
             if(position==0){
@@ -742,13 +744,15 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
     @Override
     public void onItemClick(View view, int position) {
         Log.i("sportlist","onclick"+position+" mselect"+ mSelectPosition);
-            live_list=false;
-            ishoverd=false;
-            listItemToNormal(lastSelectView);
-            lastSelectView=view;
-            listItemToBig(view);
-            view.requestFocusFromTouch();
-            buildDetail();
+            if(view.hasFocus()) {
+                live_list = false;
+                ishoverd = false;
+                listItemToNormal(lastSelectView);
+                lastSelectView = view;
+                listItemToBig(view);
+                buildDetail();
+            }
+
     }
     private boolean onkey=false;
     @Override

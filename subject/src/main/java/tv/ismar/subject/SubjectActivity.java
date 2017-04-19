@@ -27,7 +27,7 @@ public class SubjectActivity extends BaseActivity{
     public String gather_type;
     public int itemid;
     private String title;
-    public String frompage;
+    public String fromPage;
     public String channel;
     public LoadingDialog mLoadingDialog;
     private Handler handler=new Handler(new Handler.Callback() {
@@ -57,7 +57,7 @@ public class SubjectActivity extends BaseActivity{
         AppConstant.purchase_entrance_related_title = title;
         AppConstant.purchase_entrance_keyword = gather_type;
 
-        frompage = intent.getStringExtra("frompage");
+        fromPage = intent.getStringExtra("fromPage");
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
         switch (gather_type){
             case "nbagather":
@@ -65,7 +65,7 @@ public class SubjectActivity extends BaseActivity{
                 SportSubjectFragment sportSubjectFragment=new SportSubjectFragment();
                 sportSubjectFragment.pk=itemid;
                 sportSubjectFragment.channel=channel;
-                sportSubjectFragment.from=frompage;
+                sportSubjectFragment.from=fromPage;
                 sportSubjectFragment.subjectTitle=title;
                 fragmentTransaction.replace(R.id.subject_frame,sportSubjectFragment);
                 break;

@@ -128,7 +128,7 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnClickList
     private void initData() {
         type = ((SubjectActivity)getActivity()).gather_type;
         id = ((SubjectActivity)getActivity()).itemid;
-        if(((SubjectActivity)getActivity()).frompage.equals(Source.LIST.getValue())){
+        if(((SubjectActivity)getActivity()).fromPage.equals(Source.LIST.getValue())){
             channel= BaseActivity.baseChannel;
         }
         mFavoriteManager = DaisyUtils.getFavoriteManager(getActivity());
@@ -151,7 +151,7 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnClickList
                     @Override
                     public void onNext(SubjectEntity subjectEntity) {
                         mSubjectEntity = subjectEntity;
-                        video_gather_in(mSubjectEntity.getTitle(),((SubjectActivity)getActivity()).frompage,channel);
+                        video_gather_in(mSubjectEntity.getTitle(),((SubjectActivity)getActivity()).fromPage,channel);
                         processData(subjectEntity);
                     }
 
@@ -301,7 +301,7 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnClickList
             subject_btn_like.setBackgroundResource(R.drawable.like_btn_selector);
         }
         if(mSubjectEntity.getTitle()!=null)
-        video_gather_in(mSubjectEntity.getTitle(),((SubjectActivity)getActivity()).frompage,channel);
+        video_gather_in(mSubjectEntity.getTitle(),((SubjectActivity)getActivity()).fromPage,channel);
     }
 
     @Override
