@@ -386,11 +386,13 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
             subscribe.setVisibility(View.GONE);
         }
         if(playIsShow(objects.start_time)){
+            play.setEnabled(true);
             play.setClickable(true);
             play.setFocusable(true);
             play.setFocusableInTouchMode(true);
             play.setBackground(getResources().getDrawable(R.drawable.play_selector));
         }else{
+            play.setEnabled(false);
             play.setClickable(false);
             play.setFocusable(false);
             play.setBackground(getResources().getDrawable(R.drawable.play_disable));
@@ -745,24 +747,26 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
             listItemToNormal(lastSelectView);
             lastSelectView=view;
             listItemToBig(view);
+            view.requestFocusFromTouch();
             buildDetail();
     }
     private boolean onkey=false;
     @Override
     public void onItemKeyListener(View v, int keyCode, KeyEvent event) {
+        Log.i("keycode",keyCode+"");
         switch (keyCode){
             case 22:
                 live_list=true;
                 break;
             case 20:
                 if(ishoverd&&lastSelectView!=null){
-                    lastSelectView.requestFocus();
+                    lastSelectView.requestFocusFromTouch();
                 }
                 onkey=true;
                 ishoverd=false;
             case 19:
                 if(ishoverd&&lastSelectView!=null){
-                    lastSelectView.requestFocus();
+                    lastSelectView.requestFocusFromTouch();
                 }
                 onkey=true;
                 ishoverd=false;
