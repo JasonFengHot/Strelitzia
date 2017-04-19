@@ -230,7 +230,7 @@ public class PageIntent implements PageIntentInterface {
         intent.putExtra("gather_type", gather_type);
         intent.putExtra("itemid", id);
         intent.putExtra("itemtitle", title);
-        intent.putExtra("frompage", frompage);
+        intent.putExtra("fromPage", frompage);
         intent.putExtra("channel",channel);
         context.startActivity(intent);
     }

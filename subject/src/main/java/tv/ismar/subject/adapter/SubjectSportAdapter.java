@@ -192,7 +192,8 @@ public class SubjectSportAdapter extends RecyclerView.Adapter<SportViewHolder> {
             } else {
                 holder.isalive.setVisibility(View.GONE);
                 holder.start_time_layout.setVisibility(View.VISIBLE);
-                SimpleDateFormat formatter = new SimpleDateFormat("MM-dd HH:mm");
+                SimpleDateFormat formatter = new SimpleDateFormat("MM-dd HH:mm z");
+                formatter.setTimeZone(TimeZone.getTimeZone("Asia/Shanghai"));
                 String time = formatter.format(objects.start_time);
                 String times[] = time.split(" ");
                 String month[]=times[0].split("-");
