@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:labelimage="http://schemas.android.com/apk/res-auto"
-    android:orientation="horizontal"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:id="@+id/sport_bg"
+                xmlns:labelimage="http://schemas.android.com/apk/res-auto"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/sport_bg"
     >
     <ImageView
         android:layout_width="match_parent"
@@ -29,12 +30,15 @@
             android:background="@drawable/arrow_hover_select"
             android:visibility="invisible"
             />
-        <tv.ismar.subject.views.MyRecyclerView
+        <tv.libismar.pagerview.VerticalPagerView
             android:id="@+id/sport_list"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/sport_list_H"
-            android:layout_marginTop="@dimen/sport_list_MT">
-        </tv.ismar.subject.views.MyRecyclerView>
+            android:layout_marginTop="@dimen/sport_list_MT"
+            app:vpItemLayoutId="@layout/sport_list_item"
+            app:vpItemSpace="20px"
+            app:vpRowCount="6" />
+
         <ImageView
             android:id="@+id/down_image"
             android:layout_width="@dimen/sport_left_up_imageW"
@@ -184,7 +188,7 @@
             android:visibility="invisible"
             />
         <TextView
-            android:id="@+id/divider"
+            android:id="@+id/sport_subject_divider"
             android:layout_width="@dimen/subject_1040"
             android:layout_height="@dimen/subject_2"
             android:layout_marginLeft="@dimen/subject_20"
