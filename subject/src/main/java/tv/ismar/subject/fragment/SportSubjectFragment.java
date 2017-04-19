@@ -399,7 +399,7 @@ public class SportSubjectFragment extends Fragment implements OnItemFocusedListe
         game_time.setText(titles[0]);
         title.setText(titles[1]);
         relateHandler.removeCallbacks(runnable);
-        relateHandler.postDelayed(runnable,2000);
+        relateHandler.postDelayed(runnable,1000);
     }
     private void payCheck (){
         playCheckSubsc=skyService.apiPlayCheck(String.valueOf(objects.item_pk), null, null)
