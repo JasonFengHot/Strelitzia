@@ -338,7 +338,8 @@ public class GuideFragment extends ChannelBaseFragment {
         }
         guideRecommmendList.removeAllViews();
         ArrayList<FrameLayout> imageViews = new ArrayList<FrameLayout>();
-        for (int i = 0; i < 8; i++) {
+        int posterCount=posters.size()>8?8:posters.size();
+        for (int i = 0; i < posterCount; i++) {
             if (mContext == null) {
                 return;
             }
