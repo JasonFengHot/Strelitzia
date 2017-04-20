@@ -559,7 +559,7 @@ public class SportSubjectFragment extends Fragment implements View.OnHoverListen
             }
         } else {
             if (focused) {
-              listItemToBig(view);
+                listItemToBig(view);
                 buildDetail();
             } else {
                 listItemToNormal(view);
@@ -675,6 +675,7 @@ public class SportSubjectFragment extends Fragment implements View.OnHoverListen
                 holder.isalive.setVisibility(View.GONE);
                 holder.start_time_layout.setVisibility(View.VISIBLE);
                 SimpleDateFormat formatter = new SimpleDateFormat("MM-dd HH:mm");
+                formatter.setTimeZone(TimeZone.getTimeZone("Asia/Shanghai"));
                 String time = formatter.format(objects.start_time);
                 String times[] = time.split(" ");
                 String month[] = times[0].split("-");
