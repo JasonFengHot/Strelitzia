@@ -334,6 +334,10 @@ public class SportSubjectFragment extends Fragment implements View.OnHoverListen
             public void onNext(Item[] items) {
                 if(items!=null&&items.length>=3) {
                     buildRelateList(items);
+                }else{
+                    play.setNextFocusDownId(R.id.play);
+                    subscribe.setNextFocusDownId(R.id.subscribe);
+                    buy.setNextFocusDownId(R.id.buy);
                 }
             }
         });
@@ -344,6 +348,10 @@ public class SportSubjectFragment extends Fragment implements View.OnHoverListen
         relate_image3.setLivUrl(items[2].adlet_url);
 
         relate_list.setVisibility(View.VISIBLE);
+
+        play.setNextFocusDownId(R.id.relate_list_1_image);
+        buy.setNextFocusDownId(R.id.relate_list_1_image);
+        subscribe.setNextFocusDownId(R.id.relate_list_1_image);
 
         relate_text1.setText(items[0].title);
         relate_text2.setText(items[1].title);
