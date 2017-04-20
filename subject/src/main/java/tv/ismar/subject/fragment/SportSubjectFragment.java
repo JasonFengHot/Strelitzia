@@ -233,6 +233,8 @@ public class SportSubjectFragment extends Fragment implements View.OnHoverListen
     };
     private void buildDetail(){
         objects=list.get(mVerticalPagerView.getCurrentDataSelectPosition());
+        play.setVisibility(View.GONE);
+        buy.setVisibility(View.GONE);
         if(objects.poster_url!=null)
         Picasso.with(getActivity()).load(objects.poster_url).into(detail_labelImage);
         if(objects.expense!=null){
