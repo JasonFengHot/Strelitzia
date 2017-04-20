@@ -66,10 +66,26 @@
             android:layout_height="@dimen/sport_right_rel_H"
             android:layout_marginLeft="@dimen/sport_right_rel_ML"
             >
-            <tv.ismar.app.ui.view.LabelImageView
+            <tv.ismar.app.widget.LabelImageView
                 android:id="@+id/detail_labelImage"
                 android:layout_width="@dimen/sport_right_rel_W"
                 android:layout_height="@dimen/sport_right_rel_H"
+                android:focusableInTouchMode="false"
+                android:focusable="false"
+                app:livContentPadding="@dimen/label_image_padding"
+                app:livErrorDrawable="@mipmap/img_error_horizontal"
+                app:livLabelBackColor="@color/color_label_image_text_back"
+                app:livLabelColor="@color/module_color_white"
+                app:livLabelSize="@dimen/h3_size"
+                app:livLabelText=""
+                app:livRate="0"
+                app:livRateColor="@color/module_color_focus"
+                app:livRateSize="@dimen/text_size_30sp"
+                app:livSelectorDrawable="@drawable/vod_img_selector"
+                app:livUrl=""
+                app:livVipPosition="gone"
+                app:livVipSize="0dp"
+                app:livVipUrl=""
                 />
             <ImageView
                 android:id="@+id/cp_title"
@@ -216,7 +232,7 @@
                 android:clipToPadding="false"
                 android:orientation="vertical">
 
-                <tv.ismar.homepage.widget.LabelImageView3
+                <tv.ismar.app.widget.LabelImageView
                     android:id="@+id/relate_list_1_image"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/subject_189"
@@ -224,7 +240,20 @@
                     android:focusableInTouchMode="true"
                     android:scaleType="fitXY"
                     android:src="@drawable/list_item_preview_bg"
-                    labelimage:label3_needZoom="true"
+                    app:livContentPadding="@dimen/label_image_padding"
+                    app:livErrorDrawable="@mipmap/img_error_horizontal"
+                    app:livLabelBackColor="@color/color_label_image_text_back"
+                    app:livLabelColor="@color/module_color_white"
+                    app:livLabelSize="@dimen/h3_size"
+                    app:livLabelText=""
+                    app:livRate="0"
+                    app:livRateColor="@color/module_color_focus"
+                    app:livRateSize="@dimen/text_size_30sp"
+                    app:livSelectorDrawable="@drawable/vod_img_selector"
+                    app:livUrl=""
+                    app:livVipPosition="gone"
+                    app:livVipSize="0dp"
+                    app:livVipUrl=""
                     />
 
                 <TextView
@@ -247,7 +276,7 @@
                 android:clipToPadding="false"
                 android:orientation="vertical">
 
-                <tv.ismar.homepage.widget.LabelImageView3
+                <tv.ismar.app.widget.LabelImageView
                     android:id="@+id/relate_list_2_image"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/subject_189"
@@ -255,7 +284,20 @@
                     android:focusableInTouchMode="true"
                     android:scaleType="fitXY"
                     android:src="@drawable/list_item_preview_bg"
-                    labelimage:label3_needZoom="true"
+                    app:livContentPadding="@dimen/label_image_padding"
+                    app:livErrorDrawable="@mipmap/img_error_horizontal"
+                    app:livLabelBackColor="@color/color_label_image_text_back"
+                    app:livLabelColor="@color/module_color_white"
+                    app:livLabelSize="@dimen/h3_size"
+                    app:livLabelText=""
+                    app:livRate="0"
+                    app:livRateColor="@color/module_color_focus"
+                    app:livRateSize="@dimen/text_size_30sp"
+                    app:livSelectorDrawable="@drawable/vod_img_selector"
+                    app:livUrl=""
+                    app:livVipPosition="gone"
+                    app:livVipSize="0dp"
+                    app:livVipUrl=""
                     />
 
                 <TextView
@@ -278,7 +320,7 @@
                 android:clipToPadding="false"
                 android:orientation="vertical">
 
-                <tv.ismar.homepage.widget.LabelImageView3
+                <tv.ismar.app.widget.LabelImageView
                     android:id="@+id/relate_list_3_image"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/subject_189"
@@ -286,7 +328,20 @@
                     android:focusableInTouchMode="true"
                     android:scaleType="fitXY"
                     android:src="@drawable/list_item_preview_bg"
-                    labelimage:label3_needZoom="true"
+                    app:livContentPadding="@dimen/label_image_padding"
+                    app:livErrorDrawable="@mipmap/img_error_horizontal"
+                    app:livLabelBackColor="@color/color_label_image_text_back"
+                    app:livLabelColor="@color/module_color_white"
+                    app:livLabelSize="@dimen/h3_size"
+                    app:livLabelText=""
+                    app:livRate="0"
+                    app:livRateColor="@color/module_color_focus"
+                    app:livRateSize="@dimen/text_size_30sp"
+                    app:livSelectorDrawable="@drawable/vod_img_selector"
+                    app:livUrl=""
+                    app:livVipPosition="gone"
+                    app:livVipSize="0dp"
+                    app:livVipUrl=""
                    />
 
                 <TextView

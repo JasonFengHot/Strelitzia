@@ -12,6 +12,7 @@ import android.os.Message;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -54,7 +55,7 @@ import tv.ismar.app.entity.Objects;
 import tv.ismar.app.network.SkyService;
 import tv.ismar.app.network.entity.EventProperty;
 import tv.ismar.app.network.entity.PlayCheckEntity;
-import tv.ismar.app.ui.view.LabelImageView;
+import tv.ismar.app.widget.LabelImageView;
 import tv.ismar.app.widget.LoadingDialog;
 import tv.ismar.homepage.widget.LabelImageView3;
 import tv.ismar.subject.R;
@@ -77,7 +78,7 @@ public class SportSubjectFragment extends Fragment implements View.OnHoverListen
     private Subscription playCheckSubsc;
     private TextView price,hasbuy;
     private ImageView cp_title,up_arrow,down_arrow,bg;
-    private LabelImageView3 relate_image1,relate_image2,relate_image3;
+    private tv.ismar.app.widget.LabelImageView relate_image1,relate_image2,relate_image3;
     private TextView relate_text1,relate_text2,relate_text3;
     private TextView game_time,title;
     private Objects objects;
@@ -127,9 +128,9 @@ public class SportSubjectFragment extends Fragment implements View.OnHoverListen
         down_arrow= (ImageView) view.findViewById(R.id.down_image);
         arrowListent();
         relate_list= (LinearLayout) view.findViewById(R.id.relate_list);
-        relate_image1= (LabelImageView3) view.findViewById(R.id.relate_list_1_image);
-        relate_image2= (LabelImageView3) view.findViewById(R.id.relate_list_2_image);
-        relate_image3= (LabelImageView3) view.findViewById(R.id.relate_list_3_image);
+        relate_image1= (LabelImageView) view.findViewById(R.id.relate_list_1_image);
+        relate_image2= (LabelImageView) view.findViewById(R.id.relate_list_2_image);
+        relate_image3= (LabelImageView) view.findViewById(R.id.relate_list_3_image);
 
         relate_text1= (TextView) view.findViewById(R.id.relate_list_1_text);
         relate_text2= (TextView) view.findViewById(R.id.relate_list_2_text);
@@ -157,6 +158,10 @@ public class SportSubjectFragment extends Fragment implements View.OnHoverListen
     public void onResume() {
         if(!subject_type.equals("null")){
             sendLog();
+        }
+        if(objects!=null&&payHandler!=null){
+            payHandler.removeCallbacks(payRunnable);
+            payHandler.postDelayed(payRunnable,500);
         }
         super.onResume();
     }
@@ -228,7 +233,8 @@ public class SportSubjectFragment extends Fragment implements View.OnHoverListen
     };
     private void buildDetail(){
         objects=list.get(mVerticalPagerView.getCurrentDataSelectPosition());
-        Picasso.with(getActivity()).load(objects.poster_url).into(detail_labelImage);
+        if(objects.poster_url!=null)
+        detail_labelImage.setLivUrl(objects.poster_url);
         if(objects.expense!=null){
             if (playCheckSubsc != null && !playCheckSubsc.isUnsubscribed()) {
                 playCheckSubsc.unsubscribe();
@@ -331,10 +337,9 @@ public class SportSubjectFragment extends Fragment implements View.OnHoverListen
         });
     }
     private void buildRelateList(final Item[] items){
-        Picasso.with(getActivity()).load(items[0].adlet_url).memoryPolicy(MemoryPolicy.NO_CACHE).into(relate_image1);
-        Picasso.with(getActivity()).load(items[1].adlet_url).memoryPolicy(MemoryPolicy.NO_CACHE).into(relate_image2);
-        Picasso.with(getActivity()).load(items[2].adlet_url).memoryPolicy(MemoryPolicy.NO_CACHE).into(relate_image3);
-
+        relate_image1.setLivUrl(items[0].adlet_url);
+        relate_image2.setLivUrl(items[1].adlet_url);
+        relate_image3.setLivUrl(items[2].adlet_url);
 
         relate_list.setVisibility(View.VISIBLE);
 
@@ -349,6 +354,7 @@ public class SportSubjectFragment extends Fragment implements View.OnHoverListen
         relate_image1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                leaveIndex=mVerticalPagerView.getCurrentDataSelectPosition();
                 intent.toDetailPage(getActivity(),"gather",items[0].pk);
                 out.put("to","detail");
             }
@@ -356,6 +362,7 @@ public class SportSubjectFragment extends Fragment implements View.OnHoverListen
         relate_image2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                leaveIndex=mVerticalPagerView.getCurrentDataSelectPosition();
                 intent.toDetailPage(getActivity(),"gather",items[1].pk);
                 out.put("to","detail");
             }
@@ -363,6 +370,7 @@ public class SportSubjectFragment extends Fragment implements View.OnHoverListen
         relate_image3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                leaveIndex=mVerticalPagerView.getCurrentDataSelectPosition();
                 intent.toDetailPage(getActivity(),"gather",items[2].pk);
                 out.put("to","detail");
             }
@@ -408,13 +416,14 @@ public class SportSubjectFragment extends Fragment implements View.OnHoverListen
             case MotionEvent.ACTION_HOVER_ENTER:
                     leaveIndex=mVerticalPagerView.getCurrentDataSelectPosition();
                     Log.i("btnHover","leaverIndex: "+leaveIndex);
+                    v.requestFocus();
                     v.requestFocusFromTouch();
                     break;
                 case MotionEvent.ACTION_HOVER_EXIT:
-                   Log.i("btnHover","currentPosition :"+mVerticalPagerView.getCurrentDataSelectPosition()+"  leaveIndex: "+leaveIndex);
-                    if(leaveIndex>=0){
-                        mVerticalPagerView.getChildViewAt(leaveIndex).requestFocusFromTouch();
-                    }
+//                   Log.i("btnHover","currentPosition :"+mVerticalPagerView.getCurrentDataSelectPosition()+"  leaveIndex: "+leaveIndex);
+//                    if(leaveIndex>=0){
+//                        mVerticalPagerView.getChildViewAt(leaveIndex).requestFocusFromTouch();
+//                    }
                 default:
                     break;
         }
@@ -429,13 +438,15 @@ public class SportSubjectFragment extends Fragment implements View.OnHoverListen
                    break;
                case MotionEvent.ACTION_HOVER_ENTER:
                    leaveIndex=mVerticalPagerView.getCurrentDataSelectPosition();
+                   if(!v.isFocused())
+                   v.requestFocusFromTouch();
                    Log.i("btnHover","leaverIndex: "+leaveIndex);
                    break;
                case MotionEvent.ACTION_HOVER_EXIT:
-                   Log.i("btnHover","currentPosition :"+mVerticalPagerView.getCurrentDataSelectPosition()+"  leaveIndex: "+leaveIndex);
-                   if(leaveIndex>=0){
-                       mVerticalPagerView.getChildViewAt(leaveIndex).requestFocusFromTouch();
-                   }
+//                   Log.i("btnHover","currentPosition :"+mVerticalPagerView.getCurrentDataSelectPosition()+"  leaveIndex: "+leaveIndex);
+//                   if(leaveIndex>=0){
+//                       mVerticalPagerView.getChildViewAt(leaveIndex).requestFocusFromTouch();
+//                   }
                default:
                    break;
            }
@@ -449,6 +460,7 @@ public class SportSubjectFragment extends Fragment implements View.OnHoverListen
             public void onClick(View v) {
                 // longhai TODO
                 mVerticalPagerView.pageArrowUp();
+                leaveIndex=-1;
             }
         });
         down_arrow.setOnClickListener(new View.OnClickListener() {
@@ -456,6 +468,7 @@ public class SportSubjectFragment extends Fragment implements View.OnHoverListen
             public void onClick(View v) {
                 // longhai TODO
                 mVerticalPagerView.pageArrowDown();
+                leaveIndex=-1;
             }
         });
     }
@@ -515,8 +528,22 @@ public class SportSubjectFragment extends Fragment implements View.OnHoverListen
             }
         }
     }
+    private void normalItemNoSelect(View view,int position){
+        if(view!=null) {
+            RelativeLayout normal = (RelativeLayout) view.findViewById(R.id.nomarl);
+            if(normal.getVisibility()==View.VISIBLE){
+                Objects ob = list.get(position);
+                if (ob.recommend_status == 1) {
+                    normal.setBackgroundResource(R.drawable.normal_game);
+                } else {
+                    normal.setBackgroundResource(R.drawable.emphasis_game_normal);
+                }
+            }
+        }
+    }
     @Override
     public void onClick(View v) {
+        leaveIndex=mVerticalPagerView.getCurrentDataSelectPosition();
         int i = v.getId();
         if (i == R.id.buy) {
             PayCheckUtil pay=new PayCheckUtil();
@@ -627,7 +654,7 @@ public class SportSubjectFragment extends Fragment implements View.OnHoverListen
         }
 
     }
-
+    private int lastHoverIndex=-1;
     @Override
     public void onItemHovered(View view, MotionEvent event, Object var3, int var4) {
         RelativeLayout big= (RelativeLayout) view.findViewById(R.id.focus_tobig);
@@ -638,6 +665,9 @@ public class SportSubjectFragment extends Fragment implements View.OnHoverListen
             case MotionEvent.ACTION_HOVER_MOVE:
                 break;
             case MotionEvent.ACTION_HOVER_ENTER:
+                if(leaveIndex>=0){
+                    mVerticalPagerView.getChildViewAt(leaveIndex).requestFocusFromTouch();
+                }
                 if(view.hasFocus()){
                     if(recommand==1){
                         big.setBackgroundResource(R.drawable.big_game_hover);
@@ -652,6 +682,7 @@ public class SportSubjectFragment extends Fragment implements View.OnHoverListen
                     }
                     View view1=mVerticalPagerView.getChildViewAt(mVerticalPagerView.getCurrentDataSelectPosition());
                     bigItemNoSelect(view1,mVerticalPagerView.getCurrentDataSelectPosition());
+                    lastHoverIndex=var4;
                 }
                 break;
             case MotionEvent.ACTION_HOVER_EXIT:
@@ -668,15 +699,25 @@ public class SportSubjectFragment extends Fragment implements View.OnHoverListen
                         normal.setBackgroundResource(R.drawable.emphasis_game_normal);
                     }
                 }
+                lastHoverIndex=-1;
                 break;
         }
     }
     private int leaveIndex=-1;
     @Override
-    public void onKeyLeave(View view, int i) {
-        leaveIndex = mVerticalPagerView.getCurrentDataSelectPosition();
-        Log.d("LH/", "leaveIndex:" + leaveIndex);
-
+    public void onKeyDown(View view, int i, KeyEvent keyEvent) {
+        switch (i){
+            case KeyEvent.KEYCODE_DPAD_RIGHT:
+                leaveIndex = mVerticalPagerView.getCurrentDataSelectPosition();
+                break;
+            case KeyEvent.KEYCODE_DPAD_DOWN:
+            case KeyEvent.KEYCODE_DPAD_UP:
+                if(lastHoverIndex>=0){
+                    View view1=mVerticalPagerView.getChildViewAt(lastHoverIndex);
+                    normalItemNoSelect(view1,lastHoverIndex);
+                }
+                break;
+        }
     }
 
     @Override
