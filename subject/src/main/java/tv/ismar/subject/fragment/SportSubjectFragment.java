@@ -126,11 +126,8 @@ public class SportSubjectFragment extends Fragment implements View.OnHoverListen
         hasbuy= (TextView) view.findViewById(R.id.havebuy);
         up_arrow= (ImageView) view.findViewById(R.id.up_image);
         down_arrow= (ImageView) view.findViewById(R.id.down_image);
-        up_arrow.setOnHoverListener(this);
-        down_arrow.setOnHoverListener(this);
         arrowListent();
         relate_list= (LinearLayout) view.findViewById(R.id.relate_list);
-        relate_list.setOnHoverListener(this);
         relate_image1= (LabelImageView3) view.findViewById(R.id.relate_list_1_image);
         relate_image2= (LabelImageView3) view.findViewById(R.id.relate_list_2_image);
         relate_image3= (LabelImageView3) view.findViewById(R.id.relate_list_3_image);
@@ -410,17 +407,18 @@ public class SportSubjectFragment extends Fragment implements View.OnHoverListen
     @Override
     public boolean onHover(View v, MotionEvent event) {
         switch (event.getAction()){
+            case MotionEvent.ACTION_HOVER_MOVE:
+                break;
             case MotionEvent.ACTION_HOVER_ENTER:
-                case MotionEvent.ACTION_HOVER_MOVE:
                     leaveIndex=mVerticalPagerView.getCurrentDataSelectPosition();
-                    Log.i("btnHover",leaveIndex+"-leaverIndex");
-                    v.requestFocus();
+                    Log.i("btnHover","leaverIndex: "+leaveIndex);
+                    v.requestFocusFromTouch();
                     break;
                 case MotionEvent.ACTION_HOVER_EXIT:
-//                    Log.i("onHover","currentPosition :"+mVerticalPagerView.getCurrentDataSelectPosition());
-//                    if(leaveIndex>0){
-//                        mVerticalPagerView.getChildViewAt(leaveIndex).requestFocusFromTouch();
-//                    }
+                   Log.i("btnHover","currentPosition :"+mVerticalPagerView.getCurrentDataSelectPosition()+"  leaveIndex: "+leaveIndex);
+                    if(leaveIndex>=0){
+                        mVerticalPagerView.getChildViewAt(leaveIndex).requestFocusFromTouch();
+                    }
                 default:
                     break;
         }
@@ -465,9 +463,9 @@ public class SportSubjectFragment extends Fragment implements View.OnHoverListen
             big.setVisibility(View.GONE);
             Objects ob=list.get(position);
             if(ob.recommend_status==1){
-                normal.setBackgroundResource(R.drawable.normal_game_hover);
+                normal.setBackgroundResource(R.drawable.normal_game);
             }else{
-                normal.setBackgroundResource(R.drawable.emphasis_hover);
+                normal.setBackgroundResource(R.drawable.emphasis_game_normal);
             }
         }
     }
@@ -591,9 +589,9 @@ public class SportSubjectFragment extends Fragment implements View.OnHoverListen
         Objects ob=list.get(var4);
         int recommand=ob.recommend_status;
         switch (event.getAction()){
-            case MotionEvent.ACTION_HOVER_ENTER:
             case MotionEvent.ACTION_HOVER_MOVE:
-
+                break;
+            case MotionEvent.ACTION_HOVER_ENTER:
                 if(view.hasFocus()){
                     if(recommand==1){
                         big.setBackgroundResource(R.drawable.big_game_hover);
@@ -696,7 +694,7 @@ public class SportSubjectFragment extends Fragment implements View.OnHoverListen
                 String time = formatter.format(objects.start_time);
                 String times[] = time.split(" ");
                 String month[] = times[0].split("-");
-                holder.big_time.setTextColor(context.getResources().getColor(R.color._333333));
+                holder.big_time.setTextColor(context.getResources().getColor(R.color._999999));
                 holder.big_time.setText(month[0] + "月" + month[1] + "日" + " " + times[1] + " 未开始");
                 holder.start_time_ym.setText(month[0] + "月" + month[1] + "日");
                 holder.start_time.setText(times[1]);
