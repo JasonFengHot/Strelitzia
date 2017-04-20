@@ -209,7 +209,7 @@ public class ChildFragment extends ChannelBaseFragment implements Flag.ChangeCal
         int itemWidth = getResources().getDimensionPixelOffset(R.dimen.child_img_small_w);
         int itemHeight = getResources().getDimensionPixelOffset(R.dimen.child_img_small_h);
 
-        for (int i = 0; i < 7; i++) {
+        for (int i = 0; i < Math.min(7,posters.size()); i++) {
             View itemContainer = LayoutInflater.from(mContext).inflate(R.layout.item_comic_fragment, null);
             ImageView itemImg = (ImageView) itemContainer.findViewById(R.id.item_img);
             TextView itemText = (TextView) itemContainer.findViewById(R.id.item_title);
@@ -384,7 +384,7 @@ public class ChildFragment extends ChannelBaseFragment implements Flag.ChangeCal
         };
 
 
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < Math.min(3,carousels.size()); i++) {
             indicatorImgs[i].setTag(i);
             indicatorImgs[i].setOnFocusChangeListener(itemFocusChangeListener);
             indicatorImgs[i].setOnClickListener(ItemClickListener);

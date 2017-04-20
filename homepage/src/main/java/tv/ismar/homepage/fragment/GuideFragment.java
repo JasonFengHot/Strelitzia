@@ -338,8 +338,7 @@ public class GuideFragment extends ChannelBaseFragment {
         }
         guideRecommmendList.removeAllViews();
         ArrayList<FrameLayout> imageViews = new ArrayList<FrameLayout>();
-        int posterCount=posters.size()>8?8:posters.size();
-        for (int i = 0; i < posterCount; i++) {
+        for (int i = 0; i < Math.min(8,posters.size()); i++) {
             if (mContext == null) {
                 return;
             }
@@ -429,13 +428,14 @@ public class GuideFragment extends ChannelBaseFragment {
         allVideoUrl = new ArrayList<>();
 
         try {
-
-            Picasso.with(mContext).load(carousels.get(0).getThumb_image()).memoryPolicy(MemoryPolicy.NO_STORE).into(toppage_carous_imageView1);
-            toppage_carous_imageView1.setTag(0);
-            toppage_carous_imageView1.setTag(R.drawable.launcher_selector, carousels.get(0));
-            toppage_carous_imageView1.setOnClickListener(ItemClickListener);
-            toppage_carous_imageView1.setOnFocusChangeListener(itemFocusChangeListener);
-            carousels.get(0).setPosition(0);
+            if(carousels.size()>0) {
+                Picasso.with(mContext).load(carousels.get(0).getThumb_image()).memoryPolicy(MemoryPolicy.NO_STORE).into(toppage_carous_imageView1);
+                toppage_carous_imageView1.setTag(0);
+                toppage_carous_imageView1.setTag(R.drawable.launcher_selector, carousels.get(0));
+                toppage_carous_imageView1.setOnClickListener(ItemClickListener);
+                toppage_carous_imageView1.setOnFocusChangeListener(itemFocusChangeListener);
+                carousels.get(0).setPosition(0);
+            }
             if (carousels.size() > 1) {
                 Picasso.with(mContext).load(carousels.get(1).getThumb_image()).memoryPolicy(MemoryPolicy.NO_STORE).into(toppage_carous_imageView2);
                 toppage_carous_imageView2.setTag(1);
@@ -458,7 +458,7 @@ public class GuideFragment extends ChannelBaseFragment {
             toppage_carous_imageView1.setTag(R.id.view_position_tag, 2);
             toppage_carous_imageView2.setTag(R.id.view_position_tag, 3);
             toppage_carous_imageView3.setTag(R.id.view_position_tag, 4);
-
+            if(carousels.size()>0)
             allVideoUrl.add(carousels.get(0).getVideo_url());
             if (carousels.size() > 1) {
                 allVideoUrl.add(carousels.get(1).getVideo_url());
