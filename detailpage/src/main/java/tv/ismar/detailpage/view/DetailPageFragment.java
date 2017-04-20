@@ -380,7 +380,7 @@ public class DetailPageFragment extends Fragment implements DetailPageContract.V
     public void notifyPlayCheck(PlayCheckEntity playCheckEntity) {
         mModel.notifyPlayCheck(playCheckEntity);
         mRemandDay = playCheckEntity.getRemainDay();
-
+        handler.sendEmptyMessageDelayed(0,300);
 //        boolean isBuy;
 //        if (playCheckEntity.getRemainDay() == 0) {
 //            isBuy = false;// 过期了。认为没购买
@@ -455,7 +455,6 @@ public class DetailPageFragment extends Fragment implements DetailPageContract.V
                 dataCollectionProperties.put(EventProperty.SUBITEM, mItemEntity.getItemPk());
                 dataCollectionProperties.put(EventProperty.LOCATION, "detail");
                 new NetworkUtils.DataCollectionTask().execute(NetworkUtils.DETAIL_PLAY_LOAD, dataCollectionProperties);
-                handler.sendEmptyMessageDelayed(0,300);
             }
 
             mModel.showLayout();
