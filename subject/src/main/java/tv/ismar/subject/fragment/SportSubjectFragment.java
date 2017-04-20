@@ -74,7 +74,7 @@ public class SportSubjectFragment extends Fragment implements View.OnHoverListen
     private Button buy,play,subscribe;
     private SkyService skyService;
     private LinearLayout relate_list;
-    private LabelImageView detail_labelImage;
+    private ImageView detail_labelImage;
     private Subscription playCheckSubsc;
     private TextView price,hasbuy;
     private ImageView cp_title,up_arrow,down_arrow,bg;
@@ -147,7 +147,7 @@ public class SportSubjectFragment extends Fragment implements View.OnHoverListen
         subscribe.setOnHoverListener(this);
 
         cp_title= (ImageView) view.findViewById(R.id.cp_title);
-        detail_labelImage= (LabelImageView) view.findViewById(R.id.detail_labelImage);
+        detail_labelImage= (ImageView) view.findViewById(R.id.detail_labelImage);
         skyService=SkyService.ServiceManager.getService();
         mVerticalPagerView.setOnItemActionListener(this);
         getData();
@@ -234,7 +234,7 @@ public class SportSubjectFragment extends Fragment implements View.OnHoverListen
     private void buildDetail(){
         objects=list.get(mVerticalPagerView.getCurrentDataSelectPosition());
         if(objects.poster_url!=null)
-        detail_labelImage.setLivUrl(objects.poster_url);
+        Picasso.with(getActivity()).load(objects.poster_url).into(detail_labelImage);
         if(objects.expense!=null){
             if (playCheckSubsc != null && !playCheckSubsc.isUnsubscribed()) {
                 playCheckSubsc.unsubscribe();
