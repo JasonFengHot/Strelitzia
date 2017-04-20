@@ -83,7 +83,6 @@ public class SportSubjectFragment extends Fragment implements View.OnHoverListen
     private Objects objects;
     private String subject_type="null";
     private PopupWindow popupWindow;
-    private boolean live_list=false;
     private TextView divider,relate_title;
     public String channel;
     public String from;
@@ -409,7 +408,6 @@ public class SportSubjectFragment extends Fragment implements View.OnHoverListen
 
     @Override
     public boolean onHover(View v, MotionEvent event) {
-        live_list=true;
         switch (event.getAction()){
             case MotionEvent.ACTION_HOVER_ENTER:
                 case MotionEvent.ACTION_HOVER_MOVE:
@@ -463,7 +461,6 @@ public class SportSubjectFragment extends Fragment implements View.OnHoverListen
 
     @Override
     public void onClick(View v) {
-        live_list=true;
         int i = v.getId();
         if (i == R.id.buy) {
             PayCheckUtil pay=new PayCheckUtil();
@@ -546,7 +543,7 @@ public class SportSubjectFragment extends Fragment implements View.OnHoverListen
 
     @Override
     public void onItemClick(View view, int i) {
-        live_list=false;
+        Log.i("OnItemclick","true"+ "position: "+i);
         view.requestFocusFromTouch();
     }
 
@@ -578,7 +575,6 @@ public class SportSubjectFragment extends Fragment implements View.OnHoverListen
         RelativeLayout normal= (RelativeLayout) view.findViewById(R.id.nomarl);
         Objects ob=list.get(var4);
         int recommand=ob.recommend_status;
-        live_list=false;
         switch (event.getAction()){
             case MotionEvent.ACTION_HOVER_ENTER:
             case MotionEvent.ACTION_HOVER_MOVE:
