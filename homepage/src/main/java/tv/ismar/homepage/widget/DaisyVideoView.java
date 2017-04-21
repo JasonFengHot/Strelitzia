@@ -202,6 +202,7 @@ public class DaisyVideoView extends SurfaceView implements MediaPlayerControl {
 
 	public void stopPlayback() {
 		if (player != null) {
+			Log.d("LH/", "Home DaisyVideoView stopPlayback.");
 			player.stop();
 			player.release();
 			player = null;
@@ -536,7 +537,13 @@ public class DaisyVideoView extends SurfaceView implements MediaPlayerControl {
 			mSurfaceHolder = null;
 			if (mMediaController != null)
 				mMediaController.hide();
-			release(true);
+			new Thread(){
+				@Override
+				public void run() {
+					Log.d("LH/", "Home DaisyVideoView release in thread.");
+					release(true);
+				}
+			}.start();
 		}
 	};
 
