@@ -57,7 +57,6 @@ import tv.ismar.app.network.entity.EventProperty;
 import tv.ismar.app.network.entity.PlayCheckEntity;
 import tv.ismar.app.widget.LabelImageView;
 import tv.ismar.app.widget.LoadingDialog;
-import tv.ismar.homepage.widget.LabelImageView3;
 import tv.ismar.subject.R;
 import tv.ismar.subject.Utils.PayCheckUtil;
 import tv.ismar.subject.adapter.SportPresenterHolder;
@@ -78,7 +77,7 @@ public class SportSubjectFragment extends Fragment implements View.OnHoverListen
     private Subscription playCheckSubsc;
     private TextView price,hasbuy;
     private ImageView cp_title,up_arrow,down_arrow,bg;
-    private tv.ismar.app.widget.LabelImageView relate_image1,relate_image2,relate_image3;
+    private LabelImageView relate_image1,relate_image2,relate_image3;
     private TextView relate_text1,relate_text2,relate_text3;
     private TextView game_time,title;
     private Objects objects;
@@ -364,6 +363,7 @@ public class SportSubjectFragment extends Fragment implements View.OnHoverListen
         relate_image1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Log.i("Onclick","relateOnclick");
                 leaveIndex=mVerticalPagerView.getCurrentDataSelectPosition();
                 intent.toDetailPage(getActivity(),"gather",items[0].pk);
                 out.put("to","detail");
@@ -448,15 +448,12 @@ public class SportSubjectFragment extends Fragment implements View.OnHoverListen
                    break;
                case MotionEvent.ACTION_HOVER_ENTER:
                    leaveIndex=mVerticalPagerView.getCurrentDataSelectPosition();
-                   if(!v.isFocused())
                    v.requestFocusFromTouch();
                    Log.i("btnHover","leaverIndex: "+leaveIndex);
                    break;
                case MotionEvent.ACTION_HOVER_EXIT:
-//                   Log.i("btnHover","currentPosition :"+mVerticalPagerView.getCurrentDataSelectPosition()+"  leaveIndex: "+leaveIndex);
-//                   if(leaveIndex>=0){
-//                       mVerticalPagerView.getChildViewAt(leaveIndex).requestFocusFromTouch();
-//                   }
+                   Log.i("relateHover","relate exitHover"+ leaveIndex);
+                   break;
                default:
                    break;
            }
@@ -481,7 +478,25 @@ public class SportSubjectFragment extends Fragment implements View.OnHoverListen
                 leaveIndex=-1;
             }
         });
+        up_arrow.setOnHoverListener(arrowOnhover);
+        down_arrow.setOnHoverListener(arrowOnhover);
     }
+    View.OnHoverListener arrowOnhover=new View.OnHoverListener() {
+        @Override
+        public boolean onHover(View v, MotionEvent event) {
+            switch (event.getAction()){
+                case MotionEvent.ACTION_HOVER_ENTER:
+                case  MotionEvent.ACTION_HOVER_MOVE:
+                    leaveIndex=mVerticalPagerView.getCurrentDataSelectPosition();
+                    v.setFocusableInTouchMode(true);
+                    v.requestFocusFromTouch();
+                    break;
+                case MotionEvent.ACTION_HOVER_EXIT:
+                    break;
+            }
+            return false;
+        }
+    };
     private void listItemToBig(View view,int position){
         if(view!=null) {
             RelativeLayout big= (RelativeLayout) view.findViewById(R.id.focus_tobig);
@@ -561,7 +576,7 @@ public class SportSubjectFragment extends Fragment implements View.OnHoverListen
             out.put("to","expense");
         }else if(i==R.id.play){
             PageIntent intent=new PageIntent();
-            intent.toPlayPage(getActivity(),objects.pk,objects.item_pk, Source.GATHER);
+            intent.toPlayPage(getActivity(),objects.pk,0,Source.GATHER);
             out.put("to","player");
             out.put("to_item",objects.pk);
             out.put("to_title",objects.title);
@@ -643,6 +658,8 @@ public class SportSubjectFragment extends Fragment implements View.OnHoverListen
     @Override
     public void onItemFocusChanged(View view, boolean focused, int position) {
         Log.d("LH/", "onItemFocusChanged:" + focused + " - " + position+" - "+mVerticalPagerView.getCurrentDataSelectPosition());
+        up_arrow.setFocusableInTouchMode(false);
+        down_arrow.setFocusableInTouchMode(false);
         if (leaveIndex >= 0) {
             if (leaveIndex != position) {
                 mVerticalPagerView.getChildViewAt(leaveIndex).requestFocus();
@@ -719,6 +736,10 @@ public class SportSubjectFragment extends Fragment implements View.OnHoverListen
         switch (i){
             case KeyEvent.KEYCODE_DPAD_RIGHT:
                 leaveIndex = mVerticalPagerView.getCurrentDataSelectPosition();
+                if(lastHoverIndex>=0){
+                    View view1=mVerticalPagerView.getChildViewAt(lastHoverIndex);
+                    normalItemNoSelect(view1,lastHoverIndex);
+                }
                 break;
             case KeyEvent.KEYCODE_DPAD_DOWN:
             case KeyEvent.KEYCODE_DPAD_UP:
