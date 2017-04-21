@@ -374,6 +374,8 @@ public class SportSubjectFragment extends Fragment implements View.OnHoverListen
         relate_image2.setOnHoverListener(relateOnhoverListener);
         relate_image3.setOnHoverListener(relateOnhoverListener);
 
+        relate_image1.setOnFocusChangeListener(imageFocus);
+
         final PageIntent intent=new PageIntent();
         relate_image1.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -461,6 +463,8 @@ public class SportSubjectFragment extends Fragment implements View.OnHoverListen
            switch (event.getAction()){
                case MotionEvent.ACTION_HOVER_MOVE:
                case MotionEvent.ACTION_HOVER_ENTER:
+                   down_arrow.setFocusable(false);
+                   down_arrow.setFocusableInTouchMode(false);
                    leaveIndex=mVerticalPagerView.getCurrentDataSelectPosition();
                    v.requestFocus();
                    v.requestFocusFromTouch();
@@ -475,7 +479,15 @@ public class SportSubjectFragment extends Fragment implements View.OnHoverListen
            return false;
        }
    };
-
+    private View.OnFocusChangeListener imageFocus=new View.OnFocusChangeListener() {
+        @Override
+        public void onFocusChange(View v, boolean hasFocus) {
+            if (hasFocus){
+                down_arrow.setFocusableInTouchMode(false);
+                down_arrow.setFocusable(false);
+            }
+        }
+    };
     private void arrowListent(){
         up_arrow.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -497,7 +509,8 @@ public class SportSubjectFragment extends Fragment implements View.OnHoverListen
         up_arrow.setOnHoverListener(arrowOnhover);
         down_arrow.setOnHoverListener(arrowOnhover);
     }
-    View.OnHoverListener arrowOnhover=new View.OnHoverListener() {
+
+    private View.OnHoverListener arrowOnhover=new View.OnHoverListener() {
         @Override
         public boolean onHover(View v, MotionEvent event) {
             switch (event.getAction()){
@@ -759,6 +772,10 @@ public class SportSubjectFragment extends Fragment implements View.OnHoverListen
                 break;
             case KeyEvent.KEYCODE_DPAD_DOWN:
             case KeyEvent.KEYCODE_DPAD_UP:
+                up_arrow.setFocusableInTouchMode(false);
+                up_arrow.setFocusable(false);
+                down_arrow.setFocusableInTouchMode(false);
+                down_arrow.setFocusable(false);
                 if(lastHoverIndex>=0){
                     View view1=mVerticalPagerView.getChildViewAt(lastHoverIndex);
                     normalItemNoSelect(view1,lastHoverIndex);
@@ -773,13 +790,17 @@ public class SportSubjectFragment extends Fragment implements View.OnHoverListen
         setUIData(sportPresenterHolder, (Objects) object);
         if (mVerticalPagerView.getFirstVisibleChildIndex() == 0) {
             up_arrow.setBackground(getActivity().getResources().getDrawable(R.drawable.up_nomral));
+            up_arrow.setHovered(false);
             down_arrow.setBackground(getActivity().getResources().getDrawable(R.drawable.arrow_down_hover));
         } else if (mVerticalPagerView.getLastVisibleChildIndex() == list.size() - 1) {
             up_arrow.setBackground(getActivity().getResources().getDrawable(R.drawable.arrow_hover_select));
             down_arrow.setBackground(getActivity().getResources().getDrawable(R.drawable.down_normal));
+            down_arrow.setHovered(false);
         } else {
             up_arrow.setBackground(getActivity().getResources().getDrawable(R.drawable.arrow_hover_select));
             down_arrow.setBackground(getActivity().getResources().getDrawable(R.drawable.arrow_down_hover));
+            down_arrow.setHovered(true);
+            up_arrow.setHovered(true);
         }
         if(position==mVerticalPagerView.getCurrentDataSelectPosition()){
             buildDetail();
