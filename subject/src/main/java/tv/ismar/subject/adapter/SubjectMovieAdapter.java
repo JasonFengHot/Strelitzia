@@ -14,7 +14,6 @@ import java.util.List;
 
 import tv.ismar.app.core.VipMark;
 import tv.ismar.app.models.SubjectEntity;
-import tv.ismar.searchpage.model.Expense;
 import tv.ismar.subject.R;
 
 /**
@@ -58,7 +57,12 @@ public class SubjectMovieAdapter extends RecyclerView.Adapter<MovieViewHolder> {
     @Override
     public void onBindViewHolder(final MovieViewHolder holder, int position) {
         SubjectEntity.ObjectsBean item = mList.get(position);
-        Picasso.with(mContext).load(item.getList_url()).memoryPolicy(MemoryPolicy.NO_CACHE).memoryPolicy(MemoryPolicy.NO_STORE).placeholder(mContext.getResources().getDrawable(R.drawable.vertical_preview_bg)).into(holder.movie_item_poster);
+        String list_url=item.getList_url();
+        if(list_url!=null&&!"".equals(list_url)) {
+            Picasso.with(mContext).load(item.getList_url()).memoryPolicy(MemoryPolicy.NO_CACHE).memoryPolicy(MemoryPolicy.NO_STORE).placeholder(mContext.getResources().getDrawable(R.drawable.vertical_preview_bg)).into(holder.movie_item_poster);
+        }else{
+            holder.movie_item_poster.setImageResource(R.drawable.vertical_preview_bg);
+        }
         if (item.getBean_score() > 0) {
             holder.movie_item_score.setText(item.getBean_score()+"");
             holder.movie_item_score.setVisibility(View.VISIBLE);

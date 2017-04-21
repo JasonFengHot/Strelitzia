@@ -40,7 +40,7 @@
             <Button
                 android:id="@+id/update_now_bt"
                 android:layout_width="@dimen/update_confirm_button_width"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/update_confirm_button_height"
                 android:layout_alignParentLeft="true"
                 android:layout_centerHorizontal="true"
                 android:layout_marginLeft="@dimen/update_left_btn_ml"
@@ -55,7 +55,7 @@
             <Button
                 android:id="@+id/update_later_bt"
                 android:layout_width="@dimen/update_confirm_button_width"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/update_confirm_button_height"
                 android:layout_alignParentRight="true"
                 android:layout_centerHorizontal="true"
                 android:layout_marginRight="@dimen/update_left_btn_ml"

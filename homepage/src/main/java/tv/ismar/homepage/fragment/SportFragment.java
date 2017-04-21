@@ -2,21 +2,16 @@ package tv.ismar.homepage.fragment;
 
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.preference.PreferenceManager;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-//import org.apache.commons.lang3.StringUtils;
 
 import com.blankj.utilcode.utils.StringUtils;
 
@@ -49,6 +44,8 @@ import tv.ismar.homepage.R;
 import tv.ismar.homepage.view.HomePageActivity;
 import tv.ismar.homepage.widget.HomeItemContainer;
 import tv.ismar.homepage.widget.LabelImageView3;
+
+//import org.apache.commons.lang3.StringUtils;
 
 /**
  * Created by huaijie on 5/18/15.
@@ -397,7 +394,7 @@ public class SportFragment extends ChannelBaseFragment {
     private void fillData(ArrayList<Carousel> carousels, ArrayList<Poster> postlist) {
     	looppost.clear();
         LabelImageView3[] sportCards = {sport_card1, sport_card2, sport_card3};
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i< Math.min(3,carousels.size()); i++) {
             PicassoUtils.load(mContext, carousels.get(i).getThumb_image(), sportCards[i]);
             carousels.get(i).setPosition(i);
             sportCards[i].setTag(R.drawable.launcher_selector, carousels.get(i));
@@ -418,7 +415,7 @@ public class SportFragment extends ChannelBaseFragment {
 
         LabelImageView3[] sportChannelImages = {sport_channel1_image, sport_channel2_image, sport_channel3_image, sport_channel4_image};
         TextView[] sportChannleSubtitles = {sport_channel1_subtitle, sport_channel2_subtitle, sport_channel3_subtitle, sport_channel4_subtitle};
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < Math.min(4,postlist.size()); i++) {
         	postlist.get(i).setPosition(i);
             String imageUrl = postlist.get(i).getCustom_image();
             if (TextUtils.isEmpty(imageUrl)){

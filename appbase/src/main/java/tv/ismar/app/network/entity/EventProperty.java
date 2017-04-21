@@ -52,5 +52,7 @@ public class EventProperty {
     public final static String MAC = "MAC";
     public final static String INTERFACE_TYPE = "interface_type";
     public final static String ID = "id";
+    public final static String FROM = "from";
+    public final static String USER="user";
 
 }

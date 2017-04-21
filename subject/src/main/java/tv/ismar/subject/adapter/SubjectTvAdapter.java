@@ -13,9 +13,7 @@ import com.squareup.picasso.Picasso;
 import java.util.List;
 
 import tv.ismar.app.core.VipMark;
-import tv.ismar.app.entity.Item;
 import tv.ismar.app.models.SubjectEntity;
-import tv.ismar.searchpage.model.Expense;
 import tv.ismar.subject.R;
 
 /**
@@ -66,7 +64,17 @@ public class SubjectTvAdapter extends RecyclerView.Adapter<MovieViewHolder> {
             holder.movie_item_score.setVisibility(View.GONE);
         }
         holder.movie_item_title.setText(item.getTitle());
-        Picasso.with(mContext).load(item.getPoster_url()).memoryPolicy(MemoryPolicy.NO_CACHE).memoryPolicy(MemoryPolicy.NO_STORE).placeholder(R.drawable.list_item_preview_bg).into(holder.movie_item_poster);
+        String poster_url=item.getPoster_url();
+        if(poster_url!=null&&!"".equals(poster_url)) {
+            Picasso.with(mContext).load(poster_url)
+                    .memoryPolicy(MemoryPolicy.NO_CACHE)
+                    .memoryPolicy(MemoryPolicy.NO_STORE)
+                    .placeholder(R.drawable.list_item_preview_bg)
+                    .error(R.drawable.list_item_preview_bg)
+                    .into(holder.movie_item_poster);
+        }else{
+            holder.movie_item_poster.setImageResource(R.drawable.list_item_preview_bg);
+        }
         if(item.getExpense()!=null){
             Picasso.with(mContext).load(VipMark.getInstance().getImage((Activity) mContext,item.getExpense().pay_type,item.getExpense().cpid)).memoryPolicy(MemoryPolicy.NO_STORE).memoryPolicy(MemoryPolicy.NO_CACHE).into(holder.movie_item_mark);
             holder.movie_item_mark.setVisibility(View.VISIBLE);

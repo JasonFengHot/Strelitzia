@@ -68,7 +68,11 @@ public class PayLayerVipActivity extends BaseActivity implements OnHoverListener
 
     @Override
     protected void onResume() {
-        mPageStatistics.packageDetailIn(itemId + "",title, "detail");
+        if(fromPage!=null&&fromPage.equals("gather")){
+            mPageStatistics.packageDetailIn(itemId + "",title, fromPage);
+        }else {
+            mPageStatistics.packageDetailIn(itemId + "", title, "detail");
+        }
         super.onResume();
     }
 
@@ -103,7 +107,7 @@ public class PayLayerVipActivity extends BaseActivity implements OnHoverListener
 
 
     private void payLayerVip(String cpid, String itemId) {
-        if(fromPage.equals(Source.SUBJECT.getValue())){
+        if(fromPage!=null&&fromPage.equals(Source.GATHER.getValue())){
             mSkyService.apiPaylayerVipSubject(itemId+"")
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())

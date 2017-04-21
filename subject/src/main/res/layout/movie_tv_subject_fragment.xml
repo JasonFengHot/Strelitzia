@@ -39,7 +39,8 @@
         android:layout_width="@dimen/subject_movie_layer_right_w"
         android:layout_height="match_parent"
         android:src="@drawable/right_layer_movie"
-        android:layout_gravity="right"/>
+        android:layout_gravity="right"
+        android:visibility="invisible"/>
 </FrameLayout>
 
 
@@ -81,7 +82,8 @@
             android:layout_width="@dimen/subject_tv_layer_right_w"
             android:layout_height="match_parent"
             android:src="@drawable/right_layer_tv"
-            android:layout_gravity="right"/>
+            android:layout_gravity="right"
+            android:visibility="invisible"/>
     </FrameLayout>
 
     <ImageView
@@ -131,6 +133,7 @@
            android:layout_height="@dimen/subject_btn_h"
            android:background="@drawable/buy_btn_selector"
            android:focusable="true"
+           android:focusableInTouchMode="true"
            android:layout_marginBottom="@dimen/subject_btn_mb"
            />
         <Button
@@ -140,6 +143,7 @@
             android:background="@drawable/like_btn_selector"
             android:layout_marginLeft="@dimen/subject_btn_ml"
             android:focusable="true"
+            android:focusableInTouchMode="true"
             android:layout_marginBottom="@dimen/subject_btn_mb"
             android:nextFocusRight="@id/subject_btn_like"
             />

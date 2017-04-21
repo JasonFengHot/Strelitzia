@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -133,7 +134,7 @@ public class ModuleMessagePopWindow extends PopupWindow implements View.OnClickL
     public void hideCancelBtn() {
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
                 mContext.getResources().getDimensionPixelSize(R.dimen.pop_btn_width),
-                mContext.getResources().getDimensionPixelSize(R.dimen.pop_btn_height)
+                ViewGroup.LayoutParams.MATCH_PARENT
         );
         lp.rightMargin = 0;
         confirmBtn.setLayoutParams(lp);

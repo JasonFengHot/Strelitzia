@@ -3,6 +3,7 @@
     android:orientation="vertical" android:layout_width="@dimen/subject_754"
     android:layout_height="wrap_content"
     android:focusable="true"
+    android:focusableInTouchMode="true"
     >
 
     <RelativeLayout
@@ -10,8 +11,8 @@
         android:layout_width="@dimen/subject_667"
         android:layout_height="@dimen/subject_78"
         android:layout_marginLeft="@dimen/subject_56"
-        android:background="@drawable/emphasis_game_normal"
         android:visibility="visible"
+        android:background="@drawable/item_normal_selector"
         >
             <TextView
                 android:id="@+id/isalive"
@@ -20,6 +21,7 @@
                 android:layout_marginLeft="@dimen/subject_104"
                 android:textSize="@dimen/text_size_18sp"
                 android:layout_marginTop="@dimen/subject_25"
+                android:gravity="center_vertical"
                 android:textColor="#cc0033"
                 android:text="直播中"
                 />
@@ -106,15 +108,16 @@
         android:layout_width="@dimen/subject_731"
         android:layout_height="@dimen/subject_202"
         android:layout_marginLeft="@dimen/subject_23"
-        android:background="@drawable/emphasis_game_focus"
         android:visibility="gone"
+        android:background="@drawable/item_bg_selector"
         >
+
             <ImageView
                 android:id="@+id/big_away_logo"
-                android:layout_width="120dp"
-                android:layout_height="120dp"
-                android:layout_marginLeft="77dp"
-                android:layout_marginTop="23dp"
+                android:layout_width="@dimen/subject_120"
+                android:layout_height="@dimen/subject_120"
+                android:layout_marginLeft="@dimen/subject_77"
+                android:layout_marginTop="@dimen/subject_23"
                 />
             <LinearLayout
                 android:id="@+id/middle_text"

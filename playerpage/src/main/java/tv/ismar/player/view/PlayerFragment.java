@@ -561,11 +561,6 @@ public class PlayerFragment extends Fragment implements PlayerPageContract.View,
         if (mIsmartvPlayer != null && !mIsmartvPlayer.isPlaying()) {
             mIsmartvPlayer.start();
         }
-        int mediaPlayerType = IsmartvActivator.getInstance().getMediaPlayerType();
-        TextView player_type = mBinding.playerType;
-        if (mediaPlayerType == 1) {
-            player_type.setText("MediaCodec");
-        }
 
     }
 
@@ -1180,6 +1175,8 @@ public class PlayerFragment extends Fragment implements PlayerPageContract.View,
                             mIsPreview = true;
                             mItemEntity.setLiveVideo(false);
                             mPresenter.fetchMediaUrl(preview.getUrl(), sign, code);
+                        }else{
+                            goOtherPage(EVENT_COMPLETE_BUY);
                         }
 
 

@@ -6,7 +6,7 @@
 <dimen name="subject_movie_recycleview_pr">810.00dp</dimen>
 <dimen name="subject_movie_layer_left_w">80.00dp</dimen>
 <dimen name="subject_movie_layer_right_w">76.67dp</dimen>
-<dimen name="subject_movie_focus_w">220.00dp</dimen>
+<dimen name="subject_movie_focus_w">218.89dp</dimen>
 <dimen name="subject_movie_focus_h">297.22dp</dimen>
 <dimen name="subject_movie_focus_mt">177.78dp</dimen>
 <dimen name="subject_movie_focus_ml">67.78dp</dimen>
@@ -91,11 +91,13 @@
 <dimen name="sport_game_time_MT">12.78dp</dimen>
 <dimen name="sport_game_title_MT">2.78dp</dimen>
 <dimen name="subject_72">40.00dp</dimen>
+<dimen name="subject_77">42.78dp</dimen>
 <dimen name="subject_27">15.00dp</dimen>
 <dimen name="subject_20">11.11dp</dimen>
 <dimen name="subject_216">120.00dp</dimen>
-<dimen name="subject_94">52.22dp</dimen>
+<dimen name="subject_74">41.11dp</dimen>
 <dimen name="subject_10">5.56dp</dimen>
+<dimen name="subject_7">3.89dp</dimen>
 <dimen name="subject_127">70.56dp</dimen>
 <dimen name="subject_43">23.89dp</dimen>
 <dimen name="subject_266">147.78dp</dimen>
@@ -149,6 +151,11 @@
 <dimen name="subject_120">66.67dp</dimen>
 <dimen name="subject_42">23.33dp</dimen>
 <dimen name="subject_754">418.89dp</dimen>
-
+<dimen name="subject_704">391.11dp</dimen>
+<dimen name="subject_852">473.33dp</dimen>
+<dimen name="subject_63">35.00dp</dimen>
+<dimen name="subject_111">61.67dp</dimen>
+<dimen name="subject_61">33.89dp</dimen>
+<dimen name="subject_606">336.67dp</dimen>
 
 </resources>

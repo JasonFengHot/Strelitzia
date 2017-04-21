@@ -668,10 +668,10 @@ public class Util {
     	SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		sdf.setTimeZone(TimeZone.getTimeZone("Asia/Shanghai"));
         Calendar cal = Calendar.getInstance();
-        cal.setTime(sdf.parse(startdate));
+        cal.setTime(sdf.parse(startdate==null?"":startdate));
 		cal.setTimeZone(TimeZone.getTimeZone("Asia/Shanghai"));
         long time1 = cal.getTimeInMillis();               
-        cal.setTime(sdf.parse(enddate));
+        cal.setTime(sdf.parse(enddate==null?"":enddate));
 		cal.setTimeZone(TimeZone.getTimeZone("Asia/Shanghai"));
         long time2 = cal.getTimeInMillis();
         long remain = time2-time1;

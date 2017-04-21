@@ -63,7 +63,7 @@ public interface PageIntentInterface {
 
     void toHelpPage(Context context);
 
-    void toSubject(Context context, String gather_type, int id, String frompage);
+    void toSubject(Context context, String gather_type, int id, String title, String frompage,String channel);
 
     class PaymentInfo {
         private ProductCategory category;
@@ -78,7 +78,13 @@ public interface PageIntentInterface {
             this.jumpTo = jumpTo;
             this.cpid = cpid;
         }
-
+        public PaymentInfo(ProductCategory category, int pk, int jumpTo, int cpid,String title) {
+            this.category = category;
+            this.pk = pk;
+            this.jumpTo = jumpTo;
+            this.cpid = cpid;
+            this.title=title;
+        }
         public PaymentInfo(ProductCategory category, int pk, int jumpTo) {
             this.category = category;
             this.pk = pk;

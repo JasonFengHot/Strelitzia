@@ -121,6 +121,7 @@ public class DetailPageFragment extends Fragment implements DetailPageContract.V
     private Handler handler=new Handler(new Handler.Callback() {
         @Override
         public boolean handleMessage(Message msg) {
+            Log.e("handler","handler");
             if (videoIsStart()&&palyBtnView.getVisibility()==View.VISIBLE) {
                 palyBtnView.requestFocus();
                 palyBtnView.requestFocusFromTouch();
@@ -201,7 +202,6 @@ public class DetailPageFragment extends Fragment implements DetailPageContract.V
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
         Log.i(TAG, Constants.TEST);
         mPresenter.start();
 //        mPresenter.fetchItem(String.valueOf(mItemEntity.getPk()));
@@ -380,7 +380,7 @@ public class DetailPageFragment extends Fragment implements DetailPageContract.V
     public void notifyPlayCheck(PlayCheckEntity playCheckEntity) {
         mModel.notifyPlayCheck(playCheckEntity);
         mRemandDay = playCheckEntity.getRemainDay();
-
+        handler.sendEmptyMessageDelayed(0,300);
 //        boolean isBuy;
 //        if (playCheckEntity.getRemainDay() == 0) {
 //            isBuy = false;// 过期了。认为没购买
@@ -455,7 +455,8 @@ public class DetailPageFragment extends Fragment implements DetailPageContract.V
                 dataCollectionProperties.put(EventProperty.SUBITEM, mItemEntity.getItemPk());
                 dataCollectionProperties.put(EventProperty.LOCATION, "detail");
                 new NetworkUtils.DataCollectionTask().execute(NetworkUtils.DETAIL_PLAY_LOAD, dataCollectionProperties);
-                handler.sendEmptyMessageDelayed(0,300);
+                if(isLogin.equals("no")||mItemEntity.getExpense()==null||mRemandDay>0)
+                    handler.sendEmptyMessageDelayed(0,300);
             }
 
             mModel.showLayout();

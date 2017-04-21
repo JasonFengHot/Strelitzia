@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:labelimage="http://schemas.android.com/apk/res-auto"
-    android:orientation="horizontal"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:id="@+id/sport_bg"
+                xmlns:labelimage="http://schemas.android.com/apk/res-auto"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/sport_bg"
     >
     <ImageView
         android:layout_width="match_parent"
@@ -17,6 +18,8 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:id="@+id/game_list"
+        android:focusableInTouchMode="false"
+        android:focusable="false"
         >
         <ImageView
             android:id="@+id/up_image"
@@ -25,20 +28,24 @@
             android:layout_marginLeft="@dimen/sport_left_up_image_MF"
             android:layout_marginTop="@dimen/sport_left_up_image_MT"
             android:background="@drawable/arrow_hover_select"
+            android:visibility="invisible"
             />
-        <android.support.v7.widget.RecyclerView
+        <tv.libismar.pagerview.VerticalPagerView
             android:id="@+id/sport_list"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/sport_list_H"
             android:layout_marginTop="@dimen/sport_list_MT"
-            >
-        </android.support.v7.widget.RecyclerView>
+            app:vpItemLayoutId="@layout/sport_list_item"
+            app:vpItemSpace="20px"
+            app:vpRowCount="6" />
+
         <ImageView
             android:id="@+id/down_image"
             android:layout_width="@dimen/sport_left_up_imageW"
             android:layout_height="@dimen/sport_left_up_imageH"
             android:layout_marginLeft="@dimen/sport_left_up_image_MF"
-            android:background="@drawable/down_focus"
+            android:background="@drawable/arrow_down_hover"
+            android:visibility="invisible"
             />
 
     </LinearLayout>
@@ -59,10 +66,12 @@
             android:layout_height="@dimen/sport_right_rel_H"
             android:layout_marginLeft="@dimen/sport_right_rel_ML"
             >
-            <tv.ismar.app.ui.view.LabelImageView
+            <ImageView
                 android:id="@+id/detail_labelImage"
                 android:layout_width="@dimen/sport_right_rel_W"
                 android:layout_height="@dimen/sport_right_rel_H"
+                android:focusableInTouchMode="false"
+                android:focusable="false"
                 />
             <ImageView
                 android:id="@+id/cp_title"
@@ -70,19 +79,21 @@
                 android:layout_height="@dimen/sport_right_image_title_W"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentTop="true"
+                android:visibility="gone"
                 />
             <TextView
                 android:id="@+id/price"
-                android:layout_width="@dimen/sport_right_image_price_W"
+                android:layout_width="@dimen/subject_111"
                 android:layout_height="@dimen/sport_right_image_price_H"
                 android:textColor="@color/_ffffff"
                 android:layout_alignParentBottom="true"
                 android:layout_alignParentLeft="true"
                 android:textSize="@dimen/text_size_18sp"
                 android:background="@drawable/price"
+                android:layout_marginLeft="@dimen/sport_right_image_havebuy_ML"
                 android:textStyle="bold"
                 android:gravity="center"
-                android:visibility="visible" />
+                android:visibility="invisible" />
             <TextView
                 android:id="@+id/havebuy"
                 android:layout_width="@dimen/sport_right_image_havebuy_W"
@@ -93,6 +104,7 @@
                 android:layout_marginLeft="@dimen/sport_right_image_havebuy_ML"
                 android:layout_marginBottom="@dimen/sport_right_image_havebuy_MB"
                 android:gravity="center"
+                android:visibility="invisible"
                 />
         </RelativeLayout>
 
@@ -103,6 +115,7 @@
             android:id="@+id/game_time"
             android:layout_marginTop="@dimen/sport_game_time_MT"
             android:textSize="@dimen/text_size_30sp"
+            android:gravity="center_vertical"
             />
 
         <TextView
@@ -112,6 +125,7 @@
             android:id="@+id/title"
             android:textSize="@dimen/text_size_30sp"
             android:layout_marginTop="@dimen/sport_game_title_MT"
+            android:gravity="center_vertical"
             />
         <RelativeLayout
                 android:layout_width="wrap_content"
@@ -129,8 +143,9 @@
                     android:background="@drawable/buy_selector"
                     android:layout_alignParentLeft="true"
                     android:nextFocusUp="@id/buy"
-                    android:paddingLeft="@dimen/subject_94"
-                    android:paddingTop="@dimen/subject_10"
+                    android:paddingLeft="@dimen/subject_74"
+                    android:paddingTop="@dimen/subject_7"
+                    android:visibility="invisible"
                     android:text="购 买"
                     />
                 <Button
@@ -140,8 +155,8 @@
                     android:background="@drawable/play_selector"
                     android:focusableInTouchMode="true"
                     android:focusable="true"
-                    android:paddingLeft="@dimen/subject_94"
-                    android:paddingTop="@dimen/subject_10"
+                    android:paddingLeft="@dimen/subject_74"
+                    android:paddingTop="@dimen/subject_7"
                     android:textSize="@dimen/text_size_36sp"
                     android:text="播 放"
                     android:visibility="gone"
@@ -154,29 +169,35 @@
                     android:focusableInTouchMode="true"
                     android:focusable="true"
                     android:layout_marginLeft="@dimen/subject_266"
-                    android:text="订 阅"
+                    android:text="预 约"
                     android:textSize="@dimen/text_size_36sp"
-                    android:paddingLeft="@dimen/subject_94"
-                    android:paddingTop="@dimen/subject_10"
+                    android:paddingLeft="@dimen/subject_74"
                     android:background="@drawable/subscribe_selector"
+                    android:paddingTop="@dimen/subject_7"
                     android:nextFocusUp="@id/subscribe"
+                    android:visibility="invisible"
                     />
             </RelativeLayout>
         <TextView
+            android:id="@+id/relate_title"
             android:layout_width="@dimen/subject_127"
             android:layout_height="@dimen/subject_43"
             android:layout_marginLeft="@dimen/subject_20"
             android:textSize="@dimen/text_size_30sp"
             android:layout_marginTop="@dimen/subject_50"
             android:text="相关视频"
+            android:gravity="center_vertical"
+            android:visibility="invisible"
             />
         <TextView
+            android:id="@+id/sport_subject_divider"
             android:layout_width="@dimen/subject_1040"
             android:layout_height="@dimen/subject_2"
             android:layout_marginLeft="@dimen/subject_20"
-            android:alpha="0.25"
-            android:textColor="@color/_ffffff"
+            android:alpha="0.75"
+            android:background="@color/_ffffff"
             android:layout_marginTop="@dimen/subject_5"
+            android:visibility="invisible"
             />
         <LinearLayout
             android:id="@+id/relate_list"
@@ -186,6 +207,7 @@
             android:clipChildren="false"
             android:clipToPadding="false"
             android:paddingTop="@dimen/subject_22"
+            android:visibility="invisible"
             >
             <RelativeLayout
                 android:id="@+id/relate_list_1"
@@ -196,7 +218,7 @@
                 android:clipToPadding="false"
                 android:orientation="vertical">
 
-                <tv.ismar.homepage.widget.LabelImageView3
+                <tv.ismar.app.widget.LabelImageView
                     android:id="@+id/relate_list_1_image"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/subject_189"
@@ -204,7 +226,20 @@
                     android:focusableInTouchMode="true"
                     android:scaleType="fitXY"
                     android:src="@drawable/list_item_preview_bg"
-                    labelimage:label3_needZoom="true"
+                    app:livContentPadding="@dimen/label_image_padding"
+                    app:livErrorDrawable="@mipmap/img_error_horizontal"
+                    app:livLabelBackColor="@color/color_label_image_text_back"
+                    app:livLabelColor="@color/module_color_white"
+                    app:livLabelSize="@dimen/h3_size"
+                    app:livLabelText=""
+                    app:livRate="0"
+                    app:livRateColor="@color/module_color_focus"
+                    app:livRateSize="@dimen/text_size_30sp"
+                    app:livSelectorDrawable="@drawable/vod_img_selector"
+                    app:livUrl=""
+                    app:livVipPosition="gone"
+                    app:livVipSize="0dp"
+                    app:livVipUrl=""
                     />
 
                 <TextView
@@ -227,7 +262,7 @@
                 android:clipToPadding="false"
                 android:orientation="vertical">
 
-                <tv.ismar.homepage.widget.LabelImageView3
+                <tv.ismar.app.widget.LabelImageView
                     android:id="@+id/relate_list_2_image"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/subject_189"
@@ -235,7 +270,20 @@
                     android:focusableInTouchMode="true"
                     android:scaleType="fitXY"
                     android:src="@drawable/list_item_preview_bg"
-                    labelimage:label3_needZoom="true"
+                    app:livContentPadding="@dimen/label_image_padding"
+                    app:livErrorDrawable="@mipmap/img_error_horizontal"
+                    app:livLabelBackColor="@color/color_label_image_text_back"
+                    app:livLabelColor="@color/module_color_white"
+                    app:livLabelSize="@dimen/h3_size"
+                    app:livLabelText=""
+                    app:livRate="0"
+                    app:livRateColor="@color/module_color_focus"
+                    app:livRateSize="@dimen/text_size_30sp"
+                    app:livSelectorDrawable="@drawable/vod_img_selector"
+                    app:livUrl=""
+                    app:livVipPosition="gone"
+                    app:livVipSize="0dp"
+                    app:livVipUrl=""
                     />
 
                 <TextView
@@ -258,7 +306,7 @@
                 android:clipToPadding="false"
                 android:orientation="vertical">
 
-                <tv.ismar.homepage.widget.LabelImageView3
+                <tv.ismar.app.widget.LabelImageView
                     android:id="@+id/relate_list_3_image"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/subject_189"
@@ -266,7 +314,20 @@
                     android:focusableInTouchMode="true"
                     android:scaleType="fitXY"
                     android:src="@drawable/list_item_preview_bg"
-                    labelimage:label3_needZoom="true"
+                    app:livContentPadding="@dimen/label_image_padding"
+                    app:livErrorDrawable="@mipmap/img_error_horizontal"
+                    app:livLabelBackColor="@color/color_label_image_text_back"
+                    app:livLabelColor="@color/module_color_white"
+                    app:livLabelSize="@dimen/h3_size"
+                    app:livLabelText=""
+                    app:livRate="0"
+                    app:livRateColor="@color/module_color_focus"
+                    app:livRateSize="@dimen/text_size_30sp"
+                    app:livSelectorDrawable="@drawable/vod_img_selector"
+                    app:livUrl=""
+                    app:livVipPosition="gone"
+                    app:livVipSize="0dp"
+                    app:livVipUrl=""
                    />
 
                 <TextView

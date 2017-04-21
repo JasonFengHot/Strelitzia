@@ -15,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.blankj.utilcode.utils.StringUtils;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
@@ -208,7 +209,7 @@ public class ChildFragment extends ChannelBaseFragment implements Flag.ChangeCal
         int itemWidth = getResources().getDimensionPixelOffset(R.dimen.child_img_small_w);
         int itemHeight = getResources().getDimensionPixelOffset(R.dimen.child_img_small_h);
 
-        for (int i = 0; i < 7; i++) {
+        for (int i = 0; i < Math.min(7,posters.size()); i++) {
             View itemContainer = LayoutInflater.from(mContext).inflate(R.layout.item_comic_fragment, null);
             ImageView itemImg = (ImageView) itemContainer.findViewById(R.id.item_img);
             TextView itemText = (TextView) itemContainer.findViewById(R.id.item_title);
@@ -262,6 +263,8 @@ public class ChildFragment extends ChannelBaseFragment implements Flag.ChangeCal
             String imageUrl = posters.get(i).getCustom_image();
             if (TextUtils.isEmpty(imageUrl)){
                 imageUrl = posters.get(i).getPoster_url();
+                if(StringUtils.isEmpty(imageUrl))
+                    imageUrl = "error";
             }
             Picasso.with(mContext).load(imageUrl).memoryPolicy(MemoryPolicy.NO_STORE).into(itemImg);
             itemText.setText(posters.get(i).getTitle());
@@ -381,11 +384,13 @@ public class ChildFragment extends ChannelBaseFragment implements Flag.ChangeCal
         };
 
 
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < Math.min(3,carousels.size()); i++) {
             indicatorImgs[i].setTag(i);
             indicatorImgs[i].setOnFocusChangeListener(itemFocusChangeListener);
             indicatorImgs[i].setOnClickListener(ItemClickListener);
             indicatorImgs[i].setTag(R.drawable.launcher_selector, carousels.get(i));
+            if(StringUtils.isEmpty(carousels.get(i).getThumb_image()))
+                carousels.get(i).setThumb_image("error");
             Picasso.with(mContext).load(carousels.get(i).getThumb_image()).memoryPolicy(MemoryPolicy.NO_STORE).into(indicatorImgs[i]);
         }
 
@@ -426,6 +431,8 @@ public class ChildFragment extends ChannelBaseFragment implements Flag.ChangeCal
     private void playCarousel() {
         messageHandler.removeMessages(0);
         image_switcher_focus.setTag(R.drawable.launcher_selector, carousels.get(flag.getPosition()));
+        if(StringUtils.isEmpty(carousels.get(flag.getPosition()).getVideo_image()))
+        carousels.get(flag.getPosition()).setVideo_image("error");
         Picasso.with(mContext).load(carousels.get(flag.getPosition()).getVideo_image()).memoryPolicy(MemoryPolicy.NO_STORE).into(imageSwitcher, new Callback() {
             int pauseTime = Integer.parseInt(carousels.get(flag.getPosition()).getPause_time());
 

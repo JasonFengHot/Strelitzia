@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -35,8 +36,10 @@ public class SubjectSportAdapter extends RecyclerView.Adapter<SportViewHolder> {
     private OnItemFocusedListener mOnItemFocusedListener;
     private OnItemClickListener mOnItemClickListener;
     private OnItemKeyListener onItemKeyListener;
+    private OnItemOnhoverlistener onItemOnhoverlistener;
     private String TAG="subjectSportAdapter";
     private String type="NBA";
+    private int selectPosition=-1;
     public SubjectSportAdapter(Context context){
         mContext=context;
 
@@ -54,6 +57,9 @@ public class SubjectSportAdapter extends RecyclerView.Adapter<SportViewHolder> {
     public  void setOnItemKeyListener(OnItemKeyListener onItemKeyListener){
         this.onItemKeyListener=onItemKeyListener;
     }
+    public  void setmOnHoverListener(OnItemOnhoverlistener onHoverListener){
+        this.onItemOnhoverlistener=onHoverListener;
+    }
 
     @Override
     public long getItemId(int position) {
@@ -65,8 +71,6 @@ public class SubjectSportAdapter extends RecyclerView.Adapter<SportViewHolder> {
         return itemList.size();
     }
 
-    SportViewHolder  lastview;
-    int lastindex=0;
     @Override
     public SportViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         SportViewHolder holder=new SportViewHolder(LayoutInflater.from(mContext).inflate(R.layout.sport_list_item,parent,false));
@@ -75,37 +79,87 @@ public class SubjectSportAdapter extends RecyclerView.Adapter<SportViewHolder> {
 
     @Override
     public void onBindViewHolder(final SportViewHolder holder, final int position) {
-        Objects objects=itemList.get(position);
+        final Objects objects=itemList.get(position);
         holder.itemView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 int pos = position;
                 mOnItemFocusedListener.onItemfocused(v, pos, hasFocus);
+                if(hasFocus){
+                    if(objects.recommend_status==1){
+                        holder.focus_tobig.setBackgroundResource(R.drawable.big_game_hover);
+                    }else {
+                        holder.focus_tobig.setBackgroundResource(R.drawable.emphasis_focus_hover);
+                    }
+                }else{
+                    if(objects.recommend_status==1){
+                        holder.focus_tobig.setBackgroundResource(R.drawable.normal_game_focus);
+                        holder.nomarl.setBackgroundResource(R.drawable.normal_game);
+                    }else {
+                        holder.nomarl.setBackgroundResource(R.drawable.emphasis_game_normal);
+                        holder.focus_tobig.setBackgroundResource(R.drawable.emphasis_game_focus);
+                    }
+                }
             }
         });
         holder.itemView.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
-                onItemKeyListener.onItemKeyListener(v,keyCode,event);
-                if(keyCode==20){
-                    if(position==itemList.size()-1){
-                            return true;
-                    }
+                if(keyCode==20&&position==itemList.size()-1){
+                    return true;
+                }else {
+                    onItemKeyListener.onItemKeyListener(v,keyCode,event);
+                    return false;
                 }
-                return false;
             }
         });
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int pos = holder.getLayoutPosition();
-                mOnItemClickListener.onItemClick(v,pos);
+                mOnItemClickListener.onItemClick(v,position);
             }
         });
-        if(position==0){
-            holder.itemView.requestFocusFromTouch();
-            holder.itemView.requestFocus();
-        }
+        holder.itemView.setOnHoverListener(new View.OnHoverListener() {
+            @Override
+            public boolean onHover(View v, MotionEvent event) {
+                int recommed=objects.recommend_status;
+                onItemOnhoverlistener.OnItemOnhoverlistener(v,event,position,recommed);
+                switch (event.getAction()){
+                    case MotionEvent.ACTION_HOVER_MOVE:
+                    case MotionEvent.ACTION_HOVER_ENTER:
+                        if(holder.focus_tobig.getVisibility()==View.VISIBLE){
+                            if(recommed==1){
+                                holder.focus_tobig.setBackgroundResource(R.drawable.big_game_hover);
+                            }else {
+                                holder.focus_tobig.setBackgroundResource(R.drawable.emphasis_focus_hover);
+                            }
+                        }else{
+                            if(recommed==1){
+                                holder.nomarl.setBackgroundResource(R.drawable.normal_game_hover);
+                            }else {
+                                holder.nomarl.setBackgroundResource(R.drawable.emphasis_hover);
+                            }
+                        }
+                        break;
+                    case MotionEvent.ACTION_HOVER_EXIT:
+                        if(holder.focus_tobig.getVisibility()==View.VISIBLE){
+                            if(objects.recommend_status==1){
+                                holder.focus_tobig.setBackgroundResource(R.drawable.normal_game_focus);
+                            }else {
+                                holder.focus_tobig.setBackgroundResource(R.drawable.emphasis_game_focus);
+                            }
+                        }else{
+                            if(recommed==1){
+                                holder.nomarl.setBackgroundResource(R.drawable.normal_game);
+                            }else {
+                                holder.nomarl.setBackgroundResource(R.drawable.emphasis_game_normal);
+                            }
+                        }
+                        break;
+                }
+                return false;
+            }
+        });
         if(type.equals("NBA")) {
             Picasso.with(mContext).load(objects.at_home_logo).into(holder.home_logo);
             Picasso.with(mContext).load(objects.at_home_logo).into(holder.big_home_logo);
@@ -132,31 +186,41 @@ public class SubjectSportAdapter extends RecyclerView.Adapter<SportViewHolder> {
         if(objects.start_time!=null) {
             if (is_alive) {
                 holder.big_time.setText("直播中");
-                holder.big_time.setTextColor(mContext.getResources().getColor(R.color._ff9c3c));
+                holder.big_time.setTextColor(mContext.getResources().getColor(R.color._cc0033));
                 holder.start_time_layout.setVisibility(View.GONE);
                 holder.isalive.setText("直播中");
             } else {
                 holder.isalive.setVisibility(View.GONE);
                 holder.start_time_layout.setVisibility(View.VISIBLE);
-                SimpleDateFormat formatter = new SimpleDateFormat("MM-dd HH:mm");
+                SimpleDateFormat formatter = new SimpleDateFormat("MM-dd HH:mm z");
+                formatter.setTimeZone(TimeZone.getTimeZone("Asia/Shanghai"));
                 String time = formatter.format(objects.start_time);
                 String times[] = time.split(" ");
                 String month[]=times[0].split("-");
+                holder.big_time.setTextColor(mContext.getResources().getColor(R.color._333333));
                 holder.big_time.setText(month[0]+"月"+month[1]+"日"+" "+times[1]+" 未开始");
                 holder.start_time_ym.setText(month[0]+"月"+month[1]+"日");
                 holder.start_time.setText(times[1]);
             }
         }
         if(objects.recommend_status==1){
-            holder.nomarl.setBackgroundResource(R.drawable.normal_game);
-            holder.focus_tobig.setBackgroundResource(R.drawable.normal_game_focus);
+            holder.nomarl.setBackgroundResource(R.drawable.item_normal_selector);
+            holder.focus_tobig.setBackgroundResource(R.drawable.item_bg_selector);
         }else{
-            holder.nomarl.setBackgroundResource(R.drawable.emphasis_game_normal);
-            holder.focus_tobig.setBackgroundResource(R.drawable.emphasis_game_focus);
+            holder.nomarl.setBackgroundResource(R.drawable.item_recommend_normal_hovered);
+            holder.focus_tobig.setBackgroundResource(R.drawable.item_recommend_big_hoverd);
         }
-
+        if(selectPosition==position){
+            holder.nomarl.setVisibility(View.GONE);
+            holder.focus_tobig.setVisibility(View.VISIBLE);
+        }else{
+            holder.focus_tobig.setVisibility(View.GONE);
+            holder.nomarl.setVisibility(View.VISIBLE);
+        }
     }
-
+    public void setSelectPosition(int index){
+        selectPosition=index;
+    }
     @Override
     public int getItemViewType(int position) {
         return super.getItemViewType(position);
