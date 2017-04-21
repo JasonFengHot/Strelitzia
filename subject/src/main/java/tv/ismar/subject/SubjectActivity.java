@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.KeyEvent;
 
 import java.util.concurrent.TimeoutException;
@@ -14,6 +15,7 @@ import tv.ismar.app.AppConstant;
 import tv.ismar.app.BaseActivity;
 import tv.ismar.app.entity.Channel;
 import tv.ismar.app.widget.LoadingDialog;
+import tv.ismar.pay.PaymentActivity;
 import tv.ismar.subject.fragment.MovieTVSubjectFragment;
 import tv.ismar.subject.fragment.SportSubjectFragment;
 
@@ -40,6 +42,7 @@ public class SubjectActivity extends BaseActivity{
             return false;
         }
     });
+    private SportSubjectFragment sportSubjectFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,7 +65,7 @@ public class SubjectActivity extends BaseActivity{
         switch (gather_type){
             case "nbagather":
             case "premierleaguegather":
-                SportSubjectFragment sportSubjectFragment=new SportSubjectFragment();
+                sportSubjectFragment=new SportSubjectFragment();
                 sportSubjectFragment.pk=itemid;
                 sportSubjectFragment.channel=channel;
                 sportSubjectFragment.from=fromPage;
@@ -91,5 +94,16 @@ public class SubjectActivity extends BaseActivity{
             }
         });
         mLoadingDialog.showDialog();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.i("OnActivity",resultCode+" code  "+PaymentActivity.PAYMENT_SUCCESS_CODE);
+        if(resultCode== PaymentActivity.PAYMENT_SUCCESS_CODE){
+            if(sportSubjectFragment!=null){
+                sportSubjectFragment.clearPayState();
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 }

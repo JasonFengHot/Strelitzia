@@ -3,6 +3,7 @@ package tv.ismar.subject.fragment;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
@@ -56,6 +57,7 @@ import tv.ismar.app.network.SkyService;
 import tv.ismar.app.network.entity.EventProperty;
 import tv.ismar.app.network.entity.PlayCheckEntity;
 import tv.ismar.app.widget.LoadingDialog;
+import tv.ismar.pay.PaymentActivity;
 import tv.ismar.subject.R;
 import tv.ismar.subject.Utils.LableImageSubject;
 import tv.ismar.subject.Utils.PayCheckUtil;
@@ -159,10 +161,6 @@ public class SportSubjectFragment extends Fragment implements View.OnHoverListen
         if(!subject_type.equals("null")){
             sendLog();
         }
-        if(objects!=null&&payHandler!=null){
-            payHandler.removeCallbacks(payRunnable);
-            payHandler.postDelayed(payRunnable,500);
-        }
         super.onResume();
     }
 
@@ -236,6 +234,7 @@ public class SportSubjectFragment extends Fragment implements View.OnHoverListen
         objects=list.get(mVerticalPagerView.getCurrentDataSelectPosition());
         if(objects.poster_url!=null)
         Picasso.with(getActivity()).load(objects.poster_url).into(detail_labelImage);
+        int index=mVerticalPagerView.getCurrentDataSelectPosition();
         payHandler.removeCallbacks(payRunnable);
         if(objects.expense!=null){
             if (playCheckSubsc != null && !playCheckSubsc.isUnsubscribed()) {
@@ -248,7 +247,6 @@ public class SportSubjectFragment extends Fragment implements View.OnHoverListen
 //                }else{
 //                    cp_title.setVisibility(View.GONE);
 //                }
-            int index=mVerticalPagerView.getCurrentDataSelectPosition();
             if(payState!=null) {
                 if(payState[index]==0) {
                     payHandler.postDelayed(payRunnable, 500);
@@ -941,5 +939,15 @@ public class SportSubjectFragment extends Fragment implements View.OnHoverListen
 //
 //        }
 //    }
-
+    public void clearPayState(){
+        if(payState!=null) {
+            for (int i = 0; i < payState.length; i++) {
+                payState[i] = 0;
+            }
+        }
+        if(payHandler!=null) {
+            payHandler.removeCallbacks(payRunnable);
+            payHandler.postDelayed(payRunnable, 500);
+        }
+    }
 }
