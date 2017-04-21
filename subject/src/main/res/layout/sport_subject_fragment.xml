@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:labelimage="http://schemas.android.com/apk/res-auto"
                 xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
@@ -218,7 +217,7 @@
                 android:clipToPadding="false"
                 android:orientation="vertical">
 
-                <tv.ismar.app.widget.LabelImageView
+                <tv.ismar.subject.Utils.LableImageSubject
                     android:id="@+id/relate_list_1_image"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/subject_189"
@@ -262,7 +261,7 @@
                 android:clipToPadding="false"
                 android:orientation="vertical">
 
-                <tv.ismar.app.widget.LabelImageView
+                <tv.ismar.subject.Utils.LableImageSubject
                     android:id="@+id/relate_list_2_image"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/subject_189"
@@ -306,7 +305,7 @@
                 android:clipToPadding="false"
                 android:orientation="vertical">
 
-                <tv.ismar.app.widget.LabelImageView
+                <tv.ismar.subject.Utils.LableImageSubject
                     android:id="@+id/relate_list_3_image"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/subject_189"

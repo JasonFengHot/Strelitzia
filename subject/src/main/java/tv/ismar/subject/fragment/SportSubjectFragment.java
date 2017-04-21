@@ -55,9 +55,9 @@ import tv.ismar.app.entity.Objects;
 import tv.ismar.app.network.SkyService;
 import tv.ismar.app.network.entity.EventProperty;
 import tv.ismar.app.network.entity.PlayCheckEntity;
-import tv.ismar.app.widget.LabelImageView;
 import tv.ismar.app.widget.LoadingDialog;
 import tv.ismar.subject.R;
+import tv.ismar.subject.Utils.LableImageSubject;
 import tv.ismar.subject.Utils.PayCheckUtil;
 import tv.ismar.subject.adapter.SportPresenterHolder;
 import tv.libismar.pagerview.VerticalPagerView;
@@ -77,7 +77,7 @@ public class SportSubjectFragment extends Fragment implements View.OnHoverListen
     private Subscription playCheckSubsc;
     private TextView price,hasbuy;
     private ImageView cp_title,up_arrow,down_arrow,bg;
-    private LabelImageView relate_image1,relate_image2,relate_image3;
+    private LableImageSubject relate_image1,relate_image2,relate_image3;
     private TextView relate_text1,relate_text2,relate_text3;
     private TextView game_time,title;
     private Objects objects;
@@ -90,6 +90,7 @@ public class SportSubjectFragment extends Fragment implements View.OnHoverListen
     public String subjectTitle;
     private LoadingDialog mLoadingDialog;
     private VerticalPagerView mVerticalPagerView;
+    private int[] payState;
     private  HashMap<String, Object> out = new HashMap<String, Object>();
     private Handler dialogHandler=new Handler(new Handler.Callback() {
         @Override
@@ -127,9 +128,9 @@ public class SportSubjectFragment extends Fragment implements View.OnHoverListen
         down_arrow= (ImageView) view.findViewById(R.id.down_image);
         arrowListent();
         relate_list= (LinearLayout) view.findViewById(R.id.relate_list);
-        relate_image1= (LabelImageView) view.findViewById(R.id.relate_list_1_image);
-        relate_image2= (LabelImageView) view.findViewById(R.id.relate_list_2_image);
-        relate_image3= (LabelImageView) view.findViewById(R.id.relate_list_3_image);
+        relate_image1= (LableImageSubject) view.findViewById(R.id.relate_list_1_image);
+        relate_image2= (LableImageSubject) view.findViewById(R.id.relate_list_2_image);
+        relate_image3= (LableImageSubject) view.findViewById(R.id.relate_list_3_image);
 
         relate_text1= (TextView) view.findViewById(R.id.relate_list_1_text);
         relate_text2= (TextView) view.findViewById(R.id.relate_list_2_text);
@@ -177,6 +178,7 @@ public class SportSubjectFragment extends Fragment implements View.OnHoverListen
             public void onNext(Subject subject) {
                 if(subject!=null){
                     list=subject.objects;
+                    payState=new int[list.size()];
                     Collections.sort(list, new Comparator<Objects>() {
                         @Override
                         public int compare(Objects lhs, Objects rhs) {
@@ -232,8 +234,6 @@ public class SportSubjectFragment extends Fragment implements View.OnHoverListen
     };
     private void buildDetail(){
         objects=list.get(mVerticalPagerView.getCurrentDataSelectPosition());
-        play.setVisibility(View.GONE);
-        buy.setVisibility(View.GONE);
         if(objects.poster_url!=null)
         Picasso.with(getActivity()).load(objects.poster_url).into(detail_labelImage);
         if(objects.expense!=null){
@@ -247,10 +247,22 @@ public class SportSubjectFragment extends Fragment implements View.OnHoverListen
 //                }else{
 //                    cp_title.setVisibility(View.GONE);
 //                }
-            payHandler.removeCallbacks(payRunnable);
-            payHandler.postDelayed(payRunnable,500);
+            int index=mVerticalPagerView.getCurrentDataSelectPosition();
+            if(payState!=null) {
+                if(payState[index]==0) {
+                    payHandler.removeCallbacks(payRunnable);
+                    payHandler.postDelayed(payRunnable, 500);
+                }else if(payState[index]==1){
+                    play.setVisibility(View.GONE);
+                    buy.setVisibility(View.VISIBLE);
+                }else{
+                    play.setVisibility(View.VISIBLE);
+                    buy.setVisibility(View.GONE);
+                }
+            }
         }else{
             play.setVisibility(View.VISIBLE);
+            buy.setVisibility(View.GONE);
             hasbuy.setVisibility(View.INVISIBLE);
             price.setVisibility(View.INVISIBLE);
         }
@@ -297,13 +309,16 @@ public class SportSubjectFragment extends Fragment implements View.OnHoverListen
                         try {
                             PayCheckUtil payCheck=new PayCheckUtil();
                             PlayCheckEntity  playCheckEntity =payCheck.calculateRemainDay(responseBody.string());
+                            int index=mVerticalPagerView.getCurrentDataSelectPosition();
                             if (playCheckEntity.getRemainDay() == 0) {
+                                payState[index]=1;
                                 buy.setVisibility(View.VISIBLE);
                                 play.setVisibility(View.GONE);
                                 hasbuy.setVisibility(View.GONE);
                                 price.setVisibility(View.VISIBLE);
                                 price.setText(objects.expense.price+"¥");                           // 过期了。认为没购买
                             } else {
+                                payState[index]=2;
                                 play.setVisibility(View.VISIBLE);
                                 buy.setVisibility(View.GONE);
                                 price.setVisibility(View.GONE);
@@ -445,9 +460,9 @@ public class SportSubjectFragment extends Fragment implements View.OnHoverListen
        public boolean onHover(View v, MotionEvent event) {
            switch (event.getAction()){
                case MotionEvent.ACTION_HOVER_MOVE:
-                   break;
                case MotionEvent.ACTION_HOVER_ENTER:
                    leaveIndex=mVerticalPagerView.getCurrentDataSelectPosition();
+                   v.requestFocus();
                    v.requestFocusFromTouch();
                    Log.i("btnHover","leaverIndex: "+leaveIndex);
                    break;
@@ -813,6 +828,7 @@ public class SportSubjectFragment extends Fragment implements View.OnHoverListen
                 SimpleDateFormat formatter = new SimpleDateFormat("MM-dd HH:mm");
                 formatter.setTimeZone(TimeZone.getTimeZone("Asia/Shanghai"));
                 String time = formatter.format(objects.start_time);
+                Log.i("StartTime","time"+time);
                 String times[] = time.split(" ");
                 String month[] = times[0].split("-");
                 holder.big_time.setTextColor(context.getResources().getColor(R.color._333333));
