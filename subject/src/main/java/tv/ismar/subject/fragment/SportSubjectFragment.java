@@ -828,7 +828,6 @@ public class SportSubjectFragment extends Fragment implements View.OnHoverListen
                 SimpleDateFormat formatter = new SimpleDateFormat("MM-dd HH:mm");
                 formatter.setTimeZone(TimeZone.getTimeZone("Asia/Shanghai"));
                 String time = formatter.format(objects.start_time);
-                Log.i("StartTime","time"+time);
                 String times[] = time.split(" ");
                 String month[] = times[0].split("-");
                 holder.big_time.setTextColor(context.getResources().getColor(R.color._333333));
