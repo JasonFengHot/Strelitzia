@@ -216,8 +216,8 @@ public class HGridAdapterImpl extends HGridAdapter<ItemCollection> implements As
 							if(item.adlet_url.equals("http://res.tvxio.bestv.com.cn/media/upload/20160504/5eae6db53f065ff0269dfc71fb28a4ec.png")){
 								Picasso.with(mContext)
 										.load(item.list_url)
-										.error(R.drawable.list_item_ppreview_bg)
-										.placeholder(R.drawable.list_item_ppreview_bg)
+										.error(R.drawable.list_item_preview_bg)
+										.placeholder(R.drawable.list_item_preview_bg)
 										.transform(mTransformation)
 										.config(Bitmap.Config.RGB_565)
 										.into(holder.previewImage);
