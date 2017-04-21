@@ -3,7 +3,6 @@ package tv.ismar.subject.fragment;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
@@ -774,6 +773,9 @@ public class SportSubjectFragment extends Fragment implements View.OnHoverListen
                     View view1=mVerticalPagerView.getChildViewAt(lastHoverIndex);
                     normalItemNoSelect(view1,lastHoverIndex);
                 }
+                if(leaveIndex>=0){
+                    bigItemNoSelect(view,leaveIndex);
+                }
                 break;
             case KeyEvent.KEYCODE_DPAD_DOWN:
             case KeyEvent.KEYCODE_DPAD_UP:
@@ -809,6 +811,10 @@ public class SportSubjectFragment extends Fragment implements View.OnHoverListen
         }
         if(position==mVerticalPagerView.getCurrentDataSelectPosition()){
             buildDetail();
+            if(mVerticalPagerView.getChildViewAt(position)!=null) {
+                mVerticalPagerView.getChildViewAt(position).requestFocusFromTouch();
+                bigItemSelect(mVerticalPagerView.getChildViewAt(position),position);
+            }
         }
 
     }
@@ -890,55 +896,6 @@ public class SportSubjectFragment extends Fragment implements View.OnHoverListen
             return false;
         }
     }
-
-//    private RecyclerViewTV mRecyclerView;
-//    private RecyclerViewPresenter mRecyclerViewPresenter;
-//    private GeneralAdapter mGeneralAdapter;
-//
-//    private MainUpView mainUpView1;
-//    private RecyclerViewBridge mRecyclerViewBridge;
-//    private View oldView;
-//    private int mSavePos = 0;
-//
-//    @Override
-//    public void onItemClick(RecyclerViewTV parent, View itemView, int position) {
-//        listItemToNormal(oldView);
-//        listItemToBig(itemView);
-//        buildDetail();
-//    }
-//
-//    @Override
-//    public void onItemPreSelected(RecyclerViewTV parent, View itemView, int position) {
-////        mRecyclerViewBridge.setUnFocusView(oldView);
-//        listItemToNormal(oldView);
-//    }
-//
-//    @Override
-//    public void onItemSelected(RecyclerViewTV parent, View itemView, int position) {
-//        Rect localRect = new Rect();
-//        itemView.getLocalVisibleRect(localRect);
-//        Rect drawRect = new Rect();
-//        itemView.getDrawingRect(drawRect);
-//        if (localRect.bottom == drawRect.bottom) {
-////            mRecyclerViewBridge.setFocusView(itemView, 1.2f);
-//            listItemToBig(itemView);
-//            mSavePos = position;
-//            buildDetail();
-//        }
-//        oldView = itemView;
-//    }
-//
-//    @Override
-//    public void onReviseFocusFollow(RecyclerViewTV parent, View itemView, int position) {
-////        mRecyclerViewBridge.setFocusView(itemView, 1.2f);
-//        listItemToBig(itemView);
-//        oldView = itemView;
-//        mSavePos = position;
-//        buildDetail();
-//        if (position == 0){
-//
-//        }
-//    }
     public void clearPayState(){
         if(payState!=null) {
             for (int i = 0; i < payState.length; i++) {
