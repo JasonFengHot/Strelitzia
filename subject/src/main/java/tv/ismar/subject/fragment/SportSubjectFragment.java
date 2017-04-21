@@ -363,8 +363,8 @@ public class SportSubjectFragment extends Fragment implements View.OnHoverListen
         relate_image1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.i("Onclick","relateOnclick");
                 leaveIndex=mVerticalPagerView.getCurrentDataSelectPosition();
+                Log.i("Onclick","relateOnclick"+leaveIndex);
                 intent.toDetailPage(getActivity(),"gather",items[0].pk);
                 out.put("to","detail");
             }
@@ -466,16 +466,17 @@ public class SportSubjectFragment extends Fragment implements View.OnHoverListen
             @Override
             public void onClick(View v) {
                 // longhai TODO
-                mVerticalPagerView.pageArrowUp();
                 leaveIndex=-1;
+                mVerticalPagerView.pageArrowUp();
+
             }
         });
         down_arrow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // longhai TODO
-                mVerticalPagerView.pageArrowDown();
                 leaveIndex=-1;
+                mVerticalPagerView.pageArrowDown();
             }
         });
         up_arrow.setOnHoverListener(arrowOnhover);
