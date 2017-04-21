@@ -236,6 +236,7 @@ public class SportSubjectFragment extends Fragment implements View.OnHoverListen
         objects=list.get(mVerticalPagerView.getCurrentDataSelectPosition());
         if(objects.poster_url!=null)
         Picasso.with(getActivity()).load(objects.poster_url).into(detail_labelImage);
+        payHandler.removeCallbacks(payRunnable);
         if(objects.expense!=null){
             if (playCheckSubsc != null && !playCheckSubsc.isUnsubscribed()) {
                 playCheckSubsc.unsubscribe();
@@ -250,14 +251,19 @@ public class SportSubjectFragment extends Fragment implements View.OnHoverListen
             int index=mVerticalPagerView.getCurrentDataSelectPosition();
             if(payState!=null) {
                 if(payState[index]==0) {
-                    payHandler.removeCallbacks(payRunnable);
                     payHandler.postDelayed(payRunnable, 500);
                 }else if(payState[index]==1){
                     play.setVisibility(View.GONE);
                     buy.setVisibility(View.VISIBLE);
+                    hasbuy.setVisibility(View.GONE);
+                    price.setVisibility(View.VISIBLE);
+                    price.setText(objects.expense.price+"¥");
                 }else{
                     play.setVisibility(View.VISIBLE);
                     buy.setVisibility(View.GONE);
+                    price.setVisibility(View.GONE);
+                    hasbuy.setVisibility(View.VISIBLE);
+                    hasbuy.setText("已付费：有效期"+objects.expense.duration+"天");
                 }
             }
         }else{
@@ -316,7 +322,8 @@ public class SportSubjectFragment extends Fragment implements View.OnHoverListen
                                 play.setVisibility(View.GONE);
                                 hasbuy.setVisibility(View.GONE);
                                 price.setVisibility(View.VISIBLE);
-                                price.setText(objects.expense.price+"¥");                           // 过期了。认为没购买
+                                price.setText(objects.expense.price+"¥");
+                                                      // 过期了。认为没购买
                             } else {
                                 payState[index]=2;
                                 play.setVisibility(View.VISIBLE);
