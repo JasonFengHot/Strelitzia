@@ -24,27 +24,27 @@ public class ConstUtils {
     public static final String REGEX_IP = "((2[0-4]\\d|25[0-5]|[01]?\\d\\d?)\\.){3}(2[0-4]\\d|25[0-5]|[01]?\\d\\d?)";
 
     private ConstUtils() {
-        throw new UnsupportedOperationException("u can\'t instantiate me...");
+        throw new UnsupportedOperationException("Cannot instantiate...");
     }
 
-    public static enum TimeUnit {
+    public enum TimeUnit {
         MSEC,
         SEC,
         MIN,
         HOUR,
         DAY;
 
-        private TimeUnit() {
+        TimeUnit() {
         }
     }
 
-    public static enum MemoryUnit {
+    public enum MemoryUnit {
         BYTE,
         KB,
         MB,
         GB;
 
-        private MemoryUnit() {
+        MemoryUnit() {
         }
     }
 

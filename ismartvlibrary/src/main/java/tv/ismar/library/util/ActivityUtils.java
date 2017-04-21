@@ -14,8 +14,8 @@ public class ActivityUtils {
         throw new UnsupportedOperationException("Can not instantiate ...");
     }
 
-    public static void addFragmentToActivity(@NonNull FragmentManager fragmentManager,
-                                             @NonNull Fragment fragment, int frameId) {
+    public static void addSupportV4FragmentToActivity(@NonNull FragmentManager fragmentManager,
+                                                      @NonNull Fragment fragment, int frameId) {
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.replace(frameId, fragment);
         transaction.commit();

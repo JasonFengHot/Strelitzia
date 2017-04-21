@@ -2,8 +2,6 @@ package tv.ismar.library.util;
 
 import java.util.Date;
 
-import cn.ismartv.truetime.TrueTime;
-
 /**
  * Created by LongHai on 17-4-10.
  */
@@ -15,11 +13,11 @@ public class DateUtils {
     }
 
     public static Date getDateToday() {
-        return TrueTime.now();
+        return null;
     }
 
     public static long currentTimeMillis() {
-        return TrueTime.now().getTime();
+        return 0;
     }
 
 }

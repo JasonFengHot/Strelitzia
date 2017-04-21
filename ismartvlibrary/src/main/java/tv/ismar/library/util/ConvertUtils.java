@@ -22,7 +22,7 @@ public class ConvertUtils {
     static final char[] hexDigits = new char[]{'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
 
     private ConvertUtils() {
-        throw new UnsupportedOperationException("Cannot instantiate ...");
+        throw new UnsupportedOperationException("Cannot instantiate...");
     }
 
     public static String bytes2HexString(byte[] bytes) {
