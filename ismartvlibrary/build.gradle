@@ -1,12 +1,12 @@
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 25
-    buildToolsVersion "25.0.2"
+    compileSdkVersion rootProject.ext.androidCompileSdkVersion
+    buildToolsVersion rootProject.ext.androidBuildToolsVersion
 
     defaultConfig {
-        minSdkVersion 16
-        targetSdkVersion 25
+        minSdkVersion rootProject.ext.androidMinSdkVersion
+        targetSdkVersion rootProject.ext.androidTargetSdkVersion
         versionCode 1
         versionName "1.0"
 
@@ -18,6 +18,13 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+    }
+    lintOptions {
+        abortOnError false
+    }
+    packagingOptions {
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/NOTICE'
     }
 }
 
@@ -38,7 +45,9 @@ dependencies {
     })
     testCompile 'junit:junit:4.12'
     testCompile 'org.robolectric:robolectric:3.3.2'
-    compile 'com.android.support:appcompat-v7:25.3.1'
+    Map<String, String> dependencies = rootProject.ext.dependencies
+    compile dependencies.appCompat
+    compile dependencies.support_v4
     compile 'com.squareup.retrofit2:retrofit:2.2.0'
     compile 'com.squareup.retrofit2:converter-jackson:2.2.0'
     compile('com.squareup.retrofit2:converter-simplexml:2.2.0') {
@@ -47,4 +56,5 @@ dependencies {
         exclude module: 'xpp3'
     }
     compile 'com.squareup.retrofit2:adapter-rxjava:2.2.0'
+    compile 'io.reactivex:rxandroid:1.2.1'
 }
