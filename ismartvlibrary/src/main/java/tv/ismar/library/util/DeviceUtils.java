@@ -5,11 +5,13 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Point;
 import android.os.Build;
+import android.os.Environment;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.Display;
 import android.view.WindowManager;
 
+import java.io.File;
 import java.math.BigDecimal;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
@@ -23,6 +25,10 @@ public class DeviceUtils {
 
     public static String getModelName() {
         return Build.PRODUCT.replaceAll(" ", "_").toLowerCase();
+    }
+
+    public static String getSDCardCachePath() {
+        return new File(Environment.getExternalStorageDirectory(), "/Daisy/").getAbsolutePath();
     }
 
     public static Point getDisplayPixelSize(Context context) {

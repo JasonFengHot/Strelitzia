@@ -8,9 +8,7 @@ package cn.ismartv.truetime;
 import android.content.Context;
 import android.os.SystemClock;
 import android.util.Log;
-import cn.ismartv.truetime.DiskCacheClient;
-import cn.ismartv.truetime.SntpClient;
-import cn.ismartv.truetime.TrueLog;
+
 import java.io.IOException;
 import java.util.Date;
 
@@ -26,7 +24,7 @@ public class TrueTime {
     }
 
     public static Date now() {
-        if(!isInitialized()) {
+        if (!isInitialized()) {
             Log.e(TAG, "You need to call init() on TrueTime at least once.");
             return new Date();
         } else {
@@ -80,7 +78,7 @@ public class TrueTime {
     }
 
     protected static synchronized void cacheTrueTimeInfo() {
-        if(!SNTP_CLIENT.wasInitialized()) {
+        if (!SNTP_CLIENT.wasInitialized()) {
             TrueLog.i(TAG, "---- SNTP client not available. not caching TrueTime info in disk");
         } else {
             DISK_CACHE_CLIENT.cacheTrueTimeInfo(SNTP_CLIENT);
@@ -88,8 +86,8 @@ public class TrueTime {
     }
 
     private static long _getCachedDeviceUptime() {
-        long cachedDeviceUptime = SNTP_CLIENT.wasInitialized()?SNTP_CLIENT.getCachedDeviceUptime():DISK_CACHE_CLIENT.getCachedDeviceUptime();
-        if(cachedDeviceUptime == 0L) {
+        long cachedDeviceUptime = SNTP_CLIENT.wasInitialized() ? SNTP_CLIENT.getCachedDeviceUptime() : DISK_CACHE_CLIENT.getCachedDeviceUptime();
+        if (cachedDeviceUptime == 0L) {
             throw new RuntimeException("expected SNTP time from last boot to be cached. couldn\'t find it.");
         } else {
             return cachedDeviceUptime;
@@ -97,8 +95,8 @@ public class TrueTime {
     }
 
     private static long _getCachedSntpTime() {
-        long cachedSntpTime = SNTP_CLIENT.wasInitialized()?SNTP_CLIENT.getCachedSntpTime():DISK_CACHE_CLIENT.getCachedSntpTime();
-        if(cachedSntpTime == 0L) {
+        long cachedSntpTime = SNTP_CLIENT.wasInitialized() ? SNTP_CLIENT.getCachedSntpTime() : DISK_CACHE_CLIENT.getCachedSntpTime();
+        if (cachedSntpTime == 0L) {
             throw new RuntimeException("expected SNTP time from last boot to be cached. couldn\'t find it.");
         } else {
             return cachedSntpTime;

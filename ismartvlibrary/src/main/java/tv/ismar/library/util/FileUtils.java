@@ -1,6 +1,8 @@
 package tv.ismar.library.util;
 
+import android.content.Context;
 import android.os.Environment;
+import android.os.StatFs;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -816,6 +818,43 @@ public class FileUtils {
             }
 
         }
+    }
+
+    public static long getSdCardTotal(final Context context) {
+        try {
+            if (Environment.getExternalStorageState().equals(
+                    Environment.MEDIA_MOUNTED)) {
+                File path = Environment.getExternalStorageDirectory();
+                StatFs stat = new StatFs(path.getPath());
+                long blockSize = stat.getBlockSize();
+                long totalBlocks = stat.getBlockCount();
+                long totalSize = totalBlocks * blockSize;
+                return totalSize / 1048576;
+            } else {
+                return 0;
+            }
+        } catch (IllegalArgumentException e) {
+            return 0;
+        }
+    }
+
+    public static long getSdCardAvalible(final Context context) {
+        try {
+            if (Environment.getExternalStorageState().equals(
+                    Environment.MEDIA_MOUNTED)) {
+                File path = Environment.getExternalStorageDirectory();
+                StatFs stat = new StatFs(path.getPath());
+                long blockSize = stat.getBlockSize();
+                long availableBlocks = stat.getAvailableBlocks();
+                long availSize = availableBlocks * blockSize;
+                return availSize / 1048576;
+            } else {
+                return 0;
+            }
+        } catch (IllegalArgumentException e) {
+            return 0;
+        }
+
     }
 
 }

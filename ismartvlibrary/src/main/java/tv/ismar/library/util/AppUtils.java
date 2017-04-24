@@ -49,7 +49,7 @@ public class AppUtils {
     }
 
     public static boolean isSystemApp(Context context, String packageName) {
-        if (EmptyUtils.isEmptyText(packageName)) {
+        if (StringUtils.isEmpty(packageName)) {
             return false;
         } else {
             try {

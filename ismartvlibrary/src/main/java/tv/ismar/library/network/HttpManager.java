@@ -27,7 +27,7 @@ import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 import tv.ismar.library.exception.ParameterException;
-import tv.ismar.library.util.EmptyUtils;
+import tv.ismar.library.util.StringUtils;
 
 /**
  * Created by LongHai on 17-4-7.
@@ -113,7 +113,7 @@ public class HttpManager {
     @SuppressWarnings("unchecked")
     public synchronized static <T> T getDomainService(Class<T> service) {
         String domain = getInstance().domain;
-        if (EmptyUtils.isEmptyText(domain)) {
+        if (StringUtils.isEmpty(domain)) {
             throw new ParameterException(HttpManager.class.getSimpleName() + " > getDomainService");
         }
         if (getInstance().domainService == null) {
@@ -125,7 +125,7 @@ public class HttpManager {
     @SuppressWarnings("unchecked")
     public synchronized static <T> T getUpgradeService(Class<T> service) {
         String upgrade_domain = getInstance().upgrade_domain;
-        if (EmptyUtils.isEmptyText(upgrade_domain)) {
+        if (StringUtils.isEmpty(upgrade_domain)) {
             throw new ParameterException(HttpManager.class.getSimpleName() + " > getUpgradeService");
         }
         if (getInstance().upgradeService == null) {
