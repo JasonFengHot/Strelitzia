@@ -34,4 +34,5 @@ dependencies {
     compile project(path: ':homepage')
     compile project(':homepage')
     compile project(':libverticalpagerview-release')
+    compile project(':paypage')
 }

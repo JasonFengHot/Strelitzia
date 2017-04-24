@@ -56,6 +56,7 @@ import tv.ismar.app.network.SkyService;
 import tv.ismar.app.network.entity.EventProperty;
 import tv.ismar.app.network.entity.PlayCheckEntity;
 import tv.ismar.app.widget.LoadingDialog;
+import tv.ismar.pay.PaymentActivity;
 import tv.ismar.subject.R;
 import tv.ismar.subject.Utils.LableImageSubject;
 import tv.ismar.subject.Utils.PayCheckUtil;
@@ -159,10 +160,6 @@ public class SportSubjectFragment extends Fragment implements View.OnHoverListen
         if(!subject_type.equals("null")){
             sendLog();
         }
-        if(objects!=null&&payHandler!=null){
-            payHandler.removeCallbacks(payRunnable);
-            payHandler.postDelayed(payRunnable,500);
-        }
         super.onResume();
     }
 
@@ -236,6 +233,7 @@ public class SportSubjectFragment extends Fragment implements View.OnHoverListen
         objects=list.get(mVerticalPagerView.getCurrentDataSelectPosition());
         if(objects.poster_url!=null)
         Picasso.with(getActivity()).load(objects.poster_url).into(detail_labelImage);
+        int index=mVerticalPagerView.getCurrentDataSelectPosition();
         payHandler.removeCallbacks(payRunnable);
         if(objects.expense!=null){
             if (playCheckSubsc != null && !playCheckSubsc.isUnsubscribed()) {
@@ -248,7 +246,6 @@ public class SportSubjectFragment extends Fragment implements View.OnHoverListen
 //                }else{
 //                    cp_title.setVisibility(View.GONE);
 //                }
-            int index=mVerticalPagerView.getCurrentDataSelectPosition();
             if(payState!=null) {
                 if(payState[index]==0) {
                     payHandler.postDelayed(payRunnable, 500);
@@ -776,6 +773,9 @@ public class SportSubjectFragment extends Fragment implements View.OnHoverListen
                     View view1=mVerticalPagerView.getChildViewAt(lastHoverIndex);
                     normalItemNoSelect(view1,lastHoverIndex);
                 }
+                if(leaveIndex>=0){
+                    bigItemNoSelect(view,leaveIndex);
+                }
                 break;
             case KeyEvent.KEYCODE_DPAD_DOWN:
             case KeyEvent.KEYCODE_DPAD_UP:
@@ -811,6 +811,10 @@ public class SportSubjectFragment extends Fragment implements View.OnHoverListen
         }
         if(position==mVerticalPagerView.getCurrentDataSelectPosition()){
             buildDetail();
+            if(mVerticalPagerView.getChildViewAt(position)!=null) {
+                mVerticalPagerView.getChildViewAt(position).requestFocusFromTouch();
+                bigItemSelect(mVerticalPagerView.getChildViewAt(position),position);
+            }
         }
 
     }
@@ -892,54 +896,15 @@ public class SportSubjectFragment extends Fragment implements View.OnHoverListen
             return false;
         }
     }
-
-//    private RecyclerViewTV mRecyclerView;
-//    private RecyclerViewPresenter mRecyclerViewPresenter;
-//    private GeneralAdapter mGeneralAdapter;
-//
-//    private MainUpView mainUpView1;
-//    private RecyclerViewBridge mRecyclerViewBridge;
-//    private View oldView;
-//    private int mSavePos = 0;
-//
-//    @Override
-//    public void onItemClick(RecyclerViewTV parent, View itemView, int position) {
-//        listItemToNormal(oldView);
-//        listItemToBig(itemView);
-//        buildDetail();
-//    }
-//
-//    @Override
-//    public void onItemPreSelected(RecyclerViewTV parent, View itemView, int position) {
-////        mRecyclerViewBridge.setUnFocusView(oldView);
-//        listItemToNormal(oldView);
-//    }
-//
-//    @Override
-//    public void onItemSelected(RecyclerViewTV parent, View itemView, int position) {
-//        Rect localRect = new Rect();
-//        itemView.getLocalVisibleRect(localRect);
-//        Rect drawRect = new Rect();
-//        itemView.getDrawingRect(drawRect);
-//        if (localRect.bottom == drawRect.bottom) {
-////            mRecyclerViewBridge.setFocusView(itemView, 1.2f);
-//            listItemToBig(itemView);
-//            mSavePos = position;
-//            buildDetail();
-//        }
-//        oldView = itemView;
-//    }
-//
-//    @Override
-//    public void onReviseFocusFollow(RecyclerViewTV parent, View itemView, int position) {
-////        mRecyclerViewBridge.setFocusView(itemView, 1.2f);
-//        listItemToBig(itemView);
-//        oldView = itemView;
-//        mSavePos = position;
-//        buildDetail();
-//        if (position == 0){
-//
-//        }
-//    }
-
+    public void clearPayState(){
+        if(payState!=null) {
+            for (int i = 0; i < payState.length; i++) {
+                payState[i] = 0;
+            }
+        }
+        if(payHandler!=null) {
+            payHandler.removeCallbacks(payRunnable);
+            payHandler.postDelayed(payRunnable, 500);
+        }
+    }
 }
