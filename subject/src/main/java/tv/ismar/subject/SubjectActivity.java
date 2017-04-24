@@ -13,9 +13,10 @@ import java.util.concurrent.TimeoutException;
 import tv.ismar.app.AppConstant;
 import tv.ismar.app.BaseActivity;
 import tv.ismar.app.widget.LoadingDialog;
-import tv.ismar.pay.PaymentActivity;
 import tv.ismar.subject.fragment.MovieTVSubjectFragment;
 import tv.ismar.subject.fragment.SportSubjectFragment;
+
+import static tv.ismar.app.AppConstant.Payment.PAYMENT_SUCCESS_CODE;
 
 /**
  * Created by liucan on 2017/3/1.
@@ -96,8 +97,8 @@ public class SubjectActivity extends BaseActivity{
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Log.i("OnActivity",resultCode+" code  "+PaymentActivity.PAYMENT_SUCCESS_CODE);
-        if(resultCode== PaymentActivity.PAYMENT_SUCCESS_CODE){
+        Log.i("OnActivity",resultCode+" code  "+PAYMENT_SUCCESS_CODE);
+        if(resultCode== PAYMENT_SUCCESS_CODE){
             if(sportSubjectFragment!=null){
                 sportSubjectFragment.clearPayState();
             }

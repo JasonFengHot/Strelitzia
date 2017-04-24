@@ -56,7 +56,6 @@ import tv.ismar.app.network.SkyService;
 import tv.ismar.app.network.entity.EventProperty;
 import tv.ismar.app.network.entity.PlayCheckEntity;
 import tv.ismar.app.widget.LoadingDialog;
-import tv.ismar.pay.PaymentActivity;
 import tv.ismar.subject.R;
 import tv.ismar.subject.Utils.LableImageSubject;
 import tv.ismar.subject.Utils.PayCheckUtil;

@@ -25,10 +25,12 @@ import tv.ismar.app.core.PageIntentInterface.PaymentInfo;
 import tv.ismar.app.core.PageIntentInterface.ProductCategory;
 import tv.ismar.app.network.entity.PayLayerEntity;
 
+import static tv.ismar.app.AppConstant.Payment.PAYMENT_FAILURE_CODE;
+import static tv.ismar.app.AppConstant.Payment.PAYMENT_REQUEST_CODE;
+import static tv.ismar.app.AppConstant.Payment.PAYMENT_SUCCESS_CODE;
 import static tv.ismar.app.core.PageIntentInterface.FromPage.unknown;
 import static tv.ismar.app.core.PageIntentInterface.PAYMENT;
 import static tv.ismar.app.core.PageIntentInterface.PAYVIP;
-import static tv.ismar.pay.PaymentActivity.PAYMENT_REQUEST_CODE;
 
 /**
  * Created by huaijie on 4/11/16.
@@ -215,8 +217,8 @@ public class PayActivity extends BaseActivity implements View.OnHoverListener, V
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == PaymentActivity.PAYMENT_SUCCESS_CODE) {
-            setResult(PaymentActivity.PAYMENT_SUCCESS_CODE, data);
+        if (resultCode == PAYMENT_SUCCESS_CODE) {
+            setResult(PAYMENT_SUCCESS_CODE, data);
             finish();
         }
         super.onActivityResult(requestCode, resultCode, data);
@@ -224,7 +226,7 @@ public class PayActivity extends BaseActivity implements View.OnHoverListener, V
 
     @Override
     public void onBackPressed() {
-        setResult(PaymentActivity.PAYMENT_FAILURE_CODE);
+        setResult(PAYMENT_FAILURE_CODE);
         super.onBackPressed();
     }
 

@@ -31,7 +31,10 @@ import tv.ismar.app.core.VipMark;
 import tv.ismar.app.network.entity.PayLayerPackageEntity;
 import tv.ismar.statistics.DetailPageStatistics;
 
-import static tv.ismar.pay.PaymentActivity.PAYMENT_REQUEST_CODE;
+import static tv.ismar.app.AppConstant.Payment.PAYMENT_FAILURE_CODE;
+import static tv.ismar.app.AppConstant.Payment.PAYMENT_REQUEST_CODE;
+import static tv.ismar.app.AppConstant.Payment.PAYMENT_SUCCESS_CODE;
+
 
 /**
  * Created by huaijie on 4/12/16.
@@ -292,8 +295,8 @@ public class PayLayerPackageActivity extends BaseActivity implements View.OnHove
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == PaymentActivity.PAYMENT_SUCCESS_CODE) {
-            setResult(PaymentActivity.PAYMENT_SUCCESS_CODE, data);
+        if (resultCode == PAYMENT_SUCCESS_CODE) {
+            setResult(PAYMENT_SUCCESS_CODE, data);
             finish();
         }
         super.onActivityResult(requestCode, resultCode, data);
@@ -301,7 +304,7 @@ public class PayLayerPackageActivity extends BaseActivity implements View.OnHove
 
     @Override
     public void onBackPressed() {
-        setResult(PaymentActivity.PAYMENT_FAILURE_CODE);
+        setResult(PAYMENT_FAILURE_CODE);
         super.onBackPressed();
     }
 
