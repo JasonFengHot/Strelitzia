@@ -86,6 +86,7 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnClickList
     private SubjectEntity mSubjectEntity=new SubjectEntity();
     private boolean isScaledIn=true;
     private String channel="";
+    private boolean showPayLayer=false;
 
     @Nullable
     @Override
@@ -276,6 +277,7 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnClickList
     @Override
     public void onResume() {
         super.onResume();
+        showPayLayer=false;
         if(btn_buy_focused){
             subject_btn_buy.requestFocus();
         }else if(btn_like_focused) {
@@ -380,13 +382,16 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnClickList
                         if(subjectPayLayerEntity.gather_per){
                             showToast("您已拥有本专题所有影片观看权限");
                         }else{
-                            AppConstant.purchase_entrance_page="gather";
-                            PageIntentInterface.PaymentInfo paymentInfo = new PageIntentInterface.PaymentInfo(item, subjectPayLayerEntity.getPk(), PageIntent.PAYVIP, subjectPayLayerEntity.getCpid(),mSubjectEntity.getTitle());
-                            String userName = IsmartvActivator.getInstance().getUsername();
-                            String title = mSubjectEntity.getTitle();
-                            new PurchaseStatistics().expenseVideoClick(String.valueOf(id), userName, title, String.valueOf(id));
-                            new PageIntent().toPaymentForResult(getActivity(), Source.GATHER.getValue(), paymentInfo);
-                            video_gather_out(mSubjectEntity.getTitle(),"expense","","");
+                            if(!showPayLayer) {
+                                showPayLayer = true;
+                                AppConstant.purchase_entrance_page = "gather";
+                                PageIntentInterface.PaymentInfo paymentInfo = new PageIntentInterface.PaymentInfo(item, subjectPayLayerEntity.getPk(), PageIntent.PAYVIP, subjectPayLayerEntity.getCpid(), mSubjectEntity.getTitle());
+                                String userName = IsmartvActivator.getInstance().getUsername();
+                                String title = mSubjectEntity.getTitle();
+                                new PurchaseStatistics().expenseVideoClick(String.valueOf(id), userName, title, String.valueOf(id));
+                                new PageIntent().toPaymentForResult(getActivity(), Source.GATHER.getValue(), paymentInfo);
+                                video_gather_out(mSubjectEntity.getTitle(), "expense", "", "");
+                            }
                         }
                     }
 
