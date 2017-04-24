@@ -7,13 +7,11 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
-import android.view.KeyEvent;
 
 import java.util.concurrent.TimeoutException;
 
 import tv.ismar.app.AppConstant;
 import tv.ismar.app.BaseActivity;
-import tv.ismar.app.entity.Channel;
 import tv.ismar.app.widget.LoadingDialog;
 import tv.ismar.pay.PaymentActivity;
 import tv.ismar.subject.fragment.MovieTVSubjectFragment;
