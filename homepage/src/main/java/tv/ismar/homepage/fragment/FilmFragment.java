@@ -259,7 +259,7 @@ public class FilmFragment extends ChannelBaseFragment {
     @Override
     public void onStop() {
         CacheManager.getInstance().stopAllRequest();
-//        stopPlayback();
+        stopPlayback();
         super.onStop();
     }
 
