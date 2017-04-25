@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.widget.ImageView;
 
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 
@@ -12,6 +13,14 @@ import com.squareup.picasso.Transformation;
  */
 
 public class ImageUtils {
+
+    public static void loadImage(Context context, int resId, ImageView imageView){
+        Picasso.with(context).load(resId).centerCrop().into(imageView);
+    }
+
+    public static void loadImage(Context context, int resId, ImageView imageView, Callback callback){
+        Picasso.with(context).load(resId).centerCrop().into(imageView, callback);
+    }
 
     /**
      * 指定大小加载图片

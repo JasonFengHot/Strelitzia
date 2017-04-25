@@ -1,7 +1,5 @@
 package tv.ismar.library.downloader;
 
-import android.util.Log;
-
 import java.io.BufferedInputStream;
 import java.io.Closeable;
 import java.io.File;
@@ -17,11 +15,9 @@ import okhttp3.ResponseBody;
 import tv.ismar.library.downloader.model.DownloadTable;
 import tv.ismar.library.injectdb.query.Select;
 import tv.ismar.library.util.FileUtils;
+import tv.ismar.library.util.LogUtils;
 import tv.ismar.library.util.MD5;
 
-/**
- * Created by huaijie on 6/19/15.
- */
 public class DownloadClient implements Runnable {
     private static final String TAG = "LH/DownloadClient";
 
@@ -56,7 +52,7 @@ public class DownloadClient implements Runnable {
             currentLocation = downloadTable.start_position;
             contentLength = downloadTable.content_length;
         }
-        Log.d(TAG, "线程_" + mDownloadUrl + "_正在下载【" + "开始位置 : " + currentLocation + " contentLength : " + contentLength + "】");
+        LogUtils.d(TAG, "线程_" + mDownloadUrl + "_正在下载【" + "开始位置 : " + currentLocation + " contentLength : " + contentLength + "】");
         if (contentLength != 0 && currentLocation == contentLength) {
             CacheManager.getInstance().mFutureMap.remove(mDownloadUrl);
             saveToDb(downloadTable, true, currentLocation, contentLength);
@@ -73,7 +69,7 @@ public class DownloadClient implements Runnable {
             Response response = mClient.newCall(request).execute();
             ResponseBody responseBody = response.body();
             if (responseBody != null) {
-                Log.d(TAG, "Download ContentLength : " + responseBody.contentLength());
+                LogUtils.d(TAG, "Download ContentLength : " + responseBody.contentLength());
                 if (contentLength <= 0) {
                     contentLength = responseBody.contentLength();
                 }
@@ -83,7 +79,7 @@ public class DownloadClient implements Runnable {
                 int length;
                 while ((length = bis.read(buffer)) > 0) {
                     if (Thread.currentThread().isInterrupted()) {
-                        Log.d(TAG, "+++++ thread stopped +++++");
+                        LogUtils.d(TAG, "+++++ thread stopped +++++");
                         break;
                     }
                     randomAccessFile.write(buffer, 0, length);
@@ -93,10 +89,10 @@ public class DownloadClient implements Runnable {
                     }
                 }
             } else {
-                Log.e(TAG, "ResponseBody null.");
+                LogUtils.e(TAG, "ResponseBody null.");
             }
         } catch (IOException e) {
-            Log.e(TAG, "Download error : " + e.getMessage());
+            LogUtils.e(TAG, "Download error : " + e.getMessage());
             e.printStackTrace();
         } finally {
             if (bis != null) {
@@ -111,7 +107,7 @@ public class DownloadClient implements Runnable {
         }
         CacheManager.getInstance().mFutureMap.remove(mDownloadUrl);
         saveToDb(downloadTable, downloadComplete, currentLocation, contentLength);
-        Log.d(TAG, "downloadTable saved : " +
+        LogUtils.d(TAG, "downloadTable saved : " +
                 "\ndownloadComplete : " + downloadComplete +
                 "\ndownload_state   : " + downloadTable.download_state +
                 "\ncurrentLocation  : " + currentLocation +

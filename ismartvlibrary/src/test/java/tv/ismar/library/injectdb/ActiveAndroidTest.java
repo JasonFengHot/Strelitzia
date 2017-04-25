@@ -92,15 +92,19 @@ public class ActiveAndroidTest {
 
         new Update(AccountDao.class)
                 .set("username='Example LongHai'").where("username='Example 5'").execute();
-
-        AccountDao account = new AccountDao();
-        account.username = "Example 8";
-        account.password = "pwd override";
-        account.save();
-
         List<AccountDao> updateDao = new Select().from(AccountDao.class)
                 .execute();
         Log.i(TAG, "UpdateQuery:\n" + JacksonUtils.toJson(updateDao));
+
+        selectSingle.password = "pwd zhangsan";
+        selectSingle.save();
+        List<AccountDao> saveSingleDao = new Select().from(AccountDao.class)
+                .execute();
+        Log.i(TAG, "SaveSingleQuery:\n" + JacksonUtils.toJson(saveSingleDao));
+        selectSingle.delete();
+        List<AccountDao> deleteSingleDao = new Select().from(AccountDao.class)
+                .execute();
+        Log.i(TAG, "DeleteSingleDao:\n" + JacksonUtils.toJson(deleteSingleDao));
 
     }
 
