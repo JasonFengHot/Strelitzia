@@ -87,6 +87,7 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnClickList
     private boolean isScaledIn=true;
     private String channel="";
     private boolean showPayLayer=false;
+    private boolean clickble=true;
 
     @Nullable
     @Override
@@ -359,7 +360,10 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnClickList
                 showToast("取消收藏成功");
             }
         } else if (i == R.id.subject_btn_buy) {
-                buySubject();
+                if(clickble) {
+                    buySubject();
+                    clickble=false;
+                }
         }
     }
 
@@ -379,6 +383,7 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnClickList
 
                     @Override
                     public void onNext(SubjectPayLayerEntity subjectPayLayerEntity) {
+                        clickble=true;
                         if(subjectPayLayerEntity.gather_per){
                             showToast("您已拥有本专题所有影片观看权限");
                         }else{
@@ -397,6 +402,7 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnClickList
 
                     @Override
                     public void onError(Throwable e) {
+                        clickble=true;
                         super.onError(e);
                     }
                 });
