@@ -328,6 +328,17 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
             getSupportFragmentManager().beginTransaction().replace(android.R.id.content, new UpdateSlienceLoading()).commit();
             return;
         }
+//        contentView.getViewTreeObserver().addOnGlobalFocusChangeListener(new ViewTreeObserver.OnGlobalFocusChangeListener() {
+//            @Override
+//            public void onGlobalFocusChanged(View oldFocus, View newFocus) {
+//                if(newFocus!=null&&oldFocus!=null) {
+//                    if(newFocus.getId()==R.id.large_layout){
+//                        Log.i("newFocus", "larg_layout: "+newFocus.toString());
+//                    }
+//                    Log.i("newFocus", newFocus.toString());
+//                }
+//            }
+//        });
 
         try {
             System.setProperty("http.keepAlive", "false");
@@ -1258,6 +1269,10 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
 
     public void setLastViewTag(String flag) {
         lastviewTag = flag;
+    }
+    public void getFoucsReturn(){
+        int index=recyclerAdapter.getSelectedPosition();
+        home_tab_list.getChildAt(index).requestFocus();
     }
 
     public void resetBorderFocus() {

@@ -324,11 +324,31 @@ public class FilmFragment extends ChannelBaseFragment {
     }
 
     private HomeItemContainer focusView;
-
+    boolean recommendFocus=false;
+    int index=1;
     private void initPosters(ArrayList<HomePagerEntity.Poster> posters) {
         if (guideRecommmendList == null || mContext == null)
             return;
+
+//        if(guideRecommmendList.getChildAt(1)!=null&&guideRecommmendList.getChildAt(2)!=null){
+//            if(guideRecommmendList.getChildAt(1).hasFocus()){
+//                Log.i("guideRecommmendList","getChildAt(1): "+"hasFocus");
+//                index=1;
+//                recommendFocus=true;
+//            }else if(guideRecommmendList.getChildAt(2).hasFocus()){
+//                Log.i("guideRecommmendList","getChildAt(2): "+"hasFocus");
+//                index=2;
+//                recommendFocus=true;
+//            }
+//        }
+        if(focusView!=null){
+            Object tagObject = focusView.getTag(R.layout.item_poster);
+            index=Integer.parseInt(tagObject.toString())-1;
+            recommendFocus=true;
+
+        }
         guideRecommmendList.removeAllViews();
+
         posters.get(0).setPosition(0);
         String imageUrl0 = posters.get(0).getCustom_image();
         if (TextUtils.isEmpty(imageUrl0)) {
@@ -363,6 +383,7 @@ public class FilmFragment extends ChannelBaseFragment {
                 HomeItemContainer frameLayout = (HomeItemContainer) LayoutInflater.from(mContext).inflate(R.layout.item_poster, null);
                 frameLayout.setLayoutParams(params);
                 frameLayout.setOnClickListener(ItemClickListener);
+                frameLayout.setTag(R.layout.item_poster,i);
                 ImageView postitemView = (ImageView) frameLayout.findViewById(R.id.poster_image);
                 TextView textView = (TextView) frameLayout.findViewById(R.id.poster_title);
                 if (!StringUtils.isEmpty(posters.get(i).getIntroduction())) {
@@ -443,7 +464,10 @@ public class FilmFragment extends ChannelBaseFragment {
                 });
             }
         }
-
+        if(recommendFocus) {
+            guideRecommmendList.getChildAt(index).requestFocus();
+            recommendFocus=false;
+        }
         isPosterInit = true;
         resetBorder();
     }
