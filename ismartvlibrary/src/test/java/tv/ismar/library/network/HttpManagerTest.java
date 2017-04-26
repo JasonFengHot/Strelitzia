@@ -24,7 +24,7 @@ import tv.ismar.library.BuildConfig;
  */
 
 @RunWith(RobolectricTestRunner.class)
-@Config(constants = BuildConfig.class)
+@Config(constants = BuildConfig.class, sdk = 23)
 public class HttpManagerTest {
 
     private static final String TAG = "LH/HttpManagerTest";
@@ -34,11 +34,6 @@ public class HttpManagerTest {
 
     static {
         HttpManager.getInstance().init(domain, upgrade_domain, deviceToken);
-    }
-
-    @Before
-    public void setUp() throws URISyntaxException {
-        //输出日志
         ShadowLog.stream = System.out;
     }
 
