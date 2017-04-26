@@ -297,10 +297,11 @@ public class IsmartvActivator {
 
 
     public String encryptWithPublic(String string) {
+        try {
         String signPath = mContext.getFileStreamPath(SIGN_FILE_NAME).getAbsolutePath();
         String result = decryptSign(sn, signPath);
         String publicKey = result.split("\\$\\$\\$")[1];
-        try {
+
             String input = Md5.md5(string);
             Log.d(TAG, "md5: " + input);
             byte[] rsaResult = RSACoder.encryptByPublicKey(input.getBytes(), publicKey);
