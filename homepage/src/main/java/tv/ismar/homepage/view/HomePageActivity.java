@@ -1270,10 +1270,6 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
     public void setLastViewTag(String flag) {
         lastviewTag = flag;
     }
-    public void getFoucsReturn(){
-        int index=recyclerAdapter.getSelectedPosition();
-        home_tab_list.getChildAt(index).requestFocus();
-    }
 
     public void resetBorderFocus() {
         scrollFromBorder = false;

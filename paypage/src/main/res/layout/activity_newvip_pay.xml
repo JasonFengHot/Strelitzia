@@ -20,7 +20,6 @@
             android:layout_width="1dp"
             android:layout_height="1dp"
             android:layout_centerHorizontal="true"
-            android:focusable="true"
             android:src="@android:color/transparent"/>
 
         <cn.ismartv.tvhorizontalscrollview.TvHorizontalScrollView
