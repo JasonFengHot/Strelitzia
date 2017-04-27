@@ -1174,6 +1174,7 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
     protected void onResume() {
         super.onResume();
         AppConstant.purchase_referer = "homepage";
+        AppConstant.purchase_entrance_page="homepage";
         if (!isneedpause) {
             return;
         }

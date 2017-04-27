@@ -1463,6 +1463,8 @@ public class WordSearchActivity extends BaseActivity implements View.OnClickList
                 handler.sendEmptyMessageDelayed(1, 15000);
                 fetchRecommend();
                 AppConstant.purchase_page = "filter_empty";
+                AppConstant.purchase_tab = "";
+
             }
         }
 

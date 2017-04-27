@@ -57,7 +57,7 @@ public class SubjectActivity extends BaseActivity{
         AppConstant.purchase_entrance_page = "gather";
         AppConstant.purchase_entrance_related_item = String.valueOf(itemid);
         AppConstant.purchase_entrance_related_title = title;
-        AppConstant.purchase_entrance_keyword = gather_type;
+        AppConstant.purchase_entrance_keyword = title;
 
         fromPage = intent.getStringExtra("fromPage");
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
