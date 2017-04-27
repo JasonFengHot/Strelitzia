@@ -1,19 +1,21 @@
 package tv.ismar.player.media;
 
+import com.qiyi.sdk.player.SdkVideo;
+
 import java.util.List;
 
 import tv.ismar.player.IsmartvPlayer;
 import tv.ismar.player.model.ClipEntity;
 import tv.ismar.player.model.MediaEntity;
-import tv.ismar.player.widget.AspectRatioFrameLayout;
 
 /**
  * Created by LongHai on 17-4-26.
  */
 
 public class QiyiPlayer extends IsmartvPlayer {
+
     @Override
-    public void attachToView(AspectRatioFrameLayout container) {
+    protected void createPlayer(SdkVideo sdkVideo) {
 
     }
 
@@ -72,8 +74,4 @@ public class QiyiPlayer extends IsmartvPlayer {
 
     }
 
-    @Override
-    public void switchMediaSource(MediaEntity mediaEntity) {
-
-    }
 }

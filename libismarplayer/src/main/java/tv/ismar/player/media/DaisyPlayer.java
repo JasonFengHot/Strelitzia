@@ -3,9 +3,9 @@ package tv.ismar.player.media;
 import java.util.List;
 
 import tv.ismar.player.IsmartvPlayer;
+import tv.ismar.player.SmartPlayer;
 import tv.ismar.player.model.ClipEntity;
-import tv.ismar.player.model.MediaEntity;
-import tv.ismar.player.widget.AspectRatioFrameLayout;
+import tv.ismar.player.model.MediaMeta;
 
 /**
  * Created by LongHai on 17-4-26.
@@ -13,8 +13,21 @@ import tv.ismar.player.widget.AspectRatioFrameLayout;
 
 public class DaisyPlayer extends IsmartvPlayer {
 
+    private String TAG = "LH/DaisyPlayer";
+    private static final int STATE_ERROR = -1;
+    private static final int STATE_IDLE = 0;
+    private static final int STATE_PREPARING = 1;
+    private static final int STATE_PREPARED = 2;
+    private static final int STATE_PLAYING = 3;
+    private static final int STATE_PAUSED = 4;
+    private static final int STATE_COMPLETED = 5;
+
+    private int mCurrentState = STATE_IDLE;
+    private MediaMeta mMediaMeta;
+    private SmartPlayer mPlayer;
+
     @Override
-    public void attachToView(AspectRatioFrameLayout container) {
+    protected void createPlayer(MediaMeta mediaMeta) {
 
     }
 
@@ -73,8 +86,4 @@ public class DaisyPlayer extends IsmartvPlayer {
 
     }
 
-    @Override
-    public void switchMediaSource(MediaEntity mediaEntity) {
-
-    }
 }

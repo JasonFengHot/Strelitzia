@@ -1,17 +1,20 @@
 package tv.ismar.player;
 
+import android.view.SurfaceView;
+
 import java.util.List;
 
 import tv.ismar.player.model.ClipEntity;
 import tv.ismar.player.model.MediaEntity;
-import tv.ismar.player.widget.AspectRatioFrameLayout;
 
 /**
  * Created by longhai on 16-9-12.
  */
 public interface IPlayer {
 
-    void attachToView(AspectRatioFrameLayout container);
+    void prepare(MediaEntity mediaSource, boolean resetPosition);
+
+    void attachToView(SurfaceView surfaceView);
 
     void start();
 
@@ -34,8 +37,6 @@ public interface IPlayer {
     List<ClipEntity.Quality> getQualities();
 
     void switchQuality(ClipEntity.Quality quality);
-
-    void switchMediaSource(MediaEntity mediaEntity);
 
     interface OnBufferChangedListener {
 

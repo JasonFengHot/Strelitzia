@@ -1,4 +1,4 @@
-package tv.ismar.player;
+package tv.ismar.player.gui;
 
 import android.app.Service;
 import android.content.ComponentName;
@@ -9,6 +9,8 @@ import android.media.MediaPlayer;
 import android.os.Binder;
 import android.os.IBinder;
 import android.support.annotation.MainThread;
+
+import tv.ismar.player.IsmartvPlayer;
 
 public class PlaybackService extends Service {
 
