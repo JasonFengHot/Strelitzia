@@ -14,19 +14,23 @@ public interface IPlayer {
 
     void prepare(MediaEntity mediaSource, boolean resetPosition);
 
-    void attachToView(SurfaceView surfaceView);
+    void attachSurfaceView(SurfaceView surfaceView);
+
+    void detachViews();
 
     void start();
 
     void pause();
 
-    void seekTo(long position);
+    void seekTo(int position);
 
-    void stopPlayBack();
+    void stop();
 
-    long getCurrentPosition();
+    void release();
 
-    long getDuration();
+    int getCurrentPosition();
+
+    int getDuration();
 
     int getAdCountDownTime();
 

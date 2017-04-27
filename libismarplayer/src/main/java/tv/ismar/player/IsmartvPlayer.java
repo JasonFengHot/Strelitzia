@@ -45,7 +45,6 @@ public abstract class IsmartvPlayer implements IPlayer {
     // 视云
     protected ClipEntity.Quality mCurrentQuality;
     protected List<ClipEntity.Quality> mQualities;
-    protected boolean isPlayingBestvAd;
     protected int[] mBestvAdTime;
     // 奇艺
     private boolean isQiyiSdkInit;
@@ -58,7 +57,10 @@ public abstract class IsmartvPlayer implements IPlayer {
         mMediaEntity = mediaSource;
         switch (playerMode) {
             case MODE_SMART_PLAYER:
-                createPlayer(bestvUserInit());
+                MediaMeta mediaMeta = bestvUserInit();
+                if (mediaMeta != null) {
+                    createPlayer(mediaMeta);
+                }
                 break;
             case MODE_QIYI_PLAYER:
                 if (isQiyiSdkInit) {
@@ -101,7 +103,6 @@ public abstract class IsmartvPlayer implements IPlayer {
     }
 
     private MediaMeta bestvUserInit() {
-        isPlayingBestvAd = false;
         String mediaUrl = initSmartQuality(mMediaEntity.getInitQuality());
         if (TextUtils.isEmpty(mediaUrl)) {
             if (onStateChangedListener != null) {
@@ -113,7 +114,6 @@ public abstract class IsmartvPlayer implements IPlayer {
         List<AdvEntity> adList = mMediaEntity.getAdvStreamList();
         String[] mediaUrls;
         if (!adList.isEmpty()) {
-            isPlayingBestvAd = true;
             mediaUrls = new String[adList.size() + 1];
             mBestvAdTime = new int[adList.size()];
             int i = 0;
@@ -164,11 +164,6 @@ public abstract class IsmartvPlayer implements IPlayer {
     }
 
     protected void createPlayer(SdkVideo sdkVideo) {
-    }
-
-    @Override
-    public void attachToView(SurfaceView surfaceView) {
-
     }
 
     protected IsmartvPlayer() {

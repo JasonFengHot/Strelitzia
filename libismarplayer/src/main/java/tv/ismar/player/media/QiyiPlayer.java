@@ -1,5 +1,7 @@
 package tv.ismar.player.media;
 
+import android.view.SurfaceView;
+
 import com.qiyi.sdk.player.SdkVideo;
 
 import java.util.List;
@@ -20,6 +22,16 @@ public class QiyiPlayer extends IsmartvPlayer {
     }
 
     @Override
+    public void attachSurfaceView(SurfaceView surfaceView) {
+
+    }
+
+    @Override
+    public void detachViews() {
+
+    }
+
+    @Override
     public void start() {
 
     }
@@ -30,22 +42,27 @@ public class QiyiPlayer extends IsmartvPlayer {
     }
 
     @Override
-    public void seekTo(long position) {
+    public void seekTo(int position) {
 
     }
 
     @Override
-    public void stopPlayBack() {
+    public void stop() {
 
     }
 
     @Override
-    public long getCurrentPosition() {
+    public void release() {
+
+    }
+
+    @Override
+    public int getCurrentPosition() {
         return 0;
     }
 
     @Override
-    public long getDuration() {
+    public int getDuration() {
         return 0;
     }
 
