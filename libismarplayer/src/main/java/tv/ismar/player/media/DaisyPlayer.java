@@ -32,7 +32,6 @@ public class DaisyPlayer extends IsmartvPlayer implements SurfaceHelper.SurfaceC
 
     private int mCurrentState = STATE_IDLE;
     private MediaMeta mMediaMeta;
-    private boolean isPlayingBestvAd;
     private int mDuration;
 
     private SmartPlayer mPlayer;
@@ -67,13 +66,14 @@ public class DaisyPlayer extends IsmartvPlayer implements SurfaceHelper.SurfaceC
                 break;
         }
         SmartPlayer.initPlayer(player264Type, player265Type, mediaMeta.getUrls());
+        mMediaMeta = mediaMeta;
         mCurrentState = STATE_IDLE;
         isSurfaceDetached = false;
         mDuration = 0;
         if (mediaMeta.getUrls().length > 1) {
-            isPlayingBestvAd = true;
+            isPlayingAd = true;
         } else {
-            isPlayingBestvAd = false;
+            isPlayingAd = false;
         }
         if (mPlayer == null) {
             mPlayer = new SmartPlayer();
@@ -126,7 +126,7 @@ public class DaisyPlayer extends IsmartvPlayer implements SurfaceHelper.SurfaceC
         if (isInPlaybackState() && !isPlaying()) {
             long delay = 0;
             // 播放正片，起播位置大于0，需要延迟调用start()
-            if (mMediaMeta.getStartPosition() > 0 && !isPlayingBestvAd && isPreparedToStart) {
+            if (mMediaMeta.getStartPosition() > 0 && !isPlayingAd && isPreparedToStart) {
                 delay = 500;
                 isPreparedToStart = false;
             }
@@ -139,7 +139,7 @@ public class DaisyPlayer extends IsmartvPlayer implements SurfaceHelper.SurfaceC
                 }
             }, delay);
             mCurrentState = STATE_PLAYING;
-            if (!isPlayingBestvAd && onStateChangedListener != null) {
+            if (!isPlayingAd && onStateChangedListener != null) {
                 onStateChangedListener.onStarted();
             }
         }
@@ -219,7 +219,21 @@ public class DaisyPlayer extends IsmartvPlayer implements SurfaceHelper.SurfaceC
 
     @Override
     public int getAdCountDownTime() {
-        return 0;
+        if (mBestvAdTime == null || mPlayer == null || !isPlayingAd) {
+            return 0;
+        }
+        int totalAdTime = 0;
+        int currentAd = mPlayer.getCurrentPlayUrl();
+        if (currentAd == mMediaMeta.getUrls().length - 1) {
+            return 0;
+        } else if (currentAd == mBestvAdTime.length - 1) {
+            totalAdTime = mBestvAdTime[mBestvAdTime.length - 1];
+        } else {
+            for (int i = currentAd; i < mBestvAdTime.length; i++) {
+                totalAdTime += mBestvAdTime[i];
+            }
+        }
+        return (totalAdTime * 1000 - getCurrentPosition()) < 0 ? 0 : (totalAdTime * 1000 - getCurrentPosition());
     }
 
     @Override
@@ -255,7 +269,7 @@ public class DaisyPlayer extends IsmartvPlayer implements SurfaceHelper.SurfaceC
         @Override
         public void onPrepared(SmartPlayer smartPlayer, String s) {
             mCurrentState = STATE_PREPARED;
-            if (mMediaMeta.getStartPosition() > 0 && !isPlayingBestvAd) {
+            if (mMediaMeta.getStartPosition() > 0 && !isPlayingAd) {
                 seekTo(mMediaMeta.getStartPosition());
             }
             isPreparedToStart = true;

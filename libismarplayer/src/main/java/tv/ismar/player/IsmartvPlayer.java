@@ -36,6 +36,7 @@ public abstract class IsmartvPlayer implements IPlayer {
     public static final byte MODE_QIYI_PLAYER = 0x02;
 
     private MediaEntity mMediaEntity;
+    protected boolean isPlayingAd;
     protected OnBufferChangedListener onBufferChangedListener;
     protected OnAdvertisementListener onAdvertisementListener;
     protected OnStateChangedListener onStateChangedListener;
