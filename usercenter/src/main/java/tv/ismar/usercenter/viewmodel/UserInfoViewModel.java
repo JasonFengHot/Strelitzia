@@ -1,10 +1,12 @@
 package tv.ismar.usercenter.viewmodel;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.databinding.BaseObservable;
 import android.databinding.Bindable;
 import android.databinding.BindingAdapter;
 import android.os.Build;
+import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -42,7 +44,9 @@ public class UserInfoViewModel extends BaseObservable {
 
     @Bindable
     public String getSnCode() {
-        return IsmartvActivator.getInstance().getSnToken();
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
+        String snToken = sharedPreferences.getString("sn_token", "");
+        return snToken;
     }
 
     @Bindable

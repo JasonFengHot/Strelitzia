@@ -1,4 +1,7 @@
 package tv.ismar.usercenter.presenter;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
+
 import cn.ismartv.truetime.TrueTime;
 
 import cn.ismartv.truetime.TrueTime;
@@ -47,7 +50,9 @@ public class PurchaseHistoryPresenter implements PurchaseHistoryContract.Present
     public void fetchAccountsOrders() {
         String timestamp = String.valueOf(TrueTime.now().getTime());
         IsmartvActivator activator = IsmartvActivator.getInstance();
-        String sign = activator.encryptWithPublic("sn=" + activator.getSnToken() + "&timestamp=" + timestamp);
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mActivity);
+        String snToken = sharedPreferences.getString("sn_token", "");
+        String sign = activator.encryptWithPublic("sn=" + snToken + "&timestamp=" + timestamp);
 
         accountsOrdersSub = mSkyService.accountsOrders(timestamp, sign)
                 .subscribeOn(Schedulers.io())

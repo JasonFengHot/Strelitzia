@@ -3,6 +3,7 @@ package tv.ismar.subject.fragment;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
 import android.view.Gravity;
@@ -49,6 +50,8 @@ import tv.ismar.subject.adapter.SubjectMovieAdapter;
 import tv.ismar.subject.adapter.SubjectTvAdapter;
 import tv.ismar.subject.views.MyRecyclerView;
 
+import static android.support.v7.widget.RecyclerView.SCROLL_STATE_IDLE;
+import static android.support.v7.widget.RecyclerView.SCROLL_STATE_SETTLING;
 import static tv.ismar.app.core.PageIntentInterface.ProductCategory.item;
 
 /**
@@ -182,6 +185,27 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnClickList
             movie_recyclerView.setLayoutManager(new StaggeredGridLayoutManager(1,StaggeredGridLayoutManager.HORIZONTAL));
             movie_recyclerView.setAdapter(movieAdapter);
             movieAdapter.setOnItemClickListener(this);
+            movie_recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+                @Override
+                public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                    Log.i("MovieClick","scroll change: "+newState);
+                    if(newState==SCROLL_STATE_IDLE){
+                        if(recyclerView.getFocusedChild()!=null) {
+                            int viewX = (int) recyclerView.getFocusedChild().getX();
+                            if (viewX != getResources().getDimensionPixelOffset(R.dimen.subject_movie_recycleview_ml)) {
+                                recyclerView.smoothScrollBy((int) (viewX - getResources().getDimensionPixelOffset(R.dimen.subject_movie_recycleview_ml)), 0);
+                            }
+                        }
+                    }
+                    super.onScrollStateChanged(recyclerView, newState);
+                }
+
+                @Override
+                public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                    super.onScrolled(recyclerView, dx, dy);
+                }
+            });
+
             movieAdapter.setOnItemFocusedListener(new OnItemFocusedListener() {
 
 
@@ -192,6 +216,7 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnClickList
                         if(!isScaledIn){
                             JasmineUtil.scaleIn2(focusView);
                         }
+                        Log.i("MovieFocus","hasFocus: "+position);
                         checkLayerIsShow(position);
                         poster_focus.setVisibility(View.VISIBLE);
                         movie_recyclerView.smoothScrollBy((int) (view.getX()-getResources().getDimensionPixelOffset(R.dimen.subject_movie_recycleview_ml)), 0);
@@ -244,6 +269,20 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnClickList
                         }
                         tv_poster_focus.setVisibility(View.INVISIBLE);
                     }
+                }
+            });
+            tv_recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+                @Override
+                public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                    if(newState==SCROLL_STATE_IDLE){
+                        if(recyclerView.getFocusedChild()!=null) {
+                            int viewX = (int) recyclerView.getFocusedChild().getX();
+                            if (viewX != getResources().getDimensionPixelOffset(R.dimen.subject_movie_recycleview_ml)) {
+                                recyclerView.smoothScrollBy((int) (viewX - getResources().getDimensionPixelOffset(R.dimen.subject_tv_recycleview_ml)), 0);
+                            }
+                        }
+                    }
+                    super.onScrollStateChanged(recyclerView, newState);
                 }
             });
         }
@@ -411,6 +450,7 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnClickList
 
     @Override
     public void onItemClick(View view, int position) {
+        Log.i("MovieClick","onItemClick");
             focusView=view;
             PageIntent intent = new PageIntent();
             intent.toPlayPage(getActivity(), list.get(position).getPk(), 0, Source.GATHER);

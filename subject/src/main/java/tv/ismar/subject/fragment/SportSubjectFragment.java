@@ -188,7 +188,7 @@ public class SportSubjectFragment extends Fragment implements View.OnHoverListen
                     if(subject.content_model.contains("nba")){
                         subject_type="NBA";
                     }else{
-                        subject_type="PL-英超";
+                        subject_type="PL";
                     }
                     mVerticalPagerView.addDatas(list);
                     mLoadingDialog.dismiss();
@@ -356,6 +356,11 @@ public class SportSubjectFragment extends Fragment implements View.OnHoverListen
                     subscribe.setNextFocusDownId(R.id.subscribe);
                     buy.setNextFocusDownId(R.id.buy);
                 }
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                e.printStackTrace();
             }
         });
     }
