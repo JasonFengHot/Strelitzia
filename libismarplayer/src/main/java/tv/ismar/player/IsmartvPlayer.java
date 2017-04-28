@@ -3,7 +3,6 @@ package tv.ismar.player;
 import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.SurfaceView;
 
 import com.qiyi.sdk.player.Parameter;
 import com.qiyi.sdk.player.PlayerSdk;
@@ -15,7 +14,10 @@ import java.util.HashMap;
 import java.util.List;
 
 import tv.ismar.library.util.AESTool;
+import tv.ismar.library.util.DateUtils;
+import tv.ismar.library.util.MD5;
 import tv.ismar.library.util.StringUtils;
+import tv.ismar.player.event.PlayerEvent;
 import tv.ismar.player.media.DaisyPlayer;
 import tv.ismar.player.media.QiyiPlayer;
 import tv.ismar.player.model.AdvEntity;
@@ -35,13 +37,18 @@ public abstract class IsmartvPlayer implements IPlayer {
     // 奇艺片源
     public static final byte MODE_QIYI_PLAYER = 0x02;
 
-    private MediaEntity mMediaEntity;
+    protected MediaEntity mMediaEntity;
     protected boolean isPlayingAd;
     protected OnBufferChangedListener onBufferChangedListener;
     protected OnAdvertisementListener onAdvertisementListener;
     protected OnStateChangedListener onStateChangedListener;
     // 日志上报相关
-    private HashMap<String, Integer> logAdMap = new HashMap<>();
+    protected HashMap<String, Integer> logAdMap = new HashMap<>();
+    protected String playerFlag;
+    protected PlayerEvent playerEvent = new PlayerEvent();
+    protected long mPlayerOpenTime = 0;
+    private static boolean isFirstOpenPlayer = true;
+    private int mSpeed = 0;
 
     // 视云
     protected ClipEntity.Quality mCurrentQuality;
@@ -56,14 +63,18 @@ public abstract class IsmartvPlayer implements IPlayer {
             throw new IllegalArgumentException("mediaSource can't be null");
         }
         mMediaEntity = mediaSource;
+        playerEvent.pk = mediaSource.getPk();
+        playerEvent.subItemPk = mediaSource.getSubItemPk();
         switch (playerMode) {
             case MODE_SMART_PLAYER:
+                playerFlag = "bestv";
                 MediaMeta mediaMeta = bestvUserInit();
                 if (mediaMeta != null) {
                     createPlayer(mediaMeta);
                 }
                 break;
             case MODE_QIYI_PLAYER:
+                playerFlag = "qiyi";
                 if (isQiyiSdkInit) {
                     createPlayer(qiyiUserInit());
                     return;
@@ -103,12 +114,48 @@ public abstract class IsmartvPlayer implements IPlayer {
 
     }
 
+    @Override
+    public void start() {
+        if (isFirstOpenPlayer) {
+            isFirstOpenPlayer = false;
+            mPlayerOpenTime = DateUtils.currentTimeMillis();
+            String sid = MD5.getMd5ByString(snToken + mPlayerOpenTime);
+            PlayerEvent.videoStart(playerEvent, snToken, mSpeed, sid, playerFlag);
+        }
+    }
+
+    @Override
+    public void stop() {
+        isFirstOpenPlayer = true;
+    }
+
+    @Override
+    public void switchQuality(int position, ClipEntity.Quality quality) {
+        playerEvent.quality = qualityToInt(quality);
+    }
+
+    public void logVideoExit(int exitPosition, String source) {
+        String sid = MD5.getMd5ByString(snToken + DateUtils.currentTimeMillis());
+        PlayerEvent.videoExit(
+                playerEvent,
+                mSpeed,
+                source,
+                exitPosition,
+                (DateUtils.currentTimeMillis() - mPlayerOpenTime),
+                sid,
+                playerFlag);
+    }
+
     private MediaMeta bestvUserInit() {
         String mediaUrl = initSmartQuality(mMediaEntity.getInitQuality());
         if (TextUtils.isEmpty(mediaUrl)) {
             if (onStateChangedListener != null) {
                 onStateChangedListener.onError("播放地址解析错误");
             }
+            String sid = MD5.getMd5ByString(snToken + DateUtils.currentTimeMillis());
+            PlayerEvent.videoExcept(
+                    "noplayaddress", "noplayaddress",
+                    playerEvent, 0, sid, 0, playerFlag);
             return null;
         }
         MediaMeta mediaMeta = new MediaMeta();
@@ -350,6 +397,28 @@ public abstract class IsmartvPlayer implements IPlayer {
         }
     }
 
+    private int qualityToInt(ClipEntity.Quality quality) {
+        if (quality == null) {
+            return -1;
+        }
+        switch (quality) {
+            case QUALITY_NORMAL:
+                return 0;
+            case QUALITY_MEDIUM:
+                return 1;
+            case QUALITY_HIGH:
+                return 2;
+            case QUALITY_ULTRA:
+                return 3;
+            case QUALITY_BLUERAY:
+                return 4;
+            case QUALITY_4K:
+                return 5;
+            default:
+                return -1;
+        }
+    }
+
     private Context context;
     private byte playerMode = -1;
     private String snToken;
@@ -421,4 +490,16 @@ public abstract class IsmartvPlayer implements IPlayer {
     public void setOnStateChangedListener(OnStateChangedListener onStateChangedListener) {
         this.onStateChangedListener = onStateChangedListener;
     }
+
+    // 在播放器的 onStarted中调用一次
+    public void setPlayerEvent(String title, int clipPk, String channel, String section, String source, ClipEntity.Quality quality) {
+        playerEvent.title = title;
+        playerEvent.clipPk = clipPk;
+        playerEvent.channel = channel;
+        playerEvent.section = section;
+        playerEvent.source = source;
+        playerEvent.quality = qualityToInt(quality);
+    }
+
+
 }

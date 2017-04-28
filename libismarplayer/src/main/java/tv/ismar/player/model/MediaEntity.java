@@ -8,15 +8,17 @@ public class MediaEntity {
     private int pk;
     private int subItemPk;
     private ClipEntity clipEntity;
+    private boolean isLivingVideo;
     // 前贴片广告
     private List<AdvEntity> advStreamList;
     // 历史记录
     private int startPosition;
     private ClipEntity.Quality initQuality;
 
-    public MediaEntity(int pk, int subItemPk, ClipEntity clipEntity) {
+    public MediaEntity(int pk, int subItemPk, boolean isLivingVideo, ClipEntity clipEntity) {
         this.pk = pk;
         this.subItemPk = subItemPk;
+        this.isLivingVideo = isLivingVideo;
         this.clipEntity = clipEntity;
     }
 
@@ -30,6 +32,10 @@ public class MediaEntity {
 
     public ClipEntity getClipEntity() {
         return clipEntity;
+    }
+
+    public boolean isLivingVideo() {
+        return isLivingVideo;
     }
 
     public List<AdvEntity> getAdvStreamList() {

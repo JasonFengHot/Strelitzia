@@ -6,10 +6,12 @@ import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.view.SurfaceView;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
 import tv.ismar.library.util.LogUtils;
+import tv.ismar.library.util.StringUtils;
 import tv.ismar.player.IsmartvPlayer;
 import tv.ismar.player.SmartPlayer;
 import tv.ismar.player.model.ClipEntity;
@@ -38,6 +40,8 @@ public class DaisyPlayer extends IsmartvPlayer implements SurfaceHelper.SurfaceC
     private SurfaceHelper mSurfaceHelper;
     private boolean isPreparedToStart;
     private boolean isSurfaceDetached;
+
+    private boolean isS3Seeking = false;// s3设备,seek后有1002表示bufferEnd
 
     @Override
     protected void createPlayer(@NonNull MediaMeta mediaMeta) {
@@ -168,6 +172,7 @@ public class DaisyPlayer extends IsmartvPlayer implements SurfaceHelper.SurfaceC
                     mPlayer.seekTo(position);
                 }
             }.start();
+            isS3Seeking = true;
         }
     }
 
@@ -194,6 +199,7 @@ public class DaisyPlayer extends IsmartvPlayer implements SurfaceHelper.SurfaceC
             mPlayer.release();
             mPlayer = null;
         }
+        mCurrentState = STATE_IDLE;
     }
 
     @Override
@@ -252,8 +258,22 @@ public class DaisyPlayer extends IsmartvPlayer implements SurfaceHelper.SurfaceC
     }
 
     @Override
-    public void switchQuality(ClipEntity.Quality quality) {
-
+    public void switchQuality(int position, ClipEntity.Quality quality) {
+        if (!isInPlaybackState()) {
+            return;
+        }
+        super.switchQuality(position, quality);
+        String mediaUrl = qualityToUrl(quality);
+        if (!StringUtils.isEmpty(mediaUrl)) {
+            mCurrentQuality = quality;
+            String[] paths = new String[]{mediaUrl};
+            mMediaMeta.setUrls(paths);
+            if (!mMediaEntity.isLivingVideo()) {
+                mMediaMeta.setStartPosition(position);
+            }
+            stop();
+            createPlayer(mMediaMeta);
+        }
     }
 
     public boolean isInPlaybackState() {
@@ -268,6 +288,9 @@ public class DaisyPlayer extends IsmartvPlayer implements SurfaceHelper.SurfaceC
     private SmartPlayer.OnPreparedListenerUrl onPreparedListenerUrl = new SmartPlayer.OnPreparedListenerUrl() {
         @Override
         public void onPrepared(SmartPlayer smartPlayer, String s) {
+            if (mPlayer == null) {
+                return;
+            }
             mCurrentState = STATE_PREPARED;
             if (mMediaMeta.getStartPosition() > 0 && !isPlayingAd) {
                 seekTo(mMediaMeta.getStartPosition());
@@ -278,14 +301,22 @@ public class DaisyPlayer extends IsmartvPlayer implements SurfaceHelper.SurfaceC
 
     private SmartPlayer.OnVideoSizeChangedListener onVideoSizeChangedListener = new SmartPlayer.OnVideoSizeChangedListener() {
         @Override
-        public void onVideoSizeChanged(SmartPlayer smartPlayer, int i, int i1) {
-
+        public void onVideoSizeChanged(SmartPlayer smartPlayer, int width, int height) {
+            if (mPlayer == null) {
+                return;
+            }
+            if (onStateChangedListener != null) {
+                onStateChangedListener.onVideoSizeChanged(width, height);
+            }
         }
     };
 
     private SmartPlayer.OnInfoListener onInfoListener = new SmartPlayer.OnInfoListener() {
         @Override
         public boolean onInfo(SmartPlayer smartPlayer, int i, int i1) {
+            if (mPlayer == null) {
+                return false;
+            }
             return false;
         }
     };
@@ -293,6 +324,9 @@ public class DaisyPlayer extends IsmartvPlayer implements SurfaceHelper.SurfaceC
     private SmartPlayer.OnSeekCompleteListener onSeekCompleteListener = new SmartPlayer.OnSeekCompleteListener() {
         @Override
         public void onSeekComplete(SmartPlayer smartPlayer) {
+            if (mPlayer == null) {
+                return;
+            }
 
         }
     };
@@ -300,7 +334,9 @@ public class DaisyPlayer extends IsmartvPlayer implements SurfaceHelper.SurfaceC
     private SmartPlayer.OnCompletionListenerUrl onCompletionListenerUrl = new SmartPlayer.OnCompletionListenerUrl() {
         @Override
         public void onCompletion(SmartPlayer smartPlayer, String s) {
-
+            if (mPlayer == null) {
+                return;
+            }
         }
     };
 
@@ -310,6 +346,11 @@ public class DaisyPlayer extends IsmartvPlayer implements SurfaceHelper.SurfaceC
             if (mPlayer != null) {
                 mPlayer.reset();
             }
+            if (isPlayingAd) {
+                String[] paths = new String[]{mMediaMeta.getUrls()[mMediaMeta.getUrls().length - 1]};
+                mMediaMeta.setUrls(paths);
+                createPlayer(mMediaMeta);
+            }
             return false;
         }
     };
@@ -317,14 +358,18 @@ public class DaisyPlayer extends IsmartvPlayer implements SurfaceHelper.SurfaceC
     private SmartPlayer.OnTsInfoListener onTsInfoListener = new SmartPlayer.OnTsInfoListener() {
         @Override
         public void onTsInfo(SmartPlayer smartPlayer, Map<String, String> map) {
-
+            if (mPlayer == null) {
+                return;
+            }
         }
     };
 
     private SmartPlayer.OnM3u8IpListener onM3u8IpListener = new SmartPlayer.OnM3u8IpListener() {
         @Override
         public void onM3u8TsInfo(SmartPlayer smartPlayer, String s) {
-
+            if (mPlayer == null) {
+                return;
+            }
         }
     };
 
@@ -339,4 +384,34 @@ public class DaisyPlayer extends IsmartvPlayer implements SurfaceHelper.SurfaceC
     public void onSurfaceDestroyed() {
 
     }
+
+
+//    public void switchQuality(int position, ClipEntity.Quality quality) {
+//        String mediaUrl = getSmartQualityUrl(quality);
+//        if (!Utils.isEmptyText(mediaUrl)) {
+//            mQuality = quality;
+//            mPaths = new String[]{mediaUrl};
+//
+//            if (mItemEntity != null && !mItemEntity.getLiveVideo()) {
+//                mStartPosition = position;
+//            }
+//            mDaisyVideoView.release(true);
+//            mLogMedia.setQuality(getQualityIndex(mQuality));
+//            mDaisyVideoView.setVideoPaths(mPaths, mStartPosition, mLogMedia, true);
+//        }
+//    }
+//
+//    public void onAdError(String url) {
+//        if (!TextUtils.isEmpty(url)) {
+//            for (int i = 0; i < mPaths.length; i++) {
+//                if (mPaths[i].equals(url)) {
+//                    if (i < mPaths.length - 1) {
+//                        String[] paths = Arrays.copyOfRange(mPaths, i + 1, mPaths.length);
+//                        setMedia(paths);
+//                    }
+//                    break;
+//                }
+//            }
+//        }
+//    }
 }

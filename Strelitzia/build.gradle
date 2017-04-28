@@ -69,7 +69,6 @@ dependencies {
     compile project(':usercenter')
     compile project(':detailpage')
     compile project(':account')
-    compile project(':playerpage')
     compile project(':listpage')
     compile project(':homepage')
     compile project(':searchpage')

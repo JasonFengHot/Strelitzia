@@ -40,7 +40,10 @@ public interface IPlayer {
 
     List<ClipEntity.Quality> getQualities();
 
-    void switchQuality(ClipEntity.Quality quality);
+    /**
+     * @param position 部分播放器在先调用了stop()之后，再调用getCurrentPosition导致的onError回调
+     */
+    void switchQuality(int position, ClipEntity.Quality quality);
 
     interface OnBufferChangedListener {
 
