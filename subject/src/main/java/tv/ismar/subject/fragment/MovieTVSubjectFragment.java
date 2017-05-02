@@ -367,9 +367,11 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnClickList
                 Favorite favorite = new Favorite();
                 favorite.title = mSubjectEntity.getTitle();
                 String adlet_url=mSubjectEntity.getAdlet_url();
-                if(adlet_url.equals("http://res.tvxio.bestv.com.cn/media/upload/20160321/36c8886fd5b4163ae48534a72ec3a555.png")||
-                        adlet_url.equals("http://res.tvxio.bestv.com.cn/media/upload/20160504/5eae6db53f065ff0269dfc71fb28a4ec.png")){
-                    adlet_url=null;
+                if(adlet_url!=null) {
+                    if (adlet_url.equals("http://res.tvxio.bestv.com.cn/media/upload/20160321/36c8886fd5b4163ae48534a72ec3a555.png") ||
+                            adlet_url.equals("http://res.tvxio.bestv.com.cn/media/upload/20160504/5eae6db53f065ff0269dfc71fb28a4ec.png")) {
+                        adlet_url = null;
+                    }
                 }
                 favorite.adlet_url = (adlet_url==null||"".equals(adlet_url))?mSubjectEntity.getObjects().get(0).getAdlet_url():adlet_url;
                 favorite.content_model = type;
