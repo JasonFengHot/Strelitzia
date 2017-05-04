@@ -373,7 +373,9 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnClickList
                         adlet_url = null;
                     }
                 }
-                favorite.adlet_url = (adlet_url==null||"".equals(adlet_url))?mSubjectEntity.getObjects().get(0).getAdlet_url():adlet_url;
+                if(mSubjectEntity.getObjects().get(0)!=null) {
+                    favorite.adlet_url = (adlet_url == null || "".equals(adlet_url)) ? mSubjectEntity.getObjects().get(0).getAdlet_url() : adlet_url;
+                }
                 favorite.content_model = type;
                 favorite.url = url;
                 favorite.quality = 0;
