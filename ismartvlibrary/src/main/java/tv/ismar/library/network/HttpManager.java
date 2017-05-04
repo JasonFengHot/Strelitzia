@@ -3,6 +3,9 @@ package tv.ismar.library.network;
 import android.content.Context;
 import android.net.Uri;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import java.io.File;
 import java.io.IOException;
 import java.security.KeyManagementException;
@@ -102,9 +105,11 @@ public class HttpManager {
     }
 
     private static Retrofit getRetrofit(String baseUrl) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         return new Retrofit.Builder()
                 .baseUrl(appendProtocol(baseUrl))
-                .addConverterFactory(JacksonConverterFactory.create())
+                .addConverterFactory(JacksonConverterFactory.create(objectMapper))
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .client(getInstance().okHttpClient)
                 .build();

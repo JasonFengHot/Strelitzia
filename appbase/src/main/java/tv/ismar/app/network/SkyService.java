@@ -79,7 +79,7 @@ import tv.ismar.app.network.entity.ActiveEntity;
 import tv.ismar.app.network.entity.AgreementEntity;
 import tv.ismar.app.network.entity.BindedCdnEntity;
 import tv.ismar.app.network.entity.ChatMsgEntity;
-import tv.ismar.app.network.entity.ClipEntity;
+import tv.ismar.app.entity.ClipEntity;
 import tv.ismar.app.network.entity.DpiEntity;
 import tv.ismar.app.network.entity.Empty;
 import tv.ismar.app.network.entity.GoodsRenewStatusEntity;
@@ -322,7 +322,7 @@ public interface SkyService {
 
     @FormUrlEncoded
     @POST("api/histories/create/")
-    Observable<ResponseBody> sendPlayHistory(
+    Call<ResponseBody> sendPlayHistory(
             @FieldMap HashMap<String, Object> paramsMap
     );
 
@@ -400,7 +400,7 @@ public interface SkyService {
     @POST("api/order/{type}/")
     Observable<ResponseBody> apiOrderCreate(
             @Path("type") String type,
-            @Field("event_id") String  eventId,
+            @Field("event_id") String eventId,
             @Field("wares_id") String waresId,
             @Field("wares_type") String waresType,
             @Field("source") String source,
@@ -428,6 +428,11 @@ public interface SkyService {
 //    );
 //
 
+    @FormUrlEncoded
+    @POST("api/play/check/")
+    Observable<ResponseBody> videoPlayCheck(
+            @Field("item") String item
+    );
 
     @FormUrlEncoded
     @POST("api/play/check/")
@@ -631,6 +636,7 @@ public interface SkyService {
     Observable<AgreementEntity> agreement(
             @Query("source") String source
     );
+
     @GET("api/item/{pk}/")
     Observable<Subject> getSportSubjectInfo(
             @Path("pk") int pk

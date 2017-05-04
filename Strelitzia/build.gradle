@@ -73,6 +73,7 @@ dependencies {
     compile project(':homepage')
     compile project(':searchpage')
     compile project(':subject')
+    compile project(':libismarplayer')
 }
 tasks.withType(JavaCompile) {
     options.encoding = "UTF-8"

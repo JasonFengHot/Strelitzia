@@ -1,7 +1,11 @@
-package tv.ismar.player.model;
+package tv.ismar.app.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+/**
+ * Created by longhai on 16-9-9.
+ */
 public class ClipEntity {
 
     public enum Quality {
@@ -165,6 +169,8 @@ public class ClipEntity {
     public void setDrm(String drm) {
         this.drm = drm;
     }
+
+
 
     @Override
     public String toString() {

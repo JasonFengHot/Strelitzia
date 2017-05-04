@@ -1,5 +1,6 @@
 package tv.ismar.app.network.entity;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.Date;
@@ -10,61 +11,81 @@ public class ItemEntity {
     private Clip clip;
     private String focus;
     @SerializedName("subitem_show")
+    @JsonProperty("subitem_show")
     private String subitemShow;
     @SerializedName("is_3d")
+    @JsonProperty("is_3d")
     private boolean is3d;
     @SerializedName("content_model")
+    @JsonProperty("content_model")
     private String contentModel;
     private String logo;
     @SerializedName("detail_url")
+    @JsonProperty("detail_url")
     private String detailUrl;
     private int quality;
     @SerializedName("rating_count")
+    @JsonProperty("rating_count")
     private int ratingCount;
     private String source;
     private String vendor;
     @SerializedName("adlet_url")
+    @JsonProperty("adlet_url")
     private String adletUrl;
     @SerializedName("bean_score")
+    @JsonProperty("bean_score")
     private String beanScore;
     @SerializedName("poster_url")
+    @JsonProperty("poster_url")
     private String posterUrl;
     private int pk;
     @SerializedName("vertical_url")
+    @JsonProperty("vertical_url")
     private String verticalUrl;
     private String description;
     private List<String> tags;
     @SerializedName("rating_average")
+    @JsonProperty("rating_average")
     private String ratingAverage;
     private ItemEntity[] subitems;
     private boolean finished;
     @SerializedName("live_video")
+    @JsonProperty("live_video")
     private boolean liveVideo;
     @SerializedName("thumb_url")
+    @JsonProperty("thumb_url")
     private String thumbUrl;
     @SerializedName("counting_count")
+    @JsonProperty("counting_count")
     private int countingCount;
     @SerializedName("logo_3d")
+    @JsonProperty("logo_3d")
     private String logo3d;
     private int episode;
     private String title;
     private String caption;
     private List<Point> points;
     @SerializedName("publish_date")
+    @JsonProperty("publish_date")
     private String publishDate;
     @SerializedName("is_complex")
+    @JsonProperty("is_complex")
     private boolean isComplex;
     private Attributes attributes;
     @SerializedName("item_pk")
+    @JsonProperty("item_pk")
     private int itemPk;
     private String list_url;
     private String item_url;
     private Expense expense;
     private boolean repeat_buy;
     private Preview preview;
-
+    private String classification;
     private String subtitle;
     private boolean renew_buy;
+    @SerializedName("start_time")
+    @JsonProperty("start_time")
+    private Date startTime;
 
     public boolean isRenew_buy() {
         return renew_buy;
@@ -81,10 +102,6 @@ public class ItemEntity {
     public void setStartTime(Date startTime) {
         this.startTime = startTime;
     }
-
-    @SerializedName("start_time")
-    private Date startTime;
-
 
     public String getSubtitle() {
         return subtitle;
@@ -408,6 +425,14 @@ public class ItemEntity {
         this.preview = preview;
     }
 
+    public String getClassification() {
+        return classification;
+    }
+
+    public void setClassification(String classification) {
+        this.classification = classification;
+    }
+
     public class Clip {
 
         private String url;
@@ -441,21 +466,16 @@ public class ItemEntity {
     }
 
     public class Attributes {
-        private String classification;
-
-        public String getClassification() {
-            return classification;
-        }
-
-        public void setClassification(String classification) {
-            this.classification = classification;
-        }
-
         private String[][] director;
         private String[][] genre;
         private String[][] actor;
         private String[][] guest;
         private String[][] emcee;
+
+        @SerializedName("air_date")
+        @JsonProperty("air_date")
+        private String airDate;
+        private String[] area;
 
         public String[][] getGuest() {
             return guest;
@@ -472,10 +492,6 @@ public class ItemEntity {
         public void setEmcee(String[][] emcee) {
             this.emcee = emcee;
         }
-
-        @SerializedName("air_date")
-        private String airDate;
-        private String[] area;
 
         public String[] getArea() {
             return area;

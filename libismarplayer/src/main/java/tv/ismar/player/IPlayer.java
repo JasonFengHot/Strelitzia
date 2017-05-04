@@ -1,10 +1,11 @@
 package tv.ismar.player;
 
 import android.view.SurfaceView;
+import android.view.ViewGroup;
 
 import java.util.List;
 
-import tv.ismar.player.model.ClipEntity;
+import tv.ismar.app.entity.ClipEntity;
 import tv.ismar.player.model.MediaEntity;
 
 /**
@@ -12,9 +13,13 @@ import tv.ismar.player.model.MediaEntity;
  */
 public interface IPlayer {
 
-    void prepare(MediaEntity mediaSource, boolean resetPosition);
+    void prepare(MediaEntity mediaSource);
 
-    void attachSurfaceView(SurfaceView surfaceView);
+    /**
+     * @param surfaceView 视云片源使用参数
+     * @param viewGroup   爱奇艺片源使用参数
+     */
+    void attachSurfaceView(SurfaceView surfaceView, ViewGroup viewGroup);
 
     void detachViews();
 
@@ -65,6 +70,8 @@ public interface IPlayer {
     }
 
     interface OnStateChangedListener {
+
+        void onPrepared();
 
         void onStarted();
 

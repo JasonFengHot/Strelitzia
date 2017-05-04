@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.Set;
 
 import tv.ismar.library.util.DateUtils;
+import tv.ismar.library.util.MD5;
 
 public class PlayerEvent {
 
@@ -28,8 +29,10 @@ public class PlayerEvent {
     public String source = "";
     public String section = "";
     public int quality;
+    public String snToken = "";
+    public String username = "";
 
-    private static HashMap<String, Object> getPublicParams(PlayerEvent media, int speed, String sid, String playerFlag) {
+    private static HashMap<String, Object> getPublicParams(PlayerEvent media, int speed, String playerFlag) {
         HashMap<String, Object> tempMap = new HashMap<>();
         tempMap.put(ITEM, media.pk);
         if (media.subItemPk > 0 && media.pk != media.subItemPk) {
@@ -40,6 +43,7 @@ public class PlayerEvent {
         tempMap.put(QUALITY, switchQuality(media.quality));
         tempMap.put(CHANNEL, media.channel);
         tempMap.put(SPEED, speed + "KByte/s");
+        String sid = MD5.getMd5ByString(media.snToken + DateUtils.currentTimeMillis());
         tempMap.put(SID, sid);
         tempMap.put(PLAYER_FLAG, playerFlag);
         return tempMap;
@@ -48,16 +52,16 @@ public class PlayerEvent {
     /**
      * 播放器打开 video_start
      *
-     * @param media  (媒体)       Item
-     *               quality (视频清晰度 normal   medium  high  ultra  adaptive) STRING
-     * @param userId (用户ID) STRING
-     * @param speed  (网速, 单位KB/s) INTEGER
+     * @param media (媒体)       Item
+     *              quality (视频清晰度 normal   medium  high  ultra  adaptive) STRING
+     * @param speed (网速, 单位KB/s) INTEGER
      */
-    public static void videoStart(PlayerEvent media, String userId, int speed, String sid, String playerFlag) {
+    public static void videoStart(PlayerEvent media, int speed, String playerFlag) {
         if (media == null) {
             return;
         }
-        HashMap<String, Object> tempMap = getPublicParams(media, speed, sid, playerFlag);
+        HashMap<String, Object> tempMap = getPublicParams(media, speed, playerFlag);
+        String userId = TextUtils.isEmpty(media.username) ? media.snToken : media.username;
         tempMap.put("userid", userId);
         tempMap.put("source", media.source);
         tempMap.put("section", media.section);
@@ -74,11 +78,11 @@ public class PlayerEvent {
      * @param mediaIP  (媒体IP)STRING
      */
     public static void videoPlayLoad(PlayerEvent media,
-                                     long duration, int speed, String mediaIP, String sid, String playerUrl, String playerFlag) {
+                                     long duration, int speed, String mediaIP, String playerUrl, String playerFlag) {
         if (media == null) {
             return;
         }
-        HashMap<String, Object> tempMap = getPublicParams(media, speed, sid, playerFlag);
+        HashMap<String, Object> tempMap = getPublicParams(media, speed, playerFlag);
         tempMap.put(DURATION, duration / 1000);
         tempMap.put(MEDIAIP, mediaIP);
         tempMap.put("play_url", playerUrl);
@@ -94,11 +98,11 @@ public class PlayerEvent {
      *              quality (视频清晰度) normal |  medium | high | ultra | adaptive) STRING
      * @param speed (网速, 单位KB/s) INTEGER
      */
-    public static void videoPlayStart(PlayerEvent media, int speed, String sid, String playerFlag) {
+    public static void videoPlayStart(PlayerEvent media, int speed, String playerFlag) {
         if (media == null) {
             return;
         }
-        HashMap<String, Object> tempMap = getPublicParams(media, speed, sid, playerFlag);
+        HashMap<String, Object> tempMap = getPublicParams(media, speed, playerFlag);
         new DataCollectionTask().execute(VIDEO_PLAY_START, tempMap);
 
     }
@@ -111,11 +115,11 @@ public class PlayerEvent {
      * @param position (位置，单位s) INTEGER
      * @param speed    (网速, 单位KB/s) INTEGER
      */
-    public static void videoPlayPause(PlayerEvent media, int speed, Integer position, String sid, String playerFlag) {
+    public static void videoPlayPause(PlayerEvent media, int speed, Integer position, String playerFlag) {
         if (media == null) {
             return;
         }
-        HashMap<String, Object> tempMap = getPublicParams(media, speed, sid, playerFlag);
+        HashMap<String, Object> tempMap = getPublicParams(media, speed, playerFlag);
         tempMap.put(POSITION, position / 1000);
         new DataCollectionTask().execute(VIDEO_PLAY_PAUSE, tempMap);
 
@@ -130,11 +134,11 @@ public class PlayerEvent {
      * @param speed    (网速, 单位KB/s) INTEGER
      */
 
-    public static void videoPlayContinue(PlayerEvent media, int speed, Integer position, String sid, String playerFlag) {
+    public static void videoPlayContinue(PlayerEvent media, int speed, Integer position, String playerFlag) {
         if (media == null) {
             return;
         }
-        HashMap<String, Object> tempMap = getPublicParams(media, speed, sid, playerFlag);
+        HashMap<String, Object> tempMap = getPublicParams(media, speed, playerFlag);
         tempMap.put(POSITION, position / 1000);
         new DataCollectionTask().execute(VIDEO_PLAY_CONTINUE, tempMap);
 
@@ -149,11 +153,11 @@ public class PlayerEvent {
      * @param speed    (网速, 单位KB/s) INTEGER
      */
 
-    public static void videoPlaySeek(PlayerEvent media, int speed, Integer position, String sid, String playerFlag) {
+    public static void videoPlaySeek(PlayerEvent media, int speed, Integer position, String playerFlag) {
         if (media == null) {
             return;
         }
-        HashMap<String, Object> tempMap = getPublicParams(media, speed, sid, playerFlag);
+        HashMap<String, Object> tempMap = getPublicParams(media, speed, playerFlag);
         tempMap.put(POSITION, position / 1000);
         new DataCollectionTask().execute(VIDEO_PLAY_SEEK, tempMap);
 
@@ -170,11 +174,11 @@ public class PlayerEvent {
      * @param mediaIP  (媒体IP)STRING
      */
 
-    public static void videoPlaySeekBlockend(PlayerEvent media, int speed, Integer position, long duration, String mediaIP, String sid, String playerFlag) {
+    public static void videoPlaySeekBlockend(PlayerEvent media, int speed, Integer position, long duration, String mediaIP, String playerFlag) {
         if (media == null) {
             return;
         }
-        HashMap<String, Object> tempMap = getPublicParams(media, speed, sid, playerFlag);
+        HashMap<String, Object> tempMap = getPublicParams(media, speed, playerFlag);
         tempMap.put(DURATION, duration / 1000);
         tempMap.put(POSITION, position / 1000);
         tempMap.put(MEDIAIP, mediaIP);
@@ -191,11 +195,11 @@ public class PlayerEvent {
      * @param duration (缓存时间,单位s)  INTEGER
      * @param mediaIP  (媒体IP)STRING
      */
-    public static void videoPlayBlockend(PlayerEvent media, int speed, long duration, String mediaIP, String sid, String playerFlag) {
+    public static void videoPlayBlockend(PlayerEvent media, int speed, long duration, String mediaIP, String playerFlag) {
         if (media == null) {
             return;
         }
-        HashMap<String, Object> tempMap = getPublicParams(media, speed, sid, playerFlag);
+        HashMap<String, Object> tempMap = getPublicParams(media, speed, playerFlag);
         tempMap.put(DURATION, duration / 1000);
         tempMap.put(MEDIAIP, mediaIP);
         new DataCollectionTask().execute(VIDEO_PLAY_BLOCKEND, tempMap);
@@ -210,11 +214,11 @@ public class PlayerEvent {
      * @param speed   (网速, 单位KB/s) INTEGER
      * @param mediaIP (媒体IP) STRING
      */
-    public static void videoPlaySpeed(PlayerEvent media, int speed, String mediaIP, String sid, String playerFlag) {
+    public static void videoPlaySpeed(PlayerEvent media, int speed, String mediaIP, String playerFlag) {
         if (media == null) {
             return;
         }
-        HashMap<String, Object> tempMap = getPublicParams(media, speed, sid, playerFlag);
+        HashMap<String, Object> tempMap = getPublicParams(media, speed, playerFlag);
         tempMap.put(MEDIAIP, mediaIP);
         new DataCollectionTask().execute(VIDEO_PLAY_SPEED, tempMap);
 
@@ -229,11 +233,11 @@ public class PlayerEvent {
      * @param mediaIP (媒体IP) STRING
      */
 
-    public static void videoLowSpeed(PlayerEvent media, int speed, String mediaIP, String sid, String playerFlag) {
+    public static void videoLowSpeed(PlayerEvent media, int speed, String mediaIP, String playerFlag) {
         if (media == null) {
             return;
         }
-        HashMap<String, Object> tempMap = getPublicParams(media, speed, sid, playerFlag);
+        HashMap<String, Object> tempMap = getPublicParams(media, speed, playerFlag);
         tempMap.put(MEDIAIP, mediaIP);
         new DataCollectionTask().execute(VIDEO_LOW_SPEED, tempMap);
 
@@ -248,11 +252,11 @@ public class PlayerEvent {
      * @param to    (去向：detail | end) STRING
      */
 
-    public static void videoExit(PlayerEvent media, int speed, String to, Integer position, long duration, String sid, String playerFlag) {
+    public static void videoExit(PlayerEvent media, int speed, String to, Integer position, long duration, String playerFlag) {
         if (media == null) {
             return;
         }
-        HashMap<String, Object> tempMap = getPublicParams(media, speed, sid, playerFlag);
+        HashMap<String, Object> tempMap = getPublicParams(media, speed, playerFlag);
         tempMap.put(TO, to);
         tempMap.put(POSITION, position / 1000);
         tempMap.put(DURATION, duration / 1000);
@@ -272,11 +276,11 @@ public class PlayerEvent {
      * @param position (播放位置，单位s) INTEGER
      */
 
-    public static void videoExcept(String code, String content, PlayerEvent media, int speed, String sid, Integer position, String playerFlag) {
+    public static void videoExcept(String code, String content, PlayerEvent media, int speed, Integer position, String playerFlag) {
         if (media == null) {
             return;
         }
-        HashMap<String, Object> tempMap = getPublicParams(media, speed, sid, playerFlag);
+        HashMap<String, Object> tempMap = getPublicParams(media, speed, playerFlag);
         tempMap.put(CODE, code == null ? "" : code);
         tempMap.put(CONTENT, content == null ? "" : content);
         tempMap.put(POSITION, position / 1000);
@@ -292,17 +296,17 @@ public class PlayerEvent {
      *                quality (视频清晰度: normal |  medium | high | ultra | adaptive) STRING
      * @param mode    (切换模式：auto | manual) STRING
      * @param speed   (网速, 单位KB/s) INTEGER
-     * @param userid  STRING
      * @param mediaip STRING
      */
 
-    public static void videoSwitchStream(PlayerEvent media, String mode, int speed, String userid, String mediaip, String sid, String playerFlag) {
+    public static void videoSwitchStream(PlayerEvent media, String mode, int speed, String mediaip, String playerFlag) {
         if (media == null) {
             return;
         }
-        HashMap<String, Object> tempMap = getPublicParams(media, speed, sid, playerFlag);
+        String userId = TextUtils.isEmpty(media.username) ? media.snToken : media.username;
+        HashMap<String, Object> tempMap = getPublicParams(media, speed, playerFlag);
         tempMap.put(MODE, mode);
-        tempMap.put("userid", userid);
+        tempMap.put("userid", userId);
         tempMap.put(MEDIAIP, mediaip);
         tempMap.put(LOCATION, "detail");
         new DataCollectionTask().execute(VIDEO_SWITCH_STREAM, tempMap);

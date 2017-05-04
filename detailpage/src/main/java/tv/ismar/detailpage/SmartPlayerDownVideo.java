@@ -27,7 +27,7 @@
 //import tv.ismar.app.entity.History;
 //import tv.ismar.app.network.SkyService;
 //import tv.ismar.app.network.entity.AdElementEntity;
-//import tv.ismar.app.network.entity.ClipEntity;
+//import tv.ismar.player.model.ClipEntity;
 //import tv.ismar.app.network.entity.ItemEntity;
 //import tv.ismar.app.util.DeviceUtils;
 //import tv.ismar.app.util.Utils;

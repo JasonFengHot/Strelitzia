@@ -1,5 +1,18 @@
 <resources>
 
+<dimen name="text_size_50sp">44.44dp</dimen>
+<dimen name="text_size_48sp">42.67dp</dimen>
+<dimen name="text_size_36sp">32.00dp</dimen>
+<dimen name="text_size_24sp">21.33dp</dimen>
+<dimen name="text_size_27sp">24.00dp</dimen>
+<dimen name="text_size_60sp">53.33dp</dimen>
+<dimen name="text_size_30sp">26.67dp</dimen>
+<dimen name="text_size_32sp">28.44dp</dimen>
+<dimen name="text_size_34sp">30.22dp</dimen>
+<dimen name="text_size_40sp">35.56dp</dimen>
+<dimen name="text_size_18sp">16.00dp</dimen>
+<dimen name="text_size_28sp">24.89dp</dimen>
+
 <dimen name="player_seekBar_max_h">16.89dp</dimen>
 <dimen name="player_seekBar_thumbOffset">26.67dp</dimen>
 <dimen name="player_controller_margin_lr">44.44dp</dimen>
@@ -32,5 +45,7 @@
 
 <dimen name="player_toast_w">552.89dp</dimen>
 <dimen name="player_toast_h">64.89dp</dimen>
+<dimen name="player_loading_size">58.67dp</dimen>
+<dimen name="player_loading_text_mt">13.33dp</dimen>
 
 </resources>

@@ -5,11 +5,17 @@
     android:layout_height="match_parent"
     android:background="@color/player_color_black">
 
-    <tv.ismar.player.media.DaisyVideoView
-        android:id="@+id/player_surface"
+    <tv.ismar.player.widget.AspectRatioFrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="center"/>
+        android:layout_height="match_parent">
+
+        <SurfaceView
+            android:id="@+id/player_surface"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"/>
+
+    </tv.ismar.player.widget.AspectRatioFrameLayout>
 
     <FrameLayout
         android:id="@+id/player_container"
@@ -18,7 +24,7 @@
         android:layout_gravity="center"/>
 
     <ImageView
-        android:id="@+id/shadowview"
+        android:id="@+id/player_shadow"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:src="@drawable/player_bg"/>
@@ -153,21 +159,21 @@
                 android:layout_centerInParent="true">
 
                 <ImageView
-                    android:id="@+id/previous"
+                    android:id="@+id/player_previous"
                     android:layout_width="@dimen/player_icon_w"
                     android:layout_height="@dimen/player_icon_h"
                     android:clickable="true"
                     android:src="@drawable/selector_player_preview"/>
 
                 <ImageView
-                    android:id="@+id/player_PP"
+                    android:id="@+id/player_start"
                     android:layout_width="@dimen/player_icon_w"
                     android:layout_height="@dimen/player_icon_h"
                     android:layout_marginLeft="@dimen/player_icon_ml"
                     android:clickable="true"/>
 
                 <ImageView
-                    android:id="@+id/forward"
+                    android:id="@+id/player_forward"
                     android:layout_width="@dimen/player_icon_w"
                     android:layout_height="@dimen/player_icon_h"
                     android:layout_marginLeft="@dimen/player_icon_ml"

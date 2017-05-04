@@ -2,6 +2,9 @@ package tv.ismar.player.model;
 
 import java.util.List;
 
+import tv.ismar.app.entity.ClipEntity;
+import tv.ismar.app.network.entity.AdElementEntity;
+
 public class MediaEntity {
 
     // 必要属性
@@ -10,7 +13,7 @@ public class MediaEntity {
     private ClipEntity clipEntity;
     private boolean isLivingVideo;
     // 前贴片广告
-    private List<AdvEntity> advStreamList;
+    private List<AdElementEntity> advStreamList;
     // 历史记录
     private int startPosition;
     private ClipEntity.Quality initQuality;
@@ -38,11 +41,11 @@ public class MediaEntity {
         return isLivingVideo;
     }
 
-    public List<AdvEntity> getAdvStreamList() {
+    public List<AdElementEntity> getAdvStreamList() {
         return advStreamList;
     }
 
-    public void setAdvStreamList(List<AdvEntity> advStreamList) {
+    public void setAdvStreamList(List<AdElementEntity> advStreamList) {
         this.advStreamList = advStreamList;
     }
 

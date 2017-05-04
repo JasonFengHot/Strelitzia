@@ -1,31 +1,85 @@
 package tv.ismar.player.gui;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
+import android.view.KeyEvent;
 
+import tv.ismar.app.BaseActivity;
+import tv.ismar.app.core.PageIntentInterface;
+import tv.ismar.library.util.LogUtils;
 import tv.ismar.player.R;
 
-public class PlaybackActivity extends FragmentActivity implements PlaybackService.Client.Callback {
+public class PlaybackActivity extends BaseActivity {
 
-    private Fragment playbackFragment;
+    private PlaybackFragment playbackFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_playback);
-
-        playbackFragment = getSupportFragmentManager().findFragmentById(R.id.playback_fragment);
+        Intent intent = getIntent();
+        int itemPK = intent.getIntExtra(PageIntentInterface.EXTRA_PK, 0);// 当前影片pk值,通过/api/item/{pk}可获取详细信息
+        int subItemPk = intent.getIntExtra(PageIntentInterface.EXTRA_SUBITEM_PK, 0);// 当前多集片pk值,通过/api/subitem/{pk}可获取详细信息
+        String source = intent.getStringExtra(PageIntentInterface.EXTRA_SOURCE);
+        boolean clickDetailPlay = intent.getBooleanExtra(PageIntentInterface.EXTRA_DETAIL_PAGE_PLAY, false);// 从详情页0秒起播
+        if (itemPK <= 0) {
+            finish();
+            LogUtils.e("LH/PlaybackActivity", "itemId can't be null.");
+            return;
+        }
+        playbackFragment = PlaybackFragment.newInstance(itemPK, subItemPk, source, clickDetailPlay);
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.activity_player_container, playbackFragment)
+                .commit();
 
     }
 
     @Override
-    public void onConnected(PlaybackService service) {
+    protected void onResume() {
+        super.onResume();
+        IntentFilter filter = new IntentFilter(Intent.ACTION_MEDIA_MOUNTED);
+        filter.addAction(Intent.ACTION_MEDIA_CHECKING);
+        filter.setPriority(1000);
+        filter.addDataScheme("file");
+        registerReceiver(mountReceiver, filter);
 
     }
 
     @Override
-    public void onDisconnected() {
-
+    protected void onPause() {
+        super.onPause();
+        unregisterReceiver(mountReceiver);
     }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (playbackFragment != null && playbackFragment.onKeyDown(keyCode, event)) {
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
+    @Override
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
+        if (playbackFragment != null && playbackFragment.onKeyUp(keyCode, event)) {
+            return true;
+        }
+        return super.onKeyUp(keyCode, event);
+    }
+
+    private BroadcastReceiver mountReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction().equals(Intent.ACTION_MEDIA_MOUNTED)) {
+                if (playbackFragment != null) {
+                    playbackFragment.mounted = true;
+                }
+            }
+        }
+    };
+
 }
