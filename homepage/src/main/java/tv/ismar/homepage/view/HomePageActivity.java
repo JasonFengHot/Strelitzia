@@ -328,6 +328,17 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
             getSupportFragmentManager().beginTransaction().replace(android.R.id.content, new UpdateSlienceLoading()).commit();
             return;
         }
+//        contentView.getViewTreeObserver().addOnGlobalFocusChangeListener(new ViewTreeObserver.OnGlobalFocusChangeListener() {
+//            @Override
+//            public void onGlobalFocusChanged(View oldFocus, View newFocus) {
+//                if(newFocus!=null&&oldFocus!=null) {
+//                    if(newFocus.getId()==R.id.large_layout){
+//                        Log.i("newFocus", "larg_layout: "+newFocus.toString());
+//                    }
+//                    Log.i("newFocus", newFocus.toString());
+//                }
+//            }
+//        });
 
         try {
             System.setProperty("http.keepAlive", "false");
@@ -1163,6 +1174,7 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
     protected void onResume() {
         super.onResume();
         AppConstant.purchase_referer = "homepage";
+        AppConstant.purchase_entrance_page="homepage";
         if (!isneedpause) {
             return;
         }

@@ -297,10 +297,11 @@ public class IsmartvActivator {
 
 
     public String encryptWithPublic(String string) {
+        try {
         String signPath = mContext.getFileStreamPath(SIGN_FILE_NAME).getAbsolutePath();
         String result = decryptSign(sn, signPath);
         String publicKey = result.split("\\$\\$\\$")[1];
-        try {
+
             String input = Md5.md5(string);
             Log.d(TAG, "md5: " + input);
             byte[] rsaResult = RSACoder.encryptByPublicKey(input.getBytes(), publicKey);
@@ -424,6 +425,38 @@ public class IsmartvActivator {
         C.SMART_POST_NEXT_REQUEST_TIME = resultEntity.getSmart_post_next_request_time();
         editor.putInt("player", resultEntity.getPlayer());
         editor.commit();
+
+        // 获取老版本的
+        // Daisy(auth_token, mobile_number, device_token),
+        // account(sn_token, device_token, zdevice_token, zuser_token)
+        SharedPreferences daisyPres = mContext.getSharedPreferences("Daisy", Context.MODE_PRIVATE);
+        if (daisyPres != null) {
+            String auth_token = daisyPres.getString("auth_token", null);
+            String mobile_number = daisyPres.getString("mobile_number", null);
+            if (!TextUtils.isEmpty(auth_token)) {
+                setAuthToken(auth_token);
+            }
+            if (!TextUtils.isEmpty(mobile_number)) {
+                setUsername(mobile_number);
+
+                SharedPreferences.Editor daisyEditor = daisyPres.edit();
+                daisyEditor.remove("auth_token");
+                daisyEditor.remove("mobile_number");
+                daisyEditor.apply();
+            }
+        }
+        SharedPreferences accountPres = mContext.getSharedPreferences("account", Context.MODE_PRIVATE);
+        if (accountPres != null) {
+            String zuser_token = accountPres.getString("zuser_token", null);
+            if (!TextUtils.isEmpty(zuser_token)) {
+                setzUserToken(zuser_token);
+
+                SharedPreferences.Editor accountEditor = accountPres.edit();
+                accountEditor.remove("zuser_token");
+                accountEditor.apply();
+            }
+        }
+
     }
 
     private void setAuthToken(String authToken) {

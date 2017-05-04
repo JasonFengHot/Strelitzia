@@ -32,4 +32,10 @@ public class AppConstant {
     public static String purchase_entrance_related_channel;
     public static String purchase_entrance_tab;
     public static String purchase_entrance_location;
+
+    public static class Payment{
+        public static final int PAYMENT_REQUEST_CODE = 0xd6;
+        public static final int PAYMENT_SUCCESS_CODE = 0x5c;
+        public static final int PAYMENT_FAILURE_CODE = 0xd2;
+    }
 }

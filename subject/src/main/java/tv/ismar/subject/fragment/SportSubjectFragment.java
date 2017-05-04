@@ -55,9 +55,9 @@ import tv.ismar.app.entity.Objects;
 import tv.ismar.app.network.SkyService;
 import tv.ismar.app.network.entity.EventProperty;
 import tv.ismar.app.network.entity.PlayCheckEntity;
-import tv.ismar.app.widget.LabelImageView;
 import tv.ismar.app.widget.LoadingDialog;
 import tv.ismar.subject.R;
+import tv.ismar.subject.Utils.LableImageSubject;
 import tv.ismar.subject.Utils.PayCheckUtil;
 import tv.ismar.subject.adapter.SportPresenterHolder;
 import tv.libismar.pagerview.VerticalPagerView;
@@ -77,7 +77,7 @@ public class SportSubjectFragment extends Fragment implements View.OnHoverListen
     private Subscription playCheckSubsc;
     private TextView price,hasbuy;
     private ImageView cp_title,up_arrow,down_arrow,bg;
-    private LabelImageView relate_image1,relate_image2,relate_image3;
+    private LableImageSubject relate_image1,relate_image2,relate_image3;
     private TextView relate_text1,relate_text2,relate_text3;
     private TextView game_time,title;
     private Objects objects;
@@ -90,6 +90,7 @@ public class SportSubjectFragment extends Fragment implements View.OnHoverListen
     public String subjectTitle;
     private LoadingDialog mLoadingDialog;
     private VerticalPagerView mVerticalPagerView;
+    private int[] payState;
     private  HashMap<String, Object> out = new HashMap<String, Object>();
     private Handler dialogHandler=new Handler(new Handler.Callback() {
         @Override
@@ -127,9 +128,9 @@ public class SportSubjectFragment extends Fragment implements View.OnHoverListen
         down_arrow= (ImageView) view.findViewById(R.id.down_image);
         arrowListent();
         relate_list= (LinearLayout) view.findViewById(R.id.relate_list);
-        relate_image1= (LabelImageView) view.findViewById(R.id.relate_list_1_image);
-        relate_image2= (LabelImageView) view.findViewById(R.id.relate_list_2_image);
-        relate_image3= (LabelImageView) view.findViewById(R.id.relate_list_3_image);
+        relate_image1= (LableImageSubject) view.findViewById(R.id.relate_list_1_image);
+        relate_image2= (LableImageSubject) view.findViewById(R.id.relate_list_2_image);
+        relate_image3= (LableImageSubject) view.findViewById(R.id.relate_list_3_image);
 
         relate_text1= (TextView) view.findViewById(R.id.relate_list_1_text);
         relate_text2= (TextView) view.findViewById(R.id.relate_list_2_text);
@@ -158,10 +159,6 @@ public class SportSubjectFragment extends Fragment implements View.OnHoverListen
         if(!subject_type.equals("null")){
             sendLog();
         }
-        if(objects!=null&&payHandler!=null){
-            payHandler.removeCallbacks(payRunnable);
-            payHandler.postDelayed(payRunnable,500);
-        }
         super.onResume();
     }
 
@@ -177,6 +174,7 @@ public class SportSubjectFragment extends Fragment implements View.OnHoverListen
             public void onNext(Subject subject) {
                 if(subject!=null){
                     list=subject.objects;
+                    payState=new int[list.size()];
                     Collections.sort(list, new Comparator<Objects>() {
                         @Override
                         public int compare(Objects lhs, Objects rhs) {
@@ -190,7 +188,7 @@ public class SportSubjectFragment extends Fragment implements View.OnHoverListen
                     if(subject.content_model.contains("nba")){
                         subject_type="NBA";
                     }else{
-                        subject_type="PL-英超";
+                        subject_type="PL";
                     }
                     mVerticalPagerView.addDatas(list);
                     mLoadingDialog.dismiss();
@@ -232,10 +230,10 @@ public class SportSubjectFragment extends Fragment implements View.OnHoverListen
     };
     private void buildDetail(){
         objects=list.get(mVerticalPagerView.getCurrentDataSelectPosition());
-        play.setVisibility(View.GONE);
-        buy.setVisibility(View.GONE);
         if(objects.poster_url!=null)
         Picasso.with(getActivity()).load(objects.poster_url).into(detail_labelImage);
+        int index=mVerticalPagerView.getCurrentDataSelectPosition();
+        payHandler.removeCallbacks(payRunnable);
         if(objects.expense!=null){
             if (playCheckSubsc != null && !playCheckSubsc.isUnsubscribed()) {
                 playCheckSubsc.unsubscribe();
@@ -247,10 +245,26 @@ public class SportSubjectFragment extends Fragment implements View.OnHoverListen
 //                }else{
 //                    cp_title.setVisibility(View.GONE);
 //                }
-            payHandler.removeCallbacks(payRunnable);
-            payHandler.postDelayed(payRunnable,500);
+            if(payState!=null) {
+                if(payState[index]==0) {
+                    payHandler.postDelayed(payRunnable, 500);
+                }else if(payState[index]==1){
+                    play.setVisibility(View.GONE);
+                    buy.setVisibility(View.VISIBLE);
+                    hasbuy.setVisibility(View.GONE);
+                    price.setVisibility(View.VISIBLE);
+                    price.setText(objects.expense.price+"¥");
+                }else{
+                    play.setVisibility(View.VISIBLE);
+                    buy.setVisibility(View.GONE);
+                    price.setVisibility(View.GONE);
+                    hasbuy.setVisibility(View.VISIBLE);
+                    hasbuy.setText("已付费：有效期"+objects.expense.duration+"天");
+                }
+            }
         }else{
             play.setVisibility(View.VISIBLE);
+            buy.setVisibility(View.GONE);
             hasbuy.setVisibility(View.INVISIBLE);
             price.setVisibility(View.INVISIBLE);
         }
@@ -297,13 +311,17 @@ public class SportSubjectFragment extends Fragment implements View.OnHoverListen
                         try {
                             PayCheckUtil payCheck=new PayCheckUtil();
                             PlayCheckEntity  playCheckEntity =payCheck.calculateRemainDay(responseBody.string());
+                            int index=mVerticalPagerView.getCurrentDataSelectPosition();
                             if (playCheckEntity.getRemainDay() == 0) {
+                                payState[index]=1;
                                 buy.setVisibility(View.VISIBLE);
                                 play.setVisibility(View.GONE);
                                 hasbuy.setVisibility(View.GONE);
                                 price.setVisibility(View.VISIBLE);
-                                price.setText(objects.expense.price+"¥");                           // 过期了。认为没购买
+                                price.setText(objects.expense.price+"¥");
+                                                      // 过期了。认为没购买
                             } else {
+                                payState[index]=2;
                                 play.setVisibility(View.VISIBLE);
                                 buy.setVisibility(View.GONE);
                                 price.setVisibility(View.GONE);
@@ -339,6 +357,11 @@ public class SportSubjectFragment extends Fragment implements View.OnHoverListen
                     buy.setNextFocusDownId(R.id.buy);
                 }
             }
+
+            @Override
+            public void onError(Throwable e) {
+                e.printStackTrace();
+            }
         });
     }
     private void buildRelateList(final Item[] items){
@@ -358,6 +381,8 @@ public class SportSubjectFragment extends Fragment implements View.OnHoverListen
         relate_image1.setOnHoverListener(relateOnhoverListener);
         relate_image2.setOnHoverListener(relateOnhoverListener);
         relate_image3.setOnHoverListener(relateOnhoverListener);
+
+        relate_image1.setOnFocusChangeListener(imageFocus);
 
         final PageIntent intent=new PageIntent();
         relate_image1.setOnClickListener(new View.OnClickListener() {
@@ -445,9 +470,11 @@ public class SportSubjectFragment extends Fragment implements View.OnHoverListen
        public boolean onHover(View v, MotionEvent event) {
            switch (event.getAction()){
                case MotionEvent.ACTION_HOVER_MOVE:
-                   break;
                case MotionEvent.ACTION_HOVER_ENTER:
+                   down_arrow.setFocusable(false);
+                   down_arrow.setFocusableInTouchMode(false);
                    leaveIndex=mVerticalPagerView.getCurrentDataSelectPosition();
+                   v.requestFocus();
                    v.requestFocusFromTouch();
                    Log.i("btnHover","leaverIndex: "+leaveIndex);
                    break;
@@ -460,7 +487,15 @@ public class SportSubjectFragment extends Fragment implements View.OnHoverListen
            return false;
        }
    };
-
+    private View.OnFocusChangeListener imageFocus=new View.OnFocusChangeListener() {
+        @Override
+        public void onFocusChange(View v, boolean hasFocus) {
+            if (hasFocus){
+                down_arrow.setFocusableInTouchMode(false);
+                down_arrow.setFocusable(false);
+            }
+        }
+    };
     private void arrowListent(){
         up_arrow.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -482,7 +517,8 @@ public class SportSubjectFragment extends Fragment implements View.OnHoverListen
         up_arrow.setOnHoverListener(arrowOnhover);
         down_arrow.setOnHoverListener(arrowOnhover);
     }
-    View.OnHoverListener arrowOnhover=new View.OnHoverListener() {
+
+    private View.OnHoverListener arrowOnhover=new View.OnHoverListener() {
         @Override
         public boolean onHover(View v, MotionEvent event) {
             switch (event.getAction()){
@@ -741,9 +777,16 @@ public class SportSubjectFragment extends Fragment implements View.OnHoverListen
                     View view1=mVerticalPagerView.getChildViewAt(lastHoverIndex);
                     normalItemNoSelect(view1,lastHoverIndex);
                 }
+                if(leaveIndex>=0){
+                    bigItemNoSelect(view,leaveIndex);
+                }
                 break;
             case KeyEvent.KEYCODE_DPAD_DOWN:
             case KeyEvent.KEYCODE_DPAD_UP:
+                up_arrow.setFocusableInTouchMode(false);
+                up_arrow.setFocusable(false);
+                down_arrow.setFocusableInTouchMode(false);
+                down_arrow.setFocusable(false);
                 if(lastHoverIndex>=0){
                     View view1=mVerticalPagerView.getChildViewAt(lastHoverIndex);
                     normalItemNoSelect(view1,lastHoverIndex);
@@ -758,16 +801,24 @@ public class SportSubjectFragment extends Fragment implements View.OnHoverListen
         setUIData(sportPresenterHolder, (Objects) object);
         if (mVerticalPagerView.getFirstVisibleChildIndex() == 0) {
             up_arrow.setBackground(getActivity().getResources().getDrawable(R.drawable.up_nomral));
+            up_arrow.setHovered(false);
             down_arrow.setBackground(getActivity().getResources().getDrawable(R.drawable.arrow_down_hover));
         } else if (mVerticalPagerView.getLastVisibleChildIndex() == list.size() - 1) {
             up_arrow.setBackground(getActivity().getResources().getDrawable(R.drawable.arrow_hover_select));
             down_arrow.setBackground(getActivity().getResources().getDrawable(R.drawable.down_normal));
+            down_arrow.setHovered(false);
         } else {
             up_arrow.setBackground(getActivity().getResources().getDrawable(R.drawable.arrow_hover_select));
             down_arrow.setBackground(getActivity().getResources().getDrawable(R.drawable.arrow_down_hover));
+            down_arrow.setHovered(true);
+            up_arrow.setHovered(true);
         }
         if(position==mVerticalPagerView.getCurrentDataSelectPosition()){
             buildDetail();
+            if(mVerticalPagerView.getChildViewAt(position)!=null) {
+                mVerticalPagerView.getChildViewAt(position).requestFocusFromTouch();
+                bigItemSelect(mVerticalPagerView.getChildViewAt(position),position);
+            }
         }
 
     }
@@ -849,54 +900,15 @@ public class SportSubjectFragment extends Fragment implements View.OnHoverListen
             return false;
         }
     }
-
-//    private RecyclerViewTV mRecyclerView;
-//    private RecyclerViewPresenter mRecyclerViewPresenter;
-//    private GeneralAdapter mGeneralAdapter;
-//
-//    private MainUpView mainUpView1;
-//    private RecyclerViewBridge mRecyclerViewBridge;
-//    private View oldView;
-//    private int mSavePos = 0;
-//
-//    @Override
-//    public void onItemClick(RecyclerViewTV parent, View itemView, int position) {
-//        listItemToNormal(oldView);
-//        listItemToBig(itemView);
-//        buildDetail();
-//    }
-//
-//    @Override
-//    public void onItemPreSelected(RecyclerViewTV parent, View itemView, int position) {
-////        mRecyclerViewBridge.setUnFocusView(oldView);
-//        listItemToNormal(oldView);
-//    }
-//
-//    @Override
-//    public void onItemSelected(RecyclerViewTV parent, View itemView, int position) {
-//        Rect localRect = new Rect();
-//        itemView.getLocalVisibleRect(localRect);
-//        Rect drawRect = new Rect();
-//        itemView.getDrawingRect(drawRect);
-//        if (localRect.bottom == drawRect.bottom) {
-////            mRecyclerViewBridge.setFocusView(itemView, 1.2f);
-//            listItemToBig(itemView);
-//            mSavePos = position;
-//            buildDetail();
-//        }
-//        oldView = itemView;
-//    }
-//
-//    @Override
-//    public void onReviseFocusFollow(RecyclerViewTV parent, View itemView, int position) {
-////        mRecyclerViewBridge.setFocusView(itemView, 1.2f);
-//        listItemToBig(itemView);
-//        oldView = itemView;
-//        mSavePos = position;
-//        buildDetail();
-//        if (position == 0){
-//
-//        }
-//    }
-
+    public void clearPayState(){
+        if(payState!=null) {
+            for (int i = 0; i < payState.length; i++) {
+                payState[i] = 0;
+            }
+        }
+        if(payHandler!=null) {
+            payHandler.removeCallbacks(payRunnable);
+            payHandler.postDelayed(payRunnable, 500);
+        }
+    }
 }

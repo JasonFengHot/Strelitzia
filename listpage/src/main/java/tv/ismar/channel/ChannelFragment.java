@@ -914,7 +914,7 @@ public class ChannelFragment extends Fragment implements OnItemSelectedListener,
         currentposition = position;
         if (item != null) {
             try{
-                if(item.content_model.contains("gather")){
+                if(item.content_model!=null&&item.content_model.contains("gather")){
                     PageIntent intent =new PageIntent();
                     intent.toSubject(getActivity(),item.content_model,item.pk,item.title,Source.LIST.getValue(),mChannel );
                 }else if (item.model_name.equals("package")) {

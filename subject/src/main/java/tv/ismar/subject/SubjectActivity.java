@@ -6,16 +6,17 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.view.KeyEvent;
+import android.util.Log;
 
 import java.util.concurrent.TimeoutException;
 
 import tv.ismar.app.AppConstant;
 import tv.ismar.app.BaseActivity;
-import tv.ismar.app.entity.Channel;
 import tv.ismar.app.widget.LoadingDialog;
 import tv.ismar.subject.fragment.MovieTVSubjectFragment;
 import tv.ismar.subject.fragment.SportSubjectFragment;
+
+import static tv.ismar.app.AppConstant.Payment.PAYMENT_SUCCESS_CODE;
 
 /**
  * Created by liucan on 2017/3/1.
@@ -40,6 +41,7 @@ public class SubjectActivity extends BaseActivity{
             return false;
         }
     });
+    private SportSubjectFragment sportSubjectFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,14 +57,14 @@ public class SubjectActivity extends BaseActivity{
         AppConstant.purchase_entrance_page = "gather";
         AppConstant.purchase_entrance_related_item = String.valueOf(itemid);
         AppConstant.purchase_entrance_related_title = title;
-        AppConstant.purchase_entrance_keyword = gather_type;
+        AppConstant.purchase_entrance_keyword = title;
 
         fromPage = intent.getStringExtra("fromPage");
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
         switch (gather_type){
             case "nbagather":
             case "premierleaguegather":
-                SportSubjectFragment sportSubjectFragment=new SportSubjectFragment();
+                sportSubjectFragment=new SportSubjectFragment();
                 sportSubjectFragment.pk=itemid;
                 sportSubjectFragment.channel=channel;
                 sportSubjectFragment.from=fromPage;
@@ -91,5 +93,16 @@ public class SubjectActivity extends BaseActivity{
             }
         });
         mLoadingDialog.showDialog();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.i("OnActivity",resultCode+" code  "+PAYMENT_SUCCESS_CODE);
+        if(resultCode== PAYMENT_SUCCESS_CODE){
+            if(sportSubjectFragment!=null){
+                sportSubjectFragment.clearPayState();
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 }

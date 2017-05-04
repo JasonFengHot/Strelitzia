@@ -1,4 +1,8 @@
 package tv.ismar.usercenter.presenter;
+
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
+
 import cn.ismartv.truetime.TrueTime;
 
 import java.math.BigDecimal;
@@ -88,7 +92,9 @@ public class UserInfoPresenter implements UserInfoContract.Presenter {
     public void fetchPrivilege() {
         String timestamp = String.valueOf(TrueTime.now().getTime());
         IsmartvActivator activator = IsmartvActivator.getInstance();
-        String sign = activator.encryptWithPublic("sn=" + activator.getSnToken() + "&timestamp=" + timestamp);
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mActivity);
+        String snToken = sharedPreferences.getString("sn_token", "");
+        String sign = activator.encryptWithPublic("sn=" + snToken + "&timestamp=" + timestamp);
 
         privilegeSub = mSkyService.accountsPlayauths(timestamp, sign)
                 .subscribeOn(Schedulers.io())

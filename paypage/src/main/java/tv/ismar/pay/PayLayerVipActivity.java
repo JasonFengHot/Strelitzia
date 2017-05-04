@@ -3,11 +3,13 @@ package tv.ismar.pay;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnHoverListener;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -32,6 +34,9 @@ import tv.ismar.app.network.entity.SubjectPayLayerEntity;
 import tv.ismar.statistics.DetailPageStatistics;
 import tv.ismar.statistics.PurchaseStatistics;
 
+import static tv.ismar.app.AppConstant.Payment.PAYMENT_FAILURE_CODE;
+import static tv.ismar.app.AppConstant.Payment.PAYMENT_REQUEST_CODE;
+import static tv.ismar.app.AppConstant.Payment.PAYMENT_SUCCESS_CODE;
 import static tv.ismar.app.core.PageIntentInterface.ProductCategory.item;
 
 /**
@@ -55,7 +60,8 @@ public class PayLayerVipActivity extends BaseActivity implements OnHoverListener
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_paylayervip);
+        View view=LayoutInflater.from(this).inflate(R.layout.activity_paylayervip,null);
+        setContentView(view);
         mPageStatistics = new DetailPageStatistics();
         initViews();
         Intent intent = getIntent();
@@ -64,6 +70,14 @@ public class PayLayerVipActivity extends BaseActivity implements OnHoverListener
         title = intent.getStringExtra("title");
         fromPage = intent.getStringExtra("source");
         payLayerVip(String.valueOf(cpid), String.valueOf(itemId));
+//        view.getViewTreeObserver().addOnGlobalFocusChangeListener(new ViewTreeObserver.OnGlobalFocusChangeListener() {
+//            @Override
+//            public void onGlobalFocusChanged(View oldFocus, View newFocus) {
+//                if(newFocus!=null){
+//                    Log.i("VipFocus",newFocus.toString());
+//                }
+//            }
+//        });
     }
 
     @Override
@@ -200,6 +214,7 @@ public class PayLayerVipActivity extends BaseActivity implements OnHoverListener
         }
 
         scrollViewLayout.getChildAt(0).requestFocus();
+        scrollViewLayout.getChildAt(0).requestFocusFromTouch();
         if (scrollViewLayout.getChildCount() <= 4) {
             mTvHorizontalScrollView.setLeftArrow(new ImageView(this));
             mTvHorizontalScrollView.setRightArrow(new ImageView(this));
@@ -215,6 +230,7 @@ public class PayLayerVipActivity extends BaseActivity implements OnHoverListener
                 v.requestFocus();
                 break;
             case MotionEvent.ACTION_HOVER_EXIT:
+                tmp.setFocusable(true);
                 tmp.requestFocus();
                 break;
             default:
@@ -228,6 +244,7 @@ public class PayLayerVipActivity extends BaseActivity implements OnHoverListener
         if (hasFocus) {
             PayLayerVipEntity.Vip_list vipList = (PayLayerVipEntity.Vip_list) v.getTag();
             vipDescriptionTextView.setText(vipList.getDescription());
+            tmp.setFocusable(false);
         }
     }
 
@@ -237,13 +254,13 @@ public class PayLayerVipActivity extends BaseActivity implements OnHoverListener
         intent.putExtra(PageIntent.EXTRA_PK, pk);
         intent.putExtra(PageIntentInterface.EXTRA_PRODUCT_CATEGORY, PageIntentInterface.ProductCategory.Package.toString());
         intent.putExtra("movie_id", itemId);
-        startActivityForResult(intent, PaymentActivity.PAYMENT_REQUEST_CODE);
+        startActivityForResult(intent, PAYMENT_REQUEST_CODE);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == PaymentActivity.PAYMENT_SUCCESS_CODE) {
-            setResult(PaymentActivity.PAYMENT_SUCCESS_CODE, data);
+        if (resultCode == PAYMENT_SUCCESS_CODE) {
+            setResult(PAYMENT_SUCCESS_CODE, data);
             finish();
         }
         super.onActivityResult(requestCode, resultCode, data);
@@ -257,7 +274,7 @@ public class PayLayerVipActivity extends BaseActivity implements OnHoverListener
                 "",
                 "cancel"
                );
-        setResult(PaymentActivity.PAYMENT_FAILURE_CODE);
+        setResult(PAYMENT_FAILURE_CODE);
         super.onBackPressed();
     }
 

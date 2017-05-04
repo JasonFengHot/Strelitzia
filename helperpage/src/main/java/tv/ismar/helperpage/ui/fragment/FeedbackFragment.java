@@ -2,9 +2,12 @@ package tv.ismar.helperpage.ui.fragment;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.util.Log;
@@ -56,7 +59,7 @@ import tv.ismar.helperpage.ui.activity.HomeActivity;
  * Created by huaijie on 2015/4/8.
  */
 public class FeedbackFragment extends Fragment implements RadioGroup.OnCheckedChangeListener,
-        View.OnClickListener, View.OnHoverListener{
+        View.OnClickListener, View.OnHoverListener {
     private static final String TAG = "FeedbackFragment";
 
     private Context mContext;
@@ -75,13 +78,22 @@ public class FeedbackFragment extends Fragment implements RadioGroup.OnCheckedCh
     private SkyService skyService;
     private ImageView tmpImageView;
 
-    private String snCode = TextUtils.isEmpty(IsmartvActivator.getInstance().getSnToken()) ? "sn is null" : IsmartvActivator.getInstance().getSnToken();
+    private String snCode;
 
     private BitmapDecoder bitmapDecoder;
+
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         this.mContext = activity;
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity);
+        snCode = sharedPreferences.getString("sn_token", "");
+    }
+
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
     }
 
     @Override
@@ -94,7 +106,7 @@ public class FeedbackFragment extends Fragment implements RadioGroup.OnCheckedCh
                 view.setBackgroundDrawable(bitmapDrawable);
             }
         });
-        skyService=SkyService.ServiceManager.getService();
+        skyService = SkyService.ServiceManager.getService();
         view.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
@@ -123,7 +135,7 @@ public class FeedbackFragment extends Fragment implements RadioGroup.OnCheckedCh
         submitButton.setOnClickListener(this);
         phoneNumberText = (SakuraEditText) view.findViewById(R.id.phone_number_edit);
         descriptioinText = (SakuraEditText) view.findViewById(R.id.description_edit);
-        tmpImageView = (ImageView)view.findViewById(R.id.tmp);
+        tmpImageView = (ImageView) view.findViewById(R.id.tmp);
 
         arrowUp = (ImageView) view.findViewById(R.id.arrow_up);
         arrowDown = (ImageView) view.findViewById(R.id.arrow_down);
@@ -173,7 +185,7 @@ public class FeedbackFragment extends Fragment implements RadioGroup.OnCheckedCh
             radioButton.setOnFocusChangeListener(new View.OnFocusChangeListener() {
                 @Override
                 public void onFocusChange(View v, boolean hasFocus) {
-                    if(hasFocus)
+                    if (hasFocus)
                         radioButton.setChecked(true);
                 }
             });
@@ -196,7 +208,7 @@ public class FeedbackFragment extends Fragment implements RadioGroup.OnCheckedCh
 
 
     private void fetchFeedback(String sn, String top) {
-        ((HomeActivity)getActivity()).mIrisService.Feedback(sn,top)
+        ((HomeActivity) getActivity()).mIrisService.Feedback(sn, top)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<ChatMsgEntity>() {
@@ -253,27 +265,29 @@ public class FeedbackFragment extends Fragment implements RadioGroup.OnCheckedCh
             feedBack.setIsp(accountSharedPrefs.getSharedPrefs(AccountSharedPrefs.ISP));
             feedBack.setLocation(accountSharedPrefs.getSharedPrefs(AccountSharedPrefs.PROVINCE));
             String userAgent = android.os.Build.MODEL.replaceAll(" ", "_") + "/" + android.os.Build.ID + " " + snCode;
-            String q=new Gson().toJson(feedBack);
-                ((HomeActivity)getActivity()).mIrisService.UploadFeedback(userAgent,q)
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread()).subscribe(((HomeActivity) getActivity()).new BaseObserver<ResponseBody>() {
-                            @Override
-                            public void onCompleted() {
+            String q = new Gson().toJson(feedBack);
+            ((HomeActivity) getActivity()).mIrisService.UploadFeedback(userAgent, q)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread()).subscribe(((HomeActivity) getActivity()).new BaseObserver<ResponseBody>() {
+                @Override
+                public void onCompleted() {
 
-                            }
-                            @Override
-                            public void onNext(ResponseBody responseBody) {
-                                fetchFeedback(snCode, "10");
-                                Toast.makeText(mContext, "提交成功!", Toast.LENGTH_LONG).show();
-                                submitButton.setEnabled(true);
-                            }
-                    @Override
-                    public void onError(Throwable e) {
-                        Toast.makeText(mContext, "提交失败!", Toast.LENGTH_LONG).show();
-                        submitButton.setEnabled(true);
-                        super.onError(e);
-                    }
-                });
+                }
+
+                @Override
+                public void onNext(ResponseBody responseBody) {
+                    fetchFeedback(snCode, "10");
+                    Toast.makeText(mContext, "提交成功!", Toast.LENGTH_LONG).show();
+                    submitButton.setEnabled(true);
+                }
+
+                @Override
+                public void onError(Throwable e) {
+                    Toast.makeText(mContext, "提交失败!", Toast.LENGTH_LONG).show();
+                    submitButton.setEnabled(true);
+                    super.onError(e);
+                }
+            });
 //            UploadFeedback.getInstance().excute(feedBack, snCode, new UploadFeedback.Callback() {
 //                @Override
 //                public void success(String msg) {
@@ -351,6 +365,7 @@ public class FeedbackFragment extends Fragment implements RadioGroup.OnCheckedCh
         });
 
     }
+
     @Override
     public boolean onHover(View v, MotionEvent event) {
         switch (event.getAction()) {

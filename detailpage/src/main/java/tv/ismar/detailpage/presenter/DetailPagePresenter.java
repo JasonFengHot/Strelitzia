@@ -292,6 +292,7 @@ public class DetailPagePresenter implements DetailPageContract.Presenter {
         AppConstant.purchase_entrance_related_item = String.valueOf(mItemEntity.getItemPk());
         AppConstant.purchase_entrance_related_title = mItemEntity.getTitle();
         AppConstant.purchase_entrance_related_channel = AppConstant.purchase_channel;
+        AppConstant.purchase_entrance_page="related";
         Intent intent = new Intent();
         if (relatedItemList != null && relatedItemList.length > 0) {
             intent.putExtra("related_item_json", new Gson().toJson(relatedItemList));

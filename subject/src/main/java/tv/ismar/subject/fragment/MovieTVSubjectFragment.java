@@ -3,6 +3,7 @@ package tv.ismar.subject.fragment;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
 import android.view.Gravity;
@@ -49,6 +50,8 @@ import tv.ismar.subject.adapter.SubjectMovieAdapter;
 import tv.ismar.subject.adapter.SubjectTvAdapter;
 import tv.ismar.subject.views.MyRecyclerView;
 
+import static android.support.v7.widget.RecyclerView.SCROLL_STATE_IDLE;
+import static android.support.v7.widget.RecyclerView.SCROLL_STATE_SETTLING;
 import static tv.ismar.app.core.PageIntentInterface.ProductCategory.item;
 
 /**
@@ -86,6 +89,8 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnClickList
     private SubjectEntity mSubjectEntity=new SubjectEntity();
     private boolean isScaledIn=true;
     private String channel="";
+    private boolean showPayLayer=false;
+    private boolean clickble=true;
 
     @Nullable
     @Override
@@ -157,7 +162,6 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnClickList
 
                     @Override
                     public void onError(Throwable e) {
-                        hideLoading();
                         super.onError(e);
                     }
                 });
@@ -181,6 +185,27 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnClickList
             movie_recyclerView.setLayoutManager(new StaggeredGridLayoutManager(1,StaggeredGridLayoutManager.HORIZONTAL));
             movie_recyclerView.setAdapter(movieAdapter);
             movieAdapter.setOnItemClickListener(this);
+            movie_recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+                @Override
+                public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                    Log.i("MovieClick","scroll change: "+newState);
+                    if(newState==SCROLL_STATE_IDLE){
+                        if(recyclerView.getFocusedChild()!=null) {
+                            int viewX = (int) recyclerView.getFocusedChild().getX();
+                            if (viewX != getResources().getDimensionPixelOffset(R.dimen.subject_movie_recycleview_ml)) {
+                                recyclerView.smoothScrollBy((int) (viewX - getResources().getDimensionPixelOffset(R.dimen.subject_movie_recycleview_ml)), 0);
+                            }
+                        }
+                    }
+                    super.onScrollStateChanged(recyclerView, newState);
+                }
+
+                @Override
+                public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                    super.onScrolled(recyclerView, dx, dy);
+                }
+            });
+
             movieAdapter.setOnItemFocusedListener(new OnItemFocusedListener() {
 
 
@@ -191,6 +216,7 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnClickList
                         if(!isScaledIn){
                             JasmineUtil.scaleIn2(focusView);
                         }
+                        Log.i("MovieFocus","hasFocus: "+position);
                         checkLayerIsShow(position);
                         poster_focus.setVisibility(View.VISIBLE);
                         movie_recyclerView.smoothScrollBy((int) (view.getX()-getResources().getDimensionPixelOffset(R.dimen.subject_movie_recycleview_ml)), 0);
@@ -245,13 +271,20 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnClickList
                     }
                 }
             });
-        }
-        hideLoading();
-    }
-
-    private void hideLoading() {
-        if(((SubjectActivity)getActivity()).mLoadingDialog!=null&&((SubjectActivity)getActivity()).mLoadingDialog.isShowing()){
-            ((SubjectActivity)getActivity()).mLoadingDialog.dismiss();
+            tv_recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+                @Override
+                public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                    if(newState==SCROLL_STATE_IDLE){
+                        if(recyclerView.getFocusedChild()!=null) {
+                            int viewX = (int) recyclerView.getFocusedChild().getX();
+                            if (viewX != getResources().getDimensionPixelOffset(R.dimen.subject_movie_recycleview_ml)) {
+                                recyclerView.smoothScrollBy((int) (viewX - getResources().getDimensionPixelOffset(R.dimen.subject_tv_recycleview_ml)), 0);
+                            }
+                        }
+                    }
+                    super.onScrollStateChanged(recyclerView, newState);
+                }
+            });
         }
     }
 
@@ -284,6 +317,7 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnClickList
     @Override
     public void onResume() {
         super.onResume();
+        showPayLayer=false;
         if(btn_buy_focused){
             subject_btn_buy.requestFocus();
         }else if(btn_like_focused) {
@@ -333,6 +367,10 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnClickList
                 Favorite favorite = new Favorite();
                 favorite.title = mSubjectEntity.getTitle();
                 String adlet_url=mSubjectEntity.getAdlet_url();
+                if(adlet_url.equals("http://res.tvxio.bestv.com.cn/media/upload/20160321/36c8886fd5b4163ae48534a72ec3a555.png")||
+                        adlet_url.equals("http://res.tvxio.bestv.com.cn/media/upload/20160504/5eae6db53f065ff0269dfc71fb28a4ec.png")){
+                    adlet_url=null;
+                }
                 favorite.adlet_url = (adlet_url==null||"".equals(adlet_url))?mSubjectEntity.getObjects().get(0).getAdlet_url():adlet_url;
                 favorite.content_model = type;
                 favorite.url = url;
@@ -361,7 +399,10 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnClickList
                 showToast("取消收藏成功");
             }
         } else if (i == R.id.subject_btn_buy) {
-                buySubject();
+                if(clickble) {
+                    buySubject();
+                    clickble=false;
+                }
         }
     }
 
@@ -381,21 +422,26 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnClickList
 
                     @Override
                     public void onNext(SubjectPayLayerEntity subjectPayLayerEntity) {
+                        clickble=true;
                         if(subjectPayLayerEntity.gather_per){
                             showToast("您已拥有本专题所有影片观看权限");
                         }else{
-                            AppConstant.purchase_entrance_page="gather";
-                            PageIntentInterface.PaymentInfo paymentInfo = new PageIntentInterface.PaymentInfo(item, subjectPayLayerEntity.getPk(), PageIntent.PAYVIP, subjectPayLayerEntity.getCpid(),mSubjectEntity.getTitle());
-                            String userName = IsmartvActivator.getInstance().getUsername();
-                            String title = mSubjectEntity.getTitle();
-                            new PurchaseStatistics().expenseVideoClick(String.valueOf(id), userName, title, String.valueOf(id));
-                            new PageIntent().toPaymentForResult(getActivity(), Source.GATHER.getValue(), paymentInfo);
-                            video_gather_out(mSubjectEntity.getTitle(),"expense","","");
+                            if(!showPayLayer) {
+                                showPayLayer = true;
+                                AppConstant.purchase_entrance_page = "gather";
+                                PageIntentInterface.PaymentInfo paymentInfo = new PageIntentInterface.PaymentInfo(item, subjectPayLayerEntity.getPk(), PageIntent.PAYVIP, subjectPayLayerEntity.getCpid(), mSubjectEntity.getTitle());
+                                String userName = IsmartvActivator.getInstance().getUsername();
+                                String title = mSubjectEntity.getTitle();
+                                new PurchaseStatistics().expenseVideoClick(String.valueOf(id), userName, title, String.valueOf(id));
+                                new PageIntent().toPaymentForResult(getActivity(), Source.GATHER.getValue(), paymentInfo);
+                                video_gather_out(mSubjectEntity.getTitle(), "expense", "", "");
+                            }
                         }
                     }
 
                     @Override
                     public void onError(Throwable e) {
+                        clickble=true;
                         super.onError(e);
                     }
                 });
@@ -404,6 +450,7 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnClickList
 
     @Override
     public void onItemClick(View view, int position) {
+        Log.i("MovieClick","onItemClick");
             focusView=view;
             PageIntent intent = new PageIntent();
             intent.toPlayPage(getActivity(), list.get(position).getPk(), 0, Source.GATHER);

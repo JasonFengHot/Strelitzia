@@ -33,6 +33,8 @@ import tv.ismar.app.network.entity.AccountBalanceEntity;
 import tv.ismar.app.network.entity.ItemEntity;
 import tv.ismar.statistics.PurchaseStatistics;
 
+import static tv.ismar.app.AppConstant.Payment.PAYMENT_SUCCESS_CODE;
+
 
 /**
  * Created by huibin on 2016/9/14.
@@ -156,7 +158,7 @@ public class BalancePayFragment extends Fragment implements View.OnClickListener
                             e.printStackTrace();
                         }
                         float result = new JsonParser().parse(json).getAsJsonObject().get("balance").getAsFloat();
-                        activity.setResult(PaymentActivity.PAYMENT_SUCCESS_CODE);
+                        activity.setResult(PAYMENT_SUCCESS_CODE);
                         Message message = new Message();
                         message.what = 0;
                         message.obj = result;

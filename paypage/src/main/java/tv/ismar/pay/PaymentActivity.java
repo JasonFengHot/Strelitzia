@@ -48,6 +48,7 @@ import tv.ismar.app.network.entity.PayWhStatusEntity;
 import tv.ismar.pay.LoginFragment.LoginCallback;
 import tv.ismar.statistics.PurchaseStatistics;
 
+import static tv.ismar.app.AppConstant.Payment.PAYMENT_SUCCESS_CODE;
 import static tv.ismar.pay.PaymentActivity.OderType.alipay_renewal;
 
 /**
@@ -77,9 +78,6 @@ public class PaymentActivity extends BaseActivity implements View.OnClickListene
     private TextView loginTip;
     private TextView username;
 
-    public static final int PAYMENT_REQUEST_CODE = 0xd6;
-    public static final int PAYMENT_SUCCESS_CODE = 0x5c;
-    public static final int PAYMENT_FAILURE_CODE = 0xd2;
     private Subscription accountsBalanceSub;
     private Subscription apiOrderCreateSub;
     private Subscription apiOptItemSub;
