@@ -8,10 +8,14 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
+import java.util.HashMap;
 import java.util.concurrent.TimeoutException;
 
+import tv.ismar.account.IsmartvActivator;
 import tv.ismar.app.AppConstant;
 import tv.ismar.app.BaseActivity;
+import tv.ismar.app.core.client.NetworkUtils;
+import tv.ismar.app.network.entity.EventProperty;
 import tv.ismar.app.widget.LoadingDialog;
 import tv.ismar.subject.fragment.MovieTVSubjectFragment;
 import tv.ismar.subject.fragment.SportSubjectFragment;
@@ -79,6 +83,14 @@ public class SubjectActivity extends BaseActivity{
                 break;
         }
         fragmentTransaction.commit();
+        if(fromPage.equals("launcher")){
+            HashMap<String, Object> properties = new HashMap<String, Object>();
+            properties.put(EventProperty.TYPE, "item");
+            properties.put(EventProperty.PK,itemid);
+            properties.put(EventProperty.TITLE, title);
+            properties.put(EventProperty.POSITION,-1);
+            new NetworkUtils.DataCollectionTask().execute(NetworkUtils.LAUNCHER_VOD_CLICK, properties);
+        }
     }
 
     public void showDialog() {

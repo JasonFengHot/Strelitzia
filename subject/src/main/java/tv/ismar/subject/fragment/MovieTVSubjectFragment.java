@@ -362,52 +362,57 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnClickList
     public void onClick(View v) {
         int i = v.getId();
         if (i == R.id.subject_btn_like) {
-            if(!isFavorite()){
-                String url = IsmartvActivator.getInstance().getApiDomain() + "/api/item/" + id+ "/";
-                Favorite favorite = new Favorite();
-                favorite.title = mSubjectEntity.getTitle();
-                String adlet_url=mSubjectEntity.getAdlet_url();
-                if(adlet_url!=null) {
-                    if (adlet_url.equals("http://res.tvxio.bestv.com.cn/media/upload/20160321/36c8886fd5b4163ae48534a72ec3a555.png") ||
-                            adlet_url.equals("http://res.tvxio.bestv.com.cn/media/upload/20160504/5eae6db53f065ff0269dfc71fb28a4ec.png")) {
-                        adlet_url = null;
+            try {
+                if (!isFavorite()) {
+                    String url = IsmartvActivator.getInstance().getApiDomain() + "/api/item/" + id + "/";
+                    Favorite favorite = new Favorite();
+                    favorite.title = mSubjectEntity.getTitle();
+                    String adlet_url = mSubjectEntity.getAdlet_url();
+                    if (adlet_url != null) {
+                        if (adlet_url.equals("http://res.tvxio.bestv.com.cn/media/upload/20160321/36c8886fd5b4163ae48534a72ec3a555.png") ||
+                                adlet_url.equals("http://res.tvxio.bestv.com.cn/media/upload/20160504/5eae6db53f065ff0269dfc71fb28a4ec.png")) {
+                            adlet_url = null;
+                        }
                     }
-                }
-                if(mSubjectEntity.getObjects().get(0)!=null) {
-                    favorite.adlet_url = (adlet_url == null || "".equals(adlet_url)) ? mSubjectEntity.getObjects().get(0).getAdlet_url() : adlet_url;
-                }
-                favorite.content_model = type;
-                favorite.url = url;
-                favorite.quality = 0;
-                favorite.is_complex = true;
-                favorite.isnet = isnet;
-                if ("yes".equals(isnet)) {
-                    createFavoriteByNet();
-                }
-                ArrayList<Favorite> favorites = DaisyUtils.getFavoriteManager(getActivity().getApplicationContext()).getAllFavorites("no");
-                if(favorites.size()>49){
-                    mFavoriteManager.deleteFavoriteByUrl(favorites.get(favorites.size()-1).url, "no");
-                }
-                mFavoriteManager.addFavorite(favorite, isnet);
-                subject_btn_like.setBackgroundResource(R.drawable.liked_btn_selector);
-                showToast("收藏成功");
-            }else{
-                String url = IsmartvActivator.getInstance().getApiDomain() + "/api/item/" + id + "/";
-                if (IsmartvActivator.getInstance().isLogin()) {
-                    deleteFavoriteByNet();
-                    mFavoriteManager.deleteFavoriteByUrl(url, "yes");
+                    if (mSubjectEntity.getObjects().get(0) != null) {
+                        favorite.adlet_url = (adlet_url == null || "".equals(adlet_url)) ? mSubjectEntity.getObjects().get(0).getAdlet_url() : adlet_url;
+                    }
+                    favorite.content_model = type;
+                    favorite.url = url;
+                    favorite.quality = 0;
+                    favorite.is_complex = true;
+                    favorite.isnet = isnet;
+                    if ("yes".equals(isnet)) {
+                        createFavoriteByNet();
+                    }
+                    ArrayList<Favorite> favorites = DaisyUtils.getFavoriteManager(getActivity().getApplicationContext()).getAllFavorites("no");
+                    if (favorites.size() > 49) {
+                        mFavoriteManager.deleteFavoriteByUrl(favorites.get(favorites.size() - 1).url, "no");
+                    }
+                    mFavoriteManager.addFavorite(favorite, isnet);
+                    subject_btn_like.setBackgroundResource(R.drawable.liked_btn_selector);
+                    showToast("收藏成功");
                 } else {
-                    mFavoriteManager.deleteFavoriteByUrl(url, "no");
+                    String url = IsmartvActivator.getInstance().getApiDomain() + "/api/item/" + id + "/";
+                    if (IsmartvActivator.getInstance().isLogin()) {
+                        deleteFavoriteByNet();
+                        mFavoriteManager.deleteFavoriteByUrl(url, "yes");
+                    } else {
+                        mFavoriteManager.deleteFavoriteByUrl(url, "no");
+                    }
+                    subject_btn_like.setBackgroundResource(R.drawable.like_btn_selector);
+                    showToast("取消收藏成功");
                 }
-                subject_btn_like.setBackgroundResource(R.drawable.like_btn_selector);
-                showToast("取消收藏成功");
+            }catch (Exception e){
+                e.printStackTrace();
             }
-        } else if (i == R.id.subject_btn_buy) {
-                if(clickble) {
-                    buySubject();
-                    clickble=false;
-                }
+        }else if (i == R.id.subject_btn_buy) {
+            if (clickble) {
+                buySubject();
+                clickble = false;
+            }
         }
+
     }
 
     //购买专题页
