@@ -2,6 +2,7 @@ package tv.ismar.app.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.gson.annotations.SerializedName;
 
 /**
  * Created by longhai on 16-9-9.
@@ -83,6 +84,7 @@ public class ClipEntity {
     /**
      * 4K
      */
+    @SerializedName("4k")
     @JsonProperty("4k")
     private String _4k;
     /**

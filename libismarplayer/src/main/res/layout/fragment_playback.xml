@@ -13,7 +13,8 @@
             android:id="@+id/player_surface"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"/>
+            android:layout_gravity="center"
+            android:visibility="gone"/>
 
     </tv.ismar.player.widget.AspectRatioFrameLayout>
 
@@ -21,7 +22,8 @@
         android:id="@+id/player_container"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"/>
+        android:layout_gravity="center"
+        android:visibility="gone"/>
 
     <ImageView
         android:id="@+id/player_shadow"
@@ -123,6 +125,7 @@
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/player_timer"
                     android:layout_width="wrap_content"
                     android:layout_height="@dimen/player_timetext_h"
                     android:layout_marginTop="@dimen/player_timetext_mt"
@@ -130,6 +133,7 @@
                     android:textSize="@dimen/text_size_36sp"/>
 
                 <TextView
+                    android:id="@+id/player_quality"
                     android:layout_width="@dimen/player_qualitytext_w"
                     android:layout_height="@dimen/player_qualitytext_h"
                     android:layout_marginTop="@dimen/player_qualitytext_mt"
@@ -141,6 +145,7 @@
                     android:textSize="@dimen/text_size_36sp"/>
 
                 <TextView
+                    android:id="@+id/player_title"
                     android:layout_width="@dimen/player_controller_left_w"
                     android:layout_height="@dimen/player_titletext_h"
                     android:layout_marginTop="@dimen/player_titletext_mt"

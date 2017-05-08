@@ -2,9 +2,9 @@ package tv.ismar.player.media;
 
 import android.util.Log;
 import android.view.SurfaceView;
-import android.view.ViewGroup;
 
 import com.qiyi.sdk.player.BitStream;
+import com.qiyi.sdk.player.IAdController;
 import com.qiyi.sdk.player.IMediaPlayer;
 import com.qiyi.sdk.player.ISdkError;
 import com.qiyi.sdk.player.IVideoOverlay;
@@ -22,36 +22,33 @@ import tv.ismar.player.event.PlayerEvent;
 
 /**
  * Created by LongHai on 17-4-26.
+ * <p>
+ * 奇艺播放器不实现预加载功能
  */
 
-public class QiyiPlayer extends IsmartvPlayer implements SurfaceHelper.SurfaceCallback {
+public class QiyiPlayer extends IsmartvPlayer {
 
     private String TAG = "LH/QiyiPlayer";
     private IMediaPlayer mPlayer;
     private IVideoOverlay mVideoOverlay;
-    private QiyiVideoSurfaceView mQiyiVideoSurfaceView;
-    private List<BitStream> bitStreamList;
-    private SurfaceHelper mSurfaceHelper;
+    private QiyiVideoSurfaceView mSurfaceView;
+    private List<BitStream> mBitStreamList;
     private int mDuration;
 
     @Override
     protected void createPlayer(SdkVideo sdkVideo) {
         mCurrentState = STATE_IDLE;
         mDuration = 0;
-        if (mPlayer == null) {
-            mPlayer = PlayerSdk.getInstance().createMediaPlayer();
+        if (mPlayer != null) {
+            mPlayer.release();
+            mPlayer = null;
         }
-        mQiyiVideoSurfaceView = new QiyiVideoSurfaceView(getContext());
-        if (mSurfaceAttached) {
-            mVideoOverlay = PlayerSdk.getInstance().createVideoOverlay(mContainer, mQiyiVideoSurfaceView);
-            mPlayer.setDisplay(mVideoOverlay);
-        }
-//        else {
-//            mVideoOverlay = PlayerSdk.getInstance().createVideoOverlay(new FrameLayout(getContext()), qiyiVideoSurfaceView);
-//        }
-
+        mSurfaceView = new QiyiVideoSurfaceView(mQiyiContainer.getContext().getApplicationContext());
+        mVideoOverlay = PlayerSdk.getInstance().createVideoOverlay(mQiyiContainer, mSurfaceView);
+        mPlayer = PlayerSdk.getInstance().createMediaPlayer();
         //setVideo方法, 更名为setData, 必须调用, 需传入IMedia对象, 起播时间点修改为从IMedia对象获取, 不从setData传参
         mPlayer.setData(sdkVideo);
+        mPlayer.setDisplay(mVideoOverlay);
         //设置播放状态回调监听器, 需要时设置
         mPlayer.setOnStateChangedListener(qiyiStateChangedListener);
         //设置码流信息回调监听器, 需要时设置
@@ -72,34 +69,28 @@ public class QiyiPlayer extends IsmartvPlayer implements SurfaceHelper.SurfaceCa
     }
 
     @Override
-    public void attachSurfaceView(SurfaceView surfaceView, ViewGroup viewGroup) {
-        if (mPlayer == null || viewGroup == null) {
-            LogUtils.e(TAG, "AttachSurface->Player : " + mPlayer + " ViewGroup : " + viewGroup);
+    public void attachSurfaceView(SurfaceView surfaceView) {
+        LogUtils.i(TAG, "AttachSurface->Player : " + mPlayer);
+        if (mPlayer == null) {
             return;
         }
-        super.attachSurfaceView(surfaceView, viewGroup);
-        mSurfaceHelper = new SurfaceHelper(mQiyiVideoSurfaceView, this);
-        mSurfaceHelper.attachSurfaceView();
-
+        super.attachSurfaceView(surfaceView);
+        start();
     }
 
     @Override
     public void detachViews() {
-        if (mSurfaceHelper == null || mContainer == null) {
-            LogUtils.e(TAG, "SurfaceHelper or container is null");
-            return;
-        }
-        super.detachViews();
-        mSurfaceHelper.release();
-        mContainer.removeAllViews();
-
+        LogUtils.i(TAG, "detachViews");
+        mSurfaceAttached = false;
+        mQiyiContainer = null;
+        logFirstOpenPlayer = true;
     }
 
     @Override
     public void start() {
         super.start();
         if (isInPlaybackState()) {
-            if (mPlayer != null && !isPlaying() && mSurfaceHelper != null && mSurfaceHelper.getSurfaceHolder() != null) {
+            if (!isPlaying()) {
                 mPlayer.start();
             }
         }
@@ -127,13 +118,6 @@ public class QiyiPlayer extends IsmartvPlayer implements SurfaceHelper.SurfaceCa
     public void stop() {
         if (mPlayer != null) {
             mPlayer.stop();
-            mPlayer.setOnStateChangedListener(null);
-            mPlayer.setOnBitStreamInfoListener(null);
-            mPlayer.setOnPreviewInfoListener(null);
-            mPlayer.setOnVideoSizeChangedListener(null);
-            mPlayer.setOnSeekCompleteListener(null);
-            mPlayer.setOnBufferChangedListener(null);
-            mPlayer.setOnInfoListener(null);
         }
         mCurrentState = STATE_IDLE;
 
@@ -142,6 +126,13 @@ public class QiyiPlayer extends IsmartvPlayer implements SurfaceHelper.SurfaceCa
     @Override
     public void release() {
         if (mPlayer != null) {
+            mPlayer.setOnStateChangedListener(null);
+            mPlayer.setOnBitStreamInfoListener(null);
+            mPlayer.setOnPreviewInfoListener(null);
+            mPlayer.setOnVideoSizeChangedListener(null);
+            mPlayer.setOnSeekCompleteListener(null);
+            mPlayer.setOnBufferChangedListener(null);
+            mPlayer.setOnInfoListener(null);
             mPlayer.release();
             mPlayer = null;
         }
@@ -197,8 +188,15 @@ public class QiyiPlayer extends IsmartvPlayer implements SurfaceHelper.SurfaceCa
                 && mCurrentState != STATE_ERROR
                 && mCurrentState != STATE_IDLE
                 && mCurrentState != STATE_PREPARING
-                && mCurrentState != STATE_COMPLETED
-                && mSurfaceAttached);
+                && mCurrentState != STATE_COMPLETED);
+    }
+
+    @Override
+    public IAdController getAdController() {
+        if (mPlayer == null) {
+            return null;
+        }
+        return mPlayer.getAdController();
     }
 
     private IMediaPlayer.OnStateChangedListener qiyiStateChangedListener = new IMediaPlayer.OnStateChangedListener() {
@@ -208,7 +206,9 @@ public class QiyiPlayer extends IsmartvPlayer implements SurfaceHelper.SurfaceCa
                 return;
             }
             mCurrentState = STATE_PREPARED;
-
+            if (onStateChangedListener != null) {
+                onStateChangedListener.onPrepared();
+            }
         }
 
         @Override
@@ -311,6 +311,7 @@ public class QiyiPlayer extends IsmartvPlayer implements SurfaceHelper.SurfaceCa
         @Override
         public void onStopped(IMediaPlayer iMediaPlayer) {
             if (mPlayer != null && getCurrentPosition() >= mDuration) {
+                // 奇艺试看结束后也会触发此回调
                 mCurrentState = STATE_COMPLETED;
                 if (onStateChangedListener != null) {
                     onStateChangedListener.onCompleted();
@@ -344,7 +345,7 @@ public class QiyiPlayer extends IsmartvPlayer implements SurfaceHelper.SurfaceCa
                 return;
             }
             mQualities = new ArrayList<>();
-            bitStreamList = list;
+            mBitStreamList = list;
             for (BitStream bitStream : list) {
                 Log.i(TAG, "bitStream:" + bitStream.getValue());
                 // 只显示对应视云，流畅，高清，超清码率
@@ -409,9 +410,9 @@ public class QiyiPlayer extends IsmartvPlayer implements SurfaceHelper.SurfaceCa
                         DateUtils.currentTimeMillis() - logBufferStartTime,
                         logMediaIp, logPlayerFlag);
             }
-//            if (onStateChangedListener != null) {
-//                onStateChangedListener.onSeekComplete();
-//            }
+            if (onStateChangedListener != null) {
+                onStateChangedListener.onSeekCompleted();
+            }
         }
     };
 
@@ -437,7 +438,7 @@ public class QiyiPlayer extends IsmartvPlayer implements SurfaceHelper.SurfaceCa
             }
             if (mSurfaceAttached && logFirstOpenPlayer) {
                 logFirstOpenPlayer = false;
-                if (!isPlayingAd){
+                if (!isPlayingAd) {
                     PlayerEvent.videoPlayLoad(
                             logPlayerEvent,
                             (DateUtils.currentTimeMillis() - logPlayerOpenTime),
@@ -476,23 +477,23 @@ public class QiyiPlayer extends IsmartvPlayer implements SurfaceHelper.SurfaceCa
             case QUALITY_NORMAL:// 流畅
                 return BitStream.BITSTREAM_HIGH;
             case QUALITY_MEDIUM:// 高清
-                if (!bitStreamList.isEmpty()) {
-                    if (bitStreamList.contains(BitStream.BITSTREAM_720P)) {
+                if (!mBitStreamList.isEmpty()) {
+                    if (mBitStreamList.contains(BitStream.BITSTREAM_720P)) {
                         return BitStream.BITSTREAM_720P;
-                    } else if (bitStreamList.contains(BitStream.BITSTREAM_720P_DOLBY)) {
+                    } else if (mBitStreamList.contains(BitStream.BITSTREAM_720P_DOLBY)) {
                         return BitStream.BITSTREAM_720P_DOLBY;
-                    } else if (bitStreamList.contains(BitStream.BITSTREAM_720P_H265)) {
+                    } else if (mBitStreamList.contains(BitStream.BITSTREAM_720P_H265)) {
                         return BitStream.BITSTREAM_720P_H265;
                     }
                 }
                 return BitStream.BITSTREAM_720P;
             case QUALITY_HIGH:// 超清
-                if (!bitStreamList.isEmpty()) {
-                    if (bitStreamList.contains(BitStream.BITSTREAM_1080P)) {
+                if (!mBitStreamList.isEmpty()) {
+                    if (mBitStreamList.contains(BitStream.BITSTREAM_1080P)) {
                         return BitStream.BITSTREAM_1080P;
-                    } else if (bitStreamList.contains(BitStream.BITSTREAM_1080P_DOLBY)) {
+                    } else if (mBitStreamList.contains(BitStream.BITSTREAM_1080P_DOLBY)) {
                         return BitStream.BITSTREAM_1080P_DOLBY;
-                    } else if (bitStreamList.contains(BitStream.BITSTREAM_1080P_H265)) {
+                    } else if (mBitStreamList.contains(BitStream.BITSTREAM_1080P_H265)) {
                         return BitStream.BITSTREAM_1080P_H265;
                     }
                 }
@@ -502,12 +503,12 @@ public class QiyiPlayer extends IsmartvPlayer implements SurfaceHelper.SurfaceCa
                 break;
             case QUALITY_BLUERAY:
             case QUALITY_4K:
-                if (!bitStreamList.isEmpty()) {
-                    if (bitStreamList.contains(BitStream.BITSTREAM_4K)) {
+                if (!mBitStreamList.isEmpty()) {
+                    if (mBitStreamList.contains(BitStream.BITSTREAM_4K)) {
                         return BitStream.BITSTREAM_4K;
-                    } else if (bitStreamList.contains(BitStream.BITSTREAM_4K_DOLBY)) {
+                    } else if (mBitStreamList.contains(BitStream.BITSTREAM_4K_DOLBY)) {
                         return BitStream.BITSTREAM_4K_DOLBY;
-                    } else if (bitStreamList.contains(BitStream.BITSTREAM_4K_H265)) {
+                    } else if (mBitStreamList.contains(BitStream.BITSTREAM_4K_H265)) {
                         return BitStream.BITSTREAM_4K_H265;
                     }
                 }
@@ -540,28 +541,4 @@ public class QiyiPlayer extends IsmartvPlayer implements SurfaceHelper.SurfaceCa
         return null;
     }
 
-//    private void attachViewParent(ViewGroup viewGroup) {
-//        if (viewGroup != null) {
-//            mQiyiVideoSurfaceView.setIgnoreWindowChange(true);
-//            mVideoOverlay.changeParent(viewGroup);
-//            viewGroup.setVisibility(View.VISIBLE);
-//            mQiyiVideoSurfaceView.setIgnoreWindowChange(false);
-//        }
-//    }
-
-    @Override
-    public void onSurfaceCreated() {
-        LogUtils.d(TAG, "Qiyi onSurfaceCreated.");
-        if (mPlayer != null) {
-            mVideoOverlay = PlayerSdk.getInstance().createVideoOverlay(mContainer, mQiyiVideoSurfaceView);
-            mPlayer.setDisplay(mVideoOverlay);
-            mPlayer.start();
-        }
-    }
-
-    @Override
-    public void onSurfaceDestroyed() {
-        LogUtils.d(TAG, "Qiyi onSurfaceDestroyed.");
-        logFirstOpenPlayer = true;
-    }
 }

@@ -17,9 +17,8 @@ public interface IPlayer {
 
     /**
      * @param surfaceView 视云片源使用参数
-     * @param viewGroup   爱奇艺片源使用参数
      */
-    void attachSurfaceView(SurfaceView surfaceView, ViewGroup viewGroup);
+    void attachSurfaceView(SurfaceView surfaceView);
 
     void detachViews();
 
@@ -76,6 +75,8 @@ public interface IPlayer {
         void onStarted();
 
         void onPaused();
+
+        void onSeekCompleted();
 
         void onCompleted();
 

@@ -13,7 +13,6 @@ public interface PageIntentInterface {
     // 电视剧等多集片子集pk,与文档相同
     String EXTRA_SUBITEM_PK = "sub_item_pk";
     String EXTRA_SOURCE = "fromPage";
-    String EXTRA_DETAIL_PAGE_PLAY = "detail_page_play_video";
     String EXTRA_TYPE = "type";
     String EXTRA_TITLE= "title";
     String EXTRA_START_TIME= "time";

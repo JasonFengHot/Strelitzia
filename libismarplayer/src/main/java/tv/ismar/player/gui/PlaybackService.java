@@ -10,7 +10,9 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.support.annotation.MainThread;
 import android.view.SurfaceView;
-import android.widget.FrameLayout;
+import android.view.ViewGroup;
+
+import com.qiyi.sdk.player.IMediaPlayer;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -30,11 +32,11 @@ import tv.ismar.app.VodApplication;
 import tv.ismar.app.ad.Advertisement;
 import tv.ismar.app.core.PlayCheckManager;
 import tv.ismar.app.db.HistoryManager;
+import tv.ismar.app.entity.ClipEntity;
 import tv.ismar.app.entity.DBQuality;
 import tv.ismar.app.entity.History;
 import tv.ismar.app.network.SkyService;
 import tv.ismar.app.network.entity.AdElementEntity;
-import tv.ismar.app.entity.ClipEntity;
 import tv.ismar.app.network.entity.ItemEntity;
 import tv.ismar.app.util.Utils;
 import tv.ismar.library.injectdb.util.Log;
@@ -46,6 +48,7 @@ import tv.ismar.library.util.StringUtils;
 import tv.ismar.player.IPlayer;
 import tv.ismar.player.IsmartvPlayer;
 import tv.ismar.player.model.MediaEntity;
+import tv.ismar.statistics.PurchaseStatistics;
 
 public class PlaybackService extends Service implements Advertisement.OnVideoPlayAdListener {
 
@@ -82,15 +85,16 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
     private IsmartvPlayer hlsPlayer;// HLS播放
     private ServiceCallback serviceCallback;
     private SurfaceView surfaceView;
-    private FrameLayout container;
+    private ViewGroup qiyiContainer;// 奇艺SDK必须先setDisplay，然后再调用prepare
 
-    private boolean mHasAudioFocus = false;
-    private int mCurrentPosition;
+    private int mStartPosition;
     private ClipEntity.Quality mCurrentQuality;
-    private boolean mIsPlayerPrepared;// 播放器是否处于可播放状态,onPrepared回调后为true,onError，onCompleted回调或stop()后为false
+    public static boolean mIsPreload;// 当前播放地址是否已经预加载,需要在详情页绑定前置为false
+    private boolean mIsPlayerPrepared;// 播放器是否处于可播放状态,onPrepared回调后为true。onPrepared()与startPlayWhenPrepared互锁用到
     private boolean mIsPreview;// 是否试看
     private boolean isSwitchTelevision = false;// 手动切换剧集，不查历史记录
     private boolean mIsPlayingAd;// 判断是否正在播放广告
+    private boolean mIsPlayerOnStarted;
 
     public PlaybackService() {
     }
@@ -111,16 +115,41 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
         return mIsPreview;
     }
 
+    public ClipEntity.Quality getCurrentQuality() {
+        return mCurrentQuality;
+    }
+
+    public boolean isPlayingAd() {
+        return mIsPlayingAd;
+    }
+
+    public int getItemPk() {
+        return itemPk;
+    }
+
+    public int getSubItemPk() {
+        return subItemPk;
+    }
+
     @Override
     public IBinder onBind(Intent intent) {
         isBindActivity = true;
+        LogUtils.d(TAG, "onBind");
         return mBinder;
+    }
+
+    @Override
+    public void onRebind(Intent intent) {
+        super.onRebind(intent);
+        isBindActivity = true;
+        LogUtils.d(TAG, "onRebind");
     }
 
     @Override
     public boolean onUnbind(Intent intent) {
         isBindActivity = false;
-        return super.onUnbind(intent);
+        LogUtils.d(TAG, "onUnbind");
+        return true;
     }
 
     @Override
@@ -159,24 +188,47 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
 
     }
 
-    public void preparePlayer(int itemPk, int subItemPk, String source) {
-        if (itemPk <= 0) {
-            LogUtils.e(TAG, "itemPk can't be null.");
+    /**
+     * 此方法调用必须是从播放器界面调用，没有0秒起播功能时才执行方法体内函数
+     */
+    public void preparePlayer(int itemPk, int subItemPk, String source, ViewGroup qiyiContainer) {
+        if (itemPk <= 0 || qiyiContainer == null) {
+            LogUtils.e(TAG, "itemPk and qiyiContainer can't be null.");
             return;
         }
         this.itemPk = itemPk;// 当前影片pk值,通过/api/item/{pk}可获取详细信息
         this.subItemPk = subItemPk;// 当前多集片pk值,通过/api/subitem/{pk}可获取详细信息
         this.source = source;
-        mIsPlayerPrepared = false;
+        this.qiyiContainer = qiyiContainer;
+        initVariable();
         fetchPlayerItem(String.valueOf(itemPk));
     }
 
-    public void startPlayWhenPrepared(SurfaceView surfaceView, FrameLayout container) {
+    // 详情页预加载
+    public void preparePlayer(ItemEntity itemEntity, String source) {
+        if (itemEntity == null) {
+            LogUtils.e(TAG, "ItemEntity can't be null.");
+            return;
+        }
+        this.itemPk = itemEntity.getPk();// 当前影片pk值,通过/api/item/{pk}可获取详细信息
+        this.subItemPk = 0;// 当前多集片pk值,通过/api/subitem/{pk}可获取详细信息
+        this.source = source;
+        this.mItemEntity = itemEntity;
+        initVariable();
+        loadPlayerItem();
+    }
+
+    // 此方法与onPrepared回调互锁
+    public void startPlayWhenPrepared(SurfaceView surfaceView) {
         this.surfaceView = surfaceView;
-        this.container = container;
         if (mIsPlayerPrepared) {
             // Service 与 PlaybackActivity绑定，直接播放视频
-            hlsPlayer.attachSurfaceView(surfaceView, container);
+            changeAudioFocus(true);
+            if (hlsPlayer.getPlayerMode() == IsmartvPlayer.MODE_SMART_PLAYER) {
+                hlsPlayer.attachSurfaceView(surfaceView);
+            } else if (hlsPlayer.getPlayerMode() == IsmartvPlayer.MODE_QIYI_PLAYER) {
+                hlsPlayer.attachSurfaceView(null);
+            }
         }
     }
 
@@ -184,22 +236,68 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
         this.serviceCallback = serviceCallback;
     }
 
-    public void exitPlayerUI(String to) {
+    /**
+     * @param detachView true：表示在播放器UI页面调用
+     *                   false：表示在详情页调用
+     */
+    public void stopPlayer(boolean detachView) {
+        // 无论从播放器界面，还是详情页解绑Service,都需要将当前网络请求取消
+        cancelRequest();
         if (hlsPlayer != null) {
-            hlsPlayer.logVideoExit(mCurrentPosition, to);
-            if (hlsPlayer.isPlaying()) {
-                hlsPlayer.pause();
+            hlsPlayer.setOnAdvertisementListener(null);
+            hlsPlayer.setOnBufferChangedListener(null);
+            hlsPlayer.setOnStateChangedListener(null);
+            hlsPlayer.stop();
+            hlsPlayer.release();
+            if (detachView) {
+                hlsPlayer.detachViews();
             }
-            hlsPlayer.detachViews();
+            hlsPlayer = null;
         }
     }
 
-    public void setPlayerEvent() {
-        // Called once in IsmartvPlayer.OnStateChangedListener.onStarted
-        if (hlsPlayer != null) {
-            hlsPlayer.setPlayerEvent(username, mItemEntity.getTitle(), mItemEntity.getClip().getPk(),
-                    BaseActivity.baseChannel, BaseActivity.baseSection, source, mCurrentQuality);
+    public void startPlayer() {
+        if (hlsPlayer != null && !hlsPlayer.isPlaying()) {
+            hlsPlayer.start();
         }
+    }
+
+    public void pausePlayer() {
+        if (hlsPlayer != null && hlsPlayer.isPlaying()) {
+            hlsPlayer.pause();
+        }
+    }
+
+    public void switchQuality(int position, ClipEntity.Quality quality) {
+        if (hlsPlayer != null) {
+            if (hlsPlayer.getPlayerMode() == IsmartvPlayer.MODE_SMART_PLAYER){
+                hlsPlayer.stop();
+                hlsPlayer.release();
+            }
+            hlsPlayer.switchQuality(position, quality);
+            mCurrentQuality = quality;
+            // 写入数据库
+            if (historyManager == null) {
+                historyManager = VodApplication.getModuleAppContext().getModuleHistoryManager();
+            }
+            historyManager.addOrUpdateQuality(new DBQuality(0, "", quality.getValue()));
+        }
+    }
+
+    public void switchTelevision(int subPk, String clipUrl) {
+        isSwitchTelevision = true;
+        subItemPk = subPk;
+        fetchClipUrl(clipUrl);
+    }
+
+    private void initVariable() {
+        mIsPlayerPrepared = false;
+        mIsPlayingAd = false;
+        mIsPlayerOnStarted = false;
+        if (serviceCallback != null) {
+            serviceCallback.updatePlayerStatus(PlayerStatus.CREATING, null);
+        }
+
     }
 
     private void cancelRequest() {
@@ -211,59 +309,10 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
         }
     }
 
-    private void loadPlayerItem(ItemEntity itemEntity) {
-        // Get data from sharedPreference
-        mItemEntity = itemEntity;
-        if (historyManager == null) {
-            historyManager = VodApplication.getModuleAppContext().getModuleHistoryManager();
-        }
-        String historyUrl = Utils.getItemUrl(itemPk);
-        String isLogin = "no";
-        if (!Utils.isEmptyText(authToken)) {
-            isLogin = "yes";
-        }
-        mHistory = historyManager.getHistoryByUrl(historyUrl, isLogin);
-        if (mHistory != null) {
-            mCurrentPosition = (int) mHistory.last_position;
-        }
-        ItemEntity.Clip clip = itemEntity.getClip();
-        ItemEntity[] subItems = itemEntity.getSubitems();
-        if (subItems != null && subItems.length > 0) {
-            int history_sub_pk = 0;
-            if (mHistory != null) {
-                history_sub_pk = Utils.getItemPk(mHistory.sub_url);
-            }
-            Log.i(TAG, "loadItem-ExtraSubItemPk:" + subItemPk + " historySubPk:" + history_sub_pk);
-            if (subItemPk <= 0) {
-                // 点击播放按钮时，如果有历史记录，应该播放历史记录的subItemPk,默认播放第一集
-                if (history_sub_pk > 0) {
-                    subItemPk = history_sub_pk;
-                    mCurrentPosition = (int) mHistory.last_position;
-                } else {
-                    subItemPk = subItems[0].getPk();
-                    mCurrentPosition = 0;
-                }
-
-            } else {
-                if (subItemPk != history_sub_pk) {
-                    mCurrentPosition = 0;
-                }
-            }
-            // 获取当前要播放的电视剧Clip
-            for (int i = 0; i < subItems.length; i++) {
-                int _subItemPk = subItems[i].getPk();
-                if (subItemPk == _subItemPk) {
-                    clip = subItems[i].getClip();
-                    mItemEntity.setTitle(subItems[i].getTitle());
-                    mItemEntity.setClip(clip);
-                    break;
-                }
-            }
-        }
+    private void loadPlayerItem() {
+        initHistory();
         // playCheck
-        final String sign = "";
-        final String code = "1";
-        final ItemEntity.Clip playCheckClip = clip;
+        final ItemEntity.Clip playCheckClip = mItemEntity.getClip();
         mIsPreview = false;
         if (mItemEntity.getExpense() != null) {
             PlayCheckManager.getInstance(HttpManager.getDomainService(SkyService.class)).check(String.valueOf(mItemEntity.getPk()), new PlayCheckManager.Callback() {
@@ -276,9 +325,9 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
                     }
                     mQiyiUserType = user;
                     if (isBuy) {
-                        fetchClipUrl(playCheckClip.getUrl(), sign, code);
+                        fetchClipUrl(playCheckClip.getUrl());
                     } else {
-                        videoPreview(sign, code);
+                        videoPreview();
                     }
                 }
 
@@ -289,31 +338,80 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
                         LogUtils.d(TAG, "Activity unbind on play check");
                         return;
                     }
-                    videoPreview(sign, code);
+                    videoPreview();
 
                 }
             });
         } else {
-            fetchClipUrl(clip.getUrl(), sign, code);
+            fetchClipUrl(playCheckClip.getUrl());
         }
     }
 
-    private void videoPreview(String sign, String code) {
+    private void initHistory() {
+        if (historyManager == null) {
+            historyManager = VodApplication.getModuleAppContext().getModuleHistoryManager();
+        }
+        String historyUrl = Utils.getItemUrl(itemPk);
+        String isLogin = "no";
+        if (!Utils.isEmptyText(authToken)) {
+            isLogin = "yes";
+        }
+        mHistory = historyManager.getHistoryByUrl(historyUrl, isLogin);
+        if (mHistory != null) {
+            mStartPosition = (int) mHistory.last_position;
+        }
+        ItemEntity[] subItems = mItemEntity.getSubitems();
+        if (subItems != null && subItems.length > 0) {
+            int history_sub_pk = 0;
+            if (mHistory != null) {
+                history_sub_pk = Utils.getItemPk(mHistory.sub_url);
+            }
+            Log.i(TAG, "loadItem-ExtraSubItemPk:" + subItemPk + " historySubPk:" + history_sub_pk);
+            if (subItemPk <= 0) {
+                // 点击播放按钮时，如果有历史记录，应该播放历史记录的subItemPk,默认播放第一集
+                if (history_sub_pk > 0) {
+                    subItemPk = history_sub_pk;
+                    mStartPosition = (int) mHistory.last_position;
+                } else {
+                    subItemPk = subItems[0].getPk();
+                    mStartPosition = 0;
+                }
+
+            } else {
+                if (subItemPk != history_sub_pk) {
+                    mStartPosition = 0;
+                }
+            }
+            // 获取当前要播放的电视剧Clip
+            for (ItemEntity subItem : subItems) {
+                int _subItemPk = subItem.getPk();
+                if (subItemPk == _subItemPk) {
+                    ItemEntity.Clip clip = subItem.getClip();
+                    mItemEntity.setTitle(subItem.getTitle());
+                    mItemEntity.setClip(clip);
+                    break;
+                }
+            }
+        }
+    }
+
+    private void videoPreview() {
         ItemEntity.Preview preview = mItemEntity.getPreview();
         if (preview != null) {
             mIsPreview = true;
             mItemEntity.setLiveVideo(false);
-            fetchClipUrl(preview.getUrl(), sign, code);
+            fetchClipUrl(preview.getUrl());
         } else {
-            // TODO 进入购买页面
-            // goOtherPage(EVENT_COMPLETE_BUY);
+            // 试看影片，没有试看地址，直接回调试看结束
+            if (serviceCallback != null) {
+                serviceCallback.updatePlayerStatus(PlayerStatus.COMPLETED, true);
+            }
         }
     }
 
     private void loadPlayerClip(ClipEntity clipEntity) {
         mClipEntity = clipEntity;
-        mIsPlayerPrepared = false;
-        mIsPlayingAd = false;
+        initVariable();
         // 每次进入创建播放器前先获取历史记录，历史播放位置，历史分辨率，手动切换剧集例外
         if (!isSwitchTelevision) {
             if (mCurrentQuality == null) {
@@ -323,8 +421,11 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
                 }
             }
             if (mIsPreview) {
-                mCurrentPosition = 0;
+                mStartPosition = 0;
             }
+        }
+        if (mIsPreview || isSwitchTelevision){
+            mStartPosition = 0;
         }
         isSwitchTelevision = false;
         // TODO showBuffer
@@ -339,54 +440,40 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
 
     @Override
     public void loadVideoStartAd(List<AdElementEntity> adList) {
-        if (adList != null && !adList.isEmpty()) {
-            mIsPlayingAd = true;
-        }
         createPlayer(adList);
     }
 
     private void createPlayer(List<AdElementEntity> adList) {
         String iqiyi = mClipEntity.getIqiyi_4_0();
-        if (hlsPlayer != null && hlsPlayer.getPlayerMode() == IsmartvPlayer.MODE_SMART_PLAYER) {
-            // 当前已经有SmartPlayer实例，无需重新创建
-        } else if (hlsPlayer != null && hlsPlayer.getPlayerMode() == IsmartvPlayer.MODE_QIYI_PLAYER) {
-            // 当前已经有奇艺播放器实例，无需重新创建
-            hlsPlayer.setQiyiUserType(mQiyiUserType);
-            hlsPlayer.setzDeviceToken(zdeviceToken);
-            hlsPlayer.setzUserToken(zuserToken);
+        // 创建当前播放器
+        IsmartvPlayer.Builder builder = new IsmartvPlayer.Builder();
+        builder.setSnToken(snToken);
+        if (Utils.isEmptyText(iqiyi)) {
+            // 片源为视云
+            builder.setPlayerMode(IsmartvPlayer.MODE_SMART_PLAYER);
+            builder.setDeviceToken(deviceToken);
         } else {
-            if (hlsPlayer != null) {
-                hlsPlayer.stop();
-                hlsPlayer.release();
-                hlsPlayer = null;
+            if (qiyiContainer == null) {
+                throw new IllegalArgumentException("奇艺播放器，显示组件不能为空");
             }
-            // 创建当前播放器
-            IsmartvPlayer.Builder builder = new IsmartvPlayer.Builder();
-            builder.setSnToken(snToken);
-            if (Utils.isEmptyText(iqiyi)) {
-                // 片源为视云
-                builder.setPlayerMode(IsmartvPlayer.MODE_SMART_PLAYER);
-                builder.setDeviceToken(deviceToken);
-            } else {
-                // 片源为爱奇艺
-                builder.setPlayerMode(IsmartvPlayer.MODE_QIYI_PLAYER);
-                builder.setModelName(DeviceUtils.getModelName());
-                builder.setVersionCode(String.valueOf(AppUtils.getVersionCode(this)));
-                builder.setQiyiUserType(mQiyiUserType);
-                builder.setzDeviceToken(zdeviceToken);
-                builder.setzUserToken(zuserToken);
-            }
-            hlsPlayer = builder.build();
-            hlsPlayer.setOnAdvertisementListener(onAdvertisementListener);
-            hlsPlayer.setOnBufferChangedListener(onBufferChangedListener);
-            hlsPlayer.setOnStateChangedListener(onStateChangedListener);
+            builder.setPlayerMode(IsmartvPlayer.MODE_QIYI_PLAYER);
+            builder.setQiyiContainer(qiyiContainer);
+            builder.setModelName(DeviceUtils.getModelName());
+            builder.setVersionCode(String.valueOf(AppUtils.getVersionCode(this)));
+            builder.setQiyiUserType(mQiyiUserType);
+            builder.setzDeviceToken(zdeviceToken);
+            builder.setzUserToken(zuserToken);
         }
+        hlsPlayer = builder.build();
+        hlsPlayer.setOnAdvertisementListener(onAdvertisementListener);
+        hlsPlayer.setOnBufferChangedListener(onBufferChangedListener);
+        hlsPlayer.setOnStateChangedListener(onStateChangedListener);
         MediaEntity mediaEntity = new MediaEntity(itemPk, subItemPk, mItemEntity.getLiveVideo(), mClipEntity);
         if (adList != null && !adList.isEmpty()) {
             mediaEntity.setAdvStreamList(adList);
         }
         mediaEntity.setInitQuality(mCurrentQuality);
-        mediaEntity.setStartPosition(mCurrentPosition);
+        mediaEntity.setStartPosition(mStartPosition);
         hlsPlayer.prepare(mediaEntity);
     }
 
@@ -413,13 +500,14 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
                             Log.e(TAG, "Response item data null or activity unbind");
                             return;
                         }
-                        loadPlayerItem(itemEntity);
+                        mItemEntity = itemEntity;
+                        loadPlayerItem();
                     }
                 });
 
     }
 
-    private void fetchClipUrl(String clipUrl, String sign, String code) {
+    private void fetchClipUrl(String clipUrl) {
         if (mApiMediaUrlSubsc != null && !mApiMediaUrlSubsc.isUnsubscribed()) {
             mApiMediaUrlSubsc.unsubscribe();
         }
@@ -427,6 +515,8 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
             LogUtils.e(TAG, "clipUrl is null.");
             return;
         }
+        String sign = "";
+        String code = "1";
         mApiMediaUrlSubsc = HttpManager.getDomainService(SkyService.class).fetchMediaUrl(clipUrl, sign, code)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -453,56 +543,72 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
 
     }
 
-    private void sendHistory(HashMap<String, Object> history) {
-        Call<ResponseBody> call = HttpManager.getDomainService(SkyService.class).sendPlayHistory(history);
-        call.enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                String result = null;
-                try {
-                    result = response.body().string();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                LogUtils.i(TAG, "SendHistory : " + result);
-            }
-
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                t.printStackTrace();
-            }
-        });
-    }
-
     private IPlayer.OnAdvertisementListener onAdvertisementListener = new IPlayer.OnAdvertisementListener() {
         @Override
         public void onAdStart() {
-
+            if (hlsPlayer == null) {
+                return;
+            }
+            mIsPlayingAd = true;
+            if (serviceCallback != null) {
+                serviceCallback.showAdvertisement(true);
+            }
         }
 
         @Override
         public void onAdEnd() {
-
+            if (hlsPlayer == null) {
+                return;
+            }
+            mIsPlayingAd = false;
+            if (serviceCallback != null) {
+                serviceCallback.showAdvertisement(false);
+            }
         }
 
         @Override
         public void onMiddleAdStart() {
-
+            if (hlsPlayer == null) {
+                return;
+            }
+            mIsPlayingAd = true;
+            if (serviceCallback != null) {
+                serviceCallback.showAdvertisement(true);
+            }
         }
 
         @Override
         public void onMiddleAdEnd() {
-
+            if (hlsPlayer == null) {
+                return;
+            }
+            mIsPlayingAd = false;
+            if (serviceCallback != null) {
+                serviceCallback.showAdvertisement(false);
+            }
         }
     };
     private IPlayer.OnBufferChangedListener onBufferChangedListener = new IPlayer.OnBufferChangedListener() {
         @Override
         public void onBufferStart() {
-
+            if (hlsPlayer == null) {
+                return;
+            }
+            if (serviceCallback != null) {
+                serviceCallback.showBuffering(true);
+            }
         }
 
         @Override
         public void onBufferEnd() {
+            if (hlsPlayer == null) {
+                return;
+            }
+            boolean flag = hlsPlayer.getPlayerMode() == IsmartvPlayer.MODE_QIYI_PLAYER
+                    || (hlsPlayer.isPlaying() && mIsPlayerPrepared);
+            if (flag && serviceCallback != null) {
+                serviceCallback.showBuffering(false);
+            }
 
         }
     };
@@ -514,55 +620,132 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
                 return;
             }
             mIsPlayerPrepared = true;
-            if (surfaceView != null && container != null) {
+            if (surfaceView != null) {
+                // 此处与startPlayWhenPrepared()互锁
                 // Service 与 PlaybackActivity绑定，直接播放视频
-                hlsPlayer.attachSurfaceView(surfaceView, container);
+                changeAudioFocus(true);
+                if (hlsPlayer.getPlayerMode() == IsmartvPlayer.MODE_SMART_PLAYER) {
+                    hlsPlayer.attachSurfaceView(surfaceView);
+                } else if (hlsPlayer.getPlayerMode() == IsmartvPlayer.MODE_QIYI_PLAYER) {
+                    hlsPlayer.attachSurfaceView(null);
+                }
             }
 
         }
 
         @Override
         public void onStarted() {
-            if (serviceCallback != null) {
-                serviceCallback.updatePlayPause(true);
+            if (hlsPlayer == null) {
+                LogUtils.e(TAG, "Called onStarted but player is null");
+                return;
             }
-
+            if (!mIsPlayerOnStarted) {
+                mIsPlayerOnStarted = true;
+                mCurrentQuality = hlsPlayer.getCurrentQuality();
+                if (serviceCallback != null) {
+                    serviceCallback.updatePlayerStatus(PlayerStatus.START, null);
+                }
+                // 日志上报用到变量
+                int clipPk = mItemEntity.getClip() == null ? 0 : mItemEntity.getClip().getPk();
+                hlsPlayer.setPlayerEvent(username, mItemEntity.getTitle(), clipPk,
+                        BaseActivity.baseChannel, BaseActivity.baseSection, source, mCurrentQuality);
+            }
+            if (!mIsPlayingAd) {
+                if (serviceCallback != null) {
+                    serviceCallback.updatePlayerStatus(PlayerStatus.PLAY, null);
+                }
+            }
         }
 
         @Override
         public void onPaused() {
+            if (hlsPlayer == null) {
+                return;
+            }
+            if (serviceCallback != null) {
+                serviceCallback.updatePlayerStatus(PlayerStatus.PAUSE, null);
+            }
+        }
 
+        @Override
+        public void onSeekCompleted() {
+            if (hlsPlayer == null) {
+                return;
+            }
+            if (serviceCallback != null) {
+                serviceCallback.updatePlayerStatus(PlayerStatus.SEEK_COMPLETED, null);
+            }
         }
 
         @Override
         public void onCompleted() {
-            mIsPlayerPrepared = false;
+            if (hlsPlayer == null) {
+                return;
+            }
+            if (serviceCallback != null) {
+                serviceCallback.updatePlayerStatus(PlayerStatus.COMPLETED, isPreview());
+            }
         }
 
         @Override
         public void onInfo(int what, Object extra) {
-
+            if (hlsPlayer == null) {
+                return;
+            }
+            LogUtils.i(TAG, "onInfo:" + what + " extra:" + extra);
+            switch (what) {
+                case IMediaPlayer.MEDIA_INFO_MIDDLE_AD_COMING:
+                    // 即将进入爱奇艺广告,不可快进操作
+                    if (serviceCallback != null) {
+                        serviceCallback.tipsToShowMiddleAd(false);
+                    }
+                    break;
+                case IMediaPlayer.MEDIA_INFO_MIDDLE_AD_SKIPPED:
+                    // 爱奇艺中插广告播放结束
+                    if (serviceCallback != null) {
+                        serviceCallback.tipsToShowMiddleAd(true);
+                    }
+                    break;
+            }
         }
 
         @Override
         public void onVideoSizeChanged(int videoWidth, int videoHeight) {
-
+            if (hlsPlayer == null) {
+                return;
+            }
+            if (serviceCallback != null) {
+                serviceCallback.updatePlayerStatus(PlayerStatus.S3DEVICE_VIDEO_SIZE, null);
+            }
         }
 
         @Override
         public boolean onError(String message) {
-            mIsPlayerPrepared = false;
-            return false;
+            if (hlsPlayer == null) {
+                return true;
+            }
+            if (serviceCallback != null) {
+                serviceCallback.updatePlayerStatus(PlayerStatus.ERROR, message);
+            }
+            return true;
         }
     };
 
     public interface ServiceCallback {
 
-        void showAdCountDownTime(int count);// 单位为秒
+        void updatePlayerStatus(PlayerStatus status, Object args);
 
-        void updatePlayPause(boolean isPlaying);
+        void tipsToShowMiddleAd(boolean end);
+
+        void showAdvertisement(boolean isShow);
 
         void showBuffering(boolean showBuffer);
+
+    }
+
+    enum PlayerStatus {
+
+        CREATING, START, PLAY, PAUSE, SEEK_COMPLETED, COMPLETED, ERROR, S3DEVICE_VIDEO_SIZE
 
     }
 
@@ -605,7 +788,7 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
             context.startService(getServiceIntent(context));
         }
 
-        private static void stopService(Context context) {
+        public static void stopService(Context context) {
             context.stopService(getServiceIntent(context));
         }
 
@@ -631,90 +814,48 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
                 mContext.unbindService(mServiceConnection);
             }
         }
+    }
 
-        public static void restartService(Context context) {
-            stopService(context);
-            startService(context);
+    public void logVideoExit(int position, String to) {
+        if (hlsPlayer != null) {
+            hlsPlayer.logVideoExit(position, to);
         }
     }
 
-    private void changeAudioFocus(boolean acquire) {
-        final AudioManager am = (AudioManager) getSystemService(AUDIO_SERVICE);
-        if (am == null)
-            return;
-
-        if (acquire) {
-            if (!mHasAudioFocus) {
-                final int result = am.requestAudioFocus(mAudioFocusListener,
-                        AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
-                if (result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
-                    am.setParameters("bgm_state=true");
-                    mHasAudioFocus = true;
-                }
+    public void logExpenseVideoPreview(int position, String result) {
+        if (hlsPlayer != null) {
+            String player = hlsPlayer.getPlayerMode() == IsmartvPlayer.MODE_QIYI_PLAYER ? "qiyi" : "bestv";
+            int clipPk = mItemEntity.getClip() == null ? 0 : mItemEntity.getClip().getPk();
+            float price = mItemEntity.getExpense() == null ? 0 : mItemEntity.getExpense().getPrice();
+            int duration = position;
+            if (result.equals("purchase")) {
+                duration = hlsPlayer.getDuration();
             }
-        } else {
-            if (mHasAudioFocus) {
-                final int result = am.abandonAudioFocus(mAudioFocusListener);
-                am.setParameters("bgm_state=false");
-                mHasAudioFocus = false;
-            }
+            new PurchaseStatistics().expenseVideoPreview(
+                    itemPk,
+                    clipPk,
+                    username,
+                    mItemEntity.getTitle(),
+                    mItemEntity.getVendor(),
+                    price,
+                    player,
+                    result,
+                    duration / 1000
+            );
         }
     }
 
-    private final AudioManager.OnAudioFocusChangeListener mAudioFocusListener = createOnAudioFocusChangeListener();
-
-    private AudioManager.OnAudioFocusChangeListener createOnAudioFocusChangeListener() {
-        return new AudioManager.OnAudioFocusChangeListener() {
-
-            private boolean mLossTransient = false;
-            private boolean mLossTransientCanDuck = false;
-
-            @Override
-            public void onAudioFocusChange(int focusChange) {
-                switch (focusChange) {
-                    case AudioManager.AUDIOFOCUS_LOSS:
-                        // Stop playback
-                        changeAudioFocus(false);
-//                        stop();
-                        break;
-                    case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
-                        // Pause playback
-//                        if (mMediaPlayer.isPlaying()) {
-//                            mLossTransient = true;
-//                            mMediaPlayer.pause();
-//                        }
-                        break;
-                    case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
-                        // Lower the volume
-//                        if (mMediaPlayer.isPlaying()) {
-//                            mMediaPlayer.setVolume(36);
-//                            mLossTransientCanDuck = true;
-//                        }
-                        break;
-                    case AudioManager.AUDIOFOCUS_GAIN:
-                        // Resume playback
-//                        if (mLossTransientCanDuck) {
-//                            mMediaPlayer.setVolume(100);
-//                            mLossTransientCanDuck = false;
-//                        }
-//                        if (mLossTransient) {
-//                            mMediaPlayer.play();
-//                            mLossTransient = false;
-//                        }
-                        break;
-                }
-            }
-        };
-    }
-
-    public void addHistory(int last_position, boolean sendToServer, boolean isComplete) {
+    // 添加历史播放数据
+    public void addHistory(int position, boolean sendToServer) {
         if (mItemEntity == null || hlsPlayer == null || mIsPlayingAd) {
             return;
         }
         LogUtils.i(TAG, "addHistory");
+        int last_position = position;
         int completePosition = -1;
-        if (isComplete) {
-            completePosition = hlsPlayer.getDuration();
+        if (hlsPlayer.getDuration() - last_position <= 3000) {
+            last_position = 0;// 当前播放结束
+            completePosition = hlsPlayer.getDuration();// 用于日志上报中
         }
         if (historyManager == null) {
             historyManager = VodApplication.getModuleAppContext().getModuleHistoryManager();
@@ -761,6 +902,101 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
             }
             sendHistory(params);
         }
-
     }
+
+    private void sendHistory(HashMap<String, Object> history) {
+        Call<ResponseBody> call = HttpManager.getDomainService(SkyService.class).sendPlayHistory(history);
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                String result = null;
+                try {
+                    result = response.body().string();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                LogUtils.i(TAG, "SendHistory : " + result);
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                t.printStackTrace();
+            }
+        });
+    }
+
+    // audio focus 相关
+    private boolean mHasAudioFocus = false;
+
+    private void changeAudioFocus(boolean acquire) {
+        final AudioManager am = (AudioManager) getSystemService(AUDIO_SERVICE);
+        if (am == null)
+            return;
+
+        if (acquire) {
+            if (!mHasAudioFocus) {
+                final int result = am.requestAudioFocus(mAudioFocusListener,
+                        AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
+                if (result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
+                    am.setParameters("bgm_state=true");
+                    mHasAudioFocus = true;
+                }
+            }
+        } else {
+            if (mHasAudioFocus) {
+                final int result = am.abandonAudioFocus(mAudioFocusListener);
+                am.setParameters("bgm_state=false");
+                mHasAudioFocus = false;
+            }
+        }
+    }
+
+    private final AudioManager.OnAudioFocusChangeListener mAudioFocusListener = createOnAudioFocusChangeListener();
+
+    private AudioManager.OnAudioFocusChangeListener createOnAudioFocusChangeListener() {
+        return new AudioManager.OnAudioFocusChangeListener() {
+
+            private boolean mLossTransient = false;
+            private boolean mLossTransientCanDuck = false;
+
+            @Override
+            public void onAudioFocusChange(int focusChange) {
+                switch (focusChange) {
+                    case AudioManager.AUDIOFOCUS_LOSS:
+                        // Stop playback
+                        changeAudioFocus(false);
+//                        stop();
+                        break;
+                    case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
+                        // Pause playback
+                        if (hlsPlayer != null && hlsPlayer.isPlaying()) {
+                            mLossTransient = true;
+                            hlsPlayer.pause();
+                        }
+                        break;
+                    case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
+                        // Lower the volume
+//                        if (mMediaPlayer.isPlaying()) {
+//                            mMediaPlayer.setVolume(36);
+//                            mLossTransientCanDuck = true;
+//                        }
+                        break;
+                    case AudioManager.AUDIOFOCUS_GAIN:
+                        // Resume playback
+//                        if (mLossTransientCanDuck) {
+//                            mMediaPlayer.setVolume(100);
+//                            mLossTransientCanDuck = false;
+//                        }
+                        if (mLossTransient) {
+                            if (hlsPlayer != null) {
+                                hlsPlayer.start();
+                            }
+                            mLossTransient = false;
+                        }
+                        break;
+                }
+            }
+        };
+    }
+
 }

@@ -24,13 +24,12 @@ public class PlaybackActivity extends BaseActivity {
         int itemPK = intent.getIntExtra(PageIntentInterface.EXTRA_PK, 0);// 当前影片pk值,通过/api/item/{pk}可获取详细信息
         int subItemPk = intent.getIntExtra(PageIntentInterface.EXTRA_SUBITEM_PK, 0);// 当前多集片pk值,通过/api/subitem/{pk}可获取详细信息
         String source = intent.getStringExtra(PageIntentInterface.EXTRA_SOURCE);
-        boolean clickDetailPlay = intent.getBooleanExtra(PageIntentInterface.EXTRA_DETAIL_PAGE_PLAY, false);// 从详情页0秒起播
         if (itemPK <= 0) {
             finish();
             LogUtils.e("LH/PlaybackActivity", "itemId can't be null.");
             return;
         }
-        playbackFragment = PlaybackFragment.newInstance(itemPK, subItemPk, source, clickDetailPlay);
+        playbackFragment = PlaybackFragment.newInstance(itemPK, subItemPk, source);
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.activity_player_container, playbackFragment)

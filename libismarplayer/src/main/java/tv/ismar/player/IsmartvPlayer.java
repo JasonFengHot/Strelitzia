@@ -1,12 +1,12 @@
 package tv.ismar.player;
 
-import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.qiyi.sdk.player.IAdController;
 import com.qiyi.sdk.player.Parameter;
 import com.qiyi.sdk.player.PlayerSdk;
 import com.qiyi.sdk.player.SdkVideo;
@@ -16,8 +16,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import tv.ismar.app.network.entity.AdElementEntity;
 import tv.ismar.app.entity.ClipEntity;
+import tv.ismar.app.network.entity.AdElementEntity;
 import tv.ismar.library.util.AESTool;
 import tv.ismar.library.util.DateUtils;
 import tv.ismar.library.util.LogUtils;
@@ -51,7 +51,6 @@ public abstract class IsmartvPlayer implements IPlayer {
     protected MediaEntity mMediaEntity;
     protected boolean isPlayingAd;
     protected SurfaceView mSurfaceView;// 视云片源显示
-    protected ViewGroup mContainer;// 爱奇艺片源显示
     protected boolean mSurfaceAttached = false;// 播放器SurfaceView是否已设置，true表示在播放器界面，false表示在详情页
     protected OnBufferChangedListener onBufferChangedListener;
     protected OnAdvertisementListener onAdvertisementListener;
@@ -110,7 +109,7 @@ public abstract class IsmartvPlayer implements IPlayer {
                 extraParams.addAdsHint(Parameter.HINT_TYPE_SKIP_AD, "下"); // 跳过悦享看广告
                 extraParams.addAdsHint(Parameter.HINT_TYPE_HIDE_PAUSE_AD, "下"); // 消除暂停广告
                 extraParams.addAdsHint(Parameter.HINT_TYPE_SHOW_CLICK_THROUGH_AD, "右"); // 前贴,中插广告跳转页面
-                PlayerSdk.getInstance().initialize(context.getApplicationContext(), extraParams,
+                PlayerSdk.getInstance().initialize(mQiyiContainer.getContext().getApplicationContext(), extraParams,
                         new PlayerSdk.OnInitializedListener() {
                             @Override
                             public void onSuccess() {
@@ -142,25 +141,15 @@ public abstract class IsmartvPlayer implements IPlayer {
     protected abstract boolean isInPlaybackState();
 
     @Override
-    public void attachSurfaceView(SurfaceView surfaceView, ViewGroup viewGroup) {
+    public void attachSurfaceView(SurfaceView surfaceView) {
         mSurfaceAttached = true;
-        mSurfaceView = surfaceView;
-        mContainer = viewGroup;
         if (playerMode == MODE_SMART_PLAYER) {
+            mSurfaceView = surfaceView;
             mSurfaceView.setVisibility(View.VISIBLE);
-            mContainer.setVisibility(View.GONE);
         } else if (playerMode == MODE_QIYI_PLAYER) {
-            mSurfaceView.setVisibility(View.GONE);
-            mContainer.setVisibility(View.VISIBLE);
+            mQiyiContainer.setVisibility(View.VISIBLE);
         }
 
-    }
-
-    @Override
-    public void detachViews() {
-        mSurfaceAttached = false;
-        mSurfaceView = null;
-        mContainer = null;
     }
 
     @Override
@@ -213,6 +202,8 @@ public abstract class IsmartvPlayer implements IPlayer {
         PlayerEvent.videoSwitchStream(logPlayerEvent, "manual",
                 logSpeed, logMediaIp, logPlayerFlag);
     }
+
+    public abstract IAdController getAdController();
 
     public void logVideoExit(int exitPosition, String source) {
         PlayerEvent.videoExit(
@@ -303,6 +294,7 @@ public abstract class IsmartvPlayer implements IPlayer {
         // 视云片源所需变量
         private String deviceToken;
         // 奇艺片源所需变量
+        private ViewGroup qiyiContainer;
         private String modelName;
         private String versionCode;
         private String qiyiUserType;// qiyi login condition
@@ -321,6 +313,11 @@ public abstract class IsmartvPlayer implements IPlayer {
 
         public Builder setSnToken(String snToken) {
             this.snToken = snToken;
+            return this;
+        }
+
+        public Builder setQiyiContainer(ViewGroup viewGroup) {
+            this.qiyiContainer = viewGroup;
             return this;
         }
 
@@ -364,10 +361,11 @@ public abstract class IsmartvPlayer implements IPlayer {
                     break;
                 case MODE_QIYI_PLAYER:
                     if (TextUtils.isEmpty(snToken) || TextUtils.isEmpty(modelName)
-                            || TextUtils.isEmpty(versionCode)) {
+                            || TextUtils.isEmpty(versionCode) || qiyiContainer == null) {
                         throw new IllegalArgumentException("Must set qiyi variable first.");
                     }
                     tvPlayer = new QiyiPlayer();
+                    tvPlayer.setQiyiContainer(qiyiContainer);
                     tvPlayer.setModelName(modelName);
                     tvPlayer.setVersionCode(versionCode);
                     tvPlayer.setQiyiUserType(qiyiUserType);
@@ -490,24 +488,20 @@ public abstract class IsmartvPlayer implements IPlayer {
         }
     }
 
-    private Context context;
     private byte playerMode = -1;
     private String snToken;
-    // 视云片源所需变量
+    // 视云片源创建播放器所需变量
     private String deviceToken;
-    // 奇艺片源所需变量
+    // 奇艺片源创建播放器所需变量
+    protected ViewGroup mQiyiContainer;// 奇艺播放器prepared之前必须先setDisplay
     private String modelName;
     private String versionCode;
     private String qiyiUserType;// qiyi login condition
     private String zDeviceToken;// qiyi login param
     private String zUserToken;// qiyi login param
 
-    private void setContext(Context context) {
-        this.context = context;
-    }
-
-    protected Context getContext() {
-        return context;
+    private void setQiyiContainer(ViewGroup viewGroup) {
+        this.mQiyiContainer = viewGroup;
     }
 
     private void setPlayerMode(byte playerMode) {

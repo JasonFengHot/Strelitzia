@@ -35,6 +35,7 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile rootDependence.support_v4
     compile project(':appbase')
+    compile project(':statistics')
 }
 
 tasks.withType(JavaCompile) {
