@@ -38,6 +38,7 @@ public class DaisyPlayer extends IsmartvPlayer implements SurfaceHelper.SurfaceC
 
     private boolean isS3Seeking = false;// s3设备,seek后有1002表示bufferEnd
     private String logCurrentMediaUrl;
+    private boolean isSwitchQuality = false;
 
     @Override
     protected void createPlayer(@NonNull MediaMeta mediaMeta) {
@@ -227,7 +228,9 @@ public class DaisyPlayer extends IsmartvPlayer implements SurfaceHelper.SurfaceC
             if (!mMediaEntity.isLivingVideo()) {
                 mMediaMeta.setStartPosition(position);
             }
+            isSwitchQuality = true;
             stop();
+            release();
             createPlayer(mMediaMeta);
         }
     }
@@ -237,8 +240,7 @@ public class DaisyPlayer extends IsmartvPlayer implements SurfaceHelper.SurfaceC
                 && mCurrentState != STATE_ERROR
                 && mCurrentState != STATE_IDLE
                 && mCurrentState != STATE_PREPARING
-                && mCurrentState != STATE_COMPLETED
-                && mSurfaceAttached);
+                && mCurrentState != STATE_COMPLETED);
     }
 
     @Override
@@ -268,7 +270,13 @@ public class DaisyPlayer extends IsmartvPlayer implements SurfaceHelper.SurfaceC
                 @Override
                 public void run() {
                     if (mPlayer != null && onStateChangedListener != null) {
-                        onStateChangedListener.onPrepared();
+                        if (isSwitchQuality) {
+                            isSwitchQuality = false;
+                            mPlayer.setDisplay(mSurfaceHelper.getSurfaceHolder());
+                            start();
+                        } else {
+                            onStateChangedListener.onPrepared();
+                        }
                     }
                 }
             }, delay);
@@ -421,9 +429,6 @@ public class DaisyPlayer extends IsmartvPlayer implements SurfaceHelper.SurfaceC
         @Override
         public boolean onError(SmartPlayer smartPlayer, int i, int i1) {
             mCurrentState = STATE_ERROR;
-            if (mPlayer != null) {
-                mPlayer.reset();
-            }
             PlayerEvent.videoExcept(
                     "mediaexception", String.valueOf(i),
                     logPlayerEvent, logSpeed,

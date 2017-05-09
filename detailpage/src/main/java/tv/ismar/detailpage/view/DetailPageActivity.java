@@ -53,7 +53,6 @@ public class DetailPageActivity extends BaseActivity implements PlaybackService.
     private Subscription apiClipSubsc;// 需要知道当前是视云还是爱奇艺影片，只有是视云影片才加载播放器
     private HistoryManager historyManager;// 多集影片，需要查询历史记录，历史剧集的片源
     private History mHistory;
-    private boolean mClickPlayBtn;// 是否点击播放按钮
 
     private Subscription apiItemSubsc;
     private String source;
@@ -63,10 +62,10 @@ public class DetailPageActivity extends BaseActivity implements PlaybackService.
     private PackageDetailFragment mPackageDetailFragment;
     public LoadingDialog mLoadingDialog;
     private int itemPK;
-    private Handler handler=new Handler(new Handler.Callback() {
+    private Handler handler = new Handler(new Handler.Callback() {
         @Override
         public boolean handleMessage(Message msg) {
-            if(mLoadingDialog.isShowing()) {
+            if (mLoadingDialog.isShowing()) {
                 mLoadingDialog.dismiss();
                 showNetWorkErrorDialog(new TimeoutException());
             }
@@ -85,7 +84,7 @@ public class DetailPageActivity extends BaseActivity implements PlaybackService.
         itemPK = intent.getIntExtra(EXTRA_PK, -1);
         String itemJson = intent.getStringExtra(EXTRA_ITEM_JSON);
         source = intent.getStringExtra(EXTRA_SOURCE);
-        if (source!=null&&source.equals("launcher")){
+        if (source != null && source.equals("launcher")) {
             AppConstant.purchase_entrance_page = "launcher";
         }
         int type = intent.getIntExtra(EXTRA_TYPE, 0);
@@ -100,7 +99,7 @@ public class DetailPageActivity extends BaseActivity implements PlaybackService.
 
         //解析来至launcher的参数
         if (!TextUtils.isEmpty(url)) {
-            Log.e("launcher_url",url);
+            Log.e("launcher_url", url);
             String[] arrayTmp = url.split("/");
             itemPK = Integer.parseInt(arrayTmp[arrayTmp.length - 1]);
             switch (arrayTmp[arrayTmp.length - 2]) {
@@ -111,7 +110,7 @@ public class DetailPageActivity extends BaseActivity implements PlaybackService.
                     type = DETAIL_TYPE_PKG;
                     break;
             }
-            Log.e("launcher_type",type+"");
+            Log.e("launcher_type", type + "");
         }
 
         if (!TextUtils.isEmpty(itemJson)) {
@@ -125,9 +124,6 @@ public class DetailPageActivity extends BaseActivity implements PlaybackService.
     }
 
     public void goPlayer() {
-        // 从详情页点击播放，与Service解绑后无需做播放器释放，其它情况需要将播放器停止并释放
-        mClickPlayBtn = true;
-
         Intent intent = new Intent();
         intent.setAction("tv.ismar.daisy.Player");
         intent.putExtra(PageIntentInterface.EXTRA_PK, mItemEntity.getPk());
@@ -161,11 +157,11 @@ public class DetailPageActivity extends BaseActivity implements PlaybackService.
 
                     @Override
                     public void onError(Throwable e) {
-                        if(mLoadingDialog!=null)
-                        mLoadingDialog.dismiss();
-                        if (e instanceof HttpException&&((HttpException)e).code() == 404) {
+                        if (mLoadingDialog != null)
+                            mLoadingDialog.dismiss();
+                        if (e instanceof HttpException && ((HttpException) e).code() == 404) {
                             showItemOffLinePop();
-                        }else{
+                        } else {
                             super.onError(e);
                         }
                     }
@@ -200,7 +196,6 @@ public class DetailPageActivity extends BaseActivity implements PlaybackService.
     // 详情页检查权限后触发
     public void playCheckResult(boolean permission) {
         Log.i(TAG, "playCheckResult:" + permission);
-        mClickPlayBtn = false;
         PlaybackService.mIsPreload = false;
         String clipUrl = mItemEntity.getClip().getUrl();
         if (permission || mItemEntity.getExpense() == null) {
@@ -229,10 +224,10 @@ public class DetailPageActivity extends BaseActivity implements PlaybackService.
                     }
                 }
             }
-        } else if (mItemEntity.getPreview() != null){
+        } else if (mItemEntity.getPreview() != null) {
             clipUrl = mItemEntity.getPreview().getUrl();
         }
-        if (StringUtils.isEmpty(clipUrl)){
+        if (StringUtils.isEmpty(clipUrl)) {
             LogUtils.e(TAG, "clipUrl is null");
             return;
         }
@@ -264,6 +259,7 @@ public class DetailPageActivity extends BaseActivity implements PlaybackService.
                         if (Utils.isEmptyText(iqiyi)) {
                             // 片源为视云,实现预加载功能
                             // 详情页预加载，绑定服务，必须在mItemEntity不为空时执行connect操作
+                            LogUtils.d("LH/", "Preload true.");
                             PlaybackService.mIsPreload = true;
                             mClient.connect();
                         }
@@ -273,8 +269,8 @@ public class DetailPageActivity extends BaseActivity implements PlaybackService.
     }
 
     public void showDialog() {
-        handler.sendEmptyMessageDelayed(0,15000);
-        start_time=System.currentTimeMillis();
+        handler.sendEmptyMessageDelayed(0, 15000);
+        start_time = System.currentTimeMillis();
         mLoadingDialog = new LoadingDialog(this, R.style.LoadingDialog);
         mLoadingDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
             @Override
@@ -318,28 +314,28 @@ public class DetailPageActivity extends BaseActivity implements PlaybackService.
 
     @Override
     public void onDisconnected() {
-        if(!mClickPlayBtn){
-            PlaybackService.mIsPreload = false;
-            mPlaybackService.stopPlayer(false);
-        }
         mPlaybackService = null;
     }
 
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        if(mPackageDetailFragment!=null){
+        PlaybackService.mIsPreload = false;
+        if (mPlaybackService != null) {
+            mPlaybackService.stopPlayer(false);
+        }
+        if (mPackageDetailFragment != null) {
             mPackageDetailFragment.onActivityBackPressed();
         }
     }
 
     @Override
     protected void onDestroy() {
-        Intent intent=new Intent();
-        intent.putExtra("pk",itemPK);
-        setResult(1,intent);
+        Intent intent = new Intent();
+        intent.putExtra("pk", itemPK);
+        setResult(1, intent);
         handler.removeMessages(0);
-        handler=null;
+        handler = null;
         super.onDestroy();
     }
 }

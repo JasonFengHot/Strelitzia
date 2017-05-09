@@ -23,6 +23,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -204,6 +205,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
         }
         // handler消息需要立即删除，广告请求停止
         mHandler.removeCallbacksAndMessages(null);
+        mPlaybackService.addHistory(mCurrentPosition, true);
         if (mAdvertisement != null) {
             mAdvertisement.stopSubscription();
         }
@@ -224,11 +226,11 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
         }
         if (mPlaybackService != null) {
             // 非手动调用finishActivity方法，当前界面不可见时，添加历史记录，停止播放
-            mPlaybackService.addHistory(mCurrentPosition, true);
             mPlaybackService.stopPlayer(true);
         }
         // 与Service解绑
         mClient.disconnect();
+        mPlaybackService.setCallback(null);
     }
 
     @Override
@@ -246,7 +248,6 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
 
     @Override
     public void onDisconnected() {
-        mPlaybackService.setCallback(null);
         mPlaybackService = null;
     }
 
@@ -269,7 +270,6 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
         mIsExiting = true;
         if (mPlaybackService != null) {
             mPlaybackService.logVideoExit(mCurrentPosition, to);
-            mPlaybackService.addHistory(mCurrentPosition, true);
             mPlaybackService.stopPlayer(true);
         }
         getActivity().finish();
@@ -331,6 +331,25 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
                 } else {
                     ad_vip_text.setTextColor(getResources().getColor(R.color.module_color_white));
                 }
+            }
+        });
+
+        Button player_test_menu = (Button) contentView.findViewById(R.id.player_test_menu);
+        player_test_menu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                hidePanel();
+                if (!isMenuShow()) {
+                    showMenu();
+                }
+            }
+        });
+
+        Button player_test_panel = (Button) contentView.findViewById(R.id.player_test_panel);
+        player_test_panel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showPannelDelayOut();
             }
         });
 
@@ -459,8 +478,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
             mIsOnPaused = false;// 暂停以后切换画质
             if (mPlaybackService.getMediaPlayer().getPlayerMode() == IsmartvPlayer.MODE_SMART_PLAYER) {
                 timerStop();
-                // TODO 视云播放器切换码率，现没有重新创建播放器，偶尔底层SmartPlayer会报错，需要注意
-//                showBuffer(null);
+                showBuffer(null);
             }
             if (!mPlaybackService.getItemEntity().getLiveVideo()) {
                 mCurrentPosition = mPlaybackService.getMediaPlayer().getCurrentPosition();
@@ -489,19 +507,17 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
                     mPlaybackService.getItemEntity().setClip(clip);
                     player_logo_image.setVisibility(View.GONE);
 
-                    mCurrentPosition = 0;
                     mPlaybackService.stopPlayer(false);
                     showBuffer(PlAYSTART + mPlaybackService.getItemEntity().getTitle());
                     updateTitle(subItem.getTitle());
-                    mPlaybackService.addHistory(mCurrentPosition, false);
-                    mPlaybackService.switchTelevision(subItem.getPk(), clip.getUrl());
+                    mPlaybackService.switchTelevision(mCurrentPosition, subItem.getPk(), clip.getUrl());
+                    mCurrentPosition = 0;
                     ret = true;
                     break;
                 }
             }
         } else if (id == MENU_KEFU_ID) {
             mCurrentPosition = mPlaybackService.getMediaPlayer().getCurrentPosition();
-            mPlaybackService.addHistory(mCurrentPosition, false);
             timerStop();
             goOtherPage(EVENT_CLICK_KEFU);
             ret = true;
@@ -635,11 +651,10 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
                 timerStop();
                 boolean isPreview = (boolean) args;
                 if (isPreview) {
+                    // 试看影片保存历史记录应该是试看片源的duration,mCurrentPosition值不能改变
                     if (mPlaybackService.getItemEntity().getLiveVideo() && "sport".equals(mPlaybackService.getItemEntity().getContentModel())) {
-                        mPlaybackService.addHistory(mCurrentPosition, true);
                         closeActivity("finish");
                     } else {
-                        mPlaybackService.addHistory(mCurrentPosition, false);
                         goOtherPage(EVENT_COMPLETE_BUY);
                     }
                 } else {
@@ -662,11 +677,10 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
                                     if (nextMenuItem != null) {
                                         nextMenuItem.selected = true;
                                     }
-                                    mCurrentPosition = 0;
                                     mPlaybackService.stopPlayer(false);
                                     showBuffer(PlAYSTART + mPlaybackService.getItemEntity().getTitle());
-                                    mPlaybackService.addHistory(mCurrentPosition, false);
-                                    mPlaybackService.switchTelevision(nextItem.getPk(), nextItem.getClip().getUrl());
+                                    mPlaybackService.switchTelevision(mCurrentPosition, nextItem.getPk(), nextItem.getClip().getUrl());
+                                    mCurrentPosition = 0;
                                     return;
                                 }
                             }
@@ -682,7 +696,8 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
                     intent.putExtra("itemJson", itemJson);
                     intent.putExtra("source", extraSource);
                     startActivity(intent);
-                    mPlaybackService.addHistory(mCurrentPosition, true);
+                    // 播放完成，下次从头播放
+                    mCurrentPosition = 0;
                     closeActivity("finish");
                 }
                 break;
@@ -714,7 +729,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
         if (showBuffer && !isSeeking) {
             showBuffer(null);
         } else if (!showBuffer) {
-            hidePanel();
+            hideBuffer();
         }
     }
 

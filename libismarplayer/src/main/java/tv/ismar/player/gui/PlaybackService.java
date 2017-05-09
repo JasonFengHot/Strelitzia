@@ -88,6 +88,7 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
     private ViewGroup qiyiContainer;// 奇艺SDK必须先setDisplay，然后再调用prepare
 
     private int mStartPosition;
+    private int mDuration;
     private ClipEntity.Quality mCurrentQuality;
     public static boolean mIsPreload;// 当前播放地址是否已经预加载,需要在详情页绑定前置为false
     private boolean mIsPlayerPrepared;// 播放器是否处于可播放状态,onPrepared回调后为true。onPrepared()与startPlayWhenPrepared互锁用到
@@ -268,14 +269,11 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
         }
     }
 
-    public void switchQuality(int position, ClipEntity.Quality quality) {
+    public void switchQuality(int historyPosition, ClipEntity.Quality quality) {
         if (hlsPlayer != null) {
-            if (hlsPlayer.getPlayerMode() == IsmartvPlayer.MODE_SMART_PLAYER){
-                hlsPlayer.stop();
-                hlsPlayer.release();
-            }
-            hlsPlayer.switchQuality(position, quality);
+            addHistory(historyPosition, false);
             mCurrentQuality = quality;
+            hlsPlayer.switchQuality(historyPosition, quality);
             // 写入数据库
             if (historyManager == null) {
                 historyManager = VodApplication.getModuleAppContext().getModuleHistoryManager();
@@ -284,13 +282,15 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
         }
     }
 
-    public void switchTelevision(int subPk, String clipUrl) {
+    public void switchTelevision(int historyPosition, int subPk, String clipUrl) {
+        addHistory(historyPosition, false);
         isSwitchTelevision = true;
         subItemPk = subPk;
         fetchClipUrl(clipUrl);
     }
 
     private void initVariable() {
+        mDuration = 0;
         mIsPlayerPrepared = false;
         mIsPlayingAd = false;
         mIsPlayerOnStarted = false;
@@ -360,13 +360,13 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
         if (mHistory != null) {
             mStartPosition = (int) mHistory.last_position;
         }
+        Log.i(TAG, "initHistory:" + mStartPosition);
         ItemEntity[] subItems = mItemEntity.getSubitems();
         if (subItems != null && subItems.length > 0) {
             int history_sub_pk = 0;
             if (mHistory != null) {
                 history_sub_pk = Utils.getItemPk(mHistory.sub_url);
             }
-            Log.i(TAG, "loadItem-ExtraSubItemPk:" + subItemPk + " historySubPk:" + history_sub_pk);
             if (subItemPk <= 0) {
                 // 点击播放按钮时，如果有历史记录，应该播放历史记录的subItemPk,默认播放第一集
                 if (history_sub_pk > 0) {
@@ -376,12 +376,12 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
                     subItemPk = subItems[0].getPk();
                     mStartPosition = 0;
                 }
-
             } else {
                 if (subItemPk != history_sub_pk) {
                     mStartPosition = 0;
                 }
             }
+            Log.i(TAG, "loadItem-ExtraSubItemPk:" + subItemPk + " historySubPk:" + history_sub_pk + " historyPosition:" + mStartPosition);
             // 获取当前要播放的电视剧Clip
             for (ItemEntity subItem : subItems) {
                 int _subItemPk = subItem.getPk();
@@ -529,6 +529,10 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
                     @Override
                     public void onError(Throwable e) {
                         e.printStackTrace();
+                        if (PlaybackService.mIsPreload) {
+                            // TODO 预加载时，会出现此接口请求失败情况
+                            PlaybackService.mIsPreload = false;
+                        }
                     }
 
                     @Override
@@ -642,6 +646,7 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
             if (!mIsPlayerOnStarted) {
                 mIsPlayerOnStarted = true;
                 mCurrentQuality = hlsPlayer.getCurrentQuality();
+                mDuration = hlsPlayer.getDuration();
                 if (serviceCallback != null) {
                     serviceCallback.updatePlayerStatus(PlayerStatus.START, null);
                 }
@@ -847,15 +852,15 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
 
     // 添加历史播放数据
     public void addHistory(int position, boolean sendToServer) {
-        if (mItemEntity == null || hlsPlayer == null || mIsPlayingAd) {
+        if (mItemEntity == null || mIsPlayingAd || !mIsPlayerPrepared) {
             return;
         }
-        LogUtils.i(TAG, "addHistory");
+        LogUtils.i(TAG, "addHistory ： " + position);
         int last_position = position;
         int completePosition = -1;
-        if (hlsPlayer.getDuration() - last_position <= 3000) {
+        if (mDuration - last_position <= 3000) {
             last_position = 0;// 当前播放结束
-            completePosition = hlsPlayer.getDuration();// 用于日志上报中
+            completePosition = mDuration;// 用于日志上报中
         }
         if (historyManager == null) {
             historyManager = VodApplication.getModuleAppContext().getModuleHistoryManager();
@@ -875,9 +880,9 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
         history.content_model = mItemEntity.getContentModel();
         history.is_complex = mItemEntity.getIsComplex();
         history.last_position = last_position;
-        ClipEntity.Quality quality = hlsPlayer.getCurrentQuality();
+        ClipEntity.Quality quality = mCurrentQuality;
         if (quality != null) {
-            history.last_quality = hlsPlayer.getCurrentQuality().getValue();
+            history.last_quality = quality.getValue();
         }
         history.url = Utils.getItemUrl(itemPk);
         if (subItemPk > 0) {
@@ -890,7 +895,7 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
 
         if (!Utils.isEmptyText(IsmartvActivator.getInstance().getAuthToken()) && sendToServer) {
             int offset = last_position;
-            if (last_position == hlsPlayer.getDuration()) {
+            if (last_position == mDuration) {
                 offset = -1;
             }
             HashMap<String, Object> params = new HashMap<>();
