@@ -651,6 +651,10 @@ public interface SkyService {
             @Query("item_id") int pk,
             @Query("type") String type
     );
+    @GET
+    Observable<ResponseBody>repostAdLog(
+            @Url String url
+    );
 
 
     class ServiceManager {
@@ -729,7 +733,8 @@ public interface SkyService {
             mSkyService = retrofit.create(SkyService.class);
 
             Retrofit adRetrofit = new Retrofit.Builder()
-                    .baseUrl(appendProtocol(domain[1]))
+                   // .baseUrl(appendProtocol(domain[1]))
+                    .baseUrl("http://124.42.65.66:8082/")
                     .addConverterFactory(GsonConverterFactory.create())
                     .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                     .client(mClient)

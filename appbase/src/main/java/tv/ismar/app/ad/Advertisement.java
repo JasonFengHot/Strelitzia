@@ -155,6 +155,7 @@ public class Advertisement {
                         if (mApiVideoStartSubsc != null && !mApiVideoStartSubsc.isUnsubscribed()) {
                             mApiVideoStartSubsc.unsubscribe();
                         }
+                        getRepostUrl(result,adPid);
                     }
                 });
 
@@ -206,6 +207,7 @@ public class Advertisement {
                         if (mApiAppStartSubsc != null && !mApiAppStartSubsc.isUnsubscribed()) {
                             mApiAppStartSubsc.unsubscribe();
                         }
+                        getRepostUrl(result,adPid);
                     }
                 });
 
@@ -364,7 +366,6 @@ public class Advertisement {
                         }
                     }
                 }
-
                 if (!adElementEntities.isEmpty()) {
                     Collections.sort(adElementEntities, new Comparator<AdElementEntity>() {
                         @Override
@@ -380,4 +381,45 @@ public class Advertisement {
         return adElementEntities;
     }
 
+    private void repostAdLog(String url){
+        SkyService skyService = SkyService.ServiceManager.getAdService();
+        skyService.repostAdLog(url).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<ResponseBody>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable throwable) {
+
+                    }
+
+                    @Override
+                    public void onNext(ResponseBody responseBody) {
+
+                    }
+                });
+
+    }
+
+    private void getRepostUrl(String result,String adPid){
+        try {
+            JSONObject jsonObject = new JSONObject(result);
+            JSONObject body = jsonObject.getJSONObject("ads");
+            JSONArray arrays = body.getJSONArray(adPid);
+            for (int i = 0; i < arrays.length(); i++) {
+                JSONObject element = arrays.getJSONObject(i);
+                JSONArray monitor=element.getJSONArray("monitor");
+                JSONObject child=monitor.getJSONObject(1);
+                Log.i("ADSMon",monitor.length()+"");
+                String monitor_url=child.optString("monitor_url");
+                Log.i("ADSMon",monitor_url+"");
+                repostAdLog(monitor_url);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
 }
