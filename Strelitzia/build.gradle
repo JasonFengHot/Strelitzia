@@ -53,6 +53,14 @@ android {
         }
     }
 
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/LICENSE.txt'
+    }
+
 
 }
 
@@ -61,11 +69,11 @@ dependencies {
     compile project(':usercenter')
     compile project(':detailpage')
     compile project(':account')
-    compile project(':playerpage')
     compile project(':listpage')
     compile project(':homepage')
     compile project(':searchpage')
     compile project(':subject')
+    compile project(':libismarplayer')
 }
 tasks.withType(JavaCompile) {
     options.encoding = "UTF-8"

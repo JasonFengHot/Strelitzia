@@ -1,0 +1,51 @@
+<resources>
+
+<dimen name="text_size_50sp">18.52dp</dimen>
+<dimen name="text_size_48sp">17.78dp</dimen>
+<dimen name="text_size_36sp">13.33dp</dimen>
+<dimen name="text_size_24sp">8.89dp</dimen>
+<dimen name="text_size_27sp">10.00dp</dimen>
+<dimen name="text_size_60sp">22.22dp</dimen>
+<dimen name="text_size_30sp">11.11dp</dimen>
+<dimen name="text_size_32sp">11.85dp</dimen>
+<dimen name="text_size_34sp">12.59dp</dimen>
+<dimen name="text_size_40sp">14.81dp</dimen>
+<dimen name="text_size_18sp">6.67dp</dimen>
+<dimen name="text_size_28sp">10.37dp</dimen>
+
+<dimen name="player_seekBar_max_h">7.04dp</dimen>
+<dimen name="player_seekBar_thumbOffset">11.11dp</dimen>
+<dimen name="player_controller_margin_lr">18.52dp</dimen>
+<dimen name="player_controller_padding_bottom">2.96dp</dimen>
+<dimen name="player_controller_left_w">222.22dp</dimen>
+<dimen name="player_timetext_h">16.67dp</dimen>
+<dimen name="player_timetext_mt">3.70dp</dimen>
+<dimen name="player_qualitytext_w">35.93dp</dimen>
+<dimen name="player_qualitytext_h">17.78dp</dimen>
+<dimen name="player_qualitytext_mt">4.44dp</dimen>
+<dimen name="player_qualitytext_back_corner">5.56dp</dimen>
+<dimen name="player_titletext_h">20.00dp</dimen>
+<dimen name="player_titletext_mt">5.93dp</dimen>
+<dimen name="player_icon_w">26.67dp</dimen>
+<dimen name="player_icon_h">26.30dp</dimen>
+<dimen name="player_icon_ml">7.04dp</dimen>
+<dimen name="player_menu_w">192.59dp</dimen>
+<dimen name="player_menu_padding_tb">59.26dp</dimen>
+<dimen name="player_menu_padding_l">14.81dp</dimen>
+<dimen name="player_menu_item_h">44.44dp</dimen>
+<dimen name="player_logo_image_mt">10.74dp</dimen>
+<dimen name="player_logo_image_mr">15.93dp</dimen>
+
+<dimen name="qiyi_ad_width">110.37dp</dimen>
+<dimen name="qiyi_ad_height">18.52dp</dimen>
+<dimen name="ad_text_count_w">28.89dp</dimen>
+<dimen name="ad_text_vip_w">80.00dp</dimen>
+
+<dimen name="pause_ad_btn_wh">22.22dp</dimen>
+
+<dimen name="player_toast_w">230.37dp</dimen>
+<dimen name="player_toast_h">27.04dp</dimen>
+<dimen name="player_loading_size">24.44dp</dimen>
+<dimen name="player_loading_text_mt">5.56dp</dimen>
+
+</resources>

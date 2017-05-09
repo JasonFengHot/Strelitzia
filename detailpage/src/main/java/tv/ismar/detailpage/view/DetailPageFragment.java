@@ -258,6 +258,8 @@ public class DetailPageFragment extends Fragment implements DetailPageContract.V
             } else {
                 mPresenter.requestPlayCheck(String.valueOf(itemEntity.getPk()));
             }
+        } else {
+            notifyActivityPreload(false);
         }
         mModel.replaceItem(itemEntity);
         itemIsLoad = true;
@@ -381,13 +383,19 @@ public class DetailPageFragment extends Fragment implements DetailPageContract.V
         mModel.notifyPlayCheck(playCheckEntity);
         mRemandDay = playCheckEntity.getRemainDay();
         handler.sendEmptyMessageDelayed(0,300);
-//        boolean isBuy;
-//        if (playCheckEntity.getRemainDay() == 0) {
-//            isBuy = false;// 过期了。认为没购买
-//        } else {
-//            isBuy = true;// 购买了，剩余天数大于0
-//        }
-//        ((DetailPageActivity)getActivity()).playCheckResult(isBuy);
+
+        // 0秒起播功能添加
+        boolean isBuy;
+        if (playCheckEntity.getRemainDay() == 0) {
+            isBuy = false;// 过期了。认为没购买
+        } else {
+            isBuy = true;// 购买了，剩余天数大于0
+        }
+        notifyActivityPreload(isBuy);
+    }
+
+    private void notifyActivityPreload(boolean permission){
+        ((DetailPageActivity)getActivity()).playCheckResult(permission);
     }
 
     @Override

@@ -600,7 +600,7 @@ public class DetailPageViewModel extends BaseObservable {
     public String getClassification() {
         String classification;
         try {
-            classification = mItemEntity.getAttributes().getClassification();
+            classification = mItemEntity.getClassification();
         } catch (NullPointerException e) {
             classification = "";
         }

@@ -1,8 +1,6 @@
 package tv.ismar.app.ad;
-import cn.ismartv.truetime.TrueTime;
 
 import android.content.Context;
-import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
 
@@ -60,6 +58,7 @@ public class Advertisement {
 
     private OnVideoPlayAdListener mOnVideoPlayAdListener;
     private OnAppStartAdListener mOnAppStartAdListener;
+    private OnPauseVideoAdListener mOnPauseVideoAdListener;
 
     public Advertisement(Context context) {
         mContext = context;
@@ -75,6 +74,10 @@ public class Advertisement {
         mOnAppStartAdListener = onAppStartAdListener;
     }
 
+    public void setOnPauseVideoAdListener(OnPauseVideoAdListener onPauseVideoAdListener) {
+        mOnPauseVideoAdListener = onPauseVideoAdListener;
+    }
+
     public void stopSubscription() {
         if (mApiVideoStartSubsc != null && !mApiVideoStartSubsc.isUnsubscribed()) {
             mApiVideoStartSubsc.unsubscribe();
@@ -86,14 +89,18 @@ public class Advertisement {
 
     public interface OnVideoPlayAdListener {
 
-        public void loadPauseAd(List<AdElementEntity> adList);
+        void loadVideoStartAd(List<AdElementEntity> adList);
+    }
 
-        public void loadVideoStartAd(List<AdElementEntity> adList);
+    public interface OnPauseVideoAdListener {
+
+        void loadPauseAd(List<AdElementEntity> adList);
+
     }
 
     public interface OnAppStartAdListener {
 
-        public void loadAppStartAd(List<AdElementEntity> adList);
+        void loadAppStartAd(List<AdElementEntity> adList);
 
     }
 
@@ -113,12 +120,10 @@ public class Advertisement {
 
                     @Override
                     public void onError(Throwable e) {
-                        if (mOnVideoPlayAdListener != null) {
-                            if (adPid.equals(Advertisement.AD_MODE_ONPAUSE)) {
-                                mOnVideoPlayAdListener.loadPauseAd(null);
-                            } else {
-                                mOnVideoPlayAdListener.loadVideoStartAd(null);
-                            }
+                        if (adPid.equals(Advertisement.AD_MODE_ONPAUSE) && mOnPauseVideoAdListener != null) {
+                            mOnPauseVideoAdListener.loadPauseAd(null);
+                        } else if (adPid.equals(Advertisement.AD_MODE_ONSTART) && mOnVideoPlayAdListener != null) {
+                            mOnVideoPlayAdListener.loadVideoStartAd(null);
                         }
 
                         if (mApiVideoStartSubsc != null && !mApiVideoStartSubsc.isUnsubscribed()) {
@@ -136,19 +141,19 @@ public class Advertisement {
                             e.printStackTrace();
                         }
 
-                        if (Utils.isEmptyText(result) || mOnVideoPlayAdListener == null) {
-                            if (adPid.equals(Advertisement.AD_MODE_ONPAUSE)) {
-                                mOnVideoPlayAdListener.loadPauseAd(null);
-                            } else {
+                        if (Utils.isEmptyText(result)) {
+                            if (adPid.equals(Advertisement.AD_MODE_ONPAUSE) && mOnPauseVideoAdListener != null) {
+                                mOnPauseVideoAdListener.loadPauseAd(null);
+                            } else if (adPid.equals(Advertisement.AD_MODE_ONSTART) && mOnVideoPlayAdListener != null) {
                                 mOnVideoPlayAdListener.loadVideoStartAd(null);
                             }
                             return;
                         }
 
                         List<AdElementEntity> adElementEntityList = parseAdResult(result, adPid);
-                        if (adPid.equals(Advertisement.AD_MODE_ONPAUSE)) {
-                            mOnVideoPlayAdListener.loadPauseAd(adElementEntityList);
-                        } else {
+                        if (adPid.equals(Advertisement.AD_MODE_ONPAUSE) && mOnPauseVideoAdListener != null) {
+                            mOnPauseVideoAdListener.loadPauseAd(adElementEntityList);
+                        } else if (adPid.equals(Advertisement.AD_MODE_ONSTART) && mOnVideoPlayAdListener != null) {
                             mOnVideoPlayAdListener.loadVideoStartAd(adElementEntityList);
                         }
 
@@ -354,7 +359,7 @@ public class Advertisement {
                             long date_end = dateFormat.parse(end_date).getTime();
                             Date todayDate = TrueTime.now();
                             long todayDateTime = todayDate.getTime();
-                            if(todayDateTime > date_start && todayDateTime < date_end){
+                            if (todayDateTime > date_start && todayDateTime < date_end) {
                                 adElementEntities.add(ad);
                             }
                         } catch (ParseException e) {
