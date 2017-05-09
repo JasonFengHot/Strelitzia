@@ -14,8 +14,15 @@ import java.util.concurrent.TimeoutException;
 import tv.ismar.account.IsmartvActivator;
 import tv.ismar.app.AppConstant;
 import tv.ismar.app.BaseActivity;
+import tv.ismar.app.core.InitializeProcess;
+import tv.ismar.app.core.SimpleRestClient;
+import tv.ismar.app.core.VodUserAgent;
 import tv.ismar.app.core.client.NetworkUtils;
 import tv.ismar.app.network.entity.EventProperty;
+import tv.ismar.app.player.CallaPlay;
+import tv.ismar.app.util.DeviceUtils;
+import tv.ismar.app.util.SPUtils;
+import tv.ismar.app.util.SystemFileUtil;
 import tv.ismar.app.widget.LoadingDialog;
 import tv.ismar.subject.fragment.MovieTVSubjectFragment;
 import tv.ismar.subject.fragment.SportSubjectFragment;
@@ -90,6 +97,22 @@ public class SubjectActivity extends BaseActivity{
             properties.put(EventProperty.TITLE, title);
             properties.put(EventProperty.POSITION,-1);
             new NetworkUtils.DataCollectionTask().execute(NetworkUtils.LAUNCHER_VOD_CLICK, properties);
+
+            CallaPlay callaPlay = new CallaPlay();
+            String province = (String) SPUtils.getValue(InitializeProcess.PROVINCE_PY, "");
+            String city = (String) SPUtils.getValue(InitializeProcess.CITY, "");
+            String isp = (String) SPUtils.getValue(InitializeProcess.ISP, "");
+            callaPlay.app_start(IsmartvActivator.getInstance().getSnToken(),
+                    VodUserAgent.getModelName(), DeviceUtils.getScreenInch(this),
+                    android.os.Build.VERSION.RELEASE,
+                    SimpleRestClient.appVersion,
+                    SystemFileUtil.getSdCardTotal(getApplicationContext()),
+                    SystemFileUtil.getSdCardAvalible(getApplicationContext()),
+                    IsmartvActivator.getInstance().getUsername(), province, city, isp, fromPage,
+                    DeviceUtils.getLocalMacAddress(getApplicationContext()),
+                    SimpleRestClient.app, getPackageName()
+            );
+
         }
     }
 
