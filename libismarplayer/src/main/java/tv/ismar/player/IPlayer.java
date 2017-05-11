@@ -1,7 +1,6 @@
 package tv.ismar.player;
 
 import android.view.SurfaceView;
-import android.view.ViewGroup;
 
 import java.util.List;
 
@@ -13,12 +12,15 @@ import tv.ismar.player.model.MediaEntity;
  */
 public interface IPlayer {
 
-    void prepare(MediaEntity mediaSource);
+    /**
+     * @param hasPreload 是否已经进行过预加载
+     */
+    void prepare(MediaEntity mediaSource, boolean hasPreload);
 
     /**
-     * @param surfaceView 视云片源使用参数
+     * 调用此方法表示在播放器界面，onPrepared之后调用。
      */
-    void attachSurfaceView(SurfaceView surfaceView);
+    void attachedView();
 
     void detachViews();
 

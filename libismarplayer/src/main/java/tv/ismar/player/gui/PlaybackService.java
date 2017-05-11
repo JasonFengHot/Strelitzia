@@ -84,20 +84,30 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
     // HLS播放器
     private IsmartvPlayer hlsPlayer;// HLS播放
     private ServiceCallback serviceCallback;
-    private SurfaceView surfaceView;
-    private ViewGroup qiyiContainer;// 奇艺SDK必须先setDisplay，然后再调用prepare
+    private SurfaceView mSurfaceView;
+    private ViewGroup mQiyiContainer;// 奇艺SDK必须先setDisplay，然后再调用prepare
 
+    private MediaEntity mPreloadMediaSource;
     private int mStartPosition;
     private int mDuration;
     private ClipEntity.Quality mCurrentQuality;
-    public static boolean mIsPreload;// 当前播放地址是否已经预加载,需要在详情页绑定前置为false
-    private boolean mIsPlayerPrepared;// 播放器是否处于可播放状态,onPrepared回调后为true。onPrepared()与startPlayWhenPrepared互锁用到
+    private boolean mIsPreload;// 当前播放地址是否已经预加载,需要在详情页绑定前置为false
+    private boolean mIsPlayerPrepared;// 播放器是否处于可播放状态,onPrepared回调后为true。
     private boolean mIsPreview;// 是否试看
     private boolean isSwitchTelevision = false;// 手动切换剧集，不查历史记录
     private boolean mIsPlayingAd;// 判断是否正在播放广告
     private boolean mIsPlayerOnStarted;
+    private boolean mIsPlayerStopping = false;// 播放器stop，release需要时间较长
 
     public PlaybackService() {
+    }
+
+    public void setSurfaceView(SurfaceView surfaceView) {
+        this.mSurfaceView = surfaceView;
+    }
+
+    public void setQiyiContainer(ViewGroup qiyiContainer) {
+        this.mQiyiContainer = qiyiContainer;
     }
 
     public IsmartvPlayer getMediaPlayer() {
@@ -130,6 +140,14 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
 
     public int getSubItemPk() {
         return subItemPk;
+    }
+
+    public boolean isPlayerStopping() {
+        return mIsPlayerStopping;
+    }
+
+    public boolean isPreload() {
+        return mIsPreload;
     }
 
     @Override
@@ -192,16 +210,14 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
     /**
      * 此方法调用必须是从播放器界面调用，没有0秒起播功能时才执行方法体内函数
      */
-    public void preparePlayer(int itemPk, int subItemPk, String source, ViewGroup qiyiContainer) {
-        if (itemPk <= 0 || qiyiContainer == null) {
+    public void preparePlayer(int itemPk, int subItemPk, String source) {
+        if (itemPk <= 0 || mSurfaceView == null || mQiyiContainer == null) {
             LogUtils.e(TAG, "itemPk and qiyiContainer can't be null.");
             return;
         }
         this.itemPk = itemPk;// 当前影片pk值,通过/api/item/{pk}可获取详细信息
         this.subItemPk = subItemPk;// 当前多集片pk值,通过/api/subitem/{pk}可获取详细信息
         this.source = source;
-        this.qiyiContainer = qiyiContainer;
-        initVariable();
         fetchPlayerItem(String.valueOf(itemPk));
     }
 
@@ -215,22 +231,21 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
         this.subItemPk = 0;// 当前多集片pk值,通过/api/subitem/{pk}可获取详细信息
         this.source = source;
         this.mItemEntity = itemEntity;
-        initVariable();
+        mIsPreload = true;
         loadPlayerItem();
     }
 
-    // 此方法与onPrepared回调互锁
-    public void startPlayWhenPrepared(SurfaceView surfaceView) {
-        this.surfaceView = surfaceView;
-        if (mIsPlayerPrepared) {
-            // Service 与 PlaybackActivity绑定，直接播放视频
-            changeAudioFocus(true);
-            if (hlsPlayer.getPlayerMode() == IsmartvPlayer.MODE_SMART_PLAYER) {
-                hlsPlayer.attachSurfaceView(surfaceView);
-            } else if (hlsPlayer.getPlayerMode() == IsmartvPlayer.MODE_QIYI_PLAYER) {
-                hlsPlayer.attachSurfaceView(null);
-            }
+    // 详情页点击播放，注意createPlayer方法中预加载是否已经完成
+    public void startPlayWhenPrepared() {
+        // 执行此方法时，预加载已经完成
+        LogUtils.i(TAG, "startPlayWhenPrepared : " + hlsPlayer);
+        if (hlsPlayer != null) {
+            hlsPlayer.setSurfaceView(mSurfaceView);
         }
+        if (mIsPreload && mPreloadMediaSource != null && hlsPlayer != null && hlsPlayer.getPlayerMode() == IsmartvPlayer.MODE_SMART_PLAYER) {
+            hlsPlayer.prepare(mPreloadMediaSource, true);
+        }
+        mIsPreload = false;
     }
 
     public void setCallback(ServiceCallback serviceCallback) {
@@ -243,8 +258,12 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
      */
     public void stopPlayer(boolean detachView) {
         // 无论从播放器界面，还是详情页解绑Service,都需要将当前网络请求取消
-        cancelRequest();
+        mIsPreload = false;
+        if (!mIsPlayerPrepared) {
+            cancelRequest();
+        }
         if (hlsPlayer != null) {
+            mIsPlayerStopping = true;
             hlsPlayer.setOnAdvertisementListener(null);
             hlsPlayer.setOnBufferChangedListener(null);
             hlsPlayer.setOnStateChangedListener(null);
@@ -254,6 +273,7 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
                 hlsPlayer.detachViews();
             }
             hlsPlayer = null;
+            mIsPlayerStopping = false;
         }
     }
 
@@ -289,6 +309,11 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
         fetchClipUrl(clipUrl);
     }
 
+    public void onResumeFromKefu(){
+        initVariable();
+        createPlayer(null);
+    }
+
     private void initVariable() {
         mDuration = 0;
         mIsPlayerPrepared = false;
@@ -297,6 +322,22 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
         if (serviceCallback != null) {
             serviceCallback.updatePlayerStatus(PlayerStatus.CREATING, null);
         }
+        // 每次进入创建播放器前先获取历史记录，历史播放位置，历史分辨率，手动切换剧集例外
+        if (!isSwitchTelevision) {
+            if (mCurrentQuality == null) {
+                DBQuality dbQuality = historyManager.getQuality();
+                if (dbQuality != null) {
+                    mCurrentQuality = ClipEntity.Quality.getQuality(dbQuality.quality);
+                }
+            }
+            if (mIsPreview) {
+                mStartPosition = 0;
+            }
+        }
+        if (mIsPreview || isSwitchTelevision) {
+            mStartPosition = 0;
+        }
+        isSwitchTelevision = false;
 
     }
 
@@ -412,23 +453,6 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
     private void loadPlayerClip(ClipEntity clipEntity) {
         mClipEntity = clipEntity;
         initVariable();
-        // 每次进入创建播放器前先获取历史记录，历史播放位置，历史分辨率，手动切换剧集例外
-        if (!isSwitchTelevision) {
-            if (mCurrentQuality == null) {
-                DBQuality dbQuality = historyManager.getQuality();
-                if (dbQuality != null) {
-                    mCurrentQuality = ClipEntity.Quality.getQuality(dbQuality.quality);
-                }
-            }
-            if (mIsPreview) {
-                mStartPosition = 0;
-            }
-        }
-        if (mIsPreview || isSwitchTelevision){
-            mStartPosition = 0;
-        }
-        isSwitchTelevision = false;
-        // TODO showBuffer
         String iqiyi = mClipEntity.getIqiyi_4_0();
         if (!mIsPreview && Utils.isEmptyText(iqiyi)) {
             // 视云影片获取前贴片广告
@@ -444,6 +468,7 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
     }
 
     private void createPlayer(List<AdElementEntity> adList) {
+        LogUtils.i(TAG, "createPlayer 1 : " + mIsPreload);
         String iqiyi = mClipEntity.getIqiyi_4_0();
         // 创建当前播放器
         IsmartvPlayer.Builder builder = new IsmartvPlayer.Builder();
@@ -452,29 +477,43 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
             // 片源为视云
             builder.setPlayerMode(IsmartvPlayer.MODE_SMART_PLAYER);
             builder.setDeviceToken(deviceToken);
+            if (mIsPreload) {
+                hlsPlayer = builder.buildPreloadPlayer();
+            } else {
+                if (mSurfaceView == null) {
+                    throw new IllegalArgumentException("视云播放器，显示组件不能为空");
+                }
+                builder.setSurfaceView(mSurfaceView);
+                hlsPlayer = builder.build();
+            }
         } else {
-            if (qiyiContainer == null) {
+            if (mQiyiContainer == null) {
                 throw new IllegalArgumentException("奇艺播放器，显示组件不能为空");
             }
             builder.setPlayerMode(IsmartvPlayer.MODE_QIYI_PLAYER);
-            builder.setQiyiContainer(qiyiContainer);
+            builder.setQiyiContainer(mQiyiContainer);
             builder.setModelName(DeviceUtils.getModelName());
             builder.setVersionCode(String.valueOf(AppUtils.getVersionCode(this)));
             builder.setQiyiUserType(mQiyiUserType);
             builder.setzDeviceToken(zdeviceToken);
             builder.setzUserToken(zuserToken);
+            hlsPlayer = builder.build();
         }
-        hlsPlayer = builder.build();
         hlsPlayer.setOnAdvertisementListener(onAdvertisementListener);
         hlsPlayer.setOnBufferChangedListener(onBufferChangedListener);
         hlsPlayer.setOnStateChangedListener(onStateChangedListener);
-        MediaEntity mediaEntity = new MediaEntity(itemPk, subItemPk, mItemEntity.getLiveVideo(), mClipEntity);
+        LogUtils.i(TAG, "createPlayer 2 : " + mIsPreload);
+        mPreloadMediaSource = new MediaEntity(itemPk, subItemPk, mItemEntity.getLiveVideo(), mClipEntity);
         if (adList != null && !adList.isEmpty()) {
-            mediaEntity.setAdvStreamList(adList);
+            mPreloadMediaSource.setAdvStreamList(adList);
         }
-        mediaEntity.setInitQuality(mCurrentQuality);
-        mediaEntity.setStartPosition(mStartPosition);
-        hlsPlayer.prepare(mediaEntity);
+        mPreloadMediaSource.setInitQuality(mCurrentQuality);
+        mPreloadMediaSource.setStartPosition(mStartPosition);
+        if (mIsPreload) {
+            hlsPlayer.preparePreloadPlayer(mPreloadMediaSource);
+        } else {
+            hlsPlayer.prepare(mPreloadMediaSource, false);
+        }
     }
 
     private void fetchPlayerItem(String itemPk) {
@@ -529,9 +568,9 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
                     @Override
                     public void onError(Throwable e) {
                         e.printStackTrace();
-                        if (PlaybackService.mIsPreload) {
+                        if (mIsPreload) {
                             // TODO 预加载时，会出现此接口请求失败情况
-                            PlaybackService.mIsPreload = false;
+                            mIsPreload = false;
                         }
                     }
 
@@ -624,16 +663,8 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
                 return;
             }
             mIsPlayerPrepared = true;
-            if (surfaceView != null) {
-                // 此处与startPlayWhenPrepared()互锁
-                // Service 与 PlaybackActivity绑定，直接播放视频
-                changeAudioFocus(true);
-                if (hlsPlayer.getPlayerMode() == IsmartvPlayer.MODE_SMART_PLAYER) {
-                    hlsPlayer.attachSurfaceView(surfaceView);
-                } else if (hlsPlayer.getPlayerMode() == IsmartvPlayer.MODE_QIYI_PLAYER) {
-                    hlsPlayer.attachSurfaceView(null);
-                }
-            }
+            changeAudioFocus(true);
+            hlsPlayer.attachedView();
 
         }
 

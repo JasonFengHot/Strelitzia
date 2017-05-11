@@ -50,7 +50,6 @@ public abstract class IsmartvPlayer implements IPlayer {
     protected int mCurrentState = STATE_IDLE;
     protected MediaEntity mMediaEntity;
     protected boolean isPlayingAd;
-    protected SurfaceView mSurfaceView;// 视云片源显示
     protected boolean mSurfaceAttached = false;// 播放器SurfaceView是否已设置，true表示在播放器界面，false表示在详情页
     protected OnBufferChangedListener onBufferChangedListener;
     protected OnAdvertisementListener onAdvertisementListener;
@@ -72,26 +71,54 @@ public abstract class IsmartvPlayer implements IPlayer {
     protected ClipEntity.Quality mCurrentQuality;
     protected List<ClipEntity.Quality> mQualities;
     protected int[] mBestvAdTime;
+    private MediaMeta preloadMediaMeta;
     // 奇艺
     private boolean isQiyiSdkInit;
 
-    @Override
-    public void prepare(MediaEntity mediaSource) {
-        if (mediaSource == null || mediaSource.getClipEntity() == null) {
-            throw new IllegalArgumentException("mediaSource can't be null");
+    // 视云播放器从预加载播放视频，按照要求预加载只做加载
+    public void preparePreloadPlayer(MediaEntity mediaSource) {
+        if (playerMode != MODE_SMART_PLAYER || mediaSource == null || mediaSource.getClipEntity() == null) {
+            throw new IllegalArgumentException("preparePreloadPlayer mediaSource can't be null");
         }
         mMediaEntity = mediaSource;
         logPlayerEvent.pk = mediaSource.getPk();
         logPlayerEvent.subItemPk = mediaSource.getSubItemPk();
+        logPlayerFlag = "bestv";
+        preloadMediaMeta = bestvUserInit();
+        if (preloadMediaMeta != null) {
+            createPreloadPlayer(preloadMediaMeta);
+        }
+    }
+
+    @Override
+    public void prepare(MediaEntity mediaSource, boolean hasPreload) {
+        if (mediaSource == null || mediaSource.getClipEntity() == null || (hasPreload && mSurfaceView == null)) {
+            throw new IllegalArgumentException("prepare mediaSource can't be null");
+        }
+        if (!hasPreload) {
+            mMediaEntity = mediaSource;
+            logPlayerEvent.pk = mediaSource.getPk();
+            logPlayerEvent.subItemPk = mediaSource.getSubItemPk();
+        }
         switch (playerMode) {
             case MODE_SMART_PLAYER:
-                logPlayerFlag = "bestv";
-                MediaMeta mediaMeta = bestvUserInit();
-                if (mediaMeta != null) {
-                    createPlayer(mediaMeta);
+                mSurfaceView.setVisibility(View.VISIBLE);
+                if (mQiyiContainer != null) {
+                    mQiyiContainer.setVisibility(View.GONE);
+                }
+                if (!hasPreload) {
+                    logPlayerFlag = "bestv";
+                    preloadMediaMeta = bestvUserInit();
+                }
+                if (preloadMediaMeta != null) {
+                    createPlayer(preloadMediaMeta, hasPreload);
                 }
                 break;
             case MODE_QIYI_PLAYER:
+                mQiyiContainer.setVisibility(View.VISIBLE);
+                if (mSurfaceView != null) {
+                    mSurfaceView.setVisibility(View.GONE);
+                }
                 logPlayerFlag = "qiyi";
                 if (isQiyiSdkInit) {
                     createPlayer(qiyiUserInit());
@@ -141,15 +168,24 @@ public abstract class IsmartvPlayer implements IPlayer {
     protected abstract boolean isInPlaybackState();
 
     @Override
-    public void attachSurfaceView(SurfaceView surfaceView) {
+    public void attachedView() {
+        LogUtils.i(TAG, "AttachSurface->Player : " + playerMode);
         mSurfaceAttached = true;
-        if (playerMode == MODE_SMART_PLAYER) {
-            mSurfaceView = surfaceView;
-            mSurfaceView.setVisibility(View.VISIBLE);
-        } else if (playerMode == MODE_QIYI_PLAYER) {
-            mQiyiContainer.setVisibility(View.VISIBLE);
-        }
+        start();
 
+    }
+
+    @Override
+    public void detachViews() {
+        LogUtils.i(TAG, "detachViews");
+        mSurfaceAttached = false;
+        logFirstOpenPlayer = true;
+        if (mSurfaceView != null) {
+            mSurfaceView = null;
+        }
+        if (mQiyiContainer != null) {
+            mQiyiContainer = null;
+        }
     }
 
     @Override
@@ -277,10 +313,13 @@ public abstract class IsmartvPlayer implements IPlayer {
         return new SdkVideo(array[0], array[1], clipEntity.is_vip(), drmType, mMediaEntity.getStartPosition(), null);
     }
 
-    protected void createPlayer(MediaMeta mediaMeta) {
+    protected void createPlayer(MediaMeta mediaMeta, boolean hasPreload) {
     }
 
     protected void createPlayer(SdkVideo sdkVideo) {
+    }
+
+    protected void createPreloadPlayer(MediaMeta mediaMeta) {
     }
 
     protected IsmartvPlayer() {
@@ -293,6 +332,7 @@ public abstract class IsmartvPlayer implements IPlayer {
         private String snToken;
         // 视云片源所需变量
         private String deviceToken;
+        private SurfaceView surfaceView;
         // 奇艺片源所需变量
         private ViewGroup qiyiContainer;
         private String modelName;
@@ -308,6 +348,11 @@ public abstract class IsmartvPlayer implements IPlayer {
 
         public Builder setDeviceToken(String deviceToken) {
             this.deviceToken = deviceToken;
+            return this;
+        }
+
+        public Builder setSurfaceView(SurfaceView surfaceView) {
+            this.surfaceView = surfaceView;
             return this;
         }
 
@@ -346,6 +391,17 @@ public abstract class IsmartvPlayer implements IPlayer {
             return this;
         }
 
+        public IsmartvPlayer buildPreloadPlayer() {
+            if (playerMode != MODE_SMART_PLAYER || TextUtils.isEmpty(snToken) || TextUtils.isEmpty(deviceToken)) {
+                throw new IllegalAccessError("Must set variable before preload.");
+            }
+            IsmartvPlayer tvPlayer = new DaisyPlayer();
+            tvPlayer.setPlayerMode(playerMode);
+            tvPlayer.setSnToken(snToken);
+            tvPlayer.setDeviceToken(deviceToken);
+            return tvPlayer;
+        }
+
         public IsmartvPlayer build() {
             if (playerMode <= 0 || TextUtils.isEmpty(snToken)) {
                 throw new IllegalAccessError("Must call setPlayerMode first.");
@@ -353,11 +409,12 @@ public abstract class IsmartvPlayer implements IPlayer {
             IsmartvPlayer tvPlayer = null;
             switch (playerMode) {
                 case MODE_SMART_PLAYER:
-                    if (TextUtils.isEmpty(deviceToken)) {
+                    if (TextUtils.isEmpty(deviceToken) || surfaceView == null) {
                         throw new IllegalArgumentException("Must set deviceToken variable first.");
                     }
                     tvPlayer = new DaisyPlayer();
                     tvPlayer.setDeviceToken(deviceToken);
+                    tvPlayer.setSurfaceView(surfaceView);
                     break;
                 case MODE_QIYI_PLAYER:
                     if (TextUtils.isEmpty(snToken) || TextUtils.isEmpty(modelName)
@@ -392,37 +449,50 @@ public abstract class IsmartvPlayer implements IPlayer {
         mQualities = new ArrayList<>();
         String normal = clipEntity.getNormal();
         if (!TextUtils.isEmpty(normal)) {
-            normal = AESTool.decrypt(normal, deviceToken);
+            if (!normal.startsWith("http://") && !normal.startsWith("https://")) {
+                // 如果normal地址中包含http地址表示该地址已经解密
+                normal = AESTool.decrypt(normal, deviceToken);
+            }
             clipEntity.setNormal(normal);
             mQualities.add(ClipEntity.Quality.QUALITY_NORMAL);
         }
         String medium = clipEntity.getMedium();
         if (!TextUtils.isEmpty(medium)) {
-            medium = AESTool.decrypt(medium, deviceToken);
+            if (!medium.startsWith("http://") && !medium.startsWith("https://")) {
+                medium = AESTool.decrypt(medium, deviceToken);
+            }
             clipEntity.setMedium(medium);
             mQualities.add(ClipEntity.Quality.QUALITY_MEDIUM);
         }
         String high = clipEntity.getHigh();
         if (!TextUtils.isEmpty(high)) {
-            high = AESTool.decrypt(high, deviceToken);
+            if (!high.startsWith("http://") && !high.startsWith("https://")) {
+                high = AESTool.decrypt(high, deviceToken);
+            }
             clipEntity.setHigh(high);
             mQualities.add(ClipEntity.Quality.QUALITY_HIGH);
         }
         String ultra = clipEntity.getUltra();
         if (!TextUtils.isEmpty(ultra)) {
-            ultra = AESTool.decrypt(ultra, deviceToken);
+            if (!ultra.startsWith("http://") && !ultra.startsWith("https://")) {
+                ultra = AESTool.decrypt(ultra, deviceToken);
+            }
             clipEntity.setUltra(ultra);
             mQualities.add(ClipEntity.Quality.QUALITY_ULTRA);
         }
         String blueray = clipEntity.getBlueray();
         if (!TextUtils.isEmpty(blueray)) {
-            blueray = AESTool.decrypt(blueray, deviceToken);
+            if (!blueray.startsWith("http://") && !blueray.startsWith("https://")) {
+                blueray = AESTool.decrypt(blueray, deviceToken);
+            }
             clipEntity.setBlueray(blueray);
             mQualities.add(ClipEntity.Quality.QUALITY_BLUERAY);
         }
         String _4k = clipEntity.get_4k();
         if (!TextUtils.isEmpty(_4k)) {
-            _4k = AESTool.decrypt(_4k, deviceToken);
+            if (!_4k.startsWith("http://") && !_4k.startsWith("https://")) {
+                _4k = AESTool.decrypt(_4k, deviceToken);
+            }
             clipEntity.set_4k(_4k);
             mQualities.add(ClipEntity.Quality.QUALITY_4K);
         }
@@ -492,6 +562,7 @@ public abstract class IsmartvPlayer implements IPlayer {
     private String snToken;
     // 视云片源创建播放器所需变量
     private String deviceToken;
+    protected SurfaceView mSurfaceView;
     // 奇艺片源创建播放器所需变量
     protected ViewGroup mQiyiContainer;// 奇艺播放器prepared之前必须先setDisplay
     private String modelName;
@@ -499,6 +570,10 @@ public abstract class IsmartvPlayer implements IPlayer {
     private String qiyiUserType;// qiyi login condition
     private String zDeviceToken;// qiyi login param
     private String zUserToken;// qiyi login param
+
+    public void setSurfaceView(SurfaceView surfaceView) {
+        this.mSurfaceView = surfaceView;
+    }
 
     private void setQiyiContainer(ViewGroup viewGroup) {
         this.mQiyiContainer = viewGroup;

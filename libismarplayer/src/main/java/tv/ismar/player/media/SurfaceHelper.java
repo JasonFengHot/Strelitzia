@@ -5,6 +5,8 @@ import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
+import tv.ismar.library.util.LogUtils;
+
 /**
  * Created by LongHai on 17-4-27.
  */
@@ -13,7 +15,7 @@ class SurfaceHelper {
 
     interface SurfaceCallback {
         @MainThread
-        void onSurfaceCreated();
+        void onSurfaceCreated(boolean hasPreload);
 
         @MainThread
         void onSurfaceDestroyed();
@@ -23,6 +25,7 @@ class SurfaceHelper {
     private final SurfaceHolder mSurfaceHolder;
     private Surface mSurface;
     private final SurfaceCallback mSurfaceCallback;
+    private boolean hasPreload;
 
     SurfaceHelper(SurfaceView surfaceView, SurfaceCallback surfaceCallback) {
         mSurfaceView = surfaceView;
@@ -34,17 +37,20 @@ class SurfaceHelper {
         if (surface.isValid()) {
             mSurface = surface;
             if (mSurfaceCallback != null) {
-                mSurfaceCallback.onSurfaceCreated();
+                mSurfaceCallback.onSurfaceCreated(hasPreload);
             }
         }
     }
 
-    void attachSurfaceView() {
+    void attachSurfaceView(boolean preload) {
+        // 此处之前SurfaceView必须设置为VISIBLE
+        hasPreload = preload;
         mSurfaceHolder.addCallback(mSurfaceHolderCallback);
         setSurface(mSurfaceHolder.getSurface());
     }
 
     void release() {
+        hasPreload = false;
         mSurface = null;
         if (mSurfaceHolder != null)
             mSurfaceHolder.removeCallback(mSurfaceHolderCallback);
@@ -72,6 +78,7 @@ class SurfaceHelper {
 
         @Override
         public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+            LogUtils.i("LH/", "surfaceChanged");
         }
 
         @Override

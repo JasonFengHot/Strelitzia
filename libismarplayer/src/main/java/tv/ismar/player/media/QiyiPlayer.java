@@ -69,24 +69,6 @@ public class QiyiPlayer extends IsmartvPlayer {
     }
 
     @Override
-    public void attachSurfaceView(SurfaceView surfaceView) {
-        LogUtils.i(TAG, "AttachSurface->Player : " + mPlayer);
-        if (mPlayer == null) {
-            return;
-        }
-        super.attachSurfaceView(surfaceView);
-        start();
-    }
-
-    @Override
-    public void detachViews() {
-        LogUtils.i(TAG, "detachViews");
-        mSurfaceAttached = false;
-        mQiyiContainer = null;
-        logFirstOpenPlayer = true;
-    }
-
-    @Override
     public void start() {
         super.start();
         if (isInPlaybackState()) {

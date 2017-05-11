@@ -132,6 +132,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
     private boolean mIsOnPaused = false;// 调用pause()之后部分机型会执行BufferStart(701)
     private int historyPosition;// 人为操控断网，再连接网络进入播放器，可能导致进入播放器起播后，网络获取到的是未连接情况
     private boolean mIsInAdDetail;// 是否在广告详情页
+    private boolean mIsClickKefu;// 点击客服中心，返回不应再加载广告
 
     private PlaybackHandler mHandler;
 
@@ -203,6 +204,10 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
             mounted = false;
             return;
         }
+        if (mPlaybackService != null && !mPlaybackService.isPlayerStopping()) {
+            // 不能放在onStop()中，SmartPlayer在该生命周期中调用会有onError回调产生
+            mPlaybackService.stopPlayer(false);
+        }
         // handler消息需要立即删除，广告请求停止
         mHandler.removeCallbacksAndMessages(null);
         mPlaybackService.addHistory(mCurrentPosition, true);
@@ -224,11 +229,6 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
             popDialog.dismiss();
             popDialog = null;
         }
-        if (mPlaybackService != null) {
-            // 非手动调用finishActivity方法，当前界面不可见时，添加历史记录，停止播放
-            mPlaybackService.stopPlayer(true);
-        }
-        // 与Service解绑
         mClient.disconnect();
         mPlaybackService.setCallback(null);
     }
@@ -237,13 +237,20 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
     public void onConnected(PlaybackService service) {
         mPlaybackService = service;
         mPlaybackService.setCallback(this);
-        if (!PlaybackService.mIsPreload) {
-            // 非详情页点击播放，或奇艺片源，需要加载Item数据
-            mPlaybackService.preparePlayer(extraItemPk, extraSubItemPk, extraSource, player_container);
+        mPlaybackService.setSurfaceView(player_surface);
+        mPlaybackService.setQiyiContainer(player_container);
+        player_shadow.setVisibility(View.VISIBLE);
+        if (mPlaybackService.isPreload()) {
+            // 视云影片详情页预加载
+            mPlaybackService.startPlayWhenPrepared();
+        } else {
+            if (mIsClickKefu) {
+                // 点击客服后返回，不加载广告
+                mPlaybackService.onResumeFromKefu();
+            } else {
+                mPlaybackService.preparePlayer(extraItemPk, extraSubItemPk, extraSource);
+            }
         }
-        mPlaybackService.startPlayWhenPrepared(player_surface);
-        PlaybackService.mIsPreload = false;// 预加载播放一次后失效，下次需重新加载
-
     }
 
     @Override
@@ -257,10 +264,13 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
         LogUtils.i(TAG, "resultCode:" + resultCode + " request:" + requestCode);
         if (requestCode == PAYMENT_REQUEST_CODE) {
             if (resultCode == PAYMENT_SUCCESS_CODE) {
-                mPlaybackService.stopPlayer(false);
+                // 成功购买后继续播放
+                ad_vip_layout.setVisibility(View.GONE);
+                player_shadow.setVisibility(View.VISIBLE);
                 showBuffer(null);
-                mPlaybackService.preparePlayer(extraItemPk, extraSubItemPk, extraSource, player_container);
+                mPlaybackService.preparePlayer(extraItemPk, extraSubItemPk, extraSource);
             } else {
+                // 没有购买，退出播放器
                 closeActivity("finish");
             }
         }
@@ -334,26 +344,6 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
             }
         });
 
-        Button player_test_menu = (Button) contentView.findViewById(R.id.player_test_menu);
-        player_test_menu.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                hidePanel();
-                if (!isMenuShow()) {
-                    showMenu();
-                }
-            }
-        });
-
-        Button player_test_panel = (Button) contentView.findViewById(R.id.player_test_panel);
-        player_test_panel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showPannelDelayOut();
-            }
-        });
-
-
     }
 
     private View.OnClickListener onClickListener = new View.OnClickListener() {
@@ -377,7 +367,6 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
                 }
                 playPauseVideo();
             } else if (i == R.id.ad_vip_text) {
-                ad_vip_layout.setVisibility(View.GONE);
                 goOtherPage(EVENT_CLICK_VIP_BUY);
             }
 
@@ -470,7 +459,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
             }
             // id值为quality值+1
             int qualityValue = id - 1;
-            ClipEntity.Quality clickQuality = ClipEntity.Quality.getQuality(qualityValue);
+            final ClipEntity.Quality clickQuality = ClipEntity.Quality.getQuality(qualityValue);
             if (clickQuality == null || clickQuality == mPlaybackService.getCurrentQuality()) {
                 // 为空或者点击的码率和当前设置码率相同
                 return false;
@@ -483,8 +472,14 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
             if (!mPlaybackService.getItemEntity().getLiveVideo()) {
                 mCurrentPosition = mPlaybackService.getMediaPlayer().getCurrentPosition();
             }
-            mPlaybackService.switchQuality(mCurrentPosition, clickQuality);
-            updateQuality(clickQuality);
+            // 点击菜单后延迟400ms处理，菜单不会有卡顿现象
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    mPlaybackService.switchQuality(mCurrentPosition, clickQuality);
+                    updateQuality(clickQuality);
+                }
+            }, 400);
             ret = true;
         } else if (id > MENU_TELEPLAY_ID_START) {
             // id值为subItem pk值
@@ -501,17 +496,23 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
                 if (subItem.getPk() == id) {
                     mPlaybackService.logVideoExit(mCurrentPosition, "next");
                     timerStop();
+                    final ItemEntity subItemDelay = subItem;
+                    // 点击菜单后延迟400ms处理，菜单不会有卡顿现象
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            ItemEntity.Clip clip = subItemDelay.getClip();
+                            mPlaybackService.getItemEntity().setTitle(subItemDelay.getTitle());
+                            mPlaybackService.getItemEntity().setClip(clip);
+                            player_logo_image.setVisibility(View.GONE);
 
-                    ItemEntity.Clip clip = subItem.getClip();
-                    mPlaybackService.getItemEntity().setTitle(subItem.getTitle());
-                    mPlaybackService.getItemEntity().setClip(clip);
-                    player_logo_image.setVisibility(View.GONE);
-
-                    mPlaybackService.stopPlayer(false);
-                    showBuffer(PlAYSTART + mPlaybackService.getItemEntity().getTitle());
-                    updateTitle(subItem.getTitle());
-                    mPlaybackService.switchTelevision(mCurrentPosition, subItem.getPk(), clip.getUrl());
-                    mCurrentPosition = 0;
+                            mPlaybackService.stopPlayer(false);// 此处不能设置为true
+                            showBuffer(PlAYSTART + mPlaybackService.getItemEntity().getTitle());
+                            updateTitle(subItemDelay.getTitle());
+                            mPlaybackService.switchTelevision(mCurrentPosition, subItemDelay.getPk(), clip.getUrl());
+                            mCurrentPosition = 0;
+                        }
+                    }, 400);
                     ret = true;
                     break;
                 }
@@ -519,7 +520,13 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
         } else if (id == MENU_KEFU_ID) {
             mCurrentPosition = mPlaybackService.getMediaPlayer().getCurrentPosition();
             timerStop();
-            goOtherPage(EVENT_CLICK_KEFU);
+            // 点击菜单后延迟400ms处理，菜单不会有卡顿现象
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    goOtherPage(EVENT_CLICK_KEFU);
+                }
+            }, 400);
             ret = true;
         } else if (id == MENU_RESTART) {
             isSeeking = true;
@@ -957,15 +964,14 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
                 }
                 break;
             case EVENT_CLICK_KEFU:
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        PageIntent page = new PageIntent();
-                        page.toHelpPage(getActivity());
-                    }
-                }, 400);
+                mIsClickKefu = true;
+                // 点击客服，添加历史记录
+                mPlaybackService.addHistory(mCurrentPosition, true);
+                PageIntent page = new PageIntent();
+                page.toHelpPage(getActivity());
                 break;
             case EVENT_COMPLETE_BUY:
+                mPlaybackService.addHistory(mCurrentPosition, true);
                 mPlaybackService.logExpenseVideoPreview(mCurrentPosition, "purchase");
                 mPlaybackService.logVideoExit(mCurrentPosition, "finish");
                 ItemEntity.Expense expense = mPlaybackService.getItemEntity().getExpense();
@@ -1644,7 +1650,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
                 if (NetworkUtils.isConnected(context)) {
                     baseActivity.dismissNoNetConnectDialog();
                     if (!mPlaybackService.isPlayerPrepared()) {
-                        mPlaybackService.preparePlayer(mPlaybackService.getItemPk(), mPlaybackService.getSubItemPk(), extraSource, player_container);
+                        mPlaybackService.preparePlayer(mPlaybackService.getItemPk(), mPlaybackService.getSubItemPk(), extraSource);
                     } else {
                         timerStart(0);
                         if (mPlaybackService.isPlayerPrepared() && !mPlaybackService.getMediaPlayer().isPlaying() && !isSeeking) {
