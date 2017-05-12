@@ -10,16 +10,17 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
 
+import tv.ismar.app.core.client.MessageQueue;
 import tv.ismar.library.util.DateUtils;
 import tv.ismar.library.util.MD5;
 
 public class PlayerEvent {
 
-    private static ArrayList<String> playerEventList = new ArrayList<>();
-
-    public static synchronized ArrayList<String> getPlayerEventList() {
-        return playerEventList;
-    }
+//    private static ArrayList<String> playerEventList = new ArrayList<>();
+//
+//    public static synchronized ArrayList<String> getPlayerEventList() {
+//        return playerEventList;
+//    }
 
     public String title = "";
     public int pk;
@@ -429,7 +430,9 @@ public class PlayerEvent {
                 if (!TextUtils.isEmpty(eventName) && !properties.isEmpty()) {
                     try {
                         String event = getContentJson(eventName, properties);
-                        playerEventList.add(event);
+//                        playerEventList.add(event);
+                        // 添加到原先项目日志
+                        MessageQueue.addQueue(event);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
