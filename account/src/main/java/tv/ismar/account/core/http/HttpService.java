@@ -29,7 +29,9 @@ public interface HttpService {
             @Field("sign") String sign,
             @Field("fingerprint") String fingerprint,
             @Field("api_version") String api_version,
-            @Field("info") String deviceInfo
+            @Field("info") String deviceInfo,
+            @Field("wireless_mac") String wifiMac,
+            @Field("wired_mac") String wiredMac
     );
 
     @FormUrlEncoded

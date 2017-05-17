@@ -39,6 +39,7 @@ import tv.ismar.account.core.http.HttpService;
 import tv.ismar.account.core.rsa.RSACoder;
 import tv.ismar.account.core.rsa.SkyAESTool2;
 import tv.ismar.account.data.ResultEntity;
+import tv.ismar.library.util.DeviceUtils;
 
 /**
  * Created by huaijie on 5/17/16.
@@ -210,7 +211,7 @@ public class IsmartvActivator {
     }
     private boolean isactive=false;
     public ResultEntity active() {
-        Log.d(TAG, "active");
+        Log.d(TAG, "active    "+"isactive: "+isactive);
         String sign = "ismartv=201415&kind=" + kind + "&sn=" + sn;
         String rsaEncryptResult = encryptWithPublic(sign);
         if(isactive==false) {
@@ -218,17 +219,20 @@ public class IsmartvActivator {
                 isactive = true;
                 Response<ResultEntity> resultResponse = SKY_Retrofit.create(HttpService.class).
                         trustSecurityActive(sn, manufacture, kind, version, rsaEncryptResult,
-                                fingerprint, "v4_0", getAndroidDevicesInfo())
+                                fingerprint, "v4_0", getAndroidDevicesInfo(), DeviceUtils.getLocalwlanAddress(),DeviceUtils.getLocalHardwareAddress())
                         .execute();
+                Log.i(TAG,resultResponse.code()+"");
                 if (resultResponse.errorBody() == null) {
                     mResult = resultResponse.body();
                     saveAccountInfo(mResult);
                     return mResult;
-                } else {
+                } else if(resultResponse.code()==424){
+                    isactive=false;
+                    return getLicence();
+                }else{
                     isactive=false;
                     return null;
                 }
-
             } catch (IOException e) {
                 isactive=false;
                 e.printStackTrace();

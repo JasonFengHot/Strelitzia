@@ -137,4 +137,58 @@ public class DeviceUtils {
         float fontScale = context.getResources().getDisplayMetrics().scaledDensity;
         return (int)(pxValue / fontScale + 0.5F);
     }
+
+    public static String getLocalHardwareAddress() {
+        String macAddress = null;
+        StringBuffer buf = new StringBuffer();
+        NetworkInterface networkInterface = null;
+        try {
+            networkInterface = NetworkInterface.getByName("eth1");
+//            if (networkInterface == null) {
+//                networkInterface = NetworkInterface.getByName("wlan0");
+//            }
+            if (networkInterface == null) {
+                return "null";
+            }
+            byte[] addr = networkInterface.getHardwareAddress();
+            for (byte b : addr) {
+                buf.append(String.format("%02X:", b));
+            }
+            if (buf.length() > 0) {
+                buf.deleteCharAt(buf.length() - 1);
+            }
+            macAddress = buf.toString();
+        } catch (SocketException e) {
+            e.printStackTrace();
+            return "null";
+        }
+        return macAddress;
+    }
+    public static String getLocalwlanAddress() {
+        String macAddress = null;
+        StringBuffer buf = new StringBuffer();
+        NetworkInterface networkInterface = null;
+        try {
+            //   networkInterface = NetworkInterface.getByName("eth1");
+            //   if (networkInterface == null) {
+            networkInterface = NetworkInterface.getByName("wlan0");
+            //   }
+            if (networkInterface == null) {
+                return "null";
+            }
+            byte[] addr = networkInterface.getHardwareAddress();
+            for (byte b : addr) {
+                buf.append(String.format("%02X:", b));
+            }
+            if (buf.length() > 0) {
+                buf.deleteCharAt(buf.length() - 1);
+            }
+            macAddress = buf.toString();
+        } catch (SocketException e) {
+            e.printStackTrace();
+            return "null";
+        }
+        return macAddress;
+    }
+
 }
