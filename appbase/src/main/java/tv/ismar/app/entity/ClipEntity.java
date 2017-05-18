@@ -100,6 +100,12 @@ public class ClipEntity {
      */
     private String drm;
 
+    /**
+     * 编解码格式 (h264/h265)
+     */
+
+    private String code_version;
+
     public String getNormal() {
         return normal;
     }
@@ -126,6 +132,14 @@ public class ClipEntity {
 
     public String getUltra() {
         return ultra;
+    }
+
+    public String getCode_version() {
+        return code_version;
+    }
+
+    public void setCode_version(String code_version) {
+        this.code_version = code_version;
     }
 
     public void setUltra(String ultra) {
