@@ -40,9 +40,11 @@ public class DaisyPlayer extends IsmartvPlayer implements SurfaceHelper.SurfaceC
     private boolean isSwitchingQuality = false;// 切换码率后，不回调onPrepared,直接开始播放
 
     private static SmartPlayer getSmartPlayerInstance(){
-       if(mPlayer == null){
-           mPlayer = new SmartPlayer(SmartPlayer.PlayerType.PlayerCodec, SmartPlayer.PlayerType.PlayerMedia);
-       }
+        synchronized (DaisyPlayer.class) {
+            if (mPlayer == null) {
+                mPlayer = new SmartPlayer(SmartPlayer.PlayerType.PlayerCodec, SmartPlayer.PlayerType.PlayerMedia);
+            }
+        }
        return mPlayer;
     }
 
@@ -52,8 +54,8 @@ public class DaisyPlayer extends IsmartvPlayer implements SurfaceHelper.SurfaceC
             throw new IllegalArgumentException("DaisyPlayer create preload player null parameter");
         }
         super.createPreloadPlayer(mediaMeta);
-        initPlayerType(mediaMeta);
         mPlayer = DaisyPlayer.getSmartPlayerInstance();
+        initPlayerType(mediaMeta);
         mPlayer.setSn(getSnToken());
         if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
             mPlayer.setSDCardisAvailable(true);
@@ -500,9 +502,9 @@ public class DaisyPlayer extends IsmartvPlayer implements SurfaceHelper.SurfaceC
     }
 
     private void openVideo(boolean hasPreload) {
+        mPlayer =  DaisyPlayer.getSmartPlayerInstance();
         if (!hasPreload) {
             initPlayerType(mMediaMeta);
-            mPlayer =  DaisyPlayer.getSmartPlayerInstance();
         }
         mPlayer.createPlayer();
         mPlayer.setSn(getSnToken());
@@ -568,7 +570,7 @@ public class DaisyPlayer extends IsmartvPlayer implements SurfaceHelper.SurfaceC
                 player265Type = SmartPlayer.PlayerType.PlayerCodec;
                 break;
         }
-        DaisyPlayer.getSmartPlayerInstance().initPlayer(player264Type,mediaMeta.getUrls(),0);
+        mPlayer.initPlayer(mediaMeta.getUrls(),player264Type,0);
     }
 
 }
