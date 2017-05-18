@@ -435,7 +435,7 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
                         SimpleRestClient.app, getPackageName());
             }
         }.start();
-        Log.i("MacLog",DeviceUtils.getLocalMacAddress(HomePageActivity.this));
+       // Log.i("MacLog",DeviceUtils.getLocalMacAddress(HomePageActivity.this));
     }
 
     private boolean hoverOnArrow;

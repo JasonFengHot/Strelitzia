@@ -32,12 +32,19 @@ public class DaisyPlayer extends IsmartvPlayer implements SurfaceHelper.SurfaceC
     private MediaMeta mMediaMeta;
     private int mDuration;
 
-    private SmartPlayer mPlayer;
+    private static SmartPlayer mPlayer;
     private SurfaceHelper mSurfaceHelper;
 
     private boolean isS3Seeking = false;// s3设备,seek后有1002表示bufferEnd
     private String logCurrentMediaUrl;
     private boolean isSwitchingQuality = false;// 切换码率后，不回调onPrepared,直接开始播放
+
+    private static SmartPlayer getSmartPlayerInstance(){
+       if(mPlayer == null){
+           mPlayer = new SmartPlayer(SmartPlayer.PlayerType.PlayerCodec, SmartPlayer.PlayerType.PlayerMedia);
+       }
+       return mPlayer;
+    }
 
     @Override
     protected void createPreloadPlayer(MediaMeta mediaMeta) {
@@ -46,7 +53,7 @@ public class DaisyPlayer extends IsmartvPlayer implements SurfaceHelper.SurfaceC
         }
         super.createPreloadPlayer(mediaMeta);
         initPlayerType(mediaMeta);
-        mPlayer = new SmartPlayer();
+        mPlayer = DaisyPlayer.getSmartPlayerInstance();
         mPlayer.setSn(getSnToken());
         if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
             mPlayer.setSDCardisAvailable(true);
@@ -153,7 +160,9 @@ public class DaisyPlayer extends IsmartvPlayer implements SurfaceHelper.SurfaceC
             mPlayer.setOnTsInfoListener(null);
             mPlayer.setOnM3u8IpListener(null);
             mPlayer.setOnCompletionListenerUrl(null);
-            mPlayer.release();
+            mPlayer.stop();
+            mPlayer.close();
+            mPlayer.reset();
             mPlayer = null;
         }
         mCurrentState = STATE_IDLE;
@@ -493,7 +502,7 @@ public class DaisyPlayer extends IsmartvPlayer implements SurfaceHelper.SurfaceC
     private void openVideo(boolean hasPreload) {
         if (!hasPreload) {
             initPlayerType(mMediaMeta);
-            mPlayer = new SmartPlayer();
+            mPlayer =  DaisyPlayer.getSmartPlayerInstance();
         }
         mPlayer.createPlayer();
         mPlayer.setSn(getSnToken());
@@ -559,7 +568,7 @@ public class DaisyPlayer extends IsmartvPlayer implements SurfaceHelper.SurfaceC
                 player265Type = SmartPlayer.PlayerType.PlayerCodec;
                 break;
         }
-        SmartPlayer.initPlayer(player264Type, player265Type, mediaMeta.getUrls());
+        DaisyPlayer.getSmartPlayerInstance().initPlayer(player264Type,mediaMeta.getUrls(),0);
     }
 
 }
