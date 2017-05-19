@@ -255,12 +255,12 @@ public class DetailPageActivity extends BaseActivity implements PlaybackService.
                     @Override
                     public void onNext(ClipEntity clipEntity) {
                         String iqiyi = clipEntity.getIqiyi_4_0();
-                        if (Utils.isEmptyText(iqiyi)) {
+//                        if (Utils.isEmptyText(iqiyi)) {
                             // 片源为视云,实现预加载功能
                             // 详情页预加载，绑定服务，必须在mItemEntity不为空时执行connect操作
                             LogUtils.d("LH/", "Preload true.");
                             mClient.connect();
-                        }
+//                        }
                     }
                 });
 
