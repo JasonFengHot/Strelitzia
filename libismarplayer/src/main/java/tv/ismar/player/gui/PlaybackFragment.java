@@ -740,6 +740,20 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
         }
     }
 
+    /**
+     *
+     * @param value bufferd value,unit seccond
+     */
+    @Override
+    public void onBufferUpdate(long value) {
+        if (mPlaybackService == null || mPlaybackService.getMediaPlayer() == null) {
+            return;
+        }
+        /**
+         * do some uo update action.
+         */
+    }
+
     private static boolean isQuit = false;
     private Timer quitTimer = new Timer();
 

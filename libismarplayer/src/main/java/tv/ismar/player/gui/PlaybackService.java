@@ -17,6 +17,7 @@ import com.qiyi.sdk.player.IMediaPlayer;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -47,8 +48,11 @@ import tv.ismar.library.util.LogUtils;
 import tv.ismar.library.util.StringUtils;
 import tv.ismar.player.IPlayer;
 import tv.ismar.player.IsmartvPlayer;
+import tv.ismar.player.SmartPlayer;
 import tv.ismar.player.model.MediaEntity;
 import tv.ismar.statistics.PurchaseStatistics;
+
+import static android.R.id.message;
 
 public class PlaybackService extends Service implements Advertisement.OnVideoPlayAdListener {
 
@@ -765,6 +769,17 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
             }
             return true;
         }
+
+        @Override
+        public void onTsInfo(Map<String, String> map){
+            String CacheTime = map.get("TsCacheTime");
+            if (CacheTime != null)
+            {
+                Long nCacheTime = Long.parseLong(CacheTime);
+                serviceCallback.onBufferUpdate(nCacheTime);
+                Log.i(TAG, "current cache total time:" + nCacheTime);
+            }
+        }
     };
 
     public interface ServiceCallback {
@@ -777,6 +792,7 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
 
         void showBuffering(boolean showBuffer);
 
+        void onBufferUpdate(long value);
     }
 
     enum PlayerStatus {

@@ -469,6 +469,15 @@ public class DaisyPlayer extends IsmartvPlayer implements SurfaceHelper.SurfaceC
             } catch (NumberFormatException e) {
                 e.printStackTrace();
             }
+            String CacheTime = map.get("TsCacheTime");
+            if (CacheTime != null)
+            {
+                int nCacheTime = Integer.parseInt(CacheTime);
+                Log.i(TAG, "current cache total time:" + nCacheTime);
+            }
+            if (onStateChangedListener != null) {
+                onStateChangedListener.onTsInfo(map);
+            }
             logMediaIp = map.get(SmartPlayer.DownLoadTsInfo.TsIpAddr);
         }
     };

@@ -3,6 +3,7 @@ package tv.ismar.player;
 import android.view.SurfaceView;
 
 import java.util.List;
+import java.util.Map;
 
 import tv.ismar.app.entity.ClipEntity;
 import tv.ismar.player.model.MediaEntity;
@@ -87,6 +88,8 @@ public interface IPlayer {
         void onVideoSizeChanged(int videoWidth, int videoHeight);
 
         boolean onError(String message);
+
+        void onTsInfo(Map<String, String> map);
 
     }
 
