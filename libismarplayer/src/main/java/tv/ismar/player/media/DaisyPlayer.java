@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.util.Map;
 
 import tv.ismar.app.entity.ClipEntity;
+import tv.ismar.library.injectdb.util.Log;
 import tv.ismar.library.util.DateUtils;
 import tv.ismar.library.util.LogUtils;
 import tv.ismar.library.util.StringUtils;
@@ -248,6 +249,7 @@ public class DaisyPlayer extends IsmartvPlayer implements SurfaceHelper.SurfaceC
     private SmartPlayer.OnPreparedListenerUrl onPreparedListenerUrl = new SmartPlayer.OnPreparedListenerUrl() {
         @Override
         public void onPrepared(SmartPlayer smartPlayer, String s) {
+            Log.v(TAG,"onprepared");
             if (mPlayer == null) {
                 return;
             }
@@ -495,6 +497,7 @@ public class DaisyPlayer extends IsmartvPlayer implements SurfaceHelper.SurfaceC
 
     private void openVideo(boolean hasPreload) {
         mPlayer =  DaisyPlayer.getSmartPlayerInstance();
+        LogUtils.d(TAG,"openVideo");
         if (!hasPreload) {
             initPlayerType(mMediaMeta,false);
         }
@@ -559,10 +562,11 @@ public class DaisyPlayer extends IsmartvPlayer implements SurfaceHelper.SurfaceC
                 player265Type = SmartPlayer.PlayerType.PlayerCodec;
                 break;
         }
-        mPlayer.initPlayer(mediaMeta.getUrls(),"265".equals(mMediaEntity.getClipEntity().getCode_version()),mMediaEntity.isLivingVideo(),0);
+        mPlayer.initPlayer(mediaMeta.getUrls(),"265".equals(mMediaEntity.getClipEntity().getCode_version()),mMediaEntity.isLivingVideo(),mMediaEntity.getStartPosition());
         mPlayer.setOnInitCompleteListener(new SmartPlayer.OnInitCompleteListener() {
             @Override
             public void onInitComplete(SmartPlayer smartPlayer, boolean bSuccess) {
+                LogUtils.d(TAG,"onInitComplete + ispreload="+ispreload);
                 if (ispreload && (smartPlayer.getPlayerType() == SmartPlayer.PlayerType.PlayerCodec || smartPlayer.getPlayerType() == SmartPlayer.PlayerType.PlayerMedia)) {
                     mPlayer.setSn(getSnToken());
                     if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
