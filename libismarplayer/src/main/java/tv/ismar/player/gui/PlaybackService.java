@@ -776,6 +776,7 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
             if (CacheTime != null)
             {
                 Long nCacheTime = Long.parseLong(CacheTime);
+                if(serviceCallback != null)
                 serviceCallback.onBufferUpdate(nCacheTime);
                 Log.i(TAG, "current cache total time:" + nCacheTime);
             }
