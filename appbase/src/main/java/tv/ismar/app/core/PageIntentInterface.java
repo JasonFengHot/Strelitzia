@@ -18,6 +18,7 @@ public interface PageIntentInterface {
     String EXTRA_START_TIME= "time";
     String POSITION= "position";
     String TYPE= "type";
+    String QIYIFLAG= "isqiyi";
 
     String EXTRA_PRODUCT_CATEGORY = "product_category";
 

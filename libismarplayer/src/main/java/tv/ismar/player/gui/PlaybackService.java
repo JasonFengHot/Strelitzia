@@ -153,7 +153,9 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
     public boolean isPreload() {
         return mIsPreload;
     }
-
+    public void resetPreload() {
+        mIsPreload = false;
+    }
     @Override
     public IBinder onBind(Intent intent) {
         isBindActivity = true;

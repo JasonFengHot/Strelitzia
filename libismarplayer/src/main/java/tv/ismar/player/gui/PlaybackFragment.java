@@ -45,6 +45,7 @@ import java.util.TimerTask;
 
 import tv.ismar.app.BaseActivity;
 import tv.ismar.app.ad.Advertisement;
+import tv.ismar.app.core.Bookmarks;
 import tv.ismar.app.core.PageIntent;
 import tv.ismar.app.core.PageIntentInterface;
 import tv.ismar.app.entity.ClipEntity;
@@ -135,17 +136,18 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
     private boolean mIsClickKefu;// 点击客服中心，返回不应再加载广告
 
     private PlaybackHandler mHandler;
-
+    private boolean isqiyi;
     public PlaybackFragment() {
         // Required empty public constructor
     }
 
-    public static PlaybackFragment newInstance(int pk, int subPk, String source) {
+    public static PlaybackFragment newInstance(int pk, int subPk, String source,boolean isqiyi) {
         PlaybackFragment fragment = new PlaybackFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_PK, pk);
         args.putInt(ARG_SUB_PK, subPk);
         args.putString(ARG_SOURCE, source);
+        args.putBoolean(PageIntentInterface.QIYIFLAG, isqiyi);
         fragment.setArguments(args);
         return fragment;
     }
@@ -167,6 +169,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
         extraItemPk = bundle.getInt(ARG_PK);
         extraSubItemPk = bundle.getInt(ARG_SUB_PK);
         extraSource = bundle.getString(ARG_SOURCE);
+        isqiyi = bundle.getBoolean(PageIntentInterface.QIYIFLAG,false);
         panelShowAnimation = AnimationUtils.loadAnimation(getActivity(),
                 R.anim.fly_up);
         panelHideAnimation = AnimationUtils.loadAnimation(getActivity(),
@@ -240,7 +243,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
         mPlaybackService.setSurfaceView(player_surface);
         mPlaybackService.setQiyiContainer(player_container);
         player_shadow.setVisibility(View.VISIBLE);
-        if (mPlaybackService.isPreload()) {
+        if (mPlaybackService.isPreload() && !isqiyi) {
             // 视云影片详情页预加载
             mPlaybackService.startPlayWhenPrepared();
         } else {
@@ -248,6 +251,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
                 // 点击客服后返回，不加载广告
                 mPlaybackService.onResumeFromKefu();
             } else {
+                mPlaybackService.resetPreload();
                 mPlaybackService.preparePlayer(extraItemPk, extraSubItemPk, extraSource);
             }
         }
