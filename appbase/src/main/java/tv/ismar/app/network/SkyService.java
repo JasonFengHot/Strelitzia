@@ -65,6 +65,8 @@ import tv.ismar.app.models.ActorRelateRequestParams;
 import tv.ismar.app.models.Game;
 import tv.ismar.app.models.HotWords;
 import tv.ismar.app.models.PersonEntitiy;
+import tv.ismar.app.models.PlayRecommend;
+import tv.ismar.app.models.PlayfinishedRecommend;
 import tv.ismar.app.models.Recommend;
 import tv.ismar.app.models.SemanticSearchResponseEntity;
 import tv.ismar.app.models.Sport;
@@ -662,7 +664,18 @@ public interface SkyService {
             @Url String url
     );
 
+    @GET("api/recommend/{channel}/")
+    Observable<PlayfinishedRecommend>apiPlayFinishedRecommend(
+            @Path("channel") String channel,
+            @Query("sn") String sn
+    );
 
+    @GET("api/recommend/exits_play/")
+    Observable<PlayRecommend>apiPlayExitRecommend(
+            @Query("sn") String sn,
+            @Query("item_id") int item_id,
+            @Query("play_scale") int play_scale
+    );
     class ServiceManager {
         private volatile static ServiceManager serviceManager;
         private static final int DEFAULT_CONNECT_TIMEOUT = 6;

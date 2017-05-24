@@ -23,7 +23,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -85,6 +84,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
     private static final int EVENT_CLICK_VIP_BUY = 0x10;
     private static final int EVENT_CLICK_KEFU = 0x11;
     private static final int EVENT_COMPLETE_BUY = 0x12;
+    private static final int EVENT_PLAY_EXIT = 0x13;
     // 以下为弹出菜单id
     private static final int MENU_QUALITY_ID_START = 0;// 码率起始id
     private static final int MENU_QUALITY_ID_END = 8;// 码率结束id
@@ -693,19 +693,21 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
                             }
                         }
                     }
-                    String itemJson = null;
-                    try {
-                        itemJson = JacksonUtils.toJson(mPlaybackService.getItemEntity());
-                    } catch (JsonProcessingException e) {
-                        e.printStackTrace();
-                    }
-                    Intent intent = new Intent("tv.ismar.daisy.PlayFinished");
-                    intent.putExtra("itemJson", itemJson);
-                    intent.putExtra("source", extraSource);
-                    startActivity(intent);
+                    PageIntent pageIntent=new PageIntent();
+                    pageIntent.toPlayFinish(getActivity(),mPlaybackService.getItemEntity().getContentModel(),0,0,"player");
+//                    String itemJson = null;
+//                    try {
+//                        itemJson = JacksonUtils.toJson(mPlaybackService.getItemEntity());
+//                    } catch (JsonProcessingException e) {
+//                        e.printStackTrace();
+//                    }
+
+//                    Intent intent = new Intent("tv.ismar.daisy.PlayFinished");
+//                    intent.putExtra("itemJson", itemJson);
+//                    intent.putExtra("source", extraSource);
+//                    startActivity(intent);
                     // 播放完成，下次从头播放
                     mCurrentPosition = 0;
-                    closeActivity("finish");
                 }
                 break;
             case ERROR:
@@ -828,16 +830,17 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
                         };
                         quitTimer.schedule(task, 5000);
                     } else {
-                        if (mPlaybackService.isPreview()) {
-                            mPlaybackService.logExpenseVideoPreview(mCurrentPosition, "cancel");
-                        }
+//                        if (mPlaybackService.isPreview()) {
+//                            mPlaybackService.logExpenseVideoPreview(mCurrentPosition, "cancel");
+//                        }
                         ExitToast.createToastConfig().dismiss();
-                        mHandler.removeCallbacksAndMessages(null);
-                        timerStop();
-                        removeBufferingLongTime();
-                        hideBuffer();
-                        hidePanel();
-                        closeActivity("source");
+//                        mHandler.removeCallbacksAndMessages(null);
+//                        timerStop();
+//                        removeBufferingLongTime();
+//                        hideBuffer();
+//                        hidePanel();
+                        goOtherPage(EVENT_PLAY_EXIT);
+//                        closeActivity("source");
                     }
                     return true;
                 }
@@ -858,7 +861,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
                 if (mHandler.hasMessages(MSG_AD_COUNTDOWN)) {
                     mHandler.removeMessages(MSG_AD_COUNTDOWN);
                 }
-                closeActivity("source");
+//                closeActivity("source");
                 return true;
             case KeyEvent.KEYCODE_HEADSETHOOK:
             case KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE:
@@ -994,6 +997,12 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
                     mode = PageIntentInterface.ProductCategory.item;
                 }
                 toPayPage(mPlaybackService.getItemEntity().getPk(), expense.getJump_to(), expense.getCpid(), mode);
+                break;
+            case EVENT_PLAY_EXIT:
+                mIsClickKefu = true;
+                mPlaybackService.addHistory(mCurrentPosition, true);
+                PageIntent pageIntent=new PageIntent();
+                pageIntent.toPlayFinish(getActivity(),mPlaybackService.getItemEntity().getContentModel(),extraItemPk,mCurrentPosition/mPlaybackService.getMediaPlayer().getDuration(),"player");
                 break;
         }
     }
@@ -1680,5 +1689,9 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
                 }
             }
         }
+    }
+
+    public void start(){
+        mPlaybackService.preparePlayer(extraItemPk, extraSubItemPk, extraSource);
     }
 }

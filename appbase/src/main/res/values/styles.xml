@@ -10,7 +10,14 @@
         <item name="android:windowBackground">@mipmap/app_launch_bg</item>
         <item name="android:textColor">@android:color/white</item>
     </style>
-
+    <style name="IsmartvTheme" parent="Theme.AppCompat.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="android:textViewStyle">@style/AppTheme.Widget.TextView</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@drawable/transparent</item>
+    </style>
     <style name="IsmartvAppTheme.Widget" />
 
     <style name="AppTheme.Widget.TextView" parent="android:Widget.Holo.Light.TextView">

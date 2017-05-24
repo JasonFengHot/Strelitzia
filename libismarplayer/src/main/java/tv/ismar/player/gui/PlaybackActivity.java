@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.KeyEvent;
 
 import tv.ismar.app.BaseActivity;
+import tv.ismar.app.core.PageIntent;
 import tv.ismar.app.core.PageIntentInterface;
 import tv.ismar.library.util.LogUtils;
 import tv.ismar.player.R;
@@ -81,4 +82,13 @@ public class PlaybackActivity extends BaseActivity {
         }
     };
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode==200){
+            finish();
+        }else{
+            playbackFragment.start();
+        }
+    }
 }

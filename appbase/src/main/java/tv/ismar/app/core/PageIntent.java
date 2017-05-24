@@ -176,6 +176,7 @@ public class PageIntent implements PageIntentInterface {
         intent.setAction("tv.ismar.searchpage.search");
         intent.putExtra("frompage","search");
         context.startActivity(intent);
+
     }
 
     @Override
@@ -233,6 +234,17 @@ public class PageIntent implements PageIntentInterface {
         intent.putExtra("fromPage", frompage);
         intent.putExtra("channel",channel);
         context.startActivity(intent);
+    }
+
+    @Override
+    public void toPlayFinish(Activity context, String channel, int id, int playScale, String frompage) {
+        Intent intent = new Intent();
+        intent.setAction("tv.ismar.daisy.PlayFinished");
+        intent.putExtra("channel",channel);
+        intent.putExtra("item_id",id);
+        intent.putExtra("play_scale",playScale);
+        intent.putExtra("frompage",frompage);
+        context.startActivityForResult(intent,0);
     }
 
 

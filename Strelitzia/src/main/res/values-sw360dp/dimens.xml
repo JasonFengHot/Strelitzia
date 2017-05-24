@@ -1,62 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-<dimen name="linked_video_width">326.67dp</dimen>
-<dimen name="linked_video_height">110.67dp</dimen>
-<dimen name="linked_video_mt">5.33dp</dimen>
 
-<!-- play_finished -->
-<dimen name="play_finished_head_h">33.33dp</dimen>
-<dimen name="play_finished_head_pl">24.67dp</dimen>
-<dimen name="play_finished_head_pb">4.67dp</dimen>
-<dimen name="play_finished_head_img_mlr">11.33dp</dimen>
-<dimen name="play_finished_left_ml">56.00dp</dimen>
-<dimen name="play_finished_left_w">160.00dp</dimen>
-<dimen name="play_finished_img_h">90.00dp</dimen>
-<dimen name="play_finished_img_mt">69.00dp</dimen>
-<dimen name="play_finished_title_mt">8.67dp</dimen>
-<dimen name="play_finished_img_corner_mr">-1.00dp</dimen>
-<dimen name="play_finished_button_mt">11.33dp</dimen>
-<dimen name="play_finished_btn_w">68.67dp</dimen>
-<dimen name="play_finished_btn_h">24.00dp</dimen>
-<dimen name="play_finished_fav_ml">22.67dp</dimen>
-<dimen name="play_finished_btn_pl">32.33dp</dimen>
-<dimen name="play_finished_btn_fav_pl">26.33dp</dimen>
-<dimen name="play_finished_view_ml">55.67dp</dimen>
-<dimen name="play_finished_view_mt">6.00dp</dimen>
-<dimen name="play_finished_right_ml">17.67dp</dimen>
-<dimen name="play_finished_right_layout_mt">17.33dp</dimen>
-<dimen name="play_finished_right_tv_ml">22.00dp</dimen>
-<dimen name="play_finished_gridview_w">330.67dp</dimen>
-<dimen name="play_finished_right_zgrid_mt">16.33dp</dimen>
-<dimen name="play_finished_right_zgrid_mb">43.33dp</dimen>
-<dimen name="play_finished_right_zgrid_column_w">94.67dp</dimen>
-<dimen name="play_finished_right_zgrid_space_h">23.33dp</dimen>
-<dimen name="play_finished_right_zgrid_space_v">7.33dp</dimen>
-<dimen name="play_finished_right_zgrid_selectorLeftPadding">7.67dip</dimen>
-<dimen name="play_finished_right_zgrid_selectorTopPadding">7.33dip</dimen>
-<dimen name="play_finished_right_zgrid_selectorRightPadding">7.33dip</dimen>
-<dimen name="play_finished_right_zgrid_selectorBottomPadding">-12.67dip</dimen>
-<dimen name="play_finished_tv_releted_margintop">33.33dip</dimen>
-<dimen name="play_finished_image_vodie_backgroud_W">94.67dip</dimen>
-<dimen name="play_finished_image_vodie_backgroud_H">53.33dip</dimen>
+<!--play_finish-->
+<dimen name="play_finished_title_h">22.33dp</dimen>
+<dimen name="play_finished_title_ts">16.00dp</dimen>
+<dimen name="play_finished_title_mt">48.33dp</dimen>
+<dimen name="play_finished_title_ml">231.00dp</dimen>
+<dimen name="play_finished_horizontal_recylerview_h">130.33dp</dimen>
+<dimen name="play_finished_horizontal_recylerview_mt">45.67dp</dimen>
+<dimen name="play_finished_horizontal_recylerview_ml">64.33dp</dimen>
+<dimen name="play_finished_horizontal_recylerview_pr">57.33dp</dimen>
+<dimen name="play_finished_vertical_recylerview_h">175.00dp</dimen>
+<dimen name="play_finished_vertical_recylerview_mt">24.67dp</dimen>
+<dimen name="play_finished_vertical_recylerview_ml">125.83dp</dimen>
+<dimen name="play_finished_vertical_recylerview_pr">118.50dp</dimen>
+<dimen name="play_finished_btn_mt">29.67dp</dimen>
+<dimen name="play_finished_btn_w">83.33dp</dimen>
+<dimen name="play_finished_btn_ml">10.67dp</dimen>
+<dimen name="play_finished_vertical_poster_focus_w">152.17dp</dimen>
+<dimen name="play_finished_vertical_poster_focus_h">207.17dp</dimen>
+<dimen name="play_finished_horizontal_poster_focus_w">197.33dp</dimen>
+<dimen name="play_finished_horizontal_poster_focus_h">153.67dp</dimen>
 
-<!-- playfinish_gridview_item -->
-<dimen name="playfinish_gridview_item_linearimage_W">94.67dip</dimen>
-<dimen name="playfinish_gridview_item_linearimage_H">53.33dip</dimen>
-<dimen name="playfinish_gridview_item_text_margintop">8.00dip</dimen>
-<dimen name="playfinish_gridview_iv_label_W">23.67dip</dimen>
-<dimen name="playfinish_gridview_iv_label_H">23.67dip</dimen>
+<!--item_horizontal-->
+<dimen name="item_horizontal_pr">6.67dp</dimen>
+<dimen name="item_horizontal_w">166.00dp</dimen>
+<dimen name="item_horizontal_h">126.33dp</dimen>
+<dimen name="item_horizontal_mt">3.00dp</dimen>
+<dimen name="item_horizontal_mb">1.67dp</dimen>
+<dimen name="item_horizontal_poster_w">160.00dp</dimen>
+<dimen name="item_horizontal_poster_h">90.00dp</dimen>
+<dimen name="item_horizontal_poster_ml">3.00dp</dimen>
+<dimen name="item_horizontal_title_ml">2.33dp</dimen>
+<dimen name="item_horizontal_title_mt">2.67dp</dimen>
+<dimen name="item_horizontal_title_mb">1.67dp</dimen>
+<dimen name="item_horizontal_title_line_space">2.33dp</dimen>
+<dimen name="item_horizontal_title_ts">10.00dp</dimen>
 
-<!--<dimen name="playfinish_gridview_item_marginleft">15dip</dimen>-->
-<!--<dimen name="playfinish_gridview_item_margintop">5dip</dimen>-->
-<!--<dimen name="playfinish_gridview_item_marginright">15dip</dimen>-->
-<!--<dimen name="playfinish_gridview_item_marginbottom">20dip</dimen>-->
+<!--item_vertical-->
+<dimen name="item_vertical_pr">6.67dp</dimen>
+<dimen name="item_vertical_w">125.00dp</dimen>
+<dimen name="item_vertical_h">175.00dp</dimen>
+<dimen name="item_vertical_title_h">42.33dp</dimen>
+<dimen name="item_vertical_title_ts">14.67dp</dimen>
+<dimen name="item_vertical_title_pb">1.67dp</dimen>
 
-<!--<dimen name="playfinish_gridview_item_itemImage_PL">1dip</dimen>-->
-<!--<dimen name="playfinish_gridview_item_itemText_marginleft">6dip</dimen>-->
-<!--<dimen name="playfinish_gridview_item_itemText_marginright">6dip</dimen>-->
-<!--<dimen name="playfinish_gridview_item_itemText_textsize">30sp</dimen>-->
-<!--<dimen name="playfinish_gridview_item_iv_label_marginright">16dip</dimen>-->
-<!--<dimen name="playfinish_gridview_item_iv_label_margintop">3dip</dimen>-->
-
+<!--scroll_size-->
+<dimen name="scroll_395">131.67dp</dimen>
+<dimen name="scroll_396">132.00dp</dimen>
+<dimen name="scroll_238">79.33dp</dimen>
+<dimen name="scroll_337">112.33dp</dimen>
+<dimen name="scroll_1127">375.67dp</dimen>
+<dimen name="scroll_732">244.00dp</dimen>
+<dimen name="scroll_519">173.00dp</dimen>
+<dimen name="scroll_307">102.33dp</dimen>
+<dimen name="scroll_147">49.00dp</dimen>
+<dimen name="scroll_1183">394.33dp</dimen>
+<dimen name="scroll_665">221.67dp</dimen>
 </resources>

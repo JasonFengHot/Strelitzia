@@ -1,436 +1,267 @@
 package tv.ismar.daisy;
 
 import android.content.Intent;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
-import android.util.Log;
-import android.view.Gravity;
-import android.view.LayoutInflater;
-import android.view.MotionEvent;
+import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.text.TextUtils;
 import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.View.OnFocusChangeListener;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import com.google.gson.Gson;
 
 import java.util.ArrayList;
 
-import tv.ismar.account.IsmartvActivator;
-import tv.ismar.app.AppConstant;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 import tv.ismar.app.BaseActivity;
-import tv.ismar.app.core.DaisyUtils;
 import tv.ismar.app.core.PageIntent;
 import tv.ismar.app.core.SimpleRestClient;
 import tv.ismar.app.core.Source;
-import tv.ismar.app.db.FavoriteManager;
-import tv.ismar.app.db.HistoryManager;
-import tv.ismar.app.entity.Favorite;
-import tv.ismar.app.entity.Item;
-import tv.ismar.app.exception.NetworkException;
-import tv.ismar.app.network.entity.ItemEntity;
-import tv.ismar.app.player.InitPlayerTool;
-import tv.ismar.app.ui.ZGridView;
-import tv.ismar.app.util.BitmapDecoder;
-import tv.ismar.app.util.Utils;
-import tv.ismar.app.widget.AsyncImageView;
+import tv.ismar.app.models.PlayRecommend;
+import tv.ismar.app.models.PlayfinishedRecommend;
+import tv.ismar.library.injectdb.util.Log;
+import tv.ismar.searchpage.utils.JasmineUtil;
+import tv.ismar.subject.adapter.OnItemClickListener;
+import tv.ismar.subject.adapter.OnItemFocusedListener;
+import tv.ismar.subject.views.MyRecyclerView;
 
-public class PlayFinishedActivity extends BaseActivity implements OnFocusChangeListener, OnItemClickListener, OnClickListener {
 
-    private static final String TAG = "PlayFinishedActivity/LH";
-    private ItemEntity mItemEntity;
-    //	private Bitmap bitmap;
-    LinearLayout linearLeft;
-    LinearLayout linearRight;
-    TextView tvVodName;
-    AsyncImageView imageBackgroud;
-    ImageView imageVodLabel;
-    Button btnReplay;
-    Button btnFavorites;
-    ZGridView gridview;
-    PlayFinishedAdapter playAdapter;
-    private Item[] items;
-    private static final int UPDATE = 1;
-    private static final int UPDATE_BITMAP = 2;
-    private static final int NETWORK_EXCEPTION = -1;
-    final SimpleRestClient simpleRest = new SimpleRestClient();
-    private FavoriteManager mFavoriteManager;
-    private HistoryManager mHistorymanager;
-    private InitPlayerTool tool;
-    private String source;
+public class PlayFinishedActivity extends BaseActivity implements View.OnClickListener, View.OnFocusChangeListener {
+
+    private TextView play_finished_title;
+    private MyRecyclerView play_finished_horizontal_recylerview;
+    private MyRecyclerView play_finished_vertical_recylerview;
+    private Button play_finished_confirm_btn;
+    private Button play_finished_cancel_btn;
+    private int itemId;
+    private int playScale;
+    private boolean isVertical;
+    private String channel;
+    private View vertical_poster_focus;
+    private View horizontal_poster_focus;
+    private static final int CONTINUE_PLAY=100;
+    private static final int EXIT_PLAY=200;
+    private int  focusedPosition=0;
+    private boolean leftFocus=false;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+        protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.play_finished);
-
-        initViews();
-        mFavoriteManager = DaisyUtils.getFavoriteManager(this);
-        mHistorymanager = DaisyUtils.getHistoryManager(this);
-        try {
-            Intent intent = getIntent();
-            if (null != intent) {
-//                DaisyUtils.getVodApplication(this).addActivityToPool(this.toString(), this);
-                String itemJson = intent.getStringExtra("itemJson");
-                mItemEntity = new Gson().fromJson(itemJson, ItemEntity.class);
-                source = intent.getStringExtra("source");
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            finish();
-            return;
+        Intent intent = getIntent();
+        itemId = intent.getIntExtra("item_id", 0);
+        playScale = intent.getIntExtra("play_scale", 0);
+        if("homepage".equals(baseChannel)) {
+            channel = intent.getStringExtra("channel");
         }
-        // 实际这些已经封装好了
-        new Thread(mRelatedTask).start();
-        initLayout();
-    }
-
-    private Runnable mRelatedTask = new Runnable() {
-        @Override
-        public void run() {
-            try {
-                items = simpleRest.getRelatedItem("/api/tv/relate/" + mItemEntity.getItemPk() + "/");
-                Log.i(TAG, "relate==" + mItemEntity.getItemPk());
-            } catch (NetworkException e) {
-                e.printStackTrace();
-            }
-            if (items == null || items.length == 0) {
-                mHandle.sendEmptyMessage(NETWORK_EXCEPTION);
-            } else {
-                mHandle.sendEmptyMessage(UPDATE);
-            }
+        initView();
+//            initData();
+        PlayfinishedRecommend play = new PlayfinishedRecommend();
+        play.setList(new ArrayList<PlayfinishedRecommend.RecommendItem>());
+        for (int i = 0; i < 12; i++) {
+            PlayfinishedRecommend.RecommendItem item = new PlayfinishedRecommend.RecommendItem();
+            item.setTitle("标题标题标题标题标题标题标题标题标题" + i);
+            item.setContent_model("teleplay");
+            item.setPk(696674);
+            play.getList().add(item);
         }
-    };
-
-    @Override
-    protected void onResume() {
-        // TODO Auto-generated method stub
-        super.onResume();
-        AppConstant.purchase_referer = "video";
-        AppConstant.purchase_page = "finished";
-        AppConstant.purchase_entrance_page = "finished";
-        AppConstant.purchase_entrance_related_item = String.valueOf(mItemEntity.getItemPk());
-        AppConstant.purchase_entrance_related_title = mItemEntity.getTitle();
-        AppConstant.purchase_entrance_related_channel = AppConstant.purchase_channel;
-        if (isFavorite()) {
-            btnFavorites.setPadding(getResources().getDimensionPixelSize(R.dimen.play_finished_btn_fav_pl), 0, 0, 0);
-            btnFavorites.setText(getResources().getString(R.string.favorited));
-        } else {
-            btnFavorites.setPadding(getResources().getDimensionPixelSize(R.dimen.play_finished_btn_pl), 0, 0, 0);
-            btnFavorites.setText(getResources().getString(R.string.favorite));
+        processData(play.getList());
+        play_finished_title.setText("您可能对以下影片感兴趣:");
+        if (itemId == 0) {
+            play_finished_confirm_btn.setVisibility(View.GONE);
         }
     }
 
-    private void initViews() {
-//        final View background = findViewById(R.id.large_layout);
-//        new BitmapDecoder().decode(this, R.drawable.main_bg, new BitmapDecoder.Callback() {
-//            @Override
-//            public void onSuccess(BitmapDrawable bitmapDrawable) {
-//                background.setBackgroundDrawable(bitmapDrawable);
-//            }
-//        });
 
-        linearLeft = (LinearLayout) findViewById(R.id.linear_left);
-//        linearLeft.setOnHoverListener(mOnHoverListener);
-        linearRight = (LinearLayout) findViewById(R.id.linear_right);
-        tvVodName = (TextView) findViewById(R.id.tv_vodie_name);
-        imageBackgroud = (AsyncImageView) findViewById(R.id.image_vodie_backgroud);
-        imageVodLabel = (ImageView) findViewById(R.id.image_vod_label);
-        btnReplay = (Button) findViewById(R.id.btn_replay);
-        btnReplay.setOnClickListener(this);
-        btnReplay.setOnFocusChangeListener(this);
-        btnReplay.setOnHoverListener(mOnHoverListener);
-        btnFavorites = (Button) findViewById(R.id.btn_favorites);
-        btnFavorites.setOnClickListener(this);
-        btnFavorites.setOnFocusChangeListener(this);
-        btnFavorites.setOnHoverListener(mOnHoverListener);
-        gridview = (ZGridView) findViewById(R.id.gridview_related);
-        gridview.setOnFocusChangeListener(this);
-        gridview.setOnItemClickListener(this);
-//		gridview.setNumColumns(3);
-//		int H = DaisyUtils.getVodApplication(this).getheightPixels(this);
-//		if(H==720){
-//			gridview.setVerticalSpacing(20);
-//			gridview.setHorizontalSpacing(50);
-//		}
-//		else{
-//			gridview.setVerticalSpacing(40);
-//			gridview.setHorizontalSpacing(100);
-//		}
 
-    }
 
-    private Handler mHandle = new Handler() {
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            switch (msg.what) {
-                case UPDATE:
-                    playAdapter = new PlayFinishedAdapter(PlayFinishedActivity.this, items, R.layout.playfinish_gridview_item);
-                    gridview.setAdapter(playAdapter);
-                    gridview.setFocusable(true);
-                    break;
-                case NETWORK_EXCEPTION:
-                    break;
-            }
-        }
-    };
-
-    @Override
-    public void onFocusChange(View v, boolean hasFocus) {
-        switch (v.getId()) {
-            case R.id.gridview_related:
-                try {
-                    if (hasFocus) {
-                    } else {
-                        gridview.setSelection(-1);
-                    }
-                } catch (Exception e) {
+    private void initView() {
+                play_finished_title = (TextView) findViewById(R.id.play_finished_title);
+                play_finished_horizontal_recylerview = (MyRecyclerView) findViewById(R.id.play_finished_horizontal_recylerview);
+                play_finished_vertical_recylerview = (MyRecyclerView) findViewById(R.id.play_finished_vertical_recylerview);
+                play_finished_confirm_btn = (Button) findViewById(R.id.play_finished_confirm_btn);
+                play_finished_cancel_btn = (Button) findViewById(R.id.play_finished_cancel_btn);
+                vertical_poster_focus = findViewById(R.id.vertical_poster_focus);
+                horizontal_poster_focus = findViewById(R.id.horizontal_poster_focus);
+                if("chinesemovie".equals(channel)||"overseas".equals(channel)||"movie".equals(channel)){
+                    play_finished_vertical_recylerview.setVisibility(View.VISIBLE);
+                    vertical_poster_focus.setVisibility(View.VISIBLE);
+                    play_finished_vertical_recylerview.setLayoutManager(new StaggeredGridLayoutManager(1,StaggeredGridLayoutManager.HORIZONTAL));
+                    isVertical=true;
+                }else{
+                    play_finished_horizontal_recylerview.setVisibility(View.VISIBLE);
+                    horizontal_poster_focus.setVisibility(View.VISIBLE);
+                    play_finished_horizontal_recylerview.setLayoutManager(new StaggeredGridLayoutManager(1,StaggeredGridLayoutManager.HORIZONTAL));
+                    isVertical=false;
                 }
-                break;
-            default:
-                break;
-        }
-    }
+                play_finished_confirm_btn.setOnClickListener(this);
+                play_finished_cancel_btn.setOnClickListener(this);
+                play_finished_confirm_btn.setOnFocusChangeListener(this);
+                play_finished_cancel_btn.setOnFocusChangeListener(this);
+            }
 
-    @Override
-    public void onItemClick(AdapterView<?> adapterView, View view, int position, long postions) {
-        Intent intent = new Intent();
-        if (items[position].expense != null) {
-            if ("movie".equals(items[position].content_model)) {
-                intent.setAction("tv.ismar.daisy.PFileItem");
-                intent.putExtra("title", "电影");
-                intent.putExtra("url", items[position].item_url);
-                intent.putExtra("fromPage", "related");
-            } else {
-                intent.setAction("tv.ismar.daisy.Item");
-                intent.putExtra("url", items[position].item_url);
-                intent.putExtra("fromPage", "related");
+        private void initData() {
+            if(itemId==0) {
+                play_finished_confirm_btn.setVisibility(View.GONE);
+                play_finished_title.setText("您可能对以下影片感兴趣:");
+                mSkyService.apiPlayFinishedRecommend(channel,SimpleRestClient.sn_token)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new BaseObserver<PlayfinishedRecommend>() {
+
+                            @Override
+                            public void onCompleted() {
+
+                            }
+
+                            @Override
+                            public void onNext(PlayfinishedRecommend playfinishedRecommend) {
+                                processData(playfinishedRecommend.getList());
+                            }
+                        });
+            }else {
+                mSkyService.apiPlayExitRecommend(SimpleRestClient.sn_token, itemId, playScale)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new BaseObserver<PlayRecommend>() {
+
+                            @Override
+                            public void onCompleted() {
+
+                            }
+
+                            @Override
+                            public void onNext(PlayRecommend playRecommend) {
+                                if(playRecommend!=null) {
+                                    if (TextUtils.isEmpty(playRecommend.getRecommend_title()))
+                                        play_finished_title.setText(playRecommend.getRecommend_title());
+                                    processData(playRecommend.getRecommend_items());
+                                }
+                            }
+                        });
             }
-            try {
-                startActivity(intent);
-            } catch (Exception e) {
-                e.printStackTrace();
+        }
+
+    private void processData(final ArrayList<PlayfinishedRecommend.RecommendItem> list) {
+        PlayFinishedAdapter playFinishedAdapter=new PlayFinishedAdapter(this,list,isVertical);
+        playFinishedAdapter.setItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                PlayfinishedRecommend.RecommendItem item=list.get(position);
+                String contentModel=item.getContent_model();
+                if(contentModel!=null) {
+                    PageIntent pageIntent = new PageIntent();
+                    if (contentModel.equals("music") || (contentModel.equals("sport") && item.getExpense_info() == null) || contentModel.equals("game")) {
+                        pageIntent.toPlayPage(PlayFinishedActivity.this, item.getPk(), 0, Source.RELATED);
+                    } else {
+                        pageIntent.toDetailPage(PlayFinishedActivity.this, Source.RELATED.getValue(), item.getPk());
+                    }
+                }
             }
-        } else {
-            DaisyUtils.gotoSpecialPage(PlayFinishedActivity.this,
-                    items[position].content_model, items[position].item_url,
-                    "related");
+        });
+        playFinishedAdapter.setItemFocusedListener(new OnItemFocusedListener() {
+            @Override
+            public void onItemfocused(View view, int position, boolean hasFocus) {
+                if(isVertical){
+                    if(hasFocus) {
+                        if(leftFocus){
+                            leftFocus=false;
+                            if(focusedPosition==0&&play_finished_vertical_recylerview.getChildAt(0)!=null){
+                                play_finished_vertical_recylerview.getChildAt(0).requestFocus();
+                                return;
+                            }else if(focusedPosition==list.size()-1&&play_finished_vertical_recylerview.getChildAt(3)!=null){
+                                play_finished_vertical_recylerview.getChildAt(3).requestFocus();
+                                return;
+                            }
+                        }
+                        view.findViewById(R.id.item_vertical_poster_title).setVisibility(View.VISIBLE);
+                        if(position==0||(position==1&&view.getX()-getResources().getDimensionPixelOffset(R.dimen.scroll_395)>0)||position==list.size()-1) {
+                            play_finished_vertical_recylerview.smoothScrollBy(0, 0);
+                        }else{
+                            play_finished_vertical_recylerview.smoothScrollBy((int) view.getX() - getResources().getDimensionPixelOffset(R.dimen.scroll_396), 0);
+                        }
+                        JasmineUtil.scaleOut3(view);
+                        RelativeLayout.LayoutParams params=new RelativeLayout.LayoutParams(getResources().getDimensionPixelOffset(R.dimen.play_finished_vertical_poster_focus_w), getResources().getDimensionPixelOffset(R.dimen.play_finished_vertical_poster_focus_h));
+                        params.topMargin=getResources().getDimensionPixelOffset(R.dimen.scroll_238);
+                        if(position==0){
+                            params.leftMargin=getResources().getDimensionPixelOffset(R.dimen.scroll_337);
+                        }else if(position==list.size()-1&&list.size()>2){
+                            params.leftMargin=getResources().getDimensionPixelOffset(R.dimen.scroll_1127);
+                        }else{
+                            params.leftMargin=getResources().getDimensionPixelOffset(R.dimen.scroll_732);
+                        }
+                        vertical_poster_focus.setLayoutParams(params);
+                        vertical_poster_focus.setVisibility(View.VISIBLE);
+                        view.findViewById(R.id.item_vertical_poster_title).setSelected(true);
+                        focusedPosition=position;
+                    }else{
+                        JasmineUtil.scaleIn3(view);
+                        view.findViewById(R.id.item_vertical_poster_title).setVisibility(View.GONE);
+                        vertical_poster_focus.setVisibility(View.INVISIBLE);
+                        view.findViewById(R.id.item_vertical_poster_title).setSelected(false);
+                    }
+                }else{
+                    if(hasFocus){
+                        if(leftFocus){
+                            leftFocus=false;
+                            if(focusedPosition==0&&play_finished_horizontal_recylerview.getChildAt(0)!=null){
+                                play_finished_horizontal_recylerview.getChildAt(0).requestFocus();
+                                return;
+                            }else if(focusedPosition==list.size()-1&&play_finished_horizontal_recylerview.getChildAt(3)!=null){
+                                play_finished_horizontal_recylerview.getChildAt(3).requestFocus();
+                                return;
+                            }
+                        }
+                        if(position==0||(position==1&&view.getX()-getResources().getDimensionPixelOffset(R.dimen.scroll_519)>0)||position==list.size()-1) {
+                            play_finished_horizontal_recylerview.smoothScrollBy(0, 0);
+                        }else{
+                            play_finished_horizontal_recylerview.smoothScrollBy((int) view.getX() - getResources().getDimensionPixelOffset(R.dimen.scroll_519), 0);
+                        }
+                        JasmineUtil.scaleOut3(view);
+                        RelativeLayout.LayoutParams params=new RelativeLayout.LayoutParams(getResources().getDimensionPixelOffset(R.dimen.play_finished_horizontal_poster_focus_w),getResources().getDimensionPixelOffset(R.dimen.play_finished_horizontal_poster_focus_h));
+                        params.topMargin=getResources().getDimensionPixelOffset(R.dimen.scroll_307);
+                        if(position==0){
+                            params.leftMargin=getResources().getDimensionPixelOffset(R.dimen.scroll_147);
+                        }else if(position==list.size()-1&&list.size()>2){
+                            params.leftMargin=getResources().getDimensionPixelOffset(R.dimen.scroll_1183);
+                        }else{
+                            params.leftMargin=getResources().getDimensionPixelOffset(R.dimen.scroll_665);
+                        }
+                        horizontal_poster_focus.setLayoutParams(params);
+                        horizontal_poster_focus.setVisibility(View.VISIBLE);
+                        focusedPosition=position;
+                    }else{
+                        JasmineUtil.scaleIn3(view);
+                        horizontal_poster_focus.setVisibility(View.GONE);
+                    }
+                }
+            }
+        });
+        if(isVertical){
+            play_finished_vertical_recylerview.setAdapter(playFinishedAdapter);
+        }else{
+            play_finished_horizontal_recylerview.setAdapter(playFinishedAdapter);
         }
     }
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.btn_replay:
-                if (mItemEntity != null) {
-//                    String url = SimpleRestClient.root_url + "/api/item/" + item.item_pk + "/";
-//                    int sub_item_pk = -1;
-//                    History history = null;
-//                    if (SimpleRestClient.isLogin())
-//                        history = mHistorymanager.getHistoryByUrl(url, "yes");
-//                    else
-//                        history = mHistorymanager.getHistoryByUrl(url, "no");
-//                    if (history != null) {
-//                        history.last_position = 0;
-//                        if (SimpleRestClient.isLogin())
-//                            mHistorymanager.addHistory(history, "yes");
-//                        else
-//                            mHistorymanager.addHistory(history, "no");
-//                        if (history.sub_url != null) {
-//                            url = history.sub_url;
-//                            sub_item_pk = Utils.getItemPk(url);
-//                        }
-//                    }
-                    PageIntent pageIntent = new PageIntent();
-                    pageIntent.toPlayPage(PlayFinishedActivity.this, mItemEntity.getItemPk(), 0, Source.getSource(source));
-                    finish();
-                }
+        switch (v.getId()){
+            case R.id.play_finished_confirm_btn:
+                setResult(CONTINUE_PLAY);
+                finish();
                 break;
-            case R.id.btn_favorites:
-                String isnet = "";
-                if (!Utils.isEmptyText(IsmartvActivator.getInstance().getAuthToken())) {
-                    isnet = "yes";
-                } else {
-                    isnet = "no";
-                }
-                if (isFavorite()) {
-                    String url = IsmartvActivator.getInstance().getApiDomain() + "/api/item/" + mItemEntity.getItemPk() + "/";
-                    if (IsmartvActivator.getInstance().isLogin()) {
-                        deleteFavoriteByNet();
-                        mFavoriteManager.deleteFavoriteByUrl(url, "yes");
-                    } else {
-                        mFavoriteManager.deleteFavoriteByUrl(url, "no");
-                    }
-
-                    showToast(getResources().getString(R.string.vod_bookmark_remove_success));
-                } else {
-                    String url = IsmartvActivator.getInstance().getApiDomain() + "/api/item/" + mItemEntity.getItemPk() + "/";
-                    Favorite favorite = new Favorite();
-                    favorite.title = mItemEntity.getTitle();
-                    favorite.adlet_url = mItemEntity.getAdletUrl();
-                    favorite.content_model = mItemEntity.getContentModel();
-                    favorite.url = url;
-                    favorite.quality = mItemEntity.getQuality();
-                    favorite.is_complex = mItemEntity.getIsComplex();
-                    favorite.isnet = isnet;
-                    if (isnet.equals("yes")) {
-                        createFavoriteByNet();
-                    }
-                    ArrayList<Favorite> favorites = DaisyUtils.getFavoriteManager(getApplicationContext()).getAllFavorites("no");
-                    if(favorites.size()>49){
-                        mFavoriteManager.deleteFavoriteByUrl(favorites.get(favorites.size()-1).url, "no");
-                    }
-                    mFavoriteManager.addFavorite(favorite, isnet);
-                    // mFavoriteManager.addFavorite(item.title, url, mItem.content_model);
-                    showToast(getResources().getString(R.string.vod_bookmark_add_success));
-                }
-                if (isFavorite()) {
-                    btnFavorites.setPadding(getResources().getDimensionPixelSize(R.dimen.play_finished_btn_fav_pl), 0, 0, 0);
-                    btnFavorites.setText(getResources().getString(R.string.favorited));
-                } else {
-                    btnFavorites.setPadding(getResources().getDimensionPixelSize(R.dimen.play_finished_btn_pl), 0, 0, 0);
-                    btnFavorites.setText(getResources().getString(R.string.favorite));
-                }
-                break;
-            default:
+            case R.id.play_finished_cancel_btn:
+                setResult(EXIT_PLAY);
+                finish();
                 break;
         }
-
-    }
-
-    private void deleteFavoriteByNet() {
-        simpleRest.doSendRequest("/api/bookmarks/remove/", "post", "access_token=" +
-                IsmartvActivator.getInstance().getAuthToken() + "&device_token=" + SimpleRestClient.device_token + "&item=" + mItemEntity.getItemPk(), new SimpleRestClient.HttpPostRequestInterface() {
-
-            @Override
-            public void onSuccess(String info) {
-                // TODO Auto-generated method stub
-                if ("200".equals(info)) {
-
-                }
-            }
-
-            @Override
-            public void onPrepare() {
-                // TODO Auto-generated method stub
-
-            }
-
-            @Override
-            public void onFailed(String error) {
-                // TODO Auto-generated method stub
-
-            }
-        });
-    }
-
-    private void createFavoriteByNet() {
-        simpleRest.doSendRequest("/api/bookmarks/create/", "post", "access_token=" + IsmartvActivator.getInstance().getAuthToken() + "&device_token=" + SimpleRestClient.device_token + "&item=" + mItemEntity.getItemPk(), new SimpleRestClient.HttpPostRequestInterface() {
-
-            @Override
-            public void onSuccess(String info) {
-                // TODO Auto-generated method stub
-
-            }
-
-            @Override
-            public void onPrepare() {
-                // TODO Auto-generated method stub
-
-            }
-
-            @Override
-            public void onFailed(String error) {
-                // TODO Auto-generated method stub
-
-            }
-        });
-    }
-
-    /*
-     * get the favorite status of the item.
-     */
-    private boolean isFavorite() {
-        if (mItemEntity != null) {
-            String url = mItemEntity.getItem_url();
-            if (url == null && mItemEntity.getItemPk() != 0) {
-                url = IsmartvActivator.getInstance().getApiDomain() + "/api/item/" + mItemEntity.getItemPk() + "/";
-            }
-            Favorite favorite;
-            if (IsmartvActivator.getInstance().isLogin()) {
-                favorite = mFavoriteManager.getFavoriteByUrl(url, "yes");
-            } else {
-                favorite = mFavoriteManager.getFavoriteByUrl(url, "no");
-            }
-            if (favorite != null) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private void initLayout() {
-        tvVodName.setText(mItemEntity.getTitle());
-        switch (mItemEntity.getQuality()) {
-            case 3:
-                imageVodLabel.setBackgroundResource(R.drawable.label_uhd);
-                break;
-            case 4:
-                imageVodLabel.setBackgroundResource(R.drawable.label_hd);
-                break;
-            default:
-                imageVodLabel.setVisibility(View.GONE);
-                break;
-        }
-        imageBackgroud.setUrl(mItemEntity.getPosterUrl());
     }
 
     @Override
-    protected void onDestroy() {
-        if (tool != null)
-            tool.removeAsycCallback();
-        playAdapter = null;
-        mFavoriteManager = null;
-//        DaisyUtils.getVodApplication(this).removeActivtyFromPool(this.toString());
-        super.onDestroy();
-    }
-
-    private void showToast(String text) {
-        LayoutInflater inflater = getLayoutInflater();
-        View layout = inflater.inflate(R.layout.simple_toast, (ViewGroup) findViewById(R.id.simple_toast_root));
-        TextView toastText = (TextView) layout.findViewById(R.id.toast_text);
-        toastText.setText(text);
-        Toast toast = new Toast(getApplicationContext());
-        toast.setGravity(Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
-        toast.setDuration(Toast.LENGTH_SHORT);
-        toast.setView(layout);
-        toast.show();
-    }
-
-    private View.OnHoverListener mOnHoverListener = new View.OnHoverListener() {
-
-        @Override
-        public boolean onHover(View v, MotionEvent keycode) {
-            switch (keycode.getAction()) {
-                case MotionEvent.ACTION_HOVER_ENTER:
-                case MotionEvent.ACTION_HOVER_MOVE:
-                    v.requestFocusFromTouch();
-                    break;
-                case MotionEvent.ACTION_HOVER_EXIT:
-                    break;
-                default:
-                    break;
-            }
-            return false;
+    public void onFocusChange(View v, boolean hasFocus) {
+        if(hasFocus) {
+            leftFocus = true;
         }
-    };
+    }
 }
