@@ -47,17 +47,6 @@
 
         </activity>
 
-        <activity android:name="tv.ismar.view.ListPageActivity"
-            android:hardwareAccelerated="true"
-            android:screenOrientation="landscape"
-            android:theme="@style/IsmartvAppTheme.Fullscreen">
-            <intent-filter>
-                <action android:name="tv.ismar.daisy.listpage"/>
-
-                <category android:name="android.intent.category.DEFAULT"/>
-            </intent-filter>
-
-        </activity>
     </application>
 
 </manifest>
