@@ -967,7 +967,7 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
                 String result = null;
                 try {
                     result = response.body().string();
-                } catch (IOException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
                 LogUtils.i(TAG, "SendHistory : " + result);

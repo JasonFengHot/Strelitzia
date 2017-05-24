@@ -42,6 +42,7 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import tv.ismar.account.IsmartvActivator;
 import tv.ismar.app.BaseActivity;
 import tv.ismar.app.ad.Advertisement;
 import tv.ismar.app.core.Bookmarks;
@@ -52,6 +53,7 @@ import tv.ismar.app.network.entity.AdElementEntity;
 import tv.ismar.app.network.entity.ItemEntity;
 import tv.ismar.app.player.OnNoNetConfirmListener;
 import tv.ismar.app.widget.ModuleMessagePopWindow;
+import tv.ismar.library.network.HttpManager;
 import tv.ismar.library.util.JacksonUtils;
 import tv.ismar.library.util.LogUtils;
 import tv.ismar.library.util.NetworkUtils;
@@ -266,6 +268,10 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         LogUtils.i(TAG, "resultCode:" + resultCode + " request:" + requestCode);
+        String deviceToken = IsmartvActivator.getInstance().getDeviceToken();
+        String authToken = IsmartvActivator.getInstance().getAuthToken();
+        HttpManager.getInstance().setAccessToken(authToken);
+        HttpManager.getInstance().init(IsmartvActivator.getInstance().getApiDomain(), IsmartvActivator.getInstance().getUpgradeDomain(), deviceToken);
         if (requestCode == PAYMENT_REQUEST_CODE) {
             if (resultCode == PAYMENT_SUCCESS_CODE) {
                 // 成功购买后继续播放
