@@ -221,7 +221,7 @@ public class IsmartvActivator {
                         trustSecurityActive(sn, manufacture, kind, version, rsaEncryptResult,
                                 fingerprint, "v4_0", getAndroidDevicesInfo(), DeviceUtils.getLocalwlanAddress(),DeviceUtils.getLocalHardwareAddress())
                         .execute();
-                Log.i(TAG,resultResponse.code()+"");
+                Log.i(TAG,DeviceUtils.getLocalwlanAddress()+"MAC: "+DeviceUtils.getLocalHardwareAddress());
                 if (resultResponse.errorBody() == null) {
                     mResult = resultResponse.body();
                     saveAccountInfo(mResult);

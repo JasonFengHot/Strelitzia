@@ -14,6 +14,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.provider.Settings;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -38,6 +39,7 @@ import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -60,11 +62,12 @@ import tv.ismar.library.util.NetworkUtils;
 import tv.ismar.library.util.StringUtils;
 import tv.ismar.player.IsmartvPlayer;
 import tv.ismar.player.R;
+import tv.ismar.player.listener.EpisodeOnclickListener;
 import tv.ismar.player.widget.AdImageDialog;
 import tv.ismar.player.widget.ExitToast;
 
 public class PlaybackFragment extends Fragment implements PlaybackService.Client.Callback,
-        PlayerMenu.OnCreateMenuListener, Advertisement.OnPauseVideoAdListener, PlaybackService.ServiceCallback {
+        PlayerMenu.OnCreateMenuListener, Advertisement.OnPauseVideoAdListener, PlaybackService.ServiceCallback ,EpisodeOnclickListener{
 
     private final String TAG = "LH/PlaybackFragment";
     public static final int PAYMENT_REQUEST_CODE = 0xd6;
@@ -103,7 +106,8 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
     private SurfaceView player_surface;
     private LinearLayout panel_layout;
     private TextView player_timer, player_quality, player_title;
-
+    private PlayerSettingMenu settingMenu;
+    private View parentView;
     private SeekBar player_seekBar;
     private PlayerMenu playerMenu;
     private ImageView player_logo_image;
@@ -111,6 +115,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
     private View ad_vip_layout;
     private ListView player_menu;
     private LinearLayout player_buffer_layout;
+    private LinearLayout player_top_panel;
     private ImageView player_buffer_img;
     private TextView player_buffer_text;
     private ImageView player_previous, player_forward, player_start;
@@ -119,6 +124,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
     private AnimationDrawable animationDrawable;
     private Animation panelShowAnimation;
     private Animation panelHideAnimation;
+    private Animation top_fly_up,top_fly_down;
     private AdImageDialog adImageDialog;
     private Advertisement mAdvertisement;
 
@@ -176,6 +182,8 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
                 R.anim.fly_up);
         panelHideAnimation = AnimationUtils.loadAnimation(getActivity(),
                 R.anim.fly_down);
+        top_fly_down=AnimationUtils.loadAnimation(getActivity(),R.anim.top_fly_down);
+        top_fly_up=AnimationUtils.loadAnimation(getActivity(),R.anim.top_fly_up);
         mAdvertisement = new Advertisement(getActivity());
         mHandler = new PlaybackHandler(this);
         mClient = new PlaybackService.Client(getActivity(), this);
@@ -186,6 +194,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
                              Bundle savedInstanceState) {
         LogUtils.i(TAG, "onCreateView");
         View contentView = inflater.inflate(R.layout.fragment_playback, container, false);
+        parentView=contentView;
         initView(contentView);
         return contentView;
     }
@@ -299,6 +308,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
         player_container = (FrameLayout) contentView.findViewById(R.id.player_container);
         player_surface = (SurfaceView) contentView.findViewById(R.id.player_surface);
         panel_layout = (LinearLayout) contentView.findViewById(R.id.panel_layout);
+        player_top_panel= (LinearLayout) contentView.findViewById(R.id.player_top_panel);
         player_timer = (TextView) contentView.findViewById(R.id.player_timer);
         player_quality = (TextView) contentView.findViewById(R.id.player_quality);
         player_title = (TextView) contentView.findViewById(R.id.player_title);
@@ -615,6 +625,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
                 player_shadow.setVisibility(View.GONE);
                 hideBuffer();
                 updateTitle(mPlaybackService.getItemEntity().getTitle());
+                Log.i("PlayerTitle",mPlaybackService.getItemEntity().getTitle());
                 updateQuality(mPlaybackService.getCurrentQuality());
                 updateTimer(mCurrentPosition);
                 player_seekBar.setMax(mPlaybackService.getMediaPlayer().getDuration());
@@ -808,8 +819,20 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
                     return true;
                 }
                 hidePanel();
-                if (!isMenuShow()) {
-                    showMenu();
+//                if (!isMenuShow()) {
+//                    showMenu();
+//                }
+                if(settingMenu!=null&&settingMenu.isShowing()){
+                    settingMenu.dismiss();
+                }else{
+                    ItemEntity[] subItems = mPlaybackService.getItemEntity().getSubitems();
+                    ArrayList<ItemEntity> list=new ArrayList<>();
+                    for (int i=0;i<subItems.length;i++){
+                        list.add(subItems[i]);
+                    }
+                    Log.i("SettingMenu","length: "+list.size());
+                    settingMenu=new PlayerSettingMenu(getActivity().getApplicationContext(),list,mPlaybackService.getSubItemPk(),this);
+                    settingMenu.showAtLocation(parentView,Gravity.BOTTOM,0,0);
                 }
                 return true;
             case KeyEvent.KEYCODE_DPAD_DOWN:
@@ -952,6 +975,40 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
         }
         return false;
     }
+    @Override
+    public void onItemClick(int id) {
+        if (id == mPlaybackService.getSubItemPk()) {
+            return ;
+        }
+        if (!NetworkUtils.isConnected(getActivity())) {
+            ((BaseActivity) getActivity()).showNoNetConnectDialog(onNoNetConfirmListener);
+            mPlaybackService.pausePlayer();
+            LogUtils.e(TAG, "Network error switch quality.");
+        }
+        for (ItemEntity subItem : mPlaybackService.getItemEntity().getSubitems()) {
+            if (subItem.getPk() == id) {
+                mPlaybackService.logVideoExit(mCurrentPosition, "next");
+                timerStop();
+                final ItemEntity subItemDelay = subItem;
+                // 点击菜单后延迟400ms处理，菜单不会有卡顿现象
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        ItemEntity.Clip clip = subItemDelay.getClip();
+                        mPlaybackService.getItemEntity().setTitle(subItemDelay.getTitle());
+                        mPlaybackService.getItemEntity().setClip(clip);
+                        player_logo_image.setVisibility(View.GONE);
+
+                        mPlaybackService.stopPlayer(false);// 此处不能设置为true
+                        showBuffer(PlAYSTART + mPlaybackService.getItemEntity().getTitle());
+                        updateTitle(subItemDelay.getTitle());
+                        mPlaybackService.switchTelevision(mCurrentPosition, subItemDelay.getPk(), clip.getUrl());
+                        mCurrentPosition = 0;
+                    }
+                }, 400);
+            }
+        }
+    }
 
     private void playPauseVideo() {
         if (mIsExiting || mPlaybackService.isPlayingAd() || mPlaybackService == null || mPlaybackService.getMediaPlayer() == null
@@ -1029,6 +1086,9 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
                 if (panel_layout.getVisibility() != View.VISIBLE) {
                     panel_layout.startAnimation(panelShowAnimation);
                     panel_layout.setVisibility(View.VISIBLE);
+
+                    player_top_panel.startAnimation(top_fly_down);
+                    player_top_panel.setVisibility(View.VISIBLE);
                 }
                 timerStop();
                 isSeeking = true;
@@ -1050,6 +1110,9 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
                 if (panel_layout.getVisibility() != View.VISIBLE) {
                     panel_layout.startAnimation(panelShowAnimation);
                     panel_layout.setVisibility(View.VISIBLE);
+
+                    player_top_panel.startAnimation(top_fly_down);
+                    player_top_panel.setVisibility(View.VISIBLE);
                 }
                 timerStop();
                 isSeeking = true;
@@ -1204,6 +1267,10 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
         if (panel_layout.getVisibility() != View.VISIBLE) {
             panel_layout.startAnimation(panelShowAnimation);
             panel_layout.setVisibility(View.VISIBLE);
+
+            player_top_panel.startAnimation(top_fly_down);
+            player_top_panel.setVisibility(View.VISIBLE);
+
             mHandler.sendEmptyMessageDelayed(MSG_HIDE_PANEL, 3000);
         } else {
             mHandler.removeMessages(MSG_HIDE_PANEL);
@@ -1215,6 +1282,10 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
         if (panel_layout != null && panel_layout.getVisibility() == View.VISIBLE) {
             panel_layout.startAnimation(panelHideAnimation);
             panel_layout.setVisibility(View.GONE);
+
+            player_top_panel.startAnimation(top_fly_up);
+            player_top_panel.setVisibility(View.GONE);
+
             mHandler.removeMessages(MSG_HIDE_PANEL);
         }
     }

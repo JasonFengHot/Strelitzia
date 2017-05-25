@@ -43,13 +43,19 @@ android {
             signingConfig signingConfigs.release
             minifyEnabled false
             manifestPlaceholders = [s_uid: "android.uid.system"]
-
+            debuggable false
+            jniDebuggable false
+            renderscriptDebuggable false
+            zipAlignEnabled true
         }
         debug {
             signingConfig signingConfigs.release
             minifyEnabled false
             manifestPlaceholders = [s_uid: ""]
-
+            debuggable true
+            jniDebuggable false
+            renderscriptDebuggable false
+            zipAlignEnabled true
         }
     }
 

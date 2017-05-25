@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:sakura="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:alpha="0.75"
+    >
+    <TextView
+        android:id="@+id/player_setting"
+        android:layout_width="@dimen/player_77"
+        android:layout_height="@dimen/player_52"
+        android:textSize="@dimen/text_size_36sp"
+        android:layout_marginLeft="@dimen/player_51"
+        android:layout_marginTop="@dimen/player_54"
+        android:textColor="@color/_f0f0f0"
+        android:text="设置"
+        />
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        >
+
+    </LinearLayout>
+    <TextView
+        android:id="@+id/player_episode"
+        android:layout_width="@dimen/player_77"
+        android:layout_height="@dimen/player_52"
+        android:textSize="@dimen/text_size_36sp"
+        android:textColor="@color/_f0f0f0"
+        android:layout_marginLeft="@dimen/player_51"
+        android:layout_marginTop="@dimen/player_38"
+        android:text="选集"
+        />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/player_80"
+        android:orientation="horizontal"
+        android:layout_marginTop="@dimen/player_24"
+        >
+        <ImageView
+            android:id="@+id/arrow_left"
+            android:layout_width="@dimen/player_42"
+            android:layout_height="@dimen/player_72"
+            android:layout_marginLeft="@dimen/player_5"
+            android:layout_gravity="center_vertical"
+            android:background="@drawable/episode_arrow_left_selector"
+            />
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/episode_list"
+            android:layout_width="@dimen/player_1810"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/player_8"
+            >
+        </android.support.v7.widget.RecyclerView>
+        <ImageView
+            android:id="@+id/arrow_right"
+            android:layout_width="@dimen/player_42"
+            android:layout_height="@dimen/player_72"
+            android:layout_marginLeft="@dimen/player_8"
+            android:layout_gravity="center_vertical"
+            android:background="@drawable/episode_arrow_right_selector"
+            />
+    </LinearLayout>
+    
+</LinearLayout>

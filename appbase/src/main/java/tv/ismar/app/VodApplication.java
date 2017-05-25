@@ -2,7 +2,9 @@ package tv.ismar.app;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.support.multidex.MultiDex;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -27,6 +29,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 import cn.ismartv.injectdb.library.ActiveAndroid;
 import cn.ismartv.injectdb.library.app.Application;
 import cn.ismartv.truetime.TrueTime;
+import okhttp3.ResponseBody;
+import rx.Observer;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 import tv.ismar.account.HttpParamsInterceptor;
 import tv.ismar.account.IsmartvActivator;
 import tv.ismar.app.core.ImageCache;
@@ -42,8 +48,11 @@ import tv.ismar.app.db.LocalFavoriteManager;
 import tv.ismar.app.db.LocalHistoryManager;
 import tv.ismar.app.entity.ContentModel;
 import tv.ismar.app.network.HttpCacheInterceptor;
+import tv.ismar.app.network.SkyService;
+import tv.ismar.app.service.HttpProxyService;
 import tv.ismar.app.util.NetworkUtils;
 import tv.ismar.app.util.SPUtils;
+import tv.ismar.library.util.DeviceUtils;
 import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 
 /**
@@ -101,6 +110,9 @@ public class VodApplication extends Application {
         }
         BaseActivity.wasLoadSmartPlayerSo = false;
         Log.i("LH/", "applicationOnCreateEnd:" + TrueTime.now().getTime());
+    //    reportIp();  //上报本机IP地址
+        Intent ootStartIntent = new Intent(this, HttpProxyService.class);
+        this.startService(ootStartIntent);
     }
 
 
@@ -360,5 +372,26 @@ public class VodApplication extends Application {
                 .methodCount(10)                 // default 2
                 .logLevel(LogLevel.FULL)        // default LogLevel.FULL
                 .methodOffset(2);      // default 0
+    }
+    private void reportIp(){
+        SkyService skyService=SkyService.ServiceManager.getService();
+        String url="http://wx.api.tvxio.com/weixin4server/uploadclientip";
+        skyService.weixinIp(url, DeviceUtils.getLocalInetAddress().toString(),IsmartvActivator.getInstance().getSnToken(), Build.MODEL,DeviceUtils.getLocalMacAddress(this)).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<ResponseBody>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(ResponseBody responseBody) {
+
+            }
+        });
     }
 }

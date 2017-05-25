@@ -663,6 +663,14 @@ public interface SkyService {
     Observable<ResponseBody>repostAdLog(
             @Url String url
     );
+    @GET
+    Observable<ResponseBody>weixinIp(
+            @Url String url,
+            @Query("client_ip") String ip,
+            @Query("sn") String sn,
+            @Query("tvmode") String tvmode,
+            @Query ("macaddress") String macaddress
+    );
 
     @GET("api/recommend/{channel}/")
     Observable<PlayfinishedRecommend>apiPlayFinishedRecommend(
@@ -752,8 +760,8 @@ public interface SkyService {
             mSkyService = retrofit.create(SkyService.class);
 
             Retrofit adRetrofit = new Retrofit.Builder()
-                   // .baseUrl(appendProtocol(domain[1]))
-                    .baseUrl("http://124.42.65.66:8082/")
+                    .baseUrl(appendProtocol(domain[1]))
+                  //  .baseUrl("http://124.42.65.66:8082/")
                     .addConverterFactory(GsonConverterFactory.create())
                     .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                     .client(mClient)

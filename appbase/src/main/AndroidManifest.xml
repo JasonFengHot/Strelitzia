@@ -16,6 +16,7 @@
 
         <service android:name=".ad.AdsUpdateService" />
         <service android:name=".service.TrueTimeService" />
+        <service android:name=".service.HttpProxyService"/>
 
         <receiver android:name=".receiver.ConnectivityChangeReceiver">
             <intent-filter>

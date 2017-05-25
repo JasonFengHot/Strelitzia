@@ -3,6 +3,6 @@
 
     <item android:drawable="@drawable/player_icon_pause_focus" android:state_focused="true" />
     <item android:drawable="@drawable/player_icon_pause_focus" android:state_hovered="true" />
-    <item android:drawable="@drawable/player_icon_pause_focus" android:state_pressed="true" />
+    <item android:drawable="@drawable/player_icon_pause_select" android:state_pressed="true" />
     <item android:drawable="@drawable/player_icon_pause" />
 </selector>

@@ -44,5 +44,5 @@
     <color name="player_seek_bg">#005C85</color>
     <color name="player_seek_start">#407E8F</color>
     <color name="player_seek_second_progress">#FFFF00</color>
-
+    <drawable name="_000000">#000000</drawable>
 </resources>

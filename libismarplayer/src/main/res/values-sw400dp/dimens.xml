@@ -48,4 +48,36 @@
 <dimen name="player_loading_size">24.44dp</dimen>
 <dimen name="player_loading_text_mt">5.56dp</dimen>
 
+<dimen name="player_367">135.93dp</dimen>
+<dimen name="player_308">114.07dp</dimen>
+<dimen name="player_52">19.26dp</dimen>
+<dimen name="player_42">15.56dp</dimen>
+<dimen name="player_28">10.37dp</dimen>
+<dimen name="player_70">25.93dp</dimen>
+<dimen name="player_15">5.56dp</dimen>
+<dimen name="player_1449">536.67dp</dimen>
+<dimen name="player_6">2.22dp</dimen>
+<dimen name="player_24">8.89dp</dimen>
+<dimen name="player_113">41.85dp</dimen>
+<dimen name="player_270">96.67dp</dimen>
+<dimen name="player_77">28.52dp</dimen>
+<dimen name="player_27">10.00dp</dimen>
+<dimen name="player_51">18.89dp</dimen>
+<dimen name="player_54">20.00dp</dimen>
+<dimen name="player_38">14.07dp</dimen>
+<dimen name="player_80">29.63dp</dimen>
+<dimen name="player_72">26.67dp</dimen>
+<dimen name="player_5">1.85dp</dimen>
+<dimen name="player_1810">670.37dp</dimen>
+<dimen name="player_8">2.96dp</dimen>
+<dimen name="player_250">96.30dp</dimen>
+<dimen name="player_20">7.41dp</dimen>
+<dimen name="player_99">36.67dp</dimen>
+<dimen name="player_43">15.93dp</dimen>
+<dimen name="player_18">6.67dp</dimen>
+<dimen name="player_19">7.04dp</dimen>
+<dimen name="player_1920">711.11dp</dimen>
+<dimen name="player_10">3.70dp</dimen>
+<dimen name="player_260">96.30dp</dimen>
+<dimen name="player_350">129.63dp</dimen>
 </resources>

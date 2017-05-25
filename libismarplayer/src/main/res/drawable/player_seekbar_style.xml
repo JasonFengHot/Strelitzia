@@ -12,7 +12,7 @@
     </item>
     <item android:id="@android:id/progress">
         <scale
-            android:drawable="@color/player_seek_start"
+            android:drawable="@color/_ff9c3c"
             android:scaleGravity="left"
             android:scaleWidth="100%" />
     </item>

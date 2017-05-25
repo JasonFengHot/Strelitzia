@@ -73,6 +73,7 @@ import tv.ismar.app.db.AdvertiseTable;
 import tv.ismar.app.entity.ChannelEntity;
 import tv.ismar.app.network.SkyService;
 import tv.ismar.app.player.CallaPlay;
+import tv.ismar.app.service.HttpProxyService;
 import tv.ismar.app.service.TrueTimeService;
 import tv.ismar.app.ui.HeadFragment;
 import tv.ismar.app.update.UpdateService;
@@ -312,8 +313,6 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
-
         getWindow().setFormat(PixelFormat.TRANSLUCENT);
         if (savedInstanceState != null)
             savedInstanceState = null;

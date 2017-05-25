@@ -94,7 +94,7 @@ public class DeviceUtils {
         return strMacAddr;
     }
 
-    private static InetAddress getLocalInetAddress() {
+    public static InetAddress getLocalInetAddress() {
         InetAddress ip = null;
         try {
             Enumeration<NetworkInterface> en_netInterface = NetworkInterface.getNetworkInterfaces();
