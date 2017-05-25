@@ -383,11 +383,14 @@ public class IsmartvActivator {
 
     }
 
-    public int getMediaPlayerType() {
-        return mSharedPreferences.getInt("player", 0);// //0-系统，1-视云
+    public int getH264PlayerType() {
+        return mSharedPreferences.getInt("h264_player", 0);// 0-smartplayer，1-系统mediaplayer,2-自有
 
     }
+    public int getH265PlayerType() {
+        return mSharedPreferences.getInt("h265_player", 0);// 0-smartplayer，1-系统mediaplayer,2-自有
 
+    }
     public String getZUserToken() {
         return mSharedPreferences.getString("zuser_token", "");
     }
@@ -427,7 +430,8 @@ public class IsmartvActivator {
         editor.putString("zdevice_token", resultEntity.getZdevice_token());
         editor.putLong("smart_post_next_request_time", resultEntity.getSmart_post_next_request_time());
         C.SMART_POST_NEXT_REQUEST_TIME = resultEntity.getSmart_post_next_request_time();
-        editor.putInt("player", resultEntity.getPlayer());
+        editor.putInt("h264_player", resultEntity.getH264_player());
+        editor.putInt("h265_player", resultEntity.getH265_player());
         editor.commit();
 
         // 获取老版本的

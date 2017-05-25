@@ -10,8 +10,18 @@ public class ResultEntity {
     private String upgrade_domain = "1.1.1.3";
     private String zdevice_token = "";
     private String carnation = "1.1.1.1";
-    private int player;
+    private int h264_player;
+    private int h265_player;
+
+    public int getH265_player() {
+        return h265_player;
+    }
+
     private long smart_post_next_request_time = 30;
+
+    public void setH265_player(int h265_player) {
+        this.h265_player = h265_player;
+    }
 
     public long getSmart_post_next_request_time() {
         return smart_post_next_request_time * 1000;
@@ -85,11 +95,11 @@ public class ResultEntity {
         this.ad_domain = ad_domain;
     }
 
-    public int getPlayer() {
-        return player;
+    public int getH264_player() {
+        return h264_player;
     }
 
-    public void setPlayer(int player) {
-        this.player = player;
+    public void setH264_player(int player) {
+        this.h264_player = player;
     }
 }

@@ -11,6 +11,7 @@ import com.qiyi.sdk.player.IAdController;
 import java.io.IOException;
 import java.util.Map;
 
+import tv.ismar.account.IsmartvActivator;
 import tv.ismar.app.entity.ClipEntity;
 import tv.ismar.library.injectdb.util.Log;
 import tv.ismar.library.util.DateUtils;
@@ -43,7 +44,33 @@ public class DaisyPlayer extends IsmartvPlayer implements SurfaceHelper.SurfaceC
     private static SmartPlayer getSmartPlayerInstance(){
         synchronized (DaisyPlayer.class) {
             if (mPlayer == null) {
-                mPlayer = new SmartPlayer(SmartPlayer.PlayerType.PlayerCodec, SmartPlayer.PlayerType.PlayerMedia);
+                SmartPlayer.PlayerType player264Type = SmartPlayer.PlayerType.PlayerMedia;
+                SmartPlayer.PlayerType player265Type = SmartPlayer.PlayerType.PlayerMedia;
+                int h264PlayerType =IsmartvActivator.getInstance().getH264PlayerType();
+                int h265PlayerType =IsmartvActivator.getInstance().getH265PlayerType();
+                switch (h264PlayerType) {
+                    case 0:
+                        player264Type = SmartPlayer.PlayerType.PlayerMedia;
+                        break;
+                    case 1:
+                        player264Type = SmartPlayer.PlayerType.PlayerSystem;
+                        break;
+                    case 2:
+                        player264Type = SmartPlayer.PlayerType.PlayerCodec;
+                        break;
+                }
+                switch (h265PlayerType) {
+                    case 0:
+                        player265Type = SmartPlayer.PlayerType.PlayerMedia;
+                        break;
+                    case 1:
+                        player265Type = SmartPlayer.PlayerType.PlayerSystem;
+                        break;
+                    case 2:
+                        player265Type = SmartPlayer.PlayerType.PlayerCodec;
+                        break;
+                }
+                mPlayer = new SmartPlayer(player264Type, player265Type);
             }
         }
         return mPlayer;
@@ -547,30 +574,6 @@ public class DaisyPlayer extends IsmartvPlayer implements SurfaceHelper.SurfaceC
     }
 
     private void initPlayerType(final MediaMeta mediaMeta,final boolean ispreload) {
-        SmartPlayer.PlayerType player264Type = SmartPlayer.PlayerType.PlayerMedia;
-        SmartPlayer.PlayerType player265Type = SmartPlayer.PlayerType.PlayerMedia;
-        switch (mediaMeta.getPlayer264Type()) {
-            case 0:
-                player264Type = SmartPlayer.PlayerType.PlayerMedia;
-                break;
-            case 1:
-                player264Type = SmartPlayer.PlayerType.PlayerSystem;
-                break;
-            case 2:
-                player264Type = SmartPlayer.PlayerType.PlayerCodec;
-                break;
-        }
-        switch (mediaMeta.getPlayer265Type()) {
-            case 0:
-                player265Type = SmartPlayer.PlayerType.PlayerMedia;
-                break;
-            case 1:
-                player265Type = SmartPlayer.PlayerType.PlayerSystem;
-                break;
-            case 2:
-                player265Type = SmartPlayer.PlayerType.PlayerCodec;
-                break;
-        }
         mPlayer.initPlayer(mediaMeta.getUrls(),"265".equals(mMediaEntity.getClipEntity().getCode_version()),mMediaEntity.isLivingVideo(),mMediaEntity.getStartPosition());
         mPlayer.setOnInitCompleteListener(new SmartPlayer.OnInitCompleteListener() {
             @Override
