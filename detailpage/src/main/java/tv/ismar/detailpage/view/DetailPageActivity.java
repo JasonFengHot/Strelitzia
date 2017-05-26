@@ -261,6 +261,8 @@ public class DetailPageActivity extends BaseActivity implements PlaybackService.
                             // 片源为视云,实现预加载功能
                             // 详情页预加载，绑定服务，必须在mItemEntity不为空时执行connect操作
                             LogUtils.d("LH/", "Preload true.");
+                            int h264PlayerType =IsmartvActivator.getInstance().getH264PlayerType();
+                            if(h264PlayerType != 1)
                             mClient.connect();
                         }else {
                             isqiyi = true;
