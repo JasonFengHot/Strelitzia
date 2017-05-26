@@ -21,7 +21,7 @@
         android:textSize="@dimen/play_finished_title_ts"
         android:textColor="#f0f0f0"
         android:layout_marginTop="@dimen/play_finished_title_mt"
-        android:layout_marginLeft="@dimen/play_finished_title_ml"/>
+        android:layout_gravity="center_horizontal"/>
     
     <tv.ismar.subject.views.MyRecyclerView
         android:id="@+id/play_finished_horizontal_recylerview"

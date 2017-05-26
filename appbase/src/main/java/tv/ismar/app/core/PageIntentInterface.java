@@ -66,7 +66,8 @@ public interface PageIntentInterface {
 
     void toSubject(Context context, String gather_type, int id, String title, String frompage,String channel);
 
-    void toPlayFinish(Activity context,String channel,int id, int playScale, String frompage);
+
+    void toPlayFinish(Activity context, String channel, int id, int playScale, boolean hasHistory, String frompage);
 
     class PaymentInfo {
         private ProductCategory category;
