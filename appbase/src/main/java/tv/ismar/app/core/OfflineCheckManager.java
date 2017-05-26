@@ -1,4 +1,5 @@
 package tv.ismar.app.core;
+import com.google.gson.GsonBuilder;
 
 import android.util.Log;
 
@@ -59,7 +60,7 @@ public class OfflineCheckManager {
                             return;
                         }
                         Log.i("LH/", "checkItem:onResponse " + result);
-                        OfflineCheckEntity offlineCheckEntity = new Gson().fromJson(result, OfflineCheckEntity.class);
+                        OfflineCheckEntity offlineCheckEntity = new GsonBuilder().create().fromJson(result, OfflineCheckEntity.class);
                         if (!offlineCheckEntity.isOffline()) {
                             mCallback.online();
                         } else {

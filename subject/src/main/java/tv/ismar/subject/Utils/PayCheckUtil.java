@@ -1,4 +1,5 @@
 package tv.ismar.subject.Utils;
+import com.google.gson.GsonBuilder;
 
 import android.app.Activity;
 import android.content.Context;
@@ -40,7 +41,7 @@ public class PayCheckUtil {
                 playCheckEntity.setRemainDay(0);
                 break;
             default:
-                playCheckEntity = new Gson().fromJson(info, PlayCheckEntity.class);
+                playCheckEntity = new GsonBuilder().create().fromJson(info, PlayCheckEntity.class);
                 int remainDay;
                 try {
                     remainDay = Utils.daysBetween(Utils.getTime(), playCheckEntity.getExpiry_date()) + 1;

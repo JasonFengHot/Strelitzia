@@ -1,4 +1,5 @@
 package tv.ismar.channel;
+import com.google.gson.GsonBuilder;
 
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
@@ -142,7 +143,7 @@ public class RelatedActivity extends BaseActivity implements RelateScrollableSec
 
                 mItem = (Item) bundle.getSerializable("item");
                 if (mItem ==null){
-                    mItem = new Gson().fromJson(intent.getStringExtra("item_json"), Item.class);
+                    mItem = new GsonBuilder().create().fromJson(intent.getStringExtra("item_json"), Item.class);
                 }
                 if (mItem != null) {
                     if ("movie".equals(mItem.content_model))
@@ -151,7 +152,7 @@ public class RelatedActivity extends BaseActivity implements RelateScrollableSec
                 initViews();
                 Object relatedlistObj = bundle.getSerializable("related_item");
                 if (relatedlistObj==null){
-                    relatedlistObj = Arrays.asList(new Gson().fromJson(intent.getStringExtra("related_item_json"), Item[].class));
+                    relatedlistObj = Arrays.asList(new GsonBuilder().create().fromJson(intent.getStringExtra("related_item_json"), Item[].class));
                 }
 
                 if (relatedlistObj != null) {

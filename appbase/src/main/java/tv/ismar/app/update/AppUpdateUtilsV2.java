@@ -1,4 +1,5 @@
 //package tv.ismar.app.update;
+import com.google.gson.GsonBuilder;
 //
 //import android.app.ActivityManager;
 //import android.content.ComponentName;
@@ -92,7 +93,7 @@
 //        new IsmartvUrlClient().doNormalRequest(IsmartvUrlClient.Method.GET, api, paramters, new IsmartvUrlClient.CallBack() {
 //            @Override
 //            public void onSuccess(String result) {
-//                VersionInfoV2Entity versionInfoV2Entity = new Gson().fromJson(result, VersionInfoV2Entity.class);
+//                VersionInfoV2Entity versionInfoV2Entity = new GsonBuilder().create().fromJson(result, VersionInfoV2Entity.class);
 //                if (versionInfoV2Entity != null) {
 //                    updateProcess(versionInfoV2Entity);
 //                }

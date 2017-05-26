@@ -1,4 +1,5 @@
 package tv.ismar.app.core;
+import com.google.gson.GsonBuilder;
 
 import com.google.gson.Gson;
 
@@ -117,7 +118,7 @@ public class PlayCheckManager {
             case "0":
                 break;
             default:
-                PlayCheckEntity playCheckEntity = new Gson().fromJson(info, PlayCheckEntity.class);
+                PlayCheckEntity playCheckEntity = new GsonBuilder().create().fromJson(info, PlayCheckEntity.class);
                 user = playCheckEntity.getUser();
                 try {
                     remainDay = Util.daysBetween(Util.getTime(), playCheckEntity.getExpiry_date()) + 1;

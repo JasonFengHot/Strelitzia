@@ -1,4 +1,5 @@
 package tv.ismar.detailpage.presenter;
+import com.google.gson.GsonBuilder;
 
 import android.content.Intent;
 import android.text.TextUtils;
@@ -193,7 +194,7 @@ public class DetailPagePresenter implements DetailPageContract.Presenter {
                 playCheckEntity.setRemainDay(0);
                 break;
             default:
-                playCheckEntity = new Gson().fromJson(info, PlayCheckEntity.class);
+                playCheckEntity = new GsonBuilder().create().fromJson(info, PlayCheckEntity.class);
                 int remainDay;
                 try {
                     remainDay = Utils.daysBetween(Utils.getTime(), playCheckEntity.getExpiry_date()) + 1;
@@ -295,9 +296,9 @@ public class DetailPagePresenter implements DetailPageContract.Presenter {
         AppConstant.purchase_entrance_page="related";
         Intent intent = new Intent();
         if (relatedItemList != null && relatedItemList.length > 0) {
-            intent.putExtra("related_item_json", new Gson().toJson(relatedItemList));
+            intent.putExtra("related_item_json", new GsonBuilder().create().toJson(relatedItemList));
         }
-        intent.putExtra("item_json", new Gson().toJson(mItemEntity));
+        intent.putExtra("item_json", new GsonBuilder().create().toJson(mItemEntity));
         intent.setAction("tv.ismar.daisy.relateditem");
         mDetailView.getActivity().startActivity(intent);
     }
@@ -306,7 +307,7 @@ public class DetailPagePresenter implements DetailPageContract.Presenter {
     public void handleEpisode() {
         Intent intent = new Intent();
         intent.setAction("tv.ismar.daisy.episode");
-        intent.putExtra(EXTRA_ITEM_JSON, new Gson().toJson(mItemEntity));
+        intent.putExtra(EXTRA_ITEM_JSON, new GsonBuilder().create().toJson(mItemEntity));
         intent.putExtra(EXTRA_SOURCE, "detail");
         mDetailView.getActivity().startActivity(intent);
 

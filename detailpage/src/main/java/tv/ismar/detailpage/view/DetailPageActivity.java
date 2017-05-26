@@ -1,4 +1,5 @@
 package tv.ismar.detailpage.view;
+import com.google.gson.GsonBuilder;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -115,7 +116,7 @@ public class DetailPageActivity extends BaseActivity implements PlaybackService.
         }
 
         if (!TextUtils.isEmpty(itemJson)) {
-            mItemEntity = new Gson().fromJson(itemJson, ItemEntity.class);
+            mItemEntity = new GsonBuilder().create().fromJson(itemJson, ItemEntity.class);
             loadFragment(type);
         } else {
             fetchItem(String.valueOf(itemPK), type);
@@ -180,13 +181,13 @@ public class DetailPageActivity extends BaseActivity implements PlaybackService.
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         switch (type) {
             case PageIntent.DETAIL_TYPE_ITEM:
-                String itemJson = new Gson().toJson(mItemEntity);
+                String itemJson = new GsonBuilder().create().toJson(mItemEntity);
                 detailPageFragment = DetailPageFragment.newInstance(source, itemJson);
                 fragmentTransaction.replace(R.id.activity_detail_container, detailPageFragment);
                 fragmentTransaction.commit();
                 break;
             case PageIntent.DETAIL_TYPE_PKG:
-                String packJson = new Gson().toJson(mItemEntity);
+                String packJson = new GsonBuilder().create().toJson(mItemEntity);
                 mPackageDetailFragment = PackageDetailFragment.newInstance(source, packJson);
                 fragmentTransaction.replace(R.id.activity_detail_container, mPackageDetailFragment);
                 fragmentTransaction.commit();

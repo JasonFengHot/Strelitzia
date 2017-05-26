@@ -1,4 +1,5 @@
 package tv.ismar.helperpage.ui.fragment;
+import com.google.gson.GsonBuilder;
 
 import android.app.Activity;
 import android.content.Context;
@@ -265,7 +266,7 @@ public class FeedbackFragment extends Fragment implements RadioGroup.OnCheckedCh
             feedBack.setIsp(accountSharedPrefs.getSharedPrefs(AccountSharedPrefs.ISP));
             feedBack.setLocation(accountSharedPrefs.getSharedPrefs(AccountSharedPrefs.PROVINCE));
             String userAgent = android.os.Build.MODEL.replaceAll(" ", "_") + "/" + android.os.Build.ID + " " + snCode;
-            String q = new Gson().toJson(feedBack);
+            String q = new GsonBuilder().create().toJson(feedBack);
             ((HomeActivity) getActivity()).mIrisService.UploadFeedback(userAgent, q)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread()).subscribe(((HomeActivity) getActivity()).new BaseObserver<ResponseBody>() {

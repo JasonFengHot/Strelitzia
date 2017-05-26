@@ -1,4 +1,5 @@
 package tv.ismar.app.ad;
+import com.google.gson.GsonBuilder;
 
 import android.content.Context;
 import android.util.Base64;
@@ -352,7 +353,7 @@ public class Advertisement {
                     String elementRetCode = element.getString("retcode");
 //                    int elementRetCode = element.getInt("retcode");
                     if (!Utils.isEmptyText(elementRetCode) && elementRetCode.equals("200")) {
-                        AdElementEntity ad = new Gson().fromJson(element.toString(), AdElementEntity.class);
+                        AdElementEntity ad = new GsonBuilder().create().fromJson(element.toString(), AdElementEntity.class);
                         // 已经过期的数据需要过滤掉
                         try {
                             String start_date = ad.getStart_date() + " " + ad.getStart_time();

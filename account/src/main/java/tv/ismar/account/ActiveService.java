@@ -1,4 +1,5 @@
 package tv.ismar.account;
+import com.google.gson.GsonBuilder;
 
 import android.app.Service;
 import android.content.Intent;
@@ -6,7 +7,6 @@ import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import com.google.gson.Gson;
 
 import java.util.concurrent.TimeUnit;
 
@@ -80,7 +80,7 @@ public class ActiveService extends Service {
                     @Override
                     public void onNext(ResultEntity responseBody) {
                         Log.i(TAG, "active interval success !!!");
-                        Log.i(TAG, new Gson().toJson(responseBody));
+                        Log.i(TAG, new GsonBuilder().create().toJson(responseBody));
                     }
                 });
     }

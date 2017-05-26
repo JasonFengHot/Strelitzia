@@ -762,7 +762,7 @@ public interface SkyService {
             Retrofit adRetrofit = new Retrofit.Builder()
                     .baseUrl(appendProtocol(domain[1]))
                   //  .baseUrl("http://124.42.65.66:8082/")
-                    .addConverterFactory(GsonConverterFactory.create())
+                    .addConverterFactory(GsonConverterFactory.create(gson))
                     .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                     .client(mClient)
                     .build();
@@ -771,7 +771,7 @@ public interface SkyService {
             Retrofit upgradeRetrofit = new Retrofit.Builder()
                     .baseUrl(appendProtocol(domain[2]))
                     //               .baseUrl(appendProtocol("http://124.42.65.66/"))
-                    .addConverterFactory(GsonConverterFactory.create())
+                    .addConverterFactory(GsonConverterFactory.create(gson))
                     .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                     .client(mClient)
                     .build();
@@ -788,7 +788,7 @@ public interface SkyService {
 
             Retrofit wxApiServiceRetrofit = new Retrofit.Builder()
                     .baseUrl(API_HOST)
-                    .addConverterFactory(GsonConverterFactory.create())
+                    .addConverterFactory(GsonConverterFactory.create(gson))
                     .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                     .client(mClient)
                     .build();
@@ -796,7 +796,7 @@ public interface SkyService {
 
             Retrofit irisServiceRetrofit = new Retrofit.Builder()
                     .baseUrl(IRIS_TVXIO_HOST)
-                    .addConverterFactory(GsonConverterFactory.create())
+                    .addConverterFactory(GsonConverterFactory.create(gson))
                     .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                     .client(mClient)
                     .build();
@@ -804,7 +804,7 @@ public interface SkyService {
 
             Retrofit speedCallaServiceRetrofit = new Retrofit.Builder()
                     .baseUrl(SPEED_CALLA_TVXIO_HOST)
-                    .addConverterFactory(GsonConverterFactory.create())
+                    .addConverterFactory(GsonConverterFactory.create(gson))
                     .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                     .client(mClient)
                     .build();
@@ -832,7 +832,7 @@ public interface SkyService {
             Retrofit cacheSkyRetrofit = new Retrofit.Builder()
                     .client(cacheClient)
                     .baseUrl(appendProtocol(domain[0]))
-                    .addConverterFactory(GsonConverterFactory.create())
+                    .addConverterFactory(GsonConverterFactory.create(gson))
                     .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                     .build();
             mCacheSkyService = cacheSkyRetrofit.create(SkyService.class);
@@ -850,7 +850,7 @@ public interface SkyService {
             Retrofit cacheSkyRetrofit2 = new Retrofit.Builder()
                     .client(cacheClient2)
                     .baseUrl(appendProtocol(domain[0]))
-                    .addConverterFactory(GsonConverterFactory.create())
+                    .addConverterFactory(GsonConverterFactory.create(gson))
                     .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                     .build();
             mCacheSkyService2 = cacheSkyRetrofit2.create(SkyService.class);
