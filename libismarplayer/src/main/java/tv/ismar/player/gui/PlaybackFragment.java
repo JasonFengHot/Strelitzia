@@ -852,29 +852,29 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
                 return true;
             case KeyEvent.KEYCODE_BACK:
                 if (!isPopWindowShow() && !mPlaybackService.isPlayingAd()) {
-                    if (!isQuit) {
-                        isQuit = true;
-                        ExitToast.createToastConfig().show(getActivity().getApplicationContext(), 5000);
-                        TimerTask task = new TimerTask() {
-                            @Override
-                            public void run() {
-                                isQuit = false;
-                            }
-                        };
-                        quitTimer.schedule(task, 5000);
-                    } else {
+//                    if (!isQuit) {
+//                        isQuit = true;
+//                        ExitToast.createToastConfig().show(getActivity().getApplicationContext(), 5000);
+//                        TimerTask task = new TimerTask() {
+//                            @Override
+//                            public void run() {
+//                                isQuit = false;
+//                            }
+//                        };
+//                        quitTimer.schedule(task, 5000);
+//                    } else {
 //                        if (mPlaybackService.isPreview()) {
 //                            mPlaybackService.logExpenseVideoPreview(mCurrentPosition, "cancel");
 //                        }
-                        ExitToast.createToastConfig().dismiss();
+//                        ExitToast.createToastConfig().dismiss();
 //                        mHandler.removeCallbacksAndMessages(null);
 //                        timerStop();
 //                        removeBufferingLongTime();
 //                        hideBuffer();
 //                        hidePanel();
-                        goOtherPage(EVENT_PLAY_EXIT);
 //                        closeActivity("source");
-                    }
+//                    }
+                    goOtherPage(EVENT_PLAY_EXIT);
                     return true;
                 }
                 if (isPopWindowShow()) {

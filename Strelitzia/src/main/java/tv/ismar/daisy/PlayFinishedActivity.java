@@ -264,4 +264,15 @@ public class PlayFinishedActivity extends BaseActivity implements View.OnClickLi
             leftFocus = true;
         }
     }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        if(itemId==0) {
+            setResult(EXIT_PLAY);
+        }else{
+            setResult(CONTINUE_PLAY);
+        }
+        finish();
+    }
 }

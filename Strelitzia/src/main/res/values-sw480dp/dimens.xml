@@ -16,6 +16,7 @@
 <dimen name="play_finished_vertical_recylerview_pr">158.00dp</dimen>
 <dimen name="play_finished_btn_mt">39.56dp</dimen>
 <dimen name="play_finished_btn_w">111.11dp</dimen>
+<dimen name="play_finished_btn_h">26.67dp</dimen>
 <dimen name="play_finished_btn_ml">14.22dp</dimen>
 <dimen name="play_finished_vertical_poster_focus_w">202.89dp</dimen>
 <dimen name="play_finished_vertical_poster_focus_h">276.22dp</dimen>
