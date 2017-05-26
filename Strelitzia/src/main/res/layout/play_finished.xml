@@ -59,13 +59,13 @@
             android:id="@+id/play_finished_confirm_btn"
             android:layout_width="@dimen/play_finished_btn_w"
             android:layout_height="@dimen/play_finished_btn_h"
+            android:layout_marginRight="@dimen/play_finished_btn_ml"
             android:background="@drawable/continue_play_selector"
             android:nextFocusLeft="@id/play_finished_confirm_btn"/>
         <Button
             android:id="@+id/play_finished_cancel_btn"
             android:layout_width="@dimen/play_finished_btn_w"
             android:layout_height="@dimen/play_finished_btn_h"
-            android:layout_marginLeft="@dimen/play_finished_btn_ml"
             android:background="@drawable/exit_play_selector"
             android:nextFocusRight="@id/play_finished_cancel_btn"/>
     </LinearLayout>
