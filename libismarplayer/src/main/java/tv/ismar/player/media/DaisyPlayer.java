@@ -455,6 +455,9 @@ public class DaisyPlayer extends IsmartvPlayer implements SurfaceHelper.SurfaceC
         @Override
         public boolean onError(SmartPlayer smartPlayer, int i, int i1) {
             mCurrentState = STATE_ERROR;
+            if (i == 1010){
+                return true;
+            }
             PlayerEvent.videoExcept(
                     "mediaexception", String.valueOf(i),
                     logPlayerEvent, logSpeed,
@@ -534,30 +537,29 @@ public class DaisyPlayer extends IsmartvPlayer implements SurfaceHelper.SurfaceC
     private void openVideo(boolean hasPreload) {
         mPlayer =  DaisyPlayer.getSmartPlayerInstance();
         LogUtils.d(TAG,"openVideo");
-        if (!hasPreload) {
-            initPlayerType(mMediaMeta,false);
-        }
-        mPlayer.createPlayer();
-        mPlayer.setSn(getSnToken());
-        mPlayer.setScreenOnWhilePlaying(true);
-        mPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-        mPlayer.setScreenOnWhilePlaying(true);
-        if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-            mPlayer.setSDCardisAvailable(true);
-        } else {
-            mPlayer.setSDCardisAvailable(false);
-        }
-        mPlayer.setOnPreparedListenerUrl(onPreparedListenerUrl);
-        mPlayer.setOnVideoSizeChangedListener(onVideoSizeChangedListener);
-        mPlayer.setOnSeekCompleteListener(onSeekCompleteListener);
-        mPlayer.setOnErrorListener(onErrorListener);
-        mPlayer.setOnInfoListener(onInfoListener);
-        mPlayer.setOnTsInfoListener(onTsInfoListener);
-        mPlayer.setOnM3u8IpListener(onM3u8IpListener);
-        mPlayer.setOnCompletionListenerUrl(onCompletionListenerUrl);
-        mPlayer.setDisplay(mSurfaceHelper.getSurfaceHolder());
-        if (hasPreload) {
+        if(hasPreload){
+            mPlayer.createPlayer();
+            mPlayer.setSn(getSnToken());
+            mPlayer.setScreenOnWhilePlaying(true);
+            mPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+            mPlayer.setScreenOnWhilePlaying(true);
+            if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+                mPlayer.setSDCardisAvailable(true);
+            } else {
+                mPlayer.setSDCardisAvailable(false);
+            }
+            mPlayer.setOnPreparedListenerUrl(onPreparedListenerUrl);
+            mPlayer.setOnVideoSizeChangedListener(onVideoSizeChangedListener);
+            mPlayer.setOnSeekCompleteListener(onSeekCompleteListener);
+            mPlayer.setOnErrorListener(onErrorListener);
+            mPlayer.setOnInfoListener(onInfoListener);
+            mPlayer.setOnTsInfoListener(onTsInfoListener);
+            mPlayer.setOnM3u8IpListener(onM3u8IpListener);
+            mPlayer.setOnCompletionListenerUrl(onCompletionListenerUrl);
+            mPlayer.setDisplay(mSurfaceHelper.getSurfaceHolder());
             mPlayer.reprepareAsync();
+        }else{
+            initPlayerType(mMediaMeta,false);
         }
         mCurrentState = STATE_PREPARING;
     }
@@ -574,26 +576,40 @@ public class DaisyPlayer extends IsmartvPlayer implements SurfaceHelper.SurfaceC
     }
 
     private void initPlayerType(final MediaMeta mediaMeta,final boolean ispreload) {
-        mPlayer.initPlayer(mediaMeta.getUrls(),"265".equals(mMediaEntity.getClipEntity().getCode_version()),mMediaEntity.isLivingVideo(),mMediaEntity.getStartPosition());
         mPlayer.setOnInitCompleteListener(new SmartPlayer.OnInitCompleteListener() {
             @Override
             public void onInitComplete(SmartPlayer smartPlayer, boolean bSuccess) {
                 LogUtils.d(TAG,"onInitComplete + ispreload="+ispreload);
-                if (ispreload && (smartPlayer.getPlayerType() == SmartPlayer.PlayerType.PlayerCodec || smartPlayer.getPlayerType() == SmartPlayer.PlayerType.PlayerMedia)) {
-                    mPlayer.setSn(getSnToken());
-                    if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-                        mPlayer.setSDCardisAvailable(true);
-                    } else {
-                        mPlayer.setSDCardisAvailable(false);
-                    }
+                if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+                    mPlayer.setSDCardisAvailable(true);
+                } else {
+                    mPlayer.setSDCardisAvailable(false);
+                }
+                mPlayer.setSn(getSnToken());
+                if (ispreload) {
                     mPlayer.setDataSource(mediaMeta.getUrls());
                     mPlayer.prepareAsync();
                 } else {
-                    mPlayer.setDataSource(mMediaMeta.getUrls());
+                    mPlayer.createPlayer();
+                    mPlayer.setSn(getSnToken());
+                    mPlayer.setScreenOnWhilePlaying(true);
+                    mPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+                    mPlayer.setScreenOnWhilePlaying(true);
+                    mPlayer.setOnPreparedListenerUrl(onPreparedListenerUrl);
+                    mPlayer.setOnVideoSizeChangedListener(onVideoSizeChangedListener);
+                    mPlayer.setOnSeekCompleteListener(onSeekCompleteListener);
+                    mPlayer.setOnErrorListener(onErrorListener);
+                    mPlayer.setOnInfoListener(onInfoListener);
+                    mPlayer.setOnTsInfoListener(onTsInfoListener);
+                    mPlayer.setOnM3u8IpListener(onM3u8IpListener);
+                    mPlayer.setOnCompletionListenerUrl(onCompletionListenerUrl);
+                    mPlayer.setDisplay(mSurfaceHelper.getSurfaceHolder());
+                    mPlayer.setDataSource(mediaMeta.getUrls());
                     mPlayer.prepareAsync();
                 }
             }
         });
+        mPlayer.initPlayer(mediaMeta.getUrls(),"265".equals(mMediaEntity.getClipEntity().getCode_version()),mMediaEntity.isLivingVideo(),mMediaEntity.getStartPosition());
     }
 
 }

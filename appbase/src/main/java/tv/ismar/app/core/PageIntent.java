@@ -237,12 +237,13 @@ public class PageIntent implements PageIntentInterface {
     }
 
     @Override
-    public void toPlayFinish(Activity context, String channel, int id, int playScale, String frompage) {
+    public void toPlayFinish(Activity context, String channel, int id, int playScale,boolean hasHistory, String frompage) {
         Intent intent = new Intent();
         intent.setAction("tv.ismar.daisy.PlayFinished");
         intent.putExtra("channel",channel);
         intent.putExtra("item_id",id);
         intent.putExtra("play_scale",playScale);
+        intent.putExtra("has_history",hasHistory);
         intent.putExtra("frompage",frompage);
         context.startActivityForResult(intent,0);
     }

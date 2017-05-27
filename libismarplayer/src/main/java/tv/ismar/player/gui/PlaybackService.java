@@ -9,12 +9,12 @@ import android.media.AudioManager;
 import android.os.Binder;
 import android.os.IBinder;
 import android.support.annotation.MainThread;
+import android.util.Log;
 import android.view.SurfaceView;
 import android.view.ViewGroup;
 
 import com.qiyi.sdk.player.IMediaPlayer;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,7 +40,6 @@ import tv.ismar.app.network.SkyService;
 import tv.ismar.app.network.entity.AdElementEntity;
 import tv.ismar.app.network.entity.ItemEntity;
 import tv.ismar.app.util.Utils;
-import tv.ismar.library.injectdb.util.Log;
 import tv.ismar.library.network.HttpManager;
 import tv.ismar.library.util.AppUtils;
 import tv.ismar.library.util.DeviceUtils;
@@ -48,7 +47,6 @@ import tv.ismar.library.util.LogUtils;
 import tv.ismar.library.util.StringUtils;
 import tv.ismar.player.IPlayer;
 import tv.ismar.player.IsmartvPlayer;
-import tv.ismar.player.SmartPlayer;
 import tv.ismar.player.model.MediaEntity;
 import tv.ismar.statistics.PurchaseStatistics;
 
@@ -85,6 +83,7 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
     // 历史记录
     private HistoryManager historyManager;
     private History mHistory;
+    public boolean hasHistory=false;
     // HLS播放器
     private IsmartvPlayer hlsPlayer;// HLS播放
     private ServiceCallback serviceCallback;
@@ -406,6 +405,7 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
         mHistory = historyManager.getHistoryByUrl(historyUrl, isLogin);
         if (mHistory != null) {
             mStartPosition = (int) mHistory.last_position;
+            hasHistory=true;
         }
         Log.i(TAG, "initHistory:" + mStartPosition);
         ItemEntity[] subItems = mItemEntity.getSubitems();

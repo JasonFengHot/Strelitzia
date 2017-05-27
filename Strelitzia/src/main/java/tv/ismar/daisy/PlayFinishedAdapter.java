@@ -25,6 +25,7 @@ import tv.ismar.subject.adapter.OnItemFocusedListener;
 	    private boolean mIsVertical;
 		private OnItemClickListener itemClickListener;
 	    private OnItemFocusedListener itemFocusedListener;
+		private boolean firstIn=true;
 
 	public OnItemClickListener getItemClickListener() {
 		return itemClickListener;
@@ -77,7 +78,7 @@ import tv.ismar.subject.adapter.OnItemFocusedListener;
 		PlayfinishedRecommend.RecommendItem item=mData.get(position);
 		if(mIsVertical){
 			holder.item_vertical_poster_title.setText(item.getTitle());
-			if(TextUtils.isEmpty(item.getVertical_url())){
+			if(!TextUtils.isEmpty(item.getVertical_url())){
 				Picasso.with(mContext).load(item.getVertical_url()).placeholder(R.drawable.list_item_ppreview_bg)
 						.error(R.drawable.list_item_ppreview_bg).into(holder.item_vertical_poster_image);
 			}
@@ -88,11 +89,15 @@ import tv.ismar.subject.adapter.OnItemFocusedListener;
 			}else{
 				holder.item_horizontal_poster_title.setGravity(Gravity.CENTER_VERTICAL);
 			}
-			if (TextUtils.isEmpty(item.getVertical_url())) {
-				Picasso.with(mContext).load(item.getVertical_url()).placeholder(R.drawable.list_item_preview_bg)
+			if (!TextUtils.isEmpty(item.getPoster_url())) {
+				Picasso.with(mContext).load(item.getPoster_url()).placeholder(R.drawable.list_item_preview_bg)
 						.error(R.drawable.list_item_preview_bg).into(holder.item_horizontal_poster_image);
 
 			}
+		}
+		if(firstIn&&position==0){
+			firstIn=false;
+			holder.itemView.requestFocus();
 		}
 	}
 

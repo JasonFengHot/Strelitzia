@@ -3,7 +3,7 @@ package tv.ismar.daisy;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.StaggeredGridLayoutManager;
-import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RelativeLayout;
@@ -15,11 +15,9 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import tv.ismar.app.BaseActivity;
 import tv.ismar.app.core.PageIntent;
-import tv.ismar.app.core.SimpleRestClient;
 import tv.ismar.app.core.Source;
-import tv.ismar.app.models.PlayRecommend;
+import tv.ismar.app.entity.Item;
 import tv.ismar.app.models.PlayfinishedRecommend;
-import tv.ismar.library.injectdb.util.Log;
 import tv.ismar.searchpage.utils.JasmineUtil;
 import tv.ismar.subject.adapter.OnItemClickListener;
 import tv.ismar.subject.adapter.OnItemFocusedListener;
@@ -43,6 +41,7 @@ public class PlayFinishedActivity extends BaseActivity implements View.OnClickLi
     private static final int EXIT_PLAY=200;
     private int  focusedPosition=0;
     private boolean leftFocus=false;
+    private boolean hasHistory;
 
     @Override
         protected void onCreate(Bundle savedInstanceState) {
@@ -50,28 +49,12 @@ public class PlayFinishedActivity extends BaseActivity implements View.OnClickLi
         setContentView(R.layout.play_finished);
         Intent intent = getIntent();
         itemId = intent.getIntExtra("item_id", 0);
-        playScale = intent.getIntExtra("play_scale", 0);
-        if("homepage".equals(baseChannel)) {
-            channel = intent.getStringExtra("channel");
-        }
+        playScale = intent.getIntExtra("play_scale", 1);
+        hasHistory = intent.getBooleanExtra("has_history", false);
+        channel = intent.getStringExtra("channel");
         initView();
-//            initData();
-        PlayfinishedRecommend play = new PlayfinishedRecommend();
-        play.setList(new ArrayList<PlayfinishedRecommend.RecommendItem>());
-        for (int i = 0; i < 12; i++) {
-            PlayfinishedRecommend.RecommendItem item = new PlayfinishedRecommend.RecommendItem();
-            item.setTitle("标题标题标题标题标题标题标题标题标题" + i);
-            item.setContent_model("teleplay");
-            item.setPk(696674);
-            play.getList().add(item);
-        }
-        processData(play.getList());
-        play_finished_title.setText("您可能对以下影片感兴趣:");
-        if (itemId == 0) {
-            play_finished_confirm_btn.setVisibility(View.GONE);
-        }
+        initData();
     }
-
 
 
 
@@ -83,17 +66,6 @@ public class PlayFinishedActivity extends BaseActivity implements View.OnClickLi
                 play_finished_cancel_btn = (Button) findViewById(R.id.play_finished_cancel_btn);
                 vertical_poster_focus = findViewById(R.id.vertical_poster_focus);
                 horizontal_poster_focus = findViewById(R.id.horizontal_poster_focus);
-                if("chinesemovie".equals(channel)||"overseas".equals(channel)||"movie".equals(channel)){
-                    play_finished_vertical_recylerview.setVisibility(View.VISIBLE);
-                    vertical_poster_focus.setVisibility(View.VISIBLE);
-                    play_finished_vertical_recylerview.setLayoutManager(new StaggeredGridLayoutManager(1,StaggeredGridLayoutManager.HORIZONTAL));
-                    isVertical=true;
-                }else{
-                    play_finished_horizontal_recylerview.setVisibility(View.VISIBLE);
-                    horizontal_poster_focus.setVisibility(View.VISIBLE);
-                    play_finished_horizontal_recylerview.setLayoutManager(new StaggeredGridLayoutManager(1,StaggeredGridLayoutManager.HORIZONTAL));
-                    isVertical=false;
-                }
                 play_finished_confirm_btn.setOnClickListener(this);
                 play_finished_cancel_btn.setOnClickListener(this);
                 play_finished_confirm_btn.setOnFocusChangeListener(this);
@@ -101,13 +73,20 @@ public class PlayFinishedActivity extends BaseActivity implements View.OnClickLi
             }
 
         private void initData() {
-            if(itemId==0) {
+            if(playScale==1) {
+                //播放完成页
                 play_finished_confirm_btn.setVisibility(View.GONE);
+                play_finished_cancel_btn.setNextFocusLeftId(R.id.play_finished_cancel_btn);
+                if("movie".equals(channel)){
+                    setOrientation(true);
+                }else{
+                    setOrientation(false);
+                }
                 play_finished_title.setText("您可能对以下影片感兴趣:");
-                mSkyService.apiPlayFinishedRecommend(channel,SimpleRestClient.sn_token)
+                mSkyService.getRelatedArray(itemId)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new BaseObserver<PlayfinishedRecommend>() {
+                        .subscribe(new BaseObserver<Item[]>() {
 
                             @Override
                             public void onCompleted() {
@@ -115,32 +94,82 @@ public class PlayFinishedActivity extends BaseActivity implements View.OnClickLi
                             }
 
                             @Override
-                            public void onNext(PlayfinishedRecommend playfinishedRecommend) {
-                                processData(playfinishedRecommend.getList());
+                            public void onNext(Item[] playfinishedRecommend) {
+                                ArrayList<PlayfinishedRecommend.RecommendItem> list=new ArrayList<>();
+                                for (int i = 0; i <playfinishedRecommend.length ; i++) {
+                                    PlayfinishedRecommend.RecommendItem item=new PlayfinishedRecommend.RecommendItem();
+                                    item.setPk(playfinishedRecommend[i].pk);
+                                    item.setContent_model(playfinishedRecommend[i].content_model);
+                                    item.setTitle(playfinishedRecommend[i].title);
+                                    item.setPoster_url(playfinishedRecommend[i].poster_url);
+                                    item.setVertical_url(playfinishedRecommend[i].vertical_url);
+                                    list.add(item);
+                                }
+                                processData(list);
                             }
                         });
             }else {
-                mSkyService.apiPlayExitRecommend(SimpleRestClient.sn_token, itemId, playScale)
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new BaseObserver<PlayRecommend>() {
+                if(playScale<20){
+                    setOrientation(false);
+                    play_finished_title.setText("今日热播内容推荐");
+                }else{
+                    if("movie".equals(channel)){
+                        setOrientation(true);
+                    }else{
+                        setOrientation(false);
+                    }
+                    if(hasHistory){
+                        play_finished_title.setText("看过此片的用户还看过");
+                    }else{
+                        play_finished_title.setText("其他用户正在观看");
+                    }
 
-                            @Override
-                            public void onCompleted() {
-
-                            }
-
-                            @Override
-                            public void onNext(PlayRecommend playRecommend) {
-                                if(playRecommend!=null) {
-                                    if (TextUtils.isEmpty(playRecommend.getRecommend_title()))
-                                        play_finished_title.setText(playRecommend.getRecommend_title());
-                                    processData(playRecommend.getRecommend_items());
-                                }
-                            }
-                        });
+                }
+                PlayfinishedRecommend play = new PlayfinishedRecommend();
+                play.setList(new ArrayList<PlayfinishedRecommend.RecommendItem>());
+                for (int i = 0; i < 12; i++) {
+                    PlayfinishedRecommend.RecommendItem item = new PlayfinishedRecommend.RecommendItem();
+                    item.setTitle("标题标题标题标题标题标题标题标题标题" + i);
+                    item.setContent_model("teleplay");
+                    item.setPk(696674);
+                    item.setVertical_url("http:");
+                    item.setPoster_url("http:");
+                    play.getList().add(item);
+                }
+                processData(play.getList());
+//                mSkyService.apiPlayExitRecommend(SimpleRestClient.sn_token, itemId, playScale)
+//                        .subscribeOn(Schedulers.io())
+//                        .observeOn(AndroidSchedulers.mainThread())
+//                        .subscribe(new BaseObserver<PlayRecommend>() {
+//
+//                            @Override
+//                            public void onCompleted() {
+//
+//                            }
+//
+//                            @Override
+//                            public void onNext(PlayRecommend playRecommend) {
+//                                if(playRecommend!=null) {
+//                                    if (TextUtils.isEmpty(playRecommend.getRecommend_title()))
+//                                        play_finished_title.setText(playRecommend.getRecommend_title());
+//                                    processData(playRecommend.getRecommend_items());
+//                                }
+//                            }
+//                        });
             }
         }
+
+    private void setOrientation(boolean Vertical) {
+        if(Vertical){
+            play_finished_vertical_recylerview.setVisibility(View.VISIBLE);
+            play_finished_vertical_recylerview.setLayoutManager(new StaggeredGridLayoutManager(1,StaggeredGridLayoutManager.HORIZONTAL));
+            isVertical=true;
+        }else{
+            play_finished_horizontal_recylerview.setVisibility(View.VISIBLE);
+            play_finished_horizontal_recylerview.setLayoutManager(new StaggeredGridLayoutManager(1,StaggeredGridLayoutManager.HORIZONTAL));
+            isVertical=false;
+        }
+    }
 
     private void processData(final ArrayList<PlayfinishedRecommend.RecommendItem> list) {
         PlayFinishedAdapter playFinishedAdapter=new PlayFinishedAdapter(this,list,isVertical);
@@ -267,8 +296,7 @@ public class PlayFinishedActivity extends BaseActivity implements View.OnClickLi
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
-        if(itemId==0) {
+        if(playScale==1) {
             setResult(EXIT_PLAY);
         }else{
             setResult(CONTINUE_PLAY);

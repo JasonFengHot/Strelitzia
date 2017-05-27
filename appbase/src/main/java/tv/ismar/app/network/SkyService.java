@@ -672,11 +672,6 @@ public interface SkyService {
             @Query ("macaddress") String macaddress
     );
 
-    @GET("api/recommend/{channel}/")
-    Observable<PlayfinishedRecommend>apiPlayFinishedRecommend(
-            @Path("channel") String channel,
-            @Query("sn") String sn
-    );
 
     @GET("api/recommend/exits_play/")
     Observable<PlayRecommend>apiPlayExitRecommend(

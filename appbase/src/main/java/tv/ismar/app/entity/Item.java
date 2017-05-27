@@ -60,4 +60,5 @@ public class Item implements Serializable {
     public String fromPage="";
     public String start_time;
     public boolean repeat_buy;
+    public String vertical_url;
 }

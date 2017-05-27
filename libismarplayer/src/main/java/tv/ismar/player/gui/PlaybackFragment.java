@@ -46,14 +46,17 @@ import java.util.TimerTask;
 
 import tv.ismar.account.IsmartvActivator;
 import tv.ismar.app.BaseActivity;
+import tv.ismar.app.VodApplication;
 import tv.ismar.app.ad.Advertisement;
 import tv.ismar.app.core.Bookmarks;
 import tv.ismar.app.core.PageIntent;
 import tv.ismar.app.core.PageIntentInterface;
+import tv.ismar.app.db.HistoryManager;
 import tv.ismar.app.entity.ClipEntity;
 import tv.ismar.app.network.entity.AdElementEntity;
 import tv.ismar.app.network.entity.ItemEntity;
 import tv.ismar.app.player.OnNoNetConfirmListener;
+import tv.ismar.app.util.Utils;
 import tv.ismar.app.widget.ModuleMessagePopWindow;
 import tv.ismar.library.network.HttpManager;
 import tv.ismar.library.util.JacksonUtils;
@@ -129,7 +132,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
     private Advertisement mAdvertisement;
 
     private PlaybackService.Client mClient;
-    private PlaybackService mPlaybackService;
+    public PlaybackService mPlaybackService;
     private int mCurrentPosition;
     private boolean sharpSetupKeyClick = false; // 夏普电视“设置”Activity样式为Dialog样式
     public boolean mounted;// 播放影片时插拔SD卡，夏普585会弹出系统Dialog，播放器会进入onPause,但是仍需正常播放
@@ -144,6 +147,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
     private boolean mIsClickKefu;// 点击客服中心，返回不应再加载广告
 
     private PlaybackHandler mHandler;
+    private boolean backpress=false;
     private boolean isqiyi;
     public PlaybackFragment() {
         // Required empty public constructor
@@ -200,6 +204,15 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        if(backpress){
+            mPlaybackService.startPlayer();
+        }
+        backpress=false;
+    }
+
+    @Override
     public void onStart() {
         super.onStart();
         LogUtils.i(TAG, "onStart > setup : " + sharpSetupKeyClick + " sdcard : " + mounted);
@@ -218,7 +231,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
             mounted = false;
             return;
         }
-        if (mPlaybackService != null && !mPlaybackService.isPlayerStopping()) {
+        if (mPlaybackService != null && !mPlaybackService.isPlayerStopping()&&!backpress) {
             // 不能放在onStop()中，SmartPlayer在该生命周期中调用会有onError回调产生
             mPlaybackService.stopPlayer(false);
         }
@@ -665,6 +678,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
             case PAUSE:
                 timerStop();
                 updatePlayerPause();
+                if(!backpress)
                 showPannelDelayOut();
                 break;
             case SEEK_COMPLETED:
@@ -715,7 +729,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
                         }
                     }
                     PageIntent pageIntent=new PageIntent();
-                    pageIntent.toPlayFinish(getActivity(),mPlaybackService.getItemEntity().getContentModel(),0,0,"player");
+                    pageIntent.toPlayFinish(getActivity(),mPlaybackService.getItemEntity().getContentModel(),extraItemPk,1,mPlaybackService.hasHistory,"player");
 //                    String itemJson = null;
 //                    try {
 //                        itemJson = JacksonUtils.toJson(mPlaybackService.getItemEntity());
@@ -851,7 +865,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
                 }
                 return true;
             case KeyEvent.KEYCODE_BACK:
-                if (!isPopWindowShow() && !mPlaybackService.isPlayingAd()) {
+//                if (!isPopWindowShow() && !mPlaybackService.isPlayingAd()) {
 //                    if (!isQuit) {
 //                        isQuit = true;
 //                        ExitToast.createToastConfig().show(getActivity().getApplicationContext(), 5000);
@@ -874,12 +888,14 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
 //                        hidePanel();
 //                        closeActivity("source");
 //                    }
+                    backpress=true;
+                    mPlaybackService.pausePlayer();
                     goOtherPage(EVENT_PLAY_EXIT);
-                    return true;
-                }
-                if (isPopWindowShow()) {
-                    return true;
-                }
+//                    return true;
+//                }
+//                if (isPopWindowShow()) {
+//                    return true;
+//                }
                 LogUtils.d(TAG, "BACK:" + adController);
                 if (adController != null && mIsInAdDetail) {
                     // TODO 广告详情页面返回键后继续播放视频
@@ -1067,9 +1083,22 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
                 break;
             case EVENT_PLAY_EXIT:
                 mIsClickKefu = true;
-                mPlaybackService.addHistory(mCurrentPosition, true);
+
+                HistoryManager historyManager = VodApplication.getModuleAppContext().getModuleHistoryManager();
+
+                String historyUrl = Utils.getItemUrl(extraItemPk);
+                String isLogin = "no";
+                if (!Utils.isEmptyText(IsmartvActivator.getInstance().getAuthToken())) {
+                    isLogin = "yes";
+                }
+                if(historyManager.getHistoryByUrl(historyUrl, isLogin)==null){
+                    mPlaybackService.hasHistory=false;
+                }else{
+                    mPlaybackService.hasHistory=true;
+                }
                 PageIntent pageIntent=new PageIntent();
-                pageIntent.toPlayFinish(getActivity(),mPlaybackService.getItemEntity().getContentModel(),extraItemPk,mCurrentPosition/mPlaybackService.getMediaPlayer().getDuration(),"player");
+                pageIntent.toPlayFinish(getActivity(),mPlaybackService.getItemEntity().getContentModel(),extraItemPk, (int) ((((double)mPlaybackService.getMediaPlayer().getCurrentPosition())/((double)mPlaybackService.getMediaPlayer().getDuration()))*100),mPlaybackService.hasHistory,"player");
+                mPlaybackService.addHistory(mCurrentPosition, true);
                 break;
         }
     }
@@ -1770,9 +1799,5 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
                 }
             }
         }
-    }
-
-    public void start(){
-        mPlaybackService.preparePlayer(extraItemPk, extraSubItemPk, extraSource);
     }
 }
