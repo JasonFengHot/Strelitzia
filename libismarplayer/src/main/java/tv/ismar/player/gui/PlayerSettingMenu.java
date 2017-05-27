@@ -81,17 +81,15 @@ public class PlayerSettingMenu extends PopupWindow implements EpisodeOnFocusList
         }else {
             hideEpisode();
         }
-
-
         RelativeLayout relativeLayout = new RelativeLayout(mContext);
         RelativeLayout.LayoutParams layoutParams;
         layoutParams = new RelativeLayout.LayoutParams(width, height);
         relativeLayout.addView(contentView, layoutParams);
-
         setContentView(relativeLayout);
 
         setBackgroundDrawable(mContext.getResources().getDrawable(R.drawable.transparent));
         setFocusable(true);
+
     }
     private void showEpisode(){
         list.setLayoutManager(new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.HORIZONTAL));

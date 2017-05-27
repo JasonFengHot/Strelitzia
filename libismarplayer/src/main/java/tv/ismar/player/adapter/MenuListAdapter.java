@@ -2,6 +2,7 @@ package tv.ismar.player.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -75,13 +76,16 @@ public class MenuListAdapter extends RecyclerView.Adapter<MenuItemHoder> {
         holder.itemView.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
+                Log.i("logBack","onkey"+keyCode);
                 if(keyCode==21||keyCode==22){
                     return true;
                 }else {
-                    if(event.getAction()==KeyEvent.ACTION_DOWN&&keyCode==4){
+                    if(keyCode==4){
                         onKeyListener.onkeyBack(keyCode);
+                        return true;
+                    }else {
+                        return false;
                     }
-                    return false;
                 }
             }
         });
