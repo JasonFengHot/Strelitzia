@@ -455,6 +455,9 @@ public class DaisyPlayer extends IsmartvPlayer implements SurfaceHelper.SurfaceC
         @Override
         public boolean onError(SmartPlayer smartPlayer, int i, int i1) {
             mCurrentState = STATE_ERROR;
+            if (i == 1010){
+                return true;
+            }
             PlayerEvent.videoExcept(
                     "mediaexception", String.valueOf(i),
                     logPlayerEvent, logSpeed,
