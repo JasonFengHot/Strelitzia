@@ -70,7 +70,7 @@
     <dimen name="player_5">5dp</dimen>
     <dimen name="player_1810">1810dp</dimen>
     <dimen name="player_8">8dp</dimen>
-    <dimen name="player_250">260dp</dimen>
+    <dimen name="player_250">250dp</dimen>
     <dimen name="player_20">20dp</dimen>
     <dimen name="player_99">99dp</dimen>
     <dimen name="player_43">43dp</dimen>
@@ -80,4 +80,17 @@
     <dimen name="player_10">10dp</dimen>
     <dimen name="player_260">260dp</dimen>
     <dimen name="player_350">350dp</dimen>
+    <dimen name="player_55">55dp</dimen>
+    <dimen name="player_78">78dp</dimen>
+    <dimen name="player_35">35dp</dimen>
+    <dimen name="player_86">86dp</dimen>
+    <dimen name="player_2">2dp</dimen>
+    <dimen name="player_60">60dp</dimen>
+    <dimen name="player_7">7dp</dimen>
+    <dimen name="player_4">4dp</dimen>
+    <dimen name="player_146">146dp</dimen>
+    <dimen name="player_47">47dp</dimen>
+    <dimen name="player_41">41dp</dimen>
+    <dimen name="player_14">14dp</dimen>
+
 </resources>
