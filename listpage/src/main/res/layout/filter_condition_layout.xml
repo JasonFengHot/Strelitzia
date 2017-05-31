@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+<View
+    android:id="@+id/filter_condition_top_layout"
+    android:layout_width="match_parent"
+    android:layout_height="552dp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#000033"
+        android:alpha="0.9"
+        android:orientation="vertical">
+    <LinearLayout
+        android:layout_width="314dp"
+        android:layout_height="43dp"
+        android:layout_marginLeft="71dp"
+        android:layout_marginTop="51dp"
+        android:orientation="horizontal">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:textSize="30dp"
+        android:textColor="#999999"
+        android:text="按返回键"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:textSize="30dp"
+        android:layout_marginLeft="5dp"
+        android:textColor="#666666"
+        android:text="可以关闭面板"/>
+    </LinearLayout>
+
+    <View
+        android:layout_width="1768dp"
+        android:layout_height="2dp"
+        android:background="#f0f0f0"
+        android:alpha="0.2"
+        android:layout_marginTop="27dp"
+        android:layout_marginLeft="71dp"/>
+
+    <LinearLayout
+        android:id="@+id/filter_conditions"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:paddingLeft="74dp"
+        android:layout_marginTop="19dp"/>
+    </LinearLayout>
+</LinearLayout>

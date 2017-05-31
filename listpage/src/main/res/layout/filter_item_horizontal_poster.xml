@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    android:padding="-22dp"
+    android:layout_marginBottom="18dp"
+    android:layout_marginRight="9dp"
+    android:gravity="center"
+    android:background="@drawable/poster_focus_selector">
+
+<RelativeLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/item_horizontal_poster_img"
+        android:layout_width="432dp"
+        android:layout_height="243dp" />
+    
+    <ImageView
+        android:id="@+id/item_horizontal_poster_vip"
+        android:layout_width="109dp"
+        android:layout_height="109dp" />
+
+    <TextView
+        android:id="@+id/item_horizontal_poster_mark"
+        android:layout_width="78dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="150dp"
+        android:textSize="30dp"
+        android:layout_alignRight="@id/item_horizontal_poster_img"
+        android:gravity="right|center_vertical"
+        android:background="@drawable/mark_icon"
+        android:paddingRight="4dp"/>
+    
+    <TextView
+        android:id="@+id/item_horizontal_poster_des"
+        android:layout_width="423dp"
+        android:layout_height="43dp"
+        android:background="@drawable/filter_poster_title_bg"
+        android:textSize="30dp"
+        android:textColor="#cccccc"
+        android:gravity="center"
+        android:singleLine="true"
+        android:layout_alignBottom="@+id/item_horizontal_poster_img"/>
+
+    <View
+        android:layout_width="423dp"
+        android:layout_height="63dp"
+        android:background="#000000"
+        android:alpha="0.25"
+        android:layout_below="@id/item_horizontal_poster_img"/>
+
+    <TextView
+        android:id="@+id/item_horizontal_poster_title"
+        android:layout_width="423dp"
+        android:layout_height="63dp"
+        android:textSize="36dp"
+        android:textColor="#f0f0f0"
+        android:gravity="center"
+        android:ellipsize="marquee"
+        android:focusable="true"
+        android:singleLine="true"
+        android:layout_below="@id/item_horizontal_poster_img"/>
+</RelativeLayout>
+</RelativeLayout>

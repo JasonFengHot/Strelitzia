@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/filter_item"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:focusableInTouchMode="true"
+    android:focusable="true"
+    android:background="@drawable/poster_focus_selector"
+    android:padding="-22dp"
+    android:layout_marginBottom="18dp"
+    android:layout_marginRight="1dp"
+    android:gravity="center"
+    >
+<RelativeLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+    <ImageView
+        android:id="@+id/item_vertical_poster_img"
+        android:layout_width="243dp"
+        android:layout_height="340dp" />
+    <ImageView
+        android:id="@+id/item_vertical_poster_vip"
+        android:layout_width="109dp"
+        android:layout_height="109dp" />
+    <TextView
+        android:id="@+id/item_vertical_poster_mark"
+        android:layout_width="78dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="290dp"
+        android:textSize="30dp"
+        android:layout_alignRight="@id/item_vertical_poster_img"
+        android:gravity="right|center_vertical"
+        android:background="@drawable/mark_icon"
+        android:paddingRight="4dp"/>
+
+    <View
+        android:layout_width="243dp"
+        android:layout_height="63dp"
+        android:background="#000000"
+        android:alpha="0.25"
+        android:layout_below="@id/item_vertical_poster_img"/>
+
+
+    <TextView
+        android:id="@+id/item_vertical_poster_title"
+        android:layout_width="243dp"
+        android:layout_height="63dp"
+        android:textSize="36dp"
+        android:textColor="#f0f0f0"
+        android:gravity="center"
+        android:ellipsize="marquee"
+        android:focusable="true"
+        android:singleLine="true"
+        android:layout_below="@id/item_vertical_poster_img"/>
+</RelativeLayout>
+</RelativeLayout>
