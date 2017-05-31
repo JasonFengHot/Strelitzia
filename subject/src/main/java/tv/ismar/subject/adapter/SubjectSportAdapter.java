@@ -9,7 +9,6 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 
 import com.squareup.picasso.Picasso;
 
@@ -22,8 +21,11 @@ import java.util.Locale;
 import java.util.TimeZone;
 
 import cn.ismartv.truetime.TrueTime;
-import tv.ismar.app.entity.Item;
 import tv.ismar.app.entity.Objects;
+import tv.ismar.app.ui.adapter.OnItemClickListener;
+import tv.ismar.app.ui.adapter.OnItemFocusedListener;
+import tv.ismar.app.ui.adapter.OnItemKeyListener;
+import tv.ismar.app.ui.adapter.OnItemOnhoverlistener;
 import tv.ismar.subject.R;
 
 /**

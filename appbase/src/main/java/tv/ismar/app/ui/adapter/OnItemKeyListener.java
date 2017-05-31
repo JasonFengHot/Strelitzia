@@ -1,4 +1,4 @@
-package tv.ismar.subject.adapter;
+package tv.ismar.app.ui.adapter;
 
 import android.view.KeyEvent;
 import android.view.View;

@@ -1,4 +1,4 @@
-package tv.ismar.subject.adapter;
+package tv.ismar.app.ui.adapter;
 
 import android.view.MotionEvent;
 import android.view.View;
@@ -8,5 +8,5 @@ import android.view.View;
  */
 
 public interface OnItemOnhoverlistener {
-    void OnItemOnhoverlistener(View v, MotionEvent event,int position,int recommend);
+    void OnItemOnhoverlistener(View v, MotionEvent event, int position, int recommend);
 }

@@ -15,10 +15,10 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 
 import tv.ismar.app.models.PlayfinishedRecommend;
-import tv.ismar.subject.adapter.OnItemClickListener;
-import tv.ismar.subject.adapter.OnItemFocusedListener;
+import tv.ismar.app.ui.adapter.OnItemClickListener;
+import tv.ismar.app.ui.adapter.OnItemFocusedListener;
 
- 	public class PlayFinishedAdapter extends RecyclerView.Adapter<PlayFinishedAdapter.PlayViewHolder>{
+public class PlayFinishedAdapter extends RecyclerView.Adapter<PlayFinishedAdapter.PlayViewHolder>{
 
 		private Context mContext;
 		private ArrayList<PlayfinishedRecommend.RecommendItem> mData;
@@ -98,6 +98,7 @@ import tv.ismar.subject.adapter.OnItemFocusedListener;
 		if(firstIn&&position==0){
 			firstIn=false;
 			holder.itemView.requestFocus();
+			holder.itemView.requestFocusFromTouch();
 		}
 	}
 

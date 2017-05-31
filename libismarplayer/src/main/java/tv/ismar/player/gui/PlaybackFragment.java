@@ -729,7 +729,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
                         }
                     }
                     PageIntent pageIntent=new PageIntent();
-                    pageIntent.toPlayFinish(getActivity(),mPlaybackService.getItemEntity().getContentModel(),extraItemPk,1,mPlaybackService.hasHistory,"player");
+                    pageIntent.toPlayFinish(getActivity(),mPlaybackService.getItemEntity().getContentModel(),extraItemPk,100,mPlaybackService.hasHistory,"player");
 //                    String itemJson = null;
 //                    try {
 //                        itemJson = JacksonUtils.toJson(mPlaybackService.getItemEntity());

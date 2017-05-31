@@ -35,6 +35,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.ResponseBody;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
+import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -62,6 +63,7 @@ import tv.ismar.app.entity.SectionList;
 import tv.ismar.app.entity.Subject;
 import tv.ismar.app.entity.VideoEntity;
 import tv.ismar.app.models.ActorRelateRequestParams;
+import tv.ismar.app.models.FilterConditions;
 import tv.ismar.app.models.Game;
 import tv.ismar.app.models.HotWords;
 import tv.ismar.app.models.PersonEntitiy;
@@ -157,7 +159,7 @@ public interface SkyService {
     );
 
     @GET("api/tv/retrieval/{channel}")
-    Observable<ResponseBody> getFilters(
+    Observable<FilterConditions> getFilters(
             @Path("channel") String channel
     );
 
@@ -673,10 +675,11 @@ public interface SkyService {
     );
 
 
-    @GET("api/recommend/exits_play/")
+    @GET("http://114.80.117.138:8099/Wheat/wheat/V3_0/SKY2/toq0/api/recommend/exits_play/")
     Observable<PlayRecommend>apiPlayExitRecommend(
             @Query("sn") String sn,
             @Query("item_id") int item_id,
+            @Query("channel") String channel,
             @Query("play_scale") int play_scale
     );
     class ServiceManager {

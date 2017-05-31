@@ -14,6 +14,8 @@ import java.util.List;
 
 import tv.ismar.app.core.VipMark;
 import tv.ismar.app.models.SubjectEntity;
+import tv.ismar.app.ui.adapter.OnItemClickListener;
+import tv.ismar.app.ui.adapter.OnItemFocusedListener;
 import tv.ismar.subject.R;
 
 /**

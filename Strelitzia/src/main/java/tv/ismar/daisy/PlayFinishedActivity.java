@@ -3,24 +3,36 @@ package tv.ismar.daisy;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+
+import java.io.IOException;
 import java.util.ArrayList;
 
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import tv.ismar.app.BaseActivity;
 import tv.ismar.app.core.PageIntent;
+import tv.ismar.app.core.SimpleRestClient;
 import tv.ismar.app.core.Source;
 import tv.ismar.app.entity.Item;
+import tv.ismar.app.models.PlayRecommend;
 import tv.ismar.app.models.PlayfinishedRecommend;
+import tv.ismar.app.network.SkyService;
+import tv.ismar.app.ui.adapter.OnItemClickListener;
+import tv.ismar.app.ui.adapter.OnItemFocusedListener;
 import tv.ismar.searchpage.utils.JasmineUtil;
-import tv.ismar.subject.adapter.OnItemClickListener;
-import tv.ismar.subject.adapter.OnItemFocusedListener;
 import tv.ismar.subject.views.MyRecyclerView;
 
 
@@ -42,6 +54,8 @@ public class PlayFinishedActivity extends BaseActivity implements View.OnClickLi
     private int  focusedPosition=0;
     private boolean leftFocus=false;
     private boolean hasHistory;
+    private PlayFinishedAdapter playFinishedAdapter;
+    private Subscription playExitSub;
 
     @Override
         protected void onCreate(Bundle savedInstanceState) {
@@ -55,7 +69,6 @@ public class PlayFinishedActivity extends BaseActivity implements View.OnClickLi
         initView();
         initData();
     }
-
 
 
     private void initView() {
@@ -73,7 +86,7 @@ public class PlayFinishedActivity extends BaseActivity implements View.OnClickLi
             }
 
         private void initData() {
-            if(playScale==1) {
+            if(playScale==100) {
                 //播放完成页
                 play_finished_confirm_btn.setVisibility(View.GONE);
                 play_finished_cancel_btn.setNextFocusLeftId(R.id.play_finished_cancel_btn);
@@ -125,37 +138,25 @@ public class PlayFinishedActivity extends BaseActivity implements View.OnClickLi
                     }
 
                 }
-                PlayfinishedRecommend play = new PlayfinishedRecommend();
-                play.setList(new ArrayList<PlayfinishedRecommend.RecommendItem>());
-                for (int i = 0; i < 12; i++) {
-                    PlayfinishedRecommend.RecommendItem item = new PlayfinishedRecommend.RecommendItem();
-                    item.setTitle("标题标题标题标题标题标题标题标题标题" + i);
-                    item.setContent_model("teleplay");
-                    item.setPk(696674);
-                    item.setVertical_url("http:");
-                    item.setPoster_url("http:");
-                    play.getList().add(item);
-                }
-                processData(play.getList());
-//                mSkyService.apiPlayExitRecommend(SimpleRestClient.sn_token, itemId, playScale)
-//                        .subscribeOn(Schedulers.io())
-//                        .observeOn(AndroidSchedulers.mainThread())
-//                        .subscribe(new BaseObserver<PlayRecommend>() {
-//
-//                            @Override
-//                            public void onCompleted() {
-//
-//                            }
-//
-//                            @Override
-//                            public void onNext(PlayRecommend playRecommend) {
-//                                if(playRecommend!=null) {
-//                                    if (TextUtils.isEmpty(playRecommend.getRecommend_title()))
-//                                        play_finished_title.setText(playRecommend.getRecommend_title());
-//                                    processData(playRecommend.getRecommend_items());
-//                                }
-//                            }
-//                        });
+                playExitSub = SkyService.ServiceManager.getCacheSkyService2().apiPlayExitRecommend(SimpleRestClient.sn_token, itemId,channel,playScale)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new BaseObserver<PlayRecommend>() {
+
+                            @Override
+                            public void onCompleted() {
+
+                            }
+
+                            @Override
+                            public void onNext(PlayRecommend playRecommend) {
+                                if (playRecommend != null) {
+                                    if (TextUtils.isEmpty(playRecommend.getRecommend_title()))
+                                        play_finished_title.setText(playRecommend.getRecommend_title());
+                                    processData(playRecommend.getRecommend_items());
+                                }
+                            }
+                        });
             }
         }
 
@@ -172,7 +173,7 @@ public class PlayFinishedActivity extends BaseActivity implements View.OnClickLi
     }
 
     private void processData(final ArrayList<PlayfinishedRecommend.RecommendItem> list) {
-        PlayFinishedAdapter playFinishedAdapter=new PlayFinishedAdapter(this,list,isVertical);
+        playFinishedAdapter = new PlayFinishedAdapter(this,list,isVertical);
         playFinishedAdapter.setItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
@@ -209,7 +210,6 @@ public class PlayFinishedActivity extends BaseActivity implements View.OnClickLi
                         }else{
                             play_finished_vertical_recylerview.smoothScrollBy((int) view.getX() - getResources().getDimensionPixelOffset(R.dimen.scroll_396), 0);
                         }
-                        JasmineUtil.scaleOut3(view);
                         RelativeLayout.LayoutParams params=new RelativeLayout.LayoutParams(getResources().getDimensionPixelOffset(R.dimen.play_finished_vertical_poster_focus_w), getResources().getDimensionPixelOffset(R.dimen.play_finished_vertical_poster_focus_h));
                         params.topMargin=getResources().getDimensionPixelOffset(R.dimen.scroll_238);
                         if(position==0){
@@ -223,10 +223,11 @@ public class PlayFinishedActivity extends BaseActivity implements View.OnClickLi
                         vertical_poster_focus.setVisibility(View.VISIBLE);
                         view.findViewById(R.id.item_vertical_poster_title).setSelected(true);
                         focusedPosition=position;
+                        JasmineUtil.scaleOut3(view);
                     }else{
                         JasmineUtil.scaleIn3(view);
                         view.findViewById(R.id.item_vertical_poster_title).setVisibility(View.GONE);
-                        vertical_poster_focus.setVisibility(View.INVISIBLE);
+                        vertical_poster_focus.setVisibility(View.GONE);
                         view.findViewById(R.id.item_vertical_poster_title).setSelected(false);
                     }
                 }else{
@@ -246,7 +247,6 @@ public class PlayFinishedActivity extends BaseActivity implements View.OnClickLi
                         }else{
                             play_finished_horizontal_recylerview.smoothScrollBy((int) view.getX() - getResources().getDimensionPixelOffset(R.dimen.scroll_519), 0);
                         }
-                        JasmineUtil.scaleOut3(view);
                         RelativeLayout.LayoutParams params=new RelativeLayout.LayoutParams(getResources().getDimensionPixelOffset(R.dimen.play_finished_horizontal_poster_focus_w),getResources().getDimensionPixelOffset(R.dimen.play_finished_horizontal_poster_focus_h));
                         params.topMargin=getResources().getDimensionPixelOffset(R.dimen.scroll_307);
                         if(position==0){
@@ -259,6 +259,7 @@ public class PlayFinishedActivity extends BaseActivity implements View.OnClickLi
                         horizontal_poster_focus.setLayoutParams(params);
                         horizontal_poster_focus.setVisibility(View.VISIBLE);
                         focusedPosition=position;
+                        JasmineUtil.scaleOut3(view);
                     }else{
                         JasmineUtil.scaleIn3(view);
                         horizontal_poster_focus.setVisibility(View.GONE);
@@ -296,11 +297,19 @@ public class PlayFinishedActivity extends BaseActivity implements View.OnClickLi
 
     @Override
     public void onBackPressed() {
-        if(playScale==1) {
+        if(playScale==100) {
             setResult(EXIT_PLAY);
         }else{
             setResult(CONTINUE_PLAY);
         }
         finish();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (playExitSub != null && playExitSub.isUnsubscribed()) {
+            playExitSub.unsubscribe();
+        }
     }
 }
