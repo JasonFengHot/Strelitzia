@@ -545,6 +545,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
                             showBuffer(PlAYSTART + mPlaybackService.getItemEntity().getTitle());
                             updateTitle(subItemDelay.getTitle());
                             mPlaybackService.switchTelevision(mCurrentPosition, subItemDelay.getPk(), clip.getUrl());
+
                             mCurrentPosition = 0;
                         }
                     }, 400);
@@ -783,11 +784,16 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
      *
      * @param value bufferd value,unit seccond
      */
+    int direction=0;
     @Override
     public void onBufferUpdate(long value) {
         if (mPlaybackService == null || mPlaybackService.getMediaPlayer() == null) {
             return;
         }
+        Log.i("cacheTime","value: "+value);
+        direction= (int) (direction+value);
+        player_seekBar.setSecondaryProgress(direction);
+
         /**
          * do some uo update action.
          */
@@ -837,10 +843,20 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
 //                if (!isMenuShow()) {
 //                    showMenu();
 //                }
-                if(settingMenu!=null&&settingMenu.isShowing()){
-                    settingMenu.dismiss();
+                if(settingMenu!=null){
+                    if(settingMenu.isShowing()){
+                        settingMenu.dismiss();
+                    }else{
+                        settingMenu.showAtLocation(parentView,Gravity.BOTTOM,0,0);
+                    }
                 }else{
                     ItemEntity[] subItems = mPlaybackService.getItemEntity().getSubitems();
+                    List<ItemEntity> list=new ArrayList<>();
+                    if(subItems!=null) {
+                        for (int i = 0; i < subItems.length; i++) {
+                            list.add(subItems[i]);
+                        }
+                    }
                     ArrayList<QuailtyEntity> quailtyEntities=new ArrayList<>();
                     int currentQuality=0;
                     List<ClipEntity.Quality> qualities = mPlaybackService.getMediaPlayer().getQualities();
@@ -856,7 +872,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
                             quailtyEntities.add(quailtyEntity);
                         }
                     }
-                    settingMenu=new PlayerSettingMenu(getActivity().getApplicationContext(),subItems,mPlaybackService.getSubItemPk(),this,quailtyEntities,currentQuality,this);
+                    settingMenu=new PlayerSettingMenu(getActivity().getApplicationContext(),list,mPlaybackService.getSubItemPk(),this,quailtyEntities,currentQuality,this);
                     settingMenu.showAtLocation(parentView,Gravity.BOTTOM,0,0);
                 }
                 hidePanel();
@@ -1036,6 +1052,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
                 }, 400);
             }
         }
+        settingMenu=null;
     }
 
     @Override

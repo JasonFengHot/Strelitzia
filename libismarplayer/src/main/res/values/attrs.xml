@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="HorizontalEpisodeList">
+        <attr name="heRowCount" format="integer"/>
+        <attr name="heItemLayoutId" format="reference"/>
+        <attr name="heItemSpace" format="dimension"/>
+    </declare-styleable>
+</resources>

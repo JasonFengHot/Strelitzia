@@ -44,7 +44,7 @@ public class HomeActivity extends BaseActivity {
         pagerIndicator = (IconPagerIndicator) findViewById(R.id.indicator);
         nodeFragment=new NodeFragment();
         fragments = new ArrayList<Fragment>();
-        fragments.add(nodeFragment);
+     //   fragments.add(nodeFragment);
         fragments.add(new FeedbackFragment());
         fragments.add(new HelpFragment());
 
