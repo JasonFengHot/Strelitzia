@@ -66,11 +66,13 @@ import tv.ismar.library.util.StringUtils;
 import tv.ismar.player.IsmartvPlayer;
 import tv.ismar.player.R;
 import tv.ismar.player.listener.EpisodeOnclickListener;
+import tv.ismar.player.listener.OnMenuListItmeClickListener;
+import tv.ismar.player.model.QuailtyEntity;
 import tv.ismar.player.widget.AdImageDialog;
 import tv.ismar.player.widget.ExitToast;
 
 public class PlaybackFragment extends Fragment implements PlaybackService.Client.Callback,
-        PlayerMenu.OnCreateMenuListener, Advertisement.OnPauseVideoAdListener, PlaybackService.ServiceCallback ,EpisodeOnclickListener{
+        PlayerMenu.OnCreateMenuListener, Advertisement.OnPauseVideoAdListener, PlaybackService.ServiceCallback ,EpisodeOnclickListener,OnMenuListItmeClickListener{
 
     private final String TAG = "LH/PlaybackFragment";
     public static final int PAYMENT_REQUEST_CODE = 0xd6;
@@ -832,7 +834,6 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
                 if (mPlaybackService.isPlayingAd()) {
                     return true;
                 }
-                hidePanel();
 //                if (!isMenuShow()) {
 //                    showMenu();
 //                }
@@ -840,14 +841,25 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
                     settingMenu.dismiss();
                 }else{
                     ItemEntity[] subItems = mPlaybackService.getItemEntity().getSubitems();
-                    ArrayList<ItemEntity> list=new ArrayList<>();
-                    for (int i=0;i<subItems.length;i++){
-                        list.add(subItems[i]);
+                    ArrayList<QuailtyEntity> quailtyEntities=new ArrayList<>();
+                    int currentQuality=0;
+                    List<ClipEntity.Quality> qualities = mPlaybackService.getMediaPlayer().getQualities();
+                    if (qualities != null && !qualities.isEmpty()) {
+                        for (int i = 0; i < qualities.size(); i++) {
+                            ClipEntity.Quality quality = qualities.get(i);
+                            QuailtyEntity quailtyEntity=new QuailtyEntity();
+                            quailtyEntity.setName(ClipEntity.Quality.getString(quality));
+                            quailtyEntity.setValue(quality.getValue()+1);
+                            if (mPlaybackService.getMediaPlayer().getCurrentQuality() == quality) {
+                                currentQuality=i;
+                            }
+                            quailtyEntities.add(quailtyEntity);
+                        }
                     }
-                    Log.i("SettingMenu","length: "+list.size());
-                    settingMenu=new PlayerSettingMenu(getActivity().getApplicationContext(),list,mPlaybackService.getSubItemPk(),this);
+                    settingMenu=new PlayerSettingMenu(getActivity().getApplicationContext(),subItems,mPlaybackService.getSubItemPk(),this,quailtyEntities,currentQuality,this);
                     settingMenu.showAtLocation(parentView,Gravity.BOTTOM,0,0);
                 }
+                hidePanel();
                 return true;
             case KeyEvent.KEYCODE_DPAD_DOWN:
                 // TODO 暂停广告按下消除
@@ -1026,6 +1038,40 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
         }
     }
 
+    @Override
+    public void onMenuItemClick(int value, String name) {
+        if (value > MENU_QUALITY_ID_START && value <= MENU_QUALITY_ID_END) {
+            if (!NetworkUtils.isConnected(getActivity())) {
+                ((BaseActivity) getActivity()).showNoNetConnectDialog(onNoNetConfirmListener);
+                mPlaybackService.pausePlayer();
+                LogUtils.e(TAG, "Network error switch quality.");
+                return;
+            }
+            // id值为quality值+1
+            int qualityValue = value - 1;
+            final ClipEntity.Quality clickQuality = ClipEntity.Quality.getQuality(qualityValue);
+            if (clickQuality == null || clickQuality == mPlaybackService.getCurrentQuality()) {
+                // 为空或者点击的码率和当前设置码率相同
+                return;
+            }
+            mIsOnPaused = false;// 暂停以后切换画质
+            if (mPlaybackService.getMediaPlayer().getPlayerMode() == IsmartvPlayer.MODE_SMART_PLAYER) {
+                timerStop();
+                showBuffer(null);
+            }
+            if (!mPlaybackService.getItemEntity().getLiveVideo()) {
+                mCurrentPosition = mPlaybackService.getMediaPlayer().getCurrentPosition();
+            }
+            // 点击菜单后延迟400ms处理，菜单不会有卡顿现象
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    mPlaybackService.switchQuality(mCurrentPosition, clickQuality);
+                    updateQuality(clickQuality);
+                }
+            }, 400);
+        }
+    }
     private void playPauseVideo() {
         if (mIsExiting || mPlaybackService.isPlayingAd() || mPlaybackService == null || mPlaybackService.getMediaPlayer() == null
                 || mPlaybackService.getItemEntity().getLiveVideo() || !mPlaybackService.isPlayerPrepared()) {
@@ -1555,6 +1601,8 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
             }
         }
     }
+
+
 
     private static class PlaybackHandler extends Handler {
 

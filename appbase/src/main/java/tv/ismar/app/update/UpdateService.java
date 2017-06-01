@@ -1,4 +1,5 @@
 package tv.ismar.app.update;
+import com.google.gson.GsonBuilder;
 
 import android.app.Service;
 import android.content.Context;
@@ -151,7 +152,7 @@ public class UpdateService extends Service implements Loader.OnLoadCompleteListe
                         String title;
                         String selection = "title in (";
                         for (VersionInfoV2Entity.ApplicationEntity applicationEntity : versionInfoV2Entity.getUpgrades()) {
-                            title = Md5.md5(new Gson().toJson(applicationEntity));
+                            title = Md5.md5(new GsonBuilder().create().toJson(applicationEntity));
                             md5Jsons.add(title);
                             checkUpgrade(applicationEntity);
                             selection += "?,";
@@ -199,7 +200,7 @@ public class UpdateService extends Service implements Loader.OnLoadCompleteListe
         }
 
         Log.i(TAG, "local version code ---> " + installVersionCode);
-        String title = Md5.md5(new Gson().toJson(applicationEntity));
+        String title = Md5.md5(new GsonBuilder().create().toJson(applicationEntity));
 
 
         DownloadEntity download = new Select().from(DownloadEntity.class).where("title = ?", title).executeSingle();
@@ -306,7 +307,7 @@ public class UpdateService extends Service implements Loader.OnLoadCompleteListe
 
     private void downloadApp(VersionInfoV2Entity.ApplicationEntity entity) {
         String url = entity.getUrl();
-        String json = new Gson().toJson(entity);
+        String json = new GsonBuilder().create().toJson(entity);
         String title = Md5.md5(json);
         String filePath = getFilesDir().getAbsolutePath();
         DownloadManager.getInstance().start(url, title, json, filePath);
@@ -330,7 +331,7 @@ public class UpdateService extends Service implements Loader.OnLoadCompleteListe
             if (status.equalsIgnoreCase("COMPLETED")) {
                 DownloadEntity downloadEntity = new Select().from(DownloadEntity.class).where("title = ?", title).executeSingle();
                 if (downloadEntity != null && downloadEntity.status == DownloadStatus.COMPLETED) {
-                    VersionInfoV2Entity.ApplicationEntity applicationEntity = new Gson().fromJson(downloadEntity.json, VersionInfoV2Entity.ApplicationEntity.class);
+                    VersionInfoV2Entity.ApplicationEntity applicationEntity = new GsonBuilder().create().fromJson(downloadEntity.json, VersionInfoV2Entity.ApplicationEntity.class);
                     Log.d(TAG, "onLoadComplete pkg: " + applicationEntity.getProduct());
                     Log.d(TAG, "onLoadComplete version: " + applicationEntity.getVersion());
                     checkUpgrade(applicationEntity);
@@ -351,7 +352,7 @@ public class UpdateService extends Service implements Loader.OnLoadCompleteListe
     private void checkRemaindUpdateFile() {
         List<DownloadEntity> downloadEntities = new Select().from(DownloadEntity.class).execute();
         for (DownloadEntity entity : downloadEntities) {
-            VersionInfoV2Entity.ApplicationEntity applicationEntity = new Gson().fromJson(entity.json, VersionInfoV2Entity.ApplicationEntity.class);
+            VersionInfoV2Entity.ApplicationEntity applicationEntity = new GsonBuilder().create().fromJson(entity.json, VersionInfoV2Entity.ApplicationEntity.class);
             int versionCode = AppUtils.getAppVersionCode(this, applicationEntity.getProduct());
             int saveFileVersionCode = getLocalApkVersionCode(entity.savePath);
             Log.d(TAG, "checkRemaindUpdateFile: versionCode " + versionCode);

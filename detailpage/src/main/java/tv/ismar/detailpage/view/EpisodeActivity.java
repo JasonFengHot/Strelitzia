@@ -1,4 +1,5 @@
 package tv.ismar.detailpage.view;
+import com.google.gson.GsonBuilder;
 
 import android.content.Context;
 import android.graphics.Rect;
@@ -87,7 +88,7 @@ public class EpisodeActivity extends BaseActivity implements View.OnHoverListene
         if (null == bundle)
             return;
 
-        mItemEntity = new Gson().fromJson(bundle.getString(EXTRA_ITEM_JSON), ItemEntity.class);
+        mItemEntity = new GsonBuilder().create().fromJson(bundle.getString(EXTRA_ITEM_JSON), ItemEntity.class);
         source = bundle.getString(EXTRA_SOURCE);
         mItemEntityList = new ArrayList<>();
 

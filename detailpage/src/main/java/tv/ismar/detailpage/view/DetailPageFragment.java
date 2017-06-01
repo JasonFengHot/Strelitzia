@@ -1,4 +1,5 @@
 package tv.ismar.detailpage.view;
+import com.google.gson.GsonBuilder;
 
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -155,7 +156,7 @@ public class DetailPageFragment extends Fragment implements DetailPageContract.V
             String itemJson = bundle.getString(EXTRA_ITEM_JSON);
             position = bundle.getInt(POSITION,-1);
             type=bundle.getString(TYPE);
-            mItemEntity = new Gson().fromJson(itemJson, ItemEntity.class);
+            mItemEntity = new GsonBuilder().create().fromJson(itemJson, ItemEntity.class);
 
         }
 

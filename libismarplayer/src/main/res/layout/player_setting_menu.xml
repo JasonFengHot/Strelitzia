@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:sakura="http://schemas.android.com/apk/res-auto"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:alpha="0.75"
     >
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#000000"
+        android:alpha="0.75"
+        />
     <TextView
         android:id="@+id/player_setting"
         android:layout_width="@dimen/player_77"
@@ -14,13 +18,18 @@
         android:layout_marginTop="@dimen/player_54"
         android:textColor="@color/_f0f0f0"
         android:text="设置"
+        android:gravity="center"
         />
     <LinearLayout
+        android:id="@+id/menu_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/player_setting"
         android:visibility="gone"
+        android:layout_marginLeft="@dimen/player_55"
+        android:layout_marginTop="@dimen/player_2"
+        android:orientation="horizontal"
         >
-
     </LinearLayout>
     <TextView
         android:id="@+id/player_episode"
@@ -28,14 +37,17 @@
         android:layout_height="@dimen/player_52"
         android:textSize="@dimen/text_size_36sp"
         android:textColor="@color/_f0f0f0"
+        android:layout_below="@+id/menu_layout"
         android:layout_marginLeft="@dimen/player_51"
         android:layout_marginTop="@dimen/player_38"
         android:text="选集"
         />
     <LinearLayout
+        android:id="@+id/list_layout"
         android:layout_width="match_parent"
         android:layout_height="@dimen/player_80"
         android:orientation="horizontal"
+        android:layout_below="@+id/player_episode"
         android:layout_marginTop="@dimen/player_24"
         >
         <ImageView
@@ -63,4 +75,4 @@
             />
     </LinearLayout>
     
-</LinearLayout>
+</RelativeLayout>

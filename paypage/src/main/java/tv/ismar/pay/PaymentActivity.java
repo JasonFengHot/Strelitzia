@@ -1,4 +1,5 @@
 package tv.ismar.pay;
+import com.google.gson.GsonBuilder;
 
 import cn.ismartv.truetime.TrueTime;
 
@@ -135,7 +136,7 @@ public class PaymentActivity extends BaseActivity implements View.OnClickListene
         } else {
             String itemJson = intent.getStringExtra(PageIntent.EXTRA_ITEM_JSON);
             if (!TextUtils.isEmpty(itemJson)) {
-                mItemEntity = new Gson().fromJson(itemJson, ItemEntity.class);
+                mItemEntity = new GsonBuilder().create().fromJson(itemJson, ItemEntity.class);
                 pk = mItemEntity.getPk();
                 purchaseCheck(CheckType.PlayCheck);
                 if (mItemEntity.isRenew_buy()) {
@@ -368,7 +369,7 @@ public class PaymentActivity extends BaseActivity implements View.OnClickListene
                     public void onNext(ResponseBody responseBody) {
                         switch (type) {
                             case alipay_renewal:
-                                ChoosewayEntity choosewayEntity = new Gson().fromJson(responseBody.charStream(), ChoosewayEntity.class);
+                                ChoosewayEntity choosewayEntity = new GsonBuilder().create().fromJson(responseBody.charStream(), ChoosewayEntity.class);
                                 fetchImage(choosewayEntity.getAgreement().getUrl(), type, callback);
                                 break;
                             default:
@@ -419,7 +420,7 @@ public class PaymentActivity extends BaseActivity implements View.OnClickListene
 
                     @Override
                     public void onNext(ResponseBody responseBody) {
-                        ChoosewayEntity choosewayEntity = new Gson().fromJson(responseBody.charStream(), ChoosewayEntity.class);
+                        ChoosewayEntity choosewayEntity = new GsonBuilder().create().fromJson(responseBody.charStream(), ChoosewayEntity.class);
                         switch (finalSource) {
                             case "alipay_renewal":
                                 AlipayFragment alipayFragment1 = new AlipayFragment();

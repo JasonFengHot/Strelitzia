@@ -1,4 +1,4 @@
-package tv.ismar.player.gui;
+package tv.ismar.player.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -7,8 +7,6 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import java.util.ArrayList;
 
@@ -23,14 +21,14 @@ import tv.ismar.player.listener.EpisodeOnclickListener;
  */
 
 public class EpisodeAdapter extends RecyclerView.Adapter<EpisodeViewHolder> {
-    private ArrayList<ItemEntity> itemEntities;
+    private ItemEntity[] itemEntities;
     private Context mContext;
     private int pk;
     private EpisodeOnclickListener onclickListener;
     private EpisodeOnFocusListener onFocusListener;
     private EpisodeOnKeyListener onKeyListener;
 
-    public EpisodeAdapter(Context context,int subitmePk,ArrayList<ItemEntity> entities){
+    public EpisodeAdapter(Context context,int subitmePk,ItemEntity[] entities){
         mContext=context;
         pk=subitmePk;
         itemEntities=entities;
@@ -54,7 +52,7 @@ public class EpisodeAdapter extends RecyclerView.Adapter<EpisodeViewHolder> {
 
     @Override
     public void onBindViewHolder(EpisodeViewHolder holder, final int position) {
-        final ItemEntity itemEntity=itemEntities.get(position);
+        final ItemEntity itemEntity=itemEntities[position];
         String subItemTitle = itemEntity.getTitle();
         if (subItemTitle.contains("第")) {
             int ind = subItemTitle.indexOf("第");
@@ -104,7 +102,7 @@ public class EpisodeAdapter extends RecyclerView.Adapter<EpisodeViewHolder> {
 
     @Override
     public int getItemCount() {
-        return itemEntities.size();
+        return itemEntities.length;
     }
 }
 

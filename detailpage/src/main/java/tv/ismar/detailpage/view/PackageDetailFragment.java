@@ -1,4 +1,5 @@
 package tv.ismar.detailpage.view;
+import com.google.gson.GsonBuilder;
 
 import android.content.Context;
 import android.content.Intent;
@@ -121,7 +122,7 @@ public class PackageDetailFragment extends BaseFragment {
         super.onCreate(savedInstanceState);
         mPageStatistics = new DetailPageStatistics();
         Bundle bundle = getArguments();
-        mItemEntity = new Gson().fromJson(bundle.getString(EXTRA_ITEM_JSON), ItemEntity.class);
+        mItemEntity = new GsonBuilder().create().fromJson(bundle.getString(EXTRA_ITEM_JSON), ItemEntity.class);
         source = bundle.getString(EXTRA_SOURCE);
         position = bundle.getInt(POSITION,-1);
         frompage = getActivity().getIntent().getStringExtra("fromPage");
@@ -485,7 +486,7 @@ public class PackageDetailFragment extends BaseFragment {
                 playCheckEntity.setRemainDay(0);
                 break;
             default:
-                playCheckEntity = new Gson().fromJson(info, PlayCheckEntity.class);
+                playCheckEntity = new GsonBuilder().create().fromJson(info, PlayCheckEntity.class);
                 int remainDay;
                 try {
                     remainDay = Utils.daysBetween(Utils.getTime(), playCheckEntity.getExpiry_date())+1 ;

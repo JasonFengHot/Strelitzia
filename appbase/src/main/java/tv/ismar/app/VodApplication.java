@@ -9,6 +9,8 @@ import android.support.multidex.MultiDex;
 import android.util.DisplayMetrics;
 import android.util.Log;
 
+import com.ismartv.lion.custom.ICallLog;
+import com.ismartv.lion.custom.Parse;
 import com.orhanobut.logger.LogLevel;
 import com.orhanobut.logger.Logger;
 import com.squareup.picasso.Picasso;
@@ -59,6 +61,7 @@ import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
  * Created by beaver on 16-8-19.
  */
 public class VodApplication extends Application {
+    private static final String TAG = "VodApplication";
     private static HttpParamsInterceptor mHttpParamsInterceptor;
     private HttpCacheInterceptor mHttpCacheInterceptor;
     public static final boolean DEBUG = true;
@@ -113,6 +116,12 @@ public class VodApplication extends Application {
     //    reportIp();  //上报本机IP地址
         Intent ootStartIntent = new Intent(this, HttpProxyService.class);
         this.startService(ootStartIntent);
+        Parse.iCallLog = new ICallLog() {
+            @Override
+            public void addParseError(String json, String msg) throws Exception {
+                Log.d(TAG,"日志输出：内容：" + json + ", 异常：" + msg);
+            }
+        };
     }
 
 

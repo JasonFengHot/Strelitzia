@@ -1,4 +1,5 @@
 package tv.ismar.app.models;
+import com.google.gson.GsonBuilder;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -27,6 +28,6 @@ public class HotWords {
         Type listType = new TypeToken<ArrayList<HotWords>>() {
         }.getType();
 
-        return new Gson().fromJson(str, listType);
+        return new GsonBuilder().create().fromJson(str, listType);
     }
 }

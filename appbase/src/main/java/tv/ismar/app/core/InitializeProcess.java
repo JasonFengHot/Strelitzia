@@ -1,4 +1,5 @@
 package tv.ismar.app.core;
+import com.google.gson.GsonBuilder;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -212,7 +213,7 @@ public class InitializeProcess implements Runnable {
             e.printStackTrace();
         }
         if (!Utils.isEmptyText(resultString)) {
-            CdnListEntity cdnListEntity = new Gson().fromJson(resultString, CdnListEntity.class);
+            CdnListEntity cdnListEntity = new GsonBuilder().create().fromJson(resultString, CdnListEntity.class);
             initializeCdnTable(cdnListEntity);
         }
     }
@@ -259,7 +260,7 @@ public class InitializeProcess implements Runnable {
             e.printStackTrace();
         }
         if (!Utils.isEmptyText(resultString)) {
-            IpLookUpEntity ipLookUpEntity = new Gson().fromJson(resultString, IpLookUpEntity.class);
+            IpLookUpEntity ipLookUpEntity = new GsonBuilder().create().fromJson(resultString, IpLookUpEntity.class);
             initializeLocation(ipLookUpEntity);
         }
     }

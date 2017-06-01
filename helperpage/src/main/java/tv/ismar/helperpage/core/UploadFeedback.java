@@ -1,4 +1,5 @@
 package tv.ismar.helperpage.core;
+import com.google.gson.GsonBuilder;
 
 import android.os.Handler;
 import android.os.Message;
@@ -72,7 +73,7 @@ public class UploadFeedback implements Runnable {
             OutputStream outputStream = connection.getOutputStream();
 
             BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(outputStream, "UTF-8"));
-            writer.write("q=" + new Gson().toJson(feedBackEntity));
+            writer.write("q=" + new GsonBuilder().create().toJson(feedBackEntity));
             writer.flush();
             writer.close();
             int statusCode = connection.getResponseCode();

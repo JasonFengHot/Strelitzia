@@ -70,7 +70,7 @@
 <dimen name="player_5">2.22dp</dimen>
 <dimen name="player_1810">804.44dp</dimen>
 <dimen name="player_8">3.56dp</dimen>
-<dimen name="player_250">115.56dp</dimen>
+<dimen name="player_250">111.11dp</dimen>
 <dimen name="player_20">8.89dp</dimen>
 <dimen name="player_99">44.00dp</dimen>
 <dimen name="player_43">19.11dp</dimen>
@@ -80,4 +80,17 @@
 <dimen name="player_10">4.44dp</dimen>
 <dimen name="player_260">115.56dp</dimen>
 <dimen name="player_350">155.56dp</dimen>
+<dimen name="player_55">24.44dp</dimen>
+<dimen name="player_78">34.67dp</dimen>
+<dimen name="player_35">15.56dp</dimen>
+<dimen name="player_86">38.22dp</dimen>
+<dimen name="player_2">0.89dp</dimen>
+<dimen name="player_60">26.67dp</dimen>
+<dimen name="player_7">3.11dp</dimen>
+<dimen name="player_4">1.78dp</dimen>
+<dimen name="player_146">64.89dp</dimen>
+<dimen name="player_47">20.89dp</dimen>
+<dimen name="player_41">18.22dp</dimen>
+<dimen name="player_14">6.22dp</dimen>
+
 </resources>
