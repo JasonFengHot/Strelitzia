@@ -109,7 +109,7 @@ public class PlayerSettingMenu extends PopupWindow implements HorizontalEpisodeL
             list.getChildViewAt(index).requestFocus();
         }else{
             list.toPlayingItem(index);
-            list.getChildViewAt(index%7).requestFocus();
+         //   list.getChildViewAt(index%7).requestFocus();
         }
         arrow_left.setVisibility(View.INVISIBLE);
         if(itemEntities.size()>7){

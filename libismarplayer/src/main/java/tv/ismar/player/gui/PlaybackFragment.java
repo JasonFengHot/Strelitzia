@@ -1065,15 +1065,19 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
                 LogUtils.e(TAG, "Network error switch quality.");
                 return;
             }
-            if(settingMenu!=null){
-                settingMenu.dismiss();
-            }
             // id值为quality值+1
             int qualityValue = value - 1;
             final ClipEntity.Quality clickQuality = ClipEntity.Quality.getQuality(qualityValue);
             if (clickQuality == null || clickQuality == mPlaybackService.getCurrentQuality()) {
                 // 为空或者点击的码率和当前设置码率相同
+                if(settingMenu!=null){
+                    settingMenu.dismiss();
+                }
                 return;
+            }
+            if(settingMenu!=null){
+                settingMenu.dismiss();
+                settingMenu=null;
             }
             mIsOnPaused = false;// 暂停以后切换画质
             if (mPlaybackService.getMediaPlayer().getPlayerMode() == IsmartvPlayer.MODE_SMART_PLAYER) {
