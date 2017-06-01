@@ -418,7 +418,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
             int what = event.getAction();
             switch (what) {
                 case MotionEvent.ACTION_HOVER_MOVE:
-                    showPannelDelayOut();
+                //    showPannelDelayOut();
                     break;
             }
             return false;
@@ -1371,10 +1371,10 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
             player_top_panel.startAnimation(top_fly_down);
             player_top_panel.setVisibility(View.VISIBLE);
 
-            mHandler.sendEmptyMessageDelayed(MSG_HIDE_PANEL, 3000);
+            mHandler.sendEmptyMessageDelayed(MSG_HIDE_PANEL, 5000);
         } else {
             mHandler.removeMessages(MSG_HIDE_PANEL);
-            mHandler.sendEmptyMessageDelayed(MSG_HIDE_PANEL, 3000);
+            mHandler.sendEmptyMessageDelayed(MSG_HIDE_PANEL, 5000);
         }
     }
 
