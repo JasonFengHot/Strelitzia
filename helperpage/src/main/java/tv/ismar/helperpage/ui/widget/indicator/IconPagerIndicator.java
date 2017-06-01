@@ -22,7 +22,7 @@ public class IconPagerIndicator extends LinearLayout implements PagerIndicator, 
 
     private ViewPager viewPager;
 
-    private IconImageView[] icons = new IconImageView[3];
+    private IconImageView[] icons = new IconImageView[2];
 
     public IconPagerIndicator(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -62,14 +62,15 @@ public class IconPagerIndicator extends LinearLayout implements PagerIndicator, 
         IconImageView nodeIcon = (IconImageView) view.findViewById(R.id.icon_node);
         IconImageView feedbackIcon = (IconImageView) view.findViewById(R.id.icon_feedback);
         IconImageView helpIcon = (IconImageView) view.findViewById(R.id.icon_help);
+        nodeIcon.setVisibility(GONE);
 
         nodeIcon.setImageResource(R.drawable.sakura_tab_node);
         feedbackIcon.setImageResource(R.drawable.sakura_tab_feedback);
         helpIcon.setImageResource(R.drawable.sakura_tab_help);
 
-        icons[0] = nodeIcon;
-        icons[1] = feedbackIcon;
-        icons[2] = helpIcon;
+      //  icons[0] = nodeIcon;
+        icons[0] = feedbackIcon;
+        icons[1] = helpIcon;
 
         
 

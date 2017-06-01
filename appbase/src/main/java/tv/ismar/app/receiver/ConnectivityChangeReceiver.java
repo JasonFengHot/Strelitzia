@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Build;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
@@ -13,8 +14,15 @@ import android.util.Log;
 
 import com.blankj.utilcode.utils.AppUtils;
 
+import okhttp3.ResponseBody;
+import rx.Observer;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 import tv.ismar.account.ActiveService;
+import tv.ismar.account.IsmartvActivator;
+import tv.ismar.app.network.SkyService;
 import tv.ismar.app.update.UpdateService;
+import tv.ismar.library.util.DeviceUtils;
 
 import static tv.ismar.app.update.UpdateService.INSTALL_SILENT;
 
@@ -45,6 +53,7 @@ public class ConnectivityChangeReceiver extends BroadcastReceiver {
                 checkUpdate = false;
                 checkUpdate(context);
             }
+            reportIp(context);
         }
 
         NetworkInfo tmpInfo = (NetworkInfo) intent.getExtras().get(ConnectivityManager.EXTRA_NETWORK_INFO);
@@ -73,5 +82,26 @@ public class ConnectivityChangeReceiver extends BroadcastReceiver {
         intent.setClass(context, ActiveService.class);
         context.startService(intent);
     }
+    private void reportIp(Context context){
+        SkyService skyService=SkyService.ServiceManager.getService();
+        String url="http://weixin.tvxio.com/hibiscustest/hibiscustest/uploadclientip";
+//        String url="http://wx.api.tvxio.com/weixin4server/uploadclientip";
+        skyService.weixinIp(url, DeviceUtils.getLocalInetAddress().toString(), IsmartvActivator.getInstance().getSnToken(), Build.MODEL,DeviceUtils.getLocalMacAddress(context)).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<ResponseBody>() {
+            @Override
+            public void onCompleted() {
 
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(ResponseBody responseBody) {
+
+            }
+        });
+    }
 }

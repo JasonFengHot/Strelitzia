@@ -2,10 +2,10 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@android:id/background"
-        android:drawable="@color/player_seek_bg" />
+        android:drawable="@drawable/player_seek_bg" />
     <item android:id="@android:id/secondaryProgress">
         <scale
-            android:drawable="@drawable/player_seekbar_secondary_color"
+            android:drawable="@drawable/player_seekbar_cache"
             android:scaleGravity="left"
             android:scaleWidth="100%" />
 

@@ -95,6 +95,9 @@ public class EpisodeAdapter extends RecyclerView.Adapter<EpisodeViewHolder> {
         holder.itemView.setOnHoverListener(new View.OnHoverListener() {
             @Override
             public boolean onHover(View v, MotionEvent event) {
+                if(event.getAction()==MotionEvent.ACTION_HOVER_ENTER||event.getAction()==MotionEvent.ACTION_HOVER_MOVE){
+                    v.requestFocusFromTouch();
+                }
                 return false;
             }
         });

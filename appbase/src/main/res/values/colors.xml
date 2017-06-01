@@ -127,4 +127,5 @@
     <drawable name="button_normal_color">#404563</drawable>
     <color name="_cc0033">#cc0033</color>
     <color name="_f0f0f0">#f0f0f0</color>
+    <color name="_666666">#666666</color>
 </resources>

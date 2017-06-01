@@ -418,7 +418,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
             int what = event.getAction();
             switch (what) {
                 case MotionEvent.ACTION_HOVER_MOVE:
-                    showPannelDelayOut();
+                //    showPannelDelayOut();
                     break;
             }
             return false;
@@ -545,6 +545,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
                             showBuffer(PlAYSTART + mPlaybackService.getItemEntity().getTitle());
                             updateTitle(subItemDelay.getTitle());
                             mPlaybackService.switchTelevision(mCurrentPosition, subItemDelay.getPk(), clip.getUrl());
+
                             mCurrentPosition = 0;
                         }
                     }, 400);
@@ -783,11 +784,16 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
      *
      * @param value bufferd value,unit seccond
      */
+    int direction=0;
     @Override
     public void onBufferUpdate(long value) {
         if (mPlaybackService == null || mPlaybackService.getMediaPlayer() == null) {
             return;
         }
+        Log.i("cacheTime","value: "+value);
+        direction= (int) (direction+value);
+        player_seekBar.setSecondaryProgress(direction);
+
         /**
          * do some uo update action.
          */
@@ -830,17 +836,27 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
         IAdController adController = mPlaybackService.getMediaPlayer().getAdController();
         switch (keyCode) {
             case KeyEvent.KEYCODE_MENU:
-            case KeyEvent.KEYCODE_DPAD_UP:
+            case KeyEvent.KEYCODE_DPAD_DOWN:
                 if (mPlaybackService.isPlayingAd()) {
                     return true;
                 }
 //                if (!isMenuShow()) {
 //                    showMenu();
 //                }
-                if(settingMenu!=null&&settingMenu.isShowing()){
-                    settingMenu.dismiss();
+                if(settingMenu!=null){
+                    if(settingMenu.isShowing()){
+                        settingMenu.dismiss();
+                    }else{
+                        settingMenu.showAtLocation(parentView,Gravity.BOTTOM,0,0);
+                    }
                 }else{
                     ItemEntity[] subItems = mPlaybackService.getItemEntity().getSubitems();
+                    List<ItemEntity> list=new ArrayList<>();
+                    if(subItems!=null) {
+                        for (int i = 0; i < subItems.length; i++) {
+                            list.add(subItems[i]);
+                        }
+                    }
                     ArrayList<QuailtyEntity> quailtyEntities=new ArrayList<>();
                     int currentQuality=0;
                     List<ClipEntity.Quality> qualities = mPlaybackService.getMediaPlayer().getQualities();
@@ -856,12 +872,12 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
                             quailtyEntities.add(quailtyEntity);
                         }
                     }
-                    settingMenu=new PlayerSettingMenu(getActivity().getApplicationContext(),subItems,mPlaybackService.getSubItemPk(),this,quailtyEntities,currentQuality,this);
+                    settingMenu=new PlayerSettingMenu(getActivity().getApplicationContext(),list,mPlaybackService.getSubItemPk(),this,quailtyEntities,currentQuality,this);
                     settingMenu.showAtLocation(parentView,Gravity.BOTTOM,0,0);
                 }
                 hidePanel();
                 return true;
-            case KeyEvent.KEYCODE_DPAD_DOWN:
+            case KeyEvent.KEYCODE_DPAD_UP:
                 // TODO 暂停广告按下消除
                 // TODO 悦享看广告一定时间后可以消除
                 LogUtils.d(TAG, "DOWN:" + adController + " onPaused:" + mIsOnPaused);
@@ -875,6 +891,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
                     LogUtils.d(TAG, "Jump over ad.");
                     adController.skipAd();
                 }
+                showPannelDelayOut();
                 return true;
             case KeyEvent.KEYCODE_BACK:
 //                if (!isPopWindowShow() && !mPlaybackService.isPlayingAd()) {
@@ -1036,6 +1053,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
                 }, 400);
             }
         }
+        settingMenu=null;
     }
 
     @Override
@@ -1052,7 +1070,14 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
             final ClipEntity.Quality clickQuality = ClipEntity.Quality.getQuality(qualityValue);
             if (clickQuality == null || clickQuality == mPlaybackService.getCurrentQuality()) {
                 // 为空或者点击的码率和当前设置码率相同
+                if(settingMenu!=null){
+                    settingMenu.dismiss();
+                }
                 return;
+            }
+            if(settingMenu!=null){
+                settingMenu.dismiss();
+                settingMenu=null;
             }
             mIsOnPaused = false;// 暂停以后切换画质
             if (mPlaybackService.getMediaPlayer().getPlayerMode() == IsmartvPlayer.MODE_SMART_PLAYER) {
@@ -1346,10 +1371,10 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
             player_top_panel.startAnimation(top_fly_down);
             player_top_panel.setVisibility(View.VISIBLE);
 
-            mHandler.sendEmptyMessageDelayed(MSG_HIDE_PANEL, 3000);
+            mHandler.sendEmptyMessageDelayed(MSG_HIDE_PANEL, 5000);
         } else {
             mHandler.removeMessages(MSG_HIDE_PANEL);
-            mHandler.sendEmptyMessageDelayed(MSG_HIDE_PANEL, 3000);
+            mHandler.sendEmptyMessageDelayed(MSG_HIDE_PANEL, 5000);
         }
     }
 
