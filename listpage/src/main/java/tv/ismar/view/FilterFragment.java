@@ -183,99 +183,99 @@ public class FilterFragment extends BackHandledFragment {
     }
 
     private void doFilterRequest(){
-        skyService.getFilters(mChannel).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(((BaseActivity) getActivity()).new BaseObserver<ResponseBody>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onNext(ResponseBody responseBody) {
-                        try {
-                            String info=responseBody.string();
-                            JSONObject jsonObject = new JSONObject(info);
-                            content_model = jsonObject.getString("content_model");
-                            nolimit = jsonObject.getString("default");
-                            JSONObject attributes = jsonObject.getJSONObject("attributes");
-                            Iterator it = attributes.keys();
-                            mLoadingDialog.dismiss();
-                            submitBtn.setVisibility(View.VISIBLE);
-                            submitBtn.setFocusable(true);
-                            submitBtn.requestFocus();
-                            while(it.hasNext()){
-                                String key = (String) it.next();
-                                JSONObject jsonObj = attributes.getJSONObject(key);
-                                String label = jsonObj.getString("label");
-                                JSONArray values = jsonObj.getJSONArray("values");
-                                int arrayCount = values.length();
-                                if(getActivity()==null){
-                                    return;
-                                }
-                                LayoutInflater mInflater = LayoutInflater.from(getActivity());
-                                View view = mInflater.inflate(R.layout.filter_condition_item,null);
-                                TextView condition_txt = (TextView) view.findViewById(R.id.condition_txt);
-                                MyViewGroup valueViews = (MyViewGroup)view.findViewById(R.id.line_group);
-
-                                valueViews.setFocusable(true);
-                                valueViews.setFocusableInTouchMode(true);
-                                valueViews.setDescendantFocusability(ViewGroup.FOCUS_AFTER_DESCENDANTS);
-                                condition_txt.setText(label+" :");
-                                RadioButton nolimitRbtn = (RadioButton) mInflater.inflate(R.layout.radio_button,null);
-                                nolimitRbtn.setFocusable(true);
-                                nolimitRbtn.setFocusableInTouchMode(true);
-                                FilterItem noLimitItem = new FilterItem();
-                                if(nolimit.startsWith("area")&&key.equals("area")&&(mChannel.equals("chinesemovie")||mChannel.equals("overseas"))){
-                                    noLimitItem.value = nolimit;
-                                }
-                                else{
-                                    noLimitItem.value = "";
-                                }
-                                noLimitItem.type = key;
-                                noLimitItem.nolimitView = null;
-                                noLimitItem.name = "不限";
-                                nolimitRbtn.setText("不限");
-                                nolimitRbtn.setTag(noLimitItem);
-                                nolimitRbtn.setGravity(Gravity.BOTTOM);
-                                initRadioButton(nolimitRbtn);
-
-                                nolimitRbtn.setChecked(true);
-                                valueViews.addView(nolimitRbtn,new LinearLayout.LayoutParams(getResources().getDimensionPixelSize(R.dimen.filter_radio_W), getResources().getDimensionPixelSize(R.dimen.filter_radio_H)));
-                                for(int i=0; i<arrayCount; i++){
-                                    JSONArray subArray = values.getJSONArray(i);
-                                    FilterItem item = new FilterItem();
-                                    item.type = key;
-                                    item.value = subArray.getString(0);
-                                    item.nolimitView = nolimitRbtn;
-                                    item.name = subArray.getString(1);
-                                    RadioButton rbtn =(RadioButton) mInflater.inflate(R.layout.radio_button,null);
-                                    rbtn.setGravity(Gravity.BOTTOM);
-                                    rbtn.setText(subArray.getString(1));
-                                    rbtn.setTag(item);
-                                    initRadioButton(rbtn);
-                                    valueViews.addView(rbtn,new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,getResources().getDimensionPixelSize(R.dimen.filter_radio_H)));
-                                }
-                                LinearLayout.LayoutParams groupLp=new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,getResources().getDimensionPixelSize(R.dimen.filter_groupView_H));
-                                if(attributes.length()==3){
-                                    groupLp.setMargins(0,getResources().getDimensionPixelSize(R.dimen.filter_groupView_mt_2), 0, 0);
-                                }else {
-                                    groupLp.setMargins(0, getResources().getDimensionPixelSize(R.dimen.filter_groupView_mt), 0, 0);
-                                }
-                                filtermenulayout.addView(view,groupLp);
-                            }
-                        } catch (Exception e) {
-                            LogUtils.loadException("channel ","filter ","","dofilter",0,"","","server",e.toString());
-                            e.printStackTrace();
-                        }
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        mLoadingDialog.dismiss();
-                        super.onError(e);
-                    }
-                });
+//        skyService.getFilters(mChannel).subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(((BaseActivity) getActivity()).new BaseObserver<ResponseBody>() {
+//                    @Override
+//                    public void onCompleted() {
+//
+//                    }
+//
+//                    @Override
+//                    public void onNext(ResponseBody responseBody) {
+//                        try {
+//                            String info=responseBody.string();
+//                            JSONObject jsonObject = new JSONObject(info);
+//                            content_model = jsonObject.getString("content_model");
+//                            nolimit = jsonObject.getString("default");
+//                            JSONObject attributes = jsonObject.getJSONObject("attributes");
+//                            Iterator it = attributes.keys();
+//                            mLoadingDialog.dismiss();
+//                            submitBtn.setVisibility(View.VISIBLE);
+//                            submitBtn.setFocusable(true);
+//                            submitBtn.requestFocus();
+//                            while(it.hasNext()){
+//                                String key = (String) it.next();
+//                                JSONObject jsonObj = attributes.getJSONObject(key);
+//                                String label = jsonObj.getString("label");
+//                                JSONArray values = jsonObj.getJSONArray("values");
+//                                int arrayCount = values.length();
+//                                if(getActivity()==null){
+//                                    return;
+//                                }
+//                                LayoutInflater mInflater = LayoutInflater.from(getActivity());
+//                                View view = mInflater.inflate(R.layout.filter_condition_item,null);
+//                                TextView condition_txt = (TextView) view.findViewById(R.id.condition_txt);
+//                                MyViewGroup valueViews = (MyViewGroup)view.findViewById(R.id.line_group);
+//
+//                                valueViews.setFocusable(true);
+//                                valueViews.setFocusableInTouchMode(true);
+//                                valueViews.setDescendantFocusability(ViewGroup.FOCUS_AFTER_DESCENDANTS);
+//                                condition_txt.setText(label+" :");
+//                                RadioButton nolimitRbtn = (RadioButton) mInflater.inflate(R.layout.radio_button,null);
+//                                nolimitRbtn.setFocusable(true);
+//                                nolimitRbtn.setFocusableInTouchMode(true);
+//                                FilterItem noLimitItem = new FilterItem();
+//                                if(nolimit.startsWith("area")&&key.equals("area")&&(mChannel.equals("chinesemovie")||mChannel.equals("overseas"))){
+//                                    noLimitItem.value = nolimit;
+//                                }
+//                                else{
+//                                    noLimitItem.value = "";
+//                                }
+//                                noLimitItem.type = key;
+//                                noLimitItem.nolimitView = null;
+//                                noLimitItem.name = "不限";
+//                                nolimitRbtn.setText("不限");
+//                                nolimitRbtn.setTag(noLimitItem);
+//                                nolimitRbtn.setGravity(Gravity.BOTTOM);
+//                                initRadioButton(nolimitRbtn);
+//
+//                                nolimitRbtn.setChecked(true);
+//                                valueViews.addView(nolimitRbtn,new LinearLayout.LayoutParams(getResources().getDimensionPixelSize(R.dimen.filter_radio_W), getResources().getDimensionPixelSize(R.dimen.filter_radio_H)));
+//                                for(int i=0; i<arrayCount; i++){
+//                                    JSONArray subArray = values.getJSONArray(i);
+//                                    FilterItem item = new FilterItem();
+//                                    item.type = key;
+//                                    item.value = subArray.getString(0);
+//                                    item.nolimitView = nolimitRbtn;
+//                                    item.name = subArray.getString(1);
+//                                    RadioButton rbtn =(RadioButton) mInflater.inflate(R.layout.radio_button,null);
+//                                    rbtn.setGravity(Gravity.BOTTOM);
+//                                    rbtn.setText(subArray.getString(1));
+//                                    rbtn.setTag(item);
+//                                    initRadioButton(rbtn);
+//                                    valueViews.addView(rbtn,new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,getResources().getDimensionPixelSize(R.dimen.filter_radio_H)));
+//                                }
+//                                LinearLayout.LayoutParams groupLp=new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,getResources().getDimensionPixelSize(R.dimen.filter_groupView_H));
+//                                if(attributes.length()==3){
+//                                    groupLp.setMargins(0,getResources().getDimensionPixelSize(R.dimen.filter_groupView_mt_2), 0, 0);
+//                                }else {
+//                                    groupLp.setMargins(0, getResources().getDimensionPixelSize(R.dimen.filter_groupView_mt), 0, 0);
+//                                }
+//                                filtermenulayout.addView(view,groupLp);
+//                            }
+//                        } catch (Exception e) {
+//                            LogUtils.loadException("channel ","filter ","","dofilter",0,"","","server",e.toString());
+//                            e.printStackTrace();
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void onError(Throwable e) {
+//                        mLoadingDialog.dismiss();
+//                        super.onError(e);
+//                    }
+//                });
     }
     private void initRadioButton(RadioButton rbtn){
         Log.i("rate",rate+"");

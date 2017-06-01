@@ -5,8 +5,8 @@
     android:focusable="true"
     android:focusableInTouchMode="true"
     android:padding="-22dp"
-    android:layout_marginBottom="18dp"
     android:layout_marginRight="9dp"
+    android:layout_marginBottom="18dp"
     android:gravity="center"
     android:background="@drawable/poster_focus_selector">
 
@@ -16,7 +16,7 @@
 
     <ImageView
         android:id="@+id/item_horizontal_poster_img"
-        android:layout_width="432dp"
+        android:layout_width="423dp"
         android:layout_height="243dp" />
     
     <ImageView

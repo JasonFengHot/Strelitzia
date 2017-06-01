@@ -37,7 +37,7 @@ public abstract class BackHandledFragment extends Fragment {
     public void loadFragment(BackHandledFragment fragment) {
         FragmentManager fm = getFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
-        ft.replace(R.id.filter_fragment_container, fragment, "other");
+//        ft.replace(R.id.filter_fragment_container, fragment, "other");
         ft.addToBackStack("tag");
         ft.commit();
     }

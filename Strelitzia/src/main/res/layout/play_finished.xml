@@ -75,6 +75,8 @@
         android:id="@+id/vertical_poster_focus"
         android:layout_width="@dimen/play_finished_vertical_poster_focus_w"
         android:layout_height="@dimen/play_finished_vertical_poster_focus_h"
+        android:layout_marginTop="@dimen/scroll_238"
+        android:layout_marginLeft="@dimen/scroll_337"
         android:background="@drawable/vod_gv_selector"
         android:visibility="gone"/>
 
@@ -82,6 +84,8 @@
         android:id="@+id/horizontal_poster_focus"
         android:layout_width="@dimen/play_finished_horizontal_poster_focus_w"
         android:layout_height="@dimen/play_finished_horizontal_poster_focus_h"
+        android:layout_marginTop="@dimen/scroll_307"
+        android:layout_marginLeft="@dimen/scroll_147"
         android:background="@drawable/vod_gv_selector"
         android:visibility="gone"/>
 

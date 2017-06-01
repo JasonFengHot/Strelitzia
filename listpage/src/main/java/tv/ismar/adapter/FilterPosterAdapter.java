@@ -94,8 +94,8 @@ public class FilterPosterAdapter extends RecyclerView.Adapter<FilterPosterAdapte
             if(!TextUtils.isEmpty(item.focus)){
                 holder.item_horizontal_poster_des.setText(item.focus);
             }
-            if(!TextUtils.isEmpty(item.vertical_url)){
-                Picasso.with(mContext).load(item.vertical_url).error(R.drawable.list_item_ppreview_bg).placeholder(R.drawable.list_item_ppreview_bg).into(holder.item_horizontal_poster_img);
+            if(!TextUtils.isEmpty(item.poster_url)){
+                Picasso.with(mContext).load(item.poster_url).error(R.drawable.list_item_preview_bg).placeholder(R.drawable.list_item_preview_bg).into(holder.item_horizontal_poster_img);
             }
         }
         if(itemClickListener!=null){

@@ -23,7 +23,7 @@
         android:focusable="true"
         android:focusableInTouchMode="true"
         android:background="@drawable/filter_arrow_left_selector"
-        android:visibility="invisible"/>
+        android:visibility="visible"/>
 
     <HorizontalScrollView
         android:id="@+id/filter_condition_group_scrollview"
@@ -54,6 +54,6 @@
         android:focusable="true"
         android:focusableInTouchMode="true"
         android:background="@drawable/filter_arrow_right_selector"
-        android:visibility="invisible"/>
+        android:visibility="visible"/>
 </LinearLayout>
 </RelativeLayout>

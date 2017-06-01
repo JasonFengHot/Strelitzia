@@ -1,16 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     >
-<View
-    android:id="@+id/filter_condition_top_layout"
-    android:layout_width="match_parent"
-    android:layout_height="552dp"/>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="528dp"
         android:background="#000033"
         android:alpha="0.9"
         android:orientation="vertical">
