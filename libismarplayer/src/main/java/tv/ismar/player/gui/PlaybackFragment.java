@@ -836,7 +836,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
         IAdController adController = mPlaybackService.getMediaPlayer().getAdController();
         switch (keyCode) {
             case KeyEvent.KEYCODE_MENU:
-            case KeyEvent.KEYCODE_DPAD_UP:
+            case KeyEvent.KEYCODE_DPAD_DOWN:
                 if (mPlaybackService.isPlayingAd()) {
                     return true;
                 }
@@ -877,7 +877,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
                 }
                 hidePanel();
                 return true;
-            case KeyEvent.KEYCODE_DPAD_DOWN:
+            case KeyEvent.KEYCODE_DPAD_UP:
                 // TODO 暂停广告按下消除
                 // TODO 悦享看广告一定时间后可以消除
                 LogUtils.d(TAG, "DOWN:" + adController + " onPaused:" + mIsOnPaused);
@@ -891,6 +891,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
                     LogUtils.d(TAG, "Jump over ad.");
                     adController.skipAd();
                 }
+                showPannelDelayOut();
                 return true;
             case KeyEvent.KEYCODE_BACK:
 //                if (!isPopWindowShow() && !mPlaybackService.isPlayingAd()) {
@@ -1063,6 +1064,9 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
                 mPlaybackService.pausePlayer();
                 LogUtils.e(TAG, "Network error switch quality.");
                 return;
+            }
+            if(settingMenu!=null){
+                settingMenu.dismiss();
             }
             // id值为quality值+1
             int qualityValue = value - 1;

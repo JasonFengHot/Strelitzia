@@ -3,6 +3,7 @@ package tv.ismar.app.service;
 import android.app.Instrumentation;
 import android.app.Service;
 import android.content.Intent;
+import android.media.AudioManager;
 import android.os.IBinder;
 import android.util.Log;
 
@@ -19,7 +20,8 @@ import cn.ismartv.injectdb.library.query.Delete;
  */
 
 public class HttpProxyService extends Service implements HttpServerRequestCallback{
-    AsyncHttpServer server;
+    private AudioManager audioManager;
+    private AsyncHttpServer server;
     private static final String HTTP_ACTIOIN = "/keyevent";
     private static final String PING = "/ping";
     private static final String MODEL = "/model";
@@ -34,6 +36,7 @@ public class HttpProxyService extends Service implements HttpServerRequestCallba
     public void onCreate() {
         server = new AsyncHttpServer();
         server.listen(10114);
+        audioManager= (AudioManager) getSystemService(AUDIO_SERVICE);
         super.onCreate();
 
     }
@@ -81,6 +84,8 @@ public class HttpProxyService extends Service implements HttpServerRequestCallba
                     simulateKeystroke(Integer.parseInt( request.getQuery().getString("keycode")));
                     break;
                 case VOL_SEEK_EVENT:
+                    int index=Integer.parseInt(request.getQuery().getString("seek"));
+                    audioManager.adjustStreamVolume(AudioManager.STREAM_SYSTEM,index,AudioManager.FLAG_SHOW_UI);
                     break;
                 case PLAY_VIDEO_EVENT:
                     break;

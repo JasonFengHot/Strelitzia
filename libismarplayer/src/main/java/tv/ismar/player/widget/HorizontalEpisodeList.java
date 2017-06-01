@@ -131,13 +131,11 @@ public class HorizontalEpisodeList extends HorizontalScrollView {
         }
 
         public void toPlayingItem(int index){
-            int page=index/7;
-            int position=index%7;
+            int page=(index+1)/7;
+            int position=(index+1)%7;
+            Log.i("toPlaying","page:  "+page+"  position: "+position+"  index: "+index);
             for(int i=0;i<page;i++){
                 pageArrowDown();
-            }
-            for(int j=1;j<position;j++){
-                refreshView(View.FOCUS_DOWN);
             }
         }
 

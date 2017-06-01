@@ -113,7 +113,7 @@ public class VodApplication extends Application {
         }
         BaseActivity.wasLoadSmartPlayerSo = false;
         Log.i("LH/", "applicationOnCreateEnd:" + TrueTime.now().getTime());
-    //    reportIp();  //上报本机IP地址
+        reportIp();  //上报本机IP地址
         Intent ootStartIntent = new Intent(this, HttpProxyService.class);
         this.startService(ootStartIntent);
         Parse.iCallLog = new ICallLog() {

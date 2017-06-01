@@ -62,13 +62,13 @@ public class LauncherActivity extends BaseActivity implements View.OnClickListen
 
         int i = view.getId();
         if (i == R.id.indicator_node_image) {
-            intent.putExtra("position", 0);
+//            intent.putExtra("position", 0);
 
         } else if (i == R.id.indicator_feedback_image) {
-            intent.putExtra("position", 1);
+            intent.putExtra("position", 0);
 
         } else if (i == R.id.indicator_help_image) {
-            intent.putExtra("position", 2);
+            intent.putExtra("position", 1);
 
         }
         startActivity(intent);

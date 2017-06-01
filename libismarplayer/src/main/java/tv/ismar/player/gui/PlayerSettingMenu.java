@@ -98,17 +98,18 @@ public class PlayerSettingMenu extends PopupWindow implements HorizontalEpisodeL
     private void showEpisode(){
         list.setOnItemActionListener(this);
         list.addDatas(itemEntities);
+        setting.setTextColor(mContext.getResources().getColor(R.color._666666));
         int index=0;
         for(int i=0;i<itemEntities.size();i++){
             if(pk==itemEntities.get(i).getPk()){
-                index=i+1;
+                index=i;
             }
         }
         if(index<=6){
-//            list.pageArrowDown();
-//            list.pageArrowUp();
+            list.getChildViewAt(index).requestFocus();
         }else{
             list.toPlayingItem(index);
+            list.getChildViewAt(index%7).requestFocus();
         }
         arrow_left.setVisibility(View.INVISIBLE);
         if(itemEntities.size()>7){
@@ -178,6 +179,8 @@ public class PlayerSettingMenu extends PopupWindow implements HorizontalEpisodeL
         player_episode.setVisibility(View.GONE);
         menu_layout.setVisibility(View.VISIBLE);
         menu_select.setVisibility(View.VISIBLE);
+        setting.setTextColor(mContext.getResources().getColor(R.color._f0f0f0));
+
     }
     private void hideMenu(){
         menu_layout.setVisibility(View.GONE);
@@ -186,7 +189,8 @@ public class PlayerSettingMenu extends PopupWindow implements HorizontalEpisodeL
         lp.setMargins(mContext.getResources().getDimensionPixelSize(R.dimen.player_51),mContext.getResources().getDimensionPixelSize(R.dimen.player_38),0,0);
         lp.addRule(RelativeLayout.BELOW,R.id.player_setting);
         player_episode.setLayoutParams(lp);
-        list.getChildAt(0).requestFocus();
+        player_episode.setTextColor(mContext.getResources().getColor(R.color._f0f0f0));
+        setting.setTextColor(mContext.getResources().getColor(R.color._666666));
     }
     private void setArrowListener() {
 
@@ -329,6 +333,8 @@ public class PlayerSettingMenu extends PopupWindow implements HorizontalEpisodeL
             lp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM,RelativeLayout.TRUE);
             lp.setMargins(mContext.getResources().getDimensionPixelSize(R.dimen.player_51),0,0,mContext.getResources().getDimensionPixelSize(R.dimen.player_41));
             player_episode.setLayoutParams(lp);
+            player_episode.setTextColor(mContext.getResources().getColor(R.color._666666));
+            setting.setTextColor(mContext.getResources().getColor(R.color._f0f0f0));
             menu_select.requestFocusFromTouch();
         }else if(keyCode==4){
             dismiss();
