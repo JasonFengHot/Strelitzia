@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
+import android.preference.PreferenceManager;
 import android.support.multidex.MultiDex;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -383,9 +384,14 @@ public class VodApplication extends Application {
                 .methodOffset(2);      // default 0
     }
     private void reportIp(){
+        SharedPreferences sharedPreferences= PreferenceManager.getDefaultSharedPreferences(this);
+        String sn=sharedPreferences.getString("sn_token","");
+        if(sn==null){
+            sn=IsmartvActivator.getInstance().getSnToken();
+        }
         SkyService skyService=SkyService.ServiceManager.getService();
         String url="http://wx.api.tvxio.com/weixin4server/uploadclientip";
-        skyService.weixinIp(url, DeviceUtils.getLocalInetAddress().toString(),IsmartvActivator.getInstance().getSnToken(), Build.MODEL,DeviceUtils.getLocalMacAddress(this)).subscribeOn(Schedulers.io())
+        skyService.weixinIp(url, DeviceUtils.getLocalInetAddress().toString(),sn, Build.MODEL,DeviceUtils.getLocalMacAddress(this)).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<ResponseBody>() {
             @Override
             public void onCompleted() {
