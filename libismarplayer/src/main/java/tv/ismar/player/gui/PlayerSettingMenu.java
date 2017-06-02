@@ -99,6 +99,11 @@ public class PlayerSettingMenu extends PopupWindow implements HorizontalEpisodeL
         list.setOnItemActionListener(this);
         list.addDatas(itemEntities);
         setting.setTextColor(mContext.getResources().getColor(R.color._666666));
+        if(itemEntities.size()>7){
+            arrow_right.setVisibility(View.VISIBLE);
+        }else{
+            arrow_right.setVisibility(View.INVISIBLE);
+        }
         int index=0;
         for(int i=0;i<itemEntities.size();i++){
             if(pk==itemEntities.get(i).getPk()){
@@ -111,14 +116,8 @@ public class PlayerSettingMenu extends PopupWindow implements HorizontalEpisodeL
         }else{
             list.toPlayingItem(index);
             arrow_left.setVisibility(View.VISIBLE);
-         //   list.getChildViewAt(index%7).requestFocus();
         }
 
-        if(itemEntities.size()>7){
-            arrow_right.setVisibility(View.VISIBLE);
-        }else{
-            arrow_right.setVisibility(View.INVISIBLE);
-        }
         setArrowListener();
     }
     private void addmenu() {
@@ -282,6 +281,9 @@ public class PlayerSettingMenu extends PopupWindow implements HorizontalEpisodeL
         if(focused){
             arrow_right.setFocusable(false);
             arrow_left.setFocusable(false);
+            if (list.getFirstVisibleChildIndex()+7>=itemEntities.size()){
+                arrow_right.setVisibility(View.INVISIBLE);
+            }
         }
     }
 

@@ -836,7 +836,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
         IAdController adController = mPlaybackService.getMediaPlayer().getAdController();
         switch (keyCode) {
             case KeyEvent.KEYCODE_MENU:
-            case KeyEvent.KEYCODE_DPAD_DOWN:
+            case KeyEvent.KEYCODE_DPAD_UP:
                 if (mPlaybackService.isPlayingAd()) {
                     return true;
                 }
@@ -877,7 +877,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
                 }
                 hidePanel();
                 return true;
-            case KeyEvent.KEYCODE_DPAD_UP:
+            case KeyEvent.KEYCODE_DPAD_DOWN:
                 // TODO 暂停广告按下消除
                 // TODO 悦享看广告一定时间后可以消除
                 LogUtils.d(TAG, "DOWN:" + adController + " onPaused:" + mIsOnPaused);
