@@ -790,9 +790,8 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
         if (mPlaybackService == null || mPlaybackService.getMediaPlayer() == null) {
             return;
         }
-        Log.i("cacheTime","value: "+value);
-        direction= (int) (direction+value);
-        player_seekBar.setSecondaryProgress(direction);
+        Log.i("cacheTime","value: "+value+"Max: "+player_seekBar.getMax());
+         player_seekBar.setSecondaryProgress((int) value*1000);
 
         /**
          * do some uo update action.

@@ -161,14 +161,14 @@ public class PlayerSettingMenu extends PopupWindow implements HorizontalEpisodeL
         menu_select.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
-                Log.i("menu_select","keycode: "+keyCode);
+                Log.i("menu_select","Select_keycode: "+keyCode);
                 if(event.getAction()==KeyEvent.ACTION_DOWN&&keyCode==20){
                     if(itemEntities!=null&&itemEntities.size()>1){
                         hideMenu();
                     }
-                }else if(keyCode==4&&v.getVisibility()==View.VISIBLE){
-                    Log.i("menu_select",keyCode+v.getVisibility()+"");
+                }else if(event.getAction()==KeyEvent.ACTION_DOWN&&keyCode==4){
                     dismiss();
+                    return true;
                 }
                 return false;
             }
@@ -211,6 +211,24 @@ public class PlayerSettingMenu extends PopupWindow implements HorizontalEpisodeL
         });
         arrow_left.setOnHoverListener(arrowHover);
         arrow_right.setOnHoverListener(arrowHover);
+        arrow_left.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if(keyCode==22){
+                    arrow_left.setHovered(false);
+                }
+                return false;
+            }
+        });
+        arrow_right.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if(keyCode==21){
+                    arrow_right.setHovered(false);
+                }
+                return false;
+            }
+        });
     }
     View.OnHoverListener arrowHover=new View.OnHoverListener() {
         @Override
@@ -238,6 +256,7 @@ public class PlayerSettingMenu extends PopupWindow implements HorizontalEpisodeL
 
     @Override
     public void onkeyBack(int keycode) {
+        Log.i("menu_select","WheelkeyBack");
         hideWheel();
     }
     private void hideWheel(){
