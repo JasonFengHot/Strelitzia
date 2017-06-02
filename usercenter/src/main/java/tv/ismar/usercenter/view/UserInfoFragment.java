@@ -36,6 +36,7 @@ import tv.ismar.app.core.Util;
 import tv.ismar.app.network.entity.AccountBalanceEntity;
 import tv.ismar.app.network.entity.AccountPlayAuthEntity;
 import tv.ismar.app.ui.MessageDialogFragment;
+import tv.ismar.library.network.HttpManager;
 import tv.ismar.usercenter.R;
 import tv.ismar.usercenter.UserInfoContract;
 import tv.ismar.usercenter.databinding.FragmentUserinfoBinding;
@@ -287,7 +288,7 @@ public class UserInfoFragment extends BaseFragment implements UserInfoContract.V
                     public void confirmClick(View view) {
                         dialog.dismiss();
                         IsmartvActivator.getInstance().removeUserInfo();
-
+                        HttpManager.getInstance().setAccessToken(null);
                     }
                 },
                 new MessageDialogFragment.CancelListener() {
