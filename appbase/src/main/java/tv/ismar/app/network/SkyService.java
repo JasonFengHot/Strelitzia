@@ -744,7 +744,6 @@ public interface SkyService {
                     .build();
 
             Gson gson = new GsonBuilder()
-                    .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
                     .registerTypeAdapter(Date.class, new DateDeserializer())
                     .create();
             Retrofit retrofit = new Retrofit.Builder()
