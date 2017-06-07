@@ -7,19 +7,39 @@
     <LinearLayout
         android:id="@+id/line"
         android:layout_width="@dimen/player_250"
-        android:layout_height="@dimen/player_47"
+        android:layout_height="@dimen/player_43"
         android:layout_gravity="center_horizontal"
         android:orientation="vertical"
         >
         <TextView
             android:id="@+id/resolution_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/player_157"
+            android:layout_height="@dimen/player_35"
             android:layout_marginTop="@dimen/player_4"
             android:textSize="@dimen/text_size_24sp"
             android:textColor="#cccccc"
             android:gravity="center"
             android:layout_gravity="center_horizontal"
             />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="@dimen/player_250"
+        android:layout_height="@dimen/player_60"
+        android:id="@+id/focus_line"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:visibility="gone"
+        android:background="@color/_ff9c3c"
+        >
+            <TextView
+                android:id="@+id/focus_text"
+                android:layout_width="@dimen/player_157"
+                android:layout_height="@dimen/player_43"
+                android:layout_marginTop="@dimen/player_8"
+                android:textSize="@dimen/text_size_30sp"
+                android:textColor="#f0f0f0"
+                android:gravity="center"
+                android:layout_gravity="center_horizontal" />
+
     </LinearLayout>
 </LinearLayout>

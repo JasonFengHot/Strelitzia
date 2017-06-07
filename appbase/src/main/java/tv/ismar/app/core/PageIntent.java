@@ -201,13 +201,13 @@ public class PageIntent implements PageIntentInterface {
     @Override
     public void toHelpPage(Context context) {
         Intent intent = new Intent();
-        try {
-            intent.setAction("cn.ismartv.speedtester.feedback");
-            context.startActivity(intent);
-        }catch (ActivityNotFoundException e) {
+//        try {
+//            intent.setAction("cn.ismartv.speedtester.feedback");
+//            context.startActivity(intent);
+//        }catch (ActivityNotFoundException e) {
             intent.setAction("cn.ismar.sakura.launcher");
             context.startActivity(intent);
-        }
+    //    }
     }
 
     private static void showNetErrorPopup(Context context, String message) {

@@ -32,17 +32,11 @@
             />
         <RelativeLayout
             android:id="@+id/wheel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/player_250"
+            android:layout_height="@dimen/player_146"
             android:layout_marginTop="@dimen/player_4"
             android:visibility="gone"
             >
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/up_shadow"
-                android:visibility="gone"
-                />
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/menu_list"
                 android:layout_width="@dimen/player_250"
@@ -50,9 +44,19 @@
                 >
             </android.support.v7.widget.RecyclerView>
             <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:id="@+id/top_shape"
+                android:layout_width="@dimen/player_250"
+                android:layout_height="@dimen/player_43"
+                android:background="@drawable/up_shadow"
+                android:layout_alignParentTop="true"
+                android:visibility="gone"
+                />
+            <ImageView
+                android:id="@+id/bottom_shape"
+                android:layout_width="@dimen/player_250"
+                android:layout_height="@dimen/player_43"
                 android:background="@drawable/down_shadow"
+                android:layout_alignParentBottom="true"
                 android:visibility="gone"
                 />
 
