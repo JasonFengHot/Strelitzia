@@ -84,11 +84,12 @@ public class PlaybackActivity extends BaseActivity {
         }
     };
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if(resultCode==200){
-            finish();
-        }
-    }
+    // 移至PlaybackFragment
+//    @Override
+//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        super.onActivityResult(requestCode, resultCode, data);
+//        if(resultCode==200){
+//            finish();
+//        }
+//    }
 }

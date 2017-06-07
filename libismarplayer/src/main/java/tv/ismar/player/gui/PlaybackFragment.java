@@ -293,6 +293,20 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         LogUtils.i(TAG, "resultCode:" + resultCode + " request:" + requestCode);
+        // 从播放完成页面退出播放器
+        if (resultCode == 200) {
+            if (mPlaybackService.isPreview()) {
+                mPlaybackService.logExpenseVideoPreview(mCurrentPosition, "cancel");
+            }
+            ExitToast.createToastConfig().dismiss();
+            mHandler.removeCallbacksAndMessages(null);
+            timerStop();
+            removeBufferingLongTime();
+            hideBuffer();
+            hidePanel();
+            closeActivity("source");
+            return;
+        }
         String deviceToken = IsmartvActivator.getInstance().getDeviceToken();
         String authToken = IsmartvActivator.getInstance().getAuthToken();
         HttpManager.getInstance().setAccessToken(authToken);
@@ -737,7 +751,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
                         }
                     }
                     PageIntent pageIntent=new PageIntent();
-                    pageIntent.toPlayFinish(getActivity(),mPlaybackService.getItemEntity().getContentModel(),extraItemPk,100,mPlaybackService.hasHistory,"player");
+                    pageIntent.toPlayFinish(this,mPlaybackService.getItemEntity().getContentModel(),extraItemPk,100,mPlaybackService.hasHistory,"player");
 //                    String itemJson = null;
 //                    try {
 //                        itemJson = JacksonUtils.toJson(mPlaybackService.getItemEntity());
@@ -1172,7 +1186,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
                     mPlaybackService.hasHistory=true;
                 }
                 PageIntent pageIntent=new PageIntent();
-                pageIntent.toPlayFinish(getActivity(),mPlaybackService.getItemEntity().getContentModel(),extraItemPk, (int) ((((double)mPlaybackService.getMediaPlayer().getCurrentPosition())/((double)mPlaybackService.getMediaPlayer().getDuration()))*100),mPlaybackService.hasHistory,"player");
+                pageIntent.toPlayFinish(this,mPlaybackService.getItemEntity().getContentModel(),extraItemPk, (int) ((((double)mPlaybackService.getMediaPlayer().getCurrentPosition())/((double)mPlaybackService.getMediaPlayer().getDuration()))*100),mPlaybackService.hasHistory,"player");
                 mPlaybackService.addHistory(mCurrentPosition, true);
                 break;
         }

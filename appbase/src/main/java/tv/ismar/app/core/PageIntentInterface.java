@@ -2,6 +2,7 @@ package tv.ismar.app.core;
 
 import android.app.Activity;
 import android.content.Context;
+import android.support.v4.app.Fragment;
 
 /**
  * Created by huibin on 9/8/16.
@@ -67,7 +68,7 @@ public interface PageIntentInterface {
     void toSubject(Context context, String gather_type, int id, String title, String frompage,String channel);
 
 
-    void toPlayFinish(Activity context, String channel, int id, int playScale, boolean hasHistory, String frompage);
+    void toPlayFinish(Fragment fragment, String channel, int id, int playScale, boolean hasHistory, String frompage);
 
     class PaymentInfo {
         private ProductCategory category;
