@@ -1,4 +1,4 @@
-package tv.ismar.subject.views;
+package tv.ismar.app.widget;
 
 import android.content.Context;
 import android.support.annotation.Nullable;

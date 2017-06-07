@@ -56,17 +56,11 @@ public class FilterConditionAdapter extends RecyclerView.Adapter<FilterCondition
     public void onBindViewHolder(final MyViewHolder holder, final int position) {
         holder.radio.setText(mData.get(position).get(1));
         holder.itemView.setTag(mData.get(position).get(0));
-        int width;
-        if(mData.get(position).get(1).length()>2){
-                width=198;
-                holder.itemView.setBackgroundResource(R.drawable.filter_condition_checked_selector4);
-            }else{
-                width=139;
-                holder.itemView.setBackgroundResource(R.drawable.filter_condition_checked_selector2);
-            }
-        RecyclerView.LayoutParams params=new RecyclerView.LayoutParams(width, ViewGroup.LayoutParams.MATCH_PARENT);
-        params.rightMargin = 39;
-        holder.itemView.setLayoutParams(params);
+        if(position!=mData.size()-1) {
+            RecyclerView.LayoutParams params = new RecyclerView.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
+            params.rightMargin = 44;
+            holder.itemView.setLayoutParams(params);
+        }
         holder.radio.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

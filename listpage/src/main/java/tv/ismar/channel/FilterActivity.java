@@ -1,11 +1,9 @@
 package tv.ismar.channel;
 
 
-import android.annotation.TargetApi;
-
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
+import android.os.Message;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -15,12 +13,8 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.CompoundButton;
-import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -37,8 +31,10 @@ import tv.ismar.app.entity.ItemList;
 import tv.ismar.app.models.FilterConditions;
 import tv.ismar.app.ui.adapter.OnItemClickListener;
 import tv.ismar.app.ui.adapter.OnItemFocusedListener;
+import tv.ismar.app.widget.MyRecyclerView;
 import tv.ismar.listpage.R;
 import tv.ismar.searchpage.utils.JasmineUtil;
+import tv.ismar.view.FilterConditionGroupView;
 
 /**
  * Created by zhangjiqiang on 15-6-18.
@@ -48,7 +44,7 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
     private TextView filter_title;
     private Button filter_tab;
     private LinearLayout filter_checked_conditiion;
-    private RecyclerView poster_recyclerview;
+    private MyRecyclerView poster_recyclerview;
     private LinearLayout filter_conditions;
     boolean isVertical;
     private View filter_condition_layout;
@@ -60,6 +56,7 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
     private String channel;
     private String content_model;
     private FilterConditions mFilterConditions;
+    private PopupWindow filterPopup;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,15 +86,17 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
         filter_title = (TextView) findViewById(R.id.filter_title);
         filter_tab = (Button) findViewById(R.id.filter_tab);
         filter_checked_conditiion = (LinearLayout) findViewById(R.id.filter_checked_conditiion);
-        poster_recyclerview = (RecyclerView) findViewById(R.id.poster_recyclerview);
+        poster_recyclerview = (MyRecyclerView) findViewById(R.id.poster_recyclerview);
         filter_condition_layout = View.inflate(this, R.layout.filter_condition_layout,null);
         filter_conditions = (LinearLayout)filter_condition_layout.findViewById(R.id.filter_conditions);
         filter_arrow_up = findView(R.id.filter_arrow_up);
         filter_arrow_down = findView(R.id.filter_arrow_down);
         if(isVertical) {
             poster_recyclerview.setLayoutManager(new GridLayoutManager(this, 5));
+            poster_recyclerview.setPadding(0,0,0,104);
         }else{
             poster_recyclerview.setLayoutManager(new GridLayoutManager(this, 3));
+            poster_recyclerview.setPadding(0,0,0,298);
         }
         filter_tab.requestFocus();
         filter_tab.setOnClickListener(this);
@@ -107,16 +106,6 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
         filter_arrow_down.setOnHoverListener(this);
         filter_arrow_up.setOnFocusChangeListener(this);
         filter_arrow_down.setOnFocusChangeListener(this);
-        poster_recyclerview.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if(event.getAction()==MotionEvent.ACTION_MOVE) {
-                    return true;
-                }else{
-                    return false;
-                }
-            }
-        });
     }
 
     private void initData() {
@@ -126,61 +115,63 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == 22) {
-            if (isVertical) {
-                if ((focusedPos + 1) % 5 == 0) {
-                    if(poster_recyclerview.getChildAt(focusedPos + 1)!=null) {
-                        poster_recyclerview.getChildAt(focusedPos + 1).requestFocus();
-                    }else{
-                        if(poster_recyclerview.getChildPosition(poster_recyclerview.getFocusedChild())!=filterPosterAdapter.getItemCount()-1) {
-                            poster_recyclerview.getChildAt(focusedPos - 4).requestFocus();
+        if(!filterPopup.isShowing()) {
+            if (keyCode == 22) {
+                if (isVertical) {
+                    if ((focusedPos + 1) % 5 == 0) {
+                        if (poster_recyclerview.getChildAt(focusedPos + 1) != null) {
+                            poster_recyclerview.getChildAt(focusedPos + 1).requestFocus();
+                        } else {
+                            if (poster_recyclerview.getChildPosition(poster_recyclerview.getFocusedChild()) != filterPosterAdapter.getItemCount() - 1) {
+                                poster_recyclerview.getChildAt(focusedPos - 4).requestFocus();
+                            }
                         }
+                        return true;
                     }
+                } else {
+                    if ((focusedPos + 1) % 3 == 0) {
+                        if (poster_recyclerview.getChildAt(focusedPos + 1) != null) {
+                            poster_recyclerview.getChildAt(focusedPos + 1).requestFocus();
+                        } else {
+                            if (poster_recyclerview.getChildPosition(poster_recyclerview.getFocusedChild()) != filterPosterAdapter.getItemCount() - 1) {
+                                poster_recyclerview.getChildAt(focusedPos - 2).requestFocus();
+                            }
+                        }
+                        return true;
+                    }
+                }
+                if (poster_recyclerview.getChildPosition(poster_recyclerview.getFocusedChild()) == filterPosterAdapter.getItemCount() - 1) {
                     return true;
                 }
-            } else {
-                if ((focusedPos + 1) % 3 == 0) {
-                    if(poster_recyclerview.getChildAt(focusedPos + 1)!=null) {
-                        poster_recyclerview.getChildAt(focusedPos + 1).requestFocus();
-                    }else{
-                        if(poster_recyclerview.getChildPosition(poster_recyclerview.getFocusedChild())!=filterPosterAdapter.getItemCount()-1) {
-                            poster_recyclerview.getChildAt(focusedPos - 2).requestFocus();
+            } else if (keyCode == 21) {
+                if (isVertical) {
+                    if (focusedPos % 5 == 0) {
+                        if (poster_recyclerview.getChildAt(focusedPos - 1) != null) {
+                            poster_recyclerview.getChildAt(focusedPos - 1).requestFocus();
+                        } else {
+                            if (poster_recyclerview.getChildPosition(poster_recyclerview.getFocusedChild()) != 0) {
+                                poster_recyclerview.scrollBy(0, (int) (poster_recyclerview.getY() - poster_recyclerview.getChildAt(0).getHeight()));
+                                poster_recyclerview.getChildAt(4).requestFocus();
+                            } else {
+                                return false;
+                            }
                         }
+                        return true;
                     }
-                    return true;
-                }
-            }
-            if(poster_recyclerview.getChildPosition(poster_recyclerview.getFocusedChild())==filterPosterAdapter.getItemCount()-1){
-                return true;
-            }
-        }else if(keyCode==21){
-            if(isVertical){
-                if(focusedPos%5==0){
-                    if(poster_recyclerview.getChildAt(focusedPos - 1)!=null) {
-                        poster_recyclerview.getChildAt(focusedPos - 1).requestFocus();
-                    }else{
-                        if(poster_recyclerview.getChildPosition(poster_recyclerview.getFocusedChild())!=0) {
-                            poster_recyclerview.scrollBy(0, (int) (poster_recyclerview.getY() - poster_recyclerview.getChildAt(0).getHeight()));
-                            poster_recyclerview.getChildAt(4).requestFocus();
-                        }else{
-                            return false;
+                } else {
+                    if ((focusedPos) % 3 == 0) {
+                        if (poster_recyclerview.getChildAt(focusedPos - 1) != null) {
+                            poster_recyclerview.getChildAt(focusedPos - 1).requestFocus();
+                        } else {
+                            if (poster_recyclerview.getChildPosition(poster_recyclerview.getFocusedChild()) != 0) {
+                                poster_recyclerview.scrollBy(0, (int) (poster_recyclerview.getY() - poster_recyclerview.getChildAt(0).getHeight()));
+                                poster_recyclerview.getChildAt(2).requestFocus();
+                            } else {
+                                return false;
+                            }
                         }
+                        return true;
                     }
-                    return true;
-                }
-            }else{
-                if ((focusedPos) % 3 == 0) {
-                    if(poster_recyclerview.getChildAt(focusedPos - 1)!=null) {
-                        poster_recyclerview.getChildAt(focusedPos - 1).requestFocus();
-                    }else{
-                        if(poster_recyclerview.getChildPosition(poster_recyclerview.getFocusedChild())!=0) {
-                            poster_recyclerview.scrollBy(0, (int) (poster_recyclerview.getY() - poster_recyclerview.getChildAt(0).getHeight()));
-                            poster_recyclerview.getChildAt(2).requestFocus();
-                        }else{
-                            return false;
-                        }
-                    }
-                    return true;
                 }
             }
         }
@@ -213,7 +204,7 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
     }
 
     private void showFilterPopup() {
-        PopupWindow filterPopup=new PopupWindow(filter_condition_layout,1920,528,true);
+        filterPopup = new PopupWindow(filter_condition_layout,1920,528,true);
         filterPopup.setTouchable(true);
         filterPopup.setTouchInterceptor(new View.OnTouchListener() {
             @Override
@@ -223,67 +214,35 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
         });
         filterPopup.setBackgroundDrawable(getResources().getDrawable(R.drawable.transparent));
         filterPopup.showAtLocation(getRootView(),Gravity.NO_GRAVITY,0,552);
-
+        Message message=new Message();
+        message.arg1=0;
+        ((FilterConditionGroupView)filter_conditions.getChildAt(0)).handler.sendMessageDelayed(message,1000);
+        filterPopup.setOnDismissListener(new PopupWindow.OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                poster_recyclerview.getChildAt(0).requestFocus();
+            }
+        });
     }
 
-    private void fillConditionLayout(String label, List<List<String>> values) {
+    private void fillConditionLayout(String label, final List<List<String>> values) {
         List<String> no_limit=new ArrayList<>();
         no_limit.add("");
         no_limit.add("全部");
         values.add(0,no_limit);
-        View conditionGroup=View.inflate(this,R.layout.filter_condition_group,null);
-        TextView filter_condition_group_title= (TextView) conditionGroup.findViewById(R.id.filter_condition_group_title);
-        RadioGroup filter_condition_group_view= (RadioGroup) conditionGroup.findViewById(R.id.filter_condition_group_view);
-        final Button filter_condition_group_arrow_left= (Button) conditionGroup.findViewById(R.id.filter_condition_group_arrow_left);
-        final Button filter_condition_group_arrow_right= (Button) conditionGroup.findViewById(R.id.filter_condition_group_arrow_right);
-        final HorizontalScrollView filter_condition_group_scrollview= (HorizontalScrollView) conditionGroup.findViewById(R.id.filter_condition_group_scrollview);
-        filter_condition_group_title.setText(label);
-        for (int j = 0; j <values.size() ; j++) {
-            RadioButton filter_group_radio_button= (RadioButton) View.inflate(this,R.layout.filter_group_radio_button,null);
-            filter_group_radio_button.setText(values.get(j).get(1));
-            filter_group_radio_button.setTag(values.get(j).get(0));
-            int width=0;
-            if(values.get(j).get(1).length()>2){
-                width=159;
-                filter_group_radio_button.setBackgroundResource(R.drawable.filter_condition_checked_selector4);
-            }else{
-                width=100;
-                filter_group_radio_button.setBackgroundResource(R.drawable.filter_condition_checked_selector2);
-            }
-            RadioGroup.LayoutParams params=new RadioGroup.LayoutParams(width, ViewGroup.LayoutParams.MATCH_PARENT);
-            if(j!=values.size()-1) {
-                params.rightMargin = 39;
-            }
-            filter_group_radio_button.setLayoutParams(params);
-            filter_group_radio_button.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    String text=buttonView.getText().toString();
-                    filter(text,isChecked,buttonView.getTag().toString());
-                }
-            });
-            filter_condition_group_view.addView(filter_group_radio_button);
-        }
-        filter_condition_group_arrow_left.setOnHoverListener(this);
-        filter_condition_group_arrow_right.setOnHoverListener(this);
-        filter_condition_group_arrow_left.setOnClickListener(new View.OnClickListener() {
+        final FilterConditionGroupView filterConditionGroupView=new FilterConditionGroupView(this,values,label);
+        filterConditionGroupView.setFocusable(true);
+        filterConditionGroupView.setFocusableInTouchMode(true);
+        filterConditionGroupView.setOnCheckChangeListener(new FilterConditionGroupView.OnCheckChange() {
             @Override
-            public void onClick(View v) {
-                filter_condition_group_scrollview.pageScroll(View.FOCUS_LEFT);
-                filter_condition_group_arrow_left.setVisibility(View.INVISIBLE);
-                filter_condition_group_arrow_right.setVisibility(View.VISIBLE);
+            public void onCheckChange(View view, boolean isChecked) {
+                String text=((Button)view).getText().toString();
+                filter(text,isChecked,view.getTag().toString());
             }
         });
-        filter_condition_group_arrow_right.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                filter_condition_group_scrollview.pageScroll(View.FOCUS_RIGHT);
-                filter_condition_group_arrow_left.setVisibility(View.VISIBLE);
-                filter_condition_group_arrow_right.setVisibility(View.INVISIBLE);
-            }
-        });
-        filter_conditions.addView(conditionGroup);
+        filter_conditions.addView(filterConditionGroupView);
     }
+
 
     private void fetchFilterResult(String content_model, String filterCondition) {
         mSkyService.getFilterRequest(content_model,filterCondition)
@@ -348,16 +307,10 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
         if(!"全部".equals(text)){
             if(b){
                 TextView checked=new TextView(this);
-                int width=0;
-                if(text.length()>2){
-                    width=159;
-                    checked.setBackgroundResource(R.drawable.filter_condition_checked4);
-                }else{
-                    width=100;
-                    checked.setBackgroundResource(R.drawable.filter_condition_checked2);
-                }
-                LinearLayout.LayoutParams params=new LinearLayout.LayoutParams(width,43);
+                checked.setBackgroundResource(R.drawable.filter_condition_checked2);
+                LinearLayout.LayoutParams params=new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,43);
                 params.rightMargin=40;
+                checked.setPadding(15,0,14,0);
                 checked.setLayoutParams(params);
                 checked.setTextSize(30);
                 checked.setTextColor(getResources().getColor(R.color._333333));
@@ -382,7 +335,7 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
 
         for (int i = 1; i <filter_checked_conditiion.getChildCount() ; i++) {
             if(filter_checked_conditiion.getChildAt(i)!=null)
-            condition +=filter_checked_conditiion.getChildAt(i).getTag().toString()+"!";
+                condition +=filter_checked_conditiion.getChildAt(i).getTag().toString()+"!";
         }
         if(filter_checked_conditiion.getChildCount()==1){
             condition=mFilterConditions.getDefaultX()+"!";

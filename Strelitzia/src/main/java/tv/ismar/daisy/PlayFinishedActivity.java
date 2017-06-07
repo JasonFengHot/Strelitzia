@@ -24,8 +24,8 @@ import tv.ismar.app.models.PlayfinishedRecommend;
 import tv.ismar.app.network.SkyService;
 import tv.ismar.app.ui.adapter.OnItemClickListener;
 import tv.ismar.app.ui.adapter.OnItemFocusedListener;
+import tv.ismar.app.widget.MyRecyclerView;
 import tv.ismar.searchpage.utils.JasmineUtil;
-import tv.ismar.subject.views.MyRecyclerView;
 
 
 public class PlayFinishedActivity extends BaseActivity implements View.OnClickListener, View.OnFocusChangeListener {

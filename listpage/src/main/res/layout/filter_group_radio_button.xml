@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RadioButton xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/radio"
     android:layout_width="wrap_content"
     android:layout_height="match_parent"
     android:button="@null"
@@ -7,6 +8,9 @@
     android:gravity="center"
     android:textColor="@color/filter_text"
     android:focusable="true"
+    android:paddingLeft="15dp"
+    android:paddingRight="14dp"
+    android:background="@drawable/filter_condition_checked_selector2"
     >
 
 </RadioButton>

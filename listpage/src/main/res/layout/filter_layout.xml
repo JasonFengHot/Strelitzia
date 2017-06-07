@@ -46,19 +46,30 @@
         android:layout_marginLeft="-3dp"
         android:layout_marginTop="109dp"/>
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:clipChildren="false"
         android:clipToPadding="false"
-        android:orientation="vertical">
+        >
 
+        <tv.ismar.app.widget.MyRecyclerView
+            android:id="@+id/poster_recyclerview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="88dp"
+            android:layout_marginLeft="6dp"
+            android:layout_marginRight="124dp"
+            android:clipToPadding="false"
+            android:clipChildren="false"/>
         <LinearLayout
             android:id="@+id/filter_checked_conditiion"
             android:layout_width="match_parent"
             android:layout_height="76dp"
             android:orientation="horizontal"
-            android:paddingTop="33dp">
+            android:paddingTop="33dp"
+            android:background="#0e163a"
+            >
 
             <TextView
                 android:layout_width="136dp"
@@ -70,18 +81,7 @@
                 android:text="筛选条件:"/>
         </LinearLayout>
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/poster_recyclerview"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:layout_marginLeft="6dp"
-            android:layout_marginRight="124dp"
-            android:clipToPadding="false"
-            android:clipChildren="false"/>
-
-
-    </LinearLayout>
+    </RelativeLayout>
 
 </LinearLayout>
 
@@ -105,8 +105,4 @@
         android:background="@drawable/filter_arrow_down_selector"
         android:layout_alignParentRight="true"/>
 
-    <!--<include-->
-        <!--android:id="@+id/filter_condition_layout"-->
-        <!--layout="@layout/filter_condition_layout"-->
-        <!--/>-->
 </RelativeLayout>

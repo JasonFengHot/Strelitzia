@@ -42,16 +42,15 @@ import tv.ismar.app.network.entity.SubjectPayLayerEntity;
 import tv.ismar.app.ui.adapter.OnItemClickListener;
 import tv.ismar.app.ui.adapter.OnItemFocusedListener;
 import tv.ismar.app.util.Utils;
+import tv.ismar.app.widget.MyRecyclerView;
 import tv.ismar.searchpage.utils.JasmineUtil;
 import tv.ismar.statistics.PurchaseStatistics;
 import tv.ismar.subject.R;
 import tv.ismar.subject.SubjectActivity;
 import tv.ismar.subject.adapter.SubjectMovieAdapter;
 import tv.ismar.subject.adapter.SubjectTvAdapter;
-import tv.ismar.subject.views.MyRecyclerView;
 
 import static android.support.v7.widget.RecyclerView.SCROLL_STATE_IDLE;
-import static android.support.v7.widget.RecyclerView.SCROLL_STATE_SETTLING;
 import static tv.ismar.app.core.PageIntentInterface.ProductCategory.item;
 
 /**
