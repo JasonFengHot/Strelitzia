@@ -12,6 +12,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnHoverListener;
@@ -55,7 +56,7 @@ import static tv.ismar.pay.PaymentActivity.OderType.alipay_renewal;
 /**
  * Created by huibin on 9/13/16.
  */
-public class PaymentActivity extends BaseActivity implements View.OnClickListener, LoginCallback, OnHoverListener {
+public class PaymentActivity extends BaseActivity implements View.OnClickListener, LoginCallback, OnHoverListener ,View.OnFocusChangeListener,View.OnKeyListener{
     private static final String TAG = "PaymentActivity";
     private LoginFragment loginFragment;
     private Fragment weixinFragment;
@@ -121,6 +122,16 @@ public class PaymentActivity extends BaseActivity implements View.OnClickListene
         cardPayBtn.setOnClickListener(this);
         balancePayBtn.setOnClickListener(this);
 
+        weixinPayBtn.setOnFocusChangeListener(this);
+        aliPayBtn.setOnFocusChangeListener(this);
+        cardPayBtn.setOnFocusChangeListener(this);
+        balancePayBtn.setOnFocusChangeListener(this);
+
+        weixinPayBtn.setOnKeyListener(this);
+        aliPayBtn.setOnKeyListener(this);
+        balancePayBtn.setOnKeyListener(this);
+        cardPayBtn.setOnKeyListener(this);
+
         loginFragment = new LoginFragment();
         loginFragment.setLoginCallback(this);
         weixinFragment = new WeixinPayFragment();
@@ -159,6 +170,22 @@ public class PaymentActivity extends BaseActivity implements View.OnClickListene
     protected void onResume() {
         super.onResume();
 
+    }
+    @Override
+    public void onFocusChange(View v, boolean hasFocus) {
+        int i = v.getId();
+        if(hasFocus&&!ishover){
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            if (i == R.id.weixin) {
+                transaction.replace(R.id.fragment_page, weixinFragment).commit();
+            } else if (i == R.id.alipay) {
+                alipayClick();
+            }else if (i == R.id.videocard) {
+                transaction.replace(R.id.fragment_page, cardpayFragment).commit();
+            } else if (i == R.id.balance_pay) {
+                transaction.replace(R.id.fragment_page, balanceFragment).commit();
+            }
+        }
     }
 
     @Override
@@ -237,12 +264,13 @@ public class PaymentActivity extends BaseActivity implements View.OnClickListene
         purchaseCheck(PaymentActivity.CheckType.PlayCheck, true);
     }
 
-
+    boolean ishover=false;
     @Override
     public boolean onHover(View v, MotionEvent event) {
         switch (event.getAction()) {
             case MotionEvent.ACTION_HOVER_ENTER:
             case MotionEvent.ACTION_HOVER_MOVE:
+                ishover=true;
                 v.requestFocus();
                 v.requestFocusFromTouch();
                 break;
@@ -251,6 +279,13 @@ public class PaymentActivity extends BaseActivity implements View.OnClickListene
         }
         return false;
     }
+
+    @Override
+    public boolean onKey(View v, int keyCode, KeyEvent event) {
+        ishover=false;
+        return false;
+    }
+
 
     public enum CheckType {
         PlayCheck,

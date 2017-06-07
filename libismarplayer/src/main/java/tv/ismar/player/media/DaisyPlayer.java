@@ -46,8 +46,10 @@ public class DaisyPlayer extends IsmartvPlayer implements SurfaceHelper.SurfaceC
             if (mPlayer == null) {
                 SmartPlayer.PlayerType player264Type = SmartPlayer.PlayerType.PlayerMedia;
                 SmartPlayer.PlayerType player265Type = SmartPlayer.PlayerType.PlayerMedia;
+                SmartPlayer.PlayerType playerliveType = SmartPlayer.PlayerType.PlayerMedia;
                 int h264PlayerType =IsmartvActivator.getInstance().getH264PlayerType();
                 int h265PlayerType =IsmartvActivator.getInstance().getH265PlayerType();
+                int livePlayerType =IsmartvActivator.getInstance().getLivePlayerType();
                 switch (h264PlayerType) {
                     case 0:
                         player264Type = SmartPlayer.PlayerType.PlayerMedia;
@@ -70,7 +72,18 @@ public class DaisyPlayer extends IsmartvPlayer implements SurfaceHelper.SurfaceC
                         player265Type = SmartPlayer.PlayerType.PlayerCodec;
                         break;
                 }
-                mPlayer = new SmartPlayer(player264Type, player265Type);
+                switch (livePlayerType) {
+                    case 0:
+                        playerliveType = SmartPlayer.PlayerType.PlayerMedia;
+                        break;
+                    case 1:
+                        playerliveType = SmartPlayer.PlayerType.PlayerSystem;
+                        break;
+                    case 2:
+                        playerliveType = SmartPlayer.PlayerType.PlayerCodec;
+                        break;
+                }
+                mPlayer = new SmartPlayer(player264Type, player265Type,playerliveType);
             }
         }
         return mPlayer;
@@ -500,6 +513,7 @@ public class DaisyPlayer extends IsmartvPlayer implements SurfaceHelper.SurfaceC
                 e.printStackTrace();
             }
             String CacheTime = map.get("TsCacheTime");
+            LogUtils.d(TAG,"CacheTime = "+CacheTime);
             if (CacheTime != null)
             {
                 int nCacheTime = Integer.parseInt(CacheTime);
@@ -539,7 +553,6 @@ public class DaisyPlayer extends IsmartvPlayer implements SurfaceHelper.SurfaceC
         LogUtils.d(TAG,"openVideo");
         if(hasPreload){
             mPlayer.createPlayer();
-            mPlayer.setSn(getSnToken());
             mPlayer.setScreenOnWhilePlaying(true);
             mPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
             mPlayer.setScreenOnWhilePlaying(true);
@@ -591,8 +604,6 @@ public class DaisyPlayer extends IsmartvPlayer implements SurfaceHelper.SurfaceC
                     mPlayer.prepareAsync();
                 } else {
                     mPlayer.createPlayer();
-                    mPlayer.setSn(getSnToken());
-                    mPlayer.setScreenOnWhilePlaying(true);
                     mPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
                     mPlayer.setScreenOnWhilePlaying(true);
                     mPlayer.setOnPreparedListenerUrl(onPreparedListenerUrl);

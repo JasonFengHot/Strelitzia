@@ -99,6 +99,11 @@ public class PlayerSettingMenu extends PopupWindow implements HorizontalEpisodeL
         list.setOnItemActionListener(this);
         list.addDatas(itemEntities);
         setting.setTextColor(mContext.getResources().getColor(R.color._666666));
+        if(itemEntities.size()>7){
+            arrow_right.setVisibility(View.VISIBLE);
+        }else{
+            arrow_right.setVisibility(View.INVISIBLE);
+        }
         int index=0;
         for(int i=0;i<itemEntities.size();i++){
             if(pk==itemEntities.get(i).getPk()){
@@ -111,14 +116,8 @@ public class PlayerSettingMenu extends PopupWindow implements HorizontalEpisodeL
         }else{
             list.toPlayingItem(index);
             arrow_left.setVisibility(View.VISIBLE);
-         //   list.getChildViewAt(index%7).requestFocus();
         }
 
-        if(itemEntities.size()>7){
-            arrow_right.setVisibility(View.VISIBLE);
-        }else{
-            arrow_right.setVisibility(View.INVISIBLE);
-        }
         setArrowListener();
     }
     private void addmenu() {
@@ -162,14 +161,14 @@ public class PlayerSettingMenu extends PopupWindow implements HorizontalEpisodeL
         menu_select.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
-                Log.i("menu_select","keycode: "+keyCode);
+                Log.i("menu_select","Select_keycode: "+keyCode);
                 if(event.getAction()==KeyEvent.ACTION_DOWN&&keyCode==20){
                     if(itemEntities!=null&&itemEntities.size()>1){
                         hideMenu();
                     }
-                }else if(keyCode==4&&v.getVisibility()==View.VISIBLE){
-                    Log.i("menu_select",keyCode+v.getVisibility()+"");
+                }else if(event.getAction()==KeyEvent.ACTION_DOWN&&keyCode==4){
                     dismiss();
+                    return true;
                 }
                 return false;
             }
@@ -212,6 +211,24 @@ public class PlayerSettingMenu extends PopupWindow implements HorizontalEpisodeL
         });
         arrow_left.setOnHoverListener(arrowHover);
         arrow_right.setOnHoverListener(arrowHover);
+        arrow_left.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if(keyCode==22){
+                    arrow_left.setHovered(false);
+                }
+                return false;
+            }
+        });
+        arrow_right.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if(keyCode==21){
+                    arrow_right.setHovered(false);
+                }
+                return false;
+            }
+        });
     }
     View.OnHoverListener arrowHover=new View.OnHoverListener() {
         @Override
@@ -239,6 +256,7 @@ public class PlayerSettingMenu extends PopupWindow implements HorizontalEpisodeL
 
     @Override
     public void onkeyBack(int keycode) {
+        Log.i("menu_select","WheelkeyBack");
         hideWheel();
     }
     private void hideWheel(){
@@ -282,6 +300,9 @@ public class PlayerSettingMenu extends PopupWindow implements HorizontalEpisodeL
         if(focused){
             arrow_right.setFocusable(false);
             arrow_left.setFocusable(false);
+            if (list.getFirstVisibleChildIndex()+7>=itemEntities.size()){
+                arrow_right.setVisibility(View.INVISIBLE);
+            }
         }
     }
 

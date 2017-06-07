@@ -112,7 +112,7 @@ public class DeviceUtils {
                     break;
                 }
             }
-        } catch (SocketException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return ip;
@@ -158,7 +158,7 @@ public class DeviceUtils {
                 buf.deleteCharAt(buf.length() - 1);
             }
             macAddress = buf.toString();
-        } catch (SocketException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return "null";
         }
@@ -184,7 +184,7 @@ public class DeviceUtils {
                 buf.deleteCharAt(buf.length() - 1);
             }
             macAddress = buf.toString();
-        } catch (SocketException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return "null";
         }

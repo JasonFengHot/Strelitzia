@@ -391,6 +391,11 @@ public class IsmartvActivator {
         return mSharedPreferences.getInt("h265_player", 0);// 0-smartplayer，1-系统mediaplayer,2-自有
 
     }
+    public int getLivePlayerType() {
+        return mSharedPreferences.getInt("live_player", 0);// 0-smartplayer，1-系统mediaplayer,2-自有
+
+    }
+
     public String getZUserToken() {
         return mSharedPreferences.getString("zuser_token", "");
     }
@@ -432,6 +437,7 @@ public class IsmartvActivator {
         C.SMART_POST_NEXT_REQUEST_TIME = resultEntity.getSmart_post_next_request_time();
         editor.putInt("h264_player", resultEntity.getH264_player());
         editor.putInt("h265_player", resultEntity.getH265_player());
+        editor.putInt("live_player", resultEntity.getH265_player());
         editor.commit();
 
         // 获取老版本的

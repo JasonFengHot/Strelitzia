@@ -131,12 +131,39 @@ public class HorizontalEpisodeList extends HorizontalScrollView {
         }
 
         public void toPlayingItem(int index){
-            int page=(index+1)/7;
-            int position=(index+1)%7;
-            Log.i("toPlaying","page:  "+page+"  position: "+position+"  index: "+index);
-            for(int i=0;i<page;i++){
-                pageArrowDown();
+            if(index<mDataList.size()-rowCount) {
+                for (int i = 0; i < linearContainer.getChildCount(); i++) {
+                    View itemView = linearContainer.getChildAt(i);
+                    int newIndex = (int) itemView.getTag(R.id.lib_ver_pv_item_position) + index;
+                    itemView.setTag(R.id.lib_ver_pv_item_position, newIndex);
+
+                    if (mOnItemActionListener != null) {
+                        mOnItemActionListener.onBindView(itemView, (ItemEntity) mDataList.get(newIndex), newIndex);
+                        if (newIndex == mCurrentDataSelectPosition) {
+                            mOnItemActionListener.onItemFocusChanged(itemView, true, newIndex);
+                        }
+                    }
+                }
+            }else{
+
+                for (int i = 0; i < linearContainer.getChildCount(); i++) {
+                    View itemView = linearContainer.getChildAt(i);
+                    int newIndex = (int) itemView.getTag(R.id.lib_ver_pv_item_position) +(mDataList.size()-rowCount) ;
+                    itemView.setTag(R.id.lib_ver_pv_item_position, newIndex);
+
+                    if (mOnItemActionListener != null) {
+                        mOnItemActionListener.onBindView(itemView, (ItemEntity) mDataList.get(newIndex), newIndex);
+                        if (newIndex == mCurrentDataSelectPosition) {
+                            mOnItemActionListener.onItemFocusChanged(itemView, true, newIndex);
+                        }
+                    }
+                }
+                int position=mDataList.size()-index;
+                linearContainer.getChildAt(rowCount-position).requestFocus();
+
             }
+            requestLayout();
+            invalidate();
         }
 
         public int getFirstVisibleChildIndex() {

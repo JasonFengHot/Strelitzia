@@ -12,15 +12,24 @@ public class ResultEntity {
     private String carnation = "1.1.1.1";
     private int h264_player;
     private int h265_player;
+    private int live_player;
 
-    public int getH265_player() {
-        return h265_player;
-    }
 
     private long smart_post_next_request_time = 30;
 
+    public void setLive_player(int live_player) {
+        this.live_player = live_player;
+    }
+
+    public int getLive_player() {
+        return live_player;
+    }
+
     public void setH265_player(int h265_player) {
         this.h265_player = h265_player;
+    }
+    public int getH265_player() {
+        return h265_player;
     }
 
     public long getSmart_post_next_request_time() {

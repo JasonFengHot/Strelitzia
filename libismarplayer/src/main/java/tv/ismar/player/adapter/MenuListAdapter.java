@@ -76,17 +76,14 @@ public class MenuListAdapter extends RecyclerView.Adapter<MenuItemHoder> {
         holder.itemView.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
-                Log.i("logBack","onkey"+keyCode);
+                Log.i("menu_select","itemOnkey"+keyCode);
                 if(keyCode==21||keyCode==22){
                     return true;
-                }else {
-                    if(keyCode==4){
-                        onKeyListener.onkeyBack(keyCode);
-                        return true;
-                    }else {
-                        return false;
-                    }
+                }else if(event.getAction()==KeyEvent.ACTION_DOWN&&keyCode==4){
+                    onKeyListener.onkeyBack(keyCode);
+                    return true;
                 }
+                return false;
             }
         });
     }
