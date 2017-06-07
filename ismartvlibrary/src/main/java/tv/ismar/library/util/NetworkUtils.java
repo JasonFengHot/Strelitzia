@@ -14,6 +14,9 @@ public class NetworkUtils {
      * 是否已有网络连接
      */
     public static boolean isConnected(Context context) {
+        if (context == null) {
+            return false;
+        }
         ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo mobNetInfo = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
         NetworkInfo wifiNetInfo = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);

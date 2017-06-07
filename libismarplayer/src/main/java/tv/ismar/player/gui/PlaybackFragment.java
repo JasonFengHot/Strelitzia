@@ -1701,7 +1701,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
                         int mediaPosition = service.getMediaPlayer().getCurrentPosition();
                         // 播放过程中网络相关
                         if (fragment.mCurrentPosition == mediaPosition && mediaPosition != fragment.historyPosition) {
-                            LogUtils.d("LH/PlaybackHandler", "Network videoBufferingShow：" + fragment.isBufferShow());
+                            LogUtils.d("LH/PlaybackHandler", "Network videoBufferingShow：" + fragment.isBufferShow() + " " + mediaPosition + " " + fragment.mCurrentPosition);
                             if (!NetworkUtils.isConnected(fragment.getActivity())) {
                                 // 断开网络，连接网络后会在广播接收中恢复
                                 service.addHistory(fragment.mCurrentPosition, true);
@@ -1750,7 +1750,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
                         fragment.mCurrentPosition = mediaPosition;
                         fragment.player_seekBar.setProgress(fragment.mCurrentPosition);
                     }
-                    sendEmptyMessageDelayed(MSG_UPDATE_PROGRESS, 500);
+                    sendEmptyMessageDelayed(MSG_UPDATE_PROGRESS, 1000);// 部分机型在500ms内获取当前播放进度，与上一次相同，此处每1s更新一次进度条
                     break;
                 case MSG_HIDE_PANEL:
                     fragment.hidePanel();
