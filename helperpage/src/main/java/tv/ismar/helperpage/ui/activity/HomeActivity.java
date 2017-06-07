@@ -36,7 +36,6 @@ public class HomeActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.sakura_activity_home);
 
-
         Intent intent = getIntent();
         int position = intent.getIntExtra("position", 0);
 

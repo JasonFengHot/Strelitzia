@@ -27,6 +27,8 @@
             android:layout_alignParentBottom="true"
             android:layout_marginBottom="@dimen/home_indicator_margin_bottom"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/home_indicator_height"/>
+            android:layout_height="@dimen/home_indicator_height"
+            android:focusable="false"
+        />
 
 </RelativeLayout>

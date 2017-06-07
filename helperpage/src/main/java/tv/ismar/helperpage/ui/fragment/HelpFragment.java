@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.TextView;
 
 import java.util.List;
@@ -55,6 +56,14 @@ public class HelpFragment extends Fragment {
             @Override
             public void onSuccess(BitmapDrawable bitmapDrawable) {
                 view.setBackgroundDrawable(bitmapDrawable);
+            }
+        });
+        view.getViewTreeObserver().addOnGlobalFocusChangeListener(new ViewTreeObserver.OnGlobalFocusChangeListener() {
+            @Override
+            public void onGlobalFocusChanged(View oldFocus, View newFocus) {
+                if(newFocus!=null){
+                    Log.i(TAG,"newFocus: "+newFocus.toString());
+                }
             }
         });
         return view;
