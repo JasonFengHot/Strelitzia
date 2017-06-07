@@ -220,6 +220,13 @@
             </LinearLayout>
         </RelativeLayout>
     </LinearLayout>
+
+    <ImageView
+        android:id="@+id/player_shadow"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@drawable/player_bg"/>
+
     <LinearLayout
         android:id="@+id/player_buffer_layout"
         android:layout_width="match_parent"
@@ -244,11 +251,5 @@
             android:textSize="@dimen/text_size_36sp"/>
 
     </LinearLayout>
-
-    <ImageView
-        android:id="@+id/player_shadow"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:src="@drawable/player_bg"/>
 
 </FrameLayout>

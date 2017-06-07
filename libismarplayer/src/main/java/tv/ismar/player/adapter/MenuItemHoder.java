@@ -14,9 +14,13 @@ import tv.ismar.player.R;
 public class MenuItemHoder extends RecyclerView.ViewHolder{
     TextView textView;
     LinearLayout line;
+    LinearLayout focus_line;
+    TextView focus_text;
     public MenuItemHoder(View itemView) {
         super(itemView);
         textView= (TextView) itemView.findViewById(R.id.resolution_text);
         line= (LinearLayout) itemView.findViewById(R.id.line);
+        focus_line= (LinearLayout) itemView.findViewById(R.id.focus_line);
+        focus_text= (TextView) itemView.findViewById(R.id.focus_text);
     }
 }

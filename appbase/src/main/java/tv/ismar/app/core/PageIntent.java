@@ -5,6 +5,7 @@ import android.app.LauncherActivity;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -200,13 +201,13 @@ public class PageIntent implements PageIntentInterface {
     @Override
     public void toHelpPage(Context context) {
         Intent intent = new Intent();
-        try {
-            intent.setAction("cn.ismartv.speedtester.feedback");
-            context.startActivity(intent);
-        }catch (ActivityNotFoundException e) {
+//        try {
+//            intent.setAction("cn.ismartv.speedtester.feedback");
+//            context.startActivity(intent);
+//        }catch (ActivityNotFoundException e) {
             intent.setAction("cn.ismar.sakura.launcher");
             context.startActivity(intent);
-        }
+    //    }
     }
 
     private static void showNetErrorPopup(Context context, String message) {
@@ -237,7 +238,7 @@ public class PageIntent implements PageIntentInterface {
     }
 
     @Override
-    public void toPlayFinish(Activity context, String channel, int id, int playScale,boolean hasHistory, String frompage) {
+    public void toPlayFinish(Fragment fragment, String channel, int id, int playScale, boolean hasHistory, String frompage) {
         Intent intent = new Intent();
         intent.setAction("tv.ismar.daisy.PlayFinished");
         intent.putExtra("channel",channel);
@@ -245,7 +246,7 @@ public class PageIntent implements PageIntentInterface {
         intent.putExtra("play_scale",playScale);
         intent.putExtra("has_history",hasHistory);
         intent.putExtra("frompage",frompage);
-        context.startActivityForResult(intent,0);
+        fragment.startActivityForResult(intent,0);
     }
 
 
