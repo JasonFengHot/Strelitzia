@@ -50,6 +50,7 @@ public class PlayerSettingMenu extends PopupWindow implements HorizontalEpisodeL
     private RelativeLayout wheel;
     private TextView player_episode,setting;
     private LinearLayout list_layout;
+    private ImageView top_shape,bottom_shape;
     private int pk;
     private ArrayList<QuailtyEntity> quailtyList=new ArrayList<>();
     private int currentQuailty=0;
@@ -127,6 +128,8 @@ public class PlayerSettingMenu extends PopupWindow implements HorizontalEpisodeL
         menu_select= (TextView) menuView.findViewById(R.id.menu_select);
         menu_list= (RecyclerView) menuView.findViewById(R.id.menu_list);
         menu_list.setLayoutManager(new LinearLayoutManager(mContext));
+        top_shape= (ImageView) menuView.findViewById(R.id.top_shape);
+        bottom_shape= (ImageView) menuView.findViewById(R.id.bottom_shape);
         MenuListAdapter listAdapter=new MenuListAdapter(mContext,quailtyList);
         listAdapter.setMenuOnFocuslistener(this);
         listAdapter.setOnMenuListItmeClickListener(menuListener);
@@ -249,8 +252,34 @@ public class PlayerSettingMenu extends PopupWindow implements HorizontalEpisodeL
     @Override
     public void onFocus(View v, int pos, boolean hasfocus) {
         if(hasfocus) {
-            if (pos != 0)
-                menu_list.smoothScrollBy(0, (int) (v.getY() - v.getHeight()));
+             if(pos==0){
+                RelativeLayout.LayoutParams lp=new RelativeLayout.LayoutParams(mContext.getResources().getDimensionPixelSize(R.dimen.player_250),mContext.getResources().getDimensionPixelSize(R.dimen.player_146));
+                lp.setMargins(0,mContext.getResources().getDimensionPixelSize(R.dimen.player_43),0,0);
+                menu_list.setLayoutParams(lp);
+                top_shape.setVisibility(View.GONE);
+                if(quailtyList.size()>1) {
+                    bottom_shape.setVisibility(View.VISIBLE);
+                }else{
+                    bottom_shape.setVisibility(View.GONE);
+                }
+            }else if(pos==quailtyList.size()-1){
+                RelativeLayout.LayoutParams lp=new RelativeLayout.LayoutParams(mContext.getResources().getDimensionPixelSize(R.dimen.player_250),mContext.getResources().getDimensionPixelSize(R.dimen.player_146));
+                lp.setMargins(0,0,0,mContext.getResources().getDimensionPixelSize(R.dimen.player_43));
+                menu_list.setLayoutParams(lp);
+                bottom_shape.setVisibility(View.GONE);
+                if (quailtyList.size()>1){
+                    top_shape.setVisibility(View.VISIBLE);
+                }else{
+                    top_shape.setVisibility(View.GONE);
+                }
+            }else{
+                 RelativeLayout.LayoutParams lp=new RelativeLayout.LayoutParams(mContext.getResources().getDimensionPixelSize(R.dimen.player_250),mContext.getResources().getDimensionPixelSize(R.dimen.player_146));
+                 lp.setMargins(0,0,0,0);
+                 menu_list.setLayoutParams(lp);
+                 menu_list.smoothScrollBy(0, (int) (v.getY() - v.getHeight()));
+                 top_shape.setVisibility(View.VISIBLE);
+                 bottom_shape.setVisibility(View.VISIBLE);
+             }
         }
     }
 
@@ -285,7 +314,7 @@ public class PlayerSettingMenu extends PopupWindow implements HorizontalEpisodeL
                     menu_list.getChildAt(1).requestFocusFromTouch();
                 }
             }
-        },500);
+        },200);
     }
 
     @Override
