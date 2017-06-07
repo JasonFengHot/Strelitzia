@@ -147,6 +147,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
     private int historyPosition;// 人为操控断网，再连接网络进入播放器，可能导致进入播放器起播后，网络获取到的是未连接情况
     private boolean mIsInAdDetail;// 是否在广告详情页
     private boolean mIsClickKefu;// 点击客服中心，返回不应再加载广告
+    private int mAdCount;// 广告总倒计时，广告倒计时从3位数变为2位数时，2位数前面添0
 
     private PlaybackHandler mHandler;
     private boolean backpress=false;
@@ -602,8 +603,12 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
             ad_vip_layout.setVisibility(View.VISIBLE);
             ad_vip_text.setFocusable(true);
             ad_vip_text.requestFocus();
+            if (mPlaybackService != null && mPlaybackService.getMediaPlayer() != null) {
+                mAdCount = mPlaybackService.getMediaPlayer().getAdCountDownTime() / 1000;
+            }
             mHandler.sendEmptyMessage(MSG_AD_COUNTDOWN);
         } else {
+            mAdCount = 0;
             canShowMenuOrPannel = true;
             ad_vip_layout.setVisibility(View.GONE);
             mHandler.removeMessages(MSG_AD_COUNTDOWN);
@@ -1665,7 +1670,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
                         countDownTime = 0;
                     }
                     String time = String.valueOf(countDownTime);
-                    if (countDownTime < 10) {
+                    if (countDownTime < 10 || (countDownTime >= 10 && countDownTime <= 99 && fragment.mAdCount > 99)) {
                         time = "0" + time;
                     }
                     fragment.ad_count_text.setText("" + time);
