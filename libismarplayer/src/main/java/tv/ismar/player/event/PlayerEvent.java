@@ -12,6 +12,7 @@ import java.util.Set;
 
 import tv.ismar.app.core.client.MessageQueue;
 import tv.ismar.library.util.DateUtils;
+import tv.ismar.library.util.LogUtils;
 import tv.ismar.library.util.MD5;
 
 public class PlayerEvent {
@@ -32,6 +33,7 @@ public class PlayerEvent {
     public int quality;
     public String snToken = "";
     public String username = "";
+    public String sid = "";
 
     private static HashMap<String, Object> getPublicParams(PlayerEvent media, int speed, String playerFlag) {
         HashMap<String, Object> tempMap = new HashMap<>();
@@ -44,8 +46,7 @@ public class PlayerEvent {
         tempMap.put(QUALITY, switchQuality(media.quality));
         tempMap.put(CHANNEL, media.channel);
         tempMap.put(SPEED, speed + "KByte/s");
-        String sid = MD5.getMd5ByString(media.snToken + DateUtils.currentTimeMillis());
-        tempMap.put(SID, sid);
+        tempMap.put(SID, media.sid);
         tempMap.put(PLAYER_FLAG, playerFlag);
         return tempMap;
     }
@@ -430,6 +431,7 @@ public class PlayerEvent {
                 if (!TextUtils.isEmpty(eventName) && !properties.isEmpty()) {
                     try {
                         String event = getContentJson(eventName, properties);
+                        LogUtils.d("LH/Event", "event:\n" + event);
 //                        playerEventList.add(event);
                         // 添加到原先项目日志
                         MessageQueue.addQueue(event);
