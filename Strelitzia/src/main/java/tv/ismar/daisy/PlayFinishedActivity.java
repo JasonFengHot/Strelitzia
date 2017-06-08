@@ -1,5 +1,6 @@
 package tv.ismar.daisy;
 
+import android.content.BroadcastReceiver;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.StaggeredGridLayoutManager;
@@ -49,7 +50,7 @@ public class PlayFinishedActivity extends BaseActivity implements View.OnClickLi
     private boolean hasHistory;
     private PlayFinishedAdapter playFinishedAdapter;
     private Subscription playExitSub;
-    private boolean error=false;
+    private boolean exitPlay=false;
 
     @Override
         protected void onCreate(Bundle savedInstanceState) {
@@ -174,14 +175,15 @@ public class PlayFinishedActivity extends BaseActivity implements View.OnClickLi
                 PlayfinishedRecommend.RecommendItem item=list.get(position);
                 String contentModel=item.getContent_model();
                 if(contentModel!=null) {
+                    Intent intent=new Intent("tv.ismar.daisy.closeplayer");
+                    sendBroadcast(intent);
+                    finish();
                     PageIntent pageIntent = new PageIntent();
                     if (contentModel.equals("music") || (contentModel.equals("sport") && item.getExpense_info() == null) || contentModel.equals("game")) {
                         pageIntent.toPlayPage(PlayFinishedActivity.this, item.getPk(), 0, Source.RELATED);
                     } else {
                         pageIntent.toDetailPage(PlayFinishedActivity.this, Source.RELATED.getValue(), item.getPk());
                     }
-                    setResult(EXIT_PLAY);
-                    finish();
                 }
             }
         });

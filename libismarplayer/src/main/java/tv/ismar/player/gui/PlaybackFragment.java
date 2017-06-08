@@ -213,6 +213,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
         super.onStart();
         LogUtils.i(TAG, "onStart > setup : " + sharpSetupKeyClick + " sdcard : " + mounted);
         registerConnectionReceiver();
+        registerClosePlayerReceiver();
         mAdvertisement.setOnPauseVideoAdListener(this);
         mClient.connect();
         showBuffer(null);
@@ -233,7 +234,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
         }
         // handler消息需要立即删除，广告请求停止
         mHandler.removeCallbacksAndMessages(null);
-        mPlaybackService.addHistory(mCurrentPosition, true);
+//        mPlaybackService.addHistory(mCurrentPosition, true);
         if (mAdvertisement != null) {
             mAdvertisement.stopSubscription();
         }
@@ -244,6 +245,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
         super.onStop();
         LogUtils.i(TAG, "onStop > setup : " + sharpSetupKeyClick + " sdcard : " + mounted);
         unregisterConnectionReceiver();
+        unRegisterClosePlayerReceiver();
         if (mAdvertisement != null) {
             mAdvertisement.setOnPauseVideoAdListener(null);
         }
@@ -297,6 +299,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
             removeBufferingLongTime();
             hideBuffer();
             hidePanel();
+            mPlaybackService.addHistory(mCurrentPosition,true);
             closeActivity("source");
             return;
         }
@@ -1889,6 +1892,38 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
                     baseActivity.showNoNetConnectDialog(onNoNetConfirmListener);
                 }
             }
+        }
+    }
+
+    private ClosePlayerReceiver closePlayerReceiver;
+
+    private void registerClosePlayerReceiver() {
+        IntentFilter filter = new IntentFilter("tv.ismar.daisy.closeplayer");
+        closePlayerReceiver = new ClosePlayerReceiver();
+        getActivity().registerReceiver(closePlayerReceiver, filter);
+    }
+
+    private void unRegisterClosePlayerReceiver() {
+        if (closePlayerReceiver != null) {
+            getActivity().unregisterReceiver(closePlayerReceiver);
+        }
+    }
+
+    private class ClosePlayerReceiver extends BroadcastReceiver{
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (mPlaybackService.isPreview()) {
+                mPlaybackService.logExpenseVideoPreview(mCurrentPosition, "cancel");
+            }
+            ExitToast.createToastConfig().dismiss();
+            mHandler.removeCallbacksAndMessages(null);
+            timerStop();
+            removeBufferingLongTime();
+            hideBuffer();
+            hidePanel();
+            mPlaybackService.addHistory(mCurrentPosition,true);
+            closeActivity("source");
         }
     }
 }
