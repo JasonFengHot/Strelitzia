@@ -2,6 +2,7 @@ package tv.ismar.player.gui;
 
 import android.content.Context;
 import android.os.Handler;
+import android.os.Message;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
@@ -56,6 +57,7 @@ public class PlayerSettingMenu extends PopupWindow implements HorizontalEpisodeL
     private int currentQuailty=0;
     private EpisodeOnclickListener episodeOnclickListener;
     private OnMenuListItmeClickListener menuListener;
+    private MenuHandler menuHandler;
     public PlayerSettingMenu(Context context, List<ItemEntity> entities, int subitem, EpisodeOnclickListener episodeOnclickListener1, ArrayList<QuailtyEntity> quailist,int position,OnMenuListItmeClickListener listener1){
         mContext=context;
         pk=subitem;
@@ -94,7 +96,8 @@ public class PlayerSettingMenu extends PopupWindow implements HorizontalEpisodeL
 
     //    setBackgroundDrawable(mContext.getResources().getDrawable(R.drawable.transparent));
         setFocusable(true);
-
+        menuHandler=new MenuHandler();
+        
     }
     private void showEpisode(){
         list.setOnItemActionListener(this);
@@ -390,6 +393,15 @@ public class PlayerSettingMenu extends PopupWindow implements HorizontalEpisodeL
             menu_select.requestFocusFromTouch();
         }else if(keyCode==4){
             dismiss();
+        }
+    }
+    private class MenuHandler extends Handler{
+        @Override
+        public void handleMessage(Message msg) {
+            if(msg.what==1){
+                dismiss();
+            }
+            super.handleMessage(msg);
         }
     }
 }
