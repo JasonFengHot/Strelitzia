@@ -34,6 +34,9 @@ import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+import rx.Observer;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 import tv.ismar.account.core.Md5;
 import tv.ismar.account.core.http.HttpService;
 import tv.ismar.account.core.rsa.RSACoder;
@@ -225,6 +228,7 @@ public class IsmartvActivator {
                 if (resultResponse.errorBody() == null) {
                     mResult = resultResponse.body();
                     saveAccountInfo(mResult);
+                    reportIp(mResult.getSn_Token());
                     return mResult;
                 } else if(resultResponse.code()==424){
                     isactive=false;
@@ -470,7 +474,15 @@ public class IsmartvActivator {
                 accountEditor.apply();
             }
         }
-
+    }
+    private void reportIp(String sn_token){
+            String url = "http://weixin.test.tvxio.com/Hibiscus/Hibiscus/uploadclientip";
+        try {
+            Response<ResultEntity> resultResponse=SKY_Retrofit.create(HttpService.class).weixinIp(url, DeviceUtils.getLocalInetAddress().toString(), sn_token, Build.MODEL, DeviceUtils.getLocalMacAddress(mContext)).execute();
+            Log.i("ismartvRIP",resultResponse.code()+"   code"+ sn_token);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void setAuthToken(String authToken) {

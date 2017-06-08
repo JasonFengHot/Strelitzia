@@ -116,6 +116,7 @@ public class VodApplication extends Application {
         Log.i("LH/", "applicationOnCreateEnd:" + TrueTime.now().getTime());
         Intent ootStartIntent = new Intent(this, HttpProxyService.class);
         this.startService(ootStartIntent);
+        reportIp();
         Parse.iCallLog = new ICallLog() {
             @Override
             public void addParseError(String json, String msg) throws Exception {
@@ -382,5 +383,30 @@ public class VodApplication extends Application {
                 .logLevel(LogLevel.FULL)        // default LogLevel.FULL
                 .methodOffset(2);      // default 0
     }
+    private void reportIp(){
+        SharedPreferences sharedPreferences= PreferenceManager.getDefaultSharedPreferences(this);
+        String sn=sharedPreferences.getString("sn_token","");
+        if(sn==null||sn.equals("")){
+        }else {
+            SkyService skyService = SkyService.ServiceManager.getService();
+            String url = "http://weixin.test.tvxio.com/Hibiscus/Hibiscus/uploadclientip";
+            skyService.weixinIp(url, DeviceUtils.getLocalInetAddress().toString(), sn, Build.MODEL, DeviceUtils.getLocalMacAddress(this)).subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<ResponseBody>() {
+                @Override
+                public void onCompleted() {
 
+                }
+
+                @Override
+                public void onError(Throwable e) {
+
+                }
+
+                @Override
+                public void onNext(ResponseBody responseBody) {
+
+                }
+            });
+        }
+    }
 }

@@ -111,7 +111,6 @@ public class BaseActivity extends AppCompatActivity {
         mSpeedCallaService = SkyService.ServiceManager.getSpeedCallaService();
         mLilyHostService = SkyService.ServiceManager.getLilyHostService();
         app_start_time = TrueTime.now().getTime();
-        reportIp();  //上报本机IP地址
         registerNoNetReceiver();
     }
 
@@ -580,31 +579,5 @@ public class BaseActivity extends AppCompatActivity {
         };
 
         noNetConnectHandler.postDelayed(noNetConnectRunnable, 1000);
-    }
-    private void reportIp(){
-        SharedPreferences sharedPreferences= PreferenceManager.getDefaultSharedPreferences(this);
-        String sn=sharedPreferences.getString("sn_token","");
-        if(sn==null){
-            sn=IsmartvActivator.getInstance().getSnToken();
-        }
-        SkyService skyService=SkyService.ServiceManager.getService();
-        String url="http://weixin.test.tvxio.com/Hibiscus/Hibiscus/uploadclientip";
-        skyService.weixinIp(url, DeviceUtils.getLocalInetAddress().toString(),sn, Build.MODEL,DeviceUtils.getLocalMacAddress(this)).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<ResponseBody>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-
-            }
-
-            @Override
-            public void onNext(ResponseBody responseBody) {
-
-            }
-        });
     }
 }

@@ -85,29 +85,28 @@ public class ConnectivityChangeReceiver extends BroadcastReceiver {
     private void reportIp(Context context){
         SharedPreferences sharedPreferences= PreferenceManager.getDefaultSharedPreferences(context);
         String sn=sharedPreferences.getString("sn_token","");
-        if(sn==null){
-            sn=IsmartvActivator.getInstance().getSnToken();
-        }
-
-        SkyService skyService=SkyService.ServiceManager.getService();
-        String url="http://weixin.test.tvxio.com/Hibiscus/Hibiscus/uploadclientip";
+        if(sn==null||sn.equals("")){
+        }else {
+            SkyService skyService = SkyService.ServiceManager.getService();
+            String url = "http://weixin.test.tvxio.com/Hibiscus/Hibiscus/uploadclientip";
 //        String url="http://wx.api.tvxio.com/weixin4server/uploadclientip";
-        skyService.weixinIp(url, DeviceUtils.getLocalInetAddress().toString(), sn, Build.MODEL,DeviceUtils.getLocalMacAddress(context)).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<ResponseBody>() {
-            @Override
-            public void onCompleted() {
+            skyService.weixinIp(url, DeviceUtils.getLocalInetAddress().toString(), sn, Build.MODEL, DeviceUtils.getLocalMacAddress(context)).subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<ResponseBody>() {
+                @Override
+                public void onCompleted() {
 
-            }
+                }
 
-            @Override
-            public void onError(Throwable e) {
+                @Override
+                public void onError(Throwable e) {
 
-            }
+                }
 
-            @Override
-            public void onNext(ResponseBody responseBody) {
+                @Override
+                public void onNext(ResponseBody responseBody) {
 
-            }
-        });
+                }
+            });
+        }
     }
 }
