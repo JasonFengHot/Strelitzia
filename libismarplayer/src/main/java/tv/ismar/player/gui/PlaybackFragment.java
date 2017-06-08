@@ -317,6 +317,8 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
                 ad_vip_layout.setVisibility(View.GONE);
                 player_shadow.setVisibility(View.VISIBLE);
                 showBuffer(null);
+                // 在没有登录的情况下，试看影片，成功购买后，继续上次播放，数据库更新为异步操作
+                mPlaybackService.successBuyVideo = true;
                 mPlaybackService.preparePlayer(extraItemPk, extraSubItemPk, extraSource);
             } else {
                 // 没有购买，退出播放器
@@ -781,6 +783,13 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
                     isClickBufferLong = false;
                     timerStart(0);
                 }
+                break;
+            case CONTINUE_BUFFERING:
+                if (mIsExiting || isPopWindowShow() || isDetached()) {
+                    return;
+                }
+                int position = (int) args;
+                showBuffer(HISTORYCONTINUE + getTimeString(position));
                 break;
         }
 
@@ -1575,7 +1584,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
             ((BaseActivity) getActivity()).showNoNetConnectDialog(onNoNetConfirmListener);
             return;
         }
-        if (mIsOnPaused || isPopWindowShow()) {
+        if ((mIsOnPaused && !isSeeking) || isPopWindowShow()) {
             return;
         }
         if (msg != null) {
@@ -1726,7 +1735,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
                     if (service.getMediaPlayer().isPlaying()) {
                         int mediaPosition = service.getMediaPlayer().getCurrentPosition();
                         // 播放过程中网络相关
-                        if (fragment.mCurrentPosition == mediaPosition && mediaPosition != fragment.historyPosition) {
+                        if (!fragment.isSeeking && fragment.mCurrentPosition == mediaPosition && mediaPosition != fragment.historyPosition) {
                             LogUtils.d("LH/PlaybackHandler", "Network videoBufferingShow：" + fragment.isBufferShow() + " " + mediaPosition + " " + fragment.mCurrentPosition);
                             if (!NetworkUtils.isConnected(fragment.getActivity())) {
                                 // 断开网络，连接网络后会在广播接收中恢复

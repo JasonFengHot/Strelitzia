@@ -84,6 +84,7 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
     private HistoryManager historyManager;
     private History mHistory;
     public boolean hasHistory=false;
+    public boolean successBuyVideo;// 试看影片完成，成功购买后需要继续播放，仅用于PlaybackFragment onActivityResult
     // HLS播放器
     private IsmartvPlayer hlsPlayer;// HLS播放
     private ServiceCallback serviceCallback;
@@ -407,6 +408,10 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
             mStartPosition = (int) mHistory.last_position;
             hasHistory=true;
         }
+        if (successBuyVideo) {
+            successBuyVideo = false;
+            mStartPosition = mDuration;// 成功购买，起播位置设置为试看影片时长
+        }
         Log.i(TAG, "initHistory:" + mStartPosition);
         ItemEntity[] subItems = mItemEntity.getSubitems();
         if (subItems != null && subItems.length > 0) {
@@ -559,6 +564,9 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
         if (StringUtils.isEmpty(clipUrl)) {
             LogUtils.e(TAG, "clipUrl is null.");
             return;
+        }
+        if (mStartPosition > 0 && !mItemEntity.getLiveVideo() && !mIsPreview && serviceCallback != null) {
+            serviceCallback.updatePlayerStatus(PlayerStatus.CONTINUE_BUFFERING, mStartPosition);
         }
         String sign = "";
         String code = "1";
@@ -800,7 +808,7 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
 
     enum PlayerStatus {
 
-        CREATING, START, PLAY, PAUSE, SEEK_COMPLETED, COMPLETED, ERROR, S3DEVICE_VIDEO_SIZE
+        CREATING, START, PLAY, PAUSE, SEEK_COMPLETED, COMPLETED, ERROR, S3DEVICE_VIDEO_SIZE, CONTINUE_BUFFERING
 
     }
 
