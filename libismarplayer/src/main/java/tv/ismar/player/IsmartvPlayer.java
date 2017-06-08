@@ -21,6 +21,7 @@ import tv.ismar.app.network.entity.AdElementEntity;
 import tv.ismar.library.util.AESTool;
 import tv.ismar.library.util.DateUtils;
 import tv.ismar.library.util.LogUtils;
+import tv.ismar.library.util.MD5;
 import tv.ismar.library.util.StringUtils;
 import tv.ismar.player.event.PlayerEvent;
 import tv.ismar.player.media.DaisyPlayer;
@@ -100,6 +101,7 @@ public abstract class IsmartvPlayer implements IPlayer {
             logPlayerEvent.pk = mediaSource.getPk();
             logPlayerEvent.subItemPk = mediaSource.getSubItemPk();
         }
+        logPlayerEvent.sid = MD5.getMd5ByString(snToken + DateUtils.currentTimeMillis());
         switch (playerMode) {
             case MODE_SMART_PLAYER:
                 mSurfaceView.setVisibility(View.VISIBLE);
@@ -132,7 +134,7 @@ public abstract class IsmartvPlayer implements IPlayer {
                 extraParams.setCustomerAppVersion(versionCode);      //传入客户App版本号
                 extraParams.setDeviceId(snToken);   //传入deviceId, VIP项目必传, 登录和鉴权使用
                 extraParams.setDeviceInfo(modelName);
-                extraParams.setShowAdCountDown(true);
+                extraParams.setShowAdCountDown(false);
                 extraParams.addAdsHint(Parameter.HINT_TYPE_SKIP_AD, "下"); // 跳过悦享看广告
                 extraParams.addAdsHint(Parameter.HINT_TYPE_HIDE_PAUSE_AD, "下"); // 消除暂停广告
                 extraParams.addAdsHint(Parameter.HINT_TYPE_SHOW_CLICK_THROUGH_AD, "右"); // 前贴,中插广告跳转页面
