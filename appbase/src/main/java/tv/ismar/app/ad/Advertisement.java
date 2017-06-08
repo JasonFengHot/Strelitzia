@@ -399,7 +399,7 @@ public class Advertisement {
 
                     @Override
                     public void onError(Throwable throwable) {
-
+                        Log.i("ADSMon",throwable.toString()+"  onerror");
                     }
 
                     @Override
@@ -418,11 +418,13 @@ public class Advertisement {
             for (int i = 0; i < arrays.length(); i++) {
                 JSONObject element = arrays.getJSONObject(i);
                 JSONArray monitor=element.getJSONArray("monitor");
-                JSONObject child=monitor.getJSONObject(1);
-                Log.i("ADSMon",monitor.length()+"");
-                String monitor_url=child.optString("monitor_url");
-                Log.i("ADSMon",monitor_url+"");
-                repostAdLog(monitor_url);
+                if(monitor.length()>0) {
+                    JSONObject child = monitor.getJSONObject(0);
+                    Log.i("ADSMon",monitor.length()+"");
+                    String monitor_url=child.optString("monitor_url");
+                    Log.i("ADSMon",monitor_url+"");
+                    repostAdLog(monitor_url);
+                }
             }
         } catch (JSONException e) {
             e.printStackTrace();

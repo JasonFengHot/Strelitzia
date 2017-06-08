@@ -48,6 +48,8 @@
                 android:layout_width="@dimen/player_250"
                 android:layout_height="@dimen/player_43"
                 android:background="@drawable/up_shadow"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
                 android:layout_alignParentTop="true"
                 android:visibility="gone"
                 />
@@ -57,6 +59,8 @@
                 android:layout_height="@dimen/player_43"
                 android:background="@drawable/down_shadow"
                 android:layout_alignParentBottom="true"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
                 android:visibility="gone"
                 />
 
