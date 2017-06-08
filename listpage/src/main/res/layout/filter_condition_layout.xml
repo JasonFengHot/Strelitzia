@@ -6,45 +6,45 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="528dp"
+        android:layout_height="@dimen/filter_condition_layout_h"
         android:background="#000033"
         android:alpha="0.9"
         android:orientation="vertical">
     <LinearLayout
-        android:layout_width="314dp"
-        android:layout_height="43dp"
-        android:layout_marginLeft="71dp"
-        android:layout_marginTop="51dp"
+        android:layout_width="@dimen/filter_condition_layout_tip_view_w"
+        android:layout_height="@dimen/filter_condition_layout_tip_view_h"
+        android:layout_marginLeft="@dimen/filter_condition_layout_tip_view_ml"
+        android:layout_marginTop="@dimen/filter_condition_layout_tip_view_mt"
         android:orientation="horizontal">
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:textSize="30dp"
+        android:textSize="@dimen/filter_condition_layout_tip_title_ts"
         android:textColor="#999999"
         android:text="按返回键"/>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:textSize="30dp"
-        android:layout_marginLeft="5dp"
+        android:textSize="@dimen/filter_condition_layout_tip_title_ts"
+        android:layout_marginLeft="@dimen/filter_condition_layout_tip_title_ml"
         android:textColor="#666666"
         android:text="可以关闭面板"/>
     </LinearLayout>
 
     <View
-        android:layout_width="1768dp"
-        android:layout_height="2dp"
+        android:layout_width="@dimen/filter_condition_layout_horizontal_line_w"
+        android:layout_height="@dimen/filter_condition_layout_horizontal_line_h"
         android:background="#f0f0f0"
         android:alpha="0.2"
-        android:layout_marginTop="27dp"
-        android:layout_marginLeft="71dp"/>
+        android:layout_marginTop="@dimen/filter_condition_layout_horizontal_line_mt"
+        android:layout_marginLeft="@dimen/filter_condition_layout_horizontal_line_ml"/>
 
     <LinearLayout
         android:id="@+id/filter_conditions"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:paddingLeft="74dp"
-        android:layout_marginTop="19dp"/>
+        android:paddingLeft="@dimen/filter_condition_layout_filter_conditions_pl"
+        android:layout_marginTop="@dimen/filter_condition_layout_filter_conditions_mt"/>
     </LinearLayout>
 </LinearLayout>

@@ -93,10 +93,10 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
         filter_arrow_down = findView(R.id.filter_arrow_down);
         if(isVertical) {
             poster_recyclerview.setLayoutManager(new GridLayoutManager(this, 5));
-            poster_recyclerview.setPadding(0,0,0,104);
+            poster_recyclerview.setPadding(0,0,0,getResources().getDimensionPixelOffset(R.dimen.vertical_recycler_padding_bottom));
         }else{
             poster_recyclerview.setLayoutManager(new GridLayoutManager(this, 3));
-            poster_recyclerview.setPadding(0,0,0,298);
+            poster_recyclerview.setPadding(0,0,0,getResources().getDimensionPixelOffset(R.dimen.horizontal_recycler_padding_bottom));
         }
         filter_tab.requestFocus();
         filter_tab.setOnClickListener(this);
@@ -204,7 +204,7 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
     }
 
     private void showFilterPopup() {
-        filterPopup = new PopupWindow(filter_condition_layout,1920,528,true);
+        filterPopup = new PopupWindow(filter_condition_layout,getResources().getDimensionPixelOffset(R.dimen.filter_condition_popup_w),getResources().getDimensionPixelOffset(R.dimen.filter_condition_popup_h),true);
         filterPopup.setTouchable(true);
         filterPopup.setTouchInterceptor(new View.OnTouchListener() {
             @Override
@@ -213,7 +213,7 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
             }
         });
         filterPopup.setBackgroundDrawable(getResources().getDrawable(R.drawable.transparent));
-        filterPopup.showAtLocation(getRootView(),Gravity.NO_GRAVITY,0,552);
+        filterPopup.showAtLocation(getRootView(),Gravity.NO_GRAVITY,0,getResources().getDimensionPixelOffset(R.dimen.filter_condition_popup_position));
         Message message=new Message();
         message.arg1=0;
         ((FilterConditionGroupView)filter_conditions.getChildAt(0)).handler.sendMessageDelayed(message,1000);
@@ -308,11 +308,11 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
             if(b){
                 TextView checked=new TextView(this);
                 checked.setBackgroundResource(R.drawable.filter_condition_checked2);
-                LinearLayout.LayoutParams params=new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,43);
-                params.rightMargin=40;
-                checked.setPadding(15,0,14,0);
+                LinearLayout.LayoutParams params=new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,getResources().getDimensionPixelOffset(R.dimen.filter_checked_condition_h));
+                params.rightMargin=getResources().getDimensionPixelOffset(R.dimen.filter_checked_condition_mr);
+                checked.setPadding(getResources().getDimensionPixelOffset(R.dimen.filter_checked_condition_pl),0,getResources().getDimensionPixelOffset(R.dimen.filter_checked_condition_pr),0);
                 checked.setLayoutParams(params);
-                checked.setTextSize(30);
+                checked.setTextSize(getResources().getDimensionPixelSize(R.dimen.filter_checked_condition_ts));
                 checked.setTextColor(getResources().getColor(R.color._333333));
                 checked.setText(text);
                 checked.setGravity(Gravity.CENTER);

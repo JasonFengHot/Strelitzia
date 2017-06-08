@@ -23,7 +23,7 @@
         android:layout_marginTop="@dimen/play_finished_title_mt"
         android:layout_gravity="center_horizontal"/>
     
-    <tv.ismar.subject.views.MyRecyclerView
+    <tv.ismar.app.widget.MyRecyclerView
         android:id="@+id/play_finished_horizontal_recylerview"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/play_finished_horizontal_recylerview_h"
@@ -36,7 +36,7 @@
         android:visibility="gone"
         />
 
-    <tv.ismar.subject.views.MyRecyclerView
+    <tv.ismar.app.widget.MyRecyclerView
         android:id="@+id/play_finished_vertical_recylerview"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/play_finished_vertical_recylerview_h"

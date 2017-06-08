@@ -4,9 +4,9 @@
     android:layout_height="wrap_content"
     android:focusable="true"
     android:focusableInTouchMode="true"
-    android:padding="-22dp"
-    android:layout_marginRight="9dp"
-    android:layout_marginBottom="18dp"
+    android:padding="@dimen/filter_item_horizontal_poster_padding"
+    android:layout_marginRight="@dimen/filter_item_horizontal_poster_mr"
+    android:layout_marginBottom="@dimen/filter_item_horizontal_poster_mb"
     android:gravity="center"
     android:background="@drawable/poster_focus_selector">
 
@@ -16,48 +16,48 @@
 
     <ImageView
         android:id="@+id/item_horizontal_poster_img"
-        android:layout_width="423dp"
-        android:layout_height="243dp" />
+        android:layout_width="@dimen/item_horizontal_poster_img_w"
+        android:layout_height="@dimen/item_horizontal_poster_img_h" />
     
     <ImageView
         android:id="@+id/item_horizontal_poster_vip"
-        android:layout_width="109dp"
-        android:layout_height="109dp" />
+        android:layout_width="@dimen/item_horizontal_poster_vip_w"
+        android:layout_height="@dimen/item_horizontal_poster_vip_w" />
 
     <TextView
         android:id="@+id/item_horizontal_poster_mark"
-        android:layout_width="78dp"
-        android:layout_height="40dp"
-        android:layout_marginTop="150dp"
-        android:textSize="30dp"
+        android:layout_width="@dimen/item_horizontal_poster_mark_w"
+        android:layout_height="@dimen/item_horizontal_poster_mark_h"
+        android:layout_marginTop="@dimen/item_horizontal_poster_mark_mt"
+        android:textSize="@dimen/item_horizontal_poster_mark_ts"
         android:layout_alignRight="@id/item_horizontal_poster_img"
         android:gravity="right|center_vertical"
         android:background="@drawable/mark_icon"
-        android:paddingRight="4dp"/>
+        android:paddingRight="@dimen/item_horizontal_poster_mark_pr"/>
     
     <TextView
         android:id="@+id/item_horizontal_poster_des"
-        android:layout_width="423dp"
-        android:layout_height="43dp"
+        android:layout_width="@dimen/item_horizontal_poster_des_w"
+        android:layout_height="@dimen/item_horizontal_poster_des_h"
         android:background="@drawable/filter_poster_title_bg"
-        android:textSize="30dp"
+        android:textSize="@dimen/item_horizontal_poster_des_ts"
         android:textColor="#cccccc"
         android:gravity="center"
         android:singleLine="true"
         android:layout_alignBottom="@+id/item_horizontal_poster_img"/>
 
     <View
-        android:layout_width="423dp"
-        android:layout_height="63dp"
+        android:layout_width="@dimen/item_horizontal_poster_title_w"
+        android:layout_height="@dimen/item_horizontal_poster_title_h"
         android:background="#000000"
         android:alpha="0.25"
         android:layout_below="@id/item_horizontal_poster_img"/>
 
     <TextView
         android:id="@+id/item_horizontal_poster_title"
-        android:layout_width="423dp"
-        android:layout_height="63dp"
-        android:textSize="36dp"
+        android:layout_width="@dimen/item_horizontal_poster_title_w"
+        android:layout_height="@dimen/item_horizontal_poster_title_h"
+        android:textSize="@dimen/item_horizontal_poster_title_ts"
         android:textColor="#f0f0f0"
         android:gravity="center"
         android:ellipsize="marquee"

@@ -58,7 +58,7 @@ public class FilterConditionAdapter extends RecyclerView.Adapter<FilterCondition
         holder.itemView.setTag(mData.get(position).get(0));
         if(position!=mData.size()-1) {
             RecyclerView.LayoutParams params = new RecyclerView.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
-            params.rightMargin = 44;
+            params.rightMargin = mContext.getResources().getDimensionPixelOffset(R.dimen.filter_condition_radio_mr);
             holder.itemView.setLayoutParams(params);
         }
         holder.radio.setOnClickListener(new View.OnClickListener() {
