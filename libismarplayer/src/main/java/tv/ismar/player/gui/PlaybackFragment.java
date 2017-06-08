@@ -866,6 +866,12 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
                         settingMenu.dismiss();
                     }else{
                         settingMenu.showAtLocation(parentView,Gravity.BOTTOM,0,0);
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                settingMenu.sendMsg();
+                            }
+                        },1000);
                     }
                 }else{
                     ItemEntity[] subItems = mPlaybackService.getItemEntity().getSubitems();
@@ -892,6 +898,12 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
                     }
                     settingMenu=new PlayerSettingMenu(getActivity().getApplicationContext(),list,mPlaybackService.getSubItemPk(),this,quailtyEntities,currentQuality,this);
                     settingMenu.showAtLocation(parentView,Gravity.BOTTOM,0,0);
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            settingMenu.sendMsg();
+                        }
+                    },1000);
                 }
                 hidePanel();
                 return true;

@@ -2,6 +2,7 @@ package tv.ismar.player.gui;
 
 import android.content.Context;
 import android.os.Handler;
+import android.os.Message;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
@@ -56,6 +57,7 @@ public class PlayerSettingMenu extends PopupWindow implements HorizontalEpisodeL
     private int currentQuailty=0;
     private EpisodeOnclickListener episodeOnclickListener;
     private OnMenuListItmeClickListener menuListener;
+    private MenuHandler menuHandler;
     public PlayerSettingMenu(Context context, List<ItemEntity> entities, int subitem, EpisodeOnclickListener episodeOnclickListener1, ArrayList<QuailtyEntity> quailist,int position,OnMenuListItmeClickListener listener1){
         mContext=context;
         pk=subitem;
@@ -94,7 +96,9 @@ public class PlayerSettingMenu extends PopupWindow implements HorizontalEpisodeL
 
     //    setBackgroundDrawable(mContext.getResources().getDrawable(R.drawable.transparent));
         setFocusable(true);
+        menuHandler=new MenuHandler();
 
+        
     }
     private void showEpisode(){
         list.setOnItemActionListener(this);
@@ -159,6 +163,7 @@ public class PlayerSettingMenu extends PopupWindow implements HorizontalEpisodeL
             @Override
             public void onClick(View v) {
                 showWheel();
+                reSendMsg();
             }
         });
         menu_select.setOnKeyListener(new View.OnKeyListener() {
@@ -168,9 +173,11 @@ public class PlayerSettingMenu extends PopupWindow implements HorizontalEpisodeL
                 if(event.getAction()==KeyEvent.ACTION_DOWN&&keyCode==20){
                     if(itemEntities!=null&&itemEntities.size()>1){
                         hideMenu();
+                        reSendMsg();
                     }
                 }else if(event.getAction()==KeyEvent.ACTION_DOWN&&keyCode==4){
                     dismiss();
+                    menuHandler.removeMessages(1);
                     return true;
                 }
                 return false;
@@ -280,6 +287,7 @@ public class PlayerSettingMenu extends PopupWindow implements HorizontalEpisodeL
                  top_shape.setVisibility(View.VISIBLE);
                  bottom_shape.setVisibility(View.VISIBLE);
              }
+            reSendMsg();
         }
     }
 
@@ -322,6 +330,7 @@ public class PlayerSettingMenu extends PopupWindow implements HorizontalEpisodeL
         int index=list.getCurrentDataSelectPosition();
         episodeOnclickListener.onItemClick(itemEntities.get(index).getPk());
         dismiss();
+        menuHandler.removeMessages(1);
     }
 
     @Override
@@ -332,6 +341,7 @@ public class PlayerSettingMenu extends PopupWindow implements HorizontalEpisodeL
             if (list.getFirstVisibleChildIndex()+7>=itemEntities.size()){
                 arrow_right.setVisibility(View.INVISIBLE);
             }
+            reSendMsg();
         }
     }
 
@@ -388,8 +398,30 @@ public class PlayerSettingMenu extends PopupWindow implements HorizontalEpisodeL
             player_episode.setTextColor(mContext.getResources().getColor(R.color._666666));
             setting.setTextColor(mContext.getResources().getColor(R.color._f0f0f0));
             menu_select.requestFocusFromTouch();
+            reSendMsg();
         }else if(keyCode==4){
+            menuHandler.removeMessages(1);
             dismiss();
+        }
+    }
+    private class MenuHandler extends Handler{
+        @Override
+        public void handleMessage(Message msg) {
+            if(msg.what==1){
+                dismiss();
+            }
+            super.handleMessage(msg);
+        }
+    }
+    public void sendMsg(){
+        if(menuHandler!=null) {
+            menuHandler.sendEmptyMessageDelayed(1, 10 * 1000);
+        }
+    }
+    private void reSendMsg(){
+        if(menuHandler!=null) {
+            menuHandler.removeMessages(1);
+            menuHandler.sendEmptyMessageDelayed(1, 10 * 1000);
         }
     }
 }

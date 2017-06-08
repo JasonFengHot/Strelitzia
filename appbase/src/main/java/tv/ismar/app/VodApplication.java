@@ -390,7 +390,7 @@ public class VodApplication extends Application {
             sn=IsmartvActivator.getInstance().getSnToken();
         }
         SkyService skyService=SkyService.ServiceManager.getService();
-        String url="http://wx.api.tvxio.com/weixin4server/uploadclientip";
+        String url="http://weixin.test.tvxio.com/Hibiscus/Hibiscus/uploadclientip";
         skyService.weixinIp(url, DeviceUtils.getLocalInetAddress().toString(),sn, Build.MODEL,DeviceUtils.getLocalMacAddress(this)).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<ResponseBody>() {
             @Override
