@@ -6,9 +6,12 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -21,8 +24,11 @@ import android.widget.PopupWindow;
 import java.util.Stack;
 
 import cn.ismartv.truetime.TrueTime;
+import okhttp3.ResponseBody;
 import retrofit2.adapter.rxjava.HttpException;
 import rx.Observer;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 import tv.ismar.account.IsmartvActivator;
 import tv.ismar.app.network.SkyService;
 import tv.ismar.app.player.OnNoNetConfirmListener;
@@ -37,6 +43,7 @@ import tv.ismar.app.widget.NoNetConnectDialog;
 import tv.ismar.app.widget.NoNetConnectWindow;
 import tv.ismar.app.widget.NoNetModuleMessagePop;
 import tv.ismar.app.widget.UpdatePopupWindow;
+import tv.ismar.library.util.DeviceUtils;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 import static tv.ismar.app.update.UpdateService.APP_UPDATE_ACTION;
@@ -104,7 +111,7 @@ public class BaseActivity extends AppCompatActivity {
         mSpeedCallaService = SkyService.ServiceManager.getSpeedCallaService();
         mLilyHostService = SkyService.ServiceManager.getLilyHostService();
         app_start_time = TrueTime.now().getTime();
-
+        reportIp();  //上报本机IP地址
         registerNoNetReceiver();
     }
 
@@ -574,5 +581,30 @@ public class BaseActivity extends AppCompatActivity {
 
         noNetConnectHandler.postDelayed(noNetConnectRunnable, 1000);
     }
+    private void reportIp(){
+        SharedPreferences sharedPreferences= PreferenceManager.getDefaultSharedPreferences(this);
+        String sn=sharedPreferences.getString("sn_token","");
+        if(sn==null){
+            sn=IsmartvActivator.getInstance().getSnToken();
+        }
+        SkyService skyService=SkyService.ServiceManager.getService();
+        String url="http://weixin.test.tvxio.com/Hibiscus/Hibiscus/uploadclientip";
+        skyService.weixinIp(url, DeviceUtils.getLocalInetAddress().toString(),sn, Build.MODEL,DeviceUtils.getLocalMacAddress(this)).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<ResponseBody>() {
+            @Override
+            public void onCompleted() {
 
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(ResponseBody responseBody) {
+
+            }
+        });
+    }
 }

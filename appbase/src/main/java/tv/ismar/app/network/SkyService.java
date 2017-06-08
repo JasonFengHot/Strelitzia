@@ -673,7 +673,7 @@ public interface SkyService {
     );
 
 
-    @GET("http://114.80.117.138:8099/Wheat/wheat/V3_0/SKY2/toq0/api/recommend/exits_play/")
+    @GET("http://sky.test.tvxio.com/wheat/v2_0/sky/tos0/api/recommend/exits_play/")
     Observable<PlayRecommend>apiPlayExitRecommend(
             @Query("sn") String sn,
             @Query("item_id") int item_id,
@@ -755,8 +755,8 @@ public interface SkyService {
             mSkyService = retrofit.create(SkyService.class);
 
             Retrofit adRetrofit = new Retrofit.Builder()
-                    .baseUrl(appendProtocol(domain[1]))
-                  //  .baseUrl("http://124.42.65.66:8082/")
+                  //  .baseUrl(appendProtocol(domain[1]))
+                    .baseUrl("http://124.42.65.66:8082/")
                     .addConverterFactory(GsonConverterFactory.create(gson))
                     .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                     .client(mClient)
