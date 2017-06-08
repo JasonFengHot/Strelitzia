@@ -25,6 +25,7 @@ import tv.ismar.app.network.SkyService;
 import tv.ismar.app.ui.adapter.OnItemClickListener;
 import tv.ismar.app.ui.adapter.OnItemFocusedListener;
 import tv.ismar.app.widget.MyRecyclerView;
+import tv.ismar.library.injectdb.util.Log;
 import tv.ismar.searchpage.utils.JasmineUtil;
 
 
@@ -48,6 +49,7 @@ public class PlayFinishedActivity extends BaseActivity implements View.OnClickLi
     private boolean hasHistory;
     private PlayFinishedAdapter playFinishedAdapter;
     private Subscription playExitSub;
+    private boolean error=false;
 
     @Override
         protected void onCreate(Bundle savedInstanceState) {
@@ -178,6 +180,8 @@ public class PlayFinishedActivity extends BaseActivity implements View.OnClickLi
                     } else {
                         pageIntent.toDetailPage(PlayFinishedActivity.this, Source.RELATED.getValue(), item.getPk());
                     }
+                    setResult(EXIT_PLAY);
+                    finish();
                 }
             }
         });

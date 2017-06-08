@@ -79,6 +79,7 @@ public class BaseActivity extends AppCompatActivity {
 
     private Handler updateAgainHandler;
     private Runnable updateAgainRunnable;
+    private static final int EXIT_PLAY=200;
 
     /**
      * 日志新加字段相关，定义为全局静态变量
@@ -226,6 +227,8 @@ public class BaseActivity extends AppCompatActivity {
             @Override
             public void onDismiss() {
                 if (!(act.contains("HomePageActivity") || act.contains("WordSearchActivity") || act.contains("FilmStar")||act.contains("UserCenterActivity"))) {
+                    if(act.contains("PlayFinishedActivity"))
+                        setResult(EXIT_PLAY);
                     finish();
                 }
             }
@@ -245,6 +248,8 @@ public class BaseActivity extends AppCompatActivity {
                         public void cancelClick(View view) {
                             netErrorPopWindow.dismiss();
                             if (!(act.contains("HomePageActivity") || act.contains("WordSearchActivity") || act.contains("FilmStar")||act.contains("UserCenterActivity"))) {
+                                if(act.contains("PlayFinishedActivity"))
+                                    setResult(EXIT_PLAY);
                                 finish();
                             }
                         }
