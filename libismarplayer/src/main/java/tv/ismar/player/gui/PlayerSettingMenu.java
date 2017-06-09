@@ -390,21 +390,24 @@ public class PlayerSettingMenu extends PopupWindow implements HorizontalEpisodeL
     @Override
     public void onKeyDown(View view, int keyCode, KeyEvent event) {
         if(keyCode==19){
-            list_layout.setVisibility(View.GONE);
-            menu_layout.setVisibility(View.VISIBLE);
-            menu_select.setVisibility(View.VISIBLE);
-            RelativeLayout.LayoutParams lp=new RelativeLayout.LayoutParams(mContext.getResources().getDimensionPixelSize(R.dimen.player_77),mContext.getResources().getDimensionPixelSize(R.dimen.player_52));
-            lp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM,RelativeLayout.TRUE);
-            lp.setMargins(mContext.getResources().getDimensionPixelSize(R.dimen.player_51),0,0,mContext.getResources().getDimensionPixelSize(R.dimen.player_41));
-            player_episode.setLayoutParams(lp);
-            player_episode.setTextColor(mContext.getResources().getColor(R.color._666666));
-            setting.setTextColor(mContext.getResources().getColor(R.color._f0f0f0));
-            menu_select.requestFocusFromTouch();
-            reSendMsg();
+            showQuality();
         }else if(keyCode==4){
             menuHandler.removeMessages(1);
             dismiss();
         }
+    }
+    public void showQuality(){
+        list_layout.setVisibility(View.GONE);
+        menu_layout.setVisibility(View.VISIBLE);
+        menu_select.setVisibility(View.VISIBLE);
+        RelativeLayout.LayoutParams lp=new RelativeLayout.LayoutParams(mContext.getResources().getDimensionPixelSize(R.dimen.player_77),mContext.getResources().getDimensionPixelSize(R.dimen.player_52));
+        lp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM,RelativeLayout.TRUE);
+        lp.setMargins(mContext.getResources().getDimensionPixelSize(R.dimen.player_51),0,0,mContext.getResources().getDimensionPixelSize(R.dimen.player_41));
+        player_episode.setLayoutParams(lp);
+        player_episode.setTextColor(mContext.getResources().getColor(R.color._666666));
+        setting.setTextColor(mContext.getResources().getColor(R.color._f0f0f0));
+        menu_select.requestFocusFromTouch();
+        reSendMsg();
     }
     private class MenuHandler extends Handler{
         @Override
