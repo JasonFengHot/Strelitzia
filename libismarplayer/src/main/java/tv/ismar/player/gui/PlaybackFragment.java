@@ -862,54 +862,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
                 if (mPlaybackService.isPlayingAd()) {
                     return true;
                 }
-//                if (!isMenuShow()) {
-//                    showMenu();
-//                }
-                if(settingMenu!=null){
-                    if(settingMenu.isShowing()){
-                        settingMenu.dismiss();
-                    }else{
-                        settingMenu.showAtLocation(parentView,Gravity.BOTTOM,0,0);
-                        new Handler().postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                settingMenu.sendMsg();
-                            }
-                        },1000);
-                    }
-                }else{
-                    ItemEntity[] subItems = mPlaybackService.getItemEntity().getSubitems();
-                    List<ItemEntity> list=new ArrayList<>();
-                    if(subItems!=null) {
-                        for (int i = 0; i < subItems.length; i++) {
-                            list.add(subItems[i]);
-                        }
-                    }
-                    ArrayList<QuailtyEntity> quailtyEntities=new ArrayList<>();
-                    int currentQuality=0;
-                    List<ClipEntity.Quality> qualities = mPlaybackService.getMediaPlayer().getQualities();
-                    if (qualities != null && !qualities.isEmpty()) {
-                        for (int i = 0; i < qualities.size(); i++) {
-                            ClipEntity.Quality quality = qualities.get(i);
-                            QuailtyEntity quailtyEntity=new QuailtyEntity();
-                            quailtyEntity.setName(ClipEntity.Quality.getString(quality));
-                            quailtyEntity.setValue(quality.getValue()+1);
-                            if (mPlaybackService.getMediaPlayer().getCurrentQuality() == quality) {
-                                currentQuality=i;
-                            }
-                            quailtyEntities.add(quailtyEntity);
-                        }
-                    }
-                    settingMenu=new PlayerSettingMenu(getActivity().getApplicationContext(),list,mPlaybackService.getSubItemPk(),this,quailtyEntities,currentQuality,this);
-                    settingMenu.showAtLocation(parentView,Gravity.BOTTOM,0,0);
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            settingMenu.sendMsg();
-                        }
-                    },1000);
-                }
-                hidePanel();
+                showMenu();
                 return true;
             case KeyEvent.KEYCODE_DPAD_DOWN:
                 // TODO 暂停广告按下消除
@@ -1301,16 +1254,56 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
             mCurrentPosition = 0;
         player_seekBar.setProgress(mCurrentPosition);
     }
-
+    private void createMenu(){
+            ItemEntity[] subItems = mPlaybackService.getItemEntity().getSubitems();
+            List<ItemEntity> list = new ArrayList<>();
+            if (subItems != null) {
+                for (int i = 0; i < subItems.length; i++) {
+                    list.add(subItems[i]);
+                }
+            }
+            ArrayList<QuailtyEntity> quailtyEntities = new ArrayList<>();
+            int currentQuality = 0;
+            List<ClipEntity.Quality> qualities = mPlaybackService.getMediaPlayer().getQualities();
+            if (qualities != null && !qualities.isEmpty()) {
+                for (int i = 0; i < qualities.size(); i++) {
+                    ClipEntity.Quality quality = qualities.get(i);
+                    QuailtyEntity quailtyEntity = new QuailtyEntity();
+                    quailtyEntity.setName(ClipEntity.Quality.getString(quality));
+                    quailtyEntity.setValue(quality.getValue() + 1);
+                    if (mPlaybackService.getMediaPlayer().getCurrentQuality() == quality) {
+                        currentQuality = i;
+                    }
+                    quailtyEntities.add(quailtyEntity);
+                }
+            }
+            settingMenu = new PlayerSettingMenu(getActivity().getApplicationContext(), list, mPlaybackService.getSubItemPk(), this, quailtyEntities, currentQuality, this);
+            settingMenu.showAtLocation(parentView, Gravity.BOTTOM, 0, 0);
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    settingMenu.sendMsg();
+                }
+            }, 1000);
+    }
 
     private void showMenu() {
         if (mIsExiting || !canShowMenuOrPannel || mPlaybackService == null || mPlaybackService.getMediaPlayer() == null) {
             return;
         }
-        if (!isMenuShow()) {
+        if(settingMenu!=null){
             if (isPanelShow()) {
                 hidePanel();
             }
+            settingMenu.showAtLocation(parentView,Gravity.BOTTOM,0,0);
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                        settingMenu.sendMsg();
+                    }
+            },1000);
+        }else{
+            createMenu();
         }
     }
 
