@@ -255,7 +255,7 @@ public class PlayerSettingMenu extends PopupWindow implements HorizontalEpisodeL
             return false;
         }
     };
-
+    View view;
     @Override
     public void onFocus(View v, int pos, boolean hasfocus) {
         if(hasfocus) {
@@ -288,6 +288,8 @@ public class PlayerSettingMenu extends PopupWindow implements HorizontalEpisodeL
                  bottom_shape.setVisibility(View.VISIBLE);
              }
             reSendMsg();
+        }else{
+            view=v;
         }
     }
 
@@ -322,7 +324,7 @@ public class PlayerSettingMenu extends PopupWindow implements HorizontalEpisodeL
                     menu_list.getChildAt(1).requestFocusFromTouch();
                 }
             }
-        },200);
+        },50);
     }
 
     @Override

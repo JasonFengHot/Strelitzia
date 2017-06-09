@@ -107,7 +107,6 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
     private PlayerSettingMenu settingMenu;
     private View parentView;
     private SeekBar player_seekBar;
-    private PlayerMenu playerMenu;
     private ImageView player_logo_image;
     private TextView ad_count_text, ad_vip_text;
     private View ad_vip_layout;
@@ -728,17 +727,17 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
                                 if (nextItem != null && nextItem.getClip() != null) {
                                     mPlaybackService.logVideoExit(mCurrentPosition, "next");
                                     // 菜单栏剧集切换
-                                    createMenu();
-                                    PlayerMenuItem menuItem = playerMenu.findItem(mPlaybackService.getSubItemPk());
-                                    if (menuItem != null) {
-                                        menuItem.selected = false;
-                                    }
+                                  //  createMenu();
+                                  //  PlayerMenuItem menuItem = playerMenu.findItem(mPlaybackService.getSubItemPk());
+//                                    if (menuItem != null) {
+//                                        menuItem.selected = false;
+//                                    }
                                     mPlaybackService.getItemEntity().setTitle(nextItem.getTitle());
                                     mPlaybackService.getItemEntity().setClip(nextItem.getClip());
-                                    PlayerMenuItem nextMenuItem = playerMenu.findItem(mPlaybackService.getSubItemPk());
-                                    if (nextMenuItem != null) {
-                                        nextMenuItem.selected = true;
-                                    }
+//                                    PlayerMenuItem nextMenuItem = playerMenu.findItem(mPlaybackService.getSubItemPk());
+//                                    if (nextMenuItem != null) {
+//                                        nextMenuItem.selected = true;
+//                                    }
                                     mPlaybackService.stopPlayer(false);
                                     showBuffer(PlAYSTART + mPlaybackService.getItemEntity().getTitle());
                                     mPlaybackService.switchTelevision(mCurrentPosition, nextItem.getPk(), nextItem.getClip().getUrl());
@@ -1303,55 +1302,6 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
         player_seekBar.setProgress(mCurrentPosition);
     }
 
-    private boolean createMenu() {
-        if (mPlaybackService == null || mPlaybackService.getMediaPlayer() == null) {
-            return true;
-        }
-        if (playerMenu == null) {
-            playerMenu = new PlayerMenu(getActivity(), player_menu);
-            playerMenu.setOnCreateMenuListener(this);
-            // 添加电视剧子集
-            PlayerMenuItem subMenu;
-            ItemEntity[] subItems = mPlaybackService.getItemEntity().getSubitems();
-            if (subItems != null && subItems.length > 0 && !mPlaybackService.isPreview()) {
-                subMenu = playerMenu.addSubMenu(MENU_TELEPLAY_ID_START, getResources().getString(R.string.player_menu_teleplay));
-                for (ItemEntity subItem : subItems) {
-                    boolean isSelected = false;
-                    if (mPlaybackService.getSubItemPk() == subItem.getPk()) {
-                        isSelected = true;
-                    }
-                    String subItemTitle = subItem.getTitle();
-                    if (subItemTitle.contains("第")) {
-                        int ind = subItemTitle.indexOf("第");
-                        subItemTitle = subItemTitle.substring(ind);
-                    }
-                    subMenu.addItem(subItem.getPk(), subItemTitle, isSelected);
-                }
-            }
-            // 添加分辨率
-            subMenu = playerMenu.addSubMenu(MENU_QUALITY_ID_START, getResources().getString(R.string.player_menu_quality));
-            List<ClipEntity.Quality> qualities = mPlaybackService.getMediaPlayer().getQualities();
-            if (qualities != null && !qualities.isEmpty()) {
-                for (int i = 0; i < qualities.size(); i++) {
-                    ClipEntity.Quality quality = qualities.get(i);
-                    String qualityName = ClipEntity.Quality.getString(quality);
-                    boolean isSelected = false;
-                    if (mPlaybackService.getMediaPlayer().getCurrentQuality() == quality) {
-                        isSelected = true;
-                    }
-                    // quality id从0开始,此处加1
-                    subMenu.addItem(quality.getValue() + 1, qualityName, isSelected);
-                }
-            }
-            // 添加客服
-            playerMenu.addItem(MENU_KEFU_ID, getResources().getString(R.string.player_menu_kefu));
-            // 添加从头播放
-            if (mPlaybackService.getItemEntity() != null && !mPlaybackService.getItemEntity().getLiveVideo()) {
-                playerMenu.addItem(MENU_RESTART, getResources().getString(R.string.player_menu_restart));
-            }
-        }
-        return true;
-    }
 
     private void showMenu() {
         if (mIsExiting || !canShowMenuOrPannel || mPlaybackService == null || mPlaybackService.getMediaPlayer() == null) {
@@ -1361,22 +1311,20 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
             if (isPanelShow()) {
                 hidePanel();
             }
-            createMenu();
-            playerMenu.show();
         }
     }
 
     private void hideMenu() {
         if (isMenuShow()) {
-            playerMenu.hide();
+            settingMenu.dismiss();
         }
     }
 
     public boolean isMenuShow() {
-        if (playerMenu == null) {
+        if (settingMenu == null) {
             return false;
         }
-        return playerMenu.isVisible();
+        return settingMenu.isShowing();
     }
 
     public void showPannelDelayOut() {
@@ -1524,14 +1472,14 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
                                 if (isPanelShow()) {
                                     hidePanel();
                                 }
-                                createMenu();
+                              //  createMenu();
                                 ItemEntity[] subItems = mPlaybackService.getItemEntity().getSubitems();
                                 if (subItems != null && subItems.length > 0 && !mPlaybackService.isPreview()) {
                                     // 电视剧
-                                    playerMenu.showQuality(1);
+                                //    playerMenu.showQuality(1);
                                 } else {
                                     // 电影
-                                    playerMenu.showQuality(0);
+                                //    playerMenu.showQuality(0);
                                 }
                             }
                         } else {

@@ -420,7 +420,6 @@ public class Advertisement {
                 JSONArray monitor=element.getJSONArray("monitor");
                 if(monitor.length()>0) {
                     JSONObject child = monitor.getJSONObject(0);
-                    Log.i("ADSMon",monitor.length()+"");
                     String monitor_url=child.optString("monitor_url");
                     Log.i("ADSMon",monitor_url+"");
                     repostAdLog(monitor_url);
