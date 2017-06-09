@@ -428,7 +428,7 @@ public class QiyiPlayer extends IsmartvPlayer {
             } else {
                 PlayerEvent.videoPlayBlockend(
                         logPlayerEvent,
-                        0, getCurrentPosition(),
+                        0, (DateUtils.currentTimeMillis() - logBufferStartTime),
                         "", logPlayerFlag);
             }
         }

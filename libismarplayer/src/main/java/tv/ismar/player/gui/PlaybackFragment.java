@@ -222,30 +222,45 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
     public void onPause() {
         super.onPause();
         LogUtils.i(TAG, "onPause > setup : " + sharpSetupKeyClick + " sdcard : " + mounted);
-        if (sharpSetupKeyClick || mounted) {
-            sharpSetupKeyClick = false;
-            mounted = false;
-            return;
-        }
-        if (mPlaybackService != null && !mPlaybackService.isPlayerStopping()&&!backpress) {
-            // 不能放在onStop()中，SmartPlayer在该生命周期中调用会有onError回调产生
-            mPlaybackService.stopPlayer(false);
-        }
+//        if (sharpSetupKeyClick || mounted) {
+//            sharpSetupKeyClick = false;
+//            mounted = false;
+//            return;
+//        }
+//        if (mPlaybackService != null && !mPlaybackService.isPlayerStopping()&&!backpress) {
+//            // 不能放在onStop()中，SmartPlayer在该生命周期中调用会有onError回调产生
+//            mPlaybackService.stopPlayer(false);
+//        }
         // handler消息需要立即删除，广告请求停止
-        mHandler.removeCallbacksAndMessages(null);
+//        mHandler.removeCallbacksAndMessages(null);
 //        mPlaybackService.addHistory(mCurrentPosition, true);
-        if (mAdvertisement != null) {
-            mAdvertisement.stopSubscription();
-        }
+//        if (mAdvertisement != null) {
+//            mAdvertisement.stopSubscription();
+//        }
     }
 
     @Override
     public void onStop() {
         super.onStop();
         LogUtils.i(TAG, "onStop > setup : " + sharpSetupKeyClick + " sdcard : " + mounted);
+//        if (sharpSetupKeyClick || mounted) {r
+//            sharpSetupKeyClick = false;
+//            mounted = false;
+//            return;
+//        }
+        if (mPlaybackService != null && !mPlaybackService.isPlayerStopping()&&!backpress) {
+            mPlaybackService.stopPlayer(true);
+        }
+        if (mPlaybackService != null) {
+            mPlaybackService.setCallback(null);
+            mPlaybackService.addHistory(mCurrentPosition, false);// 在非按返回键退出应用时需添加历史记录，此时无需发送至服务器，addHistory不能统一写到此处
+        }
+        mHandler.removeCallbacksAndMessages(null);
+
         unregisterConnectionReceiver();
         unRegisterClosePlayerReceiver();
         if (mAdvertisement != null) {
+            mAdvertisement.stopSubscription();
             mAdvertisement.setOnPauseVideoAdListener(null);
         }
         if (isPopWindowShow()) {
@@ -254,7 +269,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
             popDialog = null;
         }
         mClient.disconnect();
-        mPlaybackService.setCallback(null);
+
     }
 
     @Override

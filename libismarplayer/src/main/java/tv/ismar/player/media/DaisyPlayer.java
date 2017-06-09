@@ -396,7 +396,7 @@ public class DaisyPlayer extends IsmartvPlayer implements SurfaceHelper.SurfaceC
                     } else {
                         PlayerEvent.videoPlayBlockend(
                                 logPlayerEvent,
-                                logSpeed, getCurrentPosition(),
+                                logSpeed, (DateUtils.currentTimeMillis() - logBufferStartTime),
                                 logMediaIp, logPlayerFlag);
                     }
                     break;
