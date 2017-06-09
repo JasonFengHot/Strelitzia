@@ -874,7 +874,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
                 if (mPlaybackService.isPlayingAd()) {
                     return true;
                 }
-                showMenu();
+                showMenu(1);
                 return true;
             case KeyEvent.KEYCODE_DPAD_DOWN:
                 // TODO 暂停广告按下消除
@@ -1290,7 +1290,6 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
                 }
             }
             settingMenu = new PlayerSettingMenu(getActivity().getApplicationContext(), list, mPlaybackService.getSubItemPk(), this, quailtyEntities, currentQuality, this);
-            settingMenu.showAtLocation(parentView, Gravity.BOTTOM, 0, 0);
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
@@ -1299,24 +1298,26 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
             }, 1000);
     }
 
-    private void showMenu() {
+    private void showMenu(int type) {
         if (mIsExiting || !canShowMenuOrPannel || mPlaybackService == null || mPlaybackService.getMediaPlayer() == null) {
             return;
         }
-        if(settingMenu!=null){
-            if (isPanelShow()) {
-                hidePanel();
-            }
-            settingMenu.showAtLocation(parentView,Gravity.BOTTOM,0,0);
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                        settingMenu.sendMsg();
-                    }
-            },1000);
-        }else{
+        if(settingMenu==null){
             createMenu();
         }
+        if (isPanelShow()) {
+            hidePanel();
+        }
+        if(type==1){
+            settingMenu.showQuality();
+        }
+        settingMenu.showAtLocation(parentView,Gravity.BOTTOM,0,0);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                settingMenu.sendMsg();
+            }
+        },1000);
     }
 
     private void hideMenu() {
