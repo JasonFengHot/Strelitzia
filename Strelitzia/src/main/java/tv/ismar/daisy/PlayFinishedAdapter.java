@@ -95,11 +95,10 @@ public class PlayFinishedAdapter extends RecyclerView.Adapter<PlayFinishedAdapte
 
 			}
 		}
-		if(firstIn&&position==0){
-			firstIn=false;
-			holder.itemView.requestFocus();
-			holder.itemView.requestFocusFromTouch();
-		}
+//		if(firstIn&&position==0){
+//			firstIn=false;
+//			holder.itemView.requestFocus();
+//		}
 	}
 
 		@Override

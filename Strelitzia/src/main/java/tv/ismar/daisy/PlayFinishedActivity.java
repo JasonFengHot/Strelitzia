@@ -1,8 +1,10 @@
 package tv.ismar.daisy;
 
-import android.content.BroadcastReceiver;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.text.TextUtils;
 import android.view.View;
@@ -26,7 +28,6 @@ import tv.ismar.app.network.SkyService;
 import tv.ismar.app.ui.adapter.OnItemClickListener;
 import tv.ismar.app.ui.adapter.OnItemFocusedListener;
 import tv.ismar.app.widget.MyRecyclerView;
-import tv.ismar.library.injectdb.util.Log;
 import tv.ismar.searchpage.utils.JasmineUtil;
 
 
@@ -50,7 +51,20 @@ public class PlayFinishedActivity extends BaseActivity implements View.OnClickLi
     private boolean hasHistory;
     private PlayFinishedAdapter playFinishedAdapter;
     private Subscription playExitSub;
-    private boolean exitPlay=false;
+
+    private Handler handler=new Handler(new Handler.Callback() {
+        @Override
+        public boolean handleMessage(Message msg) {
+            if(isVertical){
+                if(play_finished_vertical_recylerview.getChildAt(0)!=null)
+                play_finished_vertical_recylerview.getChildAt(0).requestFocus();
+            }else{
+                if(play_finished_horizontal_recylerview.getChildAt(0)!=null)
+                    play_finished_horizontal_recylerview.getChildAt(0).requestFocus();
+            }
+            return false;
+        }
+    });
 
     @Override
         protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +79,11 @@ public class PlayFinishedActivity extends BaseActivity implements View.OnClickLi
         initData();
     }
 
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        handler.sendEmptyMessageDelayed(0,50);
+    }
 
     private void initView() {
                 play_finished_title = (TextView) findViewById(R.id.play_finished_title);
