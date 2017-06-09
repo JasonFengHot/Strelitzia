@@ -420,9 +420,12 @@ public class Advertisement {
                 JSONArray monitor=element.getJSONArray("monitor");
                 if(monitor.length()>0) {
                     JSONObject child = monitor.getJSONObject(0);
+                    JSONObject child2=monitor.getJSONObject(1);
                     String monitor_url=child.optString("monitor_url");
+                    String monitor2_url=child2.optString("monitor_url");
                     Log.i("ADSMon",monitor_url+"");
                     repostAdLog(monitor_url);
+                    repostAdLog(monitor2_url);
                 }
             }
         } catch (JSONException e) {
