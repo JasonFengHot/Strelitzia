@@ -327,6 +327,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
                 // 在没有登录的情况下，试看影片，成功购买后，继续上次播放，数据库更新为异步操作
                 mPlaybackService.successBuyVideo = true;
                 mPlaybackService.preparePlayer(extraItemPk, extraSubItemPk, extraSource);
+                settingMenu=null;
             } else {
                 // 没有购买，退出播放器
                 closeActivity("finish");
@@ -874,7 +875,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
                 if (mPlaybackService.isPlayingAd()) {
                     return true;
                 }
-                showMenu(1);
+                showMenu(0);
                 return true;
             case KeyEvent.KEYCODE_DPAD_DOWN:
                 // TODO 暂停广告按下消除
@@ -1267,13 +1268,15 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
         player_seekBar.setProgress(mCurrentPosition);
     }
     private void createMenu(){
+        List<ItemEntity> list = new ArrayList<>();
+        if(!mPlaybackService.isPreview()) {
             ItemEntity[] subItems = mPlaybackService.getItemEntity().getSubitems();
-            List<ItemEntity> list = new ArrayList<>();
             if (subItems != null) {
                 for (int i = 0; i < subItems.length; i++) {
                     list.add(subItems[i]);
                 }
             }
+        }
             ArrayList<QuailtyEntity> quailtyEntities = new ArrayList<>();
             int currentQuality = 0;
             List<ClipEntity.Quality> qualities = mPlaybackService.getMediaPlayer().getQualities();
@@ -1483,9 +1486,11 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
                                 if (subItems != null && subItems.length > 0 && !mPlaybackService.isPreview()) {
                                     // 电视剧
                                 //    playerMenu.showQuality(1);
+                                    showMenu(1);
                                 } else {
                                     // 电影
                                 //    playerMenu.showQuality(0);
+                                    showMenu(1);
                                 }
                             }
                         } else {
