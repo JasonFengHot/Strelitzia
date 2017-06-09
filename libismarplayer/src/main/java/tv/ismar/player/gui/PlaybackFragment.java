@@ -302,10 +302,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
             closeActivity("source");
             return;
         }
-        String deviceToken = IsmartvActivator.getInstance().getDeviceToken();
-        String authToken = IsmartvActivator.getInstance().getAuthToken();
-        HttpManager.getInstance().setAccessToken(authToken);
-        HttpManager.getInstance().init(IsmartvActivator.getInstance().getApiDomain(), IsmartvActivator.getInstance().getUpgradeDomain(), deviceToken);
+        mPlaybackService.initUserInfo();
         if (requestCode == PAYMENT_REQUEST_CODE) {
             if (resultCode == PAYMENT_SUCCESS_CODE) {
                 // 成功购买后继续播放

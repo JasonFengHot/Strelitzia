@@ -29,4 +29,5 @@ dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile project(':appbase')
     compile project(':listpage')
+    compile project(':libismarplayer')
 }

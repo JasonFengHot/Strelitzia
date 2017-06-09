@@ -80,7 +80,6 @@ dependencies {
     compile project(':homepage')
     compile project(':searchpage')
     compile project(':subject')
-    compile project(':libismarplayer')
     compile project(path: ':appbase')
 }
 tasks.withType(JavaCompile) {

@@ -54,6 +54,7 @@ public class DetailPageActivity extends BaseActivity implements PlaybackService.
     private Subscription apiClipSubsc;// 需要知道当前是视云还是爱奇艺影片，只有是视云影片才加载播放器
     private HistoryManager historyManager;// 多集影片，需要查询历史记录，历史剧集的片源
     private History mHistory;
+    private boolean goPlayPage;// 是否点击播放，非点击播放，需要将当前预加载停止
 
     private Subscription apiItemSubsc;
     private String source;
@@ -126,6 +127,7 @@ public class DetailPageActivity extends BaseActivity implements PlaybackService.
     }
 
     public void goPlayer() {
+        goPlayPage = true;
         Intent intent = new Intent();
         intent.setAction("tv.ismar.daisy.Player");
         intent.putExtra(PageIntentInterface.EXTRA_PK, mItemEntity.getPk());
@@ -297,6 +299,7 @@ public class DetailPageActivity extends BaseActivity implements PlaybackService.
         super.onResume();
         AppConstant.purchase_referer = "video";
         AppConstant.purchase_page = "detail";
+        goPlayPage = false;
 
     }
 
@@ -321,15 +324,18 @@ public class DetailPageActivity extends BaseActivity implements PlaybackService.
 
     @Override
     public void onDisconnected() {
+        LogUtils.e(TAG, "service disconnected : " + goPlayPage);
+        if (!goPlayPage) {
+            if (mPlaybackService != null) {
+                mPlaybackService.stopPlayer(false);
+            }
+        }
         mPlaybackService = null;
     }
 
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        if (mPlaybackService != null) {
-            mPlaybackService.stopPlayer(false);
-        }
         if (mPackageDetailFragment != null) {
             mPackageDetailFragment.onActivityBackPressed();
         }
