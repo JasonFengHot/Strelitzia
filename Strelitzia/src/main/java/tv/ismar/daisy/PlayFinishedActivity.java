@@ -4,9 +4,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RelativeLayout;
@@ -51,20 +51,8 @@ public class PlayFinishedActivity extends BaseActivity implements View.OnClickLi
     private boolean hasHistory;
     private PlayFinishedAdapter playFinishedAdapter;
     private Subscription playExitSub;
+    private boolean isFirstIn=true;
 
-    private Handler handler=new Handler(new Handler.Callback() {
-        @Override
-        public boolean handleMessage(Message msg) {
-            if(isVertical){
-                if(play_finished_vertical_recylerview.getChildAt(0)!=null)
-                play_finished_vertical_recylerview.getChildAt(0).requestFocus();
-            }else{
-                if(play_finished_horizontal_recylerview.getChildAt(0)!=null)
-                    play_finished_horizontal_recylerview.getChildAt(0).requestFocus();
-            }
-            return false;
-        }
-    });
 
     @Override
         protected void onCreate(Bundle savedInstanceState) {
@@ -79,11 +67,6 @@ public class PlayFinishedActivity extends BaseActivity implements View.OnClickLi
         initData();
     }
 
-    @Override
-    public void onWindowFocusChanged(boolean hasFocus) {
-        super.onWindowFocusChanged(hasFocus);
-        handler.sendEmptyMessageDelayed(0,50);
-    }
 
     private void initView() {
                 play_finished_title = (TextView) findViewById(R.id.play_finished_title);
@@ -177,10 +160,12 @@ public class PlayFinishedActivity extends BaseActivity implements View.OnClickLi
     private void setOrientation(boolean Vertical) {
         if(Vertical){
             play_finished_vertical_recylerview.setVisibility(View.VISIBLE);
+            vertical_poster_focus.setVisibility(View.VISIBLE);
             play_finished_vertical_recylerview.setLayoutManager(new StaggeredGridLayoutManager(1,StaggeredGridLayoutManager.HORIZONTAL));
             isVertical=true;
         }else{
             play_finished_horizontal_recylerview.setVisibility(View.VISIBLE);
+            horizontal_poster_focus.setVisibility(View.VISIBLE);
             play_finished_horizontal_recylerview.setLayoutManager(new StaggeredGridLayoutManager(1,StaggeredGridLayoutManager.HORIZONTAL));
             isVertical=false;
         }
@@ -188,6 +173,11 @@ public class PlayFinishedActivity extends BaseActivity implements View.OnClickLi
 
     private void processData(final ArrayList<PlayfinishedRecommend.RecommendItem> list) {
         playFinishedAdapter = new PlayFinishedAdapter(this,list,isVertical);
+        if(isVertical){
+            play_finished_vertical_recylerview.setAdapter(playFinishedAdapter);
+        }else{
+            play_finished_horizontal_recylerview.setAdapter(playFinishedAdapter);
+        }
         playFinishedAdapter.setItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
@@ -236,7 +226,11 @@ public class PlayFinishedActivity extends BaseActivity implements View.OnClickLi
                         }else{
                             params.leftMargin=getResources().getDimensionPixelOffset(R.dimen.scroll_732);
                         }
-                        vertical_poster_focus.setLayoutParams(params);
+                        if(isFirstIn) {
+                            isFirstIn = false;
+                        }else{
+                            vertical_poster_focus.setLayoutParams(params);
+                        }
                         vertical_poster_focus.setVisibility(View.VISIBLE);
                         view.findViewById(R.id.item_vertical_poster_title).setSelected(true);
                         focusedPosition=position;
@@ -273,7 +267,11 @@ public class PlayFinishedActivity extends BaseActivity implements View.OnClickLi
                         }else{
                             params.leftMargin=getResources().getDimensionPixelOffset(R.dimen.scroll_665);
                         }
-                        horizontal_poster_focus.setLayoutParams(params);
+                        if(isFirstIn) {
+                            isFirstIn = false;
+                        }else{
+                            horizontal_poster_focus.setLayoutParams(params);
+                        }
                         horizontal_poster_focus.setVisibility(View.VISIBLE);
                         focusedPosition=position;
                         JasmineUtil.scaleOut3(view);
@@ -284,11 +282,6 @@ public class PlayFinishedActivity extends BaseActivity implements View.OnClickLi
                 }
             }
         });
-        if(isVertical){
-            play_finished_vertical_recylerview.setAdapter(playFinishedAdapter);
-        }else{
-            play_finished_horizontal_recylerview.setAdapter(playFinishedAdapter);
-        }
     }
 
     @Override
