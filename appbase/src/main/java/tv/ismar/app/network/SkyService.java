@@ -3,7 +3,6 @@ package tv.ismar.app.network;
 import android.net.Uri;
 import android.util.Log;
 
-import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializationContext;
@@ -31,9 +30,9 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
 import okhttp3.Cache;
+import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.ResponseBody;
-import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
@@ -46,15 +45,19 @@ import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.Headers;
+import retrofit2.http.Multipart;
 import retrofit2.http.POST;
+import retrofit2.http.Part;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 import retrofit2.http.Streaming;
 import retrofit2.http.Url;
 import rx.Observable;
+import tv.ismar.account.HttpLoggingInterceptor;
 import tv.ismar.app.VodApplication;
 import tv.ismar.app.core.OfflineCheckManager;
 import tv.ismar.app.entity.ChannelEntity;
+import tv.ismar.app.entity.ClipEntity;
 import tv.ismar.app.entity.HomePagerEntity;
 import tv.ismar.app.entity.Item;
 import tv.ismar.app.entity.ItemList;
@@ -81,7 +84,6 @@ import tv.ismar.app.network.entity.ActiveEntity;
 import tv.ismar.app.network.entity.AgreementEntity;
 import tv.ismar.app.network.entity.BindedCdnEntity;
 import tv.ismar.app.network.entity.ChatMsgEntity;
-import tv.ismar.app.entity.ClipEntity;
 import tv.ismar.app.network.entity.DpiEntity;
 import tv.ismar.app.network.entity.Empty;
 import tv.ismar.app.network.entity.GoodsRenewStatusEntity;
@@ -659,27 +661,37 @@ public interface SkyService {
             @Query("item_id") int pk,
             @Query("type") String type
     );
+
     @GET
-    Observable<ResponseBody>repostAdLog(
+    Observable<ResponseBody> repostAdLog(
             @Url String url
     );
+
     @GET
-    Observable<ResponseBody>weixinIp(
+    Observable<ResponseBody> weixinIp(
             @Url String url,
             @Query("client_ip") String ip,
             @Query("sn") String sn,
             @Query("tvmode") String tvmode,
-            @Query ("macaddress") String macaddress
+            @Query("macaddress") String macaddress
     );
 
 
     @GET("http://sky.test.tvxio.com/wheat/v2_0/sky/tos0/api/recommend/exits_play/")
-    Observable<PlayRecommend>apiPlayExitRecommend(
+    Observable<PlayRecommend> apiPlayExitRecommend(
             @Query("sn") String sn,
             @Query("item_id") int item_id,
             @Query("channel") String channel,
             @Query("play_scale") int play_scale
     );
+
+    @POST("http://elderberry.test.tvxio.com/Elderberry/client/uploadLog")
+    Observable<ResponseBody> uploadLog(
+            @Part MultipartBody.Part parameters,
+            @Part MultipartBody.Part data
+    );
+
+
     class ServiceManager {
         private volatile static ServiceManager serviceManager;
         private static final int DEFAULT_CONNECT_TIMEOUT = 6;
@@ -755,7 +767,7 @@ public interface SkyService {
             mSkyService = retrofit.create(SkyService.class);
 
             Retrofit adRetrofit = new Retrofit.Builder()
-                  //  .baseUrl(appendProtocol(domain[1]))
+                    //  .baseUrl(appendProtocol(domain[1]))
                     .baseUrl("http://124.42.65.66:8082/")
                     .addConverterFactory(GsonConverterFactory.create(gson))
                     .addCallAdapterFactory(RxJavaCallAdapterFactory.create())

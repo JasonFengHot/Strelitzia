@@ -30,13 +30,9 @@ import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
 import okhttp3.ResponseBody;
-import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-import rx.Observer;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 import tv.ismar.account.core.Md5;
 import tv.ismar.account.core.http.HttpService;
 import tv.ismar.account.core.rsa.RSACoder;
@@ -109,6 +105,20 @@ public class IsmartvActivator {
 
     private IsmartvActivator() {
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
+        mSharedPreferences.registerOnSharedPreferenceChangeListener(new SharedPreferences.OnSharedPreferenceChangeListener() {
+            @Override
+            public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+                switch (key){
+                    case "ip":
+                        C.ip = sharedPreferences.getString("ip", "");
+                        break;
+                    case "sn_token":
+                        C.snToken = sharedPreferences.getString("sn_token", "");
+                        break;
+                }
+            }
+        });
+
         manufacture = Build.BRAND.replace(" ", "_");
         kind = Build.PRODUCT.replaceAll(" ", "_").toLowerCase();
         version = String.valueOf(getAppVersionCode());

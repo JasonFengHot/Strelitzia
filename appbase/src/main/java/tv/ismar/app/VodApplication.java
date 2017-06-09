@@ -36,12 +36,14 @@ import okhttp3.ResponseBody;
 import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+import tv.ismar.account.C;
 import tv.ismar.account.HttpParamsInterceptor;
 import tv.ismar.account.IsmartvActivator;
+import tv.ismar.account.statistics.LogEntity;
+import tv.ismar.account.statistics.LogQueue;
 import tv.ismar.app.core.ImageCache;
 import tv.ismar.app.core.InitializeProcess;
 import tv.ismar.app.core.SimpleRestClient;
-import tv.ismar.app.core.cache.CacheManager;
 import tv.ismar.app.core.client.MessageQueue;
 import tv.ismar.app.core.preferences.AccountSharedPrefs;
 import tv.ismar.app.db.DBHelper;
@@ -50,6 +52,7 @@ import tv.ismar.app.db.HistoryManager;
 import tv.ismar.app.db.LocalFavoriteManager;
 import tv.ismar.app.db.LocalHistoryManager;
 import tv.ismar.app.entity.ContentModel;
+import tv.ismar.app.exception.CrashHandler;
 import tv.ismar.app.network.HttpCacheInterceptor;
 import tv.ismar.app.network.SkyService;
 import tv.ismar.app.service.HttpProxyService;
@@ -85,8 +88,8 @@ public class VodApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-//        CrashHandler crashHandler = CrashHandler.getInstance();
-//        crashHandler.init(getApplicationContext());
+        CrashHandler crashHandler = CrashHandler.getInstance();
+        crashHandler.init();
         Log.i("LH/", "applicationOnCreate:" + TrueTime.now().getTime());
         initLogger();
         SPUtils.init(this);
@@ -117,14 +120,30 @@ public class VodApplication extends Application {
         Intent ootStartIntent = new Intent(this, HttpProxyService.class);
         this.startService(ootStartIntent);
         reportIp();
+        initLogCallback();
+        initConstants();
+    }
+
+    private void initLogCallback() {
         Parse.iCallLog = new ICallLog() {
             @Override
             public void addParseError(String json, String msg) throws Exception {
-                Log.d(TAG,"日志输出：内容：" + json + ", 异常：" + msg);
+                Log.e(TAG, "日志输出：内容：" + json + ", 异常：" + msg);
+                LogEntity logEntity = new LogEntity("gson_error");
+                LogEntity.LogContent logContent = new LogEntity.LogContent();
+                logContent.setError_source(json);
+                logContent.setError_info(msg);
+                logEntity.setLog_content(logContent);
+                LogQueue.getInstance().put(logEntity);
             }
         };
     }
 
+    private void initConstants() {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        C.snToken = sharedPreferences.getString("sn_token", "");
+        C.ip = sharedPreferences.getString("ip", "");
+    }
 
     public SharedPreferences getPreferences() {
         return mPreferences;

@@ -6,4 +6,9 @@ package tv.ismar.account;
 
 public class C {
     public static long SMART_POST_NEXT_REQUEST_TIME = 30 * 1000;
+
+    public static String snToken;
+    public static String ip;
+
+
 }
