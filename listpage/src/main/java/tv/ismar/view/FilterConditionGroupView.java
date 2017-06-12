@@ -5,6 +5,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -151,14 +152,12 @@ public class FilterConditionGroupView extends LinearLayout implements View.OnHov
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
                 if(isFirst) {
+                    Log.e("onscroll",recyclerView.getChildCount()+"&"+values.size());
                     if (recyclerView.getChildCount() < values.size()) {
                         filter_condition_group_arrow_right.setVisibility(View.VISIBLE);
                     } else {
                         filter_condition_group_arrow_right.setVisibility(View.INVISIBLE);
                     }
-                    recyclerView.getChildAt(0).callOnClick();
-                    recyclerView.getChildAt(0).requestFocus();
-                    recyclerView.getChildAt(0).requestFocusFromTouch();
                     isFirst=false;
                 }
             }
