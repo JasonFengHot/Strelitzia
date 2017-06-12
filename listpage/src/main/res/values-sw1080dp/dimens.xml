@@ -338,7 +338,7 @@
     <dimen name="filter_layout_current_tab_arrow_ml">-3dp</dimen>
     <dimen name="filter_layout_current_tab_arrow_mt">109dp</dimen>
     <dimen name="filter_layout_poster_recyclerview_mt">88dp</dimen>
-    <dimen name="filter_layout_poster_recyclerview_ml">6dp</dimen>
+    <dimen name="filter_layout_poster_recyclerview_ml">5dp</dimen>
     <dimen name="filter_layout_poster_recyclerview_mr">102dp</dimen>
     <dimen name="filter_layout_filter_checked_conditiion_h">76dp</dimen>
     <dimen name="filter_layout_filter_checked_conditiion_pt">33dp</dimen>
@@ -386,8 +386,7 @@
 
     <!--filter_item_vertical_poster-->
     <dimen name="filter_item_vertical_poster_padding">-22dp</dimen>
-    <dimen name="filter_item_vertical_poster_mb">15dp</dimen>
-    <dimen name="filter_item_vertical_poster_mr">1dp</dimen>
+    <dimen name="filter_item_vertical_poster_mb">16dp</dimen>
     <dimen name="item_vertical_poster_img_w">243dp</dimen>
     <dimen name="item_vertical_poster_img_h">340dp</dimen>
     <dimen name="item_vertical_poster_vip_w">109dp</dimen>
@@ -402,8 +401,8 @@
 
     <!--filter_item_horizontal_poster-->
     <dimen name="filter_item_horizontal_poster_padding">-22dp</dimen>
-    <dimen name="filter_item_horizontal_poster_mr">9dp</dimen>
-    <dimen name="filter_item_horizontal_poster_mb">18dp</dimen>
+    <dimen name="filter_item_horizontal_poster_mr">2dp</dimen>
+    <dimen name="filter_item_horizontal_poster_mb">16dp</dimen>
     <dimen name="item_horizontal_poster_img_w">432dp</dimen>
     <dimen name="item_horizontal_poster_img_h">243dp</dimen>
     <dimen name="item_horizontal_poster_vip_w">109dp</dimen>
@@ -421,8 +420,8 @@
 
     <!--incode-->
     <dimen name="filter_condition_radio_mr">44dp</dimen>
-    <dimen name="vertical_recycler_padding_bottom">70dp</dimen>
-    <dimen name="horizontal_recycler_padding_bottom">298dp</dimen>
+    <dimen name="vertical_recycler_padding_bottom">65dp</dimen>
+    <dimen name="horizontal_recycler_padding_bottom">260dp</dimen>
     <dimen name="filter_condition_popup_w">1920dp</dimen>
     <dimen name="filter_condition_popup_h">528dp</dimen>
     <dimen name="filter_condition_popup_position">552dp</dimen>
@@ -431,4 +430,6 @@
     <dimen name="filter_checked_condition_pl">15dp</dimen>
     <dimen name="filter_checked_condition_pr">14dp</dimen>
     <dimen name="filter_checked_condition_ts">30dp</dimen>
+    <dimen name="filter_poster_vertical_scroll_space">32dp</dimen>
+    <dimen name="filter_poster_start_scroll_length">500dp</dimen>
 </resources>

@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Message;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -93,10 +94,12 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
         filter_arrow_down = findView(R.id.filter_arrow_down);
         if(isVertical) {
             poster_recyclerview.setLayoutManager(new GridLayoutManager(this, 5));
+            poster_recyclerview.addItemDecoration(new SpaceItemDecoration(0,getResources().getDimensionPixelOffset(R.dimen.filter_item_vertical_poster_mb)));
             poster_recyclerview.setPadding(0,0,0,getResources().getDimensionPixelOffset(R.dimen.vertical_recycler_padding_bottom));
         }else{
             poster_recyclerview.setLayoutManager(new GridLayoutManager(this, 3));
             poster_recyclerview.setPadding(0,0,0,getResources().getDimensionPixelOffset(R.dimen.horizontal_recycler_padding_bottom));
+            poster_recyclerview.addItemDecoration(new SpaceItemDecoration(getResources().getDimensionPixelOffset(R.dimen.filter_item_horizontal_poster_mr),getResources().getDimensionPixelOffset(R.dimen.filter_item_horizontal_poster_mb)));
         }
         filter_tab.requestFocus();
         filter_tab.setOnClickListener(this);
@@ -280,8 +283,8 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                             public void onItemfocused(View view, int position, boolean hasFocus) {
                                 if(hasFocus){
                                     focusedPos =poster_recyclerview.indexOfChild(view);
-                                    if(view.getY()>500){
-                                        poster_recyclerview.smoothScrollBy(0, (int) (view.getY()-view.getHeight()));
+                                    if(view.getY()>getResources().getDimensionPixelOffset(R.dimen.filter_poster_start_scroll_length)){
+                                        poster_recyclerview.smoothScrollBy(0, (int) (view.getY()-view.getHeight()-getResources().getDimensionPixelOffset(R.dimen.filter_item_vertical_poster_mb)));
                                     }
                                     JasmineUtil.scaleOut3(view);
                                     if(isVertical) {
@@ -349,10 +352,10 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
         int i = v.getId();
         if(i==R.id.filter_arrow_down){
             JasmineUtil.scaleOut4(v);
-            poster_recyclerview.smoothScrollBy(0, (int) (poster_recyclerview.getChildAt(0).getY()+poster_recyclerview.getChildAt(0).getHeight()*2));
+            poster_recyclerview.smoothScrollBy(0, (int) (poster_recyclerview.getChildAt(0).getY()+poster_recyclerview.getChildAt(0).getHeight()*2+getResources().getDimensionPixelOffset(R.dimen.filter_poster_vertical_scroll_space)));
         }else if(i==R.id.filter_arrow_up)   {
             JasmineUtil.scaleOut4(v);
-            poster_recyclerview.smoothScrollBy(0, (int) (poster_recyclerview.getChildAt(0).getY()-poster_recyclerview.getChildAt(0).getHeight()*2));
+            poster_recyclerview.smoothScrollBy(0, (int) (poster_recyclerview.getChildAt(0).getY()-poster_recyclerview.getChildAt(0).getHeight()*2-getResources().getDimensionPixelOffset(R.dimen.filter_poster_vertical_scroll_space)));
         }else if(i==R.id.filter_tab){
             showFilterPopup();
         }
