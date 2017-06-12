@@ -220,6 +220,7 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
         filterPopup.setOnDismissListener(new PopupWindow.OnDismissListener() {
             @Override
             public void onDismiss() {
+                if(poster_recyclerview.getChildAt(0)!=null)
                 poster_recyclerview.getChildAt(0).requestFocus();
             }
         });
