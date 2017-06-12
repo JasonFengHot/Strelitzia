@@ -198,9 +198,12 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                     public void onNext(FilterConditions filterConditions) {
                         content_model = filterConditions.getContent_model();
                         mFilterConditions = filterConditions;
-                        fillConditionLayout(filterConditions.getAttributes().getGenre().getLabel(),filterConditions.getAttributes().getGenre().getValues());
-                        fillConditionLayout(filterConditions.getAttributes().getArea().getLabel(),filterConditions.getAttributes().getArea().getValues());
-                        fillConditionLayout(filterConditions.getAttributes().getAir_date().getLabel(),filterConditions.getAttributes().getAir_date().getValues());
+                        if(filterConditions.getAttributes().getGenre()!=null)
+                            fillConditionLayout(filterConditions.getAttributes().getGenre().getLabel(),filterConditions.getAttributes().getGenre().getValues());
+                        if(filterConditions.getAttributes().getArea()!=null)
+                            fillConditionLayout(filterConditions.getAttributes().getArea().getLabel(),filterConditions.getAttributes().getArea().getValues());
+                        if(filterConditions.getAttributes().getAir_date()!=null)
+                            fillConditionLayout(filterConditions.getAttributes().getAir_date().getLabel(),filterConditions.getAttributes().getAir_date().getValues());
                         fetchFilterResult(filterConditions.getContent_model(),filterConditions.getDefaultX());
                         showFilterPopup();
                     }
@@ -311,7 +314,7 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
     private void filter(String text, boolean b, String tag) {
         if(!"全部".equals(text)){
             if(b){
-                TextView checked= (TextView) View.inflate(this,R.layout.filter_checked_condition,null);
+                TextView checked= new TextView(this);
                 checked.setBackgroundResource(R.drawable.filter_condition_checked2);
                 LinearLayout.LayoutParams params=new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,getResources().getDimensionPixelOffset(R.dimen.filter_checked_condition_h));
                 params.rightMargin=getResources().getDimensionPixelOffset(R.dimen.filter_checked_condition_mr);
