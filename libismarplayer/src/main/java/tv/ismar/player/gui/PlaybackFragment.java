@@ -1482,16 +1482,17 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
                                     hidePanel();
                                 }
                               //  createMenu();
-                                ItemEntity[] subItems = mPlaybackService.getItemEntity().getSubitems();
-                                if (subItems != null && subItems.length > 0 && !mPlaybackService.isPreview()) {
-                                    // 电视剧
-                                //    playerMenu.showQuality(1);
-                                    showMenu(1);
-                                } else {
-                                    // 电影
-                                //    playerMenu.showQuality(0);
-                                    showMenu(1);
-                                }
+//                                ItemEntity[] subItems = mPlaybackService.getItemEntity().getSubitems();
+//                                if (subItems != null && subItems.length > 0 && !mPlaybackService.isPreview()) {
+//                                    // 电视剧
+//                                //    playerMenu.showQuality(1);
+//
+//                                } else {
+//                                    // 电影
+//                                //    playerMenu.showQuality(0);
+//                                    showMenu(1);
+//                                }
+                                showMenu(1);
                             }
                         } else {
                             // 重新加载
