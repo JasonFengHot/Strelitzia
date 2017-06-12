@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.Message;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -310,13 +311,13 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
     private void filter(String text, boolean b, String tag) {
         if(!"全部".equals(text)){
             if(b){
-                TextView checked=new TextView(this);
+                TextView checked= (TextView) View.inflate(this,R.layout.filter_checked_condition,null);
                 checked.setBackgroundResource(R.drawable.filter_condition_checked2);
                 LinearLayout.LayoutParams params=new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,getResources().getDimensionPixelOffset(R.dimen.filter_checked_condition_h));
                 params.rightMargin=getResources().getDimensionPixelOffset(R.dimen.filter_checked_condition_mr);
                 checked.setPadding(getResources().getDimensionPixelOffset(R.dimen.filter_checked_condition_pl),0,getResources().getDimensionPixelOffset(R.dimen.filter_checked_condition_pr),0);
                 checked.setLayoutParams(params);
-                checked.setTextSize(getResources().getDimensionPixelSize(R.dimen.filter_checked_condition_ts));
+                checked.setTextSize(TypedValue.COMPLEX_UNIT_PX,getResources().getDimension(R.dimen.filter_checked_condition_ts));
                 checked.setTextColor(getResources().getColor(R.color._333333));
                 checked.setText(text);
                 checked.setGravity(Gravity.CENTER);
