@@ -204,6 +204,10 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                             fillConditionLayout(filterConditions.getAttributes().getArea().getLabel(),filterConditions.getAttributes().getArea().getValues());
                         if(filterConditions.getAttributes().getAir_date()!=null)
                             fillConditionLayout(filterConditions.getAttributes().getAir_date().getLabel(),filterConditions.getAttributes().getAir_date().getValues());
+                        if(filterConditions.getAttributes().getAge()!=null)
+                            fillConditionLayout(filterConditions.getAttributes().getAge().getLabel(),filterConditions.getAttributes().getAge().getValues());
+                        if(filterConditions.getAttributes().getFeature()!=null)
+                            fillConditionLayout(filterConditions.getAttributes().getFeature().getLabel(),filterConditions.getAttributes().getFeature().getValues());
                         fetchFilterResult(filterConditions.getContent_model(),filterConditions.getDefaultX());
                         showFilterPopup();
                     }
