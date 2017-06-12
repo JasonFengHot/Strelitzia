@@ -1,7 +1,9 @@
 package tv.ismar.app.ad;
 import com.google.gson.GsonBuilder;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.Base64;
 import android.util.Log;
 
@@ -154,14 +156,19 @@ public class Advertisement {
                         List<AdElementEntity> adElementEntityList = parseAdResult(result, adPid);
                         if (adPid.equals(Advertisement.AD_MODE_ONPAUSE) && mOnPauseVideoAdListener != null) {
                             mOnPauseVideoAdListener.loadPauseAd(adElementEntityList);
+                            getRepostUrl(result,adPid);
                         } else if (adPid.equals(Advertisement.AD_MODE_ONSTART) && mOnVideoPlayAdListener != null) {
                             mOnVideoPlayAdListener.loadVideoStartAd(adElementEntityList);
+                            SharedPreferences sp=mContext.getSharedPreferences("reportAd", Activity.MODE_PRIVATE);
+                            SharedPreferences.Editor editor=sp.edit();
+                            editor.putString("result",result);
+                            editor.putString("adPid",adPid);
+                            editor.commit();
                         }
-
                         if (mApiVideoStartSubsc != null && !mApiVideoStartSubsc.isUnsubscribed()) {
                             mApiVideoStartSubsc.unsubscribe();
                         }
-                        getRepostUrl(result,adPid);
+                        Log.i("ADSMon","video AD  "+adPid);
                     }
                 });
 
@@ -213,6 +220,7 @@ public class Advertisement {
                         if (mApiAppStartSubsc != null && !mApiAppStartSubsc.isUnsubscribed()) {
                             mApiAppStartSubsc.unsubscribe();
                         }
+                        Log.i("ADSMon","get ad "+adPid);
                         getRepostUrl(result,adPid);
                     }
                 });
@@ -410,26 +418,48 @@ public class Advertisement {
 
     }
 
-    private void getRepostUrl(String result,String adPid){
+    private void getRepostUrl(String adResult,String adId){
+        Log.i("ADSMon", "adId  "+ adId+" ");
         try {
-            JSONObject jsonObject = new JSONObject(result);
+            JSONObject jsonObject = new JSONObject(adResult);
             JSONObject body = jsonObject.getJSONObject("ads");
-            JSONArray arrays = body.getJSONArray(adPid);
+            JSONArray arrays = body.getJSONArray(adId);
             for (int i = 0; i < arrays.length(); i++) {
                 JSONObject element = arrays.getJSONObject(i);
                 JSONArray monitor=element.getJSONArray("monitor");
-                if(monitor.length()>0) {
-                    JSONObject child = monitor.getJSONObject(0);
-                    JSONObject child2=monitor.getJSONObject(1);
+               for(int j=0;j<monitor.length();j++){
+                    JSONObject child = monitor.getJSONObject(i);
                     String monitor_url=child.optString("monitor_url");
-                    String monitor2_url=child2.optString("monitor_url");
                     Log.i("ADSMon",monitor_url+"");
                     repostAdLog(monitor_url);
-                    repostAdLog(monitor2_url);
                 }
             }
         } catch (JSONException e) {
             e.printStackTrace();
         }
     }
+    public void getRepostQiantieUrl(){
+        SharedPreferences sp=mContext.getSharedPreferences("reportAd", Activity.MODE_PRIVATE);
+        String adResult=sp.getString("result","");
+        String adId=sp.getString("adPid","");
+        Log.i("ADSMon", "adId  "+ adId+" ");
+        try {
+            JSONObject jsonObject = new JSONObject(adResult);
+            JSONObject body = jsonObject.getJSONObject("ads");
+            JSONArray arrays = body.getJSONArray(adId);
+            for (int i = 0; i < arrays.length(); i++) {
+                JSONObject element = arrays.getJSONObject(i);
+                JSONArray monitor=element.getJSONArray("monitor");
+                for(int j=0;j<monitor.length();j++){
+                    JSONObject child = monitor.getJSONObject(i);
+                    String monitor_url=child.optString("monitor_url");
+                    Log.i("ADSMon",monitor_url+"");
+                    repostAdLog(monitor_url);
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
 }
