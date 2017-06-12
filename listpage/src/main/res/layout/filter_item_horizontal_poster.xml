@@ -1,18 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:focusable="true"
     android:focusableInTouchMode="true"
-    android:padding="@dimen/filter_item_horizontal_poster_padding"
-    android:layout_marginRight="@dimen/filter_item_horizontal_poster_mr"
-    android:layout_marginBottom="@dimen/filter_item_horizontal_poster_mb"
-    android:gravity="center"
-    android:background="@drawable/poster_focus_selector">
-
-<RelativeLayout
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+    android:background="@drawable/poster_focus_selector"
+    >
 
     <ImageView
         android:id="@+id/item_horizontal_poster_img"
@@ -64,5 +58,4 @@
         android:focusable="true"
         android:singleLine="true"
         android:layout_below="@id/item_horizontal_poster_img"/>
-</RelativeLayout>
 </RelativeLayout>

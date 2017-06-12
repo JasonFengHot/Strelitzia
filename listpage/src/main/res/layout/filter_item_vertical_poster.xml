@@ -1,23 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/filter_item"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:focusableInTouchMode="true"
-    android:focusable="true"
     android:background="@drawable/poster_focus_selector"
-    android:padding="@dimen/filter_item_vertical_poster_padding"
-    android:layout_marginBottom="@dimen/filter_item_vertical_poster_mb"
-    android:layout_marginRight="@dimen/filter_item_vertical_poster_mr"
-    android:gravity="center"
-    >
-<RelativeLayout
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+   >
     <ImageView
         android:id="@+id/item_vertical_poster_img"
         android:layout_width="@dimen/item_vertical_poster_img_w"
-        android:layout_height="@dimen/item_vertical_poster_img_h" />
+        android:layout_height="@dimen/item_vertical_poster_img_h"
+        />
     <ImageView
         android:id="@+id/item_vertical_poster_vip"
         android:layout_width="@dimen/item_vertical_poster_vip_w"
@@ -51,6 +44,6 @@
         android:ellipsize="marquee"
         android:focusable="true"
         android:singleLine="true"
-        android:layout_below="@id/item_vertical_poster_img"/>
-</RelativeLayout>
+        android:layout_below="@id/item_vertical_poster_img"
+        />
 </RelativeLayout>

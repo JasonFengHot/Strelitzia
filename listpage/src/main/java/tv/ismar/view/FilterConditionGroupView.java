@@ -120,7 +120,7 @@ public class FilterConditionGroupView extends LinearLayout implements View.OnHov
             public void onClick(View v) {
                 filter_condition_group_arrow_right.setVisibility(View.VISIBLE);
                 if(isHover) {
-                    filter_condition_group_recycler.smoothScrollToPosition(0);
+                    filter_condition_group_recycler.scrollToPosition(0);
                     filter_condition_group_arrow_left.setVisibility(View.INVISIBLE);
                     Message message=new Message();
                     message.arg1=0;
