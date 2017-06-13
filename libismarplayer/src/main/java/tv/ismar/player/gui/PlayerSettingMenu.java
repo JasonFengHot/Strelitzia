@@ -6,6 +6,7 @@ import android.os.Message;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.transition.Slide;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -72,7 +73,7 @@ public class PlayerSettingMenu extends PopupWindow implements HorizontalEpisodeL
 
         setWidth(width);
         setHeight(height);
-
+        setAnimationStyle(R.style.PopupAnimation);
         View contentView = LayoutInflater.from(context).inflate(R.layout.player_setting_menu, null);
         arrow_left= (ImageView) contentView.findViewById(R.id.arrow_left);
         arrow_right= (ImageView) contentView.findViewById(R.id.arrow_right);
@@ -94,7 +95,7 @@ public class PlayerSettingMenu extends PopupWindow implements HorizontalEpisodeL
         relativeLayout.addView(contentView, layoutParams);
         setContentView(relativeLayout);
 
-    //    setBackgroundDrawable(mContext.getResources().getDrawable(R.drawable.transparent));
+     //   setBackgroundDrawable(mContext.getResources().getDrawable(R.drawable.transparent));
         setFocusable(true);
         menuHandler=new MenuHandler();
 
