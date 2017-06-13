@@ -373,7 +373,9 @@ public final class HttpLoggingInterceptor implements Interceptor {
         String args[] = str.split("&");
         for (String arg : args) {
             String[] s = arg.split("=");
-            hashMap.put(s[0], s[1]);
+            if (s.length == 2) {
+                hashMap.put(s[0], s[1]);
+            }
         }
         return hashMap;
     }
