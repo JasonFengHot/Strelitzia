@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:focusable="true"
     android:background="#0e163a"
     >
 <LinearLayout
@@ -22,13 +23,15 @@
         android:textColor="#cccccc"
         android:layout_marginTop="@dimen/filter_layout_left_view_title_mt"
         android:gravity="center"
+        android:nextFocusDown="@id/filter_title"
         />
 
-    <Button
+    <TextView
         android:id="@+id/filter_tab"
         android:layout_width="@dimen/filter_layout_left_view_tab_w"
         android:layout_height="@dimen/filter_layout_left_view_tab_h"
         android:background="@drawable/filter_tab_selector"
+        android:focusable="true"
         android:layout_marginLeft="@dimen/filter_layout_left_view_tab_ml"
         android:layout_marginTop="@dimen/filter_layout_left_view_tab_mt"/>
     
