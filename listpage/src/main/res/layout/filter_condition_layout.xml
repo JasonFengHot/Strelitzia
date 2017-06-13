@@ -44,6 +44,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
+        android:focusable="true"
         android:paddingLeft="@dimen/filter_condition_layout_filter_conditions_pl"
         android:layout_marginTop="@dimen/filter_condition_layout_filter_conditions_mt"/>
     </LinearLayout>

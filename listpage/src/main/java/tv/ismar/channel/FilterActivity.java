@@ -34,6 +34,7 @@ import tv.ismar.app.models.FilterConditions;
 import tv.ismar.app.ui.adapter.OnItemClickListener;
 import tv.ismar.app.ui.adapter.OnItemFocusedListener;
 import tv.ismar.app.widget.MyRecyclerView;
+import tv.ismar.library.injectdb.util.Log;
 import tv.ismar.listpage.R;
 import tv.ismar.searchpage.utils.JasmineUtil;
 import tv.ismar.view.FilterConditionGroupView;
@@ -44,7 +45,7 @@ import tv.ismar.view.FilterConditionGroupView;
 public class FilterActivity extends BaseActivity implements View.OnClickListener, View.OnHoverListener, View.OnFocusChangeListener {
 
     private TextView filter_title;
-    private Button filter_tab;
+    private TextView filter_tab;
     private LinearLayout filter_checked_conditiion;
     private MyRecyclerView poster_recyclerview;
     private LinearLayout filter_conditions;
@@ -59,6 +60,7 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
     private String content_model;
     private FilterConditions mFilterConditions;
     private PopupWindow filterPopup;
+    private boolean isFocus=true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,7 +88,7 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
 
     private void initView() {
         filter_title = (TextView) findViewById(R.id.filter_title);
-        filter_tab = (Button) findViewById(R.id.filter_tab);
+        filter_tab = (TextView) findViewById(R.id.filter_tab);
         filter_checked_conditiion = (LinearLayout) findViewById(R.id.filter_checked_conditiion);
         poster_recyclerview = (MyRecyclerView) findViewById(R.id.poster_recyclerview);
         filter_condition_layout = View.inflate(this, R.layout.filter_condition_layout,null);
@@ -147,36 +149,6 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                 if (poster_recyclerview.getChildPosition(poster_recyclerview.getFocusedChild()) == filterPosterAdapter.getItemCount() - 1) {
                     return true;
                 }
-            } else if (keyCode == 21) {
-                if (isVertical) {
-                    if (focusedPos % 5 == 0) {
-                        if (poster_recyclerview.getChildAt(focusedPos - 1) != null) {
-                            poster_recyclerview.getChildAt(focusedPos - 1).requestFocus();
-                        } else {
-                            if (poster_recyclerview.getChildPosition(poster_recyclerview.getFocusedChild()) != 0) {
-                                poster_recyclerview.scrollBy(0, (int) (poster_recyclerview.getY() - poster_recyclerview.getChildAt(0).getHeight()));
-                                poster_recyclerview.getChildAt(4).requestFocus();
-                            } else {
-                                return false;
-                            }
-                        }
-                        return true;
-                    }
-                } else {
-                    if ((focusedPos) % 3 == 0) {
-                        if (poster_recyclerview.getChildAt(focusedPos - 1) != null) {
-                            poster_recyclerview.getChildAt(focusedPos - 1).requestFocus();
-                        } else {
-                            if (poster_recyclerview.getChildPosition(poster_recyclerview.getFocusedChild()) != 0) {
-                                poster_recyclerview.scrollBy(0, (int) (poster_recyclerview.getY() - poster_recyclerview.getChildAt(0).getHeight()));
-                                poster_recyclerview.getChildAt(2).requestFocus();
-                            } else {
-                                return false;
-                            }
-                        }
-                        return true;
-                    }
-                }
             }
         }
         return super.onKeyDown(keyCode, event);
@@ -224,11 +196,13 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
             }
         });
         filterPopup.setBackgroundDrawable(getResources().getDrawable(R.drawable.transparent));
+        getRootView().requestFocus();
         filterPopup.showAtLocation(filter_condition_layout,Gravity.NO_GRAVITY,0,getResources().getDimensionPixelOffset(R.dimen.filter_condition_popup_position));
         Message message=new Message();
         message.arg1=0;
-        ((FilterConditionGroupView)filter_conditions.getChildAt(0)).handler.sendMessageDelayed(message,1000);
+        ((FilterConditionGroupView) filter_conditions.getChildAt(0)).handler.sendMessageDelayed(message, 1000);
         filterPopup.setOnDismissListener(new PopupWindow.OnDismissListener() {
+
             @Override
             public void onDismiss() {
                 if(poster_recyclerview.getChildAt(0)!=null)
@@ -242,7 +216,8 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
         no_limit.add("");
         no_limit.add("全部");
         values.add(0,no_limit);
-        final FilterConditionGroupView filterConditionGroupView=new FilterConditionGroupView(this,values,label);
+        final FilterConditionGroupView filterConditionGroupView=new FilterConditionGroupView(this,values,label,isFocus);
+        isFocus = false;
         filterConditionGroupView.setFocusable(true);
         filterConditionGroupView.setFocusableInTouchMode(true);
         filterConditionGroupView.setOnCheckChangeListener(new FilterConditionGroupView.OnCheckChange() {
@@ -360,11 +335,14 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
         int i = v.getId();
         if(i==R.id.filter_arrow_down){
             JasmineUtil.scaleOut4(v);
+            if(poster_recyclerview.getChildCount()>0)
             poster_recyclerview.smoothScrollBy(0, (int) (poster_recyclerview.getChildAt(0).getY()+poster_recyclerview.getChildAt(0).getHeight()*2+getResources().getDimensionPixelOffset(R.dimen.filter_poster_vertical_scroll_space)));
         }else if(i==R.id.filter_arrow_up)   {
             JasmineUtil.scaleOut4(v);
-            poster_recyclerview.smoothScrollBy(0, (int) (poster_recyclerview.getChildAt(0).getY()-poster_recyclerview.getChildAt(0).getHeight()*2-getResources().getDimensionPixelOffset(R.dimen.filter_poster_vertical_scroll_space)));
+            if(poster_recyclerview.getChildCount()>0)
+                poster_recyclerview.smoothScrollBy(0, (int) (poster_recyclerview.getChildAt(0).getY()-poster_recyclerview.getChildAt(0).getHeight()*2-getResources().getDimensionPixelOffset(R.dimen.filter_poster_vertical_scroll_space)));
         }else if(i==R.id.filter_tab){
+            filter_tab.requestFocus();
             showFilterPopup();
         }
     }
