@@ -631,6 +631,8 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
                 mAdCount = mPlaybackService.getMediaPlayer().getAdCountDownTime() / 1000;
             }
             mHandler.sendEmptyMessage(MSG_AD_COUNTDOWN);
+            Advertisement advertisement=new Advertisement(getActivity());
+            advertisement.getRepostQiantieUrl();
         } else {
             mAdCount = 0;
             canShowMenuOrPannel = true;

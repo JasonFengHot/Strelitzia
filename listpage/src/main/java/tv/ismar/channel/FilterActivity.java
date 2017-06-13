@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.Message;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -197,9 +198,16 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                     public void onNext(FilterConditions filterConditions) {
                         content_model = filterConditions.getContent_model();
                         mFilterConditions = filterConditions;
-                        fillConditionLayout(filterConditions.getAttributes().getGenre().getLabel(),filterConditions.getAttributes().getGenre().getValues());
-                        fillConditionLayout(filterConditions.getAttributes().getArea().getLabel(),filterConditions.getAttributes().getArea().getValues());
-                        fillConditionLayout(filterConditions.getAttributes().getAir_date().getLabel(),filterConditions.getAttributes().getAir_date().getValues());
+                        if(filterConditions.getAttributes().getGenre()!=null)
+                            fillConditionLayout(filterConditions.getAttributes().getGenre().getLabel(),filterConditions.getAttributes().getGenre().getValues());
+                        if(filterConditions.getAttributes().getArea()!=null)
+                            fillConditionLayout(filterConditions.getAttributes().getArea().getLabel(),filterConditions.getAttributes().getArea().getValues());
+                        if(filterConditions.getAttributes().getAir_date()!=null)
+                            fillConditionLayout(filterConditions.getAttributes().getAir_date().getLabel(),filterConditions.getAttributes().getAir_date().getValues());
+                        if(filterConditions.getAttributes().getAge()!=null)
+                            fillConditionLayout(filterConditions.getAttributes().getAge().getLabel(),filterConditions.getAttributes().getAge().getValues());
+                        if(filterConditions.getAttributes().getFeature()!=null)
+                            fillConditionLayout(filterConditions.getAttributes().getFeature().getLabel(),filterConditions.getAttributes().getFeature().getValues());
                         fetchFilterResult(filterConditions.getContent_model(),filterConditions.getDefaultX());
                         showFilterPopup();
                     }
@@ -216,7 +224,7 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
             }
         });
         filterPopup.setBackgroundDrawable(getResources().getDrawable(R.drawable.transparent));
-        filterPopup.showAtLocation(getRootView(),Gravity.NO_GRAVITY,0,getResources().getDimensionPixelOffset(R.dimen.filter_condition_popup_position));
+        filterPopup.showAtLocation(filter_condition_layout,Gravity.NO_GRAVITY,0,getResources().getDimensionPixelOffset(R.dimen.filter_condition_popup_position));
         Message message=new Message();
         message.arg1=0;
         ((FilterConditionGroupView)filter_conditions.getChildAt(0)).handler.sendMessageDelayed(message,1000);
@@ -310,13 +318,13 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
     private void filter(String text, boolean b, String tag) {
         if(!"全部".equals(text)){
             if(b){
-                TextView checked=new TextView(this);
+                TextView checked= new TextView(this);
                 checked.setBackgroundResource(R.drawable.filter_condition_checked2);
                 LinearLayout.LayoutParams params=new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,getResources().getDimensionPixelOffset(R.dimen.filter_checked_condition_h));
                 params.rightMargin=getResources().getDimensionPixelOffset(R.dimen.filter_checked_condition_mr);
                 checked.setPadding(getResources().getDimensionPixelOffset(R.dimen.filter_checked_condition_pl),0,getResources().getDimensionPixelOffset(R.dimen.filter_checked_condition_pr),0);
                 checked.setLayoutParams(params);
-                checked.setTextSize(getResources().getDimensionPixelSize(R.dimen.filter_checked_condition_ts));
+                checked.setTextSize(TypedValue.COMPLEX_UNIT_PX,getResources().getDimension(R.dimen.filter_checked_condition_ts));
                 checked.setTextColor(getResources().getColor(R.color._333333));
                 checked.setText(text);
                 checked.setGravity(Gravity.CENTER);

@@ -78,6 +78,7 @@
                 android:textColor="#f0f0f0"
                 android:layout_marginLeft="@dimen/filter_layout_checked_title_ml"
                 android:layout_marginRight="@dimen/filter_layout_checked_title_mr"
+                android:gravity="center"
                 android:text="筛选条件:"/>
         </LinearLayout>
 
