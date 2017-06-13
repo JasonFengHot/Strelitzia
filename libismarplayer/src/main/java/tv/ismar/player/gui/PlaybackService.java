@@ -670,6 +670,7 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
                 return;
             }
             boolean flag = hlsPlayer.getPlayerMode() == IsmartvPlayer.MODE_QIYI_PLAYER
+                    || mItemEntity.getLiveVideo()
                     || (hlsPlayer.isPlaying() && mIsPlayerPrepared);
             if (flag && serviceCallback != null) {
                 serviceCallback.showBuffering(false);

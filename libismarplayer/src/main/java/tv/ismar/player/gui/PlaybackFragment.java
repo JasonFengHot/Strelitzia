@@ -860,10 +860,13 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
                 sharpSetupKeyClick = true;
             }
         }
-        LogUtils.i(TAG, "onKeyDown");
+        LogUtils.i(TAG, "onKeyDown : " + keyCode);
         if (mPlaybackService == null || mPlaybackService.getMediaPlayer() == null || !mPlaybackService.isPlayerPrepared()||mPlaybackService.isPlayingAd()) {
             if (keyCode == KeyEvent.KEYCODE_BACK) {
                 getActivity().finish();
+            } else if (keyCode == KeyEvent.KEYCODE_VOLUME_UP || keyCode == KeyEvent.KEYCODE_VOLUME_DOWN
+                    || keyCode == KeyEvent.KEYCODE_VOLUME_MUTE) {
+                return false;
             }
             return true;
         }
@@ -1573,6 +1576,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
         if (mHandler.hasMessages(MSG_SHOW_BUFFERING_LONG)) {
             mHandler.removeMessages(MSG_SHOW_BUFFERING_LONG);
         }
+        LogUtils.i(TAG, "removeBufferingLongTime : " + popShowType);
         if (popDialog != null && popDialog.isShowing() && popShowType == POP_TYPE_BUFFERING_LONG) {
             closePopup = true;
             popDialog.dismiss();
@@ -1676,6 +1680,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
                         removeMessages(MSG_UPDATE_PROGRESS);
                         return;
                     }
+                    LogUtils.i("LH/PlaybackHandler", "isPlaying : " + service.getMediaPlayer().isPlaying());
                     if (service.getMediaPlayer().isPlaying()) {
                         int mediaPosition = service.getMediaPlayer().getCurrentPosition();
                         // 播放过程中网络相关
