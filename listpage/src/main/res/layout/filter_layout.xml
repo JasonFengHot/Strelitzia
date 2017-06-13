@@ -28,7 +28,7 @@
         android:id="@+id/filter_tab"
         android:layout_width="@dimen/filter_layout_left_view_tab_w"
         android:layout_height="@dimen/filter_layout_left_view_tab_h"
-        android:background="@drawable/filter_tab_icon"
+        android:background="@drawable/filter_tab_selector"
         android:layout_marginLeft="@dimen/filter_layout_left_view_tab_ml"
         android:layout_marginTop="@dimen/filter_layout_left_view_tab_mt"/>
     

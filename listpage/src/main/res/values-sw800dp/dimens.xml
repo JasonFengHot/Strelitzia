@@ -328,10 +328,10 @@
 <dimen name="filter_layout_left_view_title_h">61.48dp</dimen>
 <dimen name="filter_layout_left_view_title_ts">44.44dp</dimen>
 <dimen name="filter_layout_left_view_title_mt">13.33dp</dimen>
-<dimen name="filter_layout_left_view_tab_w">220.74dp</dimen>
-<dimen name="filter_layout_left_view_tab_h">48.89dp</dimen>
-<dimen name="filter_layout_left_view_tab_ml">20.74dp</dimen>
-<dimen name="filter_layout_left_view_tab_mt">35.56dp</dimen>
+<dimen name="filter_layout_left_view_tab_w">245.93dp</dimen>
+<dimen name="filter_layout_left_view_tab_h">75.56dp</dimen>
+<dimen name="filter_layout_left_view_tab_ml">8.15dp</dimen>
+<dimen name="filter_layout_left_view_tab_mt">22.22dp</dimen>
 <dimen name="filter_layout_left_vertical_view_w">1.48dp</dimen>
 <dimen name="filter_layout_current_tab_arrow_w">11.85dp</dimen>
 <dimen name="filter_layout_current_tab_arrow_h">108.15dp</dimen>
