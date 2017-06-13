@@ -8,8 +8,6 @@
     android:gravity="center"
     android:textColor="@color/filter_text"
     android:focusable="true"
-    android:paddingLeft="@dimen/filter_group_radio_button_pl"
-    android:paddingRight="@dimen/filter_group_radio_button_pr"
     android:background="@drawable/filter_condition_checked_selector2"
     >
 

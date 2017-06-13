@@ -158,6 +158,7 @@ public class FilterConditionGroupView extends LinearLayout implements View.OnHov
                     } else {
                         filter_condition_group_arrow_right.setVisibility(View.INVISIBLE);
                     }
+                    checkedView=recyclerView.getChildAt(0);
                     isFirst=false;
                 }
             }
