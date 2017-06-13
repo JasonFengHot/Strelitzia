@@ -32,6 +32,7 @@ final class GsonResponseBodyConverter<T> implements Converter<ResponseBody, T> {
             var3 = gson.fromJson(jsonReader, type);
         } finally {
             value.close();
+            jsonReader.close();
         }
         return var3;
     }
