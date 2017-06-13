@@ -872,13 +872,13 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
         }
         IAdController adController = mPlaybackService.getMediaPlayer().getAdController();
         switch (keyCode) {
-            case KeyEvent.KEYCODE_MENU:
             case KeyEvent.KEYCODE_DPAD_UP:
                 if (mPlaybackService.isPlayingAd()) {
                     return true;
                 }
-                showMenu(0);
+                showPannelDelayOut();
                 return true;
+            case KeyEvent.KEYCODE_MENU:
             case KeyEvent.KEYCODE_DPAD_DOWN:
                 // TODO 暂停广告按下消除
                 // TODO 悦享看广告一定时间后可以消除
@@ -893,7 +893,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
                     LogUtils.d(TAG, "Jump over ad.");
                     adController.skipAd();
                 }
-                showPannelDelayOut();
+                showMenu(0);
                 return true;
             case KeyEvent.KEYCODE_BACK:
 //                if (!isPopWindowShow() && !mPlaybackService.isPlayingAd()) {
