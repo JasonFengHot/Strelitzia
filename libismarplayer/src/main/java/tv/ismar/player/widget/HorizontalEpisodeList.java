@@ -162,6 +162,7 @@ public class HorizontalEpisodeList extends HorizontalScrollView {
                 linearContainer.getChildAt(rowCount-position).requestFocus();
 
             }
+            mCurrentDataSelectPosition=index;
             requestLayout();
             invalidate();
         }
@@ -201,6 +202,7 @@ public class HorizontalEpisodeList extends HorizontalScrollView {
         }
 
         private void refreshView(int direction) {
+            Log.i("currentViewIndex","refreshView"+linearContainer.toString());
             if (linearContainer == null) {
                 return;
             }
