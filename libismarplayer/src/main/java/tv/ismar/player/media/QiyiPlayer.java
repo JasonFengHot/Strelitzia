@@ -1,8 +1,5 @@
 package tv.ismar.player.media;
 
-import android.util.Log;
-import android.view.SurfaceView;
-
 import com.qiyi.sdk.player.BitStream;
 import com.qiyi.sdk.player.IAdController;
 import com.qiyi.sdk.player.IMediaPlayer;
@@ -98,11 +95,7 @@ public class QiyiPlayer extends IsmartvPlayer {
 
     @Override
     public void stop() {
-        if (mPlayer != null) {
-            mPlayer.stop();
-        }
-        mCurrentState = STATE_IDLE;
-
+        LogUtils.e(TAG, "QiYi video called stop method.");
     }
 
     @Override
@@ -115,6 +108,7 @@ public class QiyiPlayer extends IsmartvPlayer {
             mPlayer.setOnSeekCompleteListener(null);
             mPlayer.setOnBufferChangedListener(null);
             mPlayer.setOnInfoListener(null);
+            mPlayer.stop();
             mPlayer.release();
             mPlayer = null;
         }
@@ -308,7 +302,7 @@ public class QiyiPlayer extends IsmartvPlayer {
                 return true;
             }
             mCurrentState = STATE_ERROR;
-            Log.e(TAG, "QiYiPlayer onError:" + iSdkError.getCode() + " " + iSdkError.getMsgFromError());
+            LogUtils.e(TAG, "QiYiPlayer onError:" + iSdkError.getCode() + " " + iSdkError.getMsgFromError());
             PlayerEvent.videoExcept(
                     "mediaexception", iSdkError.getCode(),
                     logPlayerEvent, 0,
@@ -329,7 +323,7 @@ public class QiyiPlayer extends IsmartvPlayer {
             mQualities = new ArrayList<>();
             mBitStreamList = list;
             for (BitStream bitStream : list) {
-                Log.i(TAG, "bitStream:" + bitStream.getValue());
+                LogUtils.i(TAG, "bitStream:" + bitStream.getValue());
                 // 只显示对应视云，流畅，高清，超清码率
                 if (bitStream.getValue() > 1) {
                     mQualities.add(bitStreamConvertToQuality(bitStream));
@@ -339,7 +333,7 @@ public class QiyiPlayer extends IsmartvPlayer {
 
         @Override
         public void onVipBitStreamListUpdate(IMediaPlayer iMediaPlayer, List<BitStream> list) {
-            Log.i(TAG, "bitStream:onVipBitStreamListUpdate");
+            LogUtils.i(TAG, "bitStream:onVipBitStreamListUpdate");
 
         }
 
@@ -355,7 +349,7 @@ public class QiyiPlayer extends IsmartvPlayer {
     private IMediaPlayer.OnPreviewInfoListener qiyiPreviewInfoListener = new IMediaPlayer.OnPreviewInfoListener() {
         @Override
         public void onPreviewInfoReady(IMediaPlayer iMediaPlayer, boolean isPreview, int length) {
-            Log.d(TAG, "QiYiOnPreview: " + isPreview + ", length = " + length);
+            LogUtils.d(TAG, "QiYiOnPreview: " + isPreview + ", length = " + length);
             if (mPlayer == null) {
                 return;
             }
@@ -368,7 +362,7 @@ public class QiyiPlayer extends IsmartvPlayer {
     private IMediaPlayer.OnVideoSizeChangedListener qiyiVideoSizeChangedListener = new IMediaPlayer.OnVideoSizeChangedListener() {
         @Override
         public void onVideoSizeChanged(IMediaPlayer iMediaPlayer, int width, int height) {
-            Log.i("LH/", "onVideoSizeChangedQiYi:" + width + " " + height);
+            LogUtils.i("LH/", "onVideoSizeChangedQiYi:" + width + " " + height);
             if (mPlayer == null) {
                 return;
             }
@@ -434,7 +428,7 @@ public class QiyiPlayer extends IsmartvPlayer {
             } else {
                 PlayerEvent.videoPlayBlockend(
                         logPlayerEvent,
-                        0, getCurrentPosition(),
+                        0, (DateUtils.currentTimeMillis() - logBufferStartTime),
                         "", logPlayerFlag);
             }
         }
@@ -481,7 +475,7 @@ public class QiyiPlayer extends IsmartvPlayer {
                 }
                 return BitStream.BITSTREAM_1080P;
             case QUALITY_ULTRA:
-                Log.e(TAG, "Only support normal, medium, high quality.");
+                LogUtils.e(TAG, "Only support normal, medium, high quality.");
                 break;
             case QUALITY_BLUERAY:
             case QUALITY_4K:

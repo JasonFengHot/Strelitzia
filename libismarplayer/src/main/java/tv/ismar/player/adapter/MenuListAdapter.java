@@ -6,6 +6,7 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -62,8 +63,9 @@ public class MenuListAdapter extends RecyclerView.Adapter<MenuItemHoder> {
                     holder.focus_line.setVisibility(View.GONE);
                     holder.line.setVisibility(View.VISIBLE);
                 }
-                if(menuOnFocuslistener!=null)
-                menuOnFocuslistener.onFocus(v,position,hasFocus);
+                if(menuOnFocuslistener!=null) {
+                    menuOnFocuslistener.onFocus(v, position, hasFocus);
+                }
             }
         });
         holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -82,6 +84,13 @@ public class MenuListAdapter extends RecyclerView.Adapter<MenuItemHoder> {
                     onKeyListener.onkeyBack(keyCode);
                     return true;
                 }
+
+                return false;
+            }
+        });
+        holder.itemView.setOnHoverListener(new View.OnHoverListener() {
+            @Override
+            public boolean onHover(View v, MotionEvent event) {
                 return false;
             }
         });

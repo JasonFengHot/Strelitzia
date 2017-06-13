@@ -185,32 +185,36 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
     @Override
     public void onCreate() {
         super.onCreate();
-        snToken = IsmartvActivator.getInstance().getSnToken();
-        deviceToken = IsmartvActivator.getInstance().getDeviceToken();
-        authToken = IsmartvActivator.getInstance().getAuthToken();
-        username = IsmartvActivator.getInstance().getUsername();
-        zuserToken = IsmartvActivator.getInstance().getZUserToken();
-        zdeviceToken = IsmartvActivator.getInstance().getDeviceToken();
         mAdvertisement = new Advertisement(this);
         mAdvertisement.setOnVideoPlayListener(this);
-        HttpManager.getInstance().setAccessToken(authToken);
-        HttpManager.getInstance().init(IsmartvActivator.getInstance().getApiDomain(), IsmartvActivator.getInstance().getUpgradeDomain(), deviceToken);
+        initUserInfo();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
+        LogUtils.d(TAG, "onDestroy");
         // 停止服务，播放器资源释放
         mIsPlayerPrepared = false;
         if (hlsPlayer != null) {
             hlsPlayer.setOnAdvertisementListener(null);
             hlsPlayer.setOnBufferChangedListener(null);
             hlsPlayer.setOnStateChangedListener(null);
-            hlsPlayer.stop();
             hlsPlayer.release();
             hlsPlayer = null;
         }
 
+    }
+
+    public void initUserInfo() {
+        snToken = IsmartvActivator.getInstance().getSnToken();
+        deviceToken = IsmartvActivator.getInstance().getDeviceToken();
+        authToken = IsmartvActivator.getInstance().getAuthToken();
+        username = IsmartvActivator.getInstance().getUsername();
+        zuserToken = IsmartvActivator.getInstance().getZUserToken();
+        zdeviceToken = IsmartvActivator.getInstance().getDeviceToken();
+        HttpManager.getInstance().setAccessToken(authToken);
+        HttpManager.getInstance().init(IsmartvActivator.getInstance().getApiDomain(), IsmartvActivator.getInstance().getUpgradeDomain(), deviceToken);
     }
 
     /**
@@ -237,6 +241,7 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
         this.subItemPk = 0;// 当前多集片pk值,通过/api/subitem/{pk}可获取详细信息
         this.source = source;
         this.mItemEntity = itemEntity;
+        initUserInfo();
         mIsPreload = true;
         loadPlayerItem();
     }
@@ -273,8 +278,11 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
             hlsPlayer.setOnAdvertisementListener(null);
             hlsPlayer.setOnBufferChangedListener(null);
             hlsPlayer.setOnStateChangedListener(null);
-            hlsPlayer.stop();
-            hlsPlayer.release();
+            if (hlsPlayer.getPlayerMode() == IsmartvPlayer.MODE_QIYI_PLAYER) {
+                hlsPlayer.release();
+            } else {
+                hlsPlayer.stop();
+            }
             if (detachView) {
                 hlsPlayer.detachViews();
             }
@@ -1032,6 +1040,7 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
                         break;
                     case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
                         // Pause playback
+                        LogUtils.d(TAG, "onAudioFocusChange : " + AudioManager.AUDIOFOCUS_LOSS_TRANSIENT);
                         if (hlsPlayer != null && hlsPlayer.isPlaying()) {
                             mLossTransient = true;
                             hlsPlayer.pause();
@@ -1050,6 +1059,7 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
 //                            mMediaPlayer.setVolume(100);
 //                            mLossTransientCanDuck = false;
 //                        }
+                        LogUtils.d(TAG, "onAudioFocusChange : " + AudioManager.AUDIOFOCUS_GAIN);
                         if (mLossTransient) {
                             if (hlsPlayer != null) {
                                 hlsPlayer.start();

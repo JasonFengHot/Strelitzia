@@ -5,6 +5,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -120,7 +121,7 @@ public class FilterConditionGroupView extends LinearLayout implements View.OnHov
             public void onClick(View v) {
                 filter_condition_group_arrow_right.setVisibility(View.VISIBLE);
                 if(isHover) {
-                    filter_condition_group_recycler.smoothScrollToPosition(0);
+                    filter_condition_group_recycler.scrollToPosition(0);
                     filter_condition_group_arrow_left.setVisibility(View.INVISIBLE);
                     Message message=new Message();
                     message.arg1=0;
@@ -151,14 +152,13 @@ public class FilterConditionGroupView extends LinearLayout implements View.OnHov
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
                 if(isFirst) {
+                    Log.e("onscroll",recyclerView.getChildCount()+"&"+values.size());
                     if (recyclerView.getChildCount() < values.size()) {
                         filter_condition_group_arrow_right.setVisibility(View.VISIBLE);
                     } else {
                         filter_condition_group_arrow_right.setVisibility(View.INVISIBLE);
                     }
-                    recyclerView.getChildAt(0).callOnClick();
-                    recyclerView.getChildAt(0).requestFocus();
-                    recyclerView.getChildAt(0).requestFocusFromTouch();
+                    checkedView=recyclerView.getChildAt(0);
                     isFirst=false;
                 }
             }

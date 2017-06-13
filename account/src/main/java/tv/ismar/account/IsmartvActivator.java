@@ -451,7 +451,7 @@ public class IsmartvActivator {
         C.SMART_POST_NEXT_REQUEST_TIME = resultEntity.getSmart_post_next_request_time();
         editor.putInt("h264_player", resultEntity.getH264_player());
         editor.putInt("h265_player", resultEntity.getH265_player());
-        editor.putInt("live_player", resultEntity.getH265_player());
+        editor.putInt("live_player", resultEntity.getLive_player());
         editor.commit();
 
         // 获取老版本的

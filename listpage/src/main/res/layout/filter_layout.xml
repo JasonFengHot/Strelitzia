@@ -28,7 +28,7 @@
         android:id="@+id/filter_tab"
         android:layout_width="@dimen/filter_layout_left_view_tab_w"
         android:layout_height="@dimen/filter_layout_left_view_tab_h"
-        android:background="@drawable/filter_tab_icon"
+        android:background="@drawable/filter_tab_selector"
         android:layout_marginLeft="@dimen/filter_layout_left_view_tab_ml"
         android:layout_marginTop="@dimen/filter_layout_left_view_tab_mt"/>
     
@@ -62,6 +62,11 @@
             android:layout_marginRight="@dimen/filter_layout_poster_recyclerview_mr"
             android:clipToPadding="false"
             android:clipChildren="false"/>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/filter_layout_filter_checked_conditiion_h"
+            android:background="#0e163a"
+        />
         <LinearLayout
             android:id="@+id/filter_checked_conditiion"
             android:layout_width="match_parent"
@@ -78,6 +83,7 @@
                 android:textColor="#f0f0f0"
                 android:layout_marginLeft="@dimen/filter_layout_checked_title_ml"
                 android:layout_marginRight="@dimen/filter_layout_checked_title_mr"
+                android:gravity="center"
                 android:text="筛选条件:"/>
         </LinearLayout>
 

@@ -96,6 +96,7 @@ import tv.ismar.homepage.fragment.MessageDialogFragment;
 import tv.ismar.homepage.fragment.SportFragment;
 import tv.ismar.homepage.fragment.UpdateSlienceLoading;
 import tv.ismar.homepage.widget.DaisyVideoView;
+import tv.ismar.player.gui.PlaybackService;
 
 /**
  * Created by huaijie on 5/18/15.
@@ -866,6 +867,7 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
                         finish();
                         BaseActivity.baseChannel = "";
                         BaseActivity.baseSection = "";
+                        stopService(new Intent(HomePageActivity.this, PlaybackService.class));
                     }
                 },
                 new ModuleMessagePopWindow.CancelListener() {

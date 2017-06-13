@@ -1,6 +1,5 @@
 package tv.ismar.daisy;
 
-import android.content.BroadcastReceiver;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.StaggeredGridLayoutManager;
@@ -26,7 +25,6 @@ import tv.ismar.app.network.SkyService;
 import tv.ismar.app.ui.adapter.OnItemClickListener;
 import tv.ismar.app.ui.adapter.OnItemFocusedListener;
 import tv.ismar.app.widget.MyRecyclerView;
-import tv.ismar.library.injectdb.util.Log;
 import tv.ismar.searchpage.utils.JasmineUtil;
 
 
@@ -50,7 +48,8 @@ public class PlayFinishedActivity extends BaseActivity implements View.OnClickLi
     private boolean hasHistory;
     private PlayFinishedAdapter playFinishedAdapter;
     private Subscription playExitSub;
-    private boolean exitPlay=false;
+    private boolean isFirstIn=true;
+
 
     @Override
         protected void onCreate(Bundle savedInstanceState) {
@@ -158,10 +157,12 @@ public class PlayFinishedActivity extends BaseActivity implements View.OnClickLi
     private void setOrientation(boolean Vertical) {
         if(Vertical){
             play_finished_vertical_recylerview.setVisibility(View.VISIBLE);
+            vertical_poster_focus.setVisibility(View.VISIBLE);
             play_finished_vertical_recylerview.setLayoutManager(new StaggeredGridLayoutManager(1,StaggeredGridLayoutManager.HORIZONTAL));
             isVertical=true;
         }else{
             play_finished_horizontal_recylerview.setVisibility(View.VISIBLE);
+            horizontal_poster_focus.setVisibility(View.VISIBLE);
             play_finished_horizontal_recylerview.setLayoutManager(new StaggeredGridLayoutManager(1,StaggeredGridLayoutManager.HORIZONTAL));
             isVertical=false;
         }
@@ -169,6 +170,11 @@ public class PlayFinishedActivity extends BaseActivity implements View.OnClickLi
 
     private void processData(final ArrayList<PlayfinishedRecommend.RecommendItem> list) {
         playFinishedAdapter = new PlayFinishedAdapter(this,list,isVertical);
+        if(isVertical){
+            play_finished_vertical_recylerview.setAdapter(playFinishedAdapter);
+        }else{
+            play_finished_horizontal_recylerview.setAdapter(playFinishedAdapter);
+        }
         playFinishedAdapter.setItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
@@ -217,7 +223,11 @@ public class PlayFinishedActivity extends BaseActivity implements View.OnClickLi
                         }else{
                             params.leftMargin=getResources().getDimensionPixelOffset(R.dimen.scroll_732);
                         }
-                        vertical_poster_focus.setLayoutParams(params);
+                        if(isFirstIn) {
+                            isFirstIn = false;
+                        }else{
+                            vertical_poster_focus.setLayoutParams(params);
+                        }
                         vertical_poster_focus.setVisibility(View.VISIBLE);
                         view.findViewById(R.id.item_vertical_poster_title).setSelected(true);
                         focusedPosition=position;
@@ -254,7 +264,11 @@ public class PlayFinishedActivity extends BaseActivity implements View.OnClickLi
                         }else{
                             params.leftMargin=getResources().getDimensionPixelOffset(R.dimen.scroll_665);
                         }
-                        horizontal_poster_focus.setLayoutParams(params);
+                        if(isFirstIn) {
+                            isFirstIn = false;
+                        }else{
+                            horizontal_poster_focus.setLayoutParams(params);
+                        }
                         horizontal_poster_focus.setVisibility(View.VISIBLE);
                         focusedPosition=position;
                         JasmineUtil.scaleOut3(view);
@@ -265,11 +279,6 @@ public class PlayFinishedActivity extends BaseActivity implements View.OnClickLi
                 }
             }
         });
-        if(isVertical){
-            play_finished_vertical_recylerview.setAdapter(playFinishedAdapter);
-        }else{
-            play_finished_horizontal_recylerview.setAdapter(playFinishedAdapter);
-        }
     }
 
     @Override

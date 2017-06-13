@@ -107,7 +107,6 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
     private PlayerSettingMenu settingMenu;
     private View parentView;
     private SeekBar player_seekBar;
-    private PlayerMenu playerMenu;
     private ImageView player_logo_image;
     private TextView ad_count_text, ad_vip_text;
     private View ad_vip_layout;
@@ -223,30 +222,45 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
     public void onPause() {
         super.onPause();
         LogUtils.i(TAG, "onPause > setup : " + sharpSetupKeyClick + " sdcard : " + mounted);
-        if (sharpSetupKeyClick || mounted) {
-            sharpSetupKeyClick = false;
-            mounted = false;
-            return;
-        }
-        if (mPlaybackService != null && !mPlaybackService.isPlayerStopping()&&!backpress) {
-            // 不能放在onStop()中，SmartPlayer在该生命周期中调用会有onError回调产生
-            mPlaybackService.stopPlayer(false);
-        }
+//        if (sharpSetupKeyClick || mounted) {
+//            sharpSetupKeyClick = false;
+//            mounted = false;
+//            return;
+//        }
+//        if (mPlaybackService != null && !mPlaybackService.isPlayerStopping()&&!backpress) {
+//            // 不能放在onStop()中，SmartPlayer在该生命周期中调用会有onError回调产生
+//            mPlaybackService.stopPlayer(false);
+//        }
         // handler消息需要立即删除，广告请求停止
-        mHandler.removeCallbacksAndMessages(null);
+//        mHandler.removeCallbacksAndMessages(null);
 //        mPlaybackService.addHistory(mCurrentPosition, true);
-        if (mAdvertisement != null) {
-            mAdvertisement.stopSubscription();
-        }
+//        if (mAdvertisement != null) {
+//            mAdvertisement.stopSubscription();
+//        }
     }
 
     @Override
     public void onStop() {
         super.onStop();
         LogUtils.i(TAG, "onStop > setup : " + sharpSetupKeyClick + " sdcard : " + mounted);
+//        if (sharpSetupKeyClick || mounted) {r
+//            sharpSetupKeyClick = false;
+//            mounted = false;
+//            return;
+//        }
+        if (mPlaybackService != null && !mPlaybackService.isPlayerStopping()&&!backpress) {
+            mPlaybackService.stopPlayer(true);
+        }
+        if (mPlaybackService != null) {
+            mPlaybackService.setCallback(null);
+            mPlaybackService.addHistory(mCurrentPosition, false);// 在非按返回键退出应用时需添加历史记录，此时无需发送至服务器，addHistory不能统一写到此处
+        }
+        mHandler.removeCallbacksAndMessages(null);
+
         unregisterConnectionReceiver();
         unRegisterClosePlayerReceiver();
         if (mAdvertisement != null) {
+            mAdvertisement.stopSubscription();
             mAdvertisement.setOnPauseVideoAdListener(null);
         }
         if (isPopWindowShow()) {
@@ -255,7 +269,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
             popDialog = null;
         }
         mClient.disconnect();
-        mPlaybackService.setCallback(null);
+
     }
 
     @Override
@@ -303,10 +317,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
             closeActivity("source");
             return;
         }
-        String deviceToken = IsmartvActivator.getInstance().getDeviceToken();
-        String authToken = IsmartvActivator.getInstance().getAuthToken();
-        HttpManager.getInstance().setAccessToken(authToken);
-        HttpManager.getInstance().init(IsmartvActivator.getInstance().getApiDomain(), IsmartvActivator.getInstance().getUpgradeDomain(), deviceToken);
+        mPlaybackService.initUserInfo();
         if (requestCode == PAYMENT_REQUEST_CODE) {
             if (resultCode == PAYMENT_SUCCESS_CODE) {
                 // 成功购买后继续播放
@@ -316,6 +327,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
                 // 在没有登录的情况下，试看影片，成功购买后，继续上次播放，数据库更新为异步操作
                 mPlaybackService.successBuyVideo = true;
                 mPlaybackService.preparePlayer(extraItemPk, extraSubItemPk, extraSource);
+                settingMenu=null;
             } else {
                 // 没有购买，退出播放器
                 closeActivity("finish");
@@ -619,6 +631,8 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
                 mAdCount = mPlaybackService.getMediaPlayer().getAdCountDownTime() / 1000;
             }
             mHandler.sendEmptyMessage(MSG_AD_COUNTDOWN);
+            Advertisement advertisement=new Advertisement(getActivity());
+            advertisement.getRepostQiantieUrl();
         } else {
             mAdCount = 0;
             canShowMenuOrPannel = true;
@@ -728,17 +742,17 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
                                 if (nextItem != null && nextItem.getClip() != null) {
                                     mPlaybackService.logVideoExit(mCurrentPosition, "next");
                                     // 菜单栏剧集切换
-                                    createMenu();
-                                    PlayerMenuItem menuItem = playerMenu.findItem(mPlaybackService.getSubItemPk());
-                                    if (menuItem != null) {
-                                        menuItem.selected = false;
-                                    }
+                                  //  createMenu();
+                                  //  PlayerMenuItem menuItem = playerMenu.findItem(mPlaybackService.getSubItemPk());
+//                                    if (menuItem != null) {
+//                                        menuItem.selected = false;
+//                                    }
                                     mPlaybackService.getItemEntity().setTitle(nextItem.getTitle());
                                     mPlaybackService.getItemEntity().setClip(nextItem.getClip());
-                                    PlayerMenuItem nextMenuItem = playerMenu.findItem(mPlaybackService.getSubItemPk());
-                                    if (nextMenuItem != null) {
-                                        nextMenuItem.selected = true;
-                                    }
+//                                    PlayerMenuItem nextMenuItem = playerMenu.findItem(mPlaybackService.getSubItemPk());
+//                                    if (nextMenuItem != null) {
+//                                        nextMenuItem.selected = true;
+//                                    }
                                     mPlaybackService.stopPlayer(false);
                                     showBuffer(PlAYSTART + mPlaybackService.getItemEntity().getTitle());
                                     mPlaybackService.switchTelevision(mCurrentPosition, nextItem.getPk(), nextItem.getClip().getUrl());
@@ -858,60 +872,13 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
         }
         IAdController adController = mPlaybackService.getMediaPlayer().getAdController();
         switch (keyCode) {
-            case KeyEvent.KEYCODE_MENU:
             case KeyEvent.KEYCODE_DPAD_UP:
                 if (mPlaybackService.isPlayingAd()) {
                     return true;
                 }
-//                if (!isMenuShow()) {
-//                    showMenu();
-//                }
-                if(settingMenu!=null){
-                    if(settingMenu.isShowing()){
-                        settingMenu.dismiss();
-                    }else{
-                        settingMenu.showAtLocation(parentView,Gravity.BOTTOM,0,0);
-                        new Handler().postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                settingMenu.sendMsg();
-                            }
-                        },1000);
-                    }
-                }else{
-                    ItemEntity[] subItems = mPlaybackService.getItemEntity().getSubitems();
-                    List<ItemEntity> list=new ArrayList<>();
-                    if(subItems!=null) {
-                        for (int i = 0; i < subItems.length; i++) {
-                            list.add(subItems[i]);
-                        }
-                    }
-                    ArrayList<QuailtyEntity> quailtyEntities=new ArrayList<>();
-                    int currentQuality=0;
-                    List<ClipEntity.Quality> qualities = mPlaybackService.getMediaPlayer().getQualities();
-                    if (qualities != null && !qualities.isEmpty()) {
-                        for (int i = 0; i < qualities.size(); i++) {
-                            ClipEntity.Quality quality = qualities.get(i);
-                            QuailtyEntity quailtyEntity=new QuailtyEntity();
-                            quailtyEntity.setName(ClipEntity.Quality.getString(quality));
-                            quailtyEntity.setValue(quality.getValue()+1);
-                            if (mPlaybackService.getMediaPlayer().getCurrentQuality() == quality) {
-                                currentQuality=i;
-                            }
-                            quailtyEntities.add(quailtyEntity);
-                        }
-                    }
-                    settingMenu=new PlayerSettingMenu(getActivity().getApplicationContext(),list,mPlaybackService.getSubItemPk(),this,quailtyEntities,currentQuality,this);
-                    settingMenu.showAtLocation(parentView,Gravity.BOTTOM,0,0);
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            settingMenu.sendMsg();
-                        }
-                    },1000);
-                }
-                hidePanel();
+                showPannelDelayOut();
                 return true;
+            case KeyEvent.KEYCODE_MENU:
             case KeyEvent.KEYCODE_DPAD_DOWN:
                 // TODO 暂停广告按下消除
                 // TODO 悦享看广告一定时间后可以消除
@@ -926,7 +893,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
                     LogUtils.d(TAG, "Jump over ad.");
                     adController.skipAd();
                 }
-                showPannelDelayOut();
+                showMenu(0);
                 return true;
             case KeyEvent.KEYCODE_BACK:
 //                if (!isPopWindowShow() && !mPlaybackService.isPlayingAd()) {
@@ -1302,81 +1269,73 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
             mCurrentPosition = 0;
         player_seekBar.setProgress(mCurrentPosition);
     }
-
-    private boolean createMenu() {
-        if (mPlaybackService == null || mPlaybackService.getMediaPlayer() == null) {
-            return true;
-        }
-        if (playerMenu == null) {
-            playerMenu = new PlayerMenu(getActivity(), player_menu);
-            playerMenu.setOnCreateMenuListener(this);
-            // 添加电视剧子集
-            PlayerMenuItem subMenu;
+    private void createMenu(){
+        List<ItemEntity> list = new ArrayList<>();
+        if(!mPlaybackService.isPreview()) {
             ItemEntity[] subItems = mPlaybackService.getItemEntity().getSubitems();
-            if (subItems != null && subItems.length > 0 && !mPlaybackService.isPreview()) {
-                subMenu = playerMenu.addSubMenu(MENU_TELEPLAY_ID_START, getResources().getString(R.string.player_menu_teleplay));
-                for (ItemEntity subItem : subItems) {
-                    boolean isSelected = false;
-                    if (mPlaybackService.getSubItemPk() == subItem.getPk()) {
-                        isSelected = true;
-                    }
-                    String subItemTitle = subItem.getTitle();
-                    if (subItemTitle.contains("第")) {
-                        int ind = subItemTitle.indexOf("第");
-                        subItemTitle = subItemTitle.substring(ind);
-                    }
-                    subMenu.addItem(subItem.getPk(), subItemTitle, isSelected);
+            if (subItems != null) {
+                for (int i = 0; i < subItems.length; i++) {
+                    list.add(subItems[i]);
                 }
             }
-            // 添加分辨率
-            subMenu = playerMenu.addSubMenu(MENU_QUALITY_ID_START, getResources().getString(R.string.player_menu_quality));
+        }
+            ArrayList<QuailtyEntity> quailtyEntities = new ArrayList<>();
+            int currentQuality = 0;
             List<ClipEntity.Quality> qualities = mPlaybackService.getMediaPlayer().getQualities();
             if (qualities != null && !qualities.isEmpty()) {
                 for (int i = 0; i < qualities.size(); i++) {
                     ClipEntity.Quality quality = qualities.get(i);
-                    String qualityName = ClipEntity.Quality.getString(quality);
-                    boolean isSelected = false;
+                    QuailtyEntity quailtyEntity = new QuailtyEntity();
+                    quailtyEntity.setName(ClipEntity.Quality.getString(quality));
+                    quailtyEntity.setValue(quality.getValue() + 1);
                     if (mPlaybackService.getMediaPlayer().getCurrentQuality() == quality) {
-                        isSelected = true;
+                        currentQuality = i;
                     }
-                    // quality id从0开始,此处加1
-                    subMenu.addItem(quality.getValue() + 1, qualityName, isSelected);
+                    quailtyEntities.add(quailtyEntity);
                 }
             }
-            // 添加客服
-            playerMenu.addItem(MENU_KEFU_ID, getResources().getString(R.string.player_menu_kefu));
-            // 添加从头播放
-            if (mPlaybackService.getItemEntity() != null && !mPlaybackService.getItemEntity().getLiveVideo()) {
-                playerMenu.addItem(MENU_RESTART, getResources().getString(R.string.player_menu_restart));
-            }
-        }
-        return true;
+            settingMenu = new PlayerSettingMenu(getActivity().getApplicationContext(), list, mPlaybackService.getSubItemPk(), this, quailtyEntities, currentQuality, this);
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    settingMenu.sendMsg();
+                }
+            }, 1000);
     }
 
-    private void showMenu() {
+    private void showMenu(int type) {
         if (mIsExiting || !canShowMenuOrPannel || mPlaybackService == null || mPlaybackService.getMediaPlayer() == null) {
             return;
         }
-        if (!isMenuShow()) {
-            if (isPanelShow()) {
-                hidePanel();
-            }
+        if(settingMenu==null){
             createMenu();
-            playerMenu.show();
         }
+        if (isPanelShow()) {
+            hidePanel();
+        }
+        if(type==1){
+            settingMenu.showQuality();
+        }
+        settingMenu.showAtLocation(parentView,Gravity.BOTTOM,0,0);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                settingMenu.sendMsg();
+            }
+        },1000);
     }
 
     private void hideMenu() {
         if (isMenuShow()) {
-            playerMenu.hide();
+            settingMenu.dismiss();
         }
     }
 
     public boolean isMenuShow() {
-        if (playerMenu == null) {
+        if (settingMenu == null) {
             return false;
         }
-        return playerMenu.isVisible();
+        return settingMenu.isShowing();
     }
 
     public void showPannelDelayOut() {
@@ -1524,15 +1483,18 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
                                 if (isPanelShow()) {
                                     hidePanel();
                                 }
-                                createMenu();
-                                ItemEntity[] subItems = mPlaybackService.getItemEntity().getSubitems();
-                                if (subItems != null && subItems.length > 0 && !mPlaybackService.isPreview()) {
-                                    // 电视剧
-                                    playerMenu.showQuality(1);
-                                } else {
-                                    // 电影
-                                    playerMenu.showQuality(0);
-                                }
+                              //  createMenu();
+//                                ItemEntity[] subItems = mPlaybackService.getItemEntity().getSubitems();
+//                                if (subItems != null && subItems.length > 0 && !mPlaybackService.isPreview()) {
+//                                    // 电视剧
+//                                //    playerMenu.showQuality(1);
+//
+//                                } else {
+//                                    // 电影
+//                                //    playerMenu.showQuality(0);
+//                                    showMenu(1);
+//                                }
+                                showMenu(1);
                             }
                         } else {
                             // 重新加载

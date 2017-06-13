@@ -44,6 +44,26 @@ public class FilterConditions {
         private GenreBean genre;
         private AreaBean area;
         private AirDateBean air_date;
+        private AgeBean age;
+        private FeatureBean feature;
+
+        public FeatureBean getFeature() {
+            return feature;
+        }
+
+        public void setFeature(FeatureBean feature) {
+            this.feature = feature;
+        }
+
+        public AgeBean getAge() {
+            return age;
+        }
+
+        public void setAge(AgeBean age) {
+            this.age = age;
+        }
+
+
 
         public GenreBean getGenre() {
             return genre;
@@ -134,6 +154,69 @@ public class FilterConditions {
         }
 
         public static class AirDateBean {
+
+
+            private int position;
+            private String label;
+            private List<List<String>> values;
+
+            public int getPosition() {
+                return position;
+            }
+
+            public void setPosition(int position) {
+                this.position = position;
+            }
+
+            public String getLabel() {
+                return label;
+            }
+
+            public void setLabel(String label) {
+                this.label = label;
+            }
+
+            public List<List<String>> getValues() {
+                return values;
+            }
+
+            public void setValues(List<List<String>> values) {
+                this.values = values;
+            }
+        }
+        public static class AgeBean {
+
+
+            private int position;
+            private String label;
+            private List<List<String>> values;
+
+            public int getPosition() {
+                return position;
+            }
+
+            public void setPosition(int position) {
+                this.position = position;
+            }
+
+            public String getLabel() {
+                return label;
+            }
+
+            public void setLabel(String label) {
+                this.label = label;
+            }
+
+            public List<List<String>> getValues() {
+                return values;
+            }
+
+            public void setValues(List<List<String>> values) {
+                this.values = values;
+            }
+        }
+
+        public static class FeatureBean {
 
 
             private int position;

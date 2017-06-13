@@ -344,7 +344,9 @@ public class FilmFragment extends ChannelBaseFragment {
         if(focusView!=null){
             Object tagObject = focusView.getTag(R.layout.item_poster);
             index=Integer.parseInt(tagObject.toString())-1;
-            recommendFocus=true;
+            if(guideRecommmendList.getChildAt(index).hasFocus()) {
+                recommendFocus = true;
+            }
 
         }
         guideRecommmendList.removeAllViews();

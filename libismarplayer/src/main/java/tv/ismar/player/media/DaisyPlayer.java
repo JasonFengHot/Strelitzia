@@ -175,15 +175,28 @@ public class DaisyPlayer extends IsmartvPlayer implements SurfaceHelper.SurfaceC
         }
     }
 
+    // 退出播放器不释放资源
     @Override
     public void stop() {
+        // 注意切换码率不能使用此函数停止播放器
         if (mPlayer != null) {
+            mPlayer.setOnPreparedListenerUrl(null);
+            mPlayer.setOnVideoSizeChangedListener(null);
+            mPlayer.setOnSeekCompleteListener(null);
+            mPlayer.setOnErrorListener(null);
+            mPlayer.setOnInfoListener(null);
+            mPlayer.setOnTsInfoListener(null);
+            mPlayer.setOnM3u8IpListener(null);
+            mPlayer.setOnCompletionListenerUrl(null);
             mPlayer.stop();
+            mPlayer.close();
+//            mPlayer.reset();
         }
         mCurrentState = STATE_IDLE;
 
     }
 
+    // 退出APP释放播放器资源
     @Override
     public void release() {
         if (mPlayer != null) {
@@ -196,8 +209,7 @@ public class DaisyPlayer extends IsmartvPlayer implements SurfaceHelper.SurfaceC
             mPlayer.setOnM3u8IpListener(null);
             mPlayer.setOnCompletionListenerUrl(null);
             mPlayer.stop();
-            mPlayer.close();
-            mPlayer.reset();
+            mPlayer.release();
             mPlayer = null;
         }
         mCurrentState = STATE_IDLE;
@@ -267,7 +279,6 @@ public class DaisyPlayer extends IsmartvPlayer implements SurfaceHelper.SurfaceC
                 mSurfaceHelper.release();
             }
             stop();
-            release();
             mSurfaceHelper = new SurfaceHelper(mSurfaceView, this);
             mSurfaceHelper.attachSurfaceView(false);
         }
@@ -385,7 +396,7 @@ public class DaisyPlayer extends IsmartvPlayer implements SurfaceHelper.SurfaceC
                     } else {
                         PlayerEvent.videoPlayBlockend(
                                 logPlayerEvent,
-                                logSpeed, getCurrentPosition(),
+                                logSpeed, (DateUtils.currentTimeMillis() - logBufferStartTime),
                                 logMediaIp, logPlayerFlag);
                     }
                     break;
@@ -555,12 +566,6 @@ public class DaisyPlayer extends IsmartvPlayer implements SurfaceHelper.SurfaceC
             mPlayer.createPlayer();
             mPlayer.setScreenOnWhilePlaying(true);
             mPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-            mPlayer.setScreenOnWhilePlaying(true);
-            if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-                mPlayer.setSDCardisAvailable(true);
-            } else {
-                mPlayer.setSDCardisAvailable(false);
-            }
             mPlayer.setOnPreparedListenerUrl(onPreparedListenerUrl);
             mPlayer.setOnVideoSizeChangedListener(onVideoSizeChangedListener);
             mPlayer.setOnSeekCompleteListener(onSeekCompleteListener);
@@ -593,6 +598,15 @@ public class DaisyPlayer extends IsmartvPlayer implements SurfaceHelper.SurfaceC
             @Override
             public void onInitComplete(SmartPlayer smartPlayer, boolean bSuccess) {
                 LogUtils.d(TAG,"onInitComplete + ispreload="+ispreload);
+                if (mPlayer != smartPlayer) {
+                    LogUtils.e(TAG, "onInitComplete player object not equal");
+                    return;
+                }
+                if (ispreload && mPlayer.getPlayerType() == SmartPlayer.PlayerType.PlayerSystem) {
+                    LogUtils.e(TAG, "SmartPlayer.PlayerType.PlayerSystem can not used to preload");
+                    return;
+                }
+
                 if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
                     mPlayer.setSDCardisAvailable(true);
                 } else {
@@ -614,13 +628,18 @@ public class DaisyPlayer extends IsmartvPlayer implements SurfaceHelper.SurfaceC
                     mPlayer.setOnTsInfoListener(onTsInfoListener);
                     mPlayer.setOnM3u8IpListener(onM3u8IpListener);
                     mPlayer.setOnCompletionListenerUrl(onCompletionListenerUrl);
-                    mPlayer.setDisplay(mSurfaceHelper.getSurfaceHolder());
                     mPlayer.setDataSource(mediaMeta.getUrls());
+                    mPlayer.setDisplay(mSurfaceHelper.getSurfaceHolder());
                     mPlayer.prepareAsync();
                 }
             }
         });
-        mPlayer.initPlayer(mediaMeta.getUrls(),"265".equals(mMediaEntity.getClipEntity().getCode_version()),mMediaEntity.isLivingVideo(),mMediaEntity.getStartPosition());
+        mPlayer.initPlayer(
+                mediaMeta.getUrls(),
+                mMediaEntity.isLivingVideo(),
+                "265".equals(mMediaEntity.getClipEntity().getCode_version()),
+                mMediaEntity.getStartPosition()
+        );
     }
 
 }
