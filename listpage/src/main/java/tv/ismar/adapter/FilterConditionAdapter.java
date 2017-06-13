@@ -57,11 +57,6 @@ public class FilterConditionAdapter extends RecyclerView.Adapter<FilterCondition
     public void onBindViewHolder(final MyViewHolder holder, final int position) {
         holder.radio.setText(mData.get(position).get(1));
         holder.itemView.setTag(mData.get(position).get(0));
-        if(position!=mData.size()-1) {
-            RecyclerView.LayoutParams params = new RecyclerView.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
-            params.rightMargin = mContext.getResources().getDimensionPixelOffset(R.dimen.filter_condition_radio_mr);
-            holder.itemView.setLayoutParams(params);
-        }
         holder.radio.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -72,8 +67,9 @@ public class FilterConditionAdapter extends RecyclerView.Adapter<FilterCondition
         holder.radio.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                if(itemFocusedListener!=null)
-                    itemFocusedListener.onItemfocused(v,position,hasFocus);
+                if(itemFocusedListener!=null) {
+                    itemFocusedListener.onItemfocused(v, position, hasFocus);
+                }
             }
         });
 

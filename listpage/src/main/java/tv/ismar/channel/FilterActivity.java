@@ -34,6 +34,7 @@ import tv.ismar.app.models.FilterConditions;
 import tv.ismar.app.ui.adapter.OnItemClickListener;
 import tv.ismar.app.ui.adapter.OnItemFocusedListener;
 import tv.ismar.app.widget.MyRecyclerView;
+import tv.ismar.library.injectdb.util.Log;
 import tv.ismar.listpage.R;
 import tv.ismar.searchpage.utils.JasmineUtil;
 import tv.ismar.view.FilterConditionGroupView;
@@ -59,6 +60,7 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
     private String content_model;
     private FilterConditions mFilterConditions;
     private PopupWindow filterPopup;
+    private boolean isFocus=true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -227,8 +229,9 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
         filterPopup.showAtLocation(filter_condition_layout,Gravity.NO_GRAVITY,0,getResources().getDimensionPixelOffset(R.dimen.filter_condition_popup_position));
         Message message=new Message();
         message.arg1=0;
-        ((FilterConditionGroupView)filter_conditions.getChildAt(0)).handler.sendMessageDelayed(message,1000);
+        ((FilterConditionGroupView) filter_conditions.getChildAt(0)).handler.sendMessageDelayed(message, 1000);
         filterPopup.setOnDismissListener(new PopupWindow.OnDismissListener() {
+
             @Override
             public void onDismiss() {
                 if(poster_recyclerview.getChildAt(0)!=null)
@@ -242,7 +245,8 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
         no_limit.add("");
         no_limit.add("全部");
         values.add(0,no_limit);
-        final FilterConditionGroupView filterConditionGroupView=new FilterConditionGroupView(this,values,label);
+        final FilterConditionGroupView filterConditionGroupView=new FilterConditionGroupView(this,values,label,isFocus);
+        isFocus = false;
         filterConditionGroupView.setFocusable(true);
         filterConditionGroupView.setFocusableInTouchMode(true);
         filterConditionGroupView.setOnCheckChangeListener(new FilterConditionGroupView.OnCheckChange() {
@@ -360,10 +364,12 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
         int i = v.getId();
         if(i==R.id.filter_arrow_down){
             JasmineUtil.scaleOut4(v);
+            if(poster_recyclerview.getChildCount()>0)
             poster_recyclerview.smoothScrollBy(0, (int) (poster_recyclerview.getChildAt(0).getY()+poster_recyclerview.getChildAt(0).getHeight()*2+getResources().getDimensionPixelOffset(R.dimen.filter_poster_vertical_scroll_space)));
         }else if(i==R.id.filter_arrow_up)   {
             JasmineUtil.scaleOut4(v);
-            poster_recyclerview.smoothScrollBy(0, (int) (poster_recyclerview.getChildAt(0).getY()-poster_recyclerview.getChildAt(0).getHeight()*2-getResources().getDimensionPixelOffset(R.dimen.filter_poster_vertical_scroll_space)));
+            if(poster_recyclerview.getChildCount()>0)
+                poster_recyclerview.smoothScrollBy(0, (int) (poster_recyclerview.getChildAt(0).getY()-poster_recyclerview.getChildAt(0).getHeight()*2-getResources().getDimensionPixelOffset(R.dimen.filter_poster_vertical_scroll_space)));
         }else if(i==R.id.filter_tab){
             showFilterPopup();
         }
