@@ -257,6 +257,7 @@ public class DaisyPlayer extends IsmartvPlayer implements SurfaceHelper.SurfaceC
 
     @Override
     public boolean isPlaying() {
+        LogUtils.i(TAG, "Player:" + mPlayer + " " + mCurrentState);
         return isInPlaybackState() && mPlayer.isPlaying();
     }
 
@@ -478,10 +479,10 @@ public class DaisyPlayer extends IsmartvPlayer implements SurfaceHelper.SurfaceC
     private SmartPlayer.OnErrorListener onErrorListener = new SmartPlayer.OnErrorListener() {
         @Override
         public boolean onError(SmartPlayer smartPlayer, int i, int i1) {
-            mCurrentState = STATE_ERROR;
             if (i == 1010){
                 return true;
             }
+            mCurrentState = STATE_ERROR;
             PlayerEvent.videoExcept(
                     "mediaexception", String.valueOf(i),
                     logPlayerEvent, logSpeed,

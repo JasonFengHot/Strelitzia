@@ -21,6 +21,7 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -650,11 +651,18 @@ public class DetailPageFragment extends Fragment implements DetailPageContract.V
     }
 
     private boolean videoIsStart() {
-        if (mItemEntity.getStartTime() != null) {
+        Date startDate = null;
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            startDate = sdf.parse(mItemEntity.getStartTime());
+        } catch (ParseException e) {
+            System.out.println(e.getMessage());
+        }
+        if (startDate != null) {
             Calendar currentCalendar = new GregorianCalendar(TimeZone.getTimeZone("Asia/Shanghai"), Locale.CHINA);
             currentCalendar.setTime(TrueTime.now());
             Calendar startCalendar = new GregorianCalendar(TimeZone.getTimeZone("Asia/Shanghai"), Locale.CHINA);
-            startCalendar.setTime(mItemEntity.getStartTime());
+            startCalendar.setTime(startDate);
             if (currentCalendar.after(startCalendar)) {
                 return true;
             } else {

@@ -85,7 +85,7 @@ public class ItemEntity {
     private boolean renew_buy;
     @SerializedName("start_time")
     @JsonProperty("start_time")
-    private Date startTime;
+    private String startTime;
 
     public boolean isRenew_buy() {
         return renew_buy;
@@ -95,11 +95,11 @@ public class ItemEntity {
         this.renew_buy = renew_buy;
     }
 
-    public Date getStartTime() {
+    public String getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(Date startTime) {
+    public void setStartTime(String startTime) {
         this.startTime = startTime;
     }
 
