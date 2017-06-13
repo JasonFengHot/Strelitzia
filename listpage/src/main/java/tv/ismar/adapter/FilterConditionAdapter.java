@@ -23,6 +23,7 @@ public class FilterConditionAdapter extends RecyclerView.Adapter<FilterCondition
     private List<List<String>> mData;
     private OnItemClickListener itemClickListener;
     private OnItemFocusedListener itemFocusedListener;
+    private boolean isFirst=true;
 
     public OnItemClickListener getItemClickListener() {
         return itemClickListener;
@@ -75,6 +76,11 @@ public class FilterConditionAdapter extends RecyclerView.Adapter<FilterCondition
                     itemFocusedListener.onItemfocused(v,position,hasFocus);
             }
         });
+
+        if(isFirst&&position==0){
+            holder.radio.setChecked(true);
+            isFirst = false;
+        }
 
     }
 
