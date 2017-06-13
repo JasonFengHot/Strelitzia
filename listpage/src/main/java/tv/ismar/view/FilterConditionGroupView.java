@@ -1,6 +1,7 @@
 package tv.ismar.view;
 
 import android.content.Context;
+import android.graphics.Rect;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.widget.RecyclerView;
@@ -18,7 +19,9 @@ import android.widget.TextView;
 import java.util.List;
 
 import tv.ismar.adapter.FilterConditionAdapter;
+import tv.ismar.adapter.SpaceItemDecoration;
 import tv.ismar.app.ui.adapter.OnItemClickListener;
+import tv.ismar.app.ui.adapter.OnItemFocusedListener;
 import tv.ismar.app.widget.MyRecyclerView;
 import tv.ismar.listpage.R;
 
@@ -38,6 +41,7 @@ public class FilterConditionGroupView extends LinearLayout implements View.OnHov
     private String label;
     public boolean isHover;
     private boolean isFirst=true;
+    private boolean isFocus;
     public Handler handler=new Handler(new Handler.Callback() {
         @Override
         public boolean handleMessage(Message msg) {
@@ -59,10 +63,11 @@ public class FilterConditionGroupView extends LinearLayout implements View.OnHov
 
     private OnCheckChange onCheckChange;
 
-    public FilterConditionGroupView(Context context,List<List<String>> values,String label) {
+    public FilterConditionGroupView(Context context,List<List<String>> values,String label,boolean isFocus) {
         super(context);
         this.label = label;
         this.values = values;
+        this.isFocus=isFocus;
         initView(context);
         initData(context);
 
@@ -152,7 +157,6 @@ public class FilterConditionGroupView extends LinearLayout implements View.OnHov
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
                 if(isFirst) {
-                    Log.e("onscroll",recyclerView.getChildCount()+"&"+values.size());
                     if (recyclerView.getChildCount() < values.size()) {
                         filter_condition_group_arrow_right.setVisibility(View.VISIBLE);
                     } else {
@@ -174,6 +178,15 @@ public class FilterConditionGroupView extends LinearLayout implements View.OnHov
         filter_condition_group_recycler.setLayoutManager(new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.HORIZONTAL));
         filter_condition_group_arrow_left.setOnKeyListener(this);
         filter_condition_group_arrow_right.setOnKeyListener(this);
+        filter_condition_group_recycler.addItemDecoration(new SpaceItemDecoration(getResources().getDimensionPixelOffset(R.dimen.filter_condition_radio_mr),0));
+        filter_condition_group_recycler.setOnFocusChangeListener(new OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(checkedView!=null){
+                    checkedView.requestFocus();
+                }
+            }
+        });
     }
 
 
@@ -188,5 +201,13 @@ public class FilterConditionGroupView extends LinearLayout implements View.OnHov
     }
     public void setOnCheckChangeListener(OnCheckChange onCheckChangeListener){
         onCheckChange=onCheckChangeListener;
+    }
+
+    @Override
+    protected void onFocusChanged(boolean gainFocus, int direction, Rect previouslyFocusedRect) {
+        super.onFocusChanged(gainFocus, direction, previouslyFocusedRect);
+        if(gainFocus){
+            filter_condition_group_recycler.requestFocus();
+        }
     }
 }
