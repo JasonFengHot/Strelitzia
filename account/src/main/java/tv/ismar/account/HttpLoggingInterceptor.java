@@ -210,7 +210,7 @@ public final class HttpLoggingInterceptor implements Interceptor {
                 }
             }
 
-            Buffer requestBuffer = new Buffer();
+            Buffer requestBuffer = null;
             if (request.method().equals("GET")) {
                 logContent.setType("参数");
                 HashMap<String, String> requestParametersMap = new HashMap<>();
@@ -220,18 +220,20 @@ public final class HttpLoggingInterceptor implements Interceptor {
                 logContent.setRequest_parameters(new Gson().toJson(requestParametersMap));
             } else if (request.method().equals("POST")) {
                 logContent.setType("参数");
+                Buffer buffer = new Buffer();
                 if (hasRequestBody) {
-                    requestBody.writeTo(requestBuffer);
+                    requestBody.writeTo(buffer);
+                    requestBuffer = buffer.clone();
                     Charset charset = UTF8;
                     MediaType contentType = requestBody.contentType();
                     if (contentType != null) {
                         charset = contentType.charset(UTF8);
                     }
 
-                    if (isPlaintext(requestBuffer)) {
+                    if (isPlaintext(buffer)) {
                         logContent.setType("参数");
-                        String parameter = requestBuffer.readString(charset);
-                        logContent.setRequest_parameters(new Gson().toJson(requestParamsToMap(parameter)));
+                        String parameter = buffer.readString(charset);
+                        logContent.setRequest_parameters(parameter);
                     } else {
                         logContent.setType("流");
                     }
@@ -243,7 +245,6 @@ public final class HttpLoggingInterceptor implements Interceptor {
             } else if (bodyEncoded(request.headers())) {
                 logger.log("--> END " + request.method() + " (encoded body omitted)");
             } else {
-                Buffer buffer = requestBuffer.clone();
                 Charset charset = UTF8;
                 MediaType contentType = requestBody.contentType();
                 if (contentType != null) {
@@ -251,8 +252,8 @@ public final class HttpLoggingInterceptor implements Interceptor {
                 }
 
                 logger.log("");
-                if (isPlaintext(buffer)) {
-                    String parameter = buffer.readString(charset);
+                if (requestBuffer != null && isPlaintext(requestBuffer)) {
+                    String parameter = requestBuffer.readString(charset);
                     logger.log(parameter);
 
                     logger.log("--> END " + request.method()
