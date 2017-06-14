@@ -30,6 +30,8 @@
         android:layout_width="@dimen/filter_condition_group_recycler_w"
         android:layout_height="@dimen/filter_condition_group_recycler_h"
         android:layout_marginLeft="@dimen/filter_condition_group_recycler_ml"
+        android:paddingLeft="@dimen/filter_condition_group_recycler_pl"
+        android:descendantFocusability="afterDescendants"
         android:layout_gravity="center_vertical"/>
 
     <Button

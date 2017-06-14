@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Message;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -34,7 +34,6 @@ import tv.ismar.app.models.FilterConditions;
 import tv.ismar.app.ui.adapter.OnItemClickListener;
 import tv.ismar.app.ui.adapter.OnItemFocusedListener;
 import tv.ismar.app.widget.MyRecyclerView;
-import tv.ismar.library.injectdb.util.Log;
 import tv.ismar.listpage.R;
 import tv.ismar.searchpage.utils.JasmineUtil;
 import tv.ismar.view.FilterConditionGroupView;
@@ -45,7 +44,7 @@ import tv.ismar.view.FilterConditionGroupView;
 public class FilterActivity extends BaseActivity implements View.OnClickListener, View.OnHoverListener, View.OnFocusChangeListener {
 
     private TextView filter_title;
-    private TextView filter_tab;
+    private Button filter_tab;
     private LinearLayout filter_checked_conditiion;
     private MyRecyclerView poster_recyclerview;
     private LinearLayout filter_conditions;
@@ -88,7 +87,7 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
 
     private void initView() {
         filter_title = (TextView) findViewById(R.id.filter_title);
-        filter_tab = (TextView) findViewById(R.id.filter_tab);
+        filter_tab = (Button) findViewById(R.id.filter_tab);
         filter_checked_conditiion = (LinearLayout) findViewById(R.id.filter_checked_conditiion);
         poster_recyclerview = (MyRecyclerView) findViewById(R.id.poster_recyclerview);
         filter_condition_layout = View.inflate(this, R.layout.filter_condition_layout,null);
@@ -104,7 +103,6 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
             poster_recyclerview.setPadding(0,0,0,getResources().getDimensionPixelOffset(R.dimen.horizontal_recycler_padding_bottom));
             poster_recyclerview.addItemDecoration(new SpaceItemDecoration(getResources().getDimensionPixelOffset(R.dimen.filter_item_horizontal_poster_mr),getResources().getDimensionPixelOffset(R.dimen.filter_item_horizontal_poster_mb)));
         }
-        filter_tab.requestFocus();
         filter_tab.setOnClickListener(this);
         filter_arrow_up.setOnClickListener(this);
         filter_arrow_down.setOnClickListener(this);
@@ -196,7 +194,6 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
             }
         });
         filterPopup.setBackgroundDrawable(getResources().getDrawable(R.drawable.transparent));
-        getRootView().requestFocus();
         filterPopup.showAtLocation(filter_condition_layout,Gravity.NO_GRAVITY,0,getResources().getDimensionPixelOffset(R.dimen.filter_condition_popup_position));
         Message message=new Message();
         message.arg1=0;
@@ -343,6 +340,7 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                 poster_recyclerview.smoothScrollBy(0, (int) (poster_recyclerview.getChildAt(0).getY()-poster_recyclerview.getChildAt(0).getHeight()*2-getResources().getDimensionPixelOffset(R.dimen.filter_poster_vertical_scroll_space)));
         }else if(i==R.id.filter_tab){
             filter_tab.requestFocus();
+            getRootView().requestFocus();
             showFilterPopup();
         }
     }
