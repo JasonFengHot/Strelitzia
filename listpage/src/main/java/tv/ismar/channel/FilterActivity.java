@@ -3,9 +3,7 @@ package tv.ismar.channel;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Message;
 import android.support.v7.widget.GridLayoutManager;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -15,7 +13,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -194,10 +191,8 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
             }
         });
         filterPopup.setBackgroundDrawable(getResources().getDrawable(R.drawable.transparent));
+        getRootView().requestFocus();
         filterPopup.showAtLocation(filter_condition_layout,Gravity.NO_GRAVITY,0,getResources().getDimensionPixelOffset(R.dimen.filter_condition_popup_position));
-        Message message=new Message();
-        message.arg1=0;
-        ((FilterConditionGroupView) filter_conditions.getChildAt(0)).handler.sendMessageDelayed(message, 1000);
         filterPopup.setOnDismissListener(new PopupWindow.OnDismissListener() {
 
             @Override
@@ -331,16 +326,13 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
     public void onClick(View v) {
         int i = v.getId();
         if(i==R.id.filter_arrow_down){
-            JasmineUtil.scaleOut4(v);
             if(poster_recyclerview.getChildCount()>0)
             poster_recyclerview.smoothScrollBy(0, (int) (poster_recyclerview.getChildAt(0).getY()+poster_recyclerview.getChildAt(0).getHeight()*2+getResources().getDimensionPixelOffset(R.dimen.filter_poster_vertical_scroll_space)));
         }else if(i==R.id.filter_arrow_up)   {
-            JasmineUtil.scaleOut4(v);
             if(poster_recyclerview.getChildCount()>0)
                 poster_recyclerview.smoothScrollBy(0, (int) (poster_recyclerview.getChildAt(0).getY()-poster_recyclerview.getChildAt(0).getHeight()*2-getResources().getDimensionPixelOffset(R.dimen.filter_poster_vertical_scroll_space)));
         }else if(i==R.id.filter_tab){
             filter_tab.requestFocus();
-            getRootView().requestFocus();
             showFilterPopup();
         }
     }
@@ -356,11 +348,25 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
 
     @Override
     public void onFocusChange(View v, boolean hasFocus) {
-        if(hasFocus){
-            JasmineUtil.scaleOut4(v);
-        }else{
-            JasmineUtil.scaleIn4(v);
+        int i = v.getId();
+        if (i == R.id.filter_arrow_up) {
+            if(hasFocus){
+                filter_arrow_up.setBackgroundResource(R.drawable.filter_arrow_up_focus);
+                JasmineUtil.scaleOut4(v);
+            }else{
+                filter_arrow_up.setBackgroundResource(R.drawable.filter_arrow_up_normal);
+                JasmineUtil.scaleIn4(v);
+            }
+        } else if (i == R.id.filter_arrow_down) {
+            if(hasFocus){
+                filter_arrow_down.setBackgroundResource(R.drawable.filter_arrow_down_focus);
+                JasmineUtil.scaleOut4(v);
+            }else{
+                filter_arrow_down.setBackgroundResource(R.drawable.filter_arrow_down_normal);
+                JasmineUtil.scaleIn4(v);
+            }
         }
+
     }
 
 }

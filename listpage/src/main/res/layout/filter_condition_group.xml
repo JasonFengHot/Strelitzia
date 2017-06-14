@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:descendantFocusability="afterDescendants"
     >
 <LinearLayout
     android:layout_width="match_parent"
@@ -25,14 +26,18 @@
         android:layout_marginLeft="@dimen/filter_condition_group_arrow_ml"
         android:background="@drawable/filter_arrow_left_selector"
         android:visibility="invisible"/>
-    <tv.ismar.app.widget.MyRecyclerView
-        android:id="@+id/filter_condition_group_recycler"
+    <HorizontalScrollView
+        android:id="@+id/filter_condition_group_scrollview"
         android:layout_width="@dimen/filter_condition_group_recycler_w"
         android:layout_height="@dimen/filter_condition_group_recycler_h"
-        android:layout_marginLeft="@dimen/filter_condition_group_recycler_ml"
-        android:paddingLeft="@dimen/filter_condition_group_recycler_pl"
-        android:descendantFocusability="afterDescendants"
-        android:layout_gravity="center_vertical"/>
+        android:layout_gravity="center_vertical"
+        android:scrollbars="none">
+        <RadioGroup
+            android:id="@+id/filter_condition_radio_group"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"/>
+    </HorizontalScrollView>
 
     <Button
         android:id="@+id/filter_condition_group_arrow_right"

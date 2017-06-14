@@ -8,7 +8,7 @@
     android:gravity="center"
     android:textColor="@color/filter_text"
     android:focusable="true"
-    android:background="@drawable/filter_condition_checked_selector2"
+    android:layout_marginLeft="@dimen/filter_condition_radio_mr"
     >
 
 </RadioButton>
