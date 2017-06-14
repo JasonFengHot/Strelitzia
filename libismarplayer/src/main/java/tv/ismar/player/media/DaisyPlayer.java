@@ -34,57 +34,55 @@ public class DaisyPlayer extends IsmartvPlayer implements SurfaceHelper.SurfaceC
     private MediaMeta mMediaMeta;
     private int mDuration;
 
-    private static SmartPlayer mPlayer;
+    private SmartPlayer mPlayer;
     private SurfaceHelper mSurfaceHelper;
 
     private boolean isS3Seeking = false;// s3设备,seek后有1002表示bufferEnd
     private String logCurrentMediaUrl;
     private boolean isSwitchingQuality = false;// 切换码率后，不回调onPrepared,直接开始播放
 
-    private static SmartPlayer getSmartPlayerInstance(){
-        synchronized (DaisyPlayer.class) {
-            if (mPlayer == null) {
-                SmartPlayer.PlayerType player264Type = SmartPlayer.PlayerType.PlayerMedia;
-                SmartPlayer.PlayerType player265Type = SmartPlayer.PlayerType.PlayerMedia;
-                SmartPlayer.PlayerType playerliveType = SmartPlayer.PlayerType.PlayerMedia;
-                int h264PlayerType =IsmartvActivator.getInstance().getH264PlayerType();
-                int h265PlayerType =IsmartvActivator.getInstance().getH265PlayerType();
-                int livePlayerType =IsmartvActivator.getInstance().getLivePlayerType();
-                switch (h264PlayerType) {
-                    case 0:
-                        player264Type = SmartPlayer.PlayerType.PlayerMedia;
-                        break;
-                    case 1:
-                        player264Type = SmartPlayer.PlayerType.PlayerSystem;
-                        break;
-                    case 2:
-                        player264Type = SmartPlayer.PlayerType.PlayerCodec;
-                        break;
-                }
-                switch (h265PlayerType) {
-                    case 0:
-                        player265Type = SmartPlayer.PlayerType.PlayerMedia;
-                        break;
-                    case 1:
-                        player265Type = SmartPlayer.PlayerType.PlayerSystem;
-                        break;
-                    case 2:
-                        player265Type = SmartPlayer.PlayerType.PlayerCodec;
-                        break;
-                }
-                switch (livePlayerType) {
-                    case 0:
-                        playerliveType = SmartPlayer.PlayerType.PlayerMedia;
-                        break;
-                    case 1:
-                        playerliveType = SmartPlayer.PlayerType.PlayerSystem;
-                        break;
-                    case 2:
-                        playerliveType = SmartPlayer.PlayerType.PlayerCodec;
-                        break;
-                }
-                mPlayer = new SmartPlayer(player264Type, player265Type,playerliveType);
+    private SmartPlayer getSmartPlayerInstance(){
+        if (mPlayer == null) {
+            SmartPlayer.PlayerType player264Type = SmartPlayer.PlayerType.PlayerMedia;
+            SmartPlayer.PlayerType player265Type = SmartPlayer.PlayerType.PlayerMedia;
+            SmartPlayer.PlayerType playerliveType = SmartPlayer.PlayerType.PlayerMedia;
+            int h264PlayerType =IsmartvActivator.getInstance().getH264PlayerType();
+            int h265PlayerType =IsmartvActivator.getInstance().getH265PlayerType();
+            int livePlayerType =IsmartvActivator.getInstance().getLivePlayerType();
+            switch (h264PlayerType) {
+                case 0:
+                    player264Type = SmartPlayer.PlayerType.PlayerMedia;
+                    break;
+                case 1:
+                    player264Type = SmartPlayer.PlayerType.PlayerSystem;
+                    break;
+                case 2:
+                    player264Type = SmartPlayer.PlayerType.PlayerCodec;
+                    break;
             }
+            switch (h265PlayerType) {
+                case 0:
+                    player265Type = SmartPlayer.PlayerType.PlayerMedia;
+                    break;
+                case 1:
+                    player265Type = SmartPlayer.PlayerType.PlayerSystem;
+                    break;
+                case 2:
+                    player265Type = SmartPlayer.PlayerType.PlayerCodec;
+                    break;
+            }
+            switch (livePlayerType) {
+                case 0:
+                    playerliveType = SmartPlayer.PlayerType.PlayerMedia;
+                    break;
+                case 1:
+                    playerliveType = SmartPlayer.PlayerType.PlayerSystem;
+                    break;
+                case 2:
+                    playerliveType = SmartPlayer.PlayerType.PlayerCodec;
+                    break;
+            }
+            mPlayer = new SmartPlayer(player264Type, player265Type,playerliveType);
         }
         return mPlayer;
     }
@@ -95,7 +93,7 @@ public class DaisyPlayer extends IsmartvPlayer implements SurfaceHelper.SurfaceC
             throw new IllegalArgumentException("DaisyPlayer create preload player null parameter");
         }
         super.createPreloadPlayer(mediaMeta);
-        mPlayer = DaisyPlayer.getSmartPlayerInstance();
+        mPlayer = getSmartPlayerInstance();
         initPlayerType(mediaMeta,true);
 
     }
@@ -279,7 +277,8 @@ public class DaisyPlayer extends IsmartvPlayer implements SurfaceHelper.SurfaceC
             if (mSurfaceHelper != null) {
                 mSurfaceHelper.release();
             }
-            stop();
+//            stop();
+            release();
             mSurfaceHelper = new SurfaceHelper(mSurfaceView, this);
             mSurfaceHelper.attachSurfaceView(false);
         }
@@ -561,7 +560,7 @@ public class DaisyPlayer extends IsmartvPlayer implements SurfaceHelper.SurfaceC
     }
 
     private void openVideo(boolean hasPreload) {
-        mPlayer =  DaisyPlayer.getSmartPlayerInstance();
+        mPlayer =  getSmartPlayerInstance();
         LogUtils.d(TAG,"openVideo");
         if(hasPreload){
             mPlayer.createPlayer();

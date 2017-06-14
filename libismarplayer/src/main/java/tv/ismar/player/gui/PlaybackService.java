@@ -278,11 +278,12 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
             hlsPlayer.setOnAdvertisementListener(null);
             hlsPlayer.setOnBufferChangedListener(null);
             hlsPlayer.setOnStateChangedListener(null);
-            if (hlsPlayer.getPlayerMode() == IsmartvPlayer.MODE_QIYI_PLAYER) {
-                hlsPlayer.release();
-            } else {
-                hlsPlayer.stop();
-            }
+            hlsPlayer.release();
+//            if (hlsPlayer.getPlayerMode() == IsmartvPlayer.MODE_QIYI_PLAYER) {
+//                hlsPlayer.release();
+//            } else {
+//                hlsPlayer.stop();
+//            }
             if (detachView) {
                 hlsPlayer.detachViews();
             }

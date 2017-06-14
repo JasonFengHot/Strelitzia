@@ -651,6 +651,9 @@ public class DetailPageFragment extends Fragment implements DetailPageContract.V
     }
 
     private boolean videoIsStart() {
+        if (Utils.isEmptyText(mItemEntity.getStartTime())) {
+            return true;
+        }
         Date startDate = null;
         try {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
