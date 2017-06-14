@@ -667,6 +667,7 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
         @Override
         public void onBufferEnd() {
             if (hlsPlayer == null) {
+                LogUtils.e(TAG, "onBufferEnd > player null");
                 return;
             }
             boolean flag = hlsPlayer.getPlayerMode() == IsmartvPlayer.MODE_QIYI_PLAYER

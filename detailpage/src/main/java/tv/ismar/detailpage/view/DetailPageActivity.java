@@ -311,8 +311,14 @@ public class DetailPageActivity extends BaseActivity implements PlaybackService.
         if (apiClipSubsc != null && !apiClipSubsc.isUnsubscribed()) {
             apiClipSubsc.unsubscribe();
         }
-        super.onStop();
+        if (!goPlayPage) {
+            if (mPlaybackService != null) {
+                mPlaybackService.stopPlayer(false);
+            }
+        }
         mClient.disconnect();
+        mPlaybackService = null;
+        super.onStop();
     }
 
     @Override
@@ -325,12 +331,6 @@ public class DetailPageActivity extends BaseActivity implements PlaybackService.
     @Override
     public void onDisconnected() {
         LogUtils.e(TAG, "service disconnected : " + goPlayPage);
-        if (!goPlayPage) {
-            if (mPlaybackService != null) {
-                mPlaybackService.stopPlayer(false);
-            }
-        }
-        mPlaybackService = null;
     }
 
     @Override

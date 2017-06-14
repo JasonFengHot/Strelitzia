@@ -378,6 +378,7 @@
 <dimen name="filter_condition_group_recycler_w">597.04dp</dimen>
 <dimen name="filter_condition_group_recycler_h">15.93dp</dimen>
 <dimen name="filter_condition_group_recycler_ml">0.74dp</dimen>
+<dimen name="filter_condition_group_recycler_pl">-16.30dp</dimen>
 
 <!--filter_group_radio_button-->
 <dimen name="filter_group_radio_button_ts">11.11dp</dimen>

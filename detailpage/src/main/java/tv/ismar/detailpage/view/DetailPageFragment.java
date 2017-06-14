@@ -658,6 +658,7 @@ public class DetailPageFragment extends Fragment implements DetailPageContract.V
         Date startDate = null;
         try {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            if(mItemEntity.getStartTime()!=null)
             startDate = sdf.parse(mItemEntity.getStartTime());
         } catch (ParseException e) {
             System.out.println(e.getMessage());
