@@ -1,5 +1,7 @@
 package tv.ismar.player.gui;
 
+import android.animation.Animator;
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
@@ -12,6 +14,9 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationSet;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
@@ -51,7 +56,7 @@ public class PlayerSettingMenu extends PopupWindow implements HorizontalEpisodeL
     private TextView menu_title,menu_select;
     private RelativeLayout wheel;
     private TextView player_episode,setting;
-    private LinearLayout list_layout;
+    private LinearLayout list_layout,episode_layout,setting_layout;
     private ImageView top_shape,bottom_shape;
     private int pk;
     private ArrayList<QuailtyEntity> quailtyList=new ArrayList<>();
@@ -59,6 +64,7 @@ public class PlayerSettingMenu extends PopupWindow implements HorizontalEpisodeL
     private EpisodeOnclickListener episodeOnclickListener;
     private OnMenuListItmeClickListener menuListener;
     private MenuHandler menuHandler;
+    private Animation episode_hide;
     public PlayerSettingMenu(Context context, List<ItemEntity> entities, int subitem, EpisodeOnclickListener episodeOnclickListener1, ArrayList<QuailtyEntity> quailist,int position,OnMenuListItmeClickListener listener1){
         mContext=context;
         pk=subitem;
@@ -82,6 +88,8 @@ public class PlayerSettingMenu extends PopupWindow implements HorizontalEpisodeL
         menu_layout= (LinearLayout) contentView.findViewById(R.id.menu_layout);
         list= (HorizontalEpisodeList) contentView.findViewById(R.id.episode_list);
         list_layout= (LinearLayout) contentView.findViewById(R.id.list_layout);
+        episode_layout= (LinearLayout) contentView.findViewById(R.id.episode_layout);
+        setting_layout= (LinearLayout) contentView.findViewById(R.id.setting_layout);
         menu_layout.setVisibility(View.GONE);
         addmenu();
         if(itemEntities!=null&&itemEntities.size()>1){
@@ -98,7 +106,7 @@ public class PlayerSettingMenu extends PopupWindow implements HorizontalEpisodeL
      //   setBackgroundDrawable(mContext.getResources().getDrawable(R.drawable.transparent));
         setFocusable(true);
         menuHandler=new MenuHandler();
-
+        episode_hide= AnimationUtils.loadAnimation(mContext,R.anim.episode_hide);
         
     }
     private void showEpisode(){
@@ -195,14 +203,38 @@ public class PlayerSettingMenu extends PopupWindow implements HorizontalEpisodeL
 
     }
     private void hideMenu(){
+        ObjectAnimator episode_show=ObjectAnimator.ofFloat(episode_layout,"translationY",mContext.getResources().getDimensionPixelSize(R.dimen.player_113),0);
+        episode_show.setDuration(300);
+        episode_show.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                player_episode.setTextColor(mContext.getResources().getColor(R.color._f0f0f0));
+                setting.setTextColor(mContext.getResources().getColor(R.color._666666));
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+
+            }
+        });
         menu_layout.setVisibility(View.GONE);
         list_layout.setVisibility(View.VISIBLE);
-        RelativeLayout.LayoutParams lp=new RelativeLayout.LayoutParams(mContext.getResources().getDimensionPixelSize(R.dimen.player_77),mContext.getResources().getDimensionPixelSize(R.dimen.player_52));
-        lp.setMargins(mContext.getResources().getDimensionPixelSize(R.dimen.player_51),mContext.getResources().getDimensionPixelSize(R.dimen.player_38),0,0);
-        lp.addRule(RelativeLayout.BELOW,R.id.player_setting);
-        player_episode.setLayoutParams(lp);
-        player_episode.setTextColor(mContext.getResources().getColor(R.color._f0f0f0));
-        setting.setTextColor(mContext.getResources().getColor(R.color._666666));
+        episode_show.start();
+//        RelativeLayout.LayoutParams lp=new RelativeLayout.LayoutParams(mContext.getResources().getDimensionPixelSize(R.dimen.player_77),mContext.getResources().getDimensionPixelSize(R.dimen.player_52));
+//        lp.setMargins(mContext.getResources().getDimensionPixelSize(R.dimen.player_51),mContext.getResources().getDimensionPixelSize(R.dimen.player_38),0,0);
+//        lp.addRule(RelativeLayout.BELOW,R.id.player_setting);
+//        player_episode.setLayoutParams(lp);
+
     }
     private void setArrowListener() {
 
@@ -300,21 +332,19 @@ public class PlayerSettingMenu extends PopupWindow implements HorizontalEpisodeL
         hideWheel();
     }
     private void hideWheel(){
+        ObjectAnimator show_wheel=ObjectAnimator.ofFloat(setting_layout,"translationY",-mContext.getResources().getDimensionPixelSize(R.dimen.player_27),0);
+        show_wheel.setDuration(300);
+        show_wheel.start();
         wheel.setVisibility(View.GONE);
         menu_select.setVisibility(View.VISIBLE);
-        RelativeLayout.LayoutParams lp=new RelativeLayout.LayoutParams(mContext.getResources().getDimensionPixelSize(R.dimen.player_77),mContext.getResources().getDimensionPixelSize(R.dimen.player_52));
-        lp.addRule(RelativeLayout.ALIGN_PARENT_TOP,RelativeLayout.TRUE);
-        lp.setMargins(mContext.getResources().getDimensionPixelSize(R.dimen.player_51),mContext.getResources().getDimensionPixelSize(R.dimen.player_54),0,0);
-        setting.setLayoutParams(lp);
         menu_select.requestFocus();
     }
     private void showWheel(){
+        ObjectAnimator show_wheel=ObjectAnimator.ofFloat(setting_layout,"translationY",0,-mContext.getResources().getDimensionPixelSize(R.dimen.player_27));
+        show_wheel.setDuration(300);
+        show_wheel.start();
         wheel.setVisibility(View.VISIBLE);
         menu_select.setVisibility(View.GONE);
-        RelativeLayout.LayoutParams lp=new RelativeLayout.LayoutParams(mContext.getResources().getDimensionPixelSize(R.dimen.player_77),mContext.getResources().getDimensionPixelSize(R.dimen.player_52));
-        lp.addRule(RelativeLayout.ALIGN_PARENT_TOP,RelativeLayout.TRUE);
-        lp.setMargins(mContext.getResources().getDimensionPixelSize(R.dimen.player_51),mContext.getResources().getDimensionPixelSize(R.dimen.player_14),0,0);
-        setting.setLayoutParams(lp);
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -398,16 +428,34 @@ public class PlayerSettingMenu extends PopupWindow implements HorizontalEpisodeL
         }
     }
     public void showQuality(){
-        list_layout.setVisibility(View.GONE);
-        menu_layout.setVisibility(View.VISIBLE);
-        menu_select.setVisibility(View.VISIBLE);
-        RelativeLayout.LayoutParams lp=new RelativeLayout.LayoutParams(mContext.getResources().getDimensionPixelSize(R.dimen.player_77),mContext.getResources().getDimensionPixelSize(R.dimen.player_52));
-        lp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM,RelativeLayout.TRUE);
-        lp.setMargins(mContext.getResources().getDimensionPixelSize(R.dimen.player_51),0,0,mContext.getResources().getDimensionPixelSize(R.dimen.player_41));
-        player_episode.setLayoutParams(lp);
-        player_episode.setTextColor(mContext.getResources().getColor(R.color._666666));
-        setting.setTextColor(mContext.getResources().getColor(R.color._f0f0f0));
-        menu_select.requestFocusFromTouch();
+        ObjectAnimator episode_hide=ObjectAnimator.ofFloat(episode_layout,"translationY",0,mContext.getResources().getDimensionPixelSize(R.dimen.player_113));
+        episode_hide.setDuration(300);
+        episode_hide.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                menu_layout.setVisibility(View.VISIBLE);
+                menu_select.setVisibility(View.VISIBLE);
+                list_layout.setVisibility(View.GONE);
+                player_episode.setTextColor(mContext.getResources().getColor(R.color._666666));
+                setting.setTextColor(mContext.getResources().getColor(R.color._f0f0f0));
+                menu_select.requestFocusFromTouch();
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+
+            }
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+
+            }
+        });
+        episode_hide.start();
         reSendMsg();
     }
     private class MenuHandler extends Handler{

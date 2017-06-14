@@ -1310,15 +1310,15 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
         if (mIsExiting || !canShowMenuOrPannel || mPlaybackService == null || mPlaybackService.getMediaPlayer() == null) {
             return;
         }
-        if(settingMenu==null){
-            createMenu();
-        }
+        settingMenu=null;
+        createMenu();
         if (isPanelShow()) {
             hidePanel();
         }
         if(type==1){
             settingMenu.showQuality();
         }
+        settingMenu.setAnimationStyle(R.style.PopupAnimation);
         settingMenu.showAtLocation(parentView,Gravity.BOTTOM,0,0);
         new Handler().postDelayed(new Runnable() {
             @Override
