@@ -93,5 +93,9 @@
 <dimen name="player_41">20.50dp</dimen>
 <dimen name="player_14">7.00dp</dimen>
 <dimen name="player_157">78.50dp</dimen>
+<dimen name="player_156">78.00dp</dimen>
+<dimen name="player_63">31.50dp</dimen>
+<dimen name="player_50">25.00dp</dimen>
+<dimen name="player_130">65.00dp</dimen>
 
 </resources>

@@ -136,7 +136,7 @@
         
         <TextView
             android:id="@+id/player_timer"
-            android:layout_width="@dimen/player_308"
+            android:layout_width="wrap_content"
             android:layout_height="@dimen/player_52"
             android:textSize="@dimen/text_size_36sp"
             android:textColor="@color/_f0f0f0"

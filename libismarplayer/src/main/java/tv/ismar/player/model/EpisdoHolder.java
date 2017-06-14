@@ -17,9 +17,11 @@ public class EpisdoHolder {
     public TextView textView;
     public ImageView imageView;
     public LinearLayout list_item;
+    public TextView subitem;
     public EpisdoHolder(View itemView){
         textView= (TextView) itemView.findViewById(R.id.episode_pk);
         imageView= (ImageView) itemView.findViewById(R.id.select_image);
         list_item= (LinearLayout) itemView.findViewById(R.id.episode_list_item);
+        subitem= (TextView) itemView.findViewById(R.id.episode_subItem_title);
     }
 }
