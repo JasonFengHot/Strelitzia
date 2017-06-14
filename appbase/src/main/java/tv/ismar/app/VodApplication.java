@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.preference.PreferenceManager;
 import android.support.multidex.MultiDex;
@@ -36,7 +38,6 @@ import okhttp3.ResponseBody;
 import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
-import tv.ismar.account.C;
 import tv.ismar.account.HttpParamsInterceptor;
 import tv.ismar.account.IsmartvActivator;
 import tv.ismar.account.statistics.LogEntity;
@@ -58,6 +59,7 @@ import tv.ismar.app.network.SkyService;
 import tv.ismar.app.service.HttpProxyService;
 import tv.ismar.app.util.NetworkUtils;
 import tv.ismar.app.util.SPUtils;
+import tv.ismar.library.util.C;
 import tv.ismar.library.util.DeviceUtils;
 import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 
@@ -143,6 +145,15 @@ public class VodApplication extends Application {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         C.snToken = sharedPreferences.getString("sn_token", "");
         C.ip = sharedPreferences.getString("ip", "");
+
+        PackageManager packageManager = getPackageManager();
+        PackageInfo packageInfo;
+        try {
+            packageInfo = packageManager.getPackageInfo(getPackageName(), 0);
+            C.versionCode = packageInfo.versionCode;
+        } catch (PackageManager.NameNotFoundException e) {
+            C.versionCode = 0;
+        }
     }
 
     public SharedPreferences getPreferences() {

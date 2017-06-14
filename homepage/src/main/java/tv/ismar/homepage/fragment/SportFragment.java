@@ -22,7 +22,6 @@ import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
-import tv.ismar.account.C;
 import tv.ismar.account.IsmartvActivator;
 import tv.ismar.app.AppConstant;
 import tv.ismar.app.BaseActivity;
@@ -44,6 +43,7 @@ import tv.ismar.homepage.R;
 import tv.ismar.homepage.view.HomePageActivity;
 import tv.ismar.homepage.widget.HomeItemContainer;
 import tv.ismar.homepage.widget.LabelImageView3;
+import tv.ismar.library.util.C;
 
 //import org.apache.commons.lang3.StringUtils;
 

@@ -100,6 +100,7 @@ public class HttpManager {
                 .readTimeout(DEFAULT_READ_TIMEOUT, TimeUnit.SECONDS)
                 .addInterceptor(interceptor)
                 .addInterceptor(paramsInterceptor)
+                .addInterceptor(new UserAgentInterceptor())
                 .sslSocketFactory(ssf)
                 .build();
     }

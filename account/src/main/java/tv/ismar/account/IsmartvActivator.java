@@ -38,6 +38,8 @@ import tv.ismar.account.core.http.HttpService;
 import tv.ismar.account.core.rsa.RSACoder;
 import tv.ismar.account.core.rsa.SkyAESTool2;
 import tv.ismar.account.data.ResultEntity;
+import tv.ismar.library.network.UserAgentInterceptor;
+import tv.ismar.library.util.C;
 import tv.ismar.library.util.DeviceUtils;
 
 /**
@@ -132,6 +134,7 @@ public class IsmartvActivator {
                 .connectTimeout(DEFAULT_CONNECT_TIMEOUT, TimeUnit.SECONDS)
                 .readTimeout(DEFAULT_READ_TIMEOUT, TimeUnit.SECONDS)
                 .addInterceptor(interceptor)
+                .addInterceptor(new UserAgentInterceptor())
                 .build();
 
         SKY_Retrofit = new Retrofit.Builder()
@@ -449,6 +452,7 @@ public class IsmartvActivator {
         editor.putString("zdevice_token", resultEntity.getZdevice_token());
         editor.putLong("smart_post_next_request_time", resultEntity.getSmart_post_next_request_time());
         C.SMART_POST_NEXT_REQUEST_TIME = resultEntity.getSmart_post_next_request_time();
+        C.snToken = resultEntity.getSn_Token();
         editor.putInt("h264_player", resultEntity.getH264_player());
         editor.putInt("h265_player", resultEntity.getH265_player());
         editor.putInt("live_player", resultEntity.getLive_player());

@@ -19,7 +19,6 @@ import java.util.concurrent.TimeUnit;
 
 import cn.ismartv.injectdb.library.query.Delete;
 import cn.ismartv.injectdb.library.query.Select;
-import cn.ismartv.truetime.TrueTime;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
@@ -29,6 +28,7 @@ import tv.ismar.app.db.AdvertiseTable;
 import tv.ismar.app.network.entity.AdElementEntity;
 import tv.ismar.app.player.CallaPlay;
 import tv.ismar.app.util.FileUtils;
+import tv.ismar.library.network.UserAgentInterceptor;
 
 public class AdvertiseManager {
     private static final String TAG = "LH/AdvertisementManager";
@@ -158,6 +158,7 @@ public class AdvertiseManager {
             mOkHttpClient = new OkHttpClient.Builder()
                     .connectTimeout(6, TimeUnit.SECONDS)
                     .readTimeout(1, TimeUnit.HOURS)
+                    .addInterceptor(new UserAgentInterceptor())
                     .build();
         }
         Request request = new Request.Builder().url(downloadUrl).build();

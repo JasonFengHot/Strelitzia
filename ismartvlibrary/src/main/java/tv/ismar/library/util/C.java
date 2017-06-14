@@ -1,4 +1,4 @@
-package tv.ismar.account;
+package tv.ismar.library.util;
 
 /**
  * Created by huibin on 4/5/17.
@@ -9,6 +9,5 @@ public class C {
 
     public static String snToken;
     public static String ip;
-
-
+    public static int versionCode;
 }

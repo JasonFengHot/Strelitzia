@@ -3,9 +3,7 @@ package tv.ismar.homepage.fragment;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.preference.PreferenceManager;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -27,9 +25,7 @@ import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
-import tv.ismar.account.C;
 import tv.ismar.account.IsmartvActivator;
-import tv.ismar.app.AppConstant;
 import tv.ismar.app.core.SimpleRestClient;
 import tv.ismar.app.entity.HomePagerEntity;
 import tv.ismar.app.network.SkyService;
@@ -38,6 +34,7 @@ import tv.ismar.homepage.R;
 import tv.ismar.homepage.view.HomePageActivity;
 import tv.ismar.homepage.widget.ChildThumbImageView;
 import tv.ismar.homepage.widget.LabelImageView3;
+import tv.ismar.library.util.C;
 
 /**
  * Created by huaijie on 5/18/15.

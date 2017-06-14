@@ -102,6 +102,7 @@ import tv.ismar.app.network.entity.UpgradeRequestEntity;
 import tv.ismar.app.network.entity.VersionInfoV2Entity;
 import tv.ismar.app.network.entity.WeatherEntity;
 import tv.ismar.app.network.entity.YouHuiDingGouEntity;
+import tv.ismar.library.network.UserAgentInterceptor;
 
 /**
  * Created by huibin on 8/3/16.
@@ -685,13 +686,6 @@ public interface SkyService {
             @Query("play_scale") int play_scale
     );
 
-    @POST("http://elderberry.test.tvxio.com/Elderberry/client/uploadLog")
-    Observable<ResponseBody> uploadLog(
-            @Part MultipartBody.Part parameters,
-            @Part MultipartBody.Part data
-    );
-
-
     class ServiceManager {
         private volatile static ServiceManager serviceManager;
         private static final int DEFAULT_CONNECT_TIMEOUT = 6;
@@ -752,6 +746,7 @@ public interface SkyService {
 //                    .addNetworkInterceptor(VodApplication.getHttpTrafficInterceptor())
 //                    .retryOnConnectionFailure(true)
                     .addInterceptor(interceptor)
+                    .addInterceptor(new UserAgentInterceptor())
                     .sslSocketFactory(sc.getSocketFactory())
                     .build();
 
@@ -834,6 +829,7 @@ public interface SkyService {
                     .addInterceptor(VodApplication.getModuleAppContext().getCacheInterceptor())
                     .addInterceptor(interceptor)
                     .addNetworkInterceptor(VodApplication.getModuleAppContext().getCacheInterceptor())
+                    .addInterceptor(new UserAgentInterceptor())
                     .cache(cache)
                     .build();
             Retrofit cacheSkyRetrofit = new Retrofit.Builder()
@@ -852,6 +848,7 @@ public interface SkyService {
                     .readTimeout(DEFAULT_READ_TIMEOUT, TimeUnit.SECONDS)
                     .addInterceptor(VodApplication.getHttpParamsInterceptor())
                     .addInterceptor(interceptor)
+                    .addInterceptor(new UserAgentInterceptor())
                     .cache(cache2)
                     .build();
             Retrofit cacheSkyRetrofit2 = new Retrofit.Builder()

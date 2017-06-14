@@ -23,6 +23,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import tv.ismar.app.BaseActivity;
 import tv.ismar.app.network.entity.ProblemEntity;
+import tv.ismar.library.util.C;
 
 public class LauncherActivity extends BaseActivity implements View.OnClickListener {
     private static final String TAG = "LauncherActivity";
@@ -108,6 +109,7 @@ public class LauncherActivity extends BaseActivity implements View.OnClickListen
 
                     @Override
                     public void onNext(IpLookUpEntity ipLookUpEntity) {
+                        C.snToken  = ipLookUpEntity.getIp();
                         initializeLocation(ipLookUpEntity);
                     }
                 });

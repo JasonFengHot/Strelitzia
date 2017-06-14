@@ -23,7 +23,8 @@ import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import rx.Observer;
 import rx.schedulers.Schedulers;
-import tv.ismar.account.C;
+import tv.ismar.library.network.UserAgentInterceptor;
+import tv.ismar.library.util.C;
 
 /**
  * Created by huibin on 6/9/17.
@@ -58,6 +59,7 @@ public class LogQueue {
         OkHttpClient mClient = new OkHttpClient.Builder()
                 .connectTimeout(DEFAULT_CONNECT_TIMEOUT, TimeUnit.SECONDS)
                 .readTimeout(DEFAULT_READ_TIMEOUT, TimeUnit.SECONDS)
+                .addInterceptor(new UserAgentInterceptor())
 //                .addInterceptor(interceptor)
                 .build();
         mRetrofit = new Retrofit.Builder()
@@ -134,6 +136,8 @@ public class LogQueue {
 
 //        ByteString byteString = ByteString.encodeUtf8(new Gson().toJson(logDataPackage.getDataPackage()));
         RequestBody requestBody = RequestBody.create(MediaType.parse("application/gzip"), outputStream.toByteArray());
+        outputStream.flush();
+        outputStream.close();
 
 //        requestBody = gzip(requestBody);
 //        MultipartBody.Part data = MultipartBody.Part.create(requestBody);

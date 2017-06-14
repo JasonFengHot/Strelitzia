@@ -7,7 +7,6 @@ import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,27 +17,17 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.blankj.utilcode.utils.StringUtils;
-import com.google.gson.Gson;
 import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
 
-//import org.apache.commons.lang3.StringUtils;
-
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
-import cn.ismartv.downloader.DownloadEntity;
-import cn.ismartv.downloader.DownloadStatus;
-import cn.ismartv.downloader.Md5;
-import cn.ismartv.injectdb.library.query.Select;
 import cn.ismartv.truetime.TrueTime;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
-import tv.ismar.account.C;
 import tv.ismar.account.IsmartvActivator;
 import tv.ismar.app.AppConstant;
 import tv.ismar.app.core.SimpleRestClient;
@@ -55,6 +44,9 @@ import tv.ismar.homepage.widget.DaisyVideoView;
 import tv.ismar.homepage.widget.DaisyViewContainer;
 import tv.ismar.homepage.widget.HomeItemContainer;
 import tv.ismar.homepage.widget.LabelImageView3;
+import tv.ismar.library.util.C;
+
+//import org.apache.commons.lang3.StringUtils;
 
 /**
  * Created by huaijie on 5/18/15.

@@ -1,14 +1,11 @@
 package tv.ismar.homepage.fragment;
 
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.graphics.drawable.BitmapDrawable;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
-import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,7 +13,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.blankj.utilcode.utils.StringUtils;
@@ -24,35 +20,23 @@ import com.squareup.picasso.Callback;
 import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
 
-//import org.apache.commons.lang3.StringUtils;
-
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
-import cn.ismartv.downloader.DownloadEntity;
-import cn.ismartv.downloader.DownloadStatus;
-import cn.ismartv.downloader.Md5;
-import cn.ismartv.injectdb.library.query.Select;
 import cn.ismartv.truetime.TrueTime;
 import okhttp3.HttpUrl;
-import okhttp3.Response;
-import retrofit2.adapter.rxjava.HttpException;
 import rx.Observable;
 import rx.Observer;
 import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
-import tv.ismar.account.C;
 import tv.ismar.account.IsmartvActivator;
-import tv.ismar.app.AppConstant;
 import tv.ismar.app.core.SimpleRestClient;
 import tv.ismar.app.core.cache.CacheManager;
 import tv.ismar.app.core.cache.DownloadClient;
@@ -67,6 +51,9 @@ import tv.ismar.homepage.view.HomePageActivity;
 import tv.ismar.homepage.widget.DaisyVideoView;
 import tv.ismar.homepage.widget.HomeItemContainer;
 import tv.ismar.homepage.widget.LabelImageView3;
+import tv.ismar.library.util.C;
+
+//import org.apache.commons.lang3.StringUtils;
 
 /**
  * Created by huaijie on 5/18/15.

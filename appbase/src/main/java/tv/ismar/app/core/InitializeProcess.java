@@ -32,6 +32,7 @@ import tv.ismar.app.network.entity.CdnListEntity;
 import tv.ismar.app.network.entity.IpLookUpEntity;
 import tv.ismar.app.util.NetworkUtils;
 import tv.ismar.app.util.Utils;
+import tv.ismar.library.network.UserAgentInterceptor;
 
 public class InitializeProcess implements Runnable {
     private static final String TAG = "InitializeProcess";
@@ -79,6 +80,7 @@ public class InitializeProcess implements Runnable {
                 .retryOnConnectionFailure(true)
                 .connectTimeout(3000, TimeUnit.MILLISECONDS)
                 .addNetworkInterceptor(mHeaderInterceptor)
+                .addInterceptor(new UserAgentInterceptor())
                 .build();
     }
 

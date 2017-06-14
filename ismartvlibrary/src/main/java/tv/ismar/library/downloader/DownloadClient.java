@@ -14,6 +14,7 @@ import okhttp3.Response;
 import okhttp3.ResponseBody;
 import tv.ismar.library.downloader.model.DownloadTable;
 import tv.ismar.library.injectdb.query.Select;
+import tv.ismar.library.network.UserAgentInterceptor;
 import tv.ismar.library.util.FileUtils;
 import tv.ismar.library.util.LogUtils;
 import tv.ismar.library.util.MD5;
@@ -33,6 +34,7 @@ public class DownloadClient implements Runnable {
         okBuilder.connectTimeout(10, TimeUnit.SECONDS);
         okBuilder.readTimeout(10, TimeUnit.SECONDS);
         okBuilder.writeTimeout(10, TimeUnit.SECONDS);
+        okBuilder.addInterceptor(new UserAgentInterceptor());
         mClient = okBuilder.build();
     }
 
