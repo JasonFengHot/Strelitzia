@@ -430,7 +430,7 @@ public class Advertisement {
                for(int j=0;j<monitor.length();j++){
                     JSONObject child = monitor.getJSONObject(j);
                     String monitor_url=child.optString("monitor_url");
-                    Log.i("ADSMon",monitor_url+"");
+                    Log.i("ADSMon","J="+j+" monitor_url: "+monitor_url);
                     repostAdLog(monitor_url);
                 }
             }
@@ -451,9 +451,9 @@ public class Advertisement {
                 JSONObject element = arrays.getJSONObject(i);
                 JSONArray monitor=element.getJSONArray("monitor");
                 for(int j=0;j<monitor.length();j++){
-                    JSONObject child = monitor.getJSONObject(i);
+                    JSONObject child = monitor.getJSONObject(j);
                     String monitor_url=child.optString("monitor_url");
-                    Log.i("ADSMon",monitor_url+"");
+                    Log.i("ADSMon","J="+j+" monitor_url: "+monitor_url);
                     repostAdLog(monitor_url);
                 }
             }
