@@ -187,7 +187,7 @@ public class DaisyPlayer extends IsmartvPlayer implements SurfaceHelper.SurfaceC
             mPlayer.setOnM3u8IpListener(null);
             mPlayer.setOnCompletionListenerUrl(null);
             mPlayer.stop();
-            mPlayer.close();
+//            mPlayer.close();
 //            mPlayer.reset();
         }
         mCurrentState = STATE_IDLE;

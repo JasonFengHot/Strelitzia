@@ -883,6 +883,7 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
 
         @MainThread
         public void disconnect() {
+            LogUtils.d(TAG, "PlaybackService disconnect : " + mBound);
             if (mBound) {
                 mBound = false;
                 mContext.unbindService(mServiceConnection);
