@@ -638,6 +638,9 @@ public class DetailPageViewModel extends BaseObservable {
     }
 
     private boolean videoIsStart() {
+        if (Utils.isEmptyText(mItemEntity.getStartTime())) {
+            return true;
+        }
         Date startDate = null;
         try {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");

@@ -9,6 +9,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
@@ -651,6 +652,9 @@ public class DetailPageFragment extends Fragment implements DetailPageContract.V
     }
 
     private boolean videoIsStart() {
+        if (Utils.isEmptyText(mItemEntity.getStartTime())) {
+            return true;
+        }
         Date startDate = null;
         try {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
