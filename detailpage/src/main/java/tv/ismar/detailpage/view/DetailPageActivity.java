@@ -128,12 +128,14 @@ public class DetailPageActivity extends BaseActivity implements PlaybackService.
 
     public void goPlayer() {
         goPlayPage = true;
+        Log.i("contentMode","contentMode : "+mItemEntity.getContentModel());
         Intent intent = new Intent();
         intent.setAction("tv.ismar.daisy.Player");
         intent.putExtra(PageIntentInterface.EXTRA_PK, mItemEntity.getPk());
 //        intent.putExtra(PageIntentInterface.EXTRA_SUBITEM_PK, mSubItemPk);
         intent.putExtra(PageIntentInterface.EXTRA_SOURCE, source);
         intent.putExtra(PageIntentInterface.QIYIFLAG, isqiyi);
+        intent.putExtra("contentMode",mItemEntity.getContentModel());
         startActivity(intent);
 
     }

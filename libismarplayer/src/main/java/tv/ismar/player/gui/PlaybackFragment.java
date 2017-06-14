@@ -144,17 +144,19 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
     private PlaybackHandler mHandler;
     private boolean backpress=false;
     private boolean isqiyi;
+    private String contentMode="";
     public PlaybackFragment() {
         // Required empty public constructor
     }
 
-    public static PlaybackFragment newInstance(int pk, int subPk, String source,boolean isqiyi) {
+    public static PlaybackFragment newInstance(int pk, int subPk, String source,boolean isqiyi,String contentMode) {
         PlaybackFragment fragment = new PlaybackFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_PK, pk);
         args.putInt(ARG_SUB_PK, subPk);
         args.putString(ARG_SOURCE, source);
         args.putBoolean(PageIntentInterface.QIYIFLAG, isqiyi);
+        args.putString("contentMode",contentMode);
         fragment.setArguments(args);
         return fragment;
     }
@@ -173,6 +175,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
             LogUtils.e(TAG, "Activity must be extends BaseActivity.");
             return;
         }
+        contentMode=bundle.getString("contentMode");
         extraItemPk = bundle.getInt(ARG_PK);
         extraSubItemPk = bundle.getInt(ARG_SUB_PK);
         extraSource = bundle.getString(ARG_SOURCE);
@@ -1297,7 +1300,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
                     quailtyEntities.add(quailtyEntity);
                 }
             }
-            settingMenu = new PlayerSettingMenu(getActivity().getApplicationContext(), list, mPlaybackService.getSubItemPk(), this, quailtyEntities, currentQuality, this);
+            settingMenu = new PlayerSettingMenu(getActivity().getApplicationContext(), list, mPlaybackService.getSubItemPk(), this, quailtyEntities, currentQuality, this,contentMode);
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {

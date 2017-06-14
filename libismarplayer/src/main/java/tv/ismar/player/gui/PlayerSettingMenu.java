@@ -65,7 +65,8 @@ public class PlayerSettingMenu extends PopupWindow implements HorizontalEpisodeL
     private OnMenuListItmeClickListener menuListener;
     private MenuHandler menuHandler;
     private Animation episode_hide;
-    public PlayerSettingMenu(Context context, List<ItemEntity> entities, int subitem, EpisodeOnclickListener episodeOnclickListener1, ArrayList<QuailtyEntity> quailist,int position,OnMenuListItmeClickListener listener1){
+    private String contentMode="";
+    public PlayerSettingMenu(Context context, List<ItemEntity> entities, int subitem, EpisodeOnclickListener episodeOnclickListener1, ArrayList<QuailtyEntity> quailist,int position,OnMenuListItmeClickListener listener1,String contentmode){
         mContext=context;
         pk=subitem;
         episodeOnclickListener=episodeOnclickListener1;
@@ -73,6 +74,7 @@ public class PlayerSettingMenu extends PopupWindow implements HorizontalEpisodeL
         currentQuailty=position;
         menuListener=listener1;
         itemEntities=entities;
+        contentMode=contentmode;
 
         int width=context.getResources().getDimensionPixelOffset(R.dimen.player_1920);
         int height=context.getResources().getDimensionPixelSize(R.dimen.player_350);
@@ -407,7 +409,7 @@ public class PlayerSettingMenu extends PopupWindow implements HorizontalEpisodeL
     private void setUIData(EpisdoHolder holder,ItemEntity object){
         String Title = object.getTitle();
         String subItemTitle=object.getSubtitle();
-        if(subItemTitle!=null&&!subItemTitle.equals("")){
+        if(contentMode.equals("variety")){
             holder.textView.setVisibility(View.GONE);
             holder.subitem.setVisibility(View.VISIBLE);
             holder.subitem.setText("第"+subItemTitle.substring(4));
