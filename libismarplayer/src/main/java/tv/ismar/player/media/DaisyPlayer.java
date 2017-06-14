@@ -352,6 +352,7 @@ public class DaisyPlayer extends IsmartvPlayer implements SurfaceHelper.SurfaceC
             if (mPlayer == null) {
                 return false;
             }
+            LogUtils.d(TAG, "onInfo:" + i + " " + onBufferChangedListener);
             switch (i) {
                 case SmartPlayer.MEDIA_INFO_BUFFERING_START:
                 case 809:
