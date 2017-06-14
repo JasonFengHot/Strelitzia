@@ -58,7 +58,7 @@ public class LogQueue {
         OkHttpClient mClient = new OkHttpClient.Builder()
                 .connectTimeout(DEFAULT_CONNECT_TIMEOUT, TimeUnit.SECONDS)
                 .readTimeout(DEFAULT_READ_TIMEOUT, TimeUnit.SECONDS)
-                .addInterceptor(interceptor)
+//                .addInterceptor(interceptor)
                 .build();
         mRetrofit = new Retrofit.Builder()
                 .baseUrl("http://124.42.65.66:8082/")
@@ -151,7 +151,7 @@ public class LogQueue {
                 .build();
 //        MultipartBody.Part parameters = MultipartBody.Part.create(parametersBody);
 
-        String url = "http://192.168.1.89:8080/Elderberry/client/uploadLog";
+        String url = "http://elderberry.test.tvxio.com/Elderberry/client/uploadLog";
 
 
         mRetrofit.create(UploadLogService.class).uploadLog(url, parametersBody, requestBody)
