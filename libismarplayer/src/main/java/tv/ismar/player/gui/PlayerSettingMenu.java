@@ -79,7 +79,6 @@ public class PlayerSettingMenu extends PopupWindow implements HorizontalEpisodeL
 
         setWidth(width);
         setHeight(height);
-        setAnimationStyle(R.style.PopupAnimation);
         View contentView = LayoutInflater.from(context).inflate(R.layout.player_setting_menu, null);
         arrow_left= (ImageView) contentView.findViewById(R.id.arrow_left);
         arrow_right= (ImageView) contentView.findViewById(R.id.arrow_right);
@@ -406,12 +405,21 @@ public class PlayerSettingMenu extends PopupWindow implements HorizontalEpisodeL
     }
 
     private void setUIData(EpisdoHolder holder,ItemEntity object){
-        String subItemTitle = object.getTitle();
-        if (subItemTitle.contains("第")) {
-            int ind = subItemTitle.indexOf("第");
-            subItemTitle = subItemTitle.substring(ind);
+        String Title = object.getTitle();
+        String subItemTitle=object.getSubtitle();
+        if(subItemTitle!=null&&!subItemTitle.equals("")){
+            holder.textView.setVisibility(View.GONE);
+            holder.subitem.setVisibility(View.VISIBLE);
+            holder.subitem.setText("第"+subItemTitle.substring(4));
+        }else {
+            if (Title.contains("第")) {
+                int ind = Title.indexOf("第");
+                Title = Title.substring(ind);
+            }
+            holder.textView.setVisibility(View.VISIBLE);
+            holder.subitem.setVisibility(View.GONE);
+            holder.textView.setText(Title);
         }
-        holder.textView.setText(subItemTitle);
         if(pk==object.getPk()){
             holder.imageView.setVisibility(View.VISIBLE);
         }else{

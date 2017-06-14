@@ -25,5 +25,17 @@
         android:textSize="@dimen/text_size_30sp"
         android:textColor="@color/_f0f0f0"
         />
+    <TextView
+        android:id="@+id/episode_subItem_title"
+        android:layout_width="@dimen/player_130"
+        android:layout_height="@dimen/player_43"
+        android:layout_marginLeft="@dimen/player_2"
+        android:layout_marginTop="@dimen/player_19"
+        android:gravity="center"
+        android:textSize="@dimen/text_size_30sp"
+        android:textColor="@color/_f0f0f0"
+        android:visibility="gone"
+
+        />
 
 </LinearLayout>
