@@ -301,6 +301,7 @@ public class DetailPagePresenter implements DetailPageContract.Presenter {
         intent.putExtra("item_json", new GsonBuilder().create().toJson(mItemEntity));
         intent.setAction("tv.ismar.daisy.relateditem");
         mDetailView.getActivity().startActivity(intent);
+        mDetailView.getActivity().finish();
     }
 
     @Override

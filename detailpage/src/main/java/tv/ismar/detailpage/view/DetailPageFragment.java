@@ -484,6 +484,7 @@ public class DetailPageFragment extends Fragment implements DetailPageContract.V
             mPageStatistics.videoRelateClick(mItemEntity.getPk(), item);
             new PageIntent().toDetailPage(getContext(), Source.RELATED.getValue(), item.getPk());
             to="relate";
+            getActivity().finish();
         }
     };
 
