@@ -327,8 +327,6 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
                 ad_vip_layout.setVisibility(View.GONE);
                 player_shadow.setVisibility(View.VISIBLE);
                 showBuffer(null);
-                // 在没有登录的情况下，试看影片，成功购买后，继续上次播放，数据库更新为异步操作
-                mPlaybackService.successBuyVideo = true;
                 mPlaybackService.preparePlayer(extraItemPk, extraSubItemPk, extraSource);
                 settingMenu=null;
             } else {

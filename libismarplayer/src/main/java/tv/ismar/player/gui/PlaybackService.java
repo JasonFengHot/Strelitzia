@@ -84,7 +84,6 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
     private HistoryManager historyManager;
     private History mHistory;
     public boolean hasHistory=false;
-    public boolean successBuyVideo;// 试看影片完成，成功购买后需要继续播放，仅用于PlaybackFragment onActivityResult
     // HLS播放器
     private IsmartvPlayer hlsPlayer;// HLS播放
     private ServiceCallback serviceCallback;
@@ -416,10 +415,8 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
         if (mHistory != null) {
             mStartPosition = (int) mHistory.last_position;
             hasHistory=true;
-        }
-        if (successBuyVideo) {
-            successBuyVideo = false;
-            mStartPosition = mDuration;// 成功购买，起播位置设置为试看影片时长
+        } else {
+            mStartPosition = 0;
         }
         Log.i(TAG, "initHistory:" + mStartPosition);
         ItemEntity[] subItems = mItemEntity.getSubitems();
@@ -930,7 +927,9 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
         int last_position = position;
         int completePosition = -1;
         if (mDuration - last_position <= 3000) {
-            last_position = 0;// 当前播放结束
+            if (!mIsPreview) {
+                last_position = 0;// 当前播放结束
+            }
             completePosition = mDuration;// 用于日志上报中
         }
         if (historyManager == null) {
