@@ -409,10 +409,11 @@ public class PlayerSettingMenu extends PopupWindow implements HorizontalEpisodeL
     private void setUIData(EpisdoHolder holder,ItemEntity object){
         String Title = object.getTitle();
         String subItemTitle=object.getSubtitle();
-        if(contentMode.equals("variety")){
+        Log.i("contentMode","title: "+Title+"  subitemTitle: "+subItemTitle);
+        if(contentMode.equals("variety")&&!subItemTitle.equals("")){
             holder.textView.setVisibility(View.GONE);
             holder.subitem.setVisibility(View.VISIBLE);
-            holder.subitem.setText("第"+subItemTitle.substring(4));
+            holder.subitem.setText(subItemTitle);
         }else {
             if (Title.contains("第")) {
                 int ind = Title.indexOf("第");
