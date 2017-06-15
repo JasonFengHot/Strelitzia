@@ -2,8 +2,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:descendantFocusability="afterDescendants"
     >
+
 <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="@dimen/filter_condition_group_h"
@@ -17,12 +17,12 @@
         android:textSize="@dimen/filter_condition_group_title_ts"
         android:textColor="#999999"
         />
+
     <Button
         android:id="@+id/filter_condition_group_arrow_left"
         android:layout_width="@dimen/filter_condition_group_arrow_w"
         android:layout_height="@dimen/filter_condition_group_arrow_w"
         android:focusable="true"
-        android:focusableInTouchMode="true"
         android:layout_marginLeft="@dimen/filter_condition_group_arrow_ml"
         android:background="@drawable/filter_arrow_left_selector"
         android:visibility="invisible"/>
@@ -31,12 +31,14 @@
         android:layout_width="@dimen/filter_condition_group_recycler_w"
         android:layout_height="@dimen/filter_condition_group_recycler_h"
         android:layout_gravity="center_vertical"
+        android:focusable="true"
         android:scrollbars="none">
         <RadioGroup
             android:id="@+id/filter_condition_radio_group"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:orientation="horizontal"/>
+            android:orientation="horizontal"
+            />
     </HorizontalScrollView>
 
     <Button
@@ -44,8 +46,8 @@
         android:layout_width="@dimen/filter_condition_group_arrow_w"
         android:layout_height="@dimen/filter_condition_group_arrow_w"
         android:focusable="true"
-        android:focusableInTouchMode="true"
         android:background="@drawable/filter_arrow_right_selector"
         android:visibility="invisible"/>
 </LinearLayout>
+
 </RelativeLayout>
