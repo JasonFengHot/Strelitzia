@@ -2,6 +2,8 @@ package tv.ismar.view;
 
 import android.content.Context;
 import android.graphics.Rect;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -24,7 +26,7 @@ import tv.ismar.listpage.R;
  * Created by admin on 2017/6/2.
  */
 
-public class FilterConditionGroupView extends LinearLayout implements View.OnHoverListener, View.OnFocusChangeListener {
+public class FilterConditionGroupView extends LinearLayout implements View.OnHoverListener {
 
     private TextView filter_condition_group_title;
     private Button filter_condition_group_arrow_left;
@@ -40,17 +42,14 @@ public class FilterConditionGroupView extends LinearLayout implements View.OnHov
     private int rightLimit=0;
     private boolean canScroll=false;
 
-
-    @Override
-    public void onFocusChange(View v, boolean hasFocus) {
-        if(v.getId()==R.id.filter_condition_group_scrollview) {
-            Log.e("onfocuschange", 1+"");
-        }else if(v.getId()==R.id.filter_condition_radio_group) {
-            Log.e("onfocuschange", 2+"");
-        }else{
-            Log.e("onfocuschange", 3+"");
+    public Handler handler=new Handler(new Handler.Callback() {
+        @Override
+        public boolean handleMessage(Message msg) {
+            filter_condition_radio_group.getChildAt(msg.arg1).requestFocus();
+            filter_condition_radio_group.getChildAt(msg.arg1).requestFocusFromTouch();
+            return false;
         }
-    }
+    });
 
 
     public FilterConditionGroupView(Context context,List<List<String>> values,String label,boolean isFocus) {
@@ -91,6 +90,12 @@ public class FilterConditionGroupView extends LinearLayout implements View.OnHov
                 radio.setNextFocusRightId(radio.getId());
             }
             final int finalI = i;
+            radio.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    radio.requestFocus();
+                }
+            });
             radio.setOnFocusChangeListener(new OnFocusChangeListener() {
                 @Override
                 public void onFocusChange(View v, boolean hasFocus) {
@@ -120,7 +125,10 @@ public class FilterConditionGroupView extends LinearLayout implements View.OnHov
             public void onClick(View v) {
                 filter_condition_group_arrow_left.setVisibility(View.VISIBLE);
                 filter_condition_group_arrow_right.setVisibility(View.INVISIBLE);
-                filter_condition_group_scrollview.fullScroll(View.FOCUS_RIGHT);
+                filter_condition_group_scrollview.pageScroll(View.FOCUS_RIGHT);
+                Message msg=new Message();
+                msg.arg1=values.size()-1;
+                handler.sendMessageDelayed(msg,300);
             }
         });
         filter_condition_group_arrow_left.setOnClickListener(new OnClickListener() {
@@ -130,7 +138,10 @@ public class FilterConditionGroupView extends LinearLayout implements View.OnHov
             public void onClick(View v) {
                 filter_condition_group_arrow_right.setVisibility(View.VISIBLE);
                 filter_condition_group_arrow_left.setVisibility(View.INVISIBLE);
-                filter_condition_group_scrollview.fullScroll(View.FOCUS_LEFT);
+                filter_condition_group_scrollview.pageScroll(View.FOCUS_LEFT);
+                Message msg=new Message();
+                msg.arg1=0;
+                handler.sendMessageDelayed(msg,300);
             }
         });
         filter_condition_group_arrow_left.setOnHoverListener(this);
@@ -164,17 +175,18 @@ public class FilterConditionGroupView extends LinearLayout implements View.OnHov
                                                                                                  }
 
                                                                                              });
-        conditionGroup.setOnFocusChangeListener(this);
-        filter_condition_group_scrollview.setOnFocusChangeListener(this);
-        filter_condition_radio_group.setOnFocusChangeListener(this);
     }
 
 
     @Override
     public boolean onHover(View v, MotionEvent event) {
         if(event.getAction()==MotionEvent.ACTION_HOVER_ENTER||event.getAction()==MotionEvent.ACTION_HOVER_MOVE){
+            v.setFocusable(true);
             v.requestFocus();
             v.requestFocusFromTouch();
+        }
+        if(event.getAction()==MotionEvent.ACTION_HOVER_EXIT){
+            v.setFocusable(false);
         }
         return false;
     }

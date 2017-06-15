@@ -3,6 +3,7 @@ package tv.ismar.channel;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Message;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -59,6 +60,7 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
     private FilterConditions mFilterConditions;
     private PopupWindow filterPopup;
     private boolean isFocus=true;
+    private View focusedView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -195,10 +197,23 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
         filterPopup.setBackgroundDrawable(getResources().getDrawable(R.drawable.transparent));
         getRootView().requestFocus();
         filterPopup.showAtLocation(filter_condition_layout,Gravity.NO_GRAVITY,0,getResources().getDimensionPixelOffset(R.dimen.filter_condition_popup_position));
+        if(focusedView!=null){
+            focusedView.requestFocus();
+        }else {
+            Message msg = new Message();
+            msg.arg1 = 0;
+            ((FilterConditionGroupView) filter_conditions.getChildAt(0)).handler.sendMessage(msg);
+        }
         filterPopup.setOnDismissListener(new PopupWindow.OnDismissListener() {
 
             @Override
             public void onDismiss() {
+                for (int i = 0; i <filter_conditions.getChildCount() ; i++) {
+                    if(((FilterConditionGroupView)filter_conditions.getChildAt(i)).filter_condition_radio_group.getFocusedChild()!=null) {
+                        focusedView = ((FilterConditionGroupView)filter_conditions.getChildAt(i)).filter_condition_radio_group.getFocusedChild();
+                        break;
+                    }
+                }
                 if(poster_recyclerview.getChildAt(0)!=null)
                     poster_recyclerview.getChildAt(0).requestFocus();
             }

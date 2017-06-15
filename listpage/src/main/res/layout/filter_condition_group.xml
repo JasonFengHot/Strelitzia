@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:descendantFocusability="afterDescendants"
     >
 
 <LinearLayout
@@ -9,6 +10,7 @@
     android:layout_height="@dimen/filter_condition_group_h"
     android:layout_marginBottom="@dimen/filter_condition_group_mb"
     android:gravity="center_vertical"
+    android:descendantFocusability="afterDescendants"
     android:orientation="horizontal">
     <TextView
         android:id="@+id/filter_condition_group_title"
@@ -22,7 +24,7 @@
         android:id="@+id/filter_condition_group_arrow_left"
         android:layout_width="@dimen/filter_condition_group_arrow_w"
         android:layout_height="@dimen/filter_condition_group_arrow_w"
-        android:focusable="true"
+        android:focusable="false"
         android:layout_marginLeft="@dimen/filter_condition_group_arrow_ml"
         android:background="@drawable/filter_arrow_left_selector"
         android:visibility="invisible"/>
@@ -32,12 +34,15 @@
         android:layout_height="@dimen/filter_condition_group_recycler_h"
         android:layout_gravity="center_vertical"
         android:focusable="true"
+        android:descendantFocusability="afterDescendants"
         android:scrollbars="none">
         <RadioGroup
             android:id="@+id/filter_condition_radio_group"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:orientation="horizontal"
+            android:descendantFocusability="afterDescendants"
+            android:focusable="true"
             />
     </HorizontalScrollView>
 
@@ -45,7 +50,7 @@
         android:id="@+id/filter_condition_group_arrow_right"
         android:layout_width="@dimen/filter_condition_group_arrow_w"
         android:layout_height="@dimen/filter_condition_group_arrow_w"
-        android:focusable="true"
+        android:focusable="false"
         android:background="@drawable/filter_arrow_right_selector"
         android:visibility="invisible"/>
 </LinearLayout>
