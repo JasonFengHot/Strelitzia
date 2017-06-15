@@ -4,8 +4,6 @@ package tv.ismar.channel;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Message;
-import android.support.v7.widget.GridLayoutManager;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -15,7 +13,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
-import android.widget.RelativeLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -24,6 +23,7 @@ import java.util.List;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import tv.ismar.adapter.FilterPosterAdapter;
+import tv.ismar.adapter.FocusGridLayoutManager;
 import tv.ismar.adapter.SpaceItemDecoration;
 import tv.ismar.app.BaseActivity;
 import tv.ismar.app.core.PageIntent;
@@ -60,6 +60,7 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
     private FilterConditions mFilterConditions;
     private PopupWindow filterPopup;
     private boolean isFocus=true;
+    private View focusedView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,11 +96,11 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
         filter_arrow_up = findView(R.id.filter_arrow_up);
         filter_arrow_down = findView(R.id.filter_arrow_down);
         if(isVertical) {
-            poster_recyclerview.setLayoutManager(new GridLayoutManager(this, 5));
+            poster_recyclerview.setLayoutManager(new FocusGridLayoutManager(this, 5));
             poster_recyclerview.addItemDecoration(new SpaceItemDecoration(0,getResources().getDimensionPixelOffset(R.dimen.filter_item_vertical_poster_mb)));
             poster_recyclerview.setPadding(0,0,0,getResources().getDimensionPixelOffset(R.dimen.vertical_recycler_padding_bottom));
         }else{
-            poster_recyclerview.setLayoutManager(new GridLayoutManager(this, 3));
+            poster_recyclerview.setLayoutManager(new FocusGridLayoutManager(this, 3));
             poster_recyclerview.setPadding(0,0,0,getResources().getDimensionPixelOffset(R.dimen.horizontal_recycler_padding_bottom));
             poster_recyclerview.addItemDecoration(new SpaceItemDecoration(getResources().getDimensionPixelOffset(R.dimen.filter_item_horizontal_poster_mr),getResources().getDimensionPixelOffset(R.dimen.filter_item_horizontal_poster_mb)));
         }
@@ -194,16 +195,27 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
             }
         });
         filterPopup.setBackgroundDrawable(getResources().getDrawable(R.drawable.transparent));
+        getRootView().requestFocus();
         filterPopup.showAtLocation(filter_condition_layout,Gravity.NO_GRAVITY,0,getResources().getDimensionPixelOffset(R.dimen.filter_condition_popup_position));
-        Message message=new Message();
-        message.arg1=0;
-        ((FilterConditionGroupView) filter_conditions.getChildAt(0)).handler.sendMessageDelayed(message, 1000);
+        if(focusedView!=null){
+            focusedView.requestFocus();
+        }else {
+            Message msg = new Message();
+            msg.arg1 = 0;
+            ((FilterConditionGroupView) filter_conditions.getChildAt(0)).handler.sendMessage(msg);
+        }
         filterPopup.setOnDismissListener(new PopupWindow.OnDismissListener() {
 
             @Override
             public void onDismiss() {
+                for (int i = 0; i <filter_conditions.getChildCount() ; i++) {
+                    if(((FilterConditionGroupView)filter_conditions.getChildAt(i)).filter_condition_radio_group.getFocusedChild()!=null) {
+                        focusedView = ((FilterConditionGroupView)filter_conditions.getChildAt(i)).filter_condition_radio_group.getFocusedChild();
+                        break;
+                    }
+                }
                 if(poster_recyclerview.getChildAt(0)!=null)
-                poster_recyclerview.getChildAt(0).requestFocus();
+                    poster_recyclerview.getChildAt(0).requestFocus();
             }
         });
     }
@@ -215,13 +227,10 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
         values.add(0,no_limit);
         final FilterConditionGroupView filterConditionGroupView=new FilterConditionGroupView(this,values,label,isFocus);
         isFocus = false;
-        filterConditionGroupView.setFocusable(true);
-        filterConditionGroupView.setFocusableInTouchMode(true);
-        filterConditionGroupView.setOnCheckChangeListener(new FilterConditionGroupView.OnCheckChange() {
+        filterConditionGroupView.filter_condition_radio_group.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
-            public void onCheckChange(View view, boolean isChecked) {
-                String text=((Button)view).getText().toString();
-                filter(text,isChecked,view.getTag().toString());
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                filter();
             }
         });
         filter_conditions.addView(filterConditionGroupView);
@@ -287,9 +296,14 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                 });
     }
 
-    private void filter(String text, boolean b, String tag) {
-        if(!"全部".equals(text)){
-            if(b){
+    private void filter() {
+        View view=filter_checked_conditiion.getChildAt(0);
+        filter_checked_conditiion.removeAllViews();
+        filter_checked_conditiion.addView(view);
+        for (int i = 0; i <filter_conditions.getChildCount() ; i++) {
+            FilterConditionGroupView filterConditionGroupView=(FilterConditionGroupView)filter_conditions.getChildAt(i);
+            RadioButton radio= (RadioButton) filterConditionGroupView.filter_condition_radio_group.findViewById(filterConditionGroupView.filter_condition_radio_group.getCheckedRadioButtonId());
+            if(!"全部".equals(radio.getText())){
                 TextView checked= new TextView(this);
                 checked.setBackgroundResource(R.drawable.filter_condition_checked2);
                 LinearLayout.LayoutParams params=new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,getResources().getDimensionPixelOffset(R.dimen.filter_checked_condition_h));
@@ -298,23 +312,18 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                 checked.setLayoutParams(params);
                 checked.setTextSize(TypedValue.COMPLEX_UNIT_PX,getResources().getDimension(R.dimen.filter_checked_condition_ts));
                 checked.setTextColor(getResources().getColor(R.color._333333));
-                checked.setText(text);
+                checked.setText(radio.getText());
                 checked.setGravity(Gravity.CENTER);
-                checked.setTag(tag);
+                checked.setTag(radio.getTag());
                 filter_checked_conditiion.addView(checked);
-            }else{
-                for (int i = 0; i <filter_checked_conditiion.getChildCount() ; i++) {
-                    if(text.equals(((TextView)filter_checked_conditiion.getChildAt(i)).getText().toString())){
-                        filter_checked_conditiion.removeViewAt(i);
-                    }
-                }
             }
+        }
             if(filter_checked_conditiion.getChildCount()>1){
                 filter_checked_conditiion.setVisibility(View.VISIBLE);
             }else{
                 filter_checked_conditiion.setVisibility(View.INVISIBLE);
             }
-        }
+
         String condition = "";
 
         for (int i = 1; i <filter_checked_conditiion.getChildCount() ; i++) {
@@ -331,16 +340,13 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
     public void onClick(View v) {
         int i = v.getId();
         if(i==R.id.filter_arrow_down){
-            JasmineUtil.scaleOut4(v);
             if(poster_recyclerview.getChildCount()>0)
-            poster_recyclerview.smoothScrollBy(0, (int) (poster_recyclerview.getChildAt(0).getY()+poster_recyclerview.getChildAt(0).getHeight()*2+getResources().getDimensionPixelOffset(R.dimen.filter_poster_vertical_scroll_space)));
+                poster_recyclerview.smoothScrollBy(0, (int) (poster_recyclerview.getChildAt(0).getY()+poster_recyclerview.getChildAt(0).getHeight()*2+getResources().getDimensionPixelOffset(R.dimen.filter_poster_vertical_scroll_space)));
         }else if(i==R.id.filter_arrow_up)   {
-            JasmineUtil.scaleOut4(v);
             if(poster_recyclerview.getChildCount()>0)
                 poster_recyclerview.smoothScrollBy(0, (int) (poster_recyclerview.getChildAt(0).getY()-poster_recyclerview.getChildAt(0).getHeight()*2-getResources().getDimensionPixelOffset(R.dimen.filter_poster_vertical_scroll_space)));
         }else if(i==R.id.filter_tab){
             filter_tab.requestFocus();
-            getRootView().requestFocus();
             showFilterPopup();
         }
     }
@@ -355,12 +361,31 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
     }
 
     @Override
+    public boolean onKeyLongPress(int keyCode, KeyEvent event) {
+        return true;
+    }
+
+    @Override
     public void onFocusChange(View v, boolean hasFocus) {
-        if(hasFocus){
-            JasmineUtil.scaleOut4(v);
-        }else{
-            JasmineUtil.scaleIn4(v);
+        int i = v.getId();
+        if (i == R.id.filter_arrow_up) {
+            if(hasFocus){
+                filter_arrow_up.setBackgroundResource(R.drawable.filter_arrow_up_focus);
+                JasmineUtil.scaleOut4(v);
+            }else{
+                filter_arrow_up.setBackgroundResource(R.drawable.filter_arrow_up_normal);
+                JasmineUtil.scaleIn4(v);
+            }
+        } else if (i == R.id.filter_arrow_down) {
+            if(hasFocus){
+                filter_arrow_down.setBackgroundResource(R.drawable.filter_arrow_down_focus);
+                JasmineUtil.scaleOut4(v);
+            }else{
+                filter_arrow_down.setBackgroundResource(R.drawable.filter_arrow_down_normal);
+                JasmineUtil.scaleIn4(v);
+            }
         }
+
     }
 
 }
