@@ -19,8 +19,11 @@ import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.MediaController;
 import android.widget.MediaController.MediaPlayerControl;
 
+import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Map;
 
+import tv.ismar.app.core.VodUserAgent;
 import tv.ismar.homepage.R;
 
 /**
@@ -193,7 +196,6 @@ public class DaisyVideoView extends SurfaceView implements MediaPlayerControl {
 	 */
 	public void setVideoURI(Uri uri, Map<String, String> headers) {
 		mUri = uri;
-		mHeaders = headers;
 		mSeekWhenPrepared = 0;
 		openVideo();
 		requestLayout();
@@ -244,7 +246,8 @@ public class DaisyVideoView extends SurfaceView implements MediaPlayerControl {
 			//player.setOnInfoListener(mInfoChangedListener);
 			player.setOnBufferingUpdateListener(mBufferingUpdateListener);
 			mCurrentBufferPercentage = 0;
-			//mHeaders.put("User-Agent", Build.MODEL+"/"+SimpleRestClient.appVersion+" "+SimpleRestClient.sn_token);
+			mHeaders = new HashMap<>();
+			mHeaders.put("User-Agent", VodUserAgent.getHttpUserAgent());
 			player.setDataSource(mContext, mUri, mHeaders);
 //	        player.setDataSource(m);
 			player.setDisplay(mSurfaceHolder);

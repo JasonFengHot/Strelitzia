@@ -16,6 +16,7 @@ import com.ismartv.lion.custom.ICallLog;
 import com.ismartv.lion.custom.Parse;
 import com.orhanobut.logger.LogLevel;
 import com.orhanobut.logger.Logger;
+import com.squareup.picasso.OkHttp3Downloader;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
@@ -29,11 +30,13 @@ import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import cn.ismartv.injectdb.library.ActiveAndroid;
 import cn.ismartv.injectdb.library.app.Application;
 import cn.ismartv.truetime.TrueTime;
+import okhttp3.OkHttpClient;
 import okhttp3.ResponseBody;
 import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
@@ -59,6 +62,7 @@ import tv.ismar.app.network.SkyService;
 import tv.ismar.app.service.HttpProxyService;
 import tv.ismar.app.util.NetworkUtils;
 import tv.ismar.app.util.SPUtils;
+import tv.ismar.library.network.UserAgentInterceptor;
 import tv.ismar.library.util.C;
 import tv.ismar.library.util.DeviceUtils;
 import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
@@ -99,11 +103,6 @@ public class VodApplication extends Application {
         ActiveAndroid.initialize(this);
         AccountSharedPrefs.initialize(this);
         load(this);
-        ExecutorService executorService = Executors.newSingleThreadExecutor();
-
-        Picasso picasso = new Picasso.Builder(this).executor(executorService).build();
-        Picasso.setSingletonInstance(picasso);
-        IsmartvActivator.initialize(this);
 //        mHttpTrafficInterceptor = new HttpTrafficInterceptor(this);
 //        mHttpTrafficInterceptor.setTrafficType(HttpTrafficInterceptor.TrafficType.UNLIMITED);
         mHttpParamsInterceptor = new HttpParamsInterceptor.Builder()
@@ -121,9 +120,11 @@ public class VodApplication extends Application {
         Log.i("LH/", "applicationOnCreateEnd:" + TrueTime.now().getTime());
         Intent ootStartIntent = new Intent(this, HttpProxyService.class);
         this.startService(ootStartIntent);
+        IsmartvActivator.initialize(this);
         reportIp();
         initLogCallback();
         initConstants();
+        initPicasso();
     }
 
     private void initLogCallback() {
@@ -154,6 +155,19 @@ public class VodApplication extends Application {
         } catch (PackageManager.NameNotFoundException e) {
             C.versionCode = 0;
         }
+    }
+
+    private void initPicasso(){
+        OkHttpClient client = new OkHttpClient.Builder()
+                .addInterceptor(new UserAgentInterceptor())
+                .build();
+
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
+        Picasso picasso = new Picasso.Builder(this)
+                .executor(executorService)
+                .downloader(new OkHttp3Downloader(client))
+                .build();
+        Picasso.setSingletonInstance(picasso);
     }
 
     public SharedPreferences getPreferences() {

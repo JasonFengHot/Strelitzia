@@ -95,7 +95,6 @@ public class AdImageDialog extends Dialog {
                     if (imageView != null && button != null) {
                         AdElementEntity element = mAdvEntityList.get(mCurrentAdIndex);
                         PlayerEvent.pause_ad_download(element.getTitle(), element.getMedia_id(), element.getMedia_url(), "bestv");
-
                         Picasso.with(mContext).load(element.getMedia_url())
                                 .into(imageView, new com.squareup.picasso.Callback() {
                                     @Override
@@ -114,7 +113,7 @@ public class AdImageDialog extends Dialog {
                                     }
 
                                     @Override
-                                    public void onError() {
+                                    public void onError(Exception e) {
                                         PlayerEvent.pause_ad_except(0, "Load error");
                                     }
                                 });
