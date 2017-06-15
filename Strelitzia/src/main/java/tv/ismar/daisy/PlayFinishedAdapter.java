@@ -25,7 +25,7 @@ public class PlayFinishedAdapter extends RecyclerView.Adapter<PlayFinishedAdapte
 	    private boolean mIsVertical;
 		private OnItemClickListener itemClickListener;
 	    private OnItemFocusedListener itemFocusedListener;
-		private boolean firstIn=true;
+
 
 	public OnItemClickListener getItemClickListener() {
 		return itemClickListener;
@@ -94,10 +94,6 @@ public class PlayFinishedAdapter extends RecyclerView.Adapter<PlayFinishedAdapte
 						.error(R.drawable.list_item_preview_bg).into(holder.item_horizontal_poster_image);
 
 			}
-		}
-		if(firstIn&&position==0){
-			firstIn=false;
-			holder.itemView.requestFocus();
 		}
 	}
 

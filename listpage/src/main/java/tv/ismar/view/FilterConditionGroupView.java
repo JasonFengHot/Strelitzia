@@ -19,6 +19,7 @@ import android.widget.TextView;
 
 import java.util.List;
 
+import tv.ismar.channel.FilterActivity;
 import tv.ismar.listpage.R;
 
 
@@ -31,10 +32,8 @@ public class FilterConditionGroupView extends LinearLayout implements View.OnHov
     private TextView filter_condition_group_title;
     private Button filter_condition_group_arrow_left;
     private Button filter_condition_group_arrow_right;
-    private RadioButton checkedView;
     private List<List<String>> values;
     private String label;
-    private boolean isFocus;
     private HorizontalScrollView filter_condition_group_scrollview;
     public RadioGroup filter_condition_radio_group;
     private RadioButton radio;
@@ -45,18 +44,24 @@ public class FilterConditionGroupView extends LinearLayout implements View.OnHov
     public Handler handler=new Handler(new Handler.Callback() {
         @Override
         public boolean handleMessage(Message msg) {
-            filter_condition_radio_group.getChildAt(msg.arg1).requestFocus();
-            filter_condition_radio_group.getChildAt(msg.arg1).requestFocusFromTouch();
+            if(msg.arg1!=-1){
+                filter_condition_radio_group.getChildAt(msg.arg1).requestFocus();
+                filter_condition_radio_group.getChildAt(msg.arg1).requestFocusFromTouch();
+            }else {
+                findViewById(filter_condition_radio_group.getCheckedRadioButtonId()).requestFocus();
+                findViewById(filter_condition_radio_group.getCheckedRadioButtonId()).requestFocusFromTouch();
+            }
             return false;
         }
     });
+    private View left_layer;
+    private View right_layer;
 
 
-    public FilterConditionGroupView(Context context,List<List<String>> values,String label,boolean isFocus) {
+    public FilterConditionGroupView(Context context,List<List<String>> values,String label) {
         super(context);
         this.label = label;
         this.values = values;
-        this.isFocus=isFocus;
         initView(context);
         initData(context);
 
@@ -90,33 +95,33 @@ public class FilterConditionGroupView extends LinearLayout implements View.OnHov
                 radio.setNextFocusRightId(radio.getId());
             }
             final int finalI = i;
-            radio.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    radio.requestFocus();
-                }
-            });
             radio.setOnFocusChangeListener(new OnFocusChangeListener() {
                 @Override
                 public void onFocusChange(View v, boolean hasFocus) {
                     if(filter_condition_group_scrollview.getScrollX()>0){
                         filter_condition_group_arrow_left.setVisibility(View.VISIBLE);
+                        left_layer.setVisibility(View.VISIBLE);
                     }else{
                         filter_condition_group_arrow_left.setVisibility(View.INVISIBLE);
+                        left_layer.setVisibility(View.INVISIBLE);
                     }
                     if(canScroll) {
                         if (finalI == values.size() - 1) {
                             filter_condition_group_arrow_right.setVisibility(View.INVISIBLE);
+                            right_layer.setVisibility(View.INVISIBLE);
                             rightLimit = filter_condition_group_scrollview.getScrollX();
                         } else {
                             if (rightLimit != 0 && filter_condition_group_scrollview.getScrollX() == rightLimit) {
                                 filter_condition_group_arrow_right.setVisibility(View.INVISIBLE);
+                                right_layer.setVisibility(View.INVISIBLE);
                             } else {
                                 filter_condition_group_arrow_right.setVisibility(View.VISIBLE);
+                                right_layer.setVisibility(View.VISIBLE);
                             }
                         }
                     }
                 }
+
             });
             filter_condition_radio_group.addView(radio);
         }
@@ -124,7 +129,9 @@ public class FilterConditionGroupView extends LinearLayout implements View.OnHov
             @Override
             public void onClick(View v) {
                 filter_condition_group_arrow_left.setVisibility(View.VISIBLE);
+                left_layer.setVisibility(View.VISIBLE);
                 filter_condition_group_arrow_right.setVisibility(View.INVISIBLE);
+                right_layer.setVisibility(View.INVISIBLE);
                 filter_condition_group_scrollview.pageScroll(View.FOCUS_RIGHT);
                 Message msg=new Message();
                 msg.arg1=values.size()-1;
@@ -137,7 +144,9 @@ public class FilterConditionGroupView extends LinearLayout implements View.OnHov
             @Override
             public void onClick(View v) {
                 filter_condition_group_arrow_right.setVisibility(View.VISIBLE);
+                right_layer.setVisibility(View.VISIBLE);
                 filter_condition_group_arrow_left.setVisibility(View.INVISIBLE);
+                left_layer.setVisibility(View.INVISIBLE);
                 filter_condition_group_scrollview.pageScroll(View.FOCUS_LEFT);
                 Message msg=new Message();
                 msg.arg1=0;
@@ -170,11 +179,14 @@ public class FilterConditionGroupView extends LinearLayout implements View.OnHov
                                                                                                      }
                                                                                                      if(totalwidth>context.getResources().getDimensionPixelOffset(R.dimen.filter_condition_group_recycler_w)){
                                                                                                          filter_condition_group_arrow_right.setVisibility(View.VISIBLE);
+                                                                                                         right_layer.setVisibility(View.VISIBLE);
                                                                                                          canScroll=true;
                                                                                                      }
                                                                                                  }
 
                                                                                              });
+        left_layer = conditionGroup.findViewById(R.id.left_layer);
+        right_layer = conditionGroup.findViewById(R.id.right_layer);
     }
 
 
