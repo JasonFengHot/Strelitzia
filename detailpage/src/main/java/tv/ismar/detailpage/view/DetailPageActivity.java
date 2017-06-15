@@ -325,6 +325,7 @@ public class DetailPageActivity extends BaseActivity implements PlaybackService.
 
     @Override
     public void onConnected(PlaybackService service) {
+        LogUtils.d(TAG, "service connected : " + goPlayPage);
         mPlaybackService = service;
         mPlaybackService.preparePlayer(mItemEntity, source);
 
