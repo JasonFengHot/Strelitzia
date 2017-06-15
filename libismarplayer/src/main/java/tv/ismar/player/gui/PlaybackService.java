@@ -227,6 +227,7 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
         this.itemPk = itemPk;// 当前影片pk值,通过/api/item/{pk}可获取详细信息
         this.subItemPk = subItemPk;// 当前多集片pk值,通过/api/subitem/{pk}可获取详细信息
         this.source = source;
+        initUserInfo();
         fetchPlayerItem(String.valueOf(itemPk));
     }
 
