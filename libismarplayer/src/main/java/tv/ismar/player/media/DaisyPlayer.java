@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.util.Map;
 
 import tv.ismar.account.IsmartvActivator;
+import tv.ismar.app.core.VodUserAgent;
 import tv.ismar.app.entity.ClipEntity;
 import tv.ismar.library.injectdb.util.Log;
 import tv.ismar.library.util.DateUtils;
@@ -614,6 +615,7 @@ public class DaisyPlayer extends IsmartvPlayer implements SurfaceHelper.SurfaceC
                     mPlayer.setSDCardisAvailable(false);
                 }
                 mPlayer.setSn(getSnToken());
+                mPlayer.setUserAgent(VodUserAgent.getHttpUserAgent());
                 if (ispreload) {
                     mPlayer.setDataSource(mediaMeta.getUrls());
                     mPlayer.prepareAsync();
