@@ -102,7 +102,7 @@
         android:layout_height="@dimen/filter_layout_filter_arrow_w"
         android:layout_marginTop="@dimen/filter_layout_filter_arrow_up_mt"
         android:layout_marginRight="@dimen/filter_layout_filter_arrow_mr"
-        android:background="@drawable/filter_arrow_up_selector"
+        android:background="@drawable/filter_arrow_up_normal"
         android:layout_alignParentRight="true"/>
 
     <Button
@@ -112,7 +112,7 @@
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="@dimen/filter_layout_filter_arrow_down_mb"
         android:layout_marginRight="@dimen/filter_layout_filter_arrow_mr"
-        android:background="@drawable/filter_arrow_down_selector"
+        android:background="@drawable/filter_arrow_down_normal"
         android:layout_alignParentRight="true"/>
 
 </RelativeLayout>

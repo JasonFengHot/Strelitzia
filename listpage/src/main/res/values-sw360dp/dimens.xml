@@ -375,10 +375,10 @@
 <dimen name="filter_condition_group_title_ts">10.00dp</dimen>
 <dimen name="filter_condition_group_arrow_w">16.67dp</dimen>
 <dimen name="filter_condition_group_arrow_ml">5.67dp</dimen>
-<dimen name="filter_condition_group_recycler_w">537.33dp</dimen>
+<dimen name="filter_condition_group_recycler_w">543.00dp</dimen>
 <dimen name="filter_condition_group_recycler_h">14.33dp</dimen>
 <dimen name="filter_condition_group_recycler_ml">0.67dp</dimen>
-<dimen name="filter_condition_group_recycler_pl">-14.67dp</dimen>
+<dimen name="filter_condition_group_recycler_pl">-13.00dp</dimen>
 
 <!--filter_group_radio_button-->
 <dimen name="filter_group_radio_button_ts">10.00dp</dimen>
@@ -420,7 +420,7 @@
 <dimen name="item_horizontal_poster_title_ts">12.00dp</dimen>
 
 <!--incode-->
-<dimen name="filter_condition_radio_mr">14.67dp</dimen>
+<dimen name="filter_condition_radio_mr">13.00dp</dimen>
 <dimen name="vertical_recycler_padding_bottom">21.67dp</dimen>
 <dimen name="horizontal_recycler_padding_bottom">86.67dp</dimen>
 <dimen name="filter_condition_popup_w">640.00dp</dimen>
@@ -433,4 +433,6 @@
 <dimen name="filter_checked_condition_ts">10.00dp</dimen>
 <dimen name="filter_poster_vertical_scroll_space">10.67dp</dimen>
 <dimen name="filter_poster_start_scroll_length">166.67dp</dimen>
+<dimen name="filter_condition_group_item_space_2">33.33dp</dimen>
+<dimen name="filter_condition_group_item_space_4">53.00dp</dimen>
 </resources>
