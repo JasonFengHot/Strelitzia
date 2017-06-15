@@ -434,7 +434,7 @@ public class DaisyPlayer extends IsmartvPlayer implements SurfaceHelper.SurfaceC
     private SmartPlayer.OnCompletionListenerUrl onCompletionListenerUrl = new SmartPlayer.OnCompletionListenerUrl() {
         @Override
         public void onCompletion(SmartPlayer smartPlayer, String s) {
-            if (mPlayer == null) {
+            if (mPlayer == null || mCurrentState == STATE_COMPLETED) {
                 return;
             }
             int currentIndex = smartPlayer.getCurrentPlayUrl();
