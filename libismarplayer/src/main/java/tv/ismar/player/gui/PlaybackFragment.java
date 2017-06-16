@@ -145,6 +145,8 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
     private boolean backpress=false;
     private boolean isqiyi;
     private String contentMode="";
+    private boolean isPlayExitLayerShow;
+
     public PlaybackFragment() {
         // Required empty public constructor
     }
@@ -204,6 +206,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
     @Override
     public void onResume() {
         super.onResume();
+        isPlayExitLayerShow=false;
         if(backpress){
             mPlaybackService.startPlayer();
         }
@@ -717,7 +720,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
                 showPannelDelayOut();
                 break;
             case SEEK_COMPLETED:
-                if (!mPlaybackService.getMediaPlayer().isPlaying()) {
+                if (!mPlaybackService.getMediaPlayer().isPlaying()&&!isPlayExitLayerShow) {
                     mPlaybackService.startPlayer();
                 }
                 timerStart(500);
@@ -1161,6 +1164,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
                 break;
             case EVENT_PLAY_EXIT:
                 mIsClickKefu = true;
+                isPlayExitLayerShow = true;
                 PageIntent pageIntent=new PageIntent();
                 pageIntent.toPlayFinish(this,mPlaybackService.getItemEntity().getContentModel(),extraItemPk, (int) ((((double)mPlaybackService.getMediaPlayer().getCurrentPosition())/((double)mPlaybackService.getMediaPlayer().getDuration()))*100),mPlaybackService.hasHistory,"player");
                 break;
