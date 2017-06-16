@@ -18,7 +18,7 @@
             android:layout_height="@dimen/player_35"
             android:layout_marginTop="@dimen/player_4"
             android:textSize="@dimen/text_size_24sp"
-            android:textColor="#cccccc"
+            android:textColor="#666666"
             android:gravity="center"
             android:layout_gravity="center_horizontal"
             />
@@ -30,7 +30,6 @@
         android:orientation="vertical"
         android:gravity="center_horizontal"
         android:visibility="gone"
-        android:background="@color/_ff9c3c"
         >
             <TextView
                 android:id="@+id/focus_text"

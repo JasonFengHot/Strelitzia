@@ -97,5 +97,7 @@
 <dimen name="player_63">23.33dp</dimen>
 <dimen name="player_50">18.52dp</dimen>
 <dimen name="player_130">48.15dp</dimen>
-
+<dimen name="player_39">14.44dp</dimen>
+<dimen name="player_103">38.15dp</dimen>
+<dimen name="player_45">16.67dp</dimen>
 </resources>
