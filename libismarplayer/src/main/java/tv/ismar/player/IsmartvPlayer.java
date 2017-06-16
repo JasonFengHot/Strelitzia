@@ -57,7 +57,7 @@ public abstract class IsmartvPlayer implements IPlayer {
     protected OnStateChangedListener onStateChangedListener;
     // 日志上报相关
     protected HashMap<String, Integer> logAdMap = new HashMap<>();
-    protected String logPlayerFlag;
+    protected String logPlayerFlag = "";
     protected PlayerEvent logPlayerEvent = new PlayerEvent();
     protected long logPlayerOpenTime = 0;
     protected boolean logFirstOpenPlayer = true;// 播放器打开日志上报，surfaceDestroy后该标志位需恢复
@@ -84,7 +84,6 @@ public abstract class IsmartvPlayer implements IPlayer {
         mMediaEntity = mediaSource;
         logPlayerEvent.pk = mediaSource.getPk();
         logPlayerEvent.subItemPk = mediaSource.getSubItemPk();
-        logPlayerFlag = "bestv";
         preloadMediaMeta = bestvUserInit();
         if (preloadMediaMeta != null) {
             createPreloadPlayer(preloadMediaMeta);
@@ -109,7 +108,6 @@ public abstract class IsmartvPlayer implements IPlayer {
                     mQiyiContainer.setVisibility(View.GONE);
                 }
                 if (!hasPreload) {
-                    logPlayerFlag = "bestv";
                     preloadMediaMeta = bestvUserInit();
                 }
                 if (preloadMediaMeta != null) {
@@ -251,6 +249,15 @@ public abstract class IsmartvPlayer implements IPlayer {
                 exitPosition,
                 (DateUtils.currentTimeMillis() - logPlayerOpenTime),
                 logPlayerFlag);
+    }
+
+    public void logExpenseAdClick() {
+        PlayerEvent.expenseAdClick(
+                logPlayerEvent,
+                logAdMediaId,
+                DateUtils.currentTimeMillis(),
+                logPlayerFlag
+        );
     }
 
     private MediaMeta bestvUserInit() {
