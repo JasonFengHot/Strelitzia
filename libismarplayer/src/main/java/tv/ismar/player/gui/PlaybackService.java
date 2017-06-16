@@ -13,8 +13,11 @@ import android.util.Log;
 import android.view.SurfaceView;
 import android.view.ViewGroup;
 
+import com.google.gson.GsonBuilder;
 import com.qiyi.sdk.player.IMediaPlayer;
 
+import java.io.IOException;
+import java.text.ParseException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,7 +34,6 @@ import tv.ismar.account.IsmartvActivator;
 import tv.ismar.app.BaseActivity;
 import tv.ismar.app.VodApplication;
 import tv.ismar.app.ad.Advertisement;
-import tv.ismar.app.core.PlayCheckManager;
 import tv.ismar.app.db.HistoryManager;
 import tv.ismar.app.entity.ClipEntity;
 import tv.ismar.app.entity.DBQuality;
@@ -39,6 +41,7 @@ import tv.ismar.app.entity.History;
 import tv.ismar.app.network.SkyService;
 import tv.ismar.app.network.entity.AdElementEntity;
 import tv.ismar.app.network.entity.ItemEntity;
+import tv.ismar.app.network.entity.PlayCheckEntity;
 import tv.ismar.app.util.Utils;
 import tv.ismar.library.network.HttpManager;
 import tv.ismar.library.util.AppUtils;
@@ -49,8 +52,6 @@ import tv.ismar.player.IPlayer;
 import tv.ismar.player.IsmartvPlayer;
 import tv.ismar.player.model.MediaEntity;
 import tv.ismar.statistics.PurchaseStatistics;
-
-import static android.R.id.message;
 
 public class PlaybackService extends Service implements Advertisement.OnVideoPlayAdListener {
 
@@ -74,6 +75,7 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
     private String snToken, deviceToken, authToken, username, zuserToken, zdeviceToken;
     private Subscription mApiItemSubsc;
     private Subscription mApiMediaUrlSubsc;
+    private Subscription mApiPlayCheckSubsc;
     private Advertisement mAdvertisement;
 
     private ItemEntity mItemEntity;
@@ -83,7 +85,7 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
     // 历史记录
     private HistoryManager historyManager;
     private History mHistory;
-    public boolean hasHistory=false;
+    public boolean hasHistory = false;
     // HLS播放器
     private IsmartvPlayer hlsPlayer;// HLS播放
     private ServiceCallback serviceCallback;
@@ -152,9 +154,11 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
     public boolean isPreload() {
         return mIsPreload;
     }
+
     public void resetPreload() {
         mIsPreload = false;
     }
+
     @Override
     public IBinder onBind(Intent intent) {
         isBindActivity = true;
@@ -241,6 +245,7 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
         this.subItemPk = 0;// 当前多集片pk值,通过/api/subitem/{pk}可获取详细信息
         this.source = source;
         this.mItemEntity = itemEntity;
+        cancelRequest();
         initUserInfo();
         mIsPreload = true;
         loadPlayerItem();
@@ -324,7 +329,7 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
         fetchClipUrl(clipUrl);
     }
 
-    public void onResumeFromKefu(){
+    public void onResumeFromKefu() {
         initVariable();
         createPlayer(null);
     }
@@ -363,6 +368,12 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
         if (mApiMediaUrlSubsc != null && !mApiMediaUrlSubsc.isUnsubscribed()) {
             mApiMediaUrlSubsc.unsubscribe();
         }
+        if (mApiPlayCheckSubsc != null && !mApiPlayCheckSubsc.isUnsubscribed()) {
+            mApiPlayCheckSubsc.unsubscribe();
+        }
+        if (mAdvertisement != null) {
+            mAdvertisement.stopSubscription();
+        }
     }
 
     private void loadPlayerItem() {
@@ -371,36 +382,75 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
         final ItemEntity.Clip playCheckClip = mItemEntity.getClip();
         mIsPreview = false;
         if (mItemEntity.getExpense() != null) {
-            PlayCheckManager.getInstance(HttpManager.getDomainService(SkyService.class)).check(String.valueOf(mItemEntity.getPk()), new PlayCheckManager.Callback() {
-                @Override
-                public void onSuccess(boolean isBuy, int remainDay, String user) {
-                    LogUtils.i(TAG, "play check isBuy:" + isBuy + " " + remainDay + " " + user);
-                    if (!isBindActivity) {
-                        LogUtils.d(TAG, "Activity unbind on play check");
-                        return;
-                    }
-                    mQiyiUserType = user;
-                    if (isBuy) {
-                        fetchClipUrl(playCheckClip.getUrl());
-                    } else {
-                        videoPreview();
-                    }
-                }
+            if (mApiPlayCheckSubsc != null && !mApiPlayCheckSubsc.isUnsubscribed()) {
+                mApiPlayCheckSubsc.unsubscribe();
+            }
+            mApiPlayCheckSubsc = HttpManager.getDomainService(SkyService.class).apiPlayCheck(String.valueOf(mItemEntity.getPk()), null, null)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Observer<ResponseBody>() {
+                        @Override
+                        public void onCompleted() {
+                        }
 
-                @Override
-                public void onFailure() {
-                    LogUtils.e(TAG, "play check fail");
-                    if (!isBindActivity) {
-                        LogUtils.d(TAG, "Activity unbind on play check");
-                        return;
-                    }
-                    videoPreview();
+                        @Override
+                        public void onError(Throwable e) {
+                            LogUtils.e(TAG, "play check onError");
+                            if (!isBindActivity) {
+                                LogUtils.d(TAG, "Activity unbind on play check");
+                                return;
+                            }
+                            videoPreview();
+                        }
 
-                }
-            });
+                        @Override
+                        public void onNext(ResponseBody responseBody) {
+                            if (!isBindActivity) {
+                                LogUtils.d(TAG, "Activity unbind on play check");
+                                return;
+                            }
+                            String result = null;
+                            try {
+                                result = responseBody.string();
+                                LogUtils.i(TAG, "play check result:" + result);
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                            if (!Utils.isEmptyText(result)) {
+                                PlayCheckEntity playCheckEntity = calculateRemainDay(result);
+                                mQiyiUserType = playCheckEntity.getUser();
+                                if (playCheckEntity.getRemainDay() > 0) {
+                                    fetchClipUrl(playCheckClip.getUrl());
+                                    return;
+                                }
+                            }
+                            videoPreview();
+                        }
+                    });
         } else {
             fetchClipUrl(playCheckClip.getUrl());
         }
+    }
+
+    private PlayCheckEntity calculateRemainDay(String info) {
+        PlayCheckEntity playCheckEntity;
+        switch (info) {
+            case "0":
+                playCheckEntity = new PlayCheckEntity();
+                playCheckEntity.setRemainDay(0);
+                break;
+            default:
+                playCheckEntity = new GsonBuilder().create().fromJson(info, PlayCheckEntity.class);
+                int remainDay;
+                try {
+                    remainDay = Utils.daysBetween(Utils.getTime(), playCheckEntity.getExpiry_date()) + 1;
+                } catch (ParseException e) {
+                    remainDay = 0;
+                }
+                playCheckEntity.setRemainDay(remainDay);
+                break;
+        }
+        return playCheckEntity;
     }
 
     private void initHistory() {
@@ -415,7 +465,7 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
         mHistory = historyManager.getHistoryByUrl(historyUrl, isLogin);
         if (mHistory != null) {
             mStartPosition = (int) mHistory.last_position;
-            hasHistory=true;
+            hasHistory = true;
         } else {
             mStartPosition = 0;
         }
@@ -791,13 +841,12 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
         }
 
         @Override
-        public void onTsInfo(Map<String, String> map){
+        public void onTsInfo(Map<String, String> map) {
             String CacheTime = map.get("TsCacheTime");
-            if (CacheTime != null)
-            {
+            if (CacheTime != null) {
                 Long nCacheTime = Long.parseLong(CacheTime);
-                if(serviceCallback != null)
-                serviceCallback.onBufferUpdate(nCacheTime);
+                if (serviceCallback != null)
+                    serviceCallback.onBufferUpdate(nCacheTime);
                 Log.i(TAG, "current cache total time:" + nCacheTime);
             }
         }

@@ -98,7 +98,6 @@ public class DetailPageFragment extends Fragment implements DetailPageContract.V
     private String mHeadTitle;
     private volatile boolean itemIsLoad;
     private volatile boolean relateIsLoad;
-    private volatile boolean playCheckIsLoad;
     private ItemEntity mItemEntity;
     private ItemEntity[] relateItems;
     private int mRemandDay = 0;
@@ -257,7 +256,6 @@ public class DetailPageFragment extends Fragment implements DetailPageContract.V
     public void loadItem(ItemEntity itemEntity) {
         if(isLogin.equals("yes")&&mItemEntity.getExpense()!=null&&mRemandDay<=0) {
             Log.e("refresh","true");
-            playCheckIsLoad=false;
             if (itemEntity.getContentModel().equals("sport")) {
                 mPresenter.requestPlayCheck(String.valueOf(mItemEntity.getPk()));
             } else {
@@ -265,7 +263,6 @@ public class DetailPageFragment extends Fragment implements DetailPageContract.V
             }
         } else {
             notifyActivityPreload(false);
-            playCheckIsLoad=true;
         }
         mModel.replaceItem(itemEntity);
         itemIsLoad = true;
@@ -398,7 +395,6 @@ public class DetailPageFragment extends Fragment implements DetailPageContract.V
             isBuy = true;// 购买了，剩余天数大于0
         }
         notifyActivityPreload(isBuy);
-        playCheckIsLoad=true;
     }
 
     private void notifyActivityPreload(boolean permission){
@@ -480,17 +476,15 @@ public class DetailPageFragment extends Fragment implements DetailPageContract.V
     private View.OnClickListener relateItemOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            if(playCheckIsLoad) {
-                AppConstant.purchase_entrance_page = "related";
-                ItemEntity item = relateItems[(int) v.getTag()];
-                AppConstant.purchase_entrance_related_item = String.valueOf(mItemEntity.getItemPk());
-                AppConstant.purchase_entrance_related_title = mItemEntity.getTitle();
-                AppConstant.purchase_entrance_related_channel = AppConstant.purchase_channel;
-                mPageStatistics.videoRelateClick(mItemEntity.getPk(), item);
-                new PageIntent().toDetailPage(getContext(), Source.RELATED.getValue(), item.getPk());
-                to = "relate";
-                getActivity().finish();
-            }
+            AppConstant.purchase_entrance_page = "related";
+            ItemEntity item = relateItems[(int) v.getTag()];
+            AppConstant.purchase_entrance_related_item = String.valueOf(mItemEntity.getItemPk());
+            AppConstant.purchase_entrance_related_title = mItemEntity.getTitle();
+            AppConstant.purchase_entrance_related_channel = AppConstant.purchase_channel;
+            mPageStatistics.videoRelateClick(mItemEntity.getPk(), item);
+            new PageIntent().toDetailPage(getContext(), Source.RELATED.getValue(), item.getPk());
+            to="relate";
+            getActivity().finish();
         }
     };
 
