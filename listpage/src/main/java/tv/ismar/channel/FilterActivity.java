@@ -67,6 +67,7 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
     private boolean isFocus=true;
     public View focusedView;
     private int spanCount;
+    private boolean canScroll=true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -124,7 +125,6 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
-                Log.e("scrollstate",recyclerView.getChildCount()+"");
                 if(newState==0){
                     if(recyclerView.getChildAt(spanCount*2)==null){
                         filter_arrow_down.setVisibility(View.INVISIBLE);
@@ -238,6 +238,7 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
             public void onDismiss() {
                 filter_tab.setFocusable(true);
                 if (poster_recyclerview.getChildAt(0) != null)
+                    canScroll = false;
                     poster_recyclerview.getChildAt(0).requestFocus();
             }
         });
@@ -306,7 +307,11 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                                 if(hasFocus){
                                     focusedPos =poster_recyclerview.indexOfChild(view);
                                     if(view.getY()>getResources().getDimensionPixelOffset(R.dimen.filter_poster_start_scroll_length)||view.getY()<=0){
-                                        poster_recyclerview.smoothScrollBy(0, (int) (view.getY()-view.getHeight()-getResources().getDimensionPixelOffset(R.dimen.filter_item_vertical_poster_mb)));
+                                        if(canScroll) {
+                                            poster_recyclerview.smoothScrollBy(0, (int) (view.getY() - view.getHeight() - getResources().getDimensionPixelOffset(R.dimen.filter_item_vertical_poster_mb)));
+                                        }else{
+                                            canScroll=true;
+                                        }
                                     }
                                     JasmineUtil.scaleOut3(view);
                                     if(isVertical) {

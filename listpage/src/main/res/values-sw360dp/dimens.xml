@@ -427,7 +427,7 @@
 <!--incode-->
 <dimen name="filter_condition_radio_mr">13.00dp</dimen>
 <dimen name="vertical_recycler_padding_bottom">22.00dp</dimen>
-<dimen name="horizontal_recycler_padding_bottom">86.67dp</dimen>
+<dimen name="horizontal_recycler_padding_bottom">87.00dp</dimen>
 <dimen name="filter_condition_popup_w">640.00dp</dimen>
 <dimen name="filter_condition_popup_h">176.00dp</dimen>
 <dimen name="filter_condition_popup_position">184.00dp</dimen>
