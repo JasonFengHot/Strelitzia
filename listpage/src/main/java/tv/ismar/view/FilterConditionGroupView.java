@@ -103,21 +103,34 @@ public class FilterConditionGroupView extends LinearLayout implements View.OnHov
                         left_layer.setVisibility(View.VISIBLE);
                     }else{
                         filter_condition_group_arrow_left.setVisibility(View.INVISIBLE);
-                        left_layer.setVisibility(View.INVISIBLE);
                     }
                     if(canScroll) {
                         if (finalI == values.size() - 1) {
                             filter_condition_group_arrow_right.setVisibility(View.INVISIBLE);
-                            right_layer.setVisibility(View.INVISIBLE);
                             rightLimit = filter_condition_group_scrollview.getScrollX();
                         } else {
                             if (rightLimit != 0 && filter_condition_group_scrollview.getScrollX() == rightLimit) {
                                 filter_condition_group_arrow_right.setVisibility(View.INVISIBLE);
-                                right_layer.setVisibility(View.INVISIBLE);
                             } else {
                                 filter_condition_group_arrow_right.setVisibility(View.VISIBLE);
                                 right_layer.setVisibility(View.VISIBLE);
                             }
+                        }
+                    }
+                    if(hasFocus&&canScroll){
+                        int[] location=new int[2];
+                        v.getLocationOnScreen(location);
+                        if(location[0]<left_layer.getRight()+context.getResources().getDimensionPixelOffset(R.dimen.filter_condition_layout_filter_conditions_pl)){
+                            left_layer.setVisibility(View.INVISIBLE);
+                        }else{
+                            if(filter_condition_group_arrow_left.getVisibility()==View.VISIBLE)
+                                left_layer.setVisibility(View.VISIBLE);
+                        }
+                        if(location[0]+v.getWidth()>right_layer.getLeft()+context.getResources().getDimensionPixelOffset(R.dimen.filter_condition_layout_filter_conditions_pl)){
+                            right_layer.setVisibility(View.INVISIBLE);
+                        }else{
+                            if(filter_condition_group_arrow_right.getVisibility()==View.VISIBLE)
+                                right_layer.setVisibility(View.VISIBLE);
                         }
                     }
                 }
@@ -129,9 +142,7 @@ public class FilterConditionGroupView extends LinearLayout implements View.OnHov
             @Override
             public void onClick(View v) {
                 filter_condition_group_arrow_left.setVisibility(View.VISIBLE);
-                left_layer.setVisibility(View.VISIBLE);
                 filter_condition_group_arrow_right.setVisibility(View.INVISIBLE);
-                right_layer.setVisibility(View.INVISIBLE);
                 filter_condition_group_scrollview.pageScroll(View.FOCUS_RIGHT);
                 Message msg=new Message();
                 msg.arg1=values.size()-1;
@@ -144,9 +155,7 @@ public class FilterConditionGroupView extends LinearLayout implements View.OnHov
             @Override
             public void onClick(View v) {
                 filter_condition_group_arrow_right.setVisibility(View.VISIBLE);
-                right_layer.setVisibility(View.VISIBLE);
                 filter_condition_group_arrow_left.setVisibility(View.INVISIBLE);
-                left_layer.setVisibility(View.INVISIBLE);
                 filter_condition_group_scrollview.pageScroll(View.FOCUS_LEFT);
                 Message msg=new Message();
                 msg.arg1=0;

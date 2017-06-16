@@ -57,19 +57,21 @@
 
     <View
         android:id="@+id/left_layer"
-        android:layout_width="78dp"
-        android:layout_height="48dp"
-        android:layout_marginLeft="151dp"
-        android:layout_marginTop="1dp"
+        android:layout_width="@dimen/filter_condition_group_layer_w"
+        android:layout_height="@dimen/filter_condition_group_layer_h"
+        android:layout_marginLeft="@dimen/filter_condition_group_layer_ml"
+        android:layout_marginTop="@dimen/filter_condition_group_layer_mt"
+        android:background="@drawable/left_layer"
         android:visibility="invisible"/>
 
     <View
         android:id="@+id/right_layer"
-        android:layout_width="78dp"
-        android:layout_height="48dp"
-        android:layout_marginRight="66dp"
+        android:layout_width="@dimen/filter_condition_group_layer_w"
+        android:layout_height="@dimen/filter_condition_group_layer_h"
+        android:layout_marginRight="@dimen/filter_condition_group_layer_mr"
         android:layout_alignParentRight="true"
-        android:layout_marginTop="1dp"
+        android:layout_marginTop="@dimen/filter_condition_group_layer_mt"
+        android:background="@drawable/right_layer"
         android:visibility="invisible"/>
 
 </RelativeLayout>

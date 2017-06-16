@@ -379,6 +379,11 @@
 <dimen name="filter_condition_group_recycler_h">19.11dp</dimen>
 <dimen name="filter_condition_group_recycler_ml">0.89dp</dimen>
 <dimen name="filter_condition_group_recycler_pl">-17.33dp</dimen>
+<dimen name="filter_condition_group_layer_w">34.67dp</dimen>
+<dimen name="filter_condition_group_layer_h">21.33dp</dimen>
+<dimen name="filter_condition_group_layer_ml">67.11dp</dimen>
+<dimen name="filter_condition_group_layer_mr">29.33dp</dimen>
+<dimen name="filter_condition_group_layer_mt">0.44dp</dimen>
 
 <!--filter_group_radio_button-->
 <dimen name="filter_group_radio_button_ts">13.33dp</dimen>
