@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -49,6 +50,7 @@ public class PlayFinishedActivity extends BaseActivity implements View.OnClickLi
     private PlayFinishedAdapter playFinishedAdapter;
     private Subscription playExitSub;
     private boolean isFirstIn=true;
+    private View play_exit_error;
 
 
     @Override
@@ -74,6 +76,7 @@ public class PlayFinishedActivity extends BaseActivity implements View.OnClickLi
                 play_finished_cancel_btn = (Button) findViewById(R.id.play_finished_cancel_btn);
                 vertical_poster_focus = findViewById(R.id.vertical_poster_focus);
                 horizontal_poster_focus = findViewById(R.id.horizontal_poster_focus);
+                play_exit_error = findViewById(R.id.play_exit_error);
                 play_finished_confirm_btn.setOnClickListener(this);
                 play_finished_cancel_btn.setOnClickListener(this);
                 play_finished_confirm_btn.setOnFocusChangeListener(this);
@@ -94,11 +97,16 @@ public class PlayFinishedActivity extends BaseActivity implements View.OnClickLi
                 mSkyService.getRelatedArray(itemId)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new BaseObserver<Item[]>() {
+                        .subscribe(new Observer <Item[]>() {
 
                             @Override
                             public void onCompleted() {
 
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+                                play_exit_error.setVisibility(View.VISIBLE);
                             }
 
                             @Override
@@ -136,11 +144,16 @@ public class PlayFinishedActivity extends BaseActivity implements View.OnClickLi
                 playExitSub = SkyService.ServiceManager.getCacheSkyService2().apiPlayExitRecommend(SimpleRestClient.sn_token, itemId,channel,playScale)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new BaseObserver<PlayRecommend>() {
+                        .subscribe(new Observer<PlayRecommend>() {
 
                             @Override
                             public void onCompleted() {
 
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+                                play_exit_error.setVisibility(View.VISIBLE);
                             }
 
                             @Override

@@ -89,4 +89,28 @@
         android:background="@drawable/vod_gv_selector"
         android:visibility="gone"/>
 
+<LinearLayout
+    android:id="@+id/play_exit_error"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:layout_centerVertical="true"
+    android:layout_marginTop="@dimen/play_exit_error_mt"
+    android:visibility="gone">
+    
+    <ImageView
+        android:layout_width="@dimen/play_exit_error_icon_w"
+        android:layout_height="@dimen/play_exit_error_icon_w"
+        android:background="@drawable/play_exit_error"
+        android:layout_gravity="center_horizontal"
+        />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/play_exit_error_text_h"
+        android:layout_gravity="center_horizontal"
+        android:textColor="#ff9c3c"
+        android:textSize="@dimen/play_exit_error_text_ts"
+        android:layout_marginTop="@dimen/play_exit_error_text_mt"
+        android:text="抱歉服务器太忙了，稍后为您提供精彩推荐！"/>
+</LinearLayout>
 </RelativeLayout>
