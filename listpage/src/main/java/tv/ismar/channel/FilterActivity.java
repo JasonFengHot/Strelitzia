@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Message;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -64,6 +66,7 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
     private PopupWindow filterPopup;
     private boolean isFocus=true;
     public View focusedView;
+    private int spanCount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,15 +101,17 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
         filter_conditions = (LinearLayout)filter_condition_layout.findViewById(R.id.filter_conditions);
         filter_arrow_up = findView(R.id.filter_arrow_up);
         filter_arrow_down = findView(R.id.filter_arrow_down);
+
         if(isVertical) {
-            poster_recyclerview.setLayoutManager(new FocusGridLayoutManager(this, 5));
+            spanCount = 5;
             poster_recyclerview.addItemDecoration(new SpaceItemDecoration(0,getResources().getDimensionPixelOffset(R.dimen.filter_item_vertical_poster_mb)));
             poster_recyclerview.setPadding(0,0,0,getResources().getDimensionPixelOffset(R.dimen.vertical_recycler_padding_bottom));
         }else{
-            poster_recyclerview.setLayoutManager(new FocusGridLayoutManager(this, 3));
+            spanCount = 3;
             poster_recyclerview.setPadding(0,0,0,getResources().getDimensionPixelOffset(R.dimen.horizontal_recycler_padding_bottom));
             poster_recyclerview.addItemDecoration(new SpaceItemDecoration(getResources().getDimensionPixelOffset(R.dimen.filter_item_horizontal_poster_mr),getResources().getDimensionPixelOffset(R.dimen.filter_item_horizontal_poster_mb)));
         }
+        poster_recyclerview.setLayoutManager(new GridLayoutManager(this, spanCount));
         filter_tab.setOnClickListener(this);
         filter_tab.setOnHoverListener(this);
         filter_arrow_up.setOnClickListener(this);
@@ -115,6 +120,30 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
         filter_arrow_down.setOnHoverListener(this);
         filter_arrow_up.setOnFocusChangeListener(this);
         filter_arrow_down.setOnFocusChangeListener(this);
+        poster_recyclerview.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                Log.e("scrollstate",recyclerView.getChildCount()+"");
+                if(newState==0){
+                    if(recyclerView.getChildAt(spanCount*2)==null){
+                        filter_arrow_down.setVisibility(View.INVISIBLE);
+                    }else{
+                        filter_arrow_down.setVisibility(View.VISIBLE);
+                    }
+                    if(recyclerView.getChildLayoutPosition(recyclerView.getChildAt(0))==0){
+                        filter_arrow_up.setVisibility(View.INVISIBLE);
+                    }else{
+                        filter_arrow_up.setVisibility(View.VISIBLE);
+                    }
+                }
+            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+            }
+        });
     }
 
     private void initData() {
@@ -190,7 +219,7 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
     }
 
     private void showFilterPopup() {
-        filterPopup = new PopupWindow(filter_condition_layout,getResources().getDimensionPixelOffset(R.dimen.filter_condition_popup_w),getResources().getDimensionPixelOffset(R.dimen.filter_condition_popup_h),true);
+        filterPopup = new PopupWindow(filter_condition_layout, getResources().getDimensionPixelOffset(R.dimen.filter_condition_popup_w), getResources().getDimensionPixelOffset(R.dimen.filter_condition_popup_h), true);
         filterPopup.setTouchable(true);
         filterPopup.setTouchInterceptor(new View.OnTouchListener() {
             @Override
@@ -199,22 +228,23 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
             }
         });
         filterPopup.setBackgroundDrawable(getResources().getDrawable(R.drawable.transparent));
-        filterPopup.showAtLocation(filter_condition_layout,Gravity.NO_GRAVITY,0,getResources().getDimensionPixelOffset(R.dimen.filter_condition_popup_position));
-            Message msg = new Message();
-            msg.arg1 = -1;
-            ((FilterConditionGroupView) filter_conditions.getChildAt(0)).handler.sendMessage(msg);
+        filterPopup.showAtLocation(filter_condition_layout, Gravity.NO_GRAVITY, 0, getResources().getDimensionPixelOffset(R.dimen.filter_condition_popup_position));
+        Message msg = new Message();
+        msg.arg1 = -1;
+        ((FilterConditionGroupView) filter_conditions.getChildAt(0)).handler.sendMessage(msg);
         filterPopup.setOnDismissListener(new PopupWindow.OnDismissListener() {
 
             @Override
             public void onDismiss() {
                 filter_tab.setFocusable(true);
-                if(poster_recyclerview.getChildAt(0)!=null)
+                if (poster_recyclerview.getChildAt(0) != null)
                     poster_recyclerview.getChildAt(0).requestFocus();
             }
         });
     }
 
     private void fillConditionLayout(String label, final List<List<String>> values) {
+
         List<String> no_limit=new ArrayList<>();
         no_limit.add("");
         no_limit.add("全部");
@@ -245,6 +275,15 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
 
                     @Override
                     public void onNext(final ItemList itemList) {
+
+                        if(itemList.objects.size()!=0){
+                            if((isVertical&&itemList.objects.size()>10)||(!isVertical&&itemList.objects.size()>6)) {
+                                filter_arrow_down.setVisibility(View.VISIBLE);
+                            }
+                        }else{
+                            filter_arrow_up.setVisibility(View.INVISIBLE);
+                            filter_arrow_down.setVisibility(View.INVISIBLE);
+                        }
                         filterPosterAdapter = new FilterPosterAdapter(FilterActivity.this,itemList,isVertical);
                         poster_recyclerview.setAdapter(filterPosterAdapter);
                         filterPosterAdapter.setItemClickListener(new OnItemClickListener() {
