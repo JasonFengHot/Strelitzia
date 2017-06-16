@@ -37,6 +37,12 @@
             android:layout_marginTop="@dimen/player_4"
             android:visibility="gone"
             >
+            <ImageView
+                android:layout_width="@dimen/player_250"
+                android:layout_height="@dimen/player_60"
+                android:background="@color/_ff9c3c"
+                android:layout_marginTop="@dimen/player_39"
+                />
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/menu_list"
                 android:layout_width="@dimen/player_250"
@@ -51,7 +57,7 @@
                 android:focusable="false"
                 android:focusableInTouchMode="false"
                 android:layout_alignParentTop="true"
-                android:visibility="gone"
+                android:visibility="visible"
                 />
             <ImageView
                 android:id="@+id/bottom_shape"
@@ -59,12 +65,54 @@
                 android:layout_height="@dimen/player_43"
                 android:background="@drawable/down_shadow"
                 android:layout_alignParentBottom="true"
+                android:layout_marginBottom="@dimen/player_2"
                 android:focusable="false"
                 android:focusableInTouchMode="false"
-                android:visibility="gone"
+                android:visibility="visible"
                 />
 
         </RelativeLayout>
+        <!--<RelativeLayout-->
+            <!--android:id="@+id/wheel"-->
+            <!--android:layout_width="@dimen/player_250"-->
+            <!--android:layout_height="@dimen/player_146"-->
+            <!--android:layout_marginTop="@dimen/player_4"-->
+            <!--android:visibility="gone"-->
+            <!--&gt;-->
+            <!--<ImageView-->
+                <!--android:layout_width="@dimen/player_250"-->
+                <!--android:layout_height="@dimen/player_60"-->
+                <!--android:background="@color/_ff9c3c"-->
+                <!--android:layout_marginTop="@dimen/player_43"-->
+                <!--/>-->
+            <!--<tv.ismar.player.wheelview.widget.WheelView-->
+                <!--android:id="@+id/wheel_view"-->
+                <!--android:layout_width="@dimen/player_250"-->
+                <!--android:layout_height="@dimen/player_146"-->
+                <!--android:listSelector="@drawable/_000000000"-->
+                <!--&gt;-->
+            <!--</tv.ismar.player.wheelview.widget.WheelView>-->
+            <!--<ImageView-->
+                <!--android:id="@+id/top_shape"-->
+                <!--android:layout_width="@dimen/player_250"-->
+                <!--android:layout_height="@dimen/player_43"-->
+                <!--android:background="@drawable/up_shadow"-->
+                <!--android:focusable="false"-->
+                <!--android:focusableInTouchMode="false"-->
+                <!--android:layout_alignParentTop="true"-->
+                <!--android:visibility="visible"-->
+                <!--/>-->
+            <!--<ImageView-->
+                <!--android:id="@+id/bottom_shape"-->
+                <!--android:layout_width="@dimen/player_250"-->
+                <!--android:layout_height="@dimen/player_43"-->
+                <!--android:background="@drawable/down_shadow"-->
+                <!--android:layout_alignParentBottom="true"-->
+                <!--android:focusable="false"-->
+                <!--android:focusableInTouchMode="false"-->
+                <!--android:visibility="visible"-->
+                <!--/>-->
+        <!--</RelativeLayout>-->
 
     </LinearLayout>
 

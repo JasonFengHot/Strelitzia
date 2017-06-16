@@ -57,11 +57,15 @@ public class MenuListAdapter extends RecyclerView.Adapter<MenuItemHoder> {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if(hasFocus) {
+//                    holder.textView.setTextColor(mContext.getResources().getColor(R.color._f0f0f0));
+//                    holder.textView.setTextSize(mContext.getResources().getDimensionPixelSize(R.dimen.text_size_24sp));
                     holder.line.setVisibility(View.GONE);
                     holder.focus_line.setVisibility(View.VISIBLE);
                 }else{
                     holder.focus_line.setVisibility(View.GONE);
                     holder.line.setVisibility(View.VISIBLE);
+//                    holder.textView.setTextColor(mContext.getResources().getColor(R.color._666666));
+//                    holder.textView.setTextSize(mContext.getResources().getDimensionPixelSize(R.dimen.text_size_24sp));
                 }
                 if(menuOnFocuslistener!=null) {
                     menuOnFocuslistener.onFocus(v, position, hasFocus);

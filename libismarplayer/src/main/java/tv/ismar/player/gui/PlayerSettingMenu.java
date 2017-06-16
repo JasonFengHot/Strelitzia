@@ -31,8 +31,6 @@ import tv.ismar.app.network.entity.ItemEntity;
 import tv.ismar.player.R;
 import tv.ismar.player.adapter.EpisodeAdapter;
 import tv.ismar.player.adapter.MenuListAdapter;
-import tv.ismar.player.listener.EpisodeOnFocusListener;
-import tv.ismar.player.listener.EpisodeOnKeyListener;
 import tv.ismar.player.listener.EpisodeOnclickListener;
 import tv.ismar.player.listener.MenuOnFocuslistener;
 import tv.ismar.player.listener.MenuOnKeyListener;
@@ -149,6 +147,20 @@ public class PlayerSettingMenu extends PopupWindow implements HorizontalEpisodeL
         listAdapter.setOnMenuListItmeClickListener(menuListener);
         listAdapter.setOnKeyListener(this);
         menu_list.setAdapter(listAdapter);
+//        wheelView= (WheelView) menuView.findViewById(R.id.wheel_view);
+//        wheelView.setWheelAdapter(new myWheelViewAdapter(mContext));
+//        wheelView.setWheelSize(3);
+//        wheelView.setSkin(WheelView.Skin.None);
+//        wheelView.setWheelData(quailtyList);
+//        wheelView.setSelection(currentQuailty);
+//
+//        WheelView.WheelViewStyle style = new WheelView.WheelViewStyle();
+//        style.textColor = R.color._666666;
+//        style.selectedTextColor = R.color._f0f0f0;
+//        style.textSize=R.dimen.text_size_24sp;
+//        style.selectedTextSize=30;
+//        wheelView.setStyle(style);
+
         menu_select.setText(quailtyList.get(currentQuailty).getName());
         menu_select.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
@@ -205,7 +217,7 @@ public class PlayerSettingMenu extends PopupWindow implements HorizontalEpisodeL
     }
     private void hideMenu(){
         ObjectAnimator episode_show=ObjectAnimator.ofFloat(episode_layout,"translationY",mContext.getResources().getDimensionPixelSize(R.dimen.player_113),0);
-        episode_show.setDuration(300);
+        episode_show.setDuration(500);
         episode_show.addListener(new Animator.AnimatorListener() {
             @Override
             public void onAnimationStart(Animator animation) {
@@ -289,41 +301,72 @@ public class PlayerSettingMenu extends PopupWindow implements HorizontalEpisodeL
             return false;
         }
     };
-    View view;
+    int lastfocusID=-1;
     @Override
     public void onFocus(View v, int pos, boolean hasfocus) {
         if(hasfocus) {
-             if(pos==0){
-                RelativeLayout.LayoutParams lp=new RelativeLayout.LayoutParams(mContext.getResources().getDimensionPixelSize(R.dimen.player_250),mContext.getResources().getDimensionPixelSize(R.dimen.player_146));
-                lp.setMargins(0,mContext.getResources().getDimensionPixelSize(R.dimen.player_43),0,0);
-                menu_list.setLayoutParams(lp);
-                top_shape.setVisibility(View.GONE);
-                if(quailtyList.size()>1) {
-                    bottom_shape.setVisibility(View.VISIBLE);
+            if (pos == 0) {
+                ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(menu_list, "translationY", 0, mContext.getResources().getDimensionPixelOffset(R.dimen.player_43));
+                objectAnimator.setDuration(300);
+                objectAnimator.addListener(new Animator.AnimatorListener() {
+                    @Override
+                    public void onAnimationStart(Animator animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(mContext.getResources().getDimensionPixelSize(R.dimen.player_250), mContext.getResources().getDimensionPixelSize(R.dimen.player_103));
+                        lp.setMargins(0, 0, 0, 0);
+                        menu_list.setLayoutParams(lp);
+                    }
+
+                    @Override
+                    public void onAnimationCancel(Animator animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animator animation) {
+
+                    }
+                });
+                objectAnimator.start();
+            } else if (pos == quailtyList.size() - 1) {
+                    if(quailtyList.size()!=2) {
+                        ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(menu_list, "translationY", 0, -mContext.getResources().getDimensionPixelOffset(R.dimen.player_43));
+                        objectAnimator.setDuration(300);
+                        objectAnimator.start();
+                    }else{
+                        if(lastfocusID==0){
+                            ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(menu_list, "translationY", mContext.getResources().getDimensionPixelOffset(R.dimen.player_43), 0);
+                            objectAnimator.setDuration(300);
+                            objectAnimator.start();
+                        }
+                    }
+            } else {
+                if (lastfocusID == 0) {
+                    ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(menu_list, "translationY", mContext.getResources().getDimensionPixelOffset(R.dimen.player_43), 0);
+                    objectAnimator.setDuration(300);
+                    objectAnimator.start();
+                    RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(mContext.getResources().getDimensionPixelSize(R.dimen.player_250), mContext.getResources().getDimensionPixelSize(R.dimen.player_146));
+                    lp.setMargins(0, 0, 0, 0);
+                    menu_list.setLayoutParams(lp);
+                } else if(lastfocusID==quailtyList.size()-1){
+                    ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(menu_list, "translationY", -mContext.getResources().getDimensionPixelOffset(R.dimen.player_43), 0);
+                    objectAnimator.setDuration(300);
+                    objectAnimator.start();
+                    RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(mContext.getResources().getDimensionPixelSize(R.dimen.player_250), mContext.getResources().getDimensionPixelSize(R.dimen.player_146));
+                    lp.setMargins(0, 0, 0, 0);
+                    menu_list.setLayoutParams(lp);
                 }else{
-                    bottom_shape.setVisibility(View.GONE);
+                    menu_list.smoothScrollBy(0, (int) (v.getY() - v.getHeight()));
                 }
-            }else if(pos==quailtyList.size()-1){
-                RelativeLayout.LayoutParams lp=new RelativeLayout.LayoutParams(mContext.getResources().getDimensionPixelSize(R.dimen.player_250),mContext.getResources().getDimensionPixelSize(R.dimen.player_146));
-                lp.setMargins(0,0,0,mContext.getResources().getDimensionPixelSize(R.dimen.player_43));
-                menu_list.setLayoutParams(lp);
-                bottom_shape.setVisibility(View.GONE);
-                if (quailtyList.size()>1){
-                    top_shape.setVisibility(View.VISIBLE);
-                }else{
-                    top_shape.setVisibility(View.GONE);
-                }
-            }else{
-                 RelativeLayout.LayoutParams lp=new RelativeLayout.LayoutParams(mContext.getResources().getDimensionPixelSize(R.dimen.player_250),mContext.getResources().getDimensionPixelSize(R.dimen.player_146));
-                 lp.setMargins(0,0,0,0);
-                 menu_list.setLayoutParams(lp);
-                 menu_list.smoothScrollBy(0, (int) (v.getY() - v.getHeight()));
-                 top_shape.setVisibility(View.VISIBLE);
-                 bottom_shape.setVisibility(View.VISIBLE);
-             }
+                top_shape.setVisibility(View.VISIBLE);
+                bottom_shape.setVisibility(View.VISIBLE);
+            }
+            lastfocusID = pos;
             reSendMsg();
-        }else{
-            view=v;
         }
     }
 
@@ -333,16 +376,20 @@ public class PlayerSettingMenu extends PopupWindow implements HorizontalEpisodeL
         hideWheel();
     }
     private void hideWheel(){
-        ObjectAnimator show_wheel=ObjectAnimator.ofFloat(setting_layout,"translationY",-mContext.getResources().getDimensionPixelSize(R.dimen.player_27),0);
+        ObjectAnimator show_wheel=ObjectAnimator.ofFloat(setting_layout,"translationY",-mContext.getResources().getDimensionPixelSize(R.dimen.player_35),0);
         show_wheel.setDuration(300);
         show_wheel.start();
         wheel.setVisibility(View.GONE);
         menu_select.setVisibility(View.VISIBLE);
         menu_select.requestFocus();
+        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(mContext.getResources().getDimensionPixelSize(R.dimen.player_250), mContext.getResources().getDimensionPixelSize(R.dimen.player_146));
+        lp.setMargins(0, 0, 0, 0);
+        menu_list.setLayoutParams(lp);
+
     }
     private void showWheel(){
-        ObjectAnimator show_wheel=ObjectAnimator.ofFloat(setting_layout,"translationY",0,-mContext.getResources().getDimensionPixelSize(R.dimen.player_27));
-        show_wheel.setDuration(300);
+        ObjectAnimator show_wheel=ObjectAnimator.ofFloat(setting_layout,"translationY",0,-mContext.getResources().getDimensionPixelSize(R.dimen.player_35));
+        show_wheel.setDuration(500);
         show_wheel.start();
         wheel.setVisibility(View.VISIBLE);
         menu_select.setVisibility(View.GONE);
