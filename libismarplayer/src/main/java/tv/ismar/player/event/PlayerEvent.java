@@ -389,6 +389,17 @@ public class PlayerEvent {
         new DataCollectionTask().execute(PAUSE_AD_EXCEPT, tempMap);
     }
 
+    public static void expenseAdClick(PlayerEvent media, int ad_id, long time, String mediaflag){
+        String userId = TextUtils.isEmpty(media.username) ? media.snToken : media.username;
+        HashMap<String, Object> tempMap = new HashMap<>();
+        tempMap.put(ITEM, media.pk);
+        tempMap.put(AD_ID, ad_id);
+        tempMap.put("userid", userId);
+        tempMap.put(TITLE, media.title);
+        tempMap.put(CLIP, media.clipPk);
+        tempMap.put("time", time);
+    }
+
     private static String switchQuality(Integer currQuality) {
         String quality = "";
         switch (currQuality) {

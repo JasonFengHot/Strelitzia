@@ -609,6 +609,18 @@ public class DaisyPlayer extends IsmartvPlayer implements SurfaceHelper.SurfaceC
                     return;
                 }
 
+                switch (mPlayer.getPlayerType()) {
+                    case PlayerMedia:
+                        logPlayerFlag = "bestv";
+                        break;
+                    case PlayerCodec:
+                        logPlayerFlag = "smart";
+                        break;
+                    case PlayerSystem:
+                        logPlayerFlag = "system";
+                        break;
+                }
+
                 if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
                     mPlayer.setSDCardisAvailable(true);
                 } else {

@@ -1139,6 +1139,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
                 } else {
                     toPayPage(mPlaybackService.getItemEntity().getPk(), 2, 2, null);
                 }
+                mPlaybackService.getMediaPlayer().logExpenseAdClick();
                 break;
             case EVENT_CLICK_KEFU:
                 mIsClickKefu = true;
