@@ -62,6 +62,7 @@ public class PlayFinishedActivity extends BaseActivity implements View.OnClickLi
         channel = intent.getStringExtra("channel");
         initView();
         initData();
+        play_finished_cancel_btn.requestFocus();
     }
 
 
@@ -157,12 +158,10 @@ public class PlayFinishedActivity extends BaseActivity implements View.OnClickLi
     private void setOrientation(boolean Vertical) {
         if(Vertical){
             play_finished_vertical_recylerview.setVisibility(View.VISIBLE);
-            vertical_poster_focus.setVisibility(View.VISIBLE);
             play_finished_vertical_recylerview.setLayoutManager(new StaggeredGridLayoutManager(1,StaggeredGridLayoutManager.HORIZONTAL));
             isVertical=true;
         }else{
             play_finished_horizontal_recylerview.setVisibility(View.VISIBLE);
-            horizontal_poster_focus.setVisibility(View.VISIBLE);
             play_finished_horizontal_recylerview.setLayoutManager(new StaggeredGridLayoutManager(1,StaggeredGridLayoutManager.HORIZONTAL));
             isVertical=false;
         }

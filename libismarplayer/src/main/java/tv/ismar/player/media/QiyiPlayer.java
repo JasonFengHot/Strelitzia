@@ -279,6 +279,7 @@ public class QiyiPlayer extends IsmartvPlayer {
                 return;
             }
             mCurrentState = STATE_COMPLETED;
+            LogUtils.d(TAG, "onCompleted");
             if (onStateChangedListener != null) {
                 onStateChangedListener.onCompleted();
             }
@@ -288,10 +289,11 @@ public class QiyiPlayer extends IsmartvPlayer {
         public void onStopped(IMediaPlayer iMediaPlayer) {
             if (mPlayer != null && getCurrentPosition() >= mDuration) {
                 // 奇艺试看结束后也会触发此回调
-                mCurrentState = STATE_COMPLETED;
-                if (onStateChangedListener != null) {
-                    onStateChangedListener.onCompleted();
-                }
+//                mCurrentState = STATE_COMPLETED;
+//                LogUtils.d(TAG, "onStopped");
+//                if (onStateChangedListener != null) {
+//                    onStateChangedListener.onCompleted();
+//                }
             }
 
         }

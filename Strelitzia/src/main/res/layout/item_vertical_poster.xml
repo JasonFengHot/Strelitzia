@@ -27,6 +27,7 @@
         android:textColor="#f0f0f0"
         android:singleLine="true"
         android:ellipsize="marquee"
+        android:marqueeRepeatLimit="marquee_forever"
         android:gravity="bottom|center_horizontal"
         android:paddingBottom="@dimen/item_vertical_title_pb"
         android:layout_alignParentBottom="true"
