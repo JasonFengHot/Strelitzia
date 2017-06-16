@@ -1431,7 +1431,7 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
                         }
 
                         @Override
-                        public void onError() {
+                        public void onError(Exception e) {
                             Picasso.with(HomePageActivity.this)
                                     .load("file:///android_asset/poster.png")
                                     .memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE)

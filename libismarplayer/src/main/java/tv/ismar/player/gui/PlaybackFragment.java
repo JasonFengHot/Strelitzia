@@ -688,7 +688,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
                         }
 
                         @Override
-                        public void onError() {
+                        public void onError(Exception e) {
                         }
                     });
                 }

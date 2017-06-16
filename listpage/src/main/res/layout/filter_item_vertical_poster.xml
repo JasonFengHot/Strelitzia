@@ -42,6 +42,7 @@
         android:textColor="#f0f0f0"
         android:gravity="center"
         android:ellipsize="marquee"
+        android:marqueeRepeatLimit="marquee_forever"
         android:focusable="true"
         android:singleLine="true"
         android:layout_below="@id/item_vertical_poster_img"

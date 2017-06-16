@@ -731,7 +731,7 @@ public class FilmFragment extends ChannelBaseFragment {
             }
 
             @Override
-            public void onError() {
+            public void onError(Exception e) {
                 mHandler.sendEmptyMessageDelayed(CAROUSEL_NEXT, pauseTime * 1000);
             }
         });

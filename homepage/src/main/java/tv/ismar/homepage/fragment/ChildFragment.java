@@ -439,7 +439,7 @@ public class ChildFragment extends ChannelBaseFragment implements Flag.ChangeCal
             }
 
             @Override
-            public void onError() {
+            public void onError(Exception e) {
                 messageHandler.sendEmptyMessageDelayed(0, pauseTime * 1000);
             }
         });
