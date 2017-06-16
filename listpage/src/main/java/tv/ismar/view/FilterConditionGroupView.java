@@ -120,13 +120,13 @@ public class FilterConditionGroupView extends LinearLayout implements View.OnHov
                     if(hasFocus&&canScroll){
                         int[] location=new int[2];
                         v.getLocationOnScreen(location);
-                        if(location[0]<left_layer.getRight()+context.getResources().getDimensionPixelOffset(R.dimen.filter_condition_layout_filter_conditions_pl)){
+                        if(location[0]-context.getResources().getDimensionPixelOffset(R.dimen.filter_condition_radio_mr)<left_layer.getLeft()+context.getResources().getDimensionPixelOffset(R.dimen.filter_condition_layout_filter_conditions_pl)){
                             left_layer.setVisibility(View.INVISIBLE);
                         }else{
                             if(filter_condition_group_arrow_left.getVisibility()==View.VISIBLE)
                                 left_layer.setVisibility(View.VISIBLE);
                         }
-                        if(location[0]+v.getWidth()>right_layer.getLeft()+context.getResources().getDimensionPixelOffset(R.dimen.filter_condition_layout_filter_conditions_pl)){
+                        if(location[0]+v.getWidth()+context.getResources().getDimensionPixelOffset(R.dimen.filter_condition_radio_mr)>right_layer.getRight()+context.getResources().getDimensionPixelOffset(R.dimen.filter_condition_layout_filter_conditions_pl)){
                             right_layer.setVisibility(View.INVISIBLE);
                         }else{
                             if(filter_condition_group_arrow_right.getVisibility()==View.VISIBLE)
