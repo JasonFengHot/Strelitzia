@@ -206,8 +206,15 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
     @Override
     public void onResume() {
         super.onResume();
+        if (isSetupNetClick && mPlaybackService != null) {
+            isSetupNetClick = false;
+            mPlaybackService.resetPreload();
+            mPlaybackService.preparePlayer(extraItemPk, extraSubItemPk, extraSource);
+            showBuffer(null);
+            return;
+        }
         isPlayExitLayerShow=false;
-        if(backpress){
+        if(backpress && mPlaybackService != null){
             mPlaybackService.startPlayer();
         }
         backpress=false;
@@ -516,7 +523,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
         boolean ret = false;
         if (id > MENU_QUALITY_ID_START && id <= MENU_QUALITY_ID_END) {
             if (!NetworkUtils.isConnected(getActivity())) {
-                ((BaseActivity) getActivity()).showNoNetConnectDialog(onNoNetConfirmListener);
+                ((BaseActivity) getActivity()).showNoNetConnectDialog(null);
                 mPlaybackService.pausePlayer();
                 LogUtils.e(TAG, "Network error switch quality.");
                 return true;
@@ -551,7 +558,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
                 return false;
             }
             if (!NetworkUtils.isConnected(getActivity())) {
-                ((BaseActivity) getActivity()).showNoNetConnectDialog(onNoNetConfirmListener);
+                ((BaseActivity) getActivity()).showNoNetConnectDialog(null);
                 mPlaybackService.pausePlayer();
                 LogUtils.e(TAG, "Network error switch quality.");
                 return true;
@@ -648,6 +655,20 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
 
     @Override
     public void updatePlayerStatus(PlaybackService.PlayerStatus status, Object args) {
+        if (status == PlaybackService.PlayerStatus.RESPONSE_ERROR) {
+            Throwable throwable = (Throwable) args;
+            BaseActivity baseActivity = ((BaseActivity) getActivity());
+            if (baseActivity == null) {
+                return;
+            }
+            if (NetworkUtils.isConnected(getActivity())) {
+                baseActivity.showNetWorkErrorDialog(throwable);
+            } else {
+                baseActivity.showNoNetConnectDialog(onNoNetConfirmListener);
+            }
+            hideBuffer();
+            return;
+        }
         if (mPlaybackService == null || mPlaybackService.getMediaPlayer() == null) {
             return;
         }
@@ -1035,7 +1056,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
             return ;
         }
         if (!NetworkUtils.isConnected(getActivity())) {
-            ((BaseActivity) getActivity()).showNoNetConnectDialog(onNoNetConfirmListener);
+            ((BaseActivity) getActivity()).showNoNetConnectDialog(null);
             mPlaybackService.pausePlayer();
             LogUtils.e(TAG, "Network error switch quality.");
         }
@@ -1069,7 +1090,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
     public void onMenuItemClick(int value, String name) {
         if (value > MENU_QUALITY_ID_START && value <= MENU_QUALITY_ID_END) {
             if (!NetworkUtils.isConnected(getActivity())) {
-                ((BaseActivity) getActivity()).showNoNetConnectDialog(onNoNetConfirmListener);
+                ((BaseActivity) getActivity()).showNoNetConnectDialog(null);
                 mPlaybackService.pausePlayer();
                 LogUtils.e(TAG, "Network error switch quality.");
                 return;
@@ -1534,7 +1555,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
             mPlaybackService.addHistory(mCurrentPosition, false);
             hidePanel();
             timerStop();
-            ((BaseActivity) getActivity()).showNoNetConnectDialog(onNoNetConfirmListener);
+            ((BaseActivity) getActivity()).showNoNetConnectDialog(null);
             return;
         }
         if ((mIsOnPaused && !isSeeking) || isPopWindowShow()) {
@@ -1669,7 +1690,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
                     if (fragment.getActivity() != null && !fragment.mIsExiting) {
                         if (!NetworkUtils.isConnected(fragment.getActivity())) {// 网络断开情况下无需显示切换分辨率
                             service.addHistory(fragment.mCurrentPosition, true);
-                            ((BaseActivity) fragment.getActivity()).showNoNetConnectDialog(fragment.onNoNetConfirmListener);
+                            ((BaseActivity) fragment.getActivity()).showNoNetConnectDialog(null);
                             LogUtils.d("LH/PlaybackHandler", "Network error on MSG_SHOW_BUFFERING_LONG.");
                             return;
                         }
@@ -1696,7 +1717,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
                                 // 断开网络，连接网络后会在广播接收中恢复
                                 service.addHistory(fragment.mCurrentPosition, true);
                                 fragment.hidePanel();
-                                ((BaseActivity) fragment.getActivity()).showNoNetConnectDialog(fragment.onNoNetConfirmListener);
+                                ((BaseActivity) fragment.getActivity()).showNoNetConnectDialog(null);
                                 LogUtils.d("LH/PlaybackHandler", "Network error on timer runnable.");
                                 return;
                             } else {
@@ -1748,15 +1769,6 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
             }
         }
     }
-
-    private boolean isSetupNetClick;// 播放过程中断网操作
-
-    private OnNoNetConfirmListener onNoNetConfirmListener = new OnNoNetConfirmListener() {
-        @Override
-        public void onNoNetConfirm() {
-            isSetupNetClick = true;
-        }
-    };
 
     private void toPayPage(int pk, int jumpTo, int cpid, PageIntentInterface.ProductCategory model) {
         LogUtils.d(TAG, "toPayPage:" + pk + " to:" + jumpTo + " cpid:" + cpid);
@@ -1862,11 +1874,20 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
                     hidePanel();
                     timerStop();
                     mPlaybackService.addHistory(mCurrentPosition, true);
-                    baseActivity.showNoNetConnectDialog(onNoNetConfirmListener);
+                    baseActivity.showNoNetConnectDialog(null);
                 }
             }
         }
     }
+
+    private boolean isSetupNetClick;// 断网起播
+
+    private OnNoNetConfirmListener onNoNetConfirmListener = new OnNoNetConfirmListener() {
+        @Override
+        public void onNoNetConfirm() {
+            isSetupNetClick = true;
+        }
+    };
 
     private ClosePlayerReceiver closePlayerReceiver;
 

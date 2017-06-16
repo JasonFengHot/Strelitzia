@@ -599,6 +599,9 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
                     @Override
                     public void onError(Throwable e) {
                         e.printStackTrace();
+                        if (serviceCallback != null) {
+                            serviceCallback.updatePlayerStatus(PlayerStatus.RESPONSE_ERROR, e);
+                        }
                     }
 
                     @Override
@@ -639,6 +642,9 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
                     @Override
                     public void onError(Throwable e) {
                         e.printStackTrace();
+                        if (serviceCallback != null) {
+                            serviceCallback.updatePlayerStatus(PlayerStatus.RESPONSE_ERROR, e);
+                        }
                         if (mIsPreload) {
                             // TODO 预加载时，会出现此接口请求失败情况
                             mIsPreload = false;
@@ -867,7 +873,7 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
 
     enum PlayerStatus {
 
-        CREATING, START, PLAY, PAUSE, SEEK_COMPLETED, COMPLETED, ERROR, S3DEVICE_VIDEO_SIZE, CONTINUE_BUFFERING
+        CREATING, START, PLAY, PAUSE, SEEK_COMPLETED, COMPLETED, ERROR, S3DEVICE_VIDEO_SIZE, CONTINUE_BUFFERING, RESPONSE_ERROR
 
     }
 
