@@ -48,7 +48,7 @@ import tv.ismar.player.widget.HorizontalEpisodeList;
 public class PlayerSettingMenu extends PopupWindow implements HorizontalEpisodeList.OnItemActionListener,MenuOnFocuslistener,MenuOnKeyListener{
     private Context mContext;
     private EpisodeAdapter adapter;
-    private List<ItemEntity> itemEntities;
+    private List<ItemEntity> itemEntities=new ArrayList<>();
     private ImageView arrow_left,arrow_right;
     private LinearLayout menu_layout;
     private HorizontalEpisodeList list;

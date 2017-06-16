@@ -52,6 +52,7 @@ public interface PageIntentInterface {
 
     void toPlayPage(Context context, int pk, int sub_item_pk, Source source);
 
+    void toPlayPageEpisode(Context context, int pk, int sub_item_pk, Source source,String contentMode);
     void toUserCenter(Context context);
 
     void toUserCenterLocation(Context context);

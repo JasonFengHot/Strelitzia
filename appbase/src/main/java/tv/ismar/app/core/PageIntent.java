@@ -139,6 +139,17 @@ public class PageIntent implements PageIntentInterface {
     }
 
     @Override
+    public void toPlayPageEpisode(Context context, int pk, int sub_item_pk, Source source, String contentMode) {
+        Intent intent = new Intent();
+        intent.setAction("tv.ismar.daisy.Player");
+        intent.putExtra(PageIntentInterface.EXTRA_PK, pk);
+        intent.putExtra(PageIntentInterface.EXTRA_SUBITEM_PK, sub_item_pk);
+        intent.putExtra(PageIntentInterface.EXTRA_SOURCE, source.getValue());
+        intent.putExtra("contentMode",contentMode);
+        context.startActivity(intent);
+    }
+
+    @Override
     public void toUserCenter(Context context) {
         Intent intent = new Intent();
         intent.setAction("tv.ismar.daisy.usercenter");
