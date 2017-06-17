@@ -642,12 +642,11 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
                 mAdCount = mPlaybackService.getMediaPlayer().getAdCountDownTime() / 1000;
             }
             mHandler.sendEmptyMessage(MSG_AD_COUNTDOWN);
-
+            Log.i("AdeverSende","play ad!!!");
             Advertisement advertisement=new Advertisement(getActivity());
             advertisement.getRepostAdUrl(AdIndex,"qiantieAd");
             AdIndex++;
         } else {
-            Log.i("AdeverSende","play ad!!!");
             mAdCount = 0;
             canShowMenuOrPannel = true;
             ad_vip_layout.setVisibility(View.GONE);
@@ -1087,6 +1086,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
             }
         }
         settingMenu=null;
+        AdIndex=0;
     }
 
     @Override
