@@ -66,6 +66,7 @@ public abstract class IsmartvPlayer implements IPlayer {
     protected int logAdMediaId = 0;
     protected boolean logSeekStartPosition = false;// 设置起播位置时调用seekTo
     protected long logBufferStartTime;
+    protected boolean isS3Seeking = false;// s3设备,seek后有1002表示bufferEnd
     protected boolean logFirstBufferEnd;
 
     // 视云
@@ -207,7 +208,7 @@ public abstract class IsmartvPlayer implements IPlayer {
 
     @Override
     public void pause() {
-        if (isInPlaybackState() && mCurrentState == STATE_PLAYING) {
+        if (isInPlaybackState() && mCurrentState == STATE_PLAYING && !isS3Seeking) {
             PlayerEvent.videoPlayPause(logPlayerEvent, logSpeed, getCurrentPosition(), logPlayerFlag);
         }
     }

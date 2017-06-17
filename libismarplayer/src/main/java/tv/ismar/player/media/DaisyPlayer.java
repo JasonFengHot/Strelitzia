@@ -44,7 +44,6 @@ public class DaisyPlayer extends IsmartvPlayer implements SurfaceHelper.SurfaceC
     private SmartPlayer mPlayer;
     private SurfaceHelper mSurfaceHelper;
 
-    private boolean isS3Seeking = false;// s3设备,seek后有1002表示bufferEnd
     private String logCurrentMediaUrl;
     private boolean isSwitchingQuality = false;// 切换码率后，不回调onPrepared,直接开始播放
 

@@ -1190,7 +1190,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
                 mIsClickKefu = true;
                 isPlayExitLayerShow = true;
                 PageIntent pageIntent=new PageIntent();
-                pageIntent.toPlayFinish(this,mPlaybackService.getItemEntity().getContentModel(),extraItemPk, (int) ((((double)mPlaybackService.getMediaPlayer().getCurrentPosition())/((double)mPlaybackService.getMediaPlayer().getDuration()))*100),mPlaybackService.hasHistory,"player");
+                pageIntent.toPlayFinish(this,mPlaybackService.getItemEntity().getContentModel(),extraItemPk, (int) ((((double)mCurrentPosition)/((double)mPlaybackService.getMediaPlayer().getDuration()))*100),mPlaybackService.hasHistory,"player");
                 break;
         }
     }
