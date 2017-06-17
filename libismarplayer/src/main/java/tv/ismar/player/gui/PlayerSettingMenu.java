@@ -79,6 +79,7 @@ public class PlayerSettingMenu extends PopupWindow implements HorizontalEpisodeL
 
         setWidth(width);
         setHeight(height);
+//        setAnimationStyle(R.style.PopupAnimation);
         View contentView = LayoutInflater.from(context).inflate(R.layout.player_setting_menu, null);
         arrow_left= (ImageView) contentView.findViewById(R.id.arrow_left);
         arrow_right= (ImageView) contentView.findViewById(R.id.arrow_right);
