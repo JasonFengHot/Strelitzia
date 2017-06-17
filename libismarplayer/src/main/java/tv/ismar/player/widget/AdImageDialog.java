@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import tv.ismar.app.ad.Advertisement;
 import tv.ismar.app.network.entity.AdElementEntity;
 import tv.ismar.player.R;
 import tv.ismar.player.event.PlayerEvent;
@@ -34,6 +35,7 @@ public class AdImageDialog extends Dialog {
     private int width;
     private int height;
     private List<AdElementEntity> mAdvEntityList;
+    private Advertisement advertisement;
     private int mCurrentAdIndex = 0;
     private ImageView imageView;
     private Button button;
@@ -45,6 +47,7 @@ public class AdImageDialog extends Dialog {
         width = wm.getDefaultDisplay().getWidth();
         height = wm.getDefaultDisplay().getHeight();
         mAdvEntityList = advEntityList;
+        advertisement=new Advertisement(context);
 
     }
 
@@ -117,6 +120,7 @@ public class AdImageDialog extends Dialog {
                                         PlayerEvent.pause_ad_except(0, "Load error");
                                     }
                                 });
+                        advertisement.getRepostAdUrl(mCurrentAdIndex,"zangtingAd");
                         if (mAdvEntityList.size() == 1) {
                             // 只有一条广告时
                             cancelTimer();

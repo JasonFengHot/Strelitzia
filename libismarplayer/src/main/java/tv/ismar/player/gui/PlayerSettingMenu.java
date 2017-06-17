@@ -102,7 +102,7 @@ public class PlayerSettingMenu extends PopupWindow implements HorizontalEpisodeL
         relativeLayout.addView(contentView, layoutParams);
         setContentView(relativeLayout);
 
-     //   setBackgroundDrawable(mContext.getResources().getDrawable(R.drawable.transparent));
+//        setBackgroundDrawable(mContext.getResources().getDrawable(R.drawable.transparent));
         setFocusable(true);
         menuHandler=new MenuHandler();
         episode_hide= AnimationUtils.loadAnimation(mContext,R.anim.episode_hide);
@@ -457,7 +457,7 @@ public class PlayerSettingMenu extends PopupWindow implements HorizontalEpisodeL
         String Title = object.getTitle();
         String subItemTitle=object.getSubtitle();
         Log.i("contentMode","title: "+Title+"  subitemTitle: "+subItemTitle);
-        if(contentMode.equals("variety")&&!subItemTitle.equals("")){
+        if(contentMode!=null&&contentMode.equals("variety")&&!subItemTitle.equals("")){
             holder.textView.setVisibility(View.GONE);
             holder.subitem.setVisibility(View.VISIBLE);
             holder.subitem.setText(subItemTitle);

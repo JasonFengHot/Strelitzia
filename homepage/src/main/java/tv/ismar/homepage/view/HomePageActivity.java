@@ -61,6 +61,7 @@ import tv.ismar.app.BaseActivity;
 import tv.ismar.app.VodApplication;
 import tv.ismar.app.ad.AdsUpdateService;
 import tv.ismar.app.ad.AdvertiseManager;
+import tv.ismar.app.ad.Advertisement;
 import tv.ismar.app.core.DaisyUtils;
 import tv.ismar.app.core.InitializeProcess;
 import tv.ismar.app.core.PageIntent;
@@ -126,6 +127,7 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
     private ImageView home_ad_pic;
     private Button home_ad_timer;
     private AdvertiseManager advertiseManager;
+    private Advertisement advertisement;
     private List<AdvertiseTable> launchAds;
     private int countAdTime = 0;
     private int currentImageAdCountDown = 0;
@@ -361,6 +363,7 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
 
         advertiseManager = new AdvertiseManager(getApplicationContext());
         launchAds = advertiseManager.getAppLaunchAdvertisement();
+        advertisement=new Advertisement(this);
         for (AdvertiseTable tab : launchAds) {
             totalAdsMills = totalAdsMills + tab.duration * 1000;
         }
@@ -1442,6 +1445,7 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
                             }
                         }
                     });
+            advertisement.getRepostAdUrl(playIndex,"startAd");
         }
 
     }

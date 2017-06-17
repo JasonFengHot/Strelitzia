@@ -628,7 +628,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
             canShowMenuOrPannel = true;
         }
     }
-
+    int AdIndex=0;
     @Override
     public void showAdvertisement(boolean isShow) {
         if (isShow) {
@@ -642,9 +642,12 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
                 mAdCount = mPlaybackService.getMediaPlayer().getAdCountDownTime() / 1000;
             }
             mHandler.sendEmptyMessage(MSG_AD_COUNTDOWN);
+
             Advertisement advertisement=new Advertisement(getActivity());
-            advertisement.getRepostQiantieUrl();
+            advertisement.getRepostAdUrl(AdIndex,"qiantieAd");
+            AdIndex++;
         } else {
+            Log.i("AdeverSende","play ad!!!");
             mAdCount = 0;
             canShowMenuOrPannel = true;
             ad_vip_layout.setVisibility(View.GONE);
