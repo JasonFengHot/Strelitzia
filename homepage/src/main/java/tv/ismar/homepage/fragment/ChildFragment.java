@@ -430,20 +430,21 @@ public class ChildFragment extends ChannelBaseFragment implements Flag.ChangeCal
         image_switcher_focus.setTag(R.drawable.launcher_selector, carousels.get(flag.getPosition()));
         if(StringUtils.isEmpty(carousels.get(flag.getPosition()).getVideo_image()))
         carousels.get(flag.getPosition()).setVideo_image("error");
-        Picasso.with(mContext).load(carousels.get(flag.getPosition()).getVideo_image()).memoryPolicy(MemoryPolicy.NO_STORE).into(imageSwitcher, new Callback() {
-            int pauseTime = Integer.parseInt(carousels.get(flag.getPosition()).getPause_time());
+        if(mContext!=null) {
+            Picasso.with(mContext).load(carousels.get(flag.getPosition()).getVideo_image()).memoryPolicy(MemoryPolicy.NO_STORE).into(imageSwitcher, new Callback() {
+                int pauseTime = Integer.parseInt(carousels.get(flag.getPosition()).getPause_time());
 
-            @Override
-            public void onSuccess() {
-                messageHandler.sendEmptyMessageDelayed(0, pauseTime * 1000);
-            }
+                @Override
+                public void onSuccess() {
+                    messageHandler.sendEmptyMessageDelayed(0, pauseTime * 1000);
+                }
 
-            @Override
-            public void onError(Exception e) {
-                messageHandler.sendEmptyMessageDelayed(0, pauseTime * 1000);
-            }
-        });
-
+                @Override
+                public void onError(Exception e) {
+                    messageHandler.sendEmptyMessageDelayed(0, pauseTime * 1000);
+                }
+            });
+        }
     }
 
     @Override
