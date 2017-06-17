@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -435,7 +436,7 @@ public class FavoriteFragment extends Fragment implements ScrollableSectionList.
 			if (item.is_complex) {
 				pageIntent.toDetailPage(getActivity(), "favorite", id);
 			} else {
-				pageIntent.toPlayPage(getActivity(), id, 0, Source.FAVORITE);
+				pageIntent.toPlayPageEpisode(getActivity(), id, 0, Source.FAVORITE,item.content_model);
 			}
 		}
 		if(mLoadingDialog!=null && mLoadingDialog.isShowing()) {
@@ -621,11 +622,14 @@ public class FavoriteFragment extends Fragment implements ScrollableSectionList.
 		} else if (i == R.id.recommend_gridview) {
 			boolean[] isSubItem = new boolean[1];
 			int pk=SimpleRestClient.getItemId(tvHome.getObjects().get(position).getItem_url(),isSubItem);
+			Item item = mHGridAdapter.getItem(position);
 			PageIntent intent=new PageIntent();
 			if (tvHome.getObjects().get(position).isIs_complex()) {
 				intent.toDetailPage(getActivity(),"tvhome",pk);
 			} else {
-				intent.toPlayPage(getActivity(),pk,0, Source.FAVORITE);
+//				intent.toPlayPage(getActivity(),pk,0, Source.FAVORITE);
+				Log.i("contentmode",item.content_model+"");
+				intent.toPlayPageEpisode(getActivity(),pk,0, Source.FAVORITE,item.content_model);
 			}
 			mDataCollectionProperties = new HashMap<String, Object>();
 			mDataCollectionProperties.put("to_title",tvHome.getObjects().get(position).getTitle());

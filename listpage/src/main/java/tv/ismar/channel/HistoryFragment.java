@@ -607,7 +607,8 @@ public class HistoryFragment extends Fragment implements ScrollableSectionList.O
 						String[] qualitys = new String[]{"normal", "high", "ultra", "adaptive"};
 					//	mDataCollectionProperties.put("quality", qualitys[(history.quality >= 0 && history.quality < qualitys.length) ? history.quality : 0]);
 						PageIntent intent = new PageIntent();
-						intent.toPlayPage(getActivity(), item.pk, 0, Source.HISTORY);
+//						intent.toPlayPage(getActivity(), item.pk, 0, Source.HISTORY);
+						intent.toPlayPageEpisode(getActivity(),item.pk,0,Source.HISTORY,item.content_model);
 					}
 					@Override
 					public void onError(Throwable e) {
@@ -768,12 +769,15 @@ public class HistoryFragment extends Fragment implements ScrollableSectionList.O
 			getClicItem(item);
 		} else if (i == R.id.recommend_gridview) {
 			boolean[] isSubItem = new boolean[1];
+			Item item = mHGridAdapter.getItem(position);
 			int pk=SimpleRestClient.getItemId(tvHome.getObjects().get(position).getItem_url(),isSubItem);
 			PageIntent intent=new PageIntent();
 			if (tvHome.getObjects().get(position).isIs_complex()) {
 				intent.toDetailPage(getActivity(),"tvhome",pk);
 			} else {
-				intent.toPlayPage(getActivity(),pk,0, Source.HISTORY);
+			//	intent.toPlayPage(getActivity(),pk,0, Source.HISTORY);
+				Log.i("contentmode",item.content_model+"");
+				intent.toPlayPageEpisode(getActivity(),pk,0, Source.HISTORY,item.content_model);
 			}
 			mDataCollectionProperties = new HashMap<String, Object>();
 			mDataCollectionProperties.put("to_title",tvHome.getObjects().get(position).getTitle());
