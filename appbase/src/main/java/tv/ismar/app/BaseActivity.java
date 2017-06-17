@@ -272,6 +272,10 @@ public class BaseActivity extends AppCompatActivity {
         }
     }
 
+    public boolean isNoNetDialogShowing() {
+        return dialog != null && dialog.isShowing();
+    }
+
     public void showNoNetConnectDialog(final OnNoNetConfirmListener onNoNetConfirmListener) {
         Log.i("onNoNet", "showNet!!!");
         if(dialog==null) {

@@ -1854,11 +1854,11 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
     private class ConnectionChangeReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (!mIsExiting && mPlaybackService != null && mPlaybackService.getMediaPlayer() != null) {
-                BaseActivity baseActivity = ((BaseActivity) getActivity());
-                if (baseActivity == null) {
-                    return;
-                }
+            BaseActivity baseActivity = ((BaseActivity) getActivity());
+            if (baseActivity == null || mPlaybackService == null || mIsExiting) {
+                return;
+            }
+            if (mPlaybackService.getMediaPlayer() != null) {
                 if (NetworkUtils.isConnected(context)) {
                     baseActivity.dismissNoNetConnectDialog();
                     if (!mPlaybackService.isPlayerPrepared()) {
@@ -1876,6 +1876,11 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
                     mPlaybackService.addHistory(mCurrentPosition, true);
                     baseActivity.showNoNetConnectDialog(null);
                 }
+            } else if (baseActivity.isNoNetDialogShowing() && NetworkUtils.isConnected(context)) {
+                baseActivity.dismissNoNetConnectDialog();
+                mPlaybackService.resetPreload();
+                mPlaybackService.preparePlayer(extraItemPk, extraSubItemPk, extraSource);
+                showBuffer(null);
             }
         }
     }

@@ -627,7 +627,9 @@ public class DaisyPlayer extends IsmartvPlayer implements SurfaceHelper.SurfaceC
                     mPlayer.setSDCardisAvailable(false);
                 }
                 mPlayer.setSn(getSnToken());
-                mPlayer.setUserAgent(VodUserAgent.getHttpUserAgent());
+                String userAgent = VodUserAgent.getHttpUserAgent();
+                LogUtils.d(TAG, "setUserAgent : " + userAgent);
+                mPlayer.setUserAgent(userAgent);
                 if (ispreload) {
                     mPlayer.setDataSource(mediaMeta.getUrls());
                     mPlayer.prepareAsync();
