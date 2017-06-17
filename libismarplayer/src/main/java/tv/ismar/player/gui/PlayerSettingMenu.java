@@ -102,7 +102,7 @@ public class PlayerSettingMenu extends PopupWindow implements HorizontalEpisodeL
         relativeLayout.addView(contentView, layoutParams);
         setContentView(relativeLayout);
 
-     //   setBackgroundDrawable(mContext.getResources().getDrawable(R.drawable.transparent));
+//        setBackgroundDrawable(mContext.getResources().getDrawable(R.drawable.transparent));
         setFocusable(true);
         menuHandler=new MenuHandler();
         episode_hide= AnimationUtils.loadAnimation(mContext,R.anim.episode_hide);
