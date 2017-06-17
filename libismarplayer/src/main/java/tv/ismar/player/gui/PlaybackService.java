@@ -646,6 +646,7 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
                         if (serviceCallback != null) {
                             serviceCallback.updatePlayerStatus(PlayerStatus.RESPONSE_ERROR, e);
                         }
+                        LogUtils.i(TAG, "fetchClip onError");
                         if (mIsPreload) {
                             // TODO 预加载时，会出现此接口请求失败情况
                             mIsPreload = false;

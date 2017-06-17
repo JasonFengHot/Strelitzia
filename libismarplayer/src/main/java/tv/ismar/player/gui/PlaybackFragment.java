@@ -890,6 +890,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
         LogUtils.i(TAG, "onKeyDown : " + keyCode);
         if (mPlaybackService == null || mPlaybackService.getMediaPlayer() == null || !mPlaybackService.isPlayerPrepared()||mPlaybackService.isPlayingAd()) {
             if (keyCode == KeyEvent.KEYCODE_BACK) {
+                backpress = true;
                 getActivity().finish();
             } else if (keyCode == KeyEvent.KEYCODE_VOLUME_UP || keyCode == KeyEvent.KEYCODE_VOLUME_DOWN
                     || keyCode == KeyEvent.KEYCODE_VOLUME_MUTE) {
