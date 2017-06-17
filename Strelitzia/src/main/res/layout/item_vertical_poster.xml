@@ -20,7 +20,7 @@
         />
     <TextView
         android:id="@+id/item_vertical_poster_title"
-        android:layout_width="match_parent"
+        android:layout_width="@dimen/item_vertical_w"
         android:layout_height="@dimen/item_vertical_title_h"
         android:background="@drawable/poster_bottom_layer"
         android:textSize="@dimen/item_vertical_title_ts"

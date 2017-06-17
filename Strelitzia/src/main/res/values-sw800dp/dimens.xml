@@ -58,4 +58,11 @@
 <dimen name="scroll_147">108.89dp</dimen>
 <dimen name="scroll_1183">876.30dp</dimen>
 <dimen name="scroll_665">492.59dp</dimen>
+
+<!--play_exit_error-->
+<dimen name="play_exit_error_icon_w">237.04dp</dimen>
+<dimen name="play_exit_error_mt">202.22dp</dimen>
+<dimen name="play_exit_error_text_mt">32.59dp</dimen>
+<dimen name="play_exit_error_text_h">61.48dp</dimen>
+<dimen name="play_exit_error_text_ts">44.44dp</dimen>
 </resources>
