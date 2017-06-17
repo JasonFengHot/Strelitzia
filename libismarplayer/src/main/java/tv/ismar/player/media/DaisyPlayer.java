@@ -11,6 +11,12 @@ import com.qiyi.sdk.player.IAdController;
 import java.io.IOException;
 import java.util.Map;
 
+import rx.Observable;
+import rx.Observer;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 import tv.ismar.account.IsmartvActivator;
 import tv.ismar.app.core.VodUserAgent;
 import tv.ismar.app.entity.ClipEntity;
@@ -145,18 +151,57 @@ public class DaisyPlayer extends IsmartvPlayer implements SurfaceHelper.SurfaceC
         }
     }
 
+    private Subscription pauseSubs;
+
     @Override
     public void pause() {
         super.pause();
         if (isInPlaybackState()) {
-            if (mPlayer.isPlaying()) {
-                mPlayer.pause();
-                mCurrentState = STATE_PAUSED;
-                if (onStateChangedListener != null) {
-                    onStateChangedListener.onPaused();
-                }
-
+            if (pauseSubs != null && pauseSubs.isUnsubscribed()) {
+                pauseSubs.unsubscribe();
             }
+            pauseSubs = Observable.just("")
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(Schedulers.io())
+                    .map(new Func1<String, Object>() {
+                        @Override
+                        public Object call(String s) {
+                            LogUtils.d(TAG, "pause call");
+                            if (mPlayer.isPlaying()) {
+                                mPlayer.pause();
+                            }
+                            return null;
+                        }
+                    })
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Observer<Object>() {
+                        @Override
+                        public void onCompleted() {
+                            LogUtils.d(TAG, "pause onCompleted");
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            LogUtils.d(TAG, "pause onError");
+                        }
+
+                        @Override
+                        public void onNext(Object o) {
+                            LogUtils.d(TAG, "pause onNext");
+                            mCurrentState = STATE_PAUSED;
+                            if (onStateChangedListener != null) {
+                                onStateChangedListener.onPaused();
+                            }
+                        }
+                    });
+//            if (mPlayer.isPlaying()) {
+//                mPlayer.pause();
+//                mCurrentState = STATE_PAUSED;
+//                if (onStateChangedListener != null) {
+//                    onStateChangedListener.onPaused();
+//                }
+//
+//            }
         }
     }
 
@@ -207,8 +252,15 @@ public class DaisyPlayer extends IsmartvPlayer implements SurfaceHelper.SurfaceC
             mPlayer.setOnTsInfoListener(null);
             mPlayer.setOnM3u8IpListener(null);
             mPlayer.setOnCompletionListenerUrl(null);
-            mPlayer.stop();
-            mPlayer.release();
+
+            final SmartPlayer smartPlayer = mPlayer;
+            new Thread(){
+                @Override
+                public void run() {
+                    smartPlayer.stop();
+                    smartPlayer.release();
+                }
+            }.start();
             mPlayer = null;
         }
         mCurrentState = STATE_IDLE;
@@ -260,6 +312,8 @@ public class DaisyPlayer extends IsmartvPlayer implements SurfaceHelper.SurfaceC
         return isInPlaybackState() && mPlayer.isPlaying();
     }
 
+    private Subscription switchQualitySubs;
+
     @Override
     public void switchQuality(int position, ClipEntity.Quality quality) {
         if (!isInPlaybackState()) {
@@ -278,10 +332,55 @@ public class DaisyPlayer extends IsmartvPlayer implements SurfaceHelper.SurfaceC
             if (mSurfaceHelper != null) {
                 mSurfaceHelper.release();
             }
-//            stop();
-            release();
-            mSurfaceHelper = new SurfaceHelper(mSurfaceView, this);
-            mSurfaceHelper.attachSurfaceView(false);
+            mCurrentState = STATE_IDLE;
+            if (switchQualitySubs != null && switchQualitySubs.isUnsubscribed()) {
+                switchQualitySubs.unsubscribe();
+            }
+            switchQualitySubs = Observable.just("")
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(Schedulers.io())
+                    .map(new Func1<String, Object>() {
+                        @Override
+                        public Object call(String s) {
+                            LogUtils.d(TAG, "switchQuality call");
+                            if (mPlayer != null) {
+                                mPlayer.setOnPreparedListenerUrl(null);
+                                mPlayer.setOnVideoSizeChangedListener(null);
+                                mPlayer.setOnSeekCompleteListener(null);
+                                mPlayer.setOnErrorListener(null);
+                                mPlayer.setOnInfoListener(null);
+                                mPlayer.setOnTsInfoListener(null);
+                                mPlayer.setOnM3u8IpListener(null);
+                                mPlayer.setOnCompletionListenerUrl(null);
+                                mPlayer.stop();
+                                mPlayer.release();
+                                mPlayer = null;
+                            }
+                            return null;
+                        }
+                    })
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Observer<Object>() {
+                        @Override
+                        public void onCompleted() {
+                            LogUtils.d(TAG, "switchQuality onCompleted");
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            LogUtils.d(TAG, "switchQuality onError");
+                        }
+
+                        @Override
+                        public void onNext(Object o) {
+                            LogUtils.d(TAG, "switchQuality onNext");
+                            mSurfaceHelper = new SurfaceHelper(mSurfaceView, DaisyPlayer.this);
+                            mSurfaceHelper.attachSurfaceView(false);
+                        }
+                    });
+//            release();
+//            mSurfaceHelper = new SurfaceHelper(mSurfaceView, this);
+//            mSurfaceHelper.attachSurfaceView(false);
         }
     }
 

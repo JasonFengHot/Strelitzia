@@ -1534,6 +1534,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
                             timerStop();
                             showBuffer(null);
                             mPlaybackService.switchQuality(mCurrentPosition, mPlaybackService.getCurrentQuality());
+                            updateQuality(mPlaybackService.getCurrentQuality());
                         }
                         break;
                     case POP_TYPE_PLAYER_NET_ERROR:

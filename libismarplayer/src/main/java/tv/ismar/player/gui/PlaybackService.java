@@ -283,6 +283,7 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
             hlsPlayer.setOnAdvertisementListener(null);
             hlsPlayer.setOnBufferChangedListener(null);
             hlsPlayer.setOnStateChangedListener(null);
+
             hlsPlayer.release();
 //            if (hlsPlayer.getPlayerMode() == IsmartvPlayer.MODE_QIYI_PLAYER) {
 //                hlsPlayer.release();
@@ -304,7 +305,7 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
     }
 
     public void pausePlayer() {
-        if (hlsPlayer != null && hlsPlayer.isPlaying()) {
+        if (hlsPlayer != null) {
             hlsPlayer.pause();
         }
     }
