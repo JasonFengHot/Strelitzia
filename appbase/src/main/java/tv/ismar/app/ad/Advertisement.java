@@ -377,10 +377,12 @@ public class Advertisement {
                     }
                 }
                 if (!adElementEntities.isEmpty()) {
+                  //  Log.i("AD Sort","start serial:  "+adElementEntities.get(0).getSerial()+"");
                     Collections.sort(adElementEntities, new Comparator<AdElementEntity>() {
                         @Override
                         public int compare(AdElementEntity lhs, AdElementEntity rhs) {
-                            return rhs.getSerial() > lhs.getSerial() ? 1 : -1;
+
+                            return rhs.getSerial() < lhs.getSerial() ? 1 : -1;
                         }
                     });
                 }
@@ -435,7 +437,7 @@ public class Advertisement {
                 for(int j=0;j<monitor.length();j++){
                     JSONObject child = monitor.getJSONObject(j);
                     String monitor_url=child.optString("monitor_url");
-                    Log.i("ADSMon","J="+j+" monitor_url: "+monitor_url);
+                    Log.i("adimagelog","J="+j+"index="+index+"  monitor_url: "+monitor_url);
                     repostAdLog(monitor_url);
                 }
         } catch (Exception e) {
