@@ -124,6 +124,7 @@ public class PlayFinishedActivity extends BaseActivity implements View.OnClickLi
 
                             @Override
                             public void onError(Throwable e) {
+                                type="exit_unknown";
                                 play_exit_error.setVisibility(View.VISIBLE);
                                 play_finished_cancel_btn.setNextFocusUpId(R.id.play_finished_cancel_btn);
                                 play_finished_confirm_btn.setNextFocusUpId(R.id.play_finished_confirm_btn);
@@ -174,6 +175,7 @@ public class PlayFinishedActivity extends BaseActivity implements View.OnClickLi
 
                             @Override
                             public void onError(Throwable e) {
+                                type="exit_unknown";
                                 play_exit_error.setVisibility(View.VISIBLE);
                                 play_finished_cancel_btn.setNextFocusUpId(R.id.play_finished_cancel_btn);
                                 play_finished_confirm_btn.setNextFocusUpId(R.id.play_finished_confirm_btn);
