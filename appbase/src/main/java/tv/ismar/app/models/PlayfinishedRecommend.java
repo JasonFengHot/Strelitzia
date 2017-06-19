@@ -32,6 +32,26 @@ public class PlayfinishedRecommend {
         private  boolean expense;
         private  String model_name;
         private  String custom_image;
+        private  int order;
+        private  int clip_id;
+
+        public int getClip_id() {
+            return clip_id;
+        }
+
+        public void setClip_id(int clip_id) {
+            this.clip_id = clip_id;
+        }
+
+        public int getOrder() {
+            return order;
+        }
+
+        public void setOrder(int order) {
+            this.order = order;
+        }
+
+
 
         public String getVertical_url() {
             return vertical_url;

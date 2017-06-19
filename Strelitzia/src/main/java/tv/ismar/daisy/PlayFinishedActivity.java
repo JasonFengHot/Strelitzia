@@ -1,7 +1,10 @@
 package tv.ismar.daisy;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.location.Location;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.text.TextUtils;
 import android.view.View;
@@ -10,19 +13,25 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+import tv.ismar.Utils.LogUtils;
+import tv.ismar.account.IsmartvActivator;
 import tv.ismar.app.BaseActivity;
 import tv.ismar.app.core.PageIntent;
 import tv.ismar.app.core.SimpleRestClient;
 import tv.ismar.app.core.Source;
+import tv.ismar.app.core.client.NetworkUtils;
 import tv.ismar.app.entity.Item;
 import tv.ismar.app.models.PlayRecommend;
 import tv.ismar.app.models.PlayfinishedRecommend;
 import tv.ismar.app.network.SkyService;
+import tv.ismar.app.network.entity.AccountPlayAuthEntity;
+import tv.ismar.app.network.entity.EventProperty;
 import tv.ismar.app.ui.adapter.OnItemClickListener;
 import tv.ismar.app.ui.adapter.OnItemFocusedListener;
 import tv.ismar.app.widget.MyRecyclerView;
@@ -51,6 +60,14 @@ public class PlayFinishedActivity extends BaseActivity implements View.OnClickLi
     private Subscription playExitSub;
     private boolean isFirstIn=true;
     private View play_exit_error;
+    private String type="exit_unknown";
+    private String action="exit";
+    private int itemPk;
+    private int clip;
+    private int subitem;
+    private int location;
+    private int order;
+    private boolean backToPlay=false;
 
 
     @Override
@@ -94,6 +111,7 @@ public class PlayFinishedActivity extends BaseActivity implements View.OnClickLi
                     setOrientation(false);
                 }
                 play_finished_title.setText("您可能对以下影片感兴趣:");
+                type = "finish";
                 mSkyService.getRelatedArray(itemId)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
@@ -130,6 +148,7 @@ public class PlayFinishedActivity extends BaseActivity implements View.OnClickLi
                 if(playScale<20){
                     setOrientation(false);
                     play_finished_title.setText("今日热播内容推荐");
+                    type="exit_not_like";
                 }else{
                     if("movie".equals(channel)){
                         setOrientation(true);
@@ -141,7 +160,7 @@ public class PlayFinishedActivity extends BaseActivity implements View.OnClickLi
                     }else{
                         play_finished_title.setText("其他用户正在观看");
                     }
-
+                    type="exit_like";
                 }
                 playExitSub = SkyService.ServiceManager.getCacheSkyService2().apiPlayExitRecommend(SimpleRestClient.sn_token, itemId,channel,playScale)
                         .subscribeOn(Schedulers.io())
@@ -195,6 +214,11 @@ public class PlayFinishedActivity extends BaseActivity implements View.OnClickLi
             @Override
             public void onItemClick(View view, int position) {
                 PlayfinishedRecommend.RecommendItem item=list.get(position);
+                action="click";
+                itemPk = item.getPk();
+                location = position+1;
+                clip=item.getClip_id();
+                order=item.getOrder();
                 String contentModel=item.getContent_model();
                 if(contentModel!=null) {
                     Intent intent=new Intent("tv.ismar.daisy.closeplayer");
@@ -302,6 +326,7 @@ public class PlayFinishedActivity extends BaseActivity implements View.OnClickLi
         switch (v.getId()){
             case R.id.play_finished_confirm_btn:
                 setResult(CONTINUE_PLAY);
+                backToPlay = true;
                 finish();
                 break;
             case R.id.play_finished_cancel_btn:
@@ -325,6 +350,7 @@ public class PlayFinishedActivity extends BaseActivity implements View.OnClickLi
         }else{
             setResult(CONTINUE_PLAY);
         }
+        backToPlay = true;
         finish();
     }
 
@@ -335,4 +361,16 @@ public class PlayFinishedActivity extends BaseActivity implements View.OnClickLi
             playExitSub.unsubscribe();
         }
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (!backToPlay) {
+            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+            String userid = sharedPreferences.getString("username", "");
+            LogUtils.video_exit_recommend(itemId, type, action, itemPk, clip, subitem, "finished", location, order, userid);
+        }
+    }
+
+
 }

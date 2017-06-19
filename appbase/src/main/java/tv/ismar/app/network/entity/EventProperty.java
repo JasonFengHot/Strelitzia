@@ -54,5 +54,9 @@ public class EventProperty {
     public final static String ID = "id";
     public final static String FROM = "from";
     public final static String USER="user";
+    public final static String SOURCE_ITEM ="source_item";
+    public final static String ACTION ="action";
+    public final static String PAGE ="page";
+    public final static String ORDER ="order";
 
 }

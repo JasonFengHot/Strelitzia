@@ -1,8 +1,11 @@
 package tv.ismar.Utils;
 
+import android.util.Log;
+
 import java.util.HashMap;
 
 import tv.ismar.app.core.client.NetworkUtils;
+import tv.ismar.app.network.entity.EventProperty;
 
 /**
  * Created by liucan on 2016/12/7.
@@ -35,6 +38,27 @@ public class LogUtils {
         properties.put("code",code);
         properties.put("detail",detail);
         String eventName = NetworkUtils.EXCEPTION_EXIT;
+        new NetworkUtils.DataCollectionTask().execute(eventName, properties);
+    }
+
+
+    /**
+     * 点击推荐内容日志上报
+     */
+    public static void video_exit_recommend(int source_item ,String type,String action,int item,int clip,int subitem,String page,int location,int order,String userid){
+        HashMap<String, Object> tempMap = new HashMap<>();
+        tempMap.put(EventProperty.SOURCE_ITEM, source_item);
+        tempMap.put(EventProperty.TYPE, type);
+        tempMap.put(EventProperty.ACTION, action);
+        tempMap.put(EventProperty.ITEM, item);
+        tempMap.put(EventProperty.CLIP, clip);
+        tempMap.put(EventProperty.SUBITEM, subitem);
+        tempMap.put(EventProperty.PAGE, page);
+        tempMap.put(EventProperty.LOCATION, location);
+        tempMap.put(EventProperty.ORDER, order);
+        tempMap.put(EventProperty.USER_ID, userid);
+        String eventName = NetworkUtils.VIDEO_EXIT_RECOMMEND;
+        HashMap<String, Object> properties = tempMap;
         new NetworkUtils.DataCollectionTask().execute(eventName, properties);
     }
 }
