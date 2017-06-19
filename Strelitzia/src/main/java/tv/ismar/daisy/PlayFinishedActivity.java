@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.text.TextUtils;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RelativeLayout;
@@ -38,7 +39,7 @@ import tv.ismar.app.widget.MyRecyclerView;
 import tv.ismar.searchpage.utils.JasmineUtil;
 
 
-public class PlayFinishedActivity extends BaseActivity implements View.OnClickListener, View.OnFocusChangeListener {
+public class PlayFinishedActivity extends BaseActivity implements View.OnClickListener, View.OnFocusChangeListener, View.OnHoverListener {
 
     private TextView play_finished_title;
     private MyRecyclerView play_finished_horizontal_recylerview;
@@ -58,7 +59,6 @@ public class PlayFinishedActivity extends BaseActivity implements View.OnClickLi
     private boolean hasHistory;
     private PlayFinishedAdapter playFinishedAdapter;
     private Subscription playExitSub;
-    private boolean isFirstIn=true;
     private View play_exit_error;
     private String type="exit_unknown";
     private String action="exit";
@@ -82,6 +82,7 @@ public class PlayFinishedActivity extends BaseActivity implements View.OnClickLi
         initView();
         initData();
         play_finished_cancel_btn.requestFocus();
+        play_finished_cancel_btn.requestFocusFromTouch();
     }
 
 
@@ -98,6 +99,8 @@ public class PlayFinishedActivity extends BaseActivity implements View.OnClickLi
                 play_finished_cancel_btn.setOnClickListener(this);
                 play_finished_confirm_btn.setOnFocusChangeListener(this);
                 play_finished_cancel_btn.setOnFocusChangeListener(this);
+        play_finished_confirm_btn.setOnHoverListener(this);
+        play_finished_cancel_btn.setOnHoverListener(this);
             }
 
         private void initData() {
@@ -124,6 +127,7 @@ public class PlayFinishedActivity extends BaseActivity implements View.OnClickLi
 
                             @Override
                             public void onError(Throwable e) {
+                                type="exit_unknown";
                                 play_exit_error.setVisibility(View.VISIBLE);
                                 play_finished_cancel_btn.setNextFocusUpId(R.id.play_finished_cancel_btn);
                                 play_finished_confirm_btn.setNextFocusUpId(R.id.play_finished_confirm_btn);
@@ -174,6 +178,7 @@ public class PlayFinishedActivity extends BaseActivity implements View.OnClickLi
 
                             @Override
                             public void onError(Throwable e) {
+                                type="exit_unknown";
                                 play_exit_error.setVisibility(View.VISIBLE);
                                 play_finished_cancel_btn.setNextFocusUpId(R.id.play_finished_cancel_btn);
                                 play_finished_confirm_btn.setNextFocusUpId(R.id.play_finished_confirm_btn);
@@ -263,11 +268,7 @@ public class PlayFinishedActivity extends BaseActivity implements View.OnClickLi
                         }else{
                             params.leftMargin=getResources().getDimensionPixelOffset(R.dimen.scroll_732);
                         }
-                        if(isFirstIn) {
-                            isFirstIn = false;
-                        }else{
-                            vertical_poster_focus.setLayoutParams(params);
-                        }
+                        vertical_poster_focus.setLayoutParams(params);
                         vertical_poster_focus.setVisibility(View.VISIBLE);
                         view.findViewById(R.id.item_vertical_poster_title).setSelected(true);
                         focusedPosition=position;
@@ -304,11 +305,7 @@ public class PlayFinishedActivity extends BaseActivity implements View.OnClickLi
                         }else{
                             params.leftMargin=getResources().getDimensionPixelOffset(R.dimen.scroll_665);
                         }
-                        if(isFirstIn) {
-                            isFirstIn = false;
-                        }else{
-                            horizontal_poster_focus.setLayoutParams(params);
-                        }
+                        horizontal_poster_focus.setLayoutParams(params);
                         horizontal_poster_focus.setVisibility(View.VISIBLE);
                         focusedPosition=position;
                         JasmineUtil.scaleOut3(view);
@@ -373,4 +370,12 @@ public class PlayFinishedActivity extends BaseActivity implements View.OnClickLi
     }
 
 
+    @Override
+    public boolean onHover(View v, MotionEvent event) {
+        if(event.getAction()==MotionEvent.ACTION_HOVER_ENTER||event.getAction()==MotionEvent.ACTION_HOVER_MOVE){
+            v.requestFocus();
+            v.requestFocusFromTouch();
+        }
+        return false;
+    }
 }

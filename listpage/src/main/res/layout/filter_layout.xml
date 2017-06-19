@@ -105,6 +105,8 @@
         android:background="@drawable/filter_arrow_up_normal"
         android:nextFocusUp="@id/filter_arrow_up"
         android:layout_alignParentRight="true"
+        android:nextFocusDown="@id/filter_arrow_up"
+        android:nextFocusRight="@id/filter_arrow_up"
         android:visibility="invisible"/>
 
     <Button
@@ -116,6 +118,8 @@
         android:layout_marginRight="@dimen/filter_layout_filter_arrow_mr"
         android:background="@drawable/filter_arrow_down_normal"
         android:nextFocusDown="@id/filter_arrow_down"
+        android:nextFocusUp="@id/filter_arrow_down"
+        android:nextFocusRight="@id/filter_arrow_down"
         android:layout_alignParentRight="true"
         android:visibility="invisible"/>
 

@@ -25,6 +25,7 @@ import java.util.List;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import tv.ismar.adapter.FilterPosterAdapter;
+import tv.ismar.adapter.FocusGridLayoutManager;
 import tv.ismar.adapter.SpaceItemDecoration;
 import tv.ismar.app.BaseActivity;
 import tv.ismar.app.core.PageIntent;
@@ -62,6 +63,7 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
     private PopupWindow filterPopup;
     private int spanCount;
     private boolean canScroll=true;
+    private boolean isFocused;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,7 +108,7 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
             poster_recyclerview.setPadding(0,0,0,getResources().getDimensionPixelOffset(R.dimen.horizontal_recycler_padding_bottom));
             poster_recyclerview.addItemDecoration(new SpaceItemDecoration(getResources().getDimensionPixelOffset(R.dimen.filter_item_horizontal_poster_mr),getResources().getDimensionPixelOffset(R.dimen.filter_item_horizontal_poster_mb)));
         }
-        poster_recyclerview.setLayoutManager(new GridLayoutManager(this, spanCount));
+        poster_recyclerview.setLayoutManager(new FocusGridLayoutManager(this, spanCount));
         filter_tab.setOnClickListener(this);
         filter_tab.setOnHoverListener(this);
         filter_arrow_up.setOnClickListener(this);
@@ -122,11 +124,19 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                 if(newState==0){
                     if(recyclerView.getChildAt(spanCount*2)==null){
                         filter_arrow_down.setVisibility(View.INVISIBLE);
+                        if(!isFocused) {
+                            filter_arrow_up.requestFocus();
+                            filter_arrow_up.requestFocusFromTouch();
+                        }
                     }else{
                         filter_arrow_down.setVisibility(View.VISIBLE);
                     }
                     if(recyclerView.getChildLayoutPosition(recyclerView.getChildAt(0))==0){
                         filter_arrow_up.setVisibility(View.INVISIBLE);
+                        if(!isFocused) {
+                            filter_arrow_down.requestFocus();
+                            filter_arrow_down.requestFocusFromTouch();
+                        }
                     }else{
                         filter_arrow_up.setVisibility(View.VISIBLE);
                     }
@@ -148,37 +158,51 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if(!filterPopup.isShowing()) {
-            if (keyCode == 22) {
-                if (isVertical) {
-                    if ((focusedPos + 1) % 5 == 0) {
-                        if (poster_recyclerview.getChildAt(focusedPos + 1) != null) {
-                            poster_recyclerview.getChildAt(focusedPos + 1).requestFocus();
-                        } else {
-                            if (poster_recyclerview.getChildPosition(poster_recyclerview.getFocusedChild()) != filterPosterAdapter.getItemCount() - 1) {
-                                poster_recyclerview.getChildAt(focusedPos - 4).requestFocus();
-                            }
-                        }
+                if (keyCode == 22) {
+                    if(filter_arrow_down.isFocused()||filter_arrow_up.isFocused()){
                         return true;
                     }
-                } else {
-                    if ((focusedPos + 1) % 3 == 0) {
-                        if (poster_recyclerview.getChildAt(focusedPos + 1) != null) {
-                            poster_recyclerview.getChildAt(focusedPos + 1).requestFocus();
-                        } else {
-                            if (poster_recyclerview.getChildPosition(poster_recyclerview.getFocusedChild()) != filterPosterAdapter.getItemCount() - 1) {
-                                poster_recyclerview.getChildAt(focusedPos - 2).requestFocus();
+                    if (isVertical) {
+                        if ((focusedPos + 1) % 5 == 0) {
+                            if (poster_recyclerview.getChildAt(focusedPos + 1) != null) {
+                                poster_recyclerview.getChildAt(focusedPos + 1).requestFocus();
+                            } else {
+                                if (poster_recyclerview.getChildPosition(poster_recyclerview.getFocusedChild()) != filterPosterAdapter.getItemCount() - 1) {
+                                    poster_recyclerview.getChildAt(focusedPos - 4).requestFocus();
+                                }
                             }
+                            return true;
                         }
+                    } else {
+                        if ((focusedPos + 1) % 3 == 0) {
+                            if (poster_recyclerview.getChildAt(focusedPos + 1) != null) {
+                                poster_recyclerview.getChildAt(focusedPos + 1).requestFocus();
+                            } else {
+                                if (poster_recyclerview.getChildPosition(poster_recyclerview.getFocusedChild()) != filterPosterAdapter.getItemCount() - 1) {
+                                    poster_recyclerview.getChildAt(focusedPos - 2).requestFocus();
+                                }
+                            }
+                            return true;
+                        }
+                    }
+                    if (poster_recyclerview.getChildPosition(poster_recyclerview.getFocusedChild()) == filterPosterAdapter.getItemCount() - 1) {
                         return true;
                     }
+                }else if(keyCode==21){
+                    if(filter_arrow_up.isFocused()){
+                        for (int i = 1; i <=spanCount ; i++) {
+                            if(poster_recyclerview.getChildAt(spanCount*2-i)!=null) {
+                                poster_recyclerview.getChildAt(spanCount*2-i).requestFocus();
+                                return true;
+                            }
+                        }
+
+                    }
                 }
-                if (poster_recyclerview.getChildPosition(poster_recyclerview.getFocusedChild()) == filterPosterAdapter.getItemCount() - 1) {
-                    return true;
-                }
-            }
         }
         return super.onKeyDown(keyCode, event);
     }
+
 
     private void fetchFilterCondition(String channel) {
         mSkyService.getFilters(channel)
@@ -242,6 +266,8 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                 if (poster_recyclerview.getChildAt(0) != null) {
                     canScroll = false;
                     poster_recyclerview.getChildAt(0).requestFocus();
+                }else{
+                    filter_tab.requestFocus();
                 }
             }
         });
@@ -308,6 +334,7 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                             @Override
                             public void onItemfocused(View view, int position, boolean hasFocus) {
                                 if(hasFocus){
+                                    isFocused = true;
                                     focusedPos =poster_recyclerview.indexOfChild(view);
                                     if(view.getY()>getResources().getDimensionPixelOffset(R.dimen.filter_poster_start_scroll_length)||view.getY()<=0){
                                         if(canScroll) {
@@ -403,23 +430,20 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
     }
 
     @Override
-    public boolean onKeyLongPress(int keyCode, KeyEvent event) {
-        return true;
-    }
-
-    @Override
     public void onFocusChange(View v, boolean hasFocus) {
         int i = v.getId();
         if (i == R.id.filter_arrow_up) {
             if(hasFocus){
                 filter_arrow_up.setBackgroundResource(R.drawable.filter_arrow_up_focus);
                 JasmineUtil.scaleOut4(v);
+                isFocused=false;
             }else{
                 filter_arrow_up.setBackgroundResource(R.drawable.filter_arrow_up_normal);
                 JasmineUtil.scaleIn4(v);
             }
         } else if (i == R.id.filter_arrow_down) {
             if(hasFocus){
+                isFocused=false;
                 filter_arrow_down.setBackgroundResource(R.drawable.filter_arrow_down_focus);
                 JasmineUtil.scaleOut4(v);
             }else{
