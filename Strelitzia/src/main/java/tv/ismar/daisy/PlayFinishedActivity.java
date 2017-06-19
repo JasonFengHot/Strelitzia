@@ -84,6 +84,7 @@ public class PlayFinishedActivity extends BaseActivity implements View.OnClickLi
         initData();
         play_finished_cancel_btn.requestFocus();
         play_finished_cancel_btn.requestFocusFromTouch();
+        leftFocus=false;
     }
 
 
