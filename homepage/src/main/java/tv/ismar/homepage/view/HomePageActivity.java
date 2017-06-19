@@ -1445,8 +1445,8 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
                             }
                         }
                     });
-            advertisement.getRepostAdUrl(playIndex,"startAd");
         }
+        advertisement.getRepostAdUrl(playIndex,"startAd");
 
     }
 

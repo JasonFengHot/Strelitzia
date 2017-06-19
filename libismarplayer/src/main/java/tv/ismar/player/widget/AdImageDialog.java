@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
@@ -96,7 +97,10 @@ public class AdImageDialog extends Dialog {
                 @Override
                 public void run() {
                     if (imageView != null && button != null) {
+                        Log.i("adimagelog"," curent: "+mCurrentAdIndex);
+                        advertisement.getRepostAdUrl(mCurrentAdIndex,"zangtingAd");
                         AdElementEntity element = mAdvEntityList.get(mCurrentAdIndex);
+                        Log.i("adimagelog","ad_url: "+element.getMedia_url());
                         PlayerEvent.pause_ad_download(element.getTitle(), element.getMedia_id(), element.getMedia_url(), "bestv");
                         Picasso.with(mContext).load(element.getMedia_url())
                                 .into(imageView, new com.squareup.picasso.Callback() {
@@ -111,7 +115,6 @@ public class AdImageDialog extends Dialog {
                                                 mAdvEntityList.get(mCurrentAdIndex).getMedia_id(),
                                                 mAdvEntityList.get(mCurrentAdIndex).getMedia_url(),
                                                 6000, "bestv");
-
 //                                        mDuration = TrueTime.now().getTime();
                                     }
 
@@ -120,7 +123,6 @@ public class AdImageDialog extends Dialog {
                                         PlayerEvent.pause_ad_except(0, "Load error");
                                     }
                                 });
-                        advertisement.getRepostAdUrl(mCurrentAdIndex,"zangtingAd");
                         if (mAdvEntityList.size() == 1) {
                             // 只有一条广告时
                             cancelTimer();
