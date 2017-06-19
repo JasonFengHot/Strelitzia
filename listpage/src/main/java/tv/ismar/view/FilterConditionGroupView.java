@@ -4,13 +4,12 @@ import android.content.Context;
 import android.graphics.Rect;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
@@ -19,7 +18,6 @@ import android.widget.TextView;
 
 import java.util.List;
 
-import tv.ismar.channel.FilterActivity;
 import tv.ismar.listpage.R;
 
 
@@ -56,7 +54,16 @@ public class FilterConditionGroupView extends LinearLayout implements View.OnHov
     });
     private View left_layer;
     private View right_layer;
+    public void setNextUpView(View nextUpView) {
+        this.nextUpView = nextUpView;
+    }
 
+    public void setNextDownView(View nextDownView) {
+        this.nextDownView = nextDownView;
+    }
+
+    private View nextUpView;
+    private View nextDownView;
 
     public FilterConditionGroupView(Context context,List<List<String>> values,String label) {
         super(context);
@@ -95,6 +102,25 @@ public class FilterConditionGroupView extends LinearLayout implements View.OnHov
                 radio.setNextFocusRightId(radio.getId());
             }
             final int finalI = i;
+            radio.setOnKeyListener(new OnKeyListener() {
+                @Override
+                public boolean onKey(View v, int keyCode, KeyEvent event) {
+                    if (event.getAction() == KeyEvent.ACTION_DOWN) {
+                        if (keyCode == 20&&nextDownView!=null) {
+                            ((FilterConditionGroupView) nextDownView).handler.sendEmptyMessage(0);
+                            return true;
+                        } else if (keyCode == 19&&nextUpView!=null) {
+                            ((FilterConditionGroupView) nextUpView).handler.sendEmptyMessage(0);
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    } else {
+                        return false;
+                    }
+                }
+
+            });
             radio.setOnFocusChangeListener(new OnFocusChangeListener() {
                 @Override
                 public void onFocusChange(View v, boolean hasFocus) {
