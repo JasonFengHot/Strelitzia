@@ -49,6 +49,8 @@ public class HttpProxyService extends Service implements HttpServerRequestCallba
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         server.get(HTTP_ACTIOIN,this);
+        Log.i("VoiceMax", audioManager.getStreamMaxVolume(AudioManager.STREAM_SYSTEM)+"  :voice");
+        Log.i("VoiceMax", audioManager.getStreamVolume(AudioManager.STREAM_SYSTEM)+"  :current Voice");
         return super.onStartCommand(intent, flags, startId);
     }
     public static void simulateKeystroke(final int KeyCode) {
@@ -69,7 +71,7 @@ public class HttpProxyService extends Service implements HttpServerRequestCallba
 
     @Override
     public void onRequest(AsyncHttpServerRequest request, AsyncHttpServerResponse response) {
-        response.send("success!!!!");
+        Log.i("weixin","keycode= "+ request.getQuery().getString("keycode"));
         if (MODEL.equals(request.getPath())) {
             response.send(DeviceUtils.getModel());
             response.writeHead();
@@ -77,7 +79,6 @@ public class HttpProxyService extends Service implements HttpServerRequestCallba
             response.send("OK!");
             response.writeHead();
         } else if (HTTP_ACTIOIN.equals(request.getPath())) {
-
             int actionCode = Integer.parseInt(request.getQuery().getString("action"));
             switch (actionCode) {
                 case BUTTON_KEY_EVENT:
