@@ -3,12 +3,14 @@ import com.google.gson.GsonBuilder;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.KeyEvent;
 
 import com.google.gson.Gson;
 
@@ -55,6 +57,7 @@ public class DetailPageActivity extends BaseActivity implements PlaybackService.
     private HistoryManager historyManager;// 多集影片，需要查询历史记录，历史剧集的片源
     private History mHistory;
     private boolean goPlayPage;// 是否点击播放，非点击播放，需要将当前预加载停止
+    private boolean sharpSetupKeyClick; // 部分夏普设备弹出设置菜单是Dialog Activity样式
 
     private Subscription apiItemSubsc;
     private String source;
@@ -306,9 +309,11 @@ public class DetailPageActivity extends BaseActivity implements PlaybackService.
     }
 
     @Override
-    protected void onStop() {
-        if (apiItemSubsc != null && apiItemSubsc.isUnsubscribed()) {
-            apiItemSubsc.unsubscribe();
+    protected void onPause() {
+        super.onPause();
+        if (sharpSetupKeyClick) {
+            sharpSetupKeyClick = false;
+            return;
         }
         if (apiClipSubsc != null && !apiClipSubsc.isUnsubscribed()) {
             apiClipSubsc.unsubscribe();
@@ -320,7 +325,44 @@ public class DetailPageActivity extends BaseActivity implements PlaybackService.
         }
         mClient.disconnect();
         mPlaybackService = null;
+    }
+
+    @Override
+    protected void onStop() {
+        if (apiItemSubsc != null && apiItemSubsc.isUnsubscribed()) {
+            apiItemSubsc.unsubscribe();
+        }
         super.onStop();
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if ("lcd_s3a01".equals(getModelName())) {
+            if (keyCode == 707 || keyCode == 774 || keyCode == 253) {
+                sharpSetupKeyClick = true;
+            }
+        } else if ("lx565ab".equals(getModelName())) {
+            if (keyCode == 82 || keyCode == 707 || keyCode == 253) {
+                sharpSetupKeyClick = true;
+            }
+        } else if ("lcd_xxcae5a_b".equals(getModelName())) {
+            if (keyCode == 497 || keyCode == 498 || keyCode == 490) {
+                sharpSetupKeyClick = true;
+            }
+        } else {
+            if (keyCode == 223 || keyCode == 499 || keyCode == 480) {
+                sharpSetupKeyClick = true;
+            }
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
+    private String getModelName() {
+        if (Build.PRODUCT.length() > 20) {
+            return Build.PRODUCT.replaceAll(" ", "_").toLowerCase().substring(0, 19);
+        } else {
+            return Build.PRODUCT.replaceAll(" ", "_").toLowerCase();
+        }
     }
 
     @Override
