@@ -213,6 +213,13 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                         if(filterConditions.getAttributes().getFeature()!=null)
                             fillConditionLayout(filterConditions.getAttributes().getFeature().getLabel(),filterConditions.getAttributes().getFeature().getValues());
                         fetchFilterResult(filterConditions.getContent_model(),filterConditions.getDefaultX());
+                        for (int i = 0; i <filter_conditions.getChildCount() ; i++) {
+                            FilterConditionGroupView filter= (FilterConditionGroupView) filter_conditions.getChildAt(i);
+                            if(filter_conditions.getChildAt(i-1)!=null)
+                                filter.setNextUpView(filter_conditions.getChildAt(i-1));
+                            if(filter_conditions.getChildAt(i+1)!=null)
+                                filter.setNextDownView(filter_conditions.getChildAt(i+1));
+                        }
                         showFilterPopup();
                     }
                 });
@@ -258,6 +265,7 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                 filter();
             }
         });
+        filterConditionGroupView.setId(R.id.filter_conditions+filter_conditions.getChildCount());
         filter_conditions.addView(filterConditionGroupView);
     }
 
