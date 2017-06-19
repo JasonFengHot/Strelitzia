@@ -377,14 +377,14 @@ public class Advertisement {
                     }
                 }
                 if (!adElementEntities.isEmpty()) {
-                    Log.i("AD Sort","start serial:  "+adElementEntities.get(0).getSerial()+"");
+                  //  Log.i("AD Sort","start serial:  "+adElementEntities.get(0).getSerial()+"");
                     Collections.sort(adElementEntities, new Comparator<AdElementEntity>() {
                         @Override
                         public int compare(AdElementEntity lhs, AdElementEntity rhs) {
-                            return rhs.getSerial() > lhs.getSerial() ? 1 : -1;
+
+                            return rhs.getSerial() < lhs.getSerial() ? 1 : -1;
                         }
                     });
-                    Log.i("AD Sort","end serial:  "+adElementEntities.get(0).getSerial());
                 }
             }
         } catch (JSONException e) {
