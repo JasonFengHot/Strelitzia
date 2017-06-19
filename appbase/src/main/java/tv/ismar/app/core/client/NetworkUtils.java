@@ -911,4 +911,8 @@ public class NetworkUtils {
      * 专题页预约
      */
     public static final String VIDEO_RESERVE="video_reserve";
+    /**
+     * 播放退出页面点击
+     */
+    public static final String VIDEO_EXIT_RECOMMEND="video_exit_recommend";
 }
