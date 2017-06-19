@@ -106,10 +106,10 @@ public class FilterConditionGroupView extends LinearLayout implements View.OnHov
                 @Override
                 public boolean onKey(View v, int keyCode, KeyEvent event) {
                     if (event.getAction() == KeyEvent.ACTION_DOWN) {
-                        if (keyCode == 20) {
+                        if (keyCode == 20&&nextDownView!=null) {
                             ((FilterConditionGroupView) nextDownView).handler.sendEmptyMessage(0);
                             return true;
-                        } else if (keyCode == 19) {
+                        } else if (keyCode == 19&&nextUpView!=null) {
                             ((FilterConditionGroupView) nextUpView).handler.sendEmptyMessage(0);
                             return true;
                         } else {
