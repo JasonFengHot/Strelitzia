@@ -2,12 +2,10 @@ package tv.ismar.channel;
 
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Message;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -22,13 +20,11 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import tv.ismar.adapter.FilterPosterAdapter;
-import tv.ismar.adapter.FocusGridLayoutManager;
 import tv.ismar.adapter.SpaceItemDecoration;
 import tv.ismar.app.BaseActivity;
 import tv.ismar.app.core.PageIntent;
@@ -64,8 +60,6 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
     private String content_model;
     private FilterConditions mFilterConditions;
     private PopupWindow filterPopup;
-    private boolean isFocus=true;
-    public View focusedView;
     private int spanCount;
     private boolean canScroll=true;
 
@@ -222,6 +216,7 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                         }
                         showFilterPopup();
                     }
+
                 });
     }
 
@@ -244,9 +239,10 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
             @Override
             public void onDismiss() {
                 filter_tab.setFocusable(true);
-                if (poster_recyclerview.getChildAt(0) != null)
+                if (poster_recyclerview.getChildAt(0) != null) {
                     canScroll = false;
                     poster_recyclerview.getChildAt(0).requestFocus();
+                }
             }
         });
     }
@@ -258,7 +254,6 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
         no_limit.add("全部");
         values.add(0,no_limit);
         final FilterConditionGroupView filterConditionGroupView=new FilterConditionGroupView(this,values,label);
-        isFocus = false;
         filterConditionGroupView.filter_condition_radio_group.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
