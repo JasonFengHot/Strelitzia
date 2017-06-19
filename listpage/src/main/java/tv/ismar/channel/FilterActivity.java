@@ -108,7 +108,7 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
             poster_recyclerview.setPadding(0,0,0,getResources().getDimensionPixelOffset(R.dimen.horizontal_recycler_padding_bottom));
             poster_recyclerview.addItemDecoration(new SpaceItemDecoration(getResources().getDimensionPixelOffset(R.dimen.filter_item_horizontal_poster_mr),getResources().getDimensionPixelOffset(R.dimen.filter_item_horizontal_poster_mb)));
         }
-        poster_recyclerview.setLayoutManager(new FocusGridLayoutManager(this, spanCount));
+        poster_recyclerview.setLayoutManager(new GridLayoutManager(this, spanCount));
         filter_tab.setOnClickListener(this);
         filter_tab.setOnHoverListener(this);
         filter_arrow_up.setOnClickListener(this);
@@ -154,9 +154,42 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
         fetchFilterCondition(channel);
         filter_title.setText(title);
     }
+//
+//    @Override
+//    public boolean onKeyLongPress(int keyCode, KeyEvent event) {
+//        if(keyCode==20&&keyCode==19){
+//            shortPress=false;
+//            return true;
+//        }
+//        return false;
+//    }
+//
+//    @Override
+//    public boolean onKeyUp(int keyCode, KeyEvent event) {
+//        if(keyCode==20&&keyCode==19){
+//            if(shortPress){
+//                return false;
+//            }else{
+//
+//            }
+//            shortPress=false;
+//            return true;
+//        }
+//        return false;
+//    }
 
+    private boolean shortPress=false;
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
+//        if(keyCode==20||keyCode==19){
+//            if(event.getAction()==KeyEvent.ACTION_DOWN){
+//                event.startTracking();
+//                if(event.getRepeatCount() == 0){
+//                    shortPress = true;
+//                               }
+//                return true;
+//            }
+//        }
         if(!filterPopup.isShowing()) {
                 if (keyCode == 22) {
                     if(filter_arrow_down.isFocused()||filter_arrow_up.isFocused()){
@@ -322,11 +355,11 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                                 PageIntent intent = new PageIntent();
                                 Item item=itemList.objects.get(position);
                                 if(item.content_model.contains("gather")){
-                                    intent.toSubject(FilterActivity.this,item.content_model,item.pk,item.title,Source.LIST.getValue(),baseChannel);
+                                    intent.toSubject(FilterActivity.this,item.content_model,item.pk,item.title,Source.RETRIEVAL.getValue(),baseChannel);
                                 }else if(item.is_complex) {
-                                    intent.toDetailPage(FilterActivity.this,Source.LIST.getValue(),item.pk);
+                                    intent.toDetailPage(FilterActivity.this,Source.RETRIEVAL.getValue(),item.pk);
                                 }else{
-                                    intent.toPlayPage(FilterActivity.this,item.pk,0, Source.LIST);
+                                    intent.toPlayPage(FilterActivity.this,item.pk,0, Source.RETRIEVAL);
                                 }
                             }
                         });
