@@ -97,11 +97,10 @@ public class AdImageDialog extends Dialog {
                 @Override
                 public void run() {
                     if (imageView != null && button != null) {
-                        Log.i("adimagelog"," curent: "+mCurrentAdIndex);
                         advertisement.getRepostAdUrl(mCurrentAdIndex,"zangtingAd");
                         AdElementEntity element = mAdvEntityList.get(mCurrentAdIndex);
-                        Log.i("adimagelog","ad_url: "+element.getMedia_url());
                         PlayerEvent.pause_ad_download(element.getTitle(), element.getMedia_id(), element.getMedia_url(), "bestv");
+                        button.setVisibility(View.INVISIBLE);
                         Picasso.with(mContext).load(element.getMedia_url())
                                 .into(imageView, new com.squareup.picasso.Callback() {
                                     @Override

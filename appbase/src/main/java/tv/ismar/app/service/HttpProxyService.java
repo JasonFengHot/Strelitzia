@@ -86,7 +86,7 @@ public class HttpProxyService extends Service implements HttpServerRequestCallba
                     break;
                 case VOL_SEEK_EVENT:
                     int index=Integer.parseInt(request.getQuery().getString("seek"));
-                    audioManager.adjustStreamVolume(AudioManager.STREAM_SYSTEM,index,AudioManager.FLAG_SHOW_UI);
+                    audioManager.setStreamVolume(AudioManager.STREAM_SYSTEM,index,AudioManager.FLAG_SHOW_UI);
                     break;
                 case PLAY_VIDEO_EVENT:
                     break;
