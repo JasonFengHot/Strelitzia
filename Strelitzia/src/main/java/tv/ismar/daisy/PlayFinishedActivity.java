@@ -9,6 +9,7 @@ import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.text.TextUtils;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -257,7 +258,7 @@ public class PlayFinishedActivity extends BaseActivity implements View.OnClickLi
                         if(position==0||(position==1&&view.getX()-getResources().getDimensionPixelOffset(R.dimen.scroll_395)>0)||position==list.size()-1) {
                             play_finished_vertical_recylerview.smoothScrollBy(0, 0);
                         }else{
-                            play_finished_vertical_recylerview.smoothScrollBy((int) view.getX() - getResources().getDimensionPixelOffset(R.dimen.scroll_396), 0);
+                            play_finished_vertical_recylerview.smoothScrollBy((int) view.getX() - view.getWidth()-getResources().getDimensionPixelOffset(R.dimen.play_finished_vertical_recylerview_ml), 0);
                         }
                         RelativeLayout.LayoutParams params=new RelativeLayout.LayoutParams(getResources().getDimensionPixelOffset(R.dimen.play_finished_vertical_poster_focus_w), getResources().getDimensionPixelOffset(R.dimen.play_finished_vertical_poster_focus_h));
                         params.topMargin=getResources().getDimensionPixelOffset(R.dimen.scroll_238);
@@ -294,7 +295,7 @@ public class PlayFinishedActivity extends BaseActivity implements View.OnClickLi
                         if(position==0||(position==1&&view.getX()-getResources().getDimensionPixelOffset(R.dimen.scroll_519)>0)||position==list.size()-1) {
                             play_finished_horizontal_recylerview.smoothScrollBy(0, 0);
                         }else{
-                            play_finished_horizontal_recylerview.smoothScrollBy((int) view.getX() - getResources().getDimensionPixelOffset(R.dimen.scroll_519), 0);
+                            play_finished_horizontal_recylerview.smoothScrollBy((int) view.getX() - view.getWidth()-getResources().getDimensionPixelOffset(R.dimen.play_finished_horizontal_recylerview_ml), 0);
                         }
                         RelativeLayout.LayoutParams params=new RelativeLayout.LayoutParams(getResources().getDimensionPixelOffset(R.dimen.play_finished_horizontal_poster_focus_w),getResources().getDimensionPixelOffset(R.dimen.play_finished_horizontal_poster_focus_h));
                         params.topMargin=getResources().getDimensionPixelOffset(R.dimen.scroll_307);

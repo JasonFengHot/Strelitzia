@@ -436,7 +436,8 @@
 <dimen name="filter_checked_condition_pl">10.00dp</dimen>
 <dimen name="filter_checked_condition_pr">9.33dp</dimen>
 <dimen name="filter_checked_condition_ts">20.00dp</dimen>
-<dimen name="filter_poster_vertical_scroll_space">21.33dp</dimen>
+<dimen name="filter_poster_vertical_scroll_space_up">21.33dp</dimen>
+<dimen name="filter_poster_vertical_scroll_space">22.00dp</dimen>
 <dimen name="filter_poster_start_scroll_length">333.33dp</dimen>
 <dimen name="filter_condition_group_item_space_2">66.67dp</dimen>
 <dimen name="filter_condition_group_item_space_4">106.00dp</dimen>

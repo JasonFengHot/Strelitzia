@@ -412,7 +412,7 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                 poster_recyclerview.smoothScrollBy(0, (int) (poster_recyclerview.getChildAt(0).getY()+poster_recyclerview.getChildAt(0).getHeight()*2+getResources().getDimensionPixelOffset(R.dimen.filter_poster_vertical_scroll_space)));
         }else if(i==R.id.filter_arrow_up)   {
             if(poster_recyclerview.getChildCount()>0)
-                poster_recyclerview.smoothScrollBy(0, (int) (poster_recyclerview.getChildAt(0).getY()-poster_recyclerview.getChildAt(0).getHeight()*2-getResources().getDimensionPixelOffset(R.dimen.filter_poster_vertical_scroll_space)));
+                poster_recyclerview.smoothScrollBy(0, (int) (poster_recyclerview.getChildAt(0).getY()-poster_recyclerview.getChildAt(0).getHeight()*2-getResources().getDimensionPixelOffset(R.dimen.filter_poster_vertical_scroll_space_up)));
         }else if(i==R.id.filter_tab){
             filter_tab.setFocusable(false);
             getRootView().requestFocus();
