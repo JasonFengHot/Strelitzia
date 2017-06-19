@@ -266,7 +266,9 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
         }
         if (mPlaybackService != null) {
             mPlaybackService.setCallback(null);
-            mPlaybackService.addHistory(mCurrentPosition, false);// 在非按返回键退出应用时需添加历史记录，此时无需发送至服务器，addHistory不能统一写到此处
+            if (!mPlaybackService.isPlayingAd()) {
+                mPlaybackService.addHistory(mCurrentPosition, false);// 在非按返回键退出应用时需添加历史记录，此时无需发送至服务器，addHistory不能统一写到此处
+            }
         }
         mHandler.removeCallbacksAndMessages(null);
 
@@ -889,15 +891,23 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
             }
         }
         LogUtils.i(TAG, "onKeyDown : " + keyCode);
-        if (mPlaybackService == null || mPlaybackService.getMediaPlayer() == null || !mPlaybackService.isPlayerPrepared()||mPlaybackService.isPlayingAd()) {
+        if (mPlaybackService == null || mPlaybackService.getMediaPlayer() == null || !mPlaybackService.isPlayerPrepared()) {
             if (keyCode == KeyEvent.KEYCODE_BACK) {
                 backpress = true;
                 getActivity().finish();
-            } else if (keyCode == KeyEvent.KEYCODE_VOLUME_UP || keyCode == KeyEvent.KEYCODE_VOLUME_DOWN
-                    || keyCode == KeyEvent.KEYCODE_VOLUME_MUTE) {
-                return false;
             }
             return true;
+        }
+        if (mPlaybackService.isPlayingAd()) {
+            if (keyCode == KeyEvent.KEYCODE_VOLUME_UP || keyCode == KeyEvent.KEYCODE_VOLUME_DOWN
+                    || keyCode == KeyEvent.KEYCODE_VOLUME_MUTE) {
+                return false;
+
+            } else if (keyCode == KeyEvent.KEYCODE_BACK) {
+                mIsExiting = true;
+                getActivity().finish();
+                return true;
+            }
         }
         if (isMenuShow()) {
             return true;
