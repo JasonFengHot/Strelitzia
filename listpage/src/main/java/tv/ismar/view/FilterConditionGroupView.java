@@ -102,6 +102,13 @@ public class FilterConditionGroupView extends LinearLayout implements View.OnHov
                 radio.setNextFocusRightId(radio.getId());
             }
             final int finalI = i;
+            radio.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    v.requestFocus();
+                    v.requestFocusFromTouch();
+                }
+            });
             radio.setOnKeyListener(new OnKeyListener() {
                 @Override
                 public boolean onKey(View v, int keyCode, KeyEvent event) {
