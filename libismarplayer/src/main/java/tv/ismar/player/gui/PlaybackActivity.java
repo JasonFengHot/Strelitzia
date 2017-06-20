@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.KeyEvent;
 
@@ -49,7 +50,12 @@ public class PlaybackActivity extends BaseActivity {
         filter.setPriority(1000);
         filter.addDataScheme("file");
         registerReceiver(mountReceiver, filter);
-
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                showLoginHint();
+            }
+        },1000);
     }
 
     @Override

@@ -128,4 +128,7 @@
     <color name="_cc0033">#cc0033</color>
     <color name="_f0f0f0">#f0f0f0</color>
     <color name="_666666">#666666</color>
+
+    <color name="login_hint_focus">#F0F0F0</color>
+    <color name="login_hint_nomarl">#999999</color>
 </resources>

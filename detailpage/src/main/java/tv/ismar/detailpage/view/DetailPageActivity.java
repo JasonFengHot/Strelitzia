@@ -305,7 +305,12 @@ public class DetailPageActivity extends BaseActivity implements PlaybackService.
         AppConstant.purchase_referer = "video";
         AppConstant.purchase_page = "detail";
         goPlayPage = false;
-
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    showLoginHint();
+                }
+            },1000);
     }
 
     @Override

@@ -5,6 +5,7 @@ import android.content.res.AssetFileDescriptor;
 import android.graphics.drawable.AnimationDrawable;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Message;
 import android.os.SystemClock;
 import android.provider.UserDictionary;
@@ -188,6 +189,13 @@ public class WordSearchActivity extends BaseActivity implements View.OnClickList
         super.onResume();
         AppConstant.purchase_referer = "search";
         AppConstant.purchase_entrance_page = "search";
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                showLoginHint();
+            }
+        },1000);
     }
 
     public void appstart() {

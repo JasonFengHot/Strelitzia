@@ -1363,7 +1363,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
         if(type==1){
             settingMenu.showQuality();
         }
-       // settingMenu.setAnimationStyle(R.style.PopupAnimation);
+        settingMenu.setAnimationStyle(R.style.PopupAnimation);
         settingMenu.showAtLocation(parentView,Gravity.BOTTOM,0,0);
         new Handler().postDelayed(new Runnable() {
             @Override

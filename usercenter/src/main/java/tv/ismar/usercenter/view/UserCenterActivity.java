@@ -314,6 +314,21 @@ public class UserCenterActivity extends BaseActivity implements LoginFragment.Lo
         } else {
             changeViewState(indicatorView.get(2), ViewState.Enable);
         }
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                showLoginHint();
+            }
+        },1000);
+        if(BaseActivity.goLogin){
+            indicatorView.get(2).callOnClick();
+            indicatorView.get(2).requestFocus();
+            changeViewState(indicatorView.get(2), ViewState.Select);
+            selectLogin();
+            BaseActivity.goLogin=false;
+        }
+
     }
 
     private void selectLocation() {
