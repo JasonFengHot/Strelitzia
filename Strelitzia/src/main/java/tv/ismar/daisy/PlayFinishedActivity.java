@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.text.TextUtils;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,7 +41,7 @@ import tv.ismar.app.widget.MyRecyclerView;
 import tv.ismar.searchpage.utils.JasmineUtil;
 
 
-public class PlayFinishedActivity extends BaseActivity implements View.OnClickListener, View.OnFocusChangeListener, View.OnHoverListener {
+public class PlayFinishedActivity extends BaseActivity implements View.OnClickListener, View.OnHoverListener, View.OnKeyListener {
 
     private TextView play_finished_title;
     private MyRecyclerView play_finished_horizontal_recylerview;
@@ -72,7 +73,7 @@ public class PlayFinishedActivity extends BaseActivity implements View.OnClickLi
 
 
     @Override
-        protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.play_finished);
         Intent intent = getIntent();
@@ -89,114 +90,114 @@ public class PlayFinishedActivity extends BaseActivity implements View.OnClickLi
 
 
     private void initView() {
-                play_finished_title = (TextView) findViewById(R.id.play_finished_title);
-                play_finished_horizontal_recylerview = (MyRecyclerView) findViewById(R.id.play_finished_horizontal_recylerview);
-                play_finished_vertical_recylerview = (MyRecyclerView) findViewById(R.id.play_finished_vertical_recylerview);
-                play_finished_confirm_btn = (Button) findViewById(R.id.play_finished_confirm_btn);
-                play_finished_cancel_btn = (Button) findViewById(R.id.play_finished_cancel_btn);
-                vertical_poster_focus = findViewById(R.id.vertical_poster_focus);
-                horizontal_poster_focus = findViewById(R.id.horizontal_poster_focus);
-                play_exit_error = findViewById(R.id.play_exit_error);
-                play_finished_confirm_btn.setOnClickListener(this);
-                play_finished_cancel_btn.setOnClickListener(this);
-                play_finished_confirm_btn.setOnFocusChangeListener(this);
-                play_finished_cancel_btn.setOnFocusChangeListener(this);
+        play_finished_title = (TextView) findViewById(R.id.play_finished_title);
+        play_finished_horizontal_recylerview = (MyRecyclerView) findViewById(R.id.play_finished_horizontal_recylerview);
+        play_finished_vertical_recylerview = (MyRecyclerView) findViewById(R.id.play_finished_vertical_recylerview);
+        play_finished_confirm_btn = (Button) findViewById(R.id.play_finished_confirm_btn);
+        play_finished_cancel_btn = (Button) findViewById(R.id.play_finished_cancel_btn);
+        vertical_poster_focus = findViewById(R.id.vertical_poster_focus);
+        horizontal_poster_focus = findViewById(R.id.horizontal_poster_focus);
+        play_exit_error = findViewById(R.id.play_exit_error);
+        play_finished_confirm_btn.setOnClickListener(this);
+        play_finished_cancel_btn.setOnClickListener(this);
         play_finished_confirm_btn.setOnHoverListener(this);
         play_finished_cancel_btn.setOnHoverListener(this);
-            }
+        play_finished_confirm_btn.setOnKeyListener(this);
+        play_finished_cancel_btn.setOnKeyListener(this);
+    }
 
-        private void initData() {
-            if(playScale==100) {
-                //播放完成页
-                play_finished_confirm_btn.setVisibility(View.GONE);
-                play_finished_cancel_btn.setNextFocusLeftId(R.id.play_finished_cancel_btn);
+    private void initData() {
+        if(playScale==100) {
+            //播放完成页
+            play_finished_confirm_btn.setVisibility(View.GONE);
+            play_finished_cancel_btn.setNextFocusLeftId(R.id.play_finished_cancel_btn);
+            if("movie".equals(channel)){
+                setOrientation(true);
+            }else{
+                setOrientation(false);
+            }
+            play_finished_title.setText("您可能对以下影片感兴趣:");
+            type = "finish";
+            mSkyService.getRelatedArray(itemId)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Observer <Item[]>() {
+
+                        @Override
+                        public void onCompleted() {
+
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            type="exit_unknown";
+                            play_exit_error.setVisibility(View.VISIBLE);
+                            play_finished_cancel_btn.setNextFocusUpId(R.id.play_finished_cancel_btn);
+                            play_finished_confirm_btn.setNextFocusUpId(R.id.play_finished_confirm_btn);
+                        }
+
+                        @Override
+                        public void onNext(Item[] playfinishedRecommend) {
+                            ArrayList<PlayfinishedRecommend.RecommendItem> list=new ArrayList<>();
+                            for (int i = 0; i <playfinishedRecommend.length ; i++) {
+                                PlayfinishedRecommend.RecommendItem item=new PlayfinishedRecommend.RecommendItem();
+                                item.setPk(playfinishedRecommend[i].pk);
+                                item.setContent_model(playfinishedRecommend[i].content_model);
+                                item.setTitle(playfinishedRecommend[i].title);
+                                item.setPoster_url(playfinishedRecommend[i].poster_url);
+                                item.setVertical_url(playfinishedRecommend[i].vertical_url);
+                                list.add(item);
+                            }
+                            processData(list);
+                        }
+                    });
+        }else {
+            if(playScale<20){
+                setOrientation(false);
+                play_finished_title.setText("今日热播内容推荐");
+                type="exit_not_like";
+            }else{
                 if("movie".equals(channel)){
                     setOrientation(true);
                 }else{
                     setOrientation(false);
                 }
-                play_finished_title.setText("您可能对以下影片感兴趣:");
-                type = "finish";
-                mSkyService.getRelatedArray(itemId)
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new Observer <Item[]>() {
-
-                            @Override
-                            public void onCompleted() {
-
-                            }
-
-                            @Override
-                            public void onError(Throwable e) {
-                                type="exit_unknown";
-                                play_exit_error.setVisibility(View.VISIBLE);
-                                play_finished_cancel_btn.setNextFocusUpId(R.id.play_finished_cancel_btn);
-                                play_finished_confirm_btn.setNextFocusUpId(R.id.play_finished_confirm_btn);
-                            }
-
-                            @Override
-                            public void onNext(Item[] playfinishedRecommend) {
-                                ArrayList<PlayfinishedRecommend.RecommendItem> list=new ArrayList<>();
-                                for (int i = 0; i <playfinishedRecommend.length ; i++) {
-                                    PlayfinishedRecommend.RecommendItem item=new PlayfinishedRecommend.RecommendItem();
-                                    item.setPk(playfinishedRecommend[i].pk);
-                                    item.setContent_model(playfinishedRecommend[i].content_model);
-                                    item.setTitle(playfinishedRecommend[i].title);
-                                    item.setPoster_url(playfinishedRecommend[i].poster_url);
-                                    item.setVertical_url(playfinishedRecommend[i].vertical_url);
-                                    list.add(item);
-                                }
-                                processData(list);
-                            }
-                        });
-            }else {
-                if(playScale<20){
-                    setOrientation(false);
-                    play_finished_title.setText("今日热播内容推荐");
-                    type="exit_not_like";
+                if(hasHistory){
+                    play_finished_title.setText("看过此片的用户还看过");
                 }else{
-                    if("movie".equals(channel)){
-                        setOrientation(true);
-                    }else{
-                        setOrientation(false);
-                    }
-                    if(hasHistory){
-                        play_finished_title.setText("看过此片的用户还看过");
-                    }else{
-                        play_finished_title.setText("其他用户正在观看");
-                    }
-                    type="exit_like";
+                    play_finished_title.setText("其他用户正在观看");
                 }
-                playExitSub = SkyService.ServiceManager.getCacheSkyService2().apiPlayExitRecommend(SimpleRestClient.sn_token, itemId,channel,playScale)
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new Observer<PlayRecommend>() {
-
-                            @Override
-                            public void onCompleted() {
-
-                            }
-
-                            @Override
-                            public void onError(Throwable e) {
-                                type="exit_unknown";
-                                play_exit_error.setVisibility(View.VISIBLE);
-                                play_finished_cancel_btn.setNextFocusUpId(R.id.play_finished_cancel_btn);
-                                play_finished_confirm_btn.setNextFocusUpId(R.id.play_finished_confirm_btn);
-                            }
-
-                            @Override
-                            public void onNext(PlayRecommend playRecommend) {
-                                if (playRecommend != null) {
-                                    if (TextUtils.isEmpty(playRecommend.getRecommend_title()))
-                                        play_finished_title.setText(playRecommend.getRecommend_title());
-                                    processData(playRecommend.getRecommend_items());
-                                }
-                            }
-                        });
+                type="exit_like";
             }
+            playExitSub = SkyService.ServiceManager.getCacheSkyService2().apiPlayExitRecommend(SimpleRestClient.sn_token, itemId,channel,playScale)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Observer<PlayRecommend>() {
+
+                        @Override
+                        public void onCompleted() {
+
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            type="exit_unknown";
+                            play_exit_error.setVisibility(View.VISIBLE);
+                            play_finished_cancel_btn.setNextFocusUpId(R.id.play_finished_cancel_btn);
+                            play_finished_confirm_btn.setNextFocusUpId(R.id.play_finished_confirm_btn);
+                        }
+
+                        @Override
+                        public void onNext(PlayRecommend playRecommend) {
+                            if (playRecommend != null) {
+                                if (TextUtils.isEmpty(playRecommend.getRecommend_title()))
+                                    play_finished_title.setText(playRecommend.getRecommend_title());
+                                processData(playRecommend.getRecommend_items());
+                            }
+                        }
+                    });
         }
+    }
 
     private void setOrientation(boolean Vertical) {
         if(Vertical){
@@ -245,16 +246,6 @@ public class PlayFinishedActivity extends BaseActivity implements View.OnClickLi
             public void onItemfocused(View view, int position, boolean hasFocus) {
                 if(isVertical){
                     if(hasFocus) {
-                        if(leftFocus){
-                            leftFocus=false;
-                            if(focusedPosition==0&&play_finished_vertical_recylerview.getChildAt(0)!=null){
-                                play_finished_vertical_recylerview.getChildAt(0).requestFocus();
-                                return;
-                            }else if(focusedPosition==list.size()-1&&play_finished_vertical_recylerview.getChildAt(3)!=null){
-                                play_finished_vertical_recylerview.getChildAt(3).requestFocus();
-                                return;
-                            }
-                        }
                         view.findViewById(R.id.item_vertical_poster_title).setVisibility(View.VISIBLE);
                         if(position==0||(position==1&&view.getX()-getResources().getDimensionPixelOffset(R.dimen.scroll_395)>0)||position==list.size()-1) {
                             play_finished_vertical_recylerview.smoothScrollBy(0, 0);
@@ -283,16 +274,6 @@ public class PlayFinishedActivity extends BaseActivity implements View.OnClickLi
                     }
                 }else{
                     if(hasFocus){
-                        if(leftFocus){
-                            leftFocus=false;
-                            if(focusedPosition==0&&play_finished_horizontal_recylerview.getChildAt(0)!=null){
-                                play_finished_horizontal_recylerview.getChildAt(0).requestFocus();
-                                return;
-                            }else if(focusedPosition==list.size()-1&&play_finished_horizontal_recylerview.getChildAt(3)!=null){
-                                play_finished_horizontal_recylerview.getChildAt(3).requestFocus();
-                                return;
-                            }
-                        }
                         if(position==0||(position==1&&view.getX()-getResources().getDimensionPixelOffset(R.dimen.scroll_519)>0)||position==list.size()-1) {
                             play_finished_horizontal_recylerview.smoothScrollBy(0, 0);
                         }else{
@@ -336,13 +317,6 @@ public class PlayFinishedActivity extends BaseActivity implements View.OnClickLi
     }
 
     @Override
-    public void onFocusChange(View v, boolean hasFocus) {
-        if(hasFocus) {
-            leftFocus = true;
-        }
-    }
-
-    @Override
     public void onBackPressed() {
         if(playScale==100) {
             setResult(EXIT_PLAY);
@@ -377,6 +351,33 @@ public class PlayFinishedActivity extends BaseActivity implements View.OnClickLi
         if(event.getAction()==MotionEvent.ACTION_HOVER_ENTER||event.getAction()==MotionEvent.ACTION_HOVER_MOVE){
             v.requestFocus();
             v.requestFocusFromTouch();
+        }
+        return false;
+    }
+
+    @Override
+    public boolean onKey(View v, int keyCode, KeyEvent event) {
+        if(keyCode==19){
+            if(isVertical){
+                if(focusedPosition==0&&play_finished_vertical_recylerview.getChildAt(0)!=null){
+                    play_finished_vertical_recylerview.getChildAt(0).requestFocus();
+                }else if(focusedPosition==playFinishedAdapter.getItemCount()-1&&play_finished_vertical_recylerview.getChildAt(3)!=null){
+                    play_finished_vertical_recylerview.getChildAt(3).requestFocus();
+                }else{
+                    return false;
+                }
+            }else{
+                if(focusedPosition==0&&play_finished_horizontal_recylerview.getChildAt(0)!=null){
+                    play_finished_horizontal_recylerview.getChildAt(0).requestFocus();
+
+                }else if(focusedPosition==playFinishedAdapter.getItemCount()-1&&play_finished_horizontal_recylerview.getChildAt(3)!=null){
+                    play_finished_horizontal_recylerview.getChildAt(3).requestFocus();
+
+                }else{
+                    return false;
+                }
+            }
+            return true;
         }
         return false;
     }
