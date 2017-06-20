@@ -148,34 +148,36 @@ public class UpdateService extends Service implements Loader.OnLoadCompleteListe
                             mCursorLoader.unregisterListener(UpdateService.this);
                         }
                         checkRemaindUpdateFile();
-                        md5Jsons = new CopyOnWriteArrayList<String>();
-                        String title;
-                        String selection = "title in (";
-                        for (VersionInfoV2Entity.ApplicationEntity applicationEntity : versionInfoV2Entity.getUpgrades()) {
-                            title = Md5.md5(new GsonBuilder().create().toJson(applicationEntity));
-                            md5Jsons.add(title);
-                            checkUpgrade(applicationEntity);
-                            selection += "?,";
-                        }
-                        selection = selection.substring(0, selection.length() - 1);
-                        selection += ")";
-
-
-                        final String finalSelection = selection;
-                        new Handler(Looper.getMainLooper()).post(new Runnable() {
-                            @Override
-                            public void run() {
-                                if (mCursorLoader!=null){
-                                    mCursorLoader.reset();
-                                }
-                                mCursorLoader = new CursorLoader(getApplicationContext(), ContentProvider.createUri(DownloadEntity.class, null),
-                                        null, finalSelection, md5Jsons.toArray(new String[]{}), null);
-
-                                mCursorLoader.registerListener(LOADER_ID_APP_UPDATE, UpdateService.this);
-                                mCursorLoader.startLoading();
+                        if (versionInfoV2Entity.getUpgrades() != null && versionInfoV2Entity.getUpgrades().size()> 0) {
+                            md5Jsons = new CopyOnWriteArrayList<String>();
+                            String title;
+                            String selection = "title in (";
+                            for (VersionInfoV2Entity.ApplicationEntity applicationEntity : versionInfoV2Entity.getUpgrades()) {
+                                title = Md5.md5(new GsonBuilder().create().toJson(applicationEntity));
+                                md5Jsons.add(title);
+                                checkUpgrade(applicationEntity);
+                                selection += "?,";
                             }
-                        });
-                    }
+                            selection = selection.substring(0, selection.length() - 1);
+                            selection += ")";
+
+
+                            final String finalSelection = selection;
+                            new Handler(Looper.getMainLooper()).post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if (mCursorLoader != null) {
+                                        mCursorLoader.reset();
+                                    }
+                                    mCursorLoader = new CursorLoader(getApplicationContext(), ContentProvider.createUri(DownloadEntity.class, null),
+                                            null, finalSelection, md5Jsons.toArray(new String[]{}), null);
+
+                                    mCursorLoader.registerListener(LOADER_ID_APP_UPDATE, UpdateService.this);
+                                    mCursorLoader.startLoading();
+                                }
+                            });
+                        }
+                      }
                 });
     }
 

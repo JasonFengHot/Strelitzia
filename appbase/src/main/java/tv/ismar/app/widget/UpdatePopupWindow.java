@@ -1,6 +1,7 @@
 package tv.ismar.app.widget;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -18,6 +19,7 @@ import com.blankj.utilcode.utils.AppUtils;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import tv.ismar.account.IsmartvActivator;
 import tv.ismar.app.R;
 
 import static android.widget.RelativeLayout.CENTER_IN_PARENT;
@@ -110,6 +112,12 @@ public class UpdatePopupWindow extends PopupWindow implements View.OnHoverListen
                     e.printStackTrace();
                 }
                 AppUtils.installApp(context, path);
+
+                SharedPreferences sp=context.getSharedPreferences("Daisy",0);
+                if(sp!=null&&!IsmartvActivator.getInstance().isLogin()) {
+                    SharedPreferences.Editor editor = sp.edit();
+                    editor.putBoolean("fristopne", true).commit();
+                }
             }
         });
         updateLater.setOnClickListener(new View.OnClickListener() {

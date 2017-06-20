@@ -37,6 +37,7 @@ import tv.ismar.app.util.NetworkUtils;
 import tv.ismar.app.widget.ExpireAccessTokenPop;
 import tv.ismar.app.widget.ItemOffLinePopWindow;
 import tv.ismar.app.widget.LoadingDialog;
+import tv.ismar.app.widget.Login_hint_dialog;
 import tv.ismar.app.widget.ModuleMessagePopWindow;
 import tv.ismar.app.widget.NetErrorPopWindow;
 import tv.ismar.app.widget.NoNetConnectDialog;
@@ -68,6 +69,8 @@ public class BaseActivity extends AppCompatActivity {
     public SkyService mLilyHostService;
     public long app_start_time;
     public long start_time;
+    private Login_hint_dialog login_hint_dialog;
+
     public static final String NO_NET_CONNECT_ACTION = "cn.ismartv.vod.action.nonet";
     //    public static SmartPlayer mSmartPlayer;// 由于目前需要在详情页实现预加载功能，故写此变量
     public static String brandName;
@@ -93,6 +96,7 @@ public class BaseActivity extends AppCompatActivity {
      */
     public static String baseSection = "";
     public static String baseChannel = "";
+    public static boolean goLogin = false;
 
     private Bundle updateBundle;
 
@@ -583,5 +587,17 @@ public class BaseActivity extends AppCompatActivity {
         };
 
         noNetConnectHandler.postDelayed(noNetConnectRunnable, 1000);
+    }
+    public void showLoginHint(){
+        SharedPreferences sp=getSharedPreferences("Daisy",0);
+        if(sp!=null&&sp.getBoolean("fristopne",true)){
+            SharedPreferences.Editor editor=sp.edit();
+            editor.putBoolean("fristopne",false);
+            editor.commit();
+            login_hint_dialog=new Login_hint_dialog(this);
+            if(login_hint_dialog!=null&&!login_hint_dialog.isShowing()){
+                login_hint_dialog.showAtLocation(getRootView(),Gravity.CENTER,0,0);
+            }
+        }
     }
 }

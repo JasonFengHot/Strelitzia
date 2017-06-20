@@ -144,6 +144,16 @@ public class ChannelListActivity extends BaseActivity {
 				}
 		}
 	}
+	@Override
+	protected void onResume() {
+		super.onResume();
+		new Handler().postDelayed(new Runnable() {
+			@Override
+			public void run() {
+				showLoginHint();
+			}
+		},1000);
+	}
 	public void addHead(String title){
 		headFragment = new HeadFragment();
 		Bundle bundle = new Bundle();

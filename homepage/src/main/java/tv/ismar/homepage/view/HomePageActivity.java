@@ -1563,6 +1563,13 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
             showNoNetConnectDialog();
         }
         startAdsService();
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                showLoginHint();
+            }
+        },1000);
     }
 
     private int getAdCountDownTime() {
