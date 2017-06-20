@@ -2,7 +2,6 @@ package tv.ismar.daisy;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.location.Location;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.widget.StaggeredGridLayoutManager;
@@ -10,31 +9,25 @@ import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import tv.ismar.Utils.LogUtils;
-import tv.ismar.account.IsmartvActivator;
 import tv.ismar.app.BaseActivity;
 import tv.ismar.app.core.PageIntent;
 import tv.ismar.app.core.SimpleRestClient;
 import tv.ismar.app.core.Source;
-import tv.ismar.app.core.client.NetworkUtils;
 import tv.ismar.app.entity.Item;
 import tv.ismar.app.models.PlayRecommend;
 import tv.ismar.app.models.PlayfinishedRecommend;
 import tv.ismar.app.network.SkyService;
-import tv.ismar.app.network.entity.AccountPlayAuthEntity;
-import tv.ismar.app.network.entity.EventProperty;
 import tv.ismar.app.ui.adapter.OnItemClickListener;
 import tv.ismar.app.ui.adapter.OnItemFocusedListener;
 import tv.ismar.app.widget.MyRecyclerView;
@@ -57,7 +50,6 @@ public class PlayFinishedActivity extends BaseActivity implements View.OnClickLi
     private static final int CONTINUE_PLAY=100;
     private static final int EXIT_PLAY=200;
     private int  focusedPosition=0;
-    private boolean leftFocus=false;
     private boolean hasHistory;
     private PlayFinishedAdapter playFinishedAdapter;
     private Subscription playExitSub;
@@ -83,9 +75,6 @@ public class PlayFinishedActivity extends BaseActivity implements View.OnClickLi
         channel = intent.getStringExtra("channel");
         initView();
         initData();
-        play_finished_cancel_btn.requestFocus();
-        play_finished_cancel_btn.requestFocusFromTouch();
-        leftFocus=false;
     }
 
 
@@ -104,6 +93,13 @@ public class PlayFinishedActivity extends BaseActivity implements View.OnClickLi
         play_finished_cancel_btn.setOnHoverListener(this);
         play_finished_confirm_btn.setOnKeyListener(this);
         play_finished_cancel_btn.setOnKeyListener(this);
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        play_finished_cancel_btn.requestFocus();
+        play_finished_cancel_btn.requestFocusFromTouch();
     }
 
     private void initData() {
