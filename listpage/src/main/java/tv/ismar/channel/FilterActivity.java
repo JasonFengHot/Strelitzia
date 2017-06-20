@@ -63,6 +63,7 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
     private int spanCount;
     private boolean canScroll=true;
     private boolean isFocused;
+    private int lastLineCount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -345,6 +346,7 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                     @Override
                     public void onNext(final ItemList itemList) {
                         filter_arrow_up.setVisibility(View.INVISIBLE);
+                        lastLineCount = itemList.objects.size()%spanCount==0?spanCount:itemList.objects.size()%spanCount;
                         if(itemList.objects.size()!=0){
                             if((isVertical&&itemList.objects.size()>10)||(!isVertical&&itemList.objects.size()>6)) {
                                 filter_arrow_down.setVisibility(View.VISIBLE);
@@ -374,6 +376,17 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                             @Override
                             public void onItemfocused(View view, int position, boolean hasFocus) {
                                 if(hasFocus){
+                                    if(position>=filterPosterAdapter.getItemCount()-lastLineCount){
+                                        view.setOnKeyListener(new View.OnKeyListener() {
+                                            @Override
+                                            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                                                if(keyCode==20){
+                                                    return true;
+                                                }
+                                                return false;
+                                            }
+                                        });
+                                    }
                                     isFocused = true;
                                     focusedPos =poster_recyclerview.indexOfChild(view);
                                     if(view.getY()>getResources().getDimensionPixelOffset(R.dimen.filter_poster_start_scroll_length)||view.getY()<=0){

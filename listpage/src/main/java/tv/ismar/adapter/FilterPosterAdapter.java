@@ -2,10 +2,8 @@ package tv.ismar.adapter;
 
 import android.app.Activity;
 import android.content.Context;
-
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,7 +30,6 @@ public class FilterPosterAdapter extends RecyclerView.Adapter<FilterPosterAdapte
     private Context mContext;
     private ItemList mItemList;
     private boolean mIsVertical;
-    private int spanCount;
     private OnItemClickListener itemClickListener;
     private OnItemFocusedListener itemFocusedListener;
 
@@ -92,7 +89,6 @@ public class FilterPosterAdapter extends RecyclerView.Adapter<FilterPosterAdapte
             }else{
                 holder.item_vertical_poster_vip.setVisibility(View.GONE);
             }
-            spanCount=5;
 
         }else{
             if(item.bean_score>0) {
@@ -116,26 +112,6 @@ public class FilterPosterAdapter extends RecyclerView.Adapter<FilterPosterAdapte
             }else{
                 holder.item_horizontal_poster_vip.setVisibility(View.GONE);
             }
-            spanCount=3;
-        }
-        int lastLineCount=mItemList.objects.size()%spanCount;
-        if(lastLineCount==0){
-            lastLineCount=spanCount;
-        }
-        for (int i = 1; i <=lastLineCount ; i++) {
-            if(position==mItemList.objects.size()-i){
-                holder.itemView.setOnKeyListener(new View.OnKeyListener() {
-                    @Override
-                    public boolean onKey(View v, int keyCode, KeyEvent event) {
-                        if(keyCode==20) {
-                            return true;
-                        }else{
-                            return false;
-                        }
-                    }
-                });
-            }
-
         }
         if(itemClickListener!=null){
             holder.itemView.setOnClickListener(new View.OnClickListener() {
