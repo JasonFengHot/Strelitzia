@@ -18,12 +18,14 @@ import android.widget.PopupWindow;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+import tv.ismar.Utils.LogUtils;
 import tv.ismar.adapter.FilterPosterAdapter;
 import tv.ismar.adapter.FocusGridLayoutManager;
 import tv.ismar.adapter.SpaceItemDecoration;
@@ -36,6 +38,7 @@ import tv.ismar.app.models.FilterConditions;
 import tv.ismar.app.ui.adapter.OnItemClickListener;
 import tv.ismar.app.ui.adapter.OnItemFocusedListener;
 import tv.ismar.app.widget.MyRecyclerView;
+import tv.ismar.library.injectdb.util.Log;
 import tv.ismar.listpage.R;
 import tv.ismar.searchpage.utils.JasmineUtil;
 import tv.ismar.view.FilterConditionGroupView;
@@ -154,84 +157,91 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
         fetchFilterCondition(channel);
         filter_title.setText(title);
     }
-//
-//    @Override
-//    public boolean onKeyLongPress(int keyCode, KeyEvent event) {
-//        if(keyCode==20&&keyCode==19){
-//            shortPress=false;
-//            return true;
-//        }
-//        return false;
-//    }
-//
-//    @Override
-//    public boolean onKeyUp(int keyCode, KeyEvent event) {
-//        if(keyCode==20&&keyCode==19){
-//            if(shortPress){
-//                return false;
-//            }else{
-//
-//            }
-//            shortPress=false;
-//            return true;
-//        }
-//        return false;
-//    }
 
-    private boolean shortPress=false;
+    @Override
+    public boolean onKeyLongPress(int keyCode, KeyEvent event) {
+        return super.onKeyLongPress(keyCode, event);
+    }
+
+    @Override
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
+        return super.onKeyUp(keyCode, event);
+    }
+
+    long mDownTime=0;
+    long mUpTime=0;
+    boolean mDownDot=false;
+    boolean mUpDot=false;
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-//        if(keyCode==20||keyCode==19){
-//            if(event.getAction()==KeyEvent.ACTION_DOWN){
-//                event.startTracking();
-//                if(event.getRepeatCount() == 0){
-//                    shortPress = true;
-//                               }
-//                return true;
-//            }
-//        }
-        if(!filterPopup.isShowing()) {
-                if (keyCode == 22) {
-                    if(filter_arrow_down.isFocused()||filter_arrow_up.isFocused()){
-                        return true;
-                    }
-                    if (isVertical) {
-                        if ((focusedPos + 1) % 5 == 0) {
-                            if (poster_recyclerview.getChildAt(focusedPos + 1) != null) {
-                                poster_recyclerview.getChildAt(focusedPos + 1).requestFocus();
-                            } else {
-                                if (poster_recyclerview.getChildPosition(poster_recyclerview.getFocusedChild()) != filterPosterAdapter.getItemCount() - 1) {
-                                    poster_recyclerview.getChildAt(focusedPos - 4).requestFocus();
-                                }
-                            }
-                            return true;
-                        }
-                    } else {
-                        if ((focusedPos + 1) % 3 == 0) {
-                            if (poster_recyclerview.getChildAt(focusedPos + 1) != null) {
-                                poster_recyclerview.getChildAt(focusedPos + 1).requestFocus();
-                            } else {
-                                if (poster_recyclerview.getChildPosition(poster_recyclerview.getFocusedChild()) != filterPosterAdapter.getItemCount() - 1) {
-                                    poster_recyclerview.getChildAt(focusedPos - 2).requestFocus();
-                                }
-                            }
-                            return true;
-                        }
-                    }
-                    if (poster_recyclerview.getChildPosition(poster_recyclerview.getFocusedChild()) == filterPosterAdapter.getItemCount() - 1) {
-                        return true;
-                    }
-                }else if(keyCode==21){
-                    if(filter_arrow_up.isFocused()){
-                        for (int i = 1; i <=spanCount ; i++) {
-                            if(poster_recyclerview.getChildAt(spanCount*2-i)!=null) {
-                                poster_recyclerview.getChildAt(spanCount*2-i).requestFocus();
-                                return true;
-                            }
-                        }
+        //长按滑动 滑动时焦点不会乱跳，但是每隔400毫秒滑动一次
+        if (keyCode == 20) {
+            long downTime =System.currentTimeMillis();
+            if(mDownTime==0){
+                mDownTime=downTime;
+                return false;
+            }
+            if(downTime-mDownTime>400){
+                mDownTime=downTime;
+                return false;
+            }
+            return true;
+        }
+        if (keyCode == 19) {
+            long upTime =System.currentTimeMillis();
+            if(mUpTime==0){
+                mUpTime=upTime;
+                return false;
+            }
+            if(upTime-mUpTime>400){
+                mUpTime=upTime;
+                return false;
+            }
+            return true;
+        }
 
+        if(!filterPopup.isShowing()) {
+            if (keyCode == 22) {
+                if(filter_arrow_down.isFocused()||filter_arrow_up.isFocused()){
+                    return true;
+                }
+                if (isVertical) {
+                    if ((focusedPos + 1) % 5 == 0) {
+                        if (poster_recyclerview.getChildAt(focusedPos + 1) != null) {
+                            poster_recyclerview.getChildAt(focusedPos + 1).requestFocus();
+                        } else {
+                            if (poster_recyclerview.getChildPosition(poster_recyclerview.getFocusedChild()) != filterPosterAdapter.getItemCount() - 1) {
+                                poster_recyclerview.getChildAt(focusedPos - 4).requestFocus();
+                            }
+                        }
+                        return true;
+                    }
+                } else {
+                    if ((focusedPos + 1) % 3 == 0) {
+                        if (poster_recyclerview.getChildAt(focusedPos + 1) != null) {
+                            poster_recyclerview.getChildAt(focusedPos + 1).requestFocus();
+                        } else {
+                            if (poster_recyclerview.getChildPosition(poster_recyclerview.getFocusedChild()) != filterPosterAdapter.getItemCount() - 1) {
+                                poster_recyclerview.getChildAt(focusedPos - 2).requestFocus();
+                            }
+                        }
+                        return true;
                     }
                 }
+                if (poster_recyclerview.getChildPosition(poster_recyclerview.getFocusedChild()) == filterPosterAdapter.getItemCount() - 1) {
+                    return true;
+                }
+            }else if(keyCode==21){
+                if(filter_arrow_up.isFocused()){
+                    for (int i = 1; i <=spanCount ; i++) {
+                        if(poster_recyclerview.getChildAt(spanCount*2-i)!=null) {
+                            poster_recyclerview.getChildAt(spanCount*2-i).requestFocus();
+                            return true;
+                        }
+                    }
+
+                }
+            }
         }
         return super.onKeyDown(keyCode, event);
     }
@@ -419,11 +429,11 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                 filter_checked_conditiion.addView(checked);
             }
         }
-            if(filter_checked_conditiion.getChildCount()>1){
-                filter_checked_conditiion.setVisibility(View.VISIBLE);
-            }else{
-                filter_checked_conditiion.setVisibility(View.INVISIBLE);
-            }
+        if(filter_checked_conditiion.getChildCount()>1){
+            filter_checked_conditiion.setVisibility(View.VISIBLE);
+        }else{
+            filter_checked_conditiion.setVisibility(View.INVISIBLE);
+        }
 
         String condition = "";
 
