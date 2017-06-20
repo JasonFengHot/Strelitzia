@@ -197,39 +197,7 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
         }
 
         if(!filterPopup.isShowing()) {
-            if (keyCode == 22) {
-                if(filter_arrow_down.isFocused()||filter_arrow_up.isFocused()){
-                    return true;
-                }
-                if (isVertical) {
-                    if ((focusedPos + 1) % 5 == 0) {
-                        if (poster_recyclerview.getChildAt(focusedPos + 1) != null) {
-                            poster_recyclerview.getChildAt(focusedPos + 1).requestFocus();
-                        } else {
-                            if (poster_recyclerview.getChildPosition(poster_recyclerview.getFocusedChild()) != filterPosterAdapter.getItemCount() - 1) {
-                                if(poster_recyclerview.getChildAt(focusedPos - 4)!=null)
-                                    poster_recyclerview.getChildAt(focusedPos - 4).requestFocus();
-                            }
-                        }
-                        return true;
-                    }
-                } else {
-                    if ((focusedPos + 1) % 3 == 0) {
-                        if (poster_recyclerview.getChildAt(focusedPos + 1) != null) {
-                            poster_recyclerview.getChildAt(focusedPos + 1).requestFocus();
-                        } else {
-                            if (poster_recyclerview.getChildPosition(poster_recyclerview.getFocusedChild()) != filterPosterAdapter.getItemCount() - 1) {
-                                if(poster_recyclerview.getChildAt(focusedPos - 2)!=null)
-                                poster_recyclerview.getChildAt(focusedPos - 2).requestFocus();
-                            }
-                        }
-                        return true;
-                    }
-                }
-                if (poster_recyclerview.getChildPosition(poster_recyclerview.getFocusedChild()) == filterPosterAdapter.getItemCount() - 1) {
-                    return true;
-                }
-            }else if(keyCode==21){
+        if(keyCode==21){
                 if(filter_arrow_up.isFocused()){
                     for (int i = 1; i <=spanCount ; i++) {
                         if(poster_recyclerview.getChildAt(spanCount*2-i)!=null) {
