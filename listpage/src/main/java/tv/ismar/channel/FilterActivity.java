@@ -344,13 +344,14 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
 
                     @Override
                     public void onNext(final ItemList itemList) {
-
+                        filter_arrow_up.setVisibility(View.INVISIBLE);
                         if(itemList.objects.size()!=0){
                             if((isVertical&&itemList.objects.size()>10)||(!isVertical&&itemList.objects.size()>6)) {
                                 filter_arrow_down.setVisibility(View.VISIBLE);
+                            }else{
+                                filter_arrow_down.setVisibility(View.INVISIBLE);
                             }
                         }else{
-                            filter_arrow_up.setVisibility(View.INVISIBLE);
                             filter_arrow_down.setVisibility(View.INVISIBLE);
                         }
                         filterPosterAdapter = new FilterPosterAdapter(FilterActivity.this,itemList,isVertical);
