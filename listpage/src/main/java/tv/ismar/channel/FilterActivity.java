@@ -65,7 +65,6 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
     private int spanCount;
     private boolean canScroll=true;
     private boolean isFocused;
-    private int lastLineCount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -169,8 +168,6 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
 
     long mDownTime=0;
     long mUpTime=0;
-    boolean mDownDot=false;
-    boolean mUpDot=false;
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         //长按滑动 滑动时焦点不会乱跳，但是每隔400毫秒滑动一次
@@ -210,7 +207,8 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                             poster_recyclerview.getChildAt(focusedPos + 1).requestFocus();
                         } else {
                             if (poster_recyclerview.getChildPosition(poster_recyclerview.getFocusedChild()) != filterPosterAdapter.getItemCount() - 1) {
-                                poster_recyclerview.getChildAt(focusedPos - 4).requestFocus();
+                                if(poster_recyclerview.getChildAt(focusedPos - 4)!=null)
+                                    poster_recyclerview.getChildAt(focusedPos - 4).requestFocus();
                             }
                         }
                         return true;
@@ -221,6 +219,7 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                             poster_recyclerview.getChildAt(focusedPos + 1).requestFocus();
                         } else {
                             if (poster_recyclerview.getChildPosition(poster_recyclerview.getFocusedChild()) != filterPosterAdapter.getItemCount() - 1) {
+                                if(poster_recyclerview.getChildAt(focusedPos - 2)!=null)
                                 poster_recyclerview.getChildAt(focusedPos - 2).requestFocus();
                             }
                         }
@@ -348,7 +347,6 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                     @Override
                     public void onNext(final ItemList itemList) {
                         filter_arrow_up.setVisibility(View.INVISIBLE);
-                        lastLineCount = itemList.objects.size()%spanCount==0?spanCount:itemList.objects.size()%spanCount;
                         if(itemList.objects.size()!=0){
                             if((isVertical&&itemList.objects.size()>10)||(!isVertical&&itemList.objects.size()>6)) {
                                 filter_arrow_down.setVisibility(View.VISIBLE);
@@ -380,7 +378,7 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                                 if(hasFocus){
                                     isFocused = true;
                                     focusedPos =poster_recyclerview.indexOfChild(view);
-                                    if(view.getY()>getResources().getDimensionPixelOffset(R.dimen.filter_poster_start_scroll_length)||view.getY()<=0){
+                                    if(view.getY()>getResources().getDimensionPixelOffset(R.dimen.filter_poster_start_scroll_length)){
                                         if(canScroll) {
                                             poster_recyclerview.smoothScrollBy(0, (int) (view.getY() - view.getHeight() - getResources().getDimensionPixelOffset(R.dimen.filter_item_vertical_poster_mb)));
                                         }else{
