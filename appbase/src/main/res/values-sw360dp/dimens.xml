@@ -612,4 +612,21 @@
 <dimen name="episode_item_btn_width">29.67dp</dimen>
 <dimen name="episode_item_btn_height">23.33dp</dimen>
 <dimen name="update_left_btn_ml">50.00dp</dimen>
+
+<dimen name="hint_1014">338.00dp</dimen>
+<dimen name="hint_600">200.00dp</dimen>
+<dimen name="hint_674">224.67dp</dimen>
+<dimen name="hint_67">22.33dp</dimen>
+<dimen name="hint_507">169.00dp</dimen>
+<dimen name="hint_123">41.00dp</dimen>
+<dimen name="hint_5">1.67dp</dimen>
+<dimen name="hint_171">57.00dp</dimen>
+<dimen name="hint_75">25.00dp</dimen>
+<dimen name="hint_32">10.67dp</dimen>
+<dimen name="hint_122">40.67dp</dimen>
+<dimen name="hint_83">27.67dp</dimen>
+<dimen name="hint_101">33.67dp</dimen>
+<dimen name="hint_382">127.33dp</dimen>
+<dimen name="hint_63">21.00dp</dimen>
+<dimen name="hint_59">19.67dp</dimen>
 </resources>
