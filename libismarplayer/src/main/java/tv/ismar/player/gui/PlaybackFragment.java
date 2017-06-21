@@ -140,6 +140,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
     private boolean mIsInAdDetail;// 是否在广告详情页
     private boolean mIsClickKefu;// 点击客服中心，返回不应再加载广告
     private int mAdCount;// 广告总倒计时，广告倒计时从3位数变为2位数时，2位数前面添0
+    private boolean isErrorPopUp;// 播放器同时回调多个onError情况
 
     private PlaybackHandler mHandler;
     private boolean backpress=false;
@@ -812,10 +813,15 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
             case ERROR:
                 String errMsg = (String) args;
                 LogUtils.e(TAG, "onError:" + errMsg);
-                if (mIsExiting || isPopWindowShow() || isDetached()) {
+                if (mIsExiting || isDetached() || isErrorPopUp) {
                     return;
                 }
+                removeBufferingLongTime();
+                isErrorPopUp = true;
                 mPlaybackService.addHistory(mCurrentPosition, true);
+                if (isPopWindowShow()) {
+                    popDialog.dismiss();
+                }
                 showPopup(POP_TYPE_PLAYER_ERROR);
                 break;
             case S3DEVICE_VIDEO_SIZE:
@@ -1510,10 +1516,11 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
                                 && (mPlaybackService.getMediaPlayer().getDuration() - mCurrentPosition <= value)) {
                             mCurrentPosition = 0;
                         }
+                        isErrorPopUp = false;
                         closeActivity("source");
                         break;
                     case POP_TYPE_BUFFERING_LONG:
-                        if (mPlaybackService == null || mIsExiting) {
+                        if (mPlaybackService == null || mIsExiting || isErrorPopUp) {
                             return;
                         }
                         if (closePopup) {
@@ -1553,7 +1560,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
                         }
                         break;
                     case POP_TYPE_PLAYER_NET_ERROR:
-                        if (popDialog.isConfirmClick) {
+                        if (popDialog.isConfirmClick && !isErrorPopUp) {
                             Intent intent = new Intent(Settings.ACTION_SETTINGS);
                             startActivity(intent);
                         }
