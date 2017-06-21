@@ -216,6 +216,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
         }
         isPlayExitLayerShow=false;
         if(backpress && mPlaybackService != null){
+            timerStart(0);
             mPlaybackService.startPlayer();
         }
         backpress=false;
@@ -968,6 +969,8 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
 //                        closeActivity("source");
 //                    }
                     backpress = true;
+                    removeBufferingLongTime();
+                    timerStop();
                     mPlaybackService.pausePlayer();
                     goOtherPage(EVENT_PLAY_EXIT);
 //                    return true;
