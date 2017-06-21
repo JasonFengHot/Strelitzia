@@ -56,7 +56,7 @@ public class LogUtils {
         tempMap.put(EventProperty.PAGE, page);
         tempMap.put(EventProperty.LOCATION, location);
         tempMap.put(EventProperty.ORDER, order);
-        tempMap.put(EventProperty.USER_ID, userid);
+        tempMap.put(EventProperty.USERID, userid);
         String eventName = NetworkUtils.VIDEO_EXIT_RECOMMEND;
         HashMap<String, Object> properties = tempMap;
         new NetworkUtils.DataCollectionTask().execute(eventName, properties);

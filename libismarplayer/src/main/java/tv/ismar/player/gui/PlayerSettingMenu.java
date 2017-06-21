@@ -458,11 +458,11 @@ public class PlayerSettingMenu extends PopupWindow implements HorizontalEpisodeL
         String Title = object.getTitle();
         String subItemTitle=object.getSubtitle();
         Log.i("contentMode","title: "+Title+"  subitemTitle: "+subItemTitle);
-        if(contentMode!=null&&contentMode.equals("variety")&&!subItemTitle.equals("")){
-            holder.textView.setVisibility(View.GONE);
-            holder.subitem.setVisibility(View.VISIBLE);
-            holder.subitem.setText(subItemTitle);
-        }else {
+//        if(contentMode!=null&&contentMode.equals("variety")&&!subItemTitle.equals("")){
+//            holder.textView.setVisibility(View.GONE);
+//            holder.subitem.setVisibility(View.VISIBLE);
+//            holder.subitem.setText(subItemTitle);
+//        }else {
             if (Title.contains("第")) {
                 int ind = Title.indexOf("第");
                 Title = Title.substring(ind);
@@ -470,7 +470,7 @@ public class PlayerSettingMenu extends PopupWindow implements HorizontalEpisodeL
             holder.textView.setVisibility(View.VISIBLE);
             holder.subitem.setVisibility(View.GONE);
             holder.textView.setText(Title);
-        }
+//        }
         if(pk==object.getPk()){
             holder.imageView.setVisibility(View.VISIBLE);
         }else{
