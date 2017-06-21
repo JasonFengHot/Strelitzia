@@ -5,6 +5,7 @@ import java.util.List;
 public class Sport {
 
 	private List<SportGame> living;
+	private List<SportGame> highlight;
 
 	public List<SportGame> getLiving() {
 		return living;
@@ -14,4 +15,11 @@ public class Sport {
 		this.living = living;
 	}
 
+	public List<SportGame> getHighlight() {
+		return highlight;
+	}
+
+	public void setHighlight(List<SportGame> highlight) {
+		this.highlight = highlight;
+	}
 }

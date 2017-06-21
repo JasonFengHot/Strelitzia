@@ -353,7 +353,7 @@ public class PlayFinishedActivity extends BaseActivity implements View.OnClickLi
 
     @Override
     public boolean onKey(View v, int keyCode, KeyEvent event) {
-        if(keyCode==19){
+        if(keyCode==19&&playFinishedAdapter!=null){
             if(isVertical){
                 if(focusedPosition==0&&play_finished_vertical_recylerview.getChildAt(0)!=null){
                     play_finished_vertical_recylerview.getChildAt(0).requestFocus();

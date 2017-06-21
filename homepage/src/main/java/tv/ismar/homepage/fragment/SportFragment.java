@@ -345,6 +345,7 @@ public class SportFragment extends ChannelBaseFragment {
                         }
                         games.clear();
                         games.addAll(sport.getLiving());
+                        games.addAll(sport.getHighlight());
                         fillLiveData();
                     }
                 });
