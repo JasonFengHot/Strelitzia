@@ -78,6 +78,7 @@ public class QiyiPlayer extends IsmartvPlayer {
 
     @Override
     public void pause() {
+        super.pause();
         if (isInPlaybackState()) {
             if (mPlayer.isPlaying()) {
                 mPlayer.pause();
@@ -345,6 +346,12 @@ public class QiyiPlayer extends IsmartvPlayer {
                 return;
             }
             mCurrentQuality = bitStreamConvertToQuality(bitStream);
+            setPlayerEventQuality(mCurrentQuality);
+            if (logFirstOpenPlayer) {
+                // 沒有详情页，点击海报后直接进入播放器，第一次进入播放器
+                logPlayerOpenTime = DateUtils.currentTimeMillis();
+                PlayerEvent.videoStart(logPlayerEvent, logSpeed, logPlayerFlag);
+            }
         }
     };
 

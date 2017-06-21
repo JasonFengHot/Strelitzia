@@ -89,6 +89,7 @@ public class DeviceUtils {
             strMacAddr = buffer.toString().toUpperCase();
         } catch (Exception e) {
             e.printStackTrace();
+            strMacAddr="";
         }
 
         return strMacAddr;

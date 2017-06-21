@@ -83,6 +83,8 @@ public class ConnectivityChangeReceiver extends BroadcastReceiver {
         context.startService(intent);
     }
     private void reportIp(Context context){
+        String ip="";
+        String mac="";
         SharedPreferences sharedPreferences= PreferenceManager.getDefaultSharedPreferences(context);
         String sn=sharedPreferences.getString("sn_token","");
         if(sn==null||sn.equals("")){
@@ -90,7 +92,10 @@ public class ConnectivityChangeReceiver extends BroadcastReceiver {
             SkyService skyService = SkyService.ServiceManager.getService();
             String url = "http://weixin.test.tvxio.com/Hibiscus/Hibiscus/uploadclientip";
 //        String url="http://wx.api.tvxio.com/weixin4server/uploadclientip";
-            skyService.weixinIp(url, DeviceUtils.getLocalInetAddress().toString(), sn, Build.MODEL, DeviceUtils.getLocalMacAddress(context)).subscribeOn(Schedulers.io())
+            if(DeviceUtils.getLocalInetAddress()!=null) {
+                ip= DeviceUtils.getLocalInetAddress().toString();
+            }
+            skyService.weixinIp(url,ip, sn, Build.MODEL, DeviceUtils.getLocalMacAddress(context)).subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<ResponseBody>() {
                 @Override
                 public void onCompleted() {

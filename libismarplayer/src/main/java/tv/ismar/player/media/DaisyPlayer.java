@@ -370,10 +370,13 @@ public class DaisyPlayer extends IsmartvPlayer implements SurfaceHelper.SurfaceC
                     break;
                 case SmartPlayer.MEDIA_INFO_BUFFERING_END:
                 case 3:
+                    if (!mSurfaceAttached) {
+                        return false;
+                    }
                     if (onBufferChangedListener != null) {
                         onBufferChangedListener.onBufferEnd();
                     }
-                    if (mSurfaceAttached && logFirstOpenPlayer) {
+                    if (logFirstOpenPlayer) {
                         // 第一次进入播放器缓冲结束
                         logFirstOpenPlayer = false;
                         if (isPlayingAd) {
@@ -564,6 +567,10 @@ public class DaisyPlayer extends IsmartvPlayer implements SurfaceHelper.SurfaceC
         mPlayer =  getSmartPlayerInstance();
         LogUtils.d(TAG,"openVideo");
         if(hasPreload){
+            if (logFirstOpenPlayer) {
+                logPlayerOpenTime = DateUtils.currentTimeMillis();
+                PlayerEvent.videoStart(logPlayerEvent, logSpeed, logPlayerFlag);
+            }
             mPlayer.createPlayer();
             mPlayer.setScreenOnWhilePlaying(true);
             mPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
@@ -633,6 +640,10 @@ public class DaisyPlayer extends IsmartvPlayer implements SurfaceHelper.SurfaceC
                     mPlayer.setDataSource(mediaMeta.getUrls());
                     mPlayer.prepareAsync();
                 } else {
+                    if (logFirstOpenPlayer) {
+                        logPlayerOpenTime = DateUtils.currentTimeMillis();
+                        PlayerEvent.videoStart(logPlayerEvent, logSpeed, logPlayerFlag);
+                    }
                     mPlayer.createPlayer();
                     mPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
                     mPlayer.setScreenOnWhilePlaying(true);

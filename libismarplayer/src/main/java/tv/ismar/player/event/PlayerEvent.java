@@ -404,28 +404,22 @@ public class PlayerEvent {
         String quality = "";
         switch (currQuality) {
             case 0:
-                quality = "low";
-                break;
-            case 1:
-                quality = "adaptive";
-                break;
-            case 2:
                 quality = "normal";
                 break;
-            case 3:
+            case 1:
                 quality = "medium";
                 break;
-            case 4:
+            case 2:
                 quality = "high";
                 break;
-            case 5:
+            case 3:
                 quality = "ultra";
                 break;
-            case 6:
+            case 4:
                 quality = "blueray";
                 break;
-            case 7:
-                quality = "4k";
+            case 5:
+                quality = "_4k";
                 break;
         }
         return quality;
