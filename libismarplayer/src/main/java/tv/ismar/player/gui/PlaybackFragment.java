@@ -268,7 +268,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
         }
         if (mPlaybackService != null) {
             mPlaybackService.setCallback(null);
-            if (!mPlaybackService.isPlayingAd()) {
+            if (!mPlaybackService.isPlayingAd() && !isPlayExitLayerShow && mCurrentPosition > 0) {
                 mPlaybackService.addHistory(mCurrentPosition, false);// 在非按返回键退出应用时需添加历史记录，此时无需发送至服务器，addHistory不能统一写到此处
             }
         }
@@ -819,7 +819,9 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
                 }
                 removeBufferingLongTime();
                 isErrorPopUp = true;
-                mPlaybackService.addHistory(mCurrentPosition, true);
+                if (mCurrentPosition > 0) {
+                    mPlaybackService.addHistory(mCurrentPosition, true);
+                }
                 if (isPopWindowShow()) {
                     popDialog.dismiss();
                 }
