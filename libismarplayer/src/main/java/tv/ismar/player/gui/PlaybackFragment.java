@@ -285,6 +285,11 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
             popDialog.dismiss();
             popDialog = null;
         }
+        if(settingMenu!=null){
+            settingMenu.dismiss();
+            settingMenu.removeAllMsg();
+            settingMenu=null;
+        }
         mClient.disconnect();
 
     }
