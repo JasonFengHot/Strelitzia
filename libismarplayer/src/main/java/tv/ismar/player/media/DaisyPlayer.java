@@ -370,10 +370,13 @@ public class DaisyPlayer extends IsmartvPlayer implements SurfaceHelper.SurfaceC
                     break;
                 case SmartPlayer.MEDIA_INFO_BUFFERING_END:
                 case 3:
+                    if (!mSurfaceAttached) {
+                        return false;
+                    }
                     if (onBufferChangedListener != null) {
                         onBufferChangedListener.onBufferEnd();
                     }
-                    if (mSurfaceAttached && logFirstOpenPlayer) {
+                    if (logFirstOpenPlayer) {
                         // 第一次进入播放器缓冲结束
                         logFirstOpenPlayer = false;
                         if (isPlayingAd) {

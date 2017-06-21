@@ -571,6 +571,10 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
         hlsPlayer.setOnAdvertisementListener(onAdvertisementListener);
         hlsPlayer.setOnBufferChangedListener(onBufferChangedListener);
         hlsPlayer.setOnStateChangedListener(onStateChangedListener);
+        // 日志上报用到变量
+        int clipPk = mItemEntity.getClip() == null ? 0 : mItemEntity.getClip().getPk();
+        hlsPlayer.setPlayerEvent(username, mItemEntity.getTitle(), clipPk,
+                BaseActivity.baseChannel, BaseActivity.baseSection, source);
         LogUtils.i(TAG, "createPlayer 2 : " + mIsPreload);
         mPreloadMediaSource = new MediaEntity(itemPk, subItemPk, mItemEntity.getLiveVideo(), mClipEntity);
         if (adList != null && !adList.isEmpty()) {
@@ -763,10 +767,6 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
                 if (serviceCallback != null) {
                     serviceCallback.updatePlayerStatus(PlayerStatus.START, null);
                 }
-                // 日志上报用到变量
-                int clipPk = mItemEntity.getClip() == null ? 0 : mItemEntity.getClip().getPk();
-                hlsPlayer.setPlayerEvent(username, mItemEntity.getTitle(), clipPk,
-                        BaseActivity.baseChannel, BaseActivity.baseSection, source, mCurrentQuality);
             }
             if (!mIsPlayingAd) {
                 if (serviceCallback != null) {

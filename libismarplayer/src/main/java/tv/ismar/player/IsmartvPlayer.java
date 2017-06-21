@@ -111,6 +111,12 @@ public abstract class IsmartvPlayer implements IPlayer {
                 if (!hasPreload) {
                     preloadMediaMeta = bestvUserInit();
                 }
+                setPlayerEventQuality(mCurrentQuality);
+                if (logFirstOpenPlayer) {
+                    // 沒有详情页，点击海报后直接进入播放器，第一次进入播放器
+                    logPlayerOpenTime = DateUtils.currentTimeMillis();
+                    PlayerEvent.videoStart(logPlayerEvent, logSpeed, logPlayerFlag);
+                }
                 if (preloadMediaMeta != null) {
                     createPlayer(preloadMediaMeta, hasPreload);
                 }
@@ -123,7 +129,7 @@ public abstract class IsmartvPlayer implements IPlayer {
                 logPlayerFlag = "qiyi";
                 if (isQiyiSdkInit) {
                     createPlayer(qiyiUserInit());
-                    return;
+                    break;
                 }
                 if (TextUtils.isEmpty(versionCode) || TextUtils.isEmpty(snToken) || TextUtils.isEmpty(modelName)) {
                     throw new IllegalArgumentException("versionCode or snToken or modelName null.");
@@ -158,12 +164,6 @@ public abstract class IsmartvPlayer implements IPlayer {
                 break;
         }
 
-        if (mSurfaceAttached && logFirstOpenPlayer) {
-            // 沒有详情页，点击海报后直接进入播放器，第一次进入播放器
-            logPlayerOpenTime = DateUtils.currentTimeMillis();
-            PlayerEvent.videoStart(logPlayerEvent, logSpeed, logPlayerFlag);
-        }
-
     }
 
     protected abstract boolean isInPlaybackState();
@@ -194,8 +194,6 @@ public abstract class IsmartvPlayer implements IPlayer {
         if (mSurfaceAttached && logFirstOpenPlayer) {
             // 从详情页，点击播放按钮
             logFirstOpenPlayer = false;
-            logPlayerOpenTime = DateUtils.currentTimeMillis();
-            PlayerEvent.videoStart(logPlayerEvent, logSpeed, logPlayerFlag);
         }
         if (isInPlaybackState() && !isPlaying()) {
             if (mCurrentState == STATE_PAUSED) {
@@ -643,13 +641,16 @@ public abstract class IsmartvPlayer implements IPlayer {
     }
 
     // 在播放器的 onStarted中调用一次
-    public void setPlayerEvent(String username, String title, int clipPk, String channel, String section, String source, ClipEntity.Quality quality) {
+    public void setPlayerEvent(String username, String title, int clipPk, String channel, String section, String source) {
         logPlayerEvent.username = username;
         logPlayerEvent.title = title;
         logPlayerEvent.clipPk = clipPk;
         logPlayerEvent.channel = channel;
         logPlayerEvent.section = section;
         logPlayerEvent.source = source;
+    }
+
+    protected void setPlayerEventQuality(ClipEntity.Quality quality) {
         logPlayerEvent.quality = qualityToInt(quality);
     }
 
