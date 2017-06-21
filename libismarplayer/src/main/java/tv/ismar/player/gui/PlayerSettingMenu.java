@@ -109,6 +109,9 @@ public class PlayerSettingMenu extends PopupWindow implements HorizontalEpisodeL
         episode_hide= AnimationUtils.loadAnimation(mContext,R.anim.episode_hide);
         
     }
+    public void removeAllMsg(){
+        menuHandler.removeCallbacksAndMessages(null);
+    }
     private void showEpisode(){
         list.setOnItemActionListener(this);
         list.addDatas(itemEntities);
@@ -462,9 +465,9 @@ public class PlayerSettingMenu extends PopupWindow implements HorizontalEpisodeL
 //            holder.subitem.setVisibility(View.VISIBLE);
 //            holder.subitem.setText(subItemTitle);
 //        }else {
-            if (Title.contains("集")) {
-                int ind = Title.indexOf("集");
-                Title = Title.substring(ind-2);
+            if (Title.contains("第")) {
+                int ind = Title.lastIndexOf("第");
+                Title = Title.substring(ind);
             }
         Log.i("contentMode","title: "+Title+"  subitemTitle: "+subItemTitle);
 
