@@ -112,11 +112,6 @@ public abstract class IsmartvPlayer implements IPlayer {
                     preloadMediaMeta = bestvUserInit();
                 }
                 setPlayerEventQuality(mCurrentQuality);
-                if (logFirstOpenPlayer) {
-                    // 沒有详情页，点击海报后直接进入播放器，第一次进入播放器
-                    logPlayerOpenTime = DateUtils.currentTimeMillis();
-                    PlayerEvent.videoStart(logPlayerEvent, logSpeed, logPlayerFlag);
-                }
                 if (preloadMediaMeta != null) {
                     createPlayer(preloadMediaMeta, hasPreload);
                 }

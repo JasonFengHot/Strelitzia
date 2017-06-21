@@ -567,6 +567,10 @@ public class DaisyPlayer extends IsmartvPlayer implements SurfaceHelper.SurfaceC
         mPlayer =  getSmartPlayerInstance();
         LogUtils.d(TAG,"openVideo");
         if(hasPreload){
+            if (logFirstOpenPlayer) {
+                logPlayerOpenTime = DateUtils.currentTimeMillis();
+                PlayerEvent.videoStart(logPlayerEvent, logSpeed, logPlayerFlag);
+            }
             mPlayer.createPlayer();
             mPlayer.setScreenOnWhilePlaying(true);
             mPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
@@ -636,6 +640,10 @@ public class DaisyPlayer extends IsmartvPlayer implements SurfaceHelper.SurfaceC
                     mPlayer.setDataSource(mediaMeta.getUrls());
                     mPlayer.prepareAsync();
                 } else {
+                    if (logFirstOpenPlayer) {
+                        logPlayerOpenTime = DateUtils.currentTimeMillis();
+                        PlayerEvent.videoStart(logPlayerEvent, logSpeed, logPlayerFlag);
+                    }
                     mPlayer.createPlayer();
                     mPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
                     mPlayer.setScreenOnWhilePlaying(true);
