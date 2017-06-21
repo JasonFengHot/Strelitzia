@@ -46,6 +46,7 @@ public class EventProperty {
     public final static String SD_SIZE = "sd_size";
     public final static String SD_FREE_SIZE = "sd_free_size";
     public final static String USERID = "userid";
+    public final static String USER_ID = "user_id";
     public final static String PROVINCE = "provice";
     public final static String CITY = "city";
     public final static String ISP = "isp";
