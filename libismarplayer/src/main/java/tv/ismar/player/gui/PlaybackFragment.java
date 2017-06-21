@@ -216,8 +216,9 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
         }
         isPlayExitLayerShow=false;
         if(backpress && mPlaybackService != null){
-            timerStart(0);
             mPlaybackService.startPlayer();
+            showBuffer(null);
+            timerStart(0);
         }
         backpress=false;
     }
@@ -1458,7 +1459,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
     }
 
     private void showPopup(final byte popType) {
-        if (mIsExiting || isPopWindowShow() || isDetached()) {
+        if (mIsExiting || isPopWindowShow() || isDetached()||isPlayExitLayerShow) {
             return;
         }
         popShowType = popType;

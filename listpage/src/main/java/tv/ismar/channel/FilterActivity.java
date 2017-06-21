@@ -95,6 +95,7 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
         filter_tab = (Button) findViewById(R.id.filter_tab);
         filter_checked_conditiion = (LinearLayout) findViewById(R.id.filter_checked_conditiion);
         poster_recyclerview = (MyRecyclerView) findViewById(R.id.poster_recyclerview);
+        poster_recyclerview.setHasFixedSize(true);
         filter_condition_layout = View.inflate(this, R.layout.filter_condition_layout,null);
         filter_conditions = (LinearLayout)filter_condition_layout.findViewById(R.id.filter_conditions);
         filter_arrow_up = findView(R.id.filter_arrow_up);
