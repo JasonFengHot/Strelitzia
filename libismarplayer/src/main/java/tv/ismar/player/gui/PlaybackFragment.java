@@ -1015,7 +1015,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
                 if (isMenuShow() || isPopWindowShow() || mPlaybackService.isPlayingAd() || mPlaybackService.getItemEntity().getLiveVideo()) {
                     return true;
                 }
-                if (!mPlaybackService.getMediaPlayer().isPlaying()) {
+                if (!mPlaybackService.getMediaPlayer().isPlaying()&&!isPlayExitLayerShow) {
                     mIsOnPaused = false;
                     mPlaybackService.getMediaPlayer().start();
                     hidePanel();
@@ -1172,6 +1172,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
             }
         } else {
             mIsOnPaused = false;
+            if(!isPlayExitLayerShow)
             mPlaybackService.startPlayer();
         }
     }
@@ -1892,7 +1893,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
         @Override
         public void onReceive(Context context, Intent intent) {
             BaseActivity baseActivity = ((BaseActivity) getActivity());
-            if (baseActivity == null || mPlaybackService == null || mIsExiting) {
+            if (baseActivity == null || mPlaybackService == null || mIsExiting||isPlayExitLayerShow) {
                 return;
             }
             if (mPlaybackService.getMediaPlayer() != null) {
