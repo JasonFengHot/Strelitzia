@@ -1446,7 +1446,11 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
                         }
                     });
         }
-        advertisement.getRepostAdUrl(playIndex,"startAd");
+        Log.i("AdverstimentId",launchAds.get(index).media_id+"   =id");
+        if(launchAds.get(index).media_id!=null) {
+            int media_id = Integer.parseInt(launchAds.get(index).media_id);
+            advertisement.getRepostAdUrl(media_id, "startAd");
+        }
 
     }
 
