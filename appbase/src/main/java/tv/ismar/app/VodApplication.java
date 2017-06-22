@@ -12,6 +12,7 @@ import android.support.multidex.MultiDex;
 import android.util.DisplayMetrics;
 import android.util.Log;
 
+import com.blankj.utilcode.utils.StringUtils;
 import com.ismartv.lion.custom.ICallLog;
 import com.ismartv.lion.custom.Parse;
 import com.orhanobut.logger.LogLevel;
@@ -113,7 +114,7 @@ public class VodApplication extends Application {
                 .setFontAttrId(R.attr.fontPath)
                 .build()
         );
-        if (NetworkUtils.isConnected(this)) {
+        if (NetworkUtils.isConnected(this) && !StringUtils.isEmpty(AccountSharedPrefs.device_token)) {
             new Thread(new InitializeProcess(this)).start();
         }
         BaseActivity.wasLoadSmartPlayerSo = false;
