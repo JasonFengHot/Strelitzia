@@ -770,12 +770,17 @@ public class HistoryFragment extends Fragment implements ScrollableSectionList.O
 		} else if (i == R.id.recommend_gridview) {
 			boolean[] isSubItem = new boolean[1];
 			int pk=SimpleRestClient.getItemId(tvHome.getObjects().get(position).getItem_url(),isSubItem);
+			String contentMode=tvHome.getObjects().get(position).getContent_model();
 			PageIntent intent=new PageIntent();
-			if (tvHome.getObjects().get(position).isIs_complex()) {
-				intent.toDetailPage(getActivity(),"tvhome",pk);
-			} else {
-			//	intent.toPlayPage(getActivity(),pk,0, Source.HISTORY);
-				intent.toPlayPageEpisode(getActivity(),pk,0, Source.HISTORY,tvHome.getObjects().get(position).getContent_model());
+			if(contentMode!=null&&contentMode.contains("gather")) {
+				intent.toSubject(getActivity(), contentMode, pk, tvHome.getObjects().get(position).getTitle(), "tvhome", "");
+			}else {
+				if (tvHome.getObjects().get(position).isIs_complex()) {
+					intent.toDetailPage(getActivity(), "tvhome", pk);
+				} else {
+					//	intent.toPlayPage(getActivity(),pk,0, Source.HISTORY);
+					intent.toPlayPageEpisode(getActivity(), pk, 0, Source.HISTORY, tvHome.getObjects().get(position).getContent_model());
+				}
 			}
 			mDataCollectionProperties = new HashMap<String, Object>();
 			mDataCollectionProperties.put("to_title",tvHome.getObjects().get(position).getTitle());
