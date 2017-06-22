@@ -779,21 +779,21 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
                                 ItemEntity nextItem = subItems[i + 1];
                                 if (nextItem != null && nextItem.getClip() != null) {
                                     mPlaybackService.logVideoExit(mCurrentPosition, "next");
-                                    // 菜单栏剧集切换
-                                  //  createMenu();
-                                  //  PlayerMenuItem menuItem = playerMenu.findItem(mPlaybackService.getSubItemPk());
-//                                    if (menuItem != null) {
-//                                        menuItem.selected = false;
-//                                    }
+
+                                    ItemEntity.Clip clip = nextItem.getClip();
                                     mPlaybackService.getItemEntity().setTitle(nextItem.getTitle());
-                                    mPlaybackService.getItemEntity().setClip(nextItem.getClip());
-//                                    PlayerMenuItem nextMenuItem = playerMenu.findItem(mPlaybackService.getSubItemPk());
-//                                    if (nextMenuItem != null) {
-//                                        nextMenuItem.selected = true;
-//                                    }
-                                    mPlaybackService.stopPlayer(false);
+                                    mPlaybackService.getItemEntity().setClip(clip);
+                                    player_logo_image.setVisibility(View.GONE);
+
+                                    mPlaybackService.stopPlayer(true);
+                                    player_surface.setVisibility(View.GONE);
+                                    player_container.setVisibility(View.GONE);
+                                    player_container.removeAllViews();
+                                    mPlaybackService.setSurfaceView(player_surface);
+                                    mPlaybackService.setQiyiContainer(player_container);
                                     showBuffer(PlAYSTART + mPlaybackService.getItemEntity().getTitle());
-                                    mPlaybackService.switchTelevision(mCurrentPosition, nextItem.getPk(), nextItem.getClip().getUrl());
+                                    updateTitle(nextItem.getTitle());
+                                    mPlaybackService.switchTelevision(mCurrentPosition, nextItem.getPk(), clip.getUrl());
                                     mCurrentPosition = 0;
                                     return;
                                 }
@@ -1105,7 +1105,13 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
                         mPlaybackService.getItemEntity().setClip(clip);
                         player_logo_image.setVisibility(View.GONE);
 
-                        mPlaybackService.stopPlayer(false);// 此处不能设置为true
+                        mPlaybackService.stopPlayer(true);
+                        player_surface.setVisibility(View.GONE);
+                        player_container.setVisibility(View.GONE);
+                        player_container.removeAllViews();
+                        mPlaybackService.setSurfaceView(player_surface);
+                        mPlaybackService.setQiyiContainer(player_container);
+                        player_shadow.setVisibility(View.VISIBLE);
                         showBuffer(PlAYSTART + mPlaybackService.getItemEntity().getTitle());
                         updateTitle(subItemDelay.getTitle());
                         mPlaybackService.switchTelevision(mCurrentPosition, subItemDelay.getPk(), clip.getUrl());
@@ -1607,6 +1613,9 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
             if (animationDrawable != null && !animationDrawable.isRunning()) {
                 animationDrawable.start();
             }
+        }
+        if (mPlaybackService != null && mPlaybackService.getMediaPlayer() != null) {
+            mPlaybackService.getMediaPlayer().setLogBufferStartTime();
         }
         // 显示buffer,就需要发送50延时消息，显示加载时间过长
         if (mHandler.hasMessages(MSG_SHOW_BUFFERING_LONG)) {

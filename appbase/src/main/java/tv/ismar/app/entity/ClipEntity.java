@@ -1,7 +1,5 @@
 package tv.ismar.app.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.gson.annotations.SerializedName;
 
 /**
@@ -85,7 +83,6 @@ public class ClipEntity {
      * 4K
      */
     @SerializedName("4k")
-    @JsonProperty("4k")
     private String _4k;
     /**
      * 爱奇艺

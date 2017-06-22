@@ -623,11 +623,16 @@ public class FavoriteFragment extends Fragment implements ScrollableSectionList.
 			boolean[] isSubItem = new boolean[1];
 			int pk=SimpleRestClient.getItemId(tvHome.getObjects().get(position).getItem_url(),isSubItem);
 			PageIntent intent=new PageIntent();
-			if (tvHome.getObjects().get(position).isIs_complex()) {
-				intent.toDetailPage(getActivity(),"tvhome",pk);
-			} else {
+			String contentMode=tvHome.getObjects().get(position).getContent_model();
+			if(contentMode!=null&&contentMode.contains("gather")){
+				intent.toSubject(getActivity(),contentMode,pk,tvHome.getObjects().get(position).getTitle(),"favorite","");
+			}else {
+				if (tvHome.getObjects().get(position).isIs_complex()) {
+					intent.toDetailPage(getActivity(),"tvhome",pk);
+				} else {
 //				intent.toPlayPage(getActivity(),pk,0, Source.FAVORITE);
-				intent.toPlayPageEpisode(getActivity(),pk,0, Source.FAVORITE,tvHome.getObjects().get(position).getContent_model());
+					intent.toPlayPageEpisode(getActivity(),pk,0, Source.FAVORITE,tvHome.getObjects().get(position).getContent_model());
+				}
 			}
 			mDataCollectionProperties = new HashMap<String, Object>();
 			mDataCollectionProperties.put("to_title",tvHome.getObjects().get(position).getTitle());

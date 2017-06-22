@@ -1,6 +1,6 @@
 package tv.ismar.library.downloader.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.gson.annotations.SerializedName;
 
 import tv.ismar.library.injectdb.Model;
 import tv.ismar.library.injectdb.annotation.Column;
@@ -16,7 +16,7 @@ public class DownloadTable extends Model {
     public static final String DOWNLOAD_PATH = "download_path";
 
     @Column
-    @JsonProperty("hello")
+    @SerializedName("hello")
     public String file_name;
 
     @Column
