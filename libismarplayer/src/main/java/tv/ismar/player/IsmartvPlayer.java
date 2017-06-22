@@ -649,5 +649,10 @@ public abstract class IsmartvPlayer implements IPlayer {
         logPlayerEvent.quality = qualityToInt(quality);
     }
 
+    // 显示buffer就重置bufferStart时间
+    public void setLogBufferStartTime() {
+        logBufferStartTime = DateUtils.currentTimeMillis();
+    }
+
 
 }

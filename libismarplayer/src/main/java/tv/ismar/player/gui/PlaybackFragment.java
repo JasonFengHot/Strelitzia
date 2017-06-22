@@ -1105,7 +1105,13 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
                         mPlaybackService.getItemEntity().setClip(clip);
                         player_logo_image.setVisibility(View.GONE);
 
-                        mPlaybackService.stopPlayer(false);// 此处不能设置为true
+                        mPlaybackService.stopPlayer(true);
+                        player_surface.setVisibility(View.GONE);
+                        player_container.setVisibility(View.GONE);
+                        player_container.removeAllViews();
+                        mPlaybackService.setSurfaceView(player_surface);
+                        mPlaybackService.setQiyiContainer(player_container);
+                        player_shadow.setVisibility(View.VISIBLE);
                         showBuffer(PlAYSTART + mPlaybackService.getItemEntity().getTitle());
                         updateTitle(subItemDelay.getTitle());
                         mPlaybackService.switchTelevision(mCurrentPosition, subItemDelay.getPk(), clip.getUrl());
@@ -1606,6 +1612,9 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
             if (animationDrawable != null && !animationDrawable.isRunning()) {
                 animationDrawable.start();
             }
+        }
+        if (mPlaybackService != null && mPlaybackService.getMediaPlayer() != null) {
+            mPlaybackService.getMediaPlayer().setLogBufferStartTime();
         }
         // 显示buffer,就需要发送50延时消息，显示加载时间过长
         if (mHandler.hasMessages(MSG_SHOW_BUFFERING_LONG)) {
