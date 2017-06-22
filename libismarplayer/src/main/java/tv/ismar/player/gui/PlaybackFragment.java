@@ -264,6 +264,9 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
 //            mounted = false;
 //            return;
 //        }
+        if (adImageDialog != null && adImageDialog.isShowing()) {
+            adImageDialog.dismiss();
+        }
         if (mPlaybackService != null && !mPlaybackService.isPlayerStopping()&&!backpress) {
             mPlaybackService.stopPlayer(true);
         }
