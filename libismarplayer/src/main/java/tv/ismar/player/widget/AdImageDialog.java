@@ -97,8 +97,8 @@ public class AdImageDialog extends Dialog {
                 @Override
                 public void run() {
                     if (imageView != null && button != null) {
-                        advertisement.getRepostAdUrl(mCurrentAdIndex,"zangtingAd");
                         AdElementEntity element = mAdvEntityList.get(mCurrentAdIndex);
+                        advertisement.getRepostAdUrl(element.getMedia_id(),"zangtingAd");
                         PlayerEvent.pause_ad_download(element.getTitle(), element.getMedia_id(), element.getMedia_url(), "bestv");
                         button.setVisibility(View.INVISIBLE);
                         Picasso.with(mContext).load(element.getMedia_url())

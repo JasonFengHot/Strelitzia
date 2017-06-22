@@ -13,6 +13,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.blankj.utilcode.utils.StringUtils;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -23,6 +25,8 @@ import tv.ismar.account.IsmartvActivator;
 import tv.ismar.app.AppConstant;
 import tv.ismar.app.BaseActivity;
 import tv.ismar.app.core.DaisyUtils;
+import tv.ismar.app.core.InitializeProcess;
+import tv.ismar.app.core.preferences.AccountSharedPrefs;
 import tv.ismar.app.entity.Favorite;
 import tv.ismar.app.entity.History;
 import tv.ismar.app.entity.Item;
@@ -110,6 +114,9 @@ public class UserCenterActivity extends BaseActivity implements LoginFragment.Lo
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_usercenter);
+        if(!InitializeProcess.flag){
+            new Thread(new InitializeProcess(this)).start();
+        }
         IsmartvActivator.getInstance().addAccountChangeListener(this);
         addHeader();
         initViews();
