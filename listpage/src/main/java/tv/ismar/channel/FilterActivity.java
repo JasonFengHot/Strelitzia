@@ -330,6 +330,7 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                         filterPosterAdapter.setItemClickListener(new OnItemClickListener() {
                             @Override
                             public void onItemClick(View view, int position) {
+                                baseSection="";
                                 PageIntent intent = new PageIntent();
                                 Item item=itemList.objects.get(position);
                                 if(item.content_model.contains("gather")){
@@ -465,4 +466,9 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
 
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        baseSection="";
+    }
 }
