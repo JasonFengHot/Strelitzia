@@ -264,7 +264,7 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
             }
         });
         filterPopup.setBackgroundDrawable(getResources().getDrawable(R.drawable.transparent));
-        filterPopup.showAtLocation(filter_condition_layout, Gravity.NO_GRAVITY, 0, getResources().getDimensionPixelOffset(R.dimen.filter_condition_popup_position));
+        filterPopup.showAtLocation(getRootView(), Gravity.NO_GRAVITY, 0, getResources().getDimensionPixelOffset(R.dimen.filter_condition_popup_position));
         Message msg = new Message();
         msg.arg1 = -1;
         ((FilterConditionGroupView) filter_conditions.getChildAt(0)).handler.sendMessage(msg);
@@ -330,6 +330,7 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                         filterPosterAdapter.setItemClickListener(new OnItemClickListener() {
                             @Override
                             public void onItemClick(View view, int position) {
+                                baseSection="";
                                 PageIntent intent = new PageIntent();
                                 Item item=itemList.objects.get(position);
                                 if(item.content_model.contains("gather")){
@@ -465,4 +466,9 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
 
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        baseSection="";
+    }
 }
