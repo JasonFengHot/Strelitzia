@@ -323,6 +323,7 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
 
         Log.i("LH/", "homepageOnCreate:" + TrueTime.now().getTime());
         BaseActivity.wasLoadSmartPlayerSo = false;// 退出应用再进入时可能需要切换播放器模式
+        if(!StringUtils.isEmpty(AccountSharedPrefs.device_token))
         startTrueTimeService();
         contentView = LayoutInflater.from(this).inflate(R.layout.activity_tv_guide, null);
         setContentView(contentView);

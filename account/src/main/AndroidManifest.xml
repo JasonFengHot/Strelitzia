@@ -3,7 +3,11 @@
 
     <application
         >
-        <service android:name=".ActiveService"/>
+        <service android:name=".ActiveService">
+            <intent-filter>
+                <action android:name="tv.ismar.daisy.initservice" />
+            </intent-filter>
+            </service>
     </application>
 
 </manifest>
