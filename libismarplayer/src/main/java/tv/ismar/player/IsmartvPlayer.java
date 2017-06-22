@@ -186,10 +186,6 @@ public abstract class IsmartvPlayer implements IPlayer {
 
     @Override
     public void start() {
-        if (mSurfaceAttached && logFirstOpenPlayer) {
-            // 从详情页，点击播放按钮
-            logFirstOpenPlayer = false;
-        }
         if (isInPlaybackState() && !isPlaying()) {
             if (mCurrentState == STATE_PAUSED) {
                 PlayerEvent.videoPlayContinue(logPlayerEvent, logSpeed, getCurrentPosition(), logPlayerFlag);
