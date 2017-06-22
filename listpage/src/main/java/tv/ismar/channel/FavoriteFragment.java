@@ -622,14 +622,12 @@ public class FavoriteFragment extends Fragment implements ScrollableSectionList.
 		} else if (i == R.id.recommend_gridview) {
 			boolean[] isSubItem = new boolean[1];
 			int pk=SimpleRestClient.getItemId(tvHome.getObjects().get(position).getItem_url(),isSubItem);
-			Item item = mHGridAdapter.getItem(position);
 			PageIntent intent=new PageIntent();
 			if (tvHome.getObjects().get(position).isIs_complex()) {
 				intent.toDetailPage(getActivity(),"tvhome",pk);
 			} else {
 //				intent.toPlayPage(getActivity(),pk,0, Source.FAVORITE);
-				Log.i("contentmode",item.content_model+"");
-				intent.toPlayPageEpisode(getActivity(),pk,0, Source.FAVORITE,item.content_model);
+				intent.toPlayPageEpisode(getActivity(),pk,0, Source.FAVORITE,tvHome.getObjects().get(position).getContent_model());
 			}
 			mDataCollectionProperties = new HashMap<String, Object>();
 			mDataCollectionProperties.put("to_title",tvHome.getObjects().get(position).getTitle());
