@@ -912,6 +912,9 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
         if (mPlaybackService == null || mPlaybackService.getMediaPlayer() == null || !mPlaybackService.isPlayerPrepared()) {
             if (keyCode == KeyEvent.KEYCODE_BACK) {
                 backpress = true;
+                if (mPlaybackService != null && mPlaybackService.getMediaPlayer() != null) {
+                    mPlaybackService.stopPlayer(true);
+                }
                 getActivity().finish();
             }
             return true;
