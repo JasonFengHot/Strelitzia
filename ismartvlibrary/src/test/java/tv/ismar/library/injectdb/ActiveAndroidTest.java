@@ -2,6 +2,8 @@ package tv.ismar.library.injectdb;
 
 import android.util.Log;
 
+import com.google.gson.Gson;
+
 import junit.framework.Assert;
 
 import org.junit.After;
@@ -19,7 +21,6 @@ import tv.ismar.library.BuildConfig;
 import tv.ismar.library.injectdb.query.Delete;
 import tv.ismar.library.injectdb.query.Select;
 import tv.ismar.library.injectdb.query.Update;
-import tv.ismar.library.util.JacksonUtils;
 
 /**
  * Created by LongHai on 17-4-14.
@@ -76,7 +77,7 @@ public class ActiveAndroidTest {
         // 查询
         List<AccountDao> selectDao = new Select().from(AccountDao.class)
                 .execute();
-        Log.i(TAG, "Query:\n" + JacksonUtils.toJson(selectDao));
+        Log.i(TAG, "Query:\n" + new Gson().toJson(selectDao));
         AccountDao selectSingle = new Select().from(AccountDao.class)
                 .where("username=?", "zhangsan")
                 .executeSingle();
@@ -88,23 +89,23 @@ public class ActiveAndroidTest {
                 .execute();
         List<AccountDao> deleteDao = new Select().from(AccountDao.class)
                 .execute();
-        Log.i(TAG, "DeleteQuery:\n" + JacksonUtils.toJson(deleteDao));
+        Log.i(TAG, "DeleteQuery:\n" + new Gson().toJson(deleteDao));
 
         new Update(AccountDao.class)
                 .set("username='Example LongHai'").where("username='Example 5'").execute();
         List<AccountDao> updateDao = new Select().from(AccountDao.class)
                 .execute();
-        Log.i(TAG, "UpdateQuery:\n" + JacksonUtils.toJson(updateDao));
+        Log.i(TAG, "UpdateQuery:\n" + new Gson().toJson(updateDao));
 
         selectSingle.password = "pwd zhangsan";
         selectSingle.save();
         List<AccountDao> saveSingleDao = new Select().from(AccountDao.class)
                 .execute();
-        Log.i(TAG, "SaveSingleQuery:\n" + JacksonUtils.toJson(saveSingleDao));
+        Log.i(TAG, "SaveSingleQuery:\n" + new Gson().toJson(saveSingleDao));
         selectSingle.delete();
         List<AccountDao> deleteSingleDao = new Select().from(AccountDao.class)
                 .execute();
-        Log.i(TAG, "DeleteSingleDao:\n" + JacksonUtils.toJson(deleteSingleDao));
+        Log.i(TAG, "DeleteSingleDao:\n" + new Gson().toJson(deleteSingleDao));
 
     }
 

@@ -1,6 +1,6 @@
 package tv.ismar.library.injectdb;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.gson.annotations.SerializedName;
 
 import tv.ismar.library.injectdb.annotation.Column;
 import tv.ismar.library.injectdb.annotation.Table;
@@ -13,7 +13,7 @@ import tv.ismar.library.injectdb.annotation.Table;
 public class AccountDao extends Model {
 
     @Column(unique = true, onUniqueConflict = Column.ConflictAction.IGNORE)
-    @JsonProperty("account")
+    @SerializedName("account")
     public String username;
 
     @Column

@@ -3,14 +3,23 @@ package tv.ismar.library.network;
 import android.content.Context;
 import android.net.Uri;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParseException;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Map;
+import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
 import javax.net.ssl.SSLContext;
@@ -28,7 +37,7 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
-import retrofit2.converter.jackson.JacksonConverterFactory;
+import retrofit2.converter.gson.GsonConverterFactory;
 import tv.ismar.library.exception.ParameterException;
 import tv.ismar.library.util.StringUtils;
 
@@ -106,11 +115,25 @@ public class HttpManager {
     }
 
     private static Retrofit getRetrofit(String baseUrl) {
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(Date.class, new JsonDeserializer<Date>(){
+                    @Override
+                    public Date deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
+                        String date = jsonElement.getAsString();
+                        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                        formatter.setTimeZone(TimeZone.getTimeZone("Asia/Shanghai"));
+                        try {
+                            return formatter.parse(date);
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                            return null;
+                        }
+                    }
+                })
+                .create();
         return new Retrofit.Builder()
                 .baseUrl(appendProtocol(baseUrl))
-                .addConverterFactory(JacksonConverterFactory.create(objectMapper))
+                .addConverterFactory(GsonConverterFactory.create(gson))
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .client(getInstance().okHttpClient)
                 .build();
