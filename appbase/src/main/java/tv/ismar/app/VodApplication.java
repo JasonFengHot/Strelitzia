@@ -24,6 +24,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -37,6 +38,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import cn.ismartv.injectdb.library.ActiveAndroid;
 import cn.ismartv.injectdb.library.app.Application;
 import cn.ismartv.truetime.TrueTime;
+import okhttp3.Cache;
 import okhttp3.OkHttpClient;
 import okhttp3.ResponseBody;
 import rx.Observer;
@@ -159,8 +161,11 @@ public class VodApplication extends Application {
     }
 
     private void initPicasso(){
+        File cacheFile = new File(getCacheDir(), "picasso_cache");
+        Cache cache = new Cache(cacheFile, 1024 * 1024 * 100); //100Mb
         OkHttpClient client = new OkHttpClient.Builder()
                 .addInterceptor(new UserAgentInterceptor())
+                .cache(cache)
                 .build();
 
         ExecutorService executorService = Executors.newSingleThreadExecutor();
