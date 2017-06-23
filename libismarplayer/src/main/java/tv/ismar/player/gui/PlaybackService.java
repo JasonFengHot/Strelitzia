@@ -744,6 +744,7 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
     private IPlayer.OnStateChangedListener onStateChangedListener = new IPlayer.OnStateChangedListener() {
         @Override
         public void onPrepared() {
+            LogUtils.d(TAG, "onPrepared");
             if (hlsPlayer == null) {
                 LogUtils.e(TAG, "Called onPrepared but player is null");
                 return;
@@ -756,6 +757,7 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
 
         @Override
         public void onStarted() {
+            LogUtils.d(TAG, "onStarted : " + mIsPlayerOnStarted);
             if (hlsPlayer == null) {
                 LogUtils.e(TAG, "Called onStarted but player is null");
                 return;
@@ -777,6 +779,7 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
 
         @Override
         public void onPaused() {
+            LogUtils.d(TAG, "onPaused");
             if (hlsPlayer == null) {
                 return;
             }
@@ -787,6 +790,7 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
 
         @Override
         public void onSeekCompleted() {
+            LogUtils.d(TAG, "onSeekCompleted");
             if (hlsPlayer == null) {
                 return;
             }
@@ -797,6 +801,7 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
 
         @Override
         public void onCompleted() {
+            LogUtils.d(TAG, "onCompleted");
             if (hlsPlayer == null) {
                 return;
             }

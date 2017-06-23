@@ -271,7 +271,6 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
             mPlaybackService.stopPlayer(true);
         }
         if (mPlaybackService != null) {
-            mPlaybackService.setCallback(null);
             if (!mPlaybackService.isPlayingAd() && !isPlayExitLayerShow && mCurrentPosition > 0) {
                 mPlaybackService.addHistory(mCurrentPosition, false);// 在非按返回键退出应用时需添加历史记录，此时无需发送至服务器，addHistory不能统一写到此处
             }
@@ -364,6 +363,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
         if (mPlaybackService != null) {
             mPlaybackService.logVideoExit(mCurrentPosition, to);
             mPlaybackService.stopPlayer(true);
+            mPlaybackService.setCallback(null);
         }
         getActivity().finish();
     }
@@ -914,6 +914,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
                 backpress = true;
                 if (mPlaybackService != null && mPlaybackService.getMediaPlayer() != null) {
                     mPlaybackService.stopPlayer(true);
+                    mPlaybackService.setCallback(null);
                 }
                 getActivity().finish();
             }
@@ -926,6 +927,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
 
             } else if (keyCode == KeyEvent.KEYCODE_BACK) {
                 mIsExiting = true;
+                mPlaybackService.setCallback(null);
                 getActivity().finish();
                 return true;
             }
