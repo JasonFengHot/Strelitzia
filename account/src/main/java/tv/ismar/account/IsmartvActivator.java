@@ -225,7 +225,7 @@ public class IsmartvActivator {
             return null;
         }
     }
-    private boolean isactive=false;
+    public static boolean isactive=false;
     public ResultEntity active() {
         Log.d(TAG, "active    "+"isactive: "+isactive);
         String sign = "ismartv=201415&kind=" + kind + "&sn=" + sn;

@@ -18,6 +18,7 @@ import com.qiyi.sdk.player.IMediaPlayer;
 
 import java.io.IOException;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -530,10 +531,11 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
             createPlayer(null);
         }
     }
-
+    private List<AdElementEntity> adElementEntityList=new ArrayList<>();
     @Override
     public void loadVideoStartAd(List<AdElementEntity> adList) {
         createPlayer(adList);
+        adElementEntityList=adList;
     }
 
     private void createPlayer(List<AdElementEntity> adList) {
@@ -678,6 +680,8 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
             mIsPlayingAd = true;
             if (serviceCallback != null) {
                 serviceCallback.showAdvertisement(true);
+                serviceCallback.sendAdlog(adElementEntityList);
+//                Advertisement advertisement=new Advertisement()
             }
         }
 
@@ -744,6 +748,7 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
     private IPlayer.OnStateChangedListener onStateChangedListener = new IPlayer.OnStateChangedListener() {
         @Override
         public void onPrepared() {
+            LogUtils.d(TAG, "onPrepared");
             if (hlsPlayer == null) {
                 LogUtils.e(TAG, "Called onPrepared but player is null");
                 return;
@@ -756,6 +761,7 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
 
         @Override
         public void onStarted() {
+            LogUtils.d(TAG, "onStarted : " + mIsPlayerOnStarted);
             if (hlsPlayer == null) {
                 LogUtils.e(TAG, "Called onStarted but player is null");
                 return;
@@ -777,6 +783,7 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
 
         @Override
         public void onPaused() {
+            LogUtils.d(TAG, "onPaused");
             if (hlsPlayer == null) {
                 return;
             }
@@ -787,6 +794,7 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
 
         @Override
         public void onSeekCompleted() {
+            LogUtils.d(TAG, "onSeekCompleted");
             if (hlsPlayer == null) {
                 return;
             }
@@ -797,6 +805,7 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
 
         @Override
         public void onCompleted() {
+            LogUtils.d(TAG, "onCompleted");
             if (hlsPlayer == null) {
                 return;
             }
@@ -871,6 +880,8 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
         void showBuffering(boolean showBuffer);
 
         void onBufferUpdate(long value);
+
+        void sendAdlog(List<AdElementEntity> adlist);
     }
 
     enum PlayerStatus {

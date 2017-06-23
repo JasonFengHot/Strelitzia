@@ -300,7 +300,7 @@ public class DaisyPlayer extends IsmartvPlayer implements SurfaceHelper.SurfaceC
     private SmartPlayer.OnPreparedListenerUrl onPreparedListenerUrl = new SmartPlayer.OnPreparedListenerUrl() {
         @Override
         public void onPrepared(SmartPlayer smartPlayer, String s) {
-            Log.v(TAG,"onprepared");
+            Log.d(TAG,"onPrepared");
             if (mPlayer == null) {
                 return;
             }

@@ -55,6 +55,7 @@ import cn.ismartv.truetime.TrueTime;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+import tv.ismar.account.ActiveService;
 import tv.ismar.account.IsmartvActivator;
 import tv.ismar.app.AppConstant;
 import tv.ismar.app.BaseActivity;
@@ -412,7 +413,7 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
             fetchChannels();
             startAdsService();
         }
-//        startIntervalActive();
+        startIntervalActive();
 
         final String fromPage = getIntent().getStringExtra("fromPage");
         app_start_time = TrueTime.now().getTime();
@@ -1432,6 +1433,10 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
                             if (playIndex == 0) {
                                 mHandler.sendEmptyMessage(MSG_AD_COUNTDOWN);
                             }
+                            if(launchAds.get(playIndex).media_id!=null) {
+                                int media_id = Integer.parseInt(launchAds.get(playIndex).media_id);
+                                advertisement.getRepostAdUrl(media_id, "startAd");
+                            }
                         }
 
                         @Override
@@ -1447,12 +1452,6 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
                         }
                     });
         }
-        Log.i("AdverstimentId",launchAds.get(index).media_id+"   =id");
-        if(launchAds.get(index).media_id!=null) {
-            int media_id = Integer.parseInt(launchAds.get(index).media_id);
-            advertisement.getRepostAdUrl(media_id, "startAd");
-        }
-
     }
 
     private MediaPlayer.OnPreparedListener onPreparedListener = new MediaPlayer.OnPreparedListener() {
@@ -1461,6 +1460,10 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
             home_ad_video.start();
             if (playIndex == 0) {
                 mHandler.sendEmptyMessage(MSG_AD_COUNTDOWN);
+            }
+            if(launchAds.get(playIndex).media_id!=null) {
+                int media_id = Integer.parseInt(launchAds.get(playIndex).media_id);
+                advertisement.getRepostAdUrl(media_id, "startAd");
             }
         }
     };
@@ -1597,22 +1600,24 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
         return countTime;
     }
 
+    /**
+     * advertisement end
+     */
     private void startAdsService() {
         Intent intent = new Intent();
         intent.setClass(this, AdsUpdateService.class);
         startService(intent);
     }
 
-    /**
-     * advertisement end
-     */
-
+    private void startIntervalActive() {
+        Intent intent = new Intent();
+        intent.setClass(this, ActiveService.class);
+        startService(intent);
+    }
 
     private void startTrueTimeService() {
         Intent intent = new Intent();
         intent.setClass(this, TrueTimeService.class);
         startService(intent);
     }
-
-
 }

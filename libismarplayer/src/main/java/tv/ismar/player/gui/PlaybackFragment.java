@@ -42,12 +42,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 
+import okhttp3.ResponseBody;
+import rx.Observer;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 import tv.ismar.account.IsmartvActivator;
 import tv.ismar.app.BaseActivity;
 import tv.ismar.app.ad.Advertisement;
 import tv.ismar.app.core.PageIntent;
 import tv.ismar.app.core.PageIntentInterface;
 import tv.ismar.app.entity.ClipEntity;
+import tv.ismar.app.network.SkyService;
 import tv.ismar.app.network.entity.AdElementEntity;
 import tv.ismar.app.network.entity.ItemEntity;
 import tv.ismar.app.player.OnNoNetConfirmListener;
@@ -271,7 +276,6 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
             mPlaybackService.stopPlayer(true);
         }
         if (mPlaybackService != null) {
-            mPlaybackService.setCallback(null);
             if (!mPlaybackService.isPlayingAd() && !isPlayExitLayerShow && mCurrentPosition > 0) {
                 mPlaybackService.addHistory(mCurrentPosition, false);// 在非按返回键退出应用时需添加历史记录，此时无需发送至服务器，addHistory不能统一写到此处
             }
@@ -364,6 +368,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
         if (mPlaybackService != null) {
             mPlaybackService.logVideoExit(mCurrentPosition, to);
             mPlaybackService.stopPlayer(true);
+            mPlaybackService.setCallback(null);
         }
         getActivity().finish();
     }
@@ -655,9 +660,8 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
                 mAdCount = mPlaybackService.getMediaPlayer().getAdCountDownTime() / 1000;
             }
             mHandler.sendEmptyMessage(MSG_AD_COUNTDOWN);
-            Advertisement advertisement=new Advertisement(getActivity());
-            advertisement.getQiantieAdUrl(AdIndex,"qiantieAd");
-            AdIndex++;
+//            Advertisement advertisement=new Advertisement(getActivity());
+//            advertisement.getQiantieAdUrl(AdIndex,"qiantieAd");
         } else {
             Log.i("AdeverSende","play ad!!!");
             mAdCount = 0;
@@ -666,6 +670,38 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
             mHandler.removeMessages(MSG_AD_COUNTDOWN);
             AdIndex=0;
         }
+
+    }
+    @Override
+    public void sendAdlog(List<AdElementEntity> adlist) {
+        int length=adlist.get(AdIndex).getMonitor().size();
+        for(int i=0;i<length;i++){
+            Log.i("adverSendLog","ADIndex: "+AdIndex);
+            Log.i("adverSendLog",adlist.get(AdIndex).getMonitor().get(i).getMonitor_url());
+            repostAdLog(adlist.get(AdIndex).getMonitor().get(i).getMonitor_url());
+        }
+        AdIndex++;
+    }
+    private void repostAdLog(String url) {
+        SkyService skyService = SkyService.ServiceManager.getAdService();
+        skyService.repostAdLog(url).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<ResponseBody>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable throwable) {
+                        Log.i("ADSMon", throwable.toString() + "  onerror");
+                    }
+
+                    @Override
+                    public void onNext(ResponseBody responseBody) {
+
+                    }
+                });
 
     }
 
@@ -884,6 +920,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
          */
     }
 
+
     private static boolean isQuit = false;
     private Timer quitTimer = new Timer();
 
@@ -914,6 +951,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
                 backpress = true;
                 if (mPlaybackService != null && mPlaybackService.getMediaPlayer() != null) {
                     mPlaybackService.stopPlayer(true);
+                    mPlaybackService.setCallback(null);
                 }
                 getActivity().finish();
             }
@@ -926,6 +964,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
 
             } else if (keyCode == KeyEvent.KEYCODE_BACK) {
                 mIsExiting = true;
+                mPlaybackService.setCallback(null);
                 getActivity().finish();
                 return true;
             }
