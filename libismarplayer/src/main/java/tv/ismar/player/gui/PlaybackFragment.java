@@ -967,7 +967,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
             } else if (keyCode == KeyEvent.KEYCODE_BACK) {
                 mIsExiting = true;
                 mPlaybackService.getMediaPlayer().logAdExit();
-                mPlaybackService.getMediaPlayer().logVideoExit(mPlaybackService.getStartPosition(), "finish");
+                mPlaybackService.getMediaPlayer().logVideoExit(mPlaybackService.getStartPosition(), "source");
                 mPlaybackService.setCallback(null);
                 getActivity().finish();
                 return true;
