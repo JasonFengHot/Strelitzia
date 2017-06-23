@@ -68,7 +68,6 @@ public class Advertisement {
         dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         dateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Shanghai"));
     }
-
     public void setOnVideoPlayListener(OnVideoPlayAdListener onVideoPlayAdListener) {
         mOnVideoPlayAdListener = onVideoPlayAdListener;
     }
@@ -377,7 +376,7 @@ public class Advertisement {
                     }
                 }
                 if (!adElementEntities.isEmpty()) {
-                  //  Log.i("AD Sort","start serial:  "+adElementEntities.get(0).getSerial()+"");
+                    Log.i("AD Sort","start serial:  "+adElementEntities.get(0).getSerial()+"");
                     Collections.sort(adElementEntities, new Comparator<AdElementEntity>() {
                         @Override
                         public int compare(AdElementEntity lhs, AdElementEntity rhs) {
