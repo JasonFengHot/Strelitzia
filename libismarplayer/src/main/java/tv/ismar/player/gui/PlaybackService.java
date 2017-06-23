@@ -528,7 +528,7 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
         mClipEntity = clipEntity;
         initVariable();
         String iqiyi = mClipEntity.getIqiyi_4_0();
-        if (!mIsPreview && Utils.isEmptyText(iqiyi)) {
+        if (!mIsPreview && Utils.isEmptyText(iqiyi) && !mItemEntity.getLiveVideo()) {
             // 视云影片获取前贴片广告
             mAdvertisement.fetchVideoStartAd(mItemEntity, Advertisement.AD_MODE_ONSTART, source);
         } else {
