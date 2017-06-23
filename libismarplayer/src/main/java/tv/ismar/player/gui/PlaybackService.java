@@ -18,6 +18,7 @@ import com.qiyi.sdk.player.IMediaPlayer;
 
 import java.io.IOException;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -530,10 +531,11 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
             createPlayer(null);
         }
     }
-
+    private List<AdElementEntity> adElementEntityList=new ArrayList<>();
     @Override
     public void loadVideoStartAd(List<AdElementEntity> adList) {
         createPlayer(adList);
+        adElementEntityList=adList;
     }
 
     private void createPlayer(List<AdElementEntity> adList) {
@@ -678,6 +680,8 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
             mIsPlayingAd = true;
             if (serviceCallback != null) {
                 serviceCallback.showAdvertisement(true);
+                serviceCallback.sendAdlog(adElementEntityList);
+//                Advertisement advertisement=new Advertisement()
             }
         }
 
@@ -876,6 +880,8 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
         void showBuffering(boolean showBuffer);
 
         void onBufferUpdate(long value);
+
+        void sendAdlog(List<AdElementEntity> adlist);
     }
 
     enum PlayerStatus {
