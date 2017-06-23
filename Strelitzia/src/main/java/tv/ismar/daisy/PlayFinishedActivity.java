@@ -55,6 +55,7 @@ public class PlayFinishedActivity extends BaseActivity implements View.OnClickLi
     private Subscription playExitSub;
     private View play_exit_error;
     private String type="exit_unknown";
+    private Source source=Source.FINISHED;
     private String action="exit";
     private int itemPk;
     private int clip;
@@ -152,6 +153,7 @@ public class PlayFinishedActivity extends BaseActivity implements View.OnClickLi
                 setOrientation(false);
                 play_finished_title.setText("今日热播内容推荐");
                 type="exit_not_like";
+                source=Source.EXIT_NOT_LIKE;
             }else{
                 if("movie".equals(channel)){
                     setOrientation(true);
@@ -164,6 +166,7 @@ public class PlayFinishedActivity extends BaseActivity implements View.OnClickLi
                     play_finished_title.setText("其他用户正在观看");
                 }
                 type="exit_like";
+                source= Source.EXIT_LIKE;
             }
             playExitSub = SkyService.ServiceManager.getCacheSkyService2().apiPlayExitRecommend(SimpleRestClient.sn_token, itemId,channel,playScale)
                     .subscribeOn(Schedulers.io())
@@ -231,7 +234,7 @@ public class PlayFinishedActivity extends BaseActivity implements View.OnClickLi
                     finish();
                     PageIntent pageIntent = new PageIntent();
                     if (contentModel.equals("music") || (contentModel.equals("sport") && item.getExpense_info() == null) || contentModel.equals("game")) {
-                        pageIntent.toPlayPage(PlayFinishedActivity.this, item.getPk(), 0, Source.RELATED);
+                        pageIntent.toPlayPage(PlayFinishedActivity.this, item.getPk(), 0,source);
                     } else {
                         pageIntent.toDetailPage(PlayFinishedActivity.this, Source.RELATED.getValue(), item.getPk());
                     }
