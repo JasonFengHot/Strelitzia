@@ -114,11 +114,13 @@ public class AdImageDialog extends Dialog {
                                                 mAdvEntityList.get(mCurrentAdIndex).getMedia_url(),
                                                 6000, "bestv");
 //                                        mDuration = TrueTime.now().getTime();
+                                        Log.i("AdverstimentId","mCurrentAdInex: "+mCurrentAdIndex);
                                         advertisement.getRepostAdUrl(mAdvEntityList.get(mCurrentAdIndex).getMedia_id(),"zangtingAd");
                                     }
 
                                     @Override
                                     public void onError(Exception e) {
+                                        Log.i("AdverstimentId","onerro"+ mCurrentAdIndex);
                                         PlayerEvent.pause_ad_except(0, "Load error");
                                     }
                                 });
