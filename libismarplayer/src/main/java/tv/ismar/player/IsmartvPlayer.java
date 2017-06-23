@@ -243,6 +243,15 @@ public abstract class IsmartvPlayer implements IPlayer {
                 logPlayerFlag);
     }
 
+    public void logAdExit(){
+        PlayerEvent.ad_play_exit(
+                logPlayerEvent,
+                (DateUtils.currentTimeMillis() - logPlayerOpenTime),
+                logMediaIp,
+                logAdMediaId,
+                logPlayerFlag);
+    }
+
     public void logExpenseAdClick() {
         PlayerEvent.expenseAdClick(
                 logPlayerEvent,

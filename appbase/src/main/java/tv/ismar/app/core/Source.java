@@ -20,7 +20,10 @@ public enum Source {
     TOPVIDEO("topvideo"),//首页上方的视频,其余为unknow
     HOMEPAGE("homepage"),//首页五个推荐,其余为unknow
     GATHER("gather"),
-    UNKNOWN("unknown");
+    UNKNOWN("unknown"),
+    FINISHED("finished"),
+    EXIT_LIKE("exit_like"),
+    EXIT_NOT_LIKE("exit_not_like");
 
     private String source;
 

@@ -222,7 +222,9 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
         isPlayExitLayerShow=false;
         if(backpress && mPlaybackService != null){
             mPlaybackService.startPlayer();
-            showBuffer(null);
+            if (!mPlaybackService.getItemEntity().getLiveVideo()) {
+                showBuffer(null);
+            }
             timerStart(0);
         }
         backpress=false;
@@ -964,6 +966,8 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
 
             } else if (keyCode == KeyEvent.KEYCODE_BACK) {
                 mIsExiting = true;
+                mPlaybackService.getMediaPlayer().logAdExit();
+                mPlaybackService.getMediaPlayer().logVideoExit(mPlaybackService.getStartPosition(), "finish");
                 mPlaybackService.setCallback(null);
                 getActivity().finish();
                 return true;
