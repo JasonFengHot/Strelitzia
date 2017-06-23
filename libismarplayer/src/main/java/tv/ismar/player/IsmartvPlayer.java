@@ -209,7 +209,7 @@ public abstract class IsmartvPlayer implements IPlayer {
         if (isInPlaybackState()) {
             logBufferStartTime = DateUtils.currentTimeMillis();
             if (!logSeekStartPosition || playerMode == MODE_QIYI_PLAYER) {
-                PlayerEvent.videoPlaySeek(logPlayerEvent, logSpeed, getCurrentPosition(), logPlayerFlag);
+                PlayerEvent.videoPlaySeek(logPlayerEvent, logSpeed, position, logPlayerFlag);
             }
         }
     }
