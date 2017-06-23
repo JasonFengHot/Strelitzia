@@ -38,6 +38,7 @@ public class AdImageDialog extends Dialog {
     private List<AdElementEntity> mAdvEntityList;
     private Advertisement advertisement;
     private int mCurrentAdIndex = 0;
+    private int adIndex=0;
     private ImageView imageView;
     private Button button;
 
@@ -100,6 +101,7 @@ public class AdImageDialog extends Dialog {
                         AdElementEntity element = mAdvEntityList.get(mCurrentAdIndex);
                         PlayerEvent.pause_ad_download(element.getTitle(), element.getMedia_id(), element.getMedia_url(), "bestv");
                         button.setVisibility(View.INVISIBLE);
+                        adIndex=mCurrentAdIndex;
                         Picasso.with(mContext).load(element.getMedia_url())
                                 .into(imageView, new com.squareup.picasso.Callback() {
                                     @Override
@@ -114,8 +116,8 @@ public class AdImageDialog extends Dialog {
                                                 mAdvEntityList.get(mCurrentAdIndex).getMedia_url(),
                                                 6000, "bestv");
 //                                        mDuration = TrueTime.now().getTime();
-                                        Log.i("AdverstimentId","mCurrentAdInex: "+mCurrentAdIndex);
-                                        advertisement.getRepostAdUrl(mAdvEntityList.get(mCurrentAdIndex).getMedia_id(),"zangtingAd");
+                                        Log.i("AdverstimentId","mCurrentAdInex: "+mCurrentAdIndex+"  adIndex: "+adIndex);
+                                        advertisement.getRepostAdUrl(mAdvEntityList.get(adIndex).getMedia_id(),"zangtingAd");
                                     }
 
                                     @Override
