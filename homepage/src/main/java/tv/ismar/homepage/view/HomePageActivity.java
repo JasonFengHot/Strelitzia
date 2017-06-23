@@ -1433,6 +1433,10 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
                             if (playIndex == 0) {
                                 mHandler.sendEmptyMessage(MSG_AD_COUNTDOWN);
                             }
+                            if(launchAds.get(playIndex).media_id!=null) {
+                                int media_id = Integer.parseInt(launchAds.get(playIndex).media_id);
+                                advertisement.getRepostAdUrl(media_id, "startAd");
+                            }
                         }
 
                         @Override
@@ -1448,12 +1452,6 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
                         }
                     });
         }
-        Log.i("AdverstimentId",launchAds.get(index).media_id+"   =id");
-        if(launchAds.get(index).media_id!=null) {
-            int media_id = Integer.parseInt(launchAds.get(index).media_id);
-            advertisement.getRepostAdUrl(media_id, "startAd");
-        }
-
     }
 
     private MediaPlayer.OnPreparedListener onPreparedListener = new MediaPlayer.OnPreparedListener() {
@@ -1462,6 +1460,10 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
             home_ad_video.start();
             if (playIndex == 0) {
                 mHandler.sendEmptyMessage(MSG_AD_COUNTDOWN);
+            }
+            if(launchAds.get(playIndex).media_id!=null) {
+                int media_id = Integer.parseInt(launchAds.get(playIndex).media_id);
+                advertisement.getRepostAdUrl(media_id, "startAd");
             }
         }
     };
