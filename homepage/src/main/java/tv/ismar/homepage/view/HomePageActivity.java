@@ -55,6 +55,7 @@ import cn.ismartv.truetime.TrueTime;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+import tv.ismar.account.ActiveService;
 import tv.ismar.account.IsmartvActivator;
 import tv.ismar.app.AppConstant;
 import tv.ismar.app.BaseActivity;
@@ -411,7 +412,7 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
             fetchChannels();
             startAdsService();
         }
-//        startIntervalActive();
+        startIntervalActive();
 
         final String fromPage = getIntent().getStringExtra("fromPage");
         app_start_time = TrueTime.now().getTime();
@@ -1592,22 +1593,24 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
         return countTime;
     }
 
+    /**
+     * advertisement end
+     */
     private void startAdsService() {
         Intent intent = new Intent();
         intent.setClass(this, AdsUpdateService.class);
         startService(intent);
     }
 
-    /**
-     * advertisement end
-     */
-
+    private void startIntervalActive() {
+        Intent intent = new Intent();
+        intent.setClass(this, ActiveService.class);
+        startService(intent);
+    }
 
     private void startTrueTimeService() {
         Intent intent = new Intent();
         intent.setClass(this, TrueTimeService.class);
         startService(intent);
     }
-
-
 }
