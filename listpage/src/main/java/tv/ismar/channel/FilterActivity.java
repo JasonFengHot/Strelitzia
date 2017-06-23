@@ -326,7 +326,7 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                             filter_arrow_down.setVisibility(View.INVISIBLE);
                         }
                         filterPosterAdapter = new FilterPosterAdapter(FilterActivity.this,itemList,isVertical);
-                        poster_recyclerview.setAdapter(filterPosterAdapter);
+                        poster_recyclerview.swapAdapter(filterPosterAdapter,true);
                         filterPosterAdapter.setItemClickListener(new OnItemClickListener() {
                             @Override
                             public void onItemClick(View view, int position) {
