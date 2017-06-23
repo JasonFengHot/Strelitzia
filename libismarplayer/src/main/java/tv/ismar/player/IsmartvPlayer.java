@@ -143,8 +143,10 @@ public abstract class IsmartvPlayer implements IPlayer {
                             @Override
                             public void onSuccess() {
                                 Log.d(TAG, "QiYiSdk init success.");
-                                isQiyiSdkInit = true;
-                                createPlayer(qiyiUserInit());
+                                if (mQiyiContainer != null) {
+                                    isQiyiSdkInit = true;
+                                    createPlayer(qiyiUserInit());
+                                }
                             }
 
                             @Override

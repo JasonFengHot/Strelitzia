@@ -656,7 +656,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
             }
             mHandler.sendEmptyMessage(MSG_AD_COUNTDOWN);
             Advertisement advertisement=new Advertisement(getActivity());
-            advertisement.getRepostAdUrl(AdIndex,"qiantieAd");
+            advertisement.getQiantieAdUrl(AdIndex,"qiantieAd");
             AdIndex++;
         } else {
             Log.i("AdeverSende","play ad!!!");
@@ -912,6 +912,9 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
         if (mPlaybackService == null || mPlaybackService.getMediaPlayer() == null || !mPlaybackService.isPlayerPrepared()) {
             if (keyCode == KeyEvent.KEYCODE_BACK) {
                 backpress = true;
+                if (mPlaybackService != null && mPlaybackService.getMediaPlayer() != null) {
+                    mPlaybackService.stopPlayer(true);
+                }
                 getActivity().finish();
             }
             return true;

@@ -97,7 +97,6 @@ public class AdImageDialog extends Dialog {
                 @Override
                 public void run() {
                     if (imageView != null && button != null) {
-                        advertisement.getRepostAdUrl(mCurrentAdIndex,"zangtingAd");
                         AdElementEntity element = mAdvEntityList.get(mCurrentAdIndex);
                         PlayerEvent.pause_ad_download(element.getTitle(), element.getMedia_id(), element.getMedia_url(), "bestv");
                         button.setVisibility(View.INVISIBLE);
@@ -115,6 +114,7 @@ public class AdImageDialog extends Dialog {
                                                 mAdvEntityList.get(mCurrentAdIndex).getMedia_url(),
                                                 6000, "bestv");
 //                                        mDuration = TrueTime.now().getTime();
+                                        advertisement.getRepostAdUrl(mAdvEntityList.get(mCurrentAdIndex).getMedia_id(),"zangtingAd");
                                     }
 
                                     @Override

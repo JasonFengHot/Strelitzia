@@ -41,6 +41,7 @@ public class AccountSharedPrefs {
     private static AccountSharedPrefs instance;
 
     private static Context mContext;
+    public static String device_token;
 
     private  static SharedPreferences mSharedPreferences;
 
@@ -59,6 +60,7 @@ public class AccountSharedPrefs {
         mContext = context;
         mSharedPreferences = mContext.getSharedPreferences(SHARED_PREFS_NAME, Context.MODE_WORLD_READABLE);
         mSharedPreferences.registerOnSharedPreferenceChangeListener(sharedPreferenceChangeListener);
+        device_token = mSharedPreferences.getString("sn_token","");
     }
 
     public static String getSharedPrefs(String key) {

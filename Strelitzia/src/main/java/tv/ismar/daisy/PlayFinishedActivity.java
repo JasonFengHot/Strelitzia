@@ -226,7 +226,8 @@ public class PlayFinishedActivity extends BaseActivity implements View.OnClickLi
                 String contentModel=item.getContent_model();
                 if(contentModel!=null) {
                     Intent intent=new Intent("tv.ismar.daisy.closeplayer");
-                    sendBroadcast(intent);
+                    intent.putExtra("closeid",itemId);
+                    sendOrderedBroadcast(intent,null);
                     finish();
                     PageIntent pageIntent = new PageIntent();
                     if (contentModel.equals("music") || (contentModel.equals("sport") && item.getExpense_info() == null) || contentModel.equals("game")) {

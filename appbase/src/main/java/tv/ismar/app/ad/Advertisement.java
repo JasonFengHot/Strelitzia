@@ -68,7 +68,6 @@ public class Advertisement {
         dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         dateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Shanghai"));
     }
-
     public void setOnVideoPlayListener(OnVideoPlayAdListener onVideoPlayAdListener) {
         mOnVideoPlayAdListener = onVideoPlayAdListener;
     }
@@ -377,7 +376,7 @@ public class Advertisement {
                     }
                 }
                 if (!adElementEntities.isEmpty()) {
-                  //  Log.i("AD Sort","start serial:  "+adElementEntities.get(0).getSerial()+"");
+                    Log.i("AD Sort","start serial:  "+adElementEntities.get(0).getSerial()+"");
                     Collections.sort(adElementEntities, new Comparator<AdElementEntity>() {
                         @Override
                         public int compare(AdElementEntity lhs, AdElementEntity rhs) {
@@ -432,14 +431,45 @@ public class Advertisement {
             JSONObject jsonObject = new JSONObject(adResult);
             JSONObject body = jsonObject.getJSONObject("ads");
             JSONArray arrays = body.getJSONArray(adId);
-            JSONObject element = arrays.getJSONObject(index);
-            JSONArray monitor=element.getJSONArray("monitor");
-                for(int j=0;j<monitor.length();j++){
-                    JSONObject child = monitor.getJSONObject(j);
-                    String monitor_url=child.optString("monitor_url");
-                    Log.i("adimagelog","J="+j+"index="+index+"  monitor_url: "+monitor_url);
-                    repostAdLog(monitor_url);
+            for(int i=0;i<arrays.length();i++) {
+                JSONObject element = arrays.getJSONObject(i);
+                int media_id=element.optInt("media_id");
+                if(media_id==index) {
+                    JSONArray monitor = element.getJSONArray("monitor");
+                    for (int j = 0; j < monitor.length(); j++) {
+                        JSONObject child = monitor.getJSONObject(j);
+                        String monitor_url = child.optString("monitor_url");
+                        Log.i("AdverstimentId", "J=" + j + "index=" + index + "  monitor_url: " + monitor_url);
+                        repostAdLog(monitor_url);
+                    }
                 }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    public void getQiantieAdUrl(int index,String adName){
+        SharedPreferences sp=mContext.getSharedPreferences(adName, Activity.MODE_PRIVATE);
+        String adResult=sp.getString("result","");
+        String adId=sp.getString("adPid","");
+        Log.i("ADSMon", "adId  "+ adId+" ");
+        try {
+            JSONObject jsonObject = new JSONObject(adResult);
+            JSONObject body = jsonObject.getJSONObject("ads");
+            JSONArray arrays = body.getJSONArray(adId);
+//            for(int i=0;i<arrays.length();i++) {
+                JSONObject element = arrays.getJSONObject(index);
+//                int media_id=element.optInt("media_id");
+//                if(media_id==index) {
+                    JSONArray monitor = element.getJSONArray("monitor");
+                    for (int j = 0; j < monitor.length(); j++) {
+                        JSONObject child = monitor.getJSONObject(j);
+                        String monitor_url = child.optString("monitor_url");
+                        Log.i("AdverstimentId", "J=" + j + "index=" + index + "  monitor_url: " + monitor_url);
+                        repostAdLog(monitor_url);
+                    }
+//                }
+//            }
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -1,8 +1,11 @@
 package tv.ismar.detailpage.view;
 import com.google.gson.GsonBuilder;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -35,7 +38,9 @@ import tv.ismar.app.widget.LoadingDialog;
 import tv.ismar.detailpage.R;
 import tv.ismar.library.util.LogUtils;
 import tv.ismar.library.util.StringUtils;
+import tv.ismar.player.gui.PlaybackFragment;
 import tv.ismar.player.gui.PlaybackService;
+import tv.ismar.player.widget.ExitToast;
 
 import static tv.ismar.app.core.PageIntentInterface.DETAIL_TYPE_ITEM;
 import static tv.ismar.app.core.PageIntentInterface.DETAIL_TYPE_PKG;
@@ -311,6 +316,7 @@ public class DetailPageActivity extends BaseActivity implements PlaybackService.
                     showLoginHint();
                 }
             },1000);
+        registerClosePlayerReceiver();
     }
 
     @Override
@@ -385,10 +391,10 @@ public class DetailPageActivity extends BaseActivity implements PlaybackService.
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
         if (mPackageDetailFragment != null) {
             mPackageDetailFragment.onActivityBackPressed();
         }
+        super.onBackPressed();
     }
 
     @Override
@@ -398,6 +404,31 @@ public class DetailPageActivity extends BaseActivity implements PlaybackService.
         setResult(1, intent);
         handler.removeMessages(0);
         handler = null;
+        unRegisterClosePlayerReceiver();
         super.onDestroy();
     }
+    private ClosePlayerReceiver closePlayerReceiver;
+
+    private void registerClosePlayerReceiver() {
+        IntentFilter filter = new IntentFilter("tv.ismar.daisy.closeplayer");
+        closePlayerReceiver = new ClosePlayerReceiver();
+        registerReceiver(closePlayerReceiver, filter);
+    }
+
+    private void unRegisterClosePlayerReceiver() {
+        if (closePlayerReceiver != null) {
+            unregisterReceiver(closePlayerReceiver);
+        }
+    }
+
+    private class ClosePlayerReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if(intent.getIntExtra("closeid",0)==mItemEntity.getPk()) {
+                finish();
+            }
+        }
+    }
+
 }

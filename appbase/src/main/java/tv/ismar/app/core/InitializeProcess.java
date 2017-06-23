@@ -59,6 +59,7 @@ public class InitializeProcess implements Runnable {
     private OkHttpClient mOkHttpClient;
     private final String[] mDistrictArray;
     private final String[] mIspArray;
+    public static boolean flag = false;
 
     Interceptor mHeaderInterceptor = new Interceptor() {
         @Override
@@ -82,6 +83,7 @@ public class InitializeProcess implements Runnable {
                 .addNetworkInterceptor(mHeaderInterceptor)
                 .addInterceptor(new UserAgentInterceptor())
                 .build();
+        flag = true;
     }
 
     @Override
