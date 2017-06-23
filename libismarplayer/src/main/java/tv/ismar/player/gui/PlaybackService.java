@@ -532,6 +532,7 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
         }
     }
     private List<AdElementEntity> adElementEntityList=new ArrayList<>();
+    private boolean isSendlog=false;
     @Override
     public void loadVideoStartAd(List<AdElementEntity> adList) {
         createPlayer(adList);
@@ -546,6 +547,7 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
         builder.setSnToken(snToken);
         if (Utils.isEmptyText(iqiyi)) {
             // 片源为视云
+            isSendlog=true;
             builder.setPlayerMode(IsmartvPlayer.MODE_SMART_PLAYER);
             builder.setDeviceToken(deviceToken);
             if (mIsPreload) {
@@ -558,6 +560,7 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
                 hlsPlayer = builder.build();
             }
         } else {
+            isSendlog=false;
             if (mQiyiContainer == null) {
                 throw new IllegalArgumentException("奇艺播放器，显示组件不能为空");
             }
@@ -680,7 +683,9 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
             mIsPlayingAd = true;
             if (serviceCallback != null) {
                 serviceCallback.showAdvertisement(true);
-                serviceCallback.sendAdlog(adElementEntityList);
+                if(isSendlog) {
+                    serviceCallback.sendAdlog(adElementEntityList);
+                }
 //                Advertisement advertisement=new Advertisement()
             }
         }
