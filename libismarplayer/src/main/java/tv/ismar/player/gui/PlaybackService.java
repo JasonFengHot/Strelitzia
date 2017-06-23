@@ -160,6 +160,10 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
         mIsPreload = false;
     }
 
+    public int getStartPosition() {
+        return mStartPosition;
+    }
+
     @Override
     public IBinder onBind(Intent intent) {
         isBindActivity = true;
