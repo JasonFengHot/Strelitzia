@@ -197,7 +197,6 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
             return true;
         }
 
-        if(!filterPopup.isShowing()) {
         if(keyCode==21){
                 if(filter_arrow_up.isFocused()){
                     for (int i = 1; i <=spanCount ; i++) {
@@ -209,7 +208,7 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
 
                 }
             }
-        }
+
         return super.onKeyDown(keyCode, event);
     }
 
