@@ -85,8 +85,10 @@ public class PlayFinishedActivity extends BaseActivity implements View.OnClickLi
         to = intent.getStringExtra("to");
         initView();
         initData();
-        if(!(frompage.equals(Source.RELATED.getValue())||frompage.equals(Source.FINISHED.getValue())||frompage.equals(Source.EXIT_LIKE.getValue())||frompage.equals(Source.EXIT_NOT_LIKE.getValue()))){
-            to=frompage;
+        if(TextUtils.isEmpty(to)) {
+            if (!frompage.equals(Source.RELATED.getValue())) {
+                to = frompage;
+            }
         }
         if(TextUtils.isEmpty(frompage)){
             return;
@@ -264,7 +266,7 @@ public class PlayFinishedActivity extends BaseActivity implements View.OnClickLi
                     if (contentModel.equals("music") || (contentModel.equals("sport") && item.getExpense_info() == null) || contentModel.equals("game")) {
                         pageIntent.toPlayPage(PlayFinishedActivity.this, item.getPk(), 0,source);
                     } else {
-                        pageIntent.toDetailPage(PlayFinishedActivity.this, source.getValue(),to, item.getPk());
+                        pageIntent.toDetailPage(PlayFinishedActivity.this, source.getValue(),to==null?"":to, item.getPk());
                     }
                 }
             }

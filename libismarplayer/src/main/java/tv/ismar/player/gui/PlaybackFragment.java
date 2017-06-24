@@ -14,6 +14,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.provider.Settings;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -201,8 +202,10 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
         mClient = new PlaybackService.Client(getActivity(), this);
         to = getActivity().getIntent().getStringExtra("to");
         String frompage = getActivity().getIntent().getStringExtra(PageIntentInterface.EXTRA_SOURCE);
-        if(!(frompage.equals(Source.RELATED.getValue())||frompage.equals(Source.FINISHED.getValue())||frompage.equals(Source.EXIT_LIKE.getValue())||frompage.equals(Source.EXIT_NOT_LIKE.getValue()))){
-            to=frompage;
+        if(TextUtils.isEmpty(to)) {
+            if (!(frompage.equals(Source.RELATED.getValue()) || frompage.equals(Source.FINISHED.getValue()) || frompage.equals(Source.EXIT_LIKE.getValue()) || frompage.equals(Source.EXIT_NOT_LIKE.getValue()))) {
+                to = frompage;
+            }
         }
     }
 

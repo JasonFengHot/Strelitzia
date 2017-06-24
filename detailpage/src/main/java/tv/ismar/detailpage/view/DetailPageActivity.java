@@ -106,10 +106,11 @@ public class DetailPageActivity extends BaseActivity implements PlaybackService.
         }
         int type = intent.getIntExtra(EXTRA_TYPE, 0);
         String url = intent.getStringExtra("url");
-        if(!TextUtils.isEmpty(source)){
-            if(!(source.equals(Source.RELATED.getValue())||source.equals(Source.FINISHED.getValue())||source.equals(Source.EXIT_LIKE.getValue())||source.equals(Source.EXIT_NOT_LIKE.getValue()))){
-                to=source;
-                Log.e("to",to);
+        if(TextUtils.isEmpty(to)) {
+            if (!TextUtils.isEmpty(source)) {
+                if (!(source.equals(Source.RELATED.getValue()) || source.equals(Source.FINISHED.getValue()) || source.equals(Source.EXIT_LIKE.getValue()) || source.equals(Source.EXIT_NOT_LIKE.getValue()))) {
+                    to = source;
+                }
             }
         }
 
@@ -154,6 +155,7 @@ public class DetailPageActivity extends BaseActivity implements PlaybackService.
 //        intent.putExtra(PageIntentInterface.EXTRA_SUBITEM_PK, mSubItemPk);
         intent.putExtra(PageIntentInterface.EXTRA_SOURCE, source);
         intent.putExtra(PageIntentInterface.QIYIFLAG, isqiyi);
+        intent.putExtra(PageIntentInterface.EXTRA_TO, to);
         intent.putExtra("contentMode",mItemEntity.getContentModel());
         startActivity(intent);
 
