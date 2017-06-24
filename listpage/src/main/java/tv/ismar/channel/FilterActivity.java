@@ -427,7 +427,7 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
         }else if(i==R.id.filter_tab){
             filter_tab.setFocusable(false);
             getRootView().requestFocus();
-            if(!filterPopup.isShowing()) {
+            if(filterPopup!=null&&!filterPopup.isShowing()) {
                 showFilterPopup();
             }
         }
