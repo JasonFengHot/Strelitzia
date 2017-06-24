@@ -565,5 +565,9 @@ public class PlayerEvent {
      * 暂停广告异常
      */
     private static final String PAUSE_AD_EXCEPT = "pause_ad_except";
+    /**
+     * 详情页缓冲完成
+     */
+    public static final String DETAIL_PLAY_LOAD = "detail_play_load";
 
 }

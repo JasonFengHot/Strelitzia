@@ -298,6 +298,19 @@ public class DaisyPlayer extends IsmartvPlayer implements SurfaceHelper.SurfaceC
         return null;
     }
 
+    private SmartPlayer.OnPreloadCompleteListener smartPreloadCompleteListener = new SmartPlayer.OnPreloadCompleteListener() {
+        @Override
+        public void OnPreloadComplete(SmartPlayer smartPlayer) {
+            LogUtils.d(TAG,"OnPreloadComplete");
+            if (mPlayer == null || mPlayer != smartPlayer) {
+                return;
+            }
+            if (onPreloadCompletedListener != null) {
+                onPreloadCompletedListener.onPreloadCompleted();
+            }
+        }
+    };
+
     private SmartPlayer.OnPreparedListenerUrl onPreparedListenerUrl = new SmartPlayer.OnPreparedListenerUrl() {
         @Override
         public void onPrepared(SmartPlayer smartPlayer, String s) {
@@ -644,6 +657,7 @@ public class DaisyPlayer extends IsmartvPlayer implements SurfaceHelper.SurfaceC
                 LogUtils.d(TAG, "setUserAgent : " + userAgent);
                 mPlayer.setUserAgent(userAgent);
                 if (ispreload) {
+                    mPlayer.setOnPreloadCompleteListener(smartPreloadCompleteListener);
                     mPlayer.setDataSource(mediaMeta.getUrls());
                     mPlayer.prepareAsync();
                 } else {

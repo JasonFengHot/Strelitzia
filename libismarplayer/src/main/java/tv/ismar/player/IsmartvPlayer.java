@@ -56,6 +56,7 @@ public abstract class IsmartvPlayer implements IPlayer {
     protected OnAdvertisementListener onAdvertisementListener;
     protected OnStateChangedListener onStateChangedListener;
     // 日志上报相关
+    protected OnPreloadCompletedListener onPreloadCompletedListener;
     protected HashMap<String, Integer> logAdMap = new HashMap<>();
     protected String logPlayerFlag = "";
     protected PlayerEvent logPlayerEvent = new PlayerEvent();
@@ -78,11 +79,12 @@ public abstract class IsmartvPlayer implements IPlayer {
     private boolean isQiyiSdkInit;
 
     // 视云播放器从预加载播放视频，按照要求预加载只做加载
-    public void preparePreloadPlayer(MediaEntity mediaSource) {
+    public void preparePreloadPlayer(MediaEntity mediaSource, OnPreloadCompletedListener onPreloadCompletedListener) {
         if (playerMode != MODE_SMART_PLAYER || mediaSource == null || mediaSource.getClipEntity() == null) {
             throw new IllegalArgumentException("preparePreloadPlayer mediaSource can't be null");
         }
         mMediaEntity = mediaSource;
+        this.onPreloadCompletedListener = onPreloadCompletedListener;
         logPlayerEvent.pk = mediaSource.getPk();
         logPlayerEvent.subItemPk = mediaSource.getSubItemPk();
         preloadMediaMeta = bestvUserInit();
@@ -640,6 +642,10 @@ public abstract class IsmartvPlayer implements IPlayer {
 
     public void setOnStateChangedListener(OnStateChangedListener onStateChangedListener) {
         this.onStateChangedListener = onStateChangedListener;
+    }
+
+    public void setOnPreloadCompletedListener(OnPreloadCompletedListener onPreloadCompletedListener) {
+        this.onPreloadCompletedListener = onPreloadCompletedListener;
     }
 
     // 在播放器的 onStarted中调用一次

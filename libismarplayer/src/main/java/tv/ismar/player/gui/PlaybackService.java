@@ -41,16 +41,19 @@ import tv.ismar.app.entity.DBQuality;
 import tv.ismar.app.entity.History;
 import tv.ismar.app.network.SkyService;
 import tv.ismar.app.network.entity.AdElementEntity;
+import tv.ismar.app.network.entity.EventProperty;
 import tv.ismar.app.network.entity.ItemEntity;
 import tv.ismar.app.network.entity.PlayCheckEntity;
 import tv.ismar.app.util.Utils;
 import tv.ismar.library.network.HttpManager;
 import tv.ismar.library.util.AppUtils;
+import tv.ismar.library.util.DateUtils;
 import tv.ismar.library.util.DeviceUtils;
 import tv.ismar.library.util.LogUtils;
 import tv.ismar.library.util.StringUtils;
 import tv.ismar.player.IPlayer;
 import tv.ismar.player.IsmartvPlayer;
+import tv.ismar.player.event.PlayerEvent;
 import tv.ismar.player.model.MediaEntity;
 import tv.ismar.statistics.PurchaseStatistics;
 
@@ -104,6 +107,7 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
     private boolean mIsPlayingAd;// 判断是否正在播放广告
     private boolean mIsPlayerOnStarted;
     private boolean mIsPlayerStopping = false;// 播放器stop，release需要时间较长
+    private long prepareStartTime;// 预加载开始时间
 
     public PlaybackService() {
     }
@@ -250,6 +254,7 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
         this.subItemPk = 0;// 当前多集片pk值,通过/api/subitem/{pk}可获取详细信息
         this.source = source;
         this.mItemEntity = itemEntity;
+        prepareStartTime = DateUtils.currentTimeMillis();
         cancelRequest();
         initUserInfo();
         mIsPreload = true;
@@ -288,6 +293,7 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
             hlsPlayer.setOnAdvertisementListener(null);
             hlsPlayer.setOnBufferChangedListener(null);
             hlsPlayer.setOnStateChangedListener(null);
+            hlsPlayer.setOnPreloadCompletedListener(null);
 
             hlsPlayer.release();
 //            if (hlsPlayer.getPlayerMode() == IsmartvPlayer.MODE_QIYI_PLAYER) {
@@ -592,7 +598,7 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
         mPreloadMediaSource.setInitQuality(mCurrentQuality);
         mPreloadMediaSource.setStartPosition(mStartPosition);
         if (mIsPreload) {
-            hlsPlayer.preparePreloadPlayer(mPreloadMediaSource);
+            hlsPlayer.preparePreloadPlayer(mPreloadMediaSource, onPreloadCompletedListener);
         } else {
             hlsPlayer.prepare(mPreloadMediaSource, false);
         }
@@ -677,6 +683,39 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
                 });
 
     }
+
+    private IPlayer.OnPreloadCompletedListener onPreloadCompletedListener = new IPlayer.OnPreloadCompletedListener() {
+        @Override
+        public void onPreloadCompleted() {
+            HashMap<String, Object> dataCollectionProperties = new HashMap<>();
+            dataCollectionProperties.put(EventProperty.CLIP, mItemEntity.getClip().getPk());
+            dataCollectionProperties.put(EventProperty.DURATION, DateUtils.currentTimeMillis() - prepareStartTime);
+            String quality = "";
+            switch (mItemEntity.getQuality()) {
+                case 2:
+                    quality = "normal";
+                    break;
+                case 3:
+                    quality = "medium";
+                    break;
+                case 4:
+                    quality = "high";
+                    break;
+                case 5:
+                    quality = "ultra";
+                    break;
+                default:
+                    quality = "adaptive";
+                    break;
+            }
+            dataCollectionProperties.put(EventProperty.QUALITY, quality);
+            dataCollectionProperties.put(EventProperty.TITLE, mItemEntity.getTitle());
+            dataCollectionProperties.put(EventProperty.ITEM, mItemEntity.getPk());
+            dataCollectionProperties.put(EventProperty.SUBITEM, mItemEntity.getItemPk());
+            dataCollectionProperties.put(EventProperty.LOCATION, "player");
+            new PlayerEvent.DataCollectionTask().execute(PlayerEvent.DETAIL_PLAY_LOAD, dataCollectionProperties);
+        }
+    };
 
     private IPlayer.OnAdvertisementListener onAdvertisementListener = new IPlayer.OnAdvertisementListener() {
         @Override
