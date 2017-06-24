@@ -81,8 +81,6 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
     @Override
     protected void onResume() {
         super.onResume();
-        baseChannel="";
-        baseSection="";
         if(filter_checked_conditiion.getChildCount()>1){
             filter_checked_conditiion.setVisibility(View.VISIBLE);
         }else{
