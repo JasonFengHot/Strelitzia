@@ -236,7 +236,7 @@ public class PlayFinishedActivity extends BaseActivity implements View.OnClickLi
                     if (contentModel.equals("music") || (contentModel.equals("sport") && item.getExpense_info() == null) || contentModel.equals("game")) {
                         pageIntent.toPlayPage(PlayFinishedActivity.this, item.getPk(), 0,source);
                     } else {
-                        pageIntent.toDetailPage(PlayFinishedActivity.this, Source.RELATED.getValue(), item.getPk());
+                        pageIntent.toDetailPage(PlayFinishedActivity.this, source.getValue(), item.getPk());
                     }
                 }
             }
