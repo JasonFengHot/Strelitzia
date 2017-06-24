@@ -37,6 +37,24 @@ public class PageIntent implements PageIntentInterface {
 
     }
 
+    @Override
+    public void toDetailPage(final Context context, final String source, final String root, final int pk) {
+
+        Intent intent = new Intent();
+        intent.setAction("tv.ismar.daisy.detailpage");
+        intent.putExtra(EXTRA_PK, pk);
+        intent.putExtra(EXTRA_SOURCE, source);
+        intent.putExtra(EXTRA_TYPE, DETAIL_TYPE_ITEM);
+        intent.putExtra(EXTRA_TO, root);
+        if(context instanceof Activity){
+            ((Activity)context).startActivityForResult(intent,1);
+        }else {
+            context.startActivity(intent);
+        }
+
+
+
+    }
 
     @Override
     public void toDetailPage(Context context, String source, String json) {
@@ -137,7 +155,16 @@ public class PageIntent implements PageIntentInterface {
         intent.putExtra(PageIntentInterface.EXTRA_SOURCE, source.getValue());
         context.startActivity(intent);
     }
-
+    public void toPlayPage(Context context, int pk, int sub_item_pk, Source source,Source root) {
+        Log.i("toPlayPage","startpalyer");
+        Intent intent = new Intent();
+        intent.setAction("tv.ismar.daisy.Player");
+        intent.putExtra(PageIntentInterface.EXTRA_PK, pk);
+        intent.putExtra(PageIntentInterface.EXTRA_SUBITEM_PK, sub_item_pk);
+        intent.putExtra(PageIntentInterface.EXTRA_SOURCE, source.getValue());
+        intent.putExtra(PageIntentInterface.EXTRA_TO, root.getValue());
+        context.startActivity(intent);
+    }
     @Override
     public void toPlayPageEpisode(Context context, int pk, int sub_item_pk, Source source, String contentMode) {
         Intent intent = new Intent();
@@ -259,6 +286,17 @@ public class PageIntent implements PageIntentInterface {
         intent.putExtra("frompage",frompage);
         fragment.startActivityForResult(intent,0);
     }
-
+    @Override
+    public void toPlayFinish(Fragment fragment, String channel, int id, int playScale, boolean hasHistory, String frompage, String root) {
+        Intent intent = new Intent();
+        intent.setAction("tv.ismar.daisy.PlayFinished");
+        intent.putExtra("channel",channel);
+        intent.putExtra("item_id",id);
+        intent.putExtra("play_scale",playScale);
+        intent.putExtra("has_history",hasHistory);
+        intent.putExtra("frompage",frompage);
+        intent.putExtra(EXTRA_TO,root);
+        fragment.startActivityForResult(intent,0);
+    }
 
 }

@@ -1,5 +1,7 @@
 package tv.ismar.statistics;
 
+import android.util.Log;
+
 import java.util.HashMap;
 
 import tv.ismar.app.core.client.NetworkUtils;
@@ -21,6 +23,7 @@ public class DetailPageStatistics {
     }
 
     public void videoDetailOut(ItemEntity itemEntity,String to) {
+        Log.e("videodetailout",to);
         HashMap<String, Object> dataCollectionProperties = new HashMap<>();
         dataCollectionProperties.put(EventProperty.ITEM, itemEntity.getPk());
         dataCollectionProperties.put(EventProperty.SUBITEM, itemEntity.getItemPk());
