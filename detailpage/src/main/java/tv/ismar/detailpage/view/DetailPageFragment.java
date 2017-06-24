@@ -159,7 +159,6 @@ public class DetailPageFragment extends Fragment implements DetailPageContract.V
             position = bundle.getInt(POSITION,-1);
             type=bundle.getString(TYPE);
             mItemEntity = new GsonBuilder().create().fromJson(itemJson, ItemEntity.class);
-
         }
 
         if (!(getActivity() instanceof BaseActivity)) {
@@ -229,11 +228,11 @@ public class DetailPageFragment extends Fragment implements DetailPageContract.V
 
         mModel.notifyBookmark(true);
         mPresenter.fetchItemRelate(String.valueOf(mItemEntity.getPk()));
+        to=fromPage;
     }
 
     @Override
     public void onPause() {
-        if(!to.equals(""))
         mPageStatistics.videoDetailOut(mItemEntity,to);
         mPresenter.stop();
         super.onPause();
@@ -248,7 +247,6 @@ public class DetailPageFragment extends Fragment implements DetailPageContract.V
 
     @Override
     public void onDestroy() {
-        mPageStatistics.videoDetailOut(mItemEntity,fromPage);
         super.onDestroy();
     }
 
