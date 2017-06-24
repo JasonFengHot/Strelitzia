@@ -59,6 +59,17 @@ public class FocusGridLayoutManager extends GridLayoutManager {
     }
 
     @Override
+    public View onInterceptFocusSearch(View focused, int direction) {
+        if(direction==View.FOCUS_RIGHT){
+            int index=getPosition(focused);
+            if(index==getItemCount()-1){
+                return focused;
+            }
+        }
+        return super.onInterceptFocusSearch(focused, direction);
+    }
+
+    @Override
     public View onFocusSearchFailed(View focused, int focusDirection, RecyclerView.Recycler recycler, RecyclerView.State state) {
 
         // Need to be called in order to layout new row/column
