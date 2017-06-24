@@ -687,27 +687,32 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
     private IPlayer.OnPreloadCompletedListener onPreloadCompletedListener = new IPlayer.OnPreloadCompletedListener() {
         @Override
         public void onPreloadCompleted() {
+            String quality = "";
+            if (mCurrentQuality != null) {
+                switch (mCurrentQuality) {
+                    case QUALITY_NORMAL:
+                        quality = "normal";
+                        break;
+                    case QUALITY_MEDIUM:
+                        quality = "medium";
+                        break;
+                    case QUALITY_HIGH:
+                        quality = "high";
+                        break;
+                    case QUALITY_ULTRA:
+                        quality = "ultra";
+                        break;
+                    case QUALITY_BLUERAY:
+                        quality = "blueray";
+                        break;
+                    case QUALITY_4K:
+                        quality = "4k";
+                        break;
+                }
+            }
             HashMap<String, Object> dataCollectionProperties = new HashMap<>();
             dataCollectionProperties.put(EventProperty.CLIP, mItemEntity.getClip().getPk());
             dataCollectionProperties.put(EventProperty.DURATION, DateUtils.currentTimeMillis() - prepareStartTime);
-            String quality = "";
-            switch (mItemEntity.getQuality()) {
-                case 2:
-                    quality = "normal";
-                    break;
-                case 3:
-                    quality = "medium";
-                    break;
-                case 4:
-                    quality = "high";
-                    break;
-                case 5:
-                    quality = "ultra";
-                    break;
-                default:
-                    quality = "adaptive";
-                    break;
-            }
             dataCollectionProperties.put(EventProperty.QUALITY, quality);
             dataCollectionProperties.put(EventProperty.TITLE, mItemEntity.getTitle());
             dataCollectionProperties.put(EventProperty.ITEM, mItemEntity.getPk());
