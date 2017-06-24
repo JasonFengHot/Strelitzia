@@ -398,6 +398,7 @@ public class PlayerEvent {
         tempMap.put(TITLE, media.title);
         tempMap.put(CLIP, media.clipPk);
         tempMap.put("time", time);
+        new DataCollectionTask().execute(EXPENSE_AD_CLICK, tempMap);
     }
 
     private static String switchQuality(Integer currQuality) {
@@ -569,5 +570,6 @@ public class PlayerEvent {
      * 详情页缓冲完成
      */
     public static final String DETAIL_PLAY_LOAD = "detail_play_load";
+    public static final String EXPENSE_AD_CLICK = "expense_ad_click";
 
 }
