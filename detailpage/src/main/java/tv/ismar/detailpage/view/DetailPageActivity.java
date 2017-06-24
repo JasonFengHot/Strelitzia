@@ -61,7 +61,6 @@ public class DetailPageActivity extends BaseActivity implements PlaybackService.
     private Subscription apiClipSubsc;// 需要知道当前是视云还是爱奇艺影片，只有是视云影片才加载播放器
     private HistoryManager historyManager;// 多集影片，需要查询历史记录，历史剧集的片源
     private History mHistory;
-    private boolean goPlayPage;// 是否点击播放，非点击播放，需要将当前预加载停止
     private boolean sharpSetupKeyClick; // 部分夏普设备弹出设置菜单是Dialog Activity样式
 
     private Subscription apiItemSubsc;
@@ -135,7 +134,6 @@ public class DetailPageActivity extends BaseActivity implements PlaybackService.
     }
 
     public void goPlayer() {
-        goPlayPage = true;
         Log.i("contentMode","contentMode : "+mItemEntity.getContentModel());
         Intent intent = new Intent();
         intent.setAction("tv.ismar.daisy.Player");
@@ -301,6 +299,13 @@ public class DetailPageActivity extends BaseActivity implements PlaybackService.
         mLoadingDialog.showDialog();
     }
 
+    // 此方法必须在clic事件之后调用
+    void stopPreload() {
+        if (mPlaybackService != null) {
+            mPlaybackService.stopPlayer(false);
+        }
+    }
+
     @Override
     protected void onResume() {
 //        isClickPlay = false;
@@ -309,7 +314,6 @@ public class DetailPageActivity extends BaseActivity implements PlaybackService.
         super.onResume();
         AppConstant.purchase_referer = "video";
         AppConstant.purchase_page = "detail";
-        goPlayPage = false;
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
@@ -328,11 +332,6 @@ public class DetailPageActivity extends BaseActivity implements PlaybackService.
         }
         if (apiClipSubsc != null && !apiClipSubsc.isUnsubscribed()) {
             apiClipSubsc.unsubscribe();
-        }
-        if (!goPlayPage) {
-            if (mPlaybackService != null) {
-                mPlaybackService.stopPlayer(false);
-            }
         }
         mClient.disconnect();
         mPlaybackService = null;
@@ -378,7 +377,7 @@ public class DetailPageActivity extends BaseActivity implements PlaybackService.
 
     @Override
     public void onConnected(PlaybackService service) {
-        LogUtils.d(TAG, "service connected : " + goPlayPage);
+        LogUtils.d(TAG, "service connected : ");
         mPlaybackService = service;
         mPlaybackService.preparePlayer(mItemEntity, source);
 
@@ -386,11 +385,12 @@ public class DetailPageActivity extends BaseActivity implements PlaybackService.
 
     @Override
     public void onDisconnected() {
-        LogUtils.e(TAG, "service disconnected : " + goPlayPage);
+        LogUtils.e(TAG, "service disconnected : ");
     }
 
     @Override
     public void onBackPressed() {
+        stopPreload();
         if (mPackageDetailFragment != null) {
             mPackageDetailFragment.onActivityBackPressed();
         }

@@ -474,6 +474,7 @@ public class DetailPageFragment extends Fragment implements DetailPageContract.V
     private View.OnClickListener relateItemOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+            ((DetailPageActivity) getActivity()).stopPreload();
             AppConstant.purchase_entrance_page = "related";
             ItemEntity item = relateItems[(int) v.getTag()];
             AppConstant.purchase_entrance_related_item = String.valueOf(mItemEntity.getItemPk());
