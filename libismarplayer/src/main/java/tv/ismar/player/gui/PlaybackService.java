@@ -1019,13 +1019,10 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
 
     public void logExpenseVideoPreview(int position, String result) {
         if (hlsPlayer != null) {
-            String player = hlsPlayer.getPlayerMode() == IsmartvPlayer.MODE_QIYI_PLAYER ? "qiyi" : "bestv";
+            String player = hlsPlayer.getPlayerType();
             int clipPk = mItemEntity.getClip() == null ? 0 : mItemEntity.getClip().getPk();
             float price = mItemEntity.getExpense() == null ? 0 : mItemEntity.getExpense().getPrice();
-            int duration = position;
-            if (result.equals("purchase")) {
-                duration = hlsPlayer.getDuration();
-            }
+            int duration = hlsPlayer.getDuration();
             new PurchaseStatistics().expenseVideoPreview(
                     itemPk,
                     clipPk,
