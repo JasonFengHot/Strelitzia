@@ -233,7 +233,6 @@ public class DetailPageFragment extends Fragment implements DetailPageContract.V
 
     @Override
     public void onPause() {
-        mPageStatistics.videoDetailOut(mItemEntity,to);
         mPresenter.stop();
         super.onPause();
     }
@@ -242,6 +241,8 @@ public class DetailPageFragment extends Fragment implements DetailPageContract.V
     public void onStop() {
 //        String sn = IsmartvActivator.getInstance().getSnToken();
 //        Log.i("LH/", "sn:" + sn);
+        if(!((DetailPageActivity)getActivity()).sendLog)
+        mPageStatistics.videoDetailOut(mItemEntity,to);
         super.onStop();
     }
 
@@ -481,7 +482,8 @@ public class DetailPageFragment extends Fragment implements DetailPageContract.V
             AppConstant.purchase_entrance_related_title = mItemEntity.getTitle();
             AppConstant.purchase_entrance_related_channel = AppConstant.purchase_channel;
             mPageStatistics.videoRelateClick(mItemEntity.getPk(), item);
-            new PageIntent().toDetailPage(getContext(), Source.RELATED.getValue(), item.getPk());
+            DetailPageActivity act = (DetailPageActivity)getActivity();
+            new PageIntent().toDetailPage(getContext(), Source.RELATED.getValue(),act.to, item.getPk());
             to="relate";
             getActivity().finish();
         }

@@ -29,6 +29,7 @@ import tv.ismar.app.BaseActivity;
 import tv.ismar.app.VodApplication;
 import tv.ismar.app.core.PageIntent;
 import tv.ismar.app.core.PageIntentInterface;
+import tv.ismar.app.core.Source;
 import tv.ismar.app.db.HistoryManager;
 import tv.ismar.app.entity.ClipEntity;
 import tv.ismar.app.entity.History;
@@ -41,6 +42,7 @@ import tv.ismar.library.util.StringUtils;
 import tv.ismar.player.gui.PlaybackFragment;
 import tv.ismar.player.gui.PlaybackService;
 import tv.ismar.player.widget.ExitToast;
+import tv.ismar.statistics.DetailPageStatistics;
 
 import static tv.ismar.app.core.PageIntentInterface.DETAIL_TYPE_ITEM;
 import static tv.ismar.app.core.PageIntentInterface.DETAIL_TYPE_PKG;
@@ -82,23 +84,35 @@ public class DetailPageActivity extends BaseActivity implements PlaybackService.
             return false;
         }
     });
+    public String to;
+    private DetailPageStatistics mPageStatistics;
+    public boolean sendLog=false;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 //        getWindow().setFormat(PixelFormat.TRANSLUCENT);
+        mPageStatistics = new DetailPageStatistics();
         setContentView(R.layout.activity_detailpage);
         Intent intent = getIntent();
 
         itemPK = intent.getIntExtra(EXTRA_PK, -1);
         String itemJson = intent.getStringExtra(EXTRA_ITEM_JSON);
         source = intent.getStringExtra(EXTRA_SOURCE);
+        to = intent.getStringExtra("to");
         if (source != null && source.equals("launcher")) {
             AppConstant.purchase_entrance_page = "launcher";
         }
         int type = intent.getIntExtra(EXTRA_TYPE, 0);
         String url = intent.getStringExtra("url");
+        if(TextUtils.isEmpty(to)) {
+            if (!TextUtils.isEmpty(source)) {
+                if (!(source.equals(Source.RELATED.getValue()) || source.equals(Source.FINISHED.getValue()) || source.equals(Source.EXIT_LIKE.getValue()) || source.equals(Source.EXIT_NOT_LIKE.getValue()))) {
+                    to = source;
+                }
+            }
+        }
 
         if (TextUtils.isEmpty(itemJson) && itemPK == -1 && TextUtils.isEmpty(url)) {
             finish();
@@ -141,6 +155,7 @@ public class DetailPageActivity extends BaseActivity implements PlaybackService.
 //        intent.putExtra(PageIntentInterface.EXTRA_SUBITEM_PK, mSubItemPk);
         intent.putExtra(PageIntentInterface.EXTRA_SOURCE, source);
         intent.putExtra(PageIntentInterface.QIYIFLAG, isqiyi);
+        intent.putExtra(PageIntentInterface.EXTRA_TO, to);
         intent.putExtra("contentMode",mItemEntity.getContentModel());
         startActivity(intent);
 
@@ -394,6 +409,11 @@ public class DetailPageActivity extends BaseActivity implements PlaybackService.
         if (mPackageDetailFragment != null) {
             mPackageDetailFragment.onActivityBackPressed();
         }
+        sendLog=true;
+        if (TextUtils.isEmpty(to)) {
+            to=Source.RELATED.getValue();
+        }
+        mPageStatistics.videoDetailOut(mItemEntity,to);
         super.onBackPressed();
     }
 

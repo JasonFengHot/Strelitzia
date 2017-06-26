@@ -14,6 +14,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.provider.Settings;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -51,6 +52,7 @@ import tv.ismar.app.BaseActivity;
 import tv.ismar.app.ad.Advertisement;
 import tv.ismar.app.core.PageIntent;
 import tv.ismar.app.core.PageIntentInterface;
+import tv.ismar.app.core.Source;
 import tv.ismar.app.entity.ClipEntity;
 import tv.ismar.app.network.SkyService;
 import tv.ismar.app.network.entity.AdElementEntity;
@@ -152,6 +154,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
     private boolean isqiyi;
     private String contentMode="";
     private boolean isPlayExitLayerShow;
+    private String to;
 
     public PlaybackFragment() {
         // Required empty public constructor
@@ -197,6 +200,13 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
         mAdvertisement = new Advertisement(getActivity());
         mHandler = new PlaybackHandler(this);
         mClient = new PlaybackService.Client(getActivity(), this);
+        to = getActivity().getIntent().getStringExtra("to");
+        String frompage = getActivity().getIntent().getStringExtra(PageIntentInterface.EXTRA_SOURCE);
+        if(TextUtils.isEmpty(to)) {
+            if (!(frompage.equals(Source.RELATED.getValue()) || frompage.equals(Source.FINISHED.getValue()) || frompage.equals(Source.EXIT_LIKE.getValue()) || frompage.equals(Source.EXIT_NOT_LIKE.getValue()))) {
+                to = frompage;
+            }
+        }
     }
 
     @Override
@@ -842,7 +852,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
                         }
                     }
                     PageIntent pageIntent=new PageIntent();
-                    pageIntent.toPlayFinish(this,mPlaybackService.getItemEntity().getContentModel(),extraItemPk,100,mPlaybackService.hasHistory,"player");
+                    pageIntent.toPlayFinish(this,mPlaybackService.getItemEntity().getContentModel(),extraItemPk,100,mPlaybackService.hasHistory,"player",to);
 //                    String itemJson = null;
 //                    try {
 //                        itemJson = JacksonUtils.toJson(mPlaybackService.getItemEntity());
@@ -1275,7 +1285,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
                 mIsClickKefu = true;
                 isPlayExitLayerShow = true;
                 PageIntent pageIntent=new PageIntent();
-                pageIntent.toPlayFinish(this,mPlaybackService.getItemEntity().getContentModel(),extraItemPk, (int) ((((double)mCurrentPosition)/((double)mPlaybackService.getMediaPlayer().getDuration()))*100),mPlaybackService.hasHistory,"player");
+                pageIntent.toPlayFinish(this,mPlaybackService.getItemEntity().getContentModel(),extraItemPk, (int) ((((double)mCurrentPosition)/((double)mPlaybackService.getMediaPlayer().getDuration()))*100),mPlaybackService.hasHistory,"player",to);
                 break;
         }
     }

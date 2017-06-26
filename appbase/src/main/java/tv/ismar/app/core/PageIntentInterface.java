@@ -14,6 +14,7 @@ public interface PageIntentInterface {
     // 电视剧等多集片子集pk,与文档相同
     String EXTRA_SUBITEM_PK = "sub_item_pk";
     String EXTRA_SOURCE = "fromPage";
+    String EXTRA_TO = "to";
     String EXTRA_TYPE = "type";
     String EXTRA_TITLE= "title";
     String EXTRA_START_TIME= "time";
@@ -38,6 +39,8 @@ public interface PageIntentInterface {
 
     void toDetailPage(Context context, String source, int pk);
 
+
+    void toDetailPage(Context context, String source, String root, int pk);
 
     void toDetailPage(Context context, String source, String json);
 
@@ -70,6 +73,8 @@ public interface PageIntentInterface {
 
 
     void toPlayFinish(Fragment fragment, String channel, int id, int playScale, boolean hasHistory, String frompage);
+
+    void toPlayFinish(Fragment fragment, String channel, int id, int playScale, boolean hasHistory, String frompage, String root);
 
     class PaymentInfo {
         private ProductCategory category;
