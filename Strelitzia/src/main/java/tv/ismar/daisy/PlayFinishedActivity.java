@@ -373,6 +373,12 @@ public class PlayFinishedActivity extends BaseActivity implements View.OnClickLi
             String userid = sharedPreferences.getString("username", "");
             LogUtils.video_exit_recommend(itemId, type, action, itemPk, clip, subitem, "finished", location, order, userid);
         }
+        play_finished_horizontal_recylerview.setAdapter(null);
+        play_finished_vertical_recylerview.setAdapter(null);
+        play_finished_horizontal_recylerview=null;
+        play_finished_vertical_recylerview=null;
+        playFinishedAdapter=null;
+
     }
 
 
