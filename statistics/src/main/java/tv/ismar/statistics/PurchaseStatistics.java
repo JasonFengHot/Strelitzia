@@ -131,7 +131,7 @@ public class PurchaseStatistics {
         dataCollectionProperties.put("userid", userid);
         dataCollectionProperties.put("type", type);
         dataCollectionProperties.put("wares_id", wares_id);
-        dataCollectionProperties.put("subject", video_title);
+        dataCollectionProperties.put("subject", subject);
         dataCollectionProperties.put("result", result);
         dataCollectionProperties.put("except", except);
         dataCollectionProperties.put("trade_no", trade_no);

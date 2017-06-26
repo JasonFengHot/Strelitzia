@@ -750,7 +750,7 @@ public class PaymentActivity extends BaseActivity implements View.OnClickListene
                         }
                     }
                     new PurchaseStatistics().expensePageExit(String.valueOf(mItemEntity.getPk()), mItemEntity.getTitle(), IsmartvActivator.getInstance().getUsername(),
-                            type, "", "", "success", "", uuid);
+                            type, "", mItemEntity.getTitle(), "success", "", uuid);
                 } else {
                     new PurchaseStatistics().expensePageExit("", "", IsmartvActivator.getInstance().getUsername(),
                             "", "", "", "success", "", uuid);
@@ -771,7 +771,7 @@ public class PaymentActivity extends BaseActivity implements View.OnClickListene
                         }
                     }
                     new PurchaseStatistics().expensePageExit(String.valueOf(mItemEntity.getPk()), mItemEntity.getTitle(), IsmartvActivator.getInstance().getUsername(),
-                            type, "", "", "allow", "", uuid);
+                            type, "", mItemEntity.getTitle(), "allow", "", uuid);
                 }else {
                     new PurchaseStatistics().expensePageExit("", "", IsmartvActivator.getInstance().getUsername(),
                             "", "", "", "allow", "", uuid);
