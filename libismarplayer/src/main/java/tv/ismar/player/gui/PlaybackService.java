@@ -293,7 +293,6 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
             hlsPlayer.setOnAdvertisementListener(null);
             hlsPlayer.setOnBufferChangedListener(null);
             hlsPlayer.setOnStateChangedListener(null);
-            hlsPlayer.setOnPreloadCompletedListener(null);
 
             hlsPlayer.release();
 //            if (hlsPlayer.getPlayerMode() == IsmartvPlayer.MODE_QIYI_PLAYER) {
@@ -598,7 +597,7 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
         mPreloadMediaSource.setInitQuality(mCurrentQuality);
         mPreloadMediaSource.setStartPosition(mStartPosition);
         if (mIsPreload) {
-            hlsPlayer.preparePreloadPlayer(mPreloadMediaSource, onPreloadCompletedListener);
+            hlsPlayer.preparePreloadPlayer(mPreloadMediaSource);
         } else {
             hlsPlayer.prepare(mPreloadMediaSource, false);
         }
@@ -683,44 +682,6 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
                 });
 
     }
-
-    private IPlayer.OnPreloadCompletedListener onPreloadCompletedListener = new IPlayer.OnPreloadCompletedListener() {
-        @Override
-        public void onPreloadCompleted() {
-            String quality = "";
-            if (mCurrentQuality != null) {
-                switch (mCurrentQuality) {
-                    case QUALITY_NORMAL:
-                        quality = "normal";
-                        break;
-                    case QUALITY_MEDIUM:
-                        quality = "medium";
-                        break;
-                    case QUALITY_HIGH:
-                        quality = "high";
-                        break;
-                    case QUALITY_ULTRA:
-                        quality = "ultra";
-                        break;
-                    case QUALITY_BLUERAY:
-                        quality = "blueray";
-                        break;
-                    case QUALITY_4K:
-                        quality = "4k";
-                        break;
-                }
-            }
-            HashMap<String, Object> dataCollectionProperties = new HashMap<>();
-            dataCollectionProperties.put(EventProperty.CLIP, mItemEntity.getClip().getPk());
-            dataCollectionProperties.put(EventProperty.DURATION, DateUtils.currentTimeMillis() - prepareStartTime);
-            dataCollectionProperties.put(EventProperty.QUALITY, quality);
-            dataCollectionProperties.put(EventProperty.TITLE, mItemEntity.getTitle());
-            dataCollectionProperties.put(EventProperty.ITEM, mItemEntity.getPk());
-            dataCollectionProperties.put(EventProperty.SUBITEM, mItemEntity.getItemPk());
-            dataCollectionProperties.put(EventProperty.LOCATION, "player");
-            new PlayerEvent.DataCollectionTask().execute(PlayerEvent.DETAIL_PLAY_LOAD, dataCollectionProperties);
-        }
-    };
 
     private IPlayer.OnAdvertisementListener onAdvertisementListener = new IPlayer.OnAdvertisementListener() {
         @Override
@@ -1022,7 +983,6 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
             String player = hlsPlayer.getPlayerType();
             int clipPk = mItemEntity.getClip() == null ? 0 : mItemEntity.getClip().getPk();
             float price = mItemEntity.getExpense() == null ? 0 : mItemEntity.getExpense().getPrice();
-            int duration = hlsPlayer.getDuration();
             new PurchaseStatistics().expenseVideoPreview(
                     itemPk,
                     clipPk,
@@ -1032,7 +992,7 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
                     price,
                     player,
                     result,
-                    duration / 1000
+                    position / 1000
             );
         }
     }

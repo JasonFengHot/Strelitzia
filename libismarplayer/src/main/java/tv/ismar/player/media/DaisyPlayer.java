@@ -305,9 +305,7 @@ public class DaisyPlayer extends IsmartvPlayer implements SurfaceHelper.SurfaceC
             if (mPlayer == null || mPlayer != smartPlayer) {
                 return;
             }
-            if (onPreloadCompletedListener != null) {
-                onPreloadCompletedListener.onPreloadCompleted();
-            }
+            isPreloadCompleted = true;
         }
     };
 
@@ -589,7 +587,7 @@ public class DaisyPlayer extends IsmartvPlayer implements SurfaceHelper.SurfaceC
         if(hasPreload){
             if (logFirstOpenPlayer) {
                 logPlayerOpenTime = DateUtils.currentTimeMillis();
-                PlayerEvent.videoStart(logPlayerEvent, logSpeed, logPlayerFlag);
+                PlayerEvent.videoStart(logPlayerEvent, logSpeed, logPlayerFlag, true);
             }
             mPlayer.createPlayer();
             mPlayer.setScreenOnWhilePlaying(true);
@@ -663,7 +661,7 @@ public class DaisyPlayer extends IsmartvPlayer implements SurfaceHelper.SurfaceC
                 } else {
                     if (logFirstOpenPlayer) {
                         logPlayerOpenTime = DateUtils.currentTimeMillis();
-                        PlayerEvent.videoStart(logPlayerEvent, logSpeed, logPlayerFlag);
+                        PlayerEvent.videoStart(logPlayerEvent, logSpeed, logPlayerFlag, false);
                     }
                     mPlayer.createPlayer();
                     mPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);

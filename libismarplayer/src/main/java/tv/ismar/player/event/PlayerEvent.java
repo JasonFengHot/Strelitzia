@@ -58,7 +58,7 @@ public class PlayerEvent {
      *              quality (视频清晰度 normal   medium  high  ultra  adaptive) STRING
      * @param speed (网速, 单位KB/s) INTEGER
      */
-    public static void videoStart(PlayerEvent media, int speed, String playerFlag) {
+    public static void videoStart(PlayerEvent media, int speed, String playerFlag, boolean isPreload) {
         if (media == null) {
             return;
         }
@@ -67,6 +67,9 @@ public class PlayerEvent {
         tempMap.put("userid", userId);
         tempMap.put("source", media.source);
         tempMap.put("section", media.section);
+        if (isPreload) {
+            tempMap.put("location", "detail");
+        }
         new DataCollectionTask().execute(VIDEO_START, tempMap);
     }
 

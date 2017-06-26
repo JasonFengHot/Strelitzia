@@ -249,6 +249,7 @@ public class DetailPageFragment extends Fragment implements DetailPageContract.V
     @Override
     public void onDestroy() {
         super.onDestroy();
+        handler=null;
     }
 
     @Override
