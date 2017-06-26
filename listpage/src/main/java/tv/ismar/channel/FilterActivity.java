@@ -471,5 +471,7 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
     protected void onDestroy() {
         super.onDestroy();
         baseSection="";
+        filter_conditions.removeAllViews();
+        poster_recyclerview.swapAdapter(null,true);
     }
 }
