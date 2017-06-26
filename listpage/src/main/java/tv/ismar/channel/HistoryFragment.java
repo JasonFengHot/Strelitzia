@@ -613,7 +613,7 @@ public class HistoryFragment extends Fragment implements ScrollableSectionList.O
 								}
 							}
 						} else {
-							mDataCollectionProperties.put("to_subitem", item.clip.pk);
+							mDataCollectionProperties.put("to_subitem", 0);
 						}
 						mDataCollectionProperties.put("to_title", item.title);
 						mDataCollectionProperties.put("position", history.last_position/1000);
