@@ -25,6 +25,7 @@ import cn.ismartv.tvhorizontalscrollview.TvHorizontalScrollView;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import tv.ismar.account.IsmartvActivator;
+import tv.ismar.app.AppConstant;
 import tv.ismar.app.BaseActivity;
 import tv.ismar.app.core.PageIntent;
 import tv.ismar.app.core.Source;
@@ -371,6 +372,7 @@ public class FilmStarActivity extends BaseActivity implements OnFocusChangeListe
                             }
 
                             fetchActorRelateByType(pk, entity.getFacet().get(0).getContent_type());
+                            AppConstant.purchase_tab = entity.getFacet().get(0).getContent_type();
                             indicatorListLayout.getChildAt(0).requestFocus();
                         }
 
@@ -460,6 +462,7 @@ public class FilmStarActivity extends BaseActivity implements OnFocusChangeListe
             indicatorSelectedView = v;
             indicatorSelectedView.setSelected(true);
             String type = (String) v.getTag();
+            AppConstant.purchase_tab = type;
             fetchActorRelateByType(pk, type);
             JasmineUtil.video_search(type,title);
         }
