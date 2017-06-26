@@ -235,6 +235,10 @@ public abstract class IsmartvPlayer implements IPlayer {
 
     public abstract IAdController getAdController();
 
+    public String getPlayerType() {
+        return logPlayerFlag;
+    }
+
     public void logVideoExit(int exitPosition, String source) {
         PlayerEvent.videoExit(
                 logPlayerEvent,
