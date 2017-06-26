@@ -359,6 +359,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
             closeActivity("source");
             return;
         }
+        if(mPlaybackService!=null)
         mPlaybackService.initUserInfo();
         if (requestCode == PAYMENT_REQUEST_CODE) {
             if (resultCode == PAYMENT_SUCCESS_CODE) {
@@ -1038,6 +1039,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
                     backpress = true;
                     removeBufferingLongTime();
                     timerStop();
+                    isPlayExitLayerShow = true;
                     mPlaybackService.pausePlayer();
                     goOtherPage(EVENT_PLAY_EXIT);
 //                    return true;
@@ -1283,7 +1285,6 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
                 break;
             case EVENT_PLAY_EXIT:
                 mIsClickKefu = true;
-                isPlayExitLayerShow = true;
                 PageIntent pageIntent=new PageIntent();
                 pageIntent.toPlayFinish(this,mPlaybackService.getItemEntity().getContentModel(),extraItemPk, (int) ((((double)mCurrentPosition)/((double)mPlaybackService.getMediaPlayer().getDuration()))*100),mPlaybackService.hasHistory,"player",to);
                 break;
