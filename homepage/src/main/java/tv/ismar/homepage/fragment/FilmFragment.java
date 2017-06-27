@@ -464,50 +464,60 @@ public class FilmFragment extends ChannelBaseFragment {
 
     private void initCarousel(ArrayList<HomePagerEntity.Carousel> carousels) {
         allItem = new ArrayList<LabelImageView3>();
-        if(carousels.size()>=5) {
-            carousels = new ArrayList<>(carousels.subList(0, 5));
-        }
         mCarousels = carousels;
         carouselMap = new HashMap<>();
 
 
         try {
-            Picasso.with(mContext).load(carousels.get(0).getThumb_image()).memoryPolicy(MemoryPolicy.NO_STORE).into(film_carous_imageView1);
-            film_carous_imageView1.setTag(0);
-            film_carous_imageView1.setTag(R.drawable.launcher_selector, carousels.get(0));
-            film_carous_imageView1.setOnClickListener(ItemClickListener);
-            film_carous_imageView1.setOnFocusChangeListener(itemFocusChangeListener);
-            carousels.get(0).setPosition(0);
-            Picasso.with(mContext).load(carousels.get(1).getThumb_image()).memoryPolicy(MemoryPolicy.NO_STORE).into(film_carous_imageView2);
-            film_carous_imageView2.setTag(1);
-            film_carous_imageView2.setTag(R.drawable.launcher_selector, carousels.get(1));
-            film_carous_imageView2.setOnClickListener(ItemClickListener);
-            film_carous_imageView2.setOnFocusChangeListener(itemFocusChangeListener);
-            carousels.get(1).setPosition(1);
-            Picasso.with(mContext).load(carousels.get(2).getThumb_image()).memoryPolicy(MemoryPolicy.NO_STORE).into(film_carous_imageView3);
-            film_carous_imageView3.setTag(2);
-            film_carous_imageView3.setTag(R.drawable.launcher_selector, carousels.get(2));
-            film_carous_imageView3.setOnClickListener(ItemClickListener);
-            film_carous_imageView3.setOnFocusChangeListener(itemFocusChangeListener);
-            carousels.get(2).setPosition(2);
-
-            Picasso.with(mContext).load(carousels.get(3).getThumb_image()).memoryPolicy(MemoryPolicy.NO_STORE).into(film_carous_imageView4);
-            film_carous_imageView4.setTag(3);
-            film_carous_imageView4.setTag(R.drawable.launcher_selector, carousels.get(3));
-            film_carous_imageView4.setOnClickListener(ItemClickListener);
-            film_carous_imageView4.setOnFocusChangeListener(itemFocusChangeListener);
-            carousels.get(3).setPosition(3);
-
-            Picasso.with(mContext).load(carousels.get(4).getThumb_image()).memoryPolicy(MemoryPolicy.NO_STORE).into(film_carous_imageView5);
-            film_carous_imageView5.setTag(4);
-            film_carous_imageView5.setTag(R.drawable.launcher_selector, carousels.get(4));
-            film_carous_imageView5.setOnClickListener(ItemClickListener);
-            film_carous_imageView5.setOnFocusChangeListener(itemFocusChangeListener);
-            carousels.get(4).setPosition(4);
+            if(mCarousels.size()>0) {
+                Picasso.with(mContext).load(carousels.get(0).getThumb_image()).memoryPolicy(MemoryPolicy.NO_STORE).into(film_carous_imageView1);
+                film_carous_imageView1.setTag(0);
+                film_carous_imageView1.setTag(R.drawable.launcher_selector, carousels.get(0));
+                film_carous_imageView1.setOnClickListener(ItemClickListener);
+                film_carous_imageView1.setOnFocusChangeListener(itemFocusChangeListener);
+                carousels.get(0).setPosition(0);
+            }
+            if(mCarousels.size()>1) {
+                Picasso.with(mContext).load(carousels.get(1).getThumb_image()).memoryPolicy(MemoryPolicy.NO_STORE).into(film_carous_imageView2);
+                film_carous_imageView2.setTag(1);
+                film_carous_imageView2.setTag(R.drawable.launcher_selector, carousels.get(1));
+                film_carous_imageView2.setOnClickListener(ItemClickListener);
+                film_carous_imageView2.setOnFocusChangeListener(itemFocusChangeListener);
+                carousels.get(1).setPosition(1);
+            }
+            if(mCarousels.size()>2) {
+                Picasso.with(mContext).load(carousels.get(2).getThumb_image()).memoryPolicy(MemoryPolicy.NO_STORE).into(film_carous_imageView3);
+                film_carous_imageView3.setTag(2);
+                film_carous_imageView3.setTag(R.drawable.launcher_selector, carousels.get(2));
+                film_carous_imageView3.setOnClickListener(ItemClickListener);
+                film_carous_imageView3.setOnFocusChangeListener(itemFocusChangeListener);
+                carousels.get(2).setPosition(2);
+            }
+            if(mCarousels.size()>3) {
+                Picasso.with(mContext).load(carousels.get(3).getThumb_image()).memoryPolicy(MemoryPolicy.NO_STORE).into(film_carous_imageView4);
+                film_carous_imageView4.setTag(3);
+                film_carous_imageView4.setTag(R.drawable.launcher_selector, carousels.get(3));
+                film_carous_imageView4.setOnClickListener(ItemClickListener);
+                film_carous_imageView4.setOnFocusChangeListener(itemFocusChangeListener);
+                carousels.get(3).setPosition(3);
+            }
+            if(mCarousels.size()>4) {
+                Picasso.with(mContext).load(carousels.get(4).getThumb_image()).memoryPolicy(MemoryPolicy.NO_STORE).into(film_carous_imageView5);
+                film_carous_imageView5.setTag(4);
+                film_carous_imageView5.setTag(R.drawable.launcher_selector, carousels.get(4));
+                film_carous_imageView5.setOnClickListener(ItemClickListener);
+                film_carous_imageView5.setOnFocusChangeListener(itemFocusChangeListener);
+                carousels.get(4).setPosition(4);
+            }
+            if(mCarousels.size()>0)
             allItem.add(film_carous_imageView1);
+            if(mCarousels.size()>1)
             allItem.add(film_carous_imageView2);
+            if(mCarousels.size()>2)
             allItem.add(film_carous_imageView3);
+            if(mCarousels.size()>3)
             allItem.add(film_carous_imageView4);
+            if(mCarousels.size()>4)
             allItem.add(film_carous_imageView5);
         } catch (Exception e) {
             new CallaPlay().exception_except("launcher", "launcher", channelEntity.getChannel(),
@@ -522,10 +532,15 @@ public class FilmFragment extends ChannelBaseFragment {
         resetBorder();
 
         carouselMap = new HashMap<>();
+        if(mCarousels.size()>0)
         carouselMap.put(0, film_carous_imageView1.getId());
+        if(mCarousels.size()>1)
         carouselMap.put(1, film_carous_imageView2.getId());
+        if(mCarousels.size()>2)
         carouselMap.put(2, film_carous_imageView3.getId());
+        if(mCarousels.size()>3)
         carouselMap.put(3, film_carous_imageView4.getId());
+        if(mCarousels.size()>4)
         carouselMap.put(4, film_carous_imageView5.getId());
         playCarousel(0);
     }
