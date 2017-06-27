@@ -90,8 +90,8 @@ public class ConnectivityChangeReceiver extends BroadcastReceiver {
         if(sn==null||sn.equals("")){
         }else {
             SkyService skyService = SkyService.ServiceManager.getService();
-            String url = "http://weixin.test.tvxio.com/Hibiscus/Hibiscus/uploadclientip";
-//        String url="http://wx.api.tvxio.com/weixin4server/uploadclientip";
+//            String url = "http://weixin.test.tvxio.com/Hibiscus/Hibiscus/uploadclientip";
+            String url="http://wx.api.tvxio.com/weixin4server/uploadclientip";
             if(DeviceUtils.getLocalInetAddress()!=null) {
                 ip= DeviceUtils.getLocalInetAddress().toString();
             }
