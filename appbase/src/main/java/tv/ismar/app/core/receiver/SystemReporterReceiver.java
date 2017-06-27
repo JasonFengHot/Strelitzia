@@ -53,8 +53,9 @@ public class SystemReporterReceiver extends BroadcastReceiver {
                     HashMap<String, Object> properties = new HashMap<String, Object>();
                     properties.put("duration", lastUseTme / 1000);      // int类型 单位 s
                     properties.put("version", getVersionCode());   // 软件版本号, 例如: S-1-1030-F
-                    properties.put("firmware", Build.VERSION.RELEASE);                     // 固件版本号, 例如: Nebula_SDV2.1_120406__C_1030-F
+                    properties.put("firmware", "");                     // 固件版本号, 例如: Nebula_SDV2.1_120406__C_1030-F
                     properties.put("welcome", "TV");                    // 开机界面, (TV|Smart), 例如: TV
+                    properties.put("os_version",Build.VERSION.RELEASE);
                     NetworkUtils.SaveLogToLocal(eventName, properties);
                     Log.i("reporter", "lastUseTime:" + lastUseTme);
                 }
@@ -77,7 +78,8 @@ public class SystemReporterReceiver extends BroadcastReceiver {
                 properties.put("duration", 86400000);      // int类型 单位 s
                 properties.put("version", Build.VERSION.RELEASE);   // 软件版本号, 例如: S-1-1030-F
                 properties.put("firmware", "");                     // 固件版本号, 例如: Nebula_SDV2.1_120406__C_1030-F
-                properties.put("welcome", "TV");                    // 开机界面, (TV|Smart), 例如: TV
+                properties.put("welcome", "TV");                       // 开机界面, (TV|Smart), 例如: TV
+                properties.put("os_version",Build.VERSION.RELEASE);
                 NetworkUtils.SaveLogToLocal(eventName, properties);
                 new Thread(mUpLoadLogRunnable).start();
             }
