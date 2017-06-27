@@ -350,7 +350,7 @@ public class QiyiPlayer extends IsmartvPlayer {
             if (logFirstOpenPlayer) {
                 // 沒有详情页，点击海报后直接进入播放器，第一次进入播放器
                 logPlayerOpenTime = DateUtils.currentTimeMillis();
-                PlayerEvent.videoStart(logPlayerEvent, logSpeed, logPlayerFlag, false);
+                PlayerEvent.videoStart(logPlayerEvent, logSpeed, logPlayerFlag);
             }
         }
     };

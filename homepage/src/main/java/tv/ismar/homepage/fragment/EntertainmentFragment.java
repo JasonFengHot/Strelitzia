@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnFocusChangeListener;
@@ -488,8 +489,9 @@ public class EntertainmentFragment extends ChannelBaseFragment {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            if (looppost.size() < 3)
-                return;
+            Log.i("entertain","Looppost"+looppost.size());
+//            if (looppost.size() < 3)
+//                return;
             Picasso.with(mContext).load(looppost.get(++loopindex)).memoryPolicy(MemoryPolicy.NO_STORE)
                     .into(vaiety_post);
             if (loopindex == 0) {
@@ -515,7 +517,7 @@ public class EntertainmentFragment extends ChannelBaseFragment {
                 vaiety_post.setTag(R.drawable.launcher_selector, vaiety_thumb3.getTag(R.drawable.launcher_selector));
             }
 
-            if (loopindex >= 2)
+            if (loopindex >= looppost.size()-1)
                 loopindex = -1;
             if (imageswitch.hasMessages(IMAGE_SWITCH_KEY))
                 imageswitch.removeMessages(IMAGE_SWITCH_KEY);

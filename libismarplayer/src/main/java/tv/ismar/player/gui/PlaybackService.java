@@ -107,7 +107,7 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
     private boolean mIsPlayingAd;// 判断是否正在播放广告
     private boolean mIsPlayerOnStarted;
     private boolean mIsPlayerStopping = false;// 播放器stop，release需要时间较长
-    private long prepareStartTime;// 预加载开始时间
+    public static long prepareStartTime;// 预加载开始时间
 
     public PlaybackService() {
     }

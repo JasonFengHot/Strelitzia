@@ -37,8 +37,10 @@ import tv.ismar.app.network.entity.ItemEntity;
 import tv.ismar.app.util.Utils;
 import tv.ismar.app.widget.LoadingDialog;
 import tv.ismar.detailpage.R;
+import tv.ismar.library.util.DateUtils;
 import tv.ismar.library.util.LogUtils;
 import tv.ismar.library.util.StringUtils;
+import tv.ismar.player.IsmartvPlayer;
 import tv.ismar.player.gui.PlaybackFragment;
 import tv.ismar.player.gui.PlaybackService;
 import tv.ismar.player.widget.ExitToast;
@@ -64,6 +66,7 @@ public class DetailPageActivity extends BaseActivity implements PlaybackService.
     private HistoryManager historyManager;// 多集影片，需要查询历史记录，历史剧集的片源
     private History mHistory;
     private boolean sharpSetupKeyClick; // 部分夏普设备弹出设置菜单是Dialog Activity样式
+    private long preloadStartTime;
 
     private Subscription apiItemSubsc;
     private String source;
@@ -315,8 +318,11 @@ public class DetailPageActivity extends BaseActivity implements PlaybackService.
     }
 
     // 此方法必须在clic事件之后调用
-    void stopPreload() {
+    public void stopPreload() {
         if (mPlaybackService != null) {
+            if (!IsmartvPlayer.isPreloadCompleted && mPlaybackService.getMediaPlayer() != null) {
+                mPlaybackService.getMediaPlayer().logPreloadEnd();
+            }
             mPlaybackService.stopPlayer(false);
         }
     }
@@ -394,6 +400,7 @@ public class DetailPageActivity extends BaseActivity implements PlaybackService.
     @Override
     public void onConnected(PlaybackService service) {
         LogUtils.d(TAG, "service connected : ");
+        preloadStartTime = DateUtils.currentTimeMillis();
         mPlaybackService = service;
         mPlaybackService.preparePlayer(mItemEntity, source);
 
