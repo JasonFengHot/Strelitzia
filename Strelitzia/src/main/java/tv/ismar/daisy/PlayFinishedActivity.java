@@ -70,6 +70,7 @@ public class PlayFinishedActivity extends BaseActivity implements View.OnClickLi
     private String to;
     private String frompage;
     private ImageView play_exit_error_img;
+    private BitmapDecoder bitmapDecoder;
 
 
     @Override
@@ -122,6 +123,7 @@ public class PlayFinishedActivity extends BaseActivity implements View.OnClickLi
     }
 
     private void initData() {
+        bitmapDecoder = new BitmapDecoder();
         if(playScale==100) {
             //播放完成页
             play_finished_confirm_btn.setVisibility(View.GONE);
@@ -146,7 +148,7 @@ public class PlayFinishedActivity extends BaseActivity implements View.OnClickLi
                         @Override
                         public void onError(Throwable e) {
                             type="exit_unknown";
-                            new BitmapDecoder().decode(PlayFinishedActivity.this, R.drawable.play_exit_error, new BitmapDecoder.Callback() {
+                            bitmapDecoder.decode(PlayFinishedActivity.this, R.drawable.play_exit_error, new BitmapDecoder.Callback() {
                                 @Override
                                 public void onSuccess(BitmapDrawable bitmapDrawable) {
                                     play_exit_error_img.setBackgroundDrawable(bitmapDrawable);
@@ -160,7 +162,8 @@ public class PlayFinishedActivity extends BaseActivity implements View.OnClickLi
                         @Override
                         public void onNext(Item[] playfinishedRecommend) {
                             ArrayList<PlayfinishedRecommend.RecommendItem> list=new ArrayList<>();
-                            for (int i = 0; i <playfinishedRecommend.length ; i++) {
+                            int length=playfinishedRecommend.length;
+                            for (int i = 0; i <length ; i++) {
                                 PlayfinishedRecommend.RecommendItem item=new PlayfinishedRecommend.RecommendItem();
                                 item.setPk(playfinishedRecommend[i].pk);
                                 item.setContent_model(playfinishedRecommend[i].content_model);
@@ -205,7 +208,7 @@ public class PlayFinishedActivity extends BaseActivity implements View.OnClickLi
                         @Override
                         public void onError(Throwable e) {
                             type="exit_unknown";
-                            new BitmapDecoder().decode(PlayFinishedActivity.this, R.drawable.play_exit_error, new BitmapDecoder.Callback() {
+                            bitmapDecoder.decode(PlayFinishedActivity.this, R.drawable.play_exit_error, new BitmapDecoder.Callback() {
                                 @Override
                                 public void onSuccess(BitmapDrawable bitmapDrawable) {
                                     play_exit_error_img.setBackgroundDrawable(bitmapDrawable);
@@ -378,6 +381,9 @@ public class PlayFinishedActivity extends BaseActivity implements View.OnClickLi
         play_finished_horizontal_recylerview=null;
         play_finished_vertical_recylerview=null;
         playFinishedAdapter=null;
+        if (bitmapDecoder != null && bitmapDecoder.isAlive()) {
+            bitmapDecoder.interrupt();
+        }
 
     }
 

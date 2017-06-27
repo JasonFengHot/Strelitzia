@@ -80,12 +80,6 @@ public class PayLayerVipActivity extends BaseActivity implements OnHoverListener
 //                }
 //            }
 //        });
-        new BitmapDecoder().decode(this, R.drawable.newvip_bg, new BitmapDecoder.Callback() {
-            @Override
-            public void onSuccess(BitmapDrawable bitmapDrawable) {
-                getRootView().setBackgroundDrawable(bitmapDrawable);
-            }
-        });
     }
 
     @Override

@@ -304,7 +304,7 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
 
 
     private void fetchFilterResult(String content_model, String filterCondition) {
-        AppConstant.purchase_entrance_keyword = "filterCondition";
+        AppConstant.purchase_entrance_keyword = filterCondition;
         mSkyService.getFilterRequest(content_model,filterCondition)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
