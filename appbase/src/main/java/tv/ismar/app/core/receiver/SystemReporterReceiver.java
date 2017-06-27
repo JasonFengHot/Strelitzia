@@ -5,6 +5,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.text.TextUtils;
 import android.util.Log;
@@ -24,7 +26,7 @@ import tv.ismar.app.core.client.NetworkUtils;
  * Created by Beaver on 2016/4/14.
  */
 public class SystemReporterReceiver extends BroadcastReceiver {
-
+    private Context mContext;
     private final static String TAG = "LH/ReporterReceiver";
 
     private final static String ACTION_BOOT_COMPLETED = "android.intent.action.BOOT_COMPLETED";
@@ -39,6 +41,7 @@ public class SystemReporterReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         String action = intent.getAction();
+        mContext=context;
         Log.d(TAG, "Action:" + action);
         SharedPreferences settings = context.getSharedPreferences(SP_FILE_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = settings.edit();
@@ -49,8 +52,8 @@ public class SystemReporterReceiver extends BroadcastReceiver {
                 if (lastUseTme > 0) {
                     HashMap<String, Object> properties = new HashMap<String, Object>();
                     properties.put("duration", lastUseTme / 1000);      // int类型 单位 s
-                    properties.put("version", Build.VERSION.RELEASE);   // 软件版本号, 例如: S-1-1030-F
-                    properties.put("firmware", "");                     // 固件版本号, 例如: Nebula_SDV2.1_120406__C_1030-F
+                    properties.put("version", getVersionCode());   // 软件版本号, 例如: S-1-1030-F
+                    properties.put("firmware", Build.VERSION.RELEASE);                     // 固件版本号, 例如: Nebula_SDV2.1_120406__C_1030-F
                     properties.put("welcome", "TV");                    // 开机界面, (TV|Smart), 例如: TV
                     NetworkUtils.SaveLogToLocal(eventName, properties);
                     Log.i("reporter", "lastUseTime:" + lastUseTme);
@@ -129,4 +132,14 @@ public class SystemReporterReceiver extends BroadcastReceiver {
             Log.i("qazwsx", "Thread is finished!!!");
         }
     };
+    private String getVersionCode() {
+        PackageManager packageManager = mContext.getPackageManager();
+        try {
+            PackageInfo packageInfo = packageManager.getPackageInfo(mContext.getPackageName(), 0);
+            return "版本号：" + packageInfo.versionCode;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
 }
