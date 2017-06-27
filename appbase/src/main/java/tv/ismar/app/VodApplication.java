@@ -134,7 +134,8 @@ public class VodApplication extends Application {
         Parse.iCallLog = new ICallLog() {
             @Override
             public void addParseError(String json, String msg) throws Exception {
-                Log.e(TAG, "日志输出：内容：" + json + ", 异常：" + msg);
+                Log.e(TAG, "日志输出：内容：" + json);
+                Log.e(TAG, "日志输出：异常：" + msg);
                 LogEntity logEntity = new LogEntity("gson_error");
                 LogEntity.LogContent logContent = new LogEntity.LogContent();
                 logContent.setError_source(json);
