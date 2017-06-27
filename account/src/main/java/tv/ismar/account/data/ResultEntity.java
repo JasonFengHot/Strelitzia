@@ -13,7 +13,33 @@ public class ResultEntity {
     private int h264_player;
     private int h265_player;
     private int live_player;
+    private int is_report_log;
+    private int report_log_time_interval;
+    private int report_log_size;
 
+    public int getReport_log_time_interval() {
+        return report_log_time_interval;
+    }
+
+    public void setReport_log_time_interval(int report_log_time_interval) {
+        this.report_log_time_interval = report_log_time_interval;
+    }
+
+    public int getReport_log_size() {
+        return report_log_size;
+    }
+
+    public void setReport_log_size(int report_log_size) {
+        this.report_log_size = report_log_size;
+    }
+
+    public int getIs_report_log() {
+        return is_report_log;
+    }
+
+    public void setIs_report_log(int is_report_log) {
+        this.is_report_log = is_report_log;
+    }
 
     private long smart_post_next_request_time = 30;
 

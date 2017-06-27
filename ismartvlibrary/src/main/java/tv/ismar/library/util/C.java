@@ -10,4 +10,7 @@ public class C {
     public static String snToken;
     public static String ip;
     public static int versionCode;
+    public static volatile int isReportLog = 1;
+    public static volatile int report_log_time_interval = 60;
+    public static volatile int report_log_size = 256;
 }

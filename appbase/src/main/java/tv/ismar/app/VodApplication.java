@@ -150,6 +150,9 @@ public class VodApplication extends Application {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         C.snToken = sharedPreferences.getString("sn_token", "");
         C.ip = sharedPreferences.getString("ip", "");
+        C.isReportLog = sharedPreferences.getInt("is_report_log", 1);
+        C.report_log_size = sharedPreferences.getInt("report_log_size", 256);
+        C.report_log_time_interval = sharedPreferences.getInt("report_log_time_interval", 60);
 
         PackageManager packageManager = getPackageManager();
         PackageInfo packageInfo;
@@ -440,7 +443,7 @@ public class VodApplication extends Application {
         if(sn==null||sn.equals("")){
         }else {
             SkyService skyService = SkyService.ServiceManager.getService();
-            String url = "http://weixin.test.tvxio.com/Hibiscus/Hibiscus/uploadclientip";
+            String url = "http://wx.api.tvxio.com/weixin4server/uploadclientip";
             skyService.weixinIp(url, DeviceUtils.getLocalInetAddress().toString(), sn, Build.MODEL, DeviceUtils.getLocalMacAddress(this)).subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<ResponseBody>() {
                 @Override

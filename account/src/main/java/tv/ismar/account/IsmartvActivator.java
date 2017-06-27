@@ -453,9 +453,15 @@ public class IsmartvActivator {
         editor.putLong("smart_post_next_request_time", resultEntity.getSmart_post_next_request_time());
         C.SMART_POST_NEXT_REQUEST_TIME = resultEntity.getSmart_post_next_request_time();
         C.snToken = resultEntity.getSn_Token();
+        C.isReportLog = resultEntity.getIs_report_log();
+        C.report_log_size = resultEntity.getReport_log_size();
+        C.report_log_time_interval = resultEntity.getReport_log_time_interval();
         editor.putInt("h264_player", resultEntity.getH264_player());
         editor.putInt("h265_player", resultEntity.getH265_player());
         editor.putInt("live_player", resultEntity.getLive_player());
+        editor.putInt("is_report_log", resultEntity.getIs_report_log());
+        editor.putInt("report_log_time_interval", resultEntity.getReport_log_time_interval());
+        editor.putInt("report_log_size", resultEntity.getReport_log_size());
         editor.commit();
 
         // 获取老版本的

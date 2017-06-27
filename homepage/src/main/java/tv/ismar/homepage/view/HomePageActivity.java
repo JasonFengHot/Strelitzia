@@ -57,6 +57,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import tv.ismar.account.ActiveService;
 import tv.ismar.account.IsmartvActivator;
+import tv.ismar.account.statistics.LogQueue;
 import tv.ismar.app.AppConstant;
 import tv.ismar.app.BaseActivity;
 import tv.ismar.app.VodApplication;
@@ -769,6 +770,7 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
 
                     @Override
                     public void onNext(ChannelEntity[] channelEntities) {
+                        LogQueue.getInstance().init(IsmartvActivator.getInstance().getApiDomain());
                         fillChannelLayout(channelEntities);
                     }
 
