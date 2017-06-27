@@ -1815,6 +1815,13 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
                         return;
                     }
                     LogUtils.i("LH/PlaybackHandler", "isPlaying : " + service.getMediaPlayer().isPlaying());
+                    if (fragment.isPlayExitLayerShow) {
+                        if (service.getMediaPlayer().isPlaying()) {
+                            service.pausePlayer();
+                        }
+                        fragment.timerStop();
+                        return;
+                    }
                     if (service.getMediaPlayer().isPlaying()) {
                         int mediaPosition = service.getMediaPlayer().getCurrentPosition();
                         // 播放过程中网络相关

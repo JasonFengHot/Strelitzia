@@ -22,6 +22,7 @@ import tv.ismar.library.util.StringUtils;
 import tv.ismar.player.IsmartvPlayer;
 import tv.ismar.player.SmartPlayer;
 import tv.ismar.player.event.PlayerEvent;
+import tv.ismar.player.gui.PlaybackService;
 import tv.ismar.player.model.MediaMeta;
 
 /**
@@ -207,6 +208,7 @@ public class DaisyPlayer extends IsmartvPlayer implements SurfaceHelper.SurfaceC
             mPlayer.setOnTsInfoListener(null);
             mPlayer.setOnM3u8IpListener(null);
             mPlayer.setOnCompletionListenerUrl(null);
+            mPlayer.setOnPreloadCompleteListener(null);
             mPlayer.stop();
             mPlayer.release();
             mPlayer = null;
@@ -305,7 +307,10 @@ public class DaisyPlayer extends IsmartvPlayer implements SurfaceHelper.SurfaceC
             if (mPlayer == null || mPlayer != smartPlayer) {
                 return;
             }
-            isPreloadCompleted = true;
+            if (preloadMediaMeta != null) {
+                isPreloadCompleted = true;
+                logPreloadEnd();
+            }
         }
     };
 
@@ -587,7 +592,7 @@ public class DaisyPlayer extends IsmartvPlayer implements SurfaceHelper.SurfaceC
         if(hasPreload){
             if (logFirstOpenPlayer) {
                 logPlayerOpenTime = DateUtils.currentTimeMillis();
-                PlayerEvent.videoStart(logPlayerEvent, logSpeed, logPlayerFlag, true);
+                PlayerEvent.videoStart(logPlayerEvent, logSpeed, logPlayerFlag);
             }
             mPlayer.createPlayer();
             mPlayer.setScreenOnWhilePlaying(true);
@@ -661,7 +666,7 @@ public class DaisyPlayer extends IsmartvPlayer implements SurfaceHelper.SurfaceC
                 } else {
                     if (logFirstOpenPlayer) {
                         logPlayerOpenTime = DateUtils.currentTimeMillis();
-                        PlayerEvent.videoStart(logPlayerEvent, logSpeed, logPlayerFlag, false);
+                        PlayerEvent.videoStart(logPlayerEvent, logSpeed, logPlayerFlag);
                     }
                     mPlayer.createPlayer();
                     mPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);

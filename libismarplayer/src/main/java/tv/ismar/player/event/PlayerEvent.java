@@ -43,7 +43,7 @@ public class PlayerEvent {
         }
         tempMap.put(TITLE, media.title);
         tempMap.put(CLIP, media.clipPk);
-        tempMap.put(QUALITY, switchQuality(media.quality));
+        tempMap.put(QUALITY, getQuality(media.quality));
         tempMap.put(CHANNEL, media.channel);
         tempMap.put(SPEED, speed + "KByte/s");
         tempMap.put(SID, media.sid);
@@ -58,7 +58,7 @@ public class PlayerEvent {
      *              quality (视频清晰度 normal   medium  high  ultra  adaptive) STRING
      * @param speed (网速, 单位KB/s) INTEGER
      */
-    public static void videoStart(PlayerEvent media, int speed, String playerFlag, boolean isPreload) {
+    public static void videoStart(PlayerEvent media, int speed, String playerFlag) {
         if (media == null) {
             return;
         }
@@ -67,9 +67,6 @@ public class PlayerEvent {
         tempMap.put("userid", userId);
         tempMap.put("source", media.source);
         tempMap.put("section", media.section);
-        if (isPreload) {
-            tempMap.put("location", "detail");
-        }
         new DataCollectionTask().execute(VIDEO_START, tempMap);
     }
 
@@ -318,6 +315,19 @@ public class PlayerEvent {
 
     }
 
+    public static void preloadStart(int clipPk, long duration, String quality, String title, int item, int subitem, long time) {
+        HashMap<String, Object> tempMap = new HashMap<>();
+        tempMap.put("location", "detail");
+        tempMap.put("clip", clipPk);
+        tempMap.put("duration", duration);
+        tempMap.put("quality", quality);
+        tempMap.put("title", title);
+        tempMap.put("item", item);
+        tempMap.put("subitem", subitem);
+        tempMap.put("time", time);
+        new DataCollectionTask().execute(VIDEO_START, tempMap);
+    }
+
     public static void ad_play_load(PlayerEvent media, long duration, String mediaip, int ad_id, String mediaflag) {
         if (media == null) {
             return;
@@ -404,7 +414,7 @@ public class PlayerEvent {
         new DataCollectionTask().execute(EXPENSE_AD_CLICK, tempMap);
     }
 
-    private static String switchQuality(Integer currQuality) {
+    public static String getQuality(Integer currQuality) {
         String quality = "";
         switch (currQuality) {
             case 0:
@@ -569,10 +579,7 @@ public class PlayerEvent {
      * 暂停广告异常
      */
     private static final String PAUSE_AD_EXCEPT = "pause_ad_except";
-    /**
-     * 详情页缓冲完成
-     */
-    public static final String DETAIL_PLAY_LOAD = "detail_play_load";
+
     public static final String EXPENSE_AD_CLICK = "expense_ad_click";
 
 }
