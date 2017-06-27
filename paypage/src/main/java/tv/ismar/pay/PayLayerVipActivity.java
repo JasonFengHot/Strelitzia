@@ -1,6 +1,7 @@
 package tv.ismar.pay;
 
 import android.content.Intent;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -31,6 +32,7 @@ import tv.ismar.app.core.PageIntentInterface;
 import tv.ismar.app.core.Source;
 import tv.ismar.app.network.entity.PayLayerVipEntity;
 import tv.ismar.app.network.entity.SubjectPayLayerEntity;
+import tv.ismar.app.util.BitmapDecoder;
 import tv.ismar.statistics.DetailPageStatistics;
 import tv.ismar.statistics.PurchaseStatistics;
 
@@ -78,6 +80,12 @@ public class PayLayerVipActivity extends BaseActivity implements OnHoverListener
 //                }
 //            }
 //        });
+        new BitmapDecoder().decode(this, R.drawable.newvip_bg, new BitmapDecoder.Callback() {
+            @Override
+            public void onSuccess(BitmapDrawable bitmapDrawable) {
+                getRootView().setBackgroundDrawable(bitmapDrawable);
+            }
+        });
     }
 
     @Override
