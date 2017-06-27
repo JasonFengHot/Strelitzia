@@ -138,7 +138,7 @@ public class SystemReporterReceiver extends BroadcastReceiver {
         PackageManager packageManager = mContext.getPackageManager();
         try {
             PackageInfo packageInfo = packageManager.getPackageInfo(mContext.getPackageName(), 0);
-            return "版本号：" + packageInfo.versionCode;
+            return  ""+packageInfo.versionCode;
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }

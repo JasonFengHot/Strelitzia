@@ -464,6 +464,9 @@ public class FilmFragment extends ChannelBaseFragment {
 
     private void initCarousel(ArrayList<HomePagerEntity.Carousel> carousels) {
         allItem = new ArrayList<LabelImageView3>();
+        if(carousels.size()>=5) {
+            carousels = new ArrayList<>(carousels.subList(0, 5));
+        }
         mCarousels = carousels;
         carouselMap = new HashMap<>();
 
