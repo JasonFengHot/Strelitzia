@@ -24,6 +24,7 @@ import tv.ismar.library.util.LogUtils;
 import tv.ismar.library.util.MD5;
 import tv.ismar.library.util.StringUtils;
 import tv.ismar.player.event.PlayerEvent;
+import tv.ismar.player.gui.PlaybackService;
 import tv.ismar.player.media.DaisyPlayer;
 import tv.ismar.player.media.QiyiPlayer;
 import tv.ismar.player.model.MediaEntity;
@@ -73,8 +74,8 @@ public abstract class IsmartvPlayer implements IPlayer {
     protected ClipEntity.Quality mCurrentQuality;
     protected List<ClipEntity.Quality> mQualities;
     protected int[] mBestvAdTime;
-    private MediaMeta preloadMediaMeta;
-    protected boolean isPreloadCompleted;
+    protected MediaMeta preloadMediaMeta;
+    public static boolean isPreloadCompleted;
     // 奇艺
     private boolean isQiyiSdkInit;
 
@@ -264,6 +265,12 @@ public abstract class IsmartvPlayer implements IPlayer {
                 DateUtils.currentTimeMillis(),
                 logPlayerFlag
         );
+    }
+
+    public void logPreloadEnd() {
+        PlayerEvent.preloadStart(logPlayerEvent.clipPk,
+                (DateUtils.currentTimeMillis() - PlaybackService.prepareStartTime) / 1000, PlayerEvent.getQuality(qualityToInt(mCurrentQuality)),
+                logPlayerEvent.title, logPlayerEvent.pk, logPlayerEvent.subItemPk, DateUtils.currentTimeMillis());
     }
 
     private MediaMeta bestvUserInit() {
