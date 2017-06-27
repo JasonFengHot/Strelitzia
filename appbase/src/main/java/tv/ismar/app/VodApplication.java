@@ -151,6 +151,8 @@ public class VodApplication extends Application {
         C.snToken = sharedPreferences.getString("sn_token", "");
         C.ip = sharedPreferences.getString("ip", "");
         C.isReportLog = sharedPreferences.getInt("is_report_log", 1);
+        C.report_log_size = sharedPreferences.getInt("report_log_size", 256);
+        C.report_log_time_interval = sharedPreferences.getInt("report_log_time_interval", 60);
 
         PackageManager packageManager = getPackageManager();
         PackageInfo packageInfo;
