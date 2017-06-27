@@ -13,7 +13,15 @@ public class ResultEntity {
     private int h264_player;
     private int h265_player;
     private int live_player;
+    private int is_report_log;
 
+    public int getIs_report_log() {
+        return is_report_log;
+    }
+
+    public void setIs_report_log(int is_report_log) {
+        this.is_report_log = is_report_log;
+    }
 
     private long smart_post_next_request_time = 30;
 

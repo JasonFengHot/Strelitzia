@@ -10,4 +10,5 @@ public class C {
     public static String snToken;
     public static String ip;
     public static int versionCode;
+    public static volatile int isReportLog = 1;
 }
