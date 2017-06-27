@@ -1256,8 +1256,8 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
         }
         BaseActivity.baseChannel = "";
         BaseActivity.baseSection = "";
-        mHandler=null;
         mHandler.removeCallbacks(mRunnable);
+        mHandler=null;
         super.onDestroy();
     }
 
