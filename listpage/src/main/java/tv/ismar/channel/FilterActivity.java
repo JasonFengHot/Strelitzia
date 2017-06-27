@@ -82,7 +82,8 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
     @Override
     protected void onResume() {
         super.onResume();
-        AppConstant.purchase_tab = "filter";
+        AppConstant.purchase_entrance_page = "filter";
+        AppConstant.purchase_page = "filter";
         if(filter_checked_conditiion.getChildCount()>1){
             filter_checked_conditiion.setVisibility(View.VISIBLE);
         }else{
