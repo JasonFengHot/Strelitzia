@@ -12,7 +12,6 @@ import android.support.multidex.MultiDex;
 import android.util.DisplayMetrics;
 import android.util.Log;
 
-import com.blankj.utilcode.utils.StringUtils;
 import com.ismartv.lion.custom.ICallLog;
 import com.ismartv.lion.custom.Parse;
 import com.orhanobut.logger.LogLevel;
@@ -32,7 +31,6 @@ import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import cn.ismartv.injectdb.library.ActiveAndroid;
@@ -63,7 +61,6 @@ import tv.ismar.app.exception.CrashHandler;
 import tv.ismar.app.network.HttpCacheInterceptor;
 import tv.ismar.app.network.SkyService;
 import tv.ismar.app.service.HttpProxyService;
-import tv.ismar.app.util.NetworkUtils;
 import tv.ismar.app.util.SPUtils;
 import tv.ismar.library.network.UserAgentInterceptor;
 import tv.ismar.library.util.C;
@@ -116,9 +113,7 @@ public class VodApplication extends Application {
                 .setFontAttrId(R.attr.fontPath)
                 .build()
         );
-        if (NetworkUtils.isConnected(this) && !StringUtils.isEmpty(AccountSharedPrefs.device_token)) {
-            new Thread(new InitializeProcess(this)).start();
-        }
+        new Thread(new InitializeProcess(this)).start();
         BaseActivity.wasLoadSmartPlayerSo = false;
         Log.i("LH/", "applicationOnCreateEnd:" + TrueTime.now().getTime());
         Intent ootStartIntent = new Intent(this, HttpProxyService.class);
