@@ -496,7 +496,7 @@ public class IsmartvActivator {
         }
     }
     private void reportIp(String sn_token){
-            String url = "http://weixin.test.tvxio.com/Hibiscus/Hibiscus/uploadclientip";
+            String url = "http://wx.api.tvxio.com/weixin4server/uploadclientip";
         try {
             Response<ResultEntity> resultResponse=SKY_Retrofit.create(HttpService.class).weixinIp(url, DeviceUtils.getLocalInetAddress().toString(), sn_token, Build.MODEL, DeviceUtils.getLocalMacAddress(mContext)).execute();
             Log.i("ismartvRIP",resultResponse.code()+"   code"+ sn_token);

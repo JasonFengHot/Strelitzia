@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
+import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -59,16 +60,17 @@ public class SystemReporterReceiver extends BroadcastReceiver {
                     NetworkUtils.SaveLogToLocal(eventName, properties);
                     Log.i("reporter", "lastUseTime:" + lastUseTme);
                 }
-                long tvOnTime = TrueTime.now().getTime();
+              //  long tvOnTime = TrueTime.now().getTime();
+                long tvOnTime= System.currentTimeMillis();
                 Log.d(TAG, "tvOnTime:" + tvOnTime+"  lastUseTme:"+lastUseTme);
-                editor.putLong(tv_on_time, TrueTime.now().getTime());
+                editor.putLong(tv_on_time, tvOnTime);
                 editor.apply();
                 new Thread(mUpLoadLogRunnable).start();
             } else if (action.equals(ACTION_SHUTDOWN)) {
                 long lastTvOnTime = settings.getLong(tv_on_time, 0);
                 long useTime = 0;
                 if (lastTvOnTime > 0) {
-                    useTime = TrueTime.now().getTime() - lastTvOnTime;
+                    useTime = System.currentTimeMillis() - lastTvOnTime;
                 }
                     Log.d(TAG, "lastUseTime:" + useTime);
                     editor.putLong(lastUseTime, useTime);
