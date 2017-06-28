@@ -2039,4 +2039,10 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
             closeActivity("source");
         }
     }
+
+    @Override
+    public void onDestroy() {
+        mClient=null;
+        super.onDestroy();
+    }
 }

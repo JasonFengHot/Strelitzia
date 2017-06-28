@@ -95,9 +95,9 @@ public class PlaybackActivity extends BaseActivity {
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
         mHandler.removeMessages(0);
         mHandler=null;
+        super.onDestroy();
     }
     // 移至PlaybackFragment
 //    @Override
