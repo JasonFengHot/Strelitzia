@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -22,6 +23,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import okhttp3.ResponseBody;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import tv.ismar.Utils.LogUtils;
@@ -101,6 +103,7 @@ public class FavoriteFragment extends Fragment implements ScrollableSectionList.
     private View gideview_layuot;
 	private SkyService skyService;
 	private TextView clertFavorite;
+	private Subscription netSub;
 	private void initViews(View fragmentView) {
         View vv = fragmentView.findViewById(R.id.tabs_layout);
         vv.setVisibility(View.GONE);
@@ -276,8 +279,7 @@ public class FavoriteFragment extends Fragment implements ScrollableSectionList.
 		createMenu();
 	}
 	private void GetFavoriteByNet(){
-		mLoadingDialog.show();
-		skyService.getBookmarks().subscribeOn(Schedulers.io())
+		netSub=skyService.getBookmarks().subscribeOn(Schedulers.io())
 				.observeOn(AndroidSchedulers.mainThread())
 				.subscribe(((BaseActivity) getActivity()).new BaseObserver<Item[]>() {
 					@Override
@@ -463,11 +465,27 @@ public class FavoriteFragment extends Fragment implements ScrollableSectionList.
 		}
 		((ChannelListActivity)getActivity()).registerOnMenuToggleListener(this);
 		if(!IsmartvActivator.getInstance().isLogin()){
-					getFavoriteTask = new GetFavoriteTask();
-					getFavoriteTask.execute();
+			new Handler().postDelayed(new Runnable() {
+				@Override
+				public void run() {
+					if(isAdded()) {
+						getFavoriteTask = new GetFavoriteTask();
+						getFavoriteTask.execute();
+					}
+				}
+			},2000);
+
 		}
 		else {
-					GetFavoriteByNet();
+			mLoadingDialog.showDialog();
+			new Handler().postDelayed(new Runnable() {
+				@Override
+				public void run() {
+					if(isAdded())
+						GetFavoriteByNet();
+				}
+			},2000);
+
 		}
 		super.onResume();
 	}
@@ -475,6 +493,9 @@ public class FavoriteFragment extends Fragment implements ScrollableSectionList.
 	public void onPause() {
 		if(mHGridAdapter!=null) {
 			mHGridAdapter.cancel();
+		}
+		if(netSub!=null&&netSub.isUnsubscribed()){
+			netSub.unsubscribe();
 		}
 
 		((ChannelListActivity)getActivity()).unregisterOnMenuToggleListener();

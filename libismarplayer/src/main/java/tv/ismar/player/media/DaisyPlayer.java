@@ -9,18 +9,20 @@ import android.support.annotation.NonNull;
 import com.qiyi.sdk.player.IAdController;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Map;
 
 import tv.ismar.account.IsmartvActivator;
 import tv.ismar.app.core.VodUserAgent;
 import tv.ismar.app.entity.ClipEntity;
-import tv.ismar.library.injectdb.util.Log;
 import tv.ismar.library.util.DateUtils;
+import tv.ismar.library.util.DeviceUtils;
 import tv.ismar.library.util.LogUtils;
 import tv.ismar.library.util.StringUtils;
 import tv.ismar.player.IsmartvPlayer;
 import tv.ismar.player.SmartPlayer;
 import tv.ismar.player.event.PlayerEvent;
+import tv.ismar.player.gui.PlaybackService;
 import tv.ismar.player.model.MediaMeta;
 
 /**
@@ -206,6 +208,7 @@ public class DaisyPlayer extends IsmartvPlayer implements SurfaceHelper.SurfaceC
             mPlayer.setOnTsInfoListener(null);
             mPlayer.setOnM3u8IpListener(null);
             mPlayer.setOnCompletionListenerUrl(null);
+            mPlayer.setOnPreloadCompleteListener(null);
             mPlayer.stop();
             mPlayer.release();
             mPlayer = null;
@@ -297,10 +300,24 @@ public class DaisyPlayer extends IsmartvPlayer implements SurfaceHelper.SurfaceC
         return null;
     }
 
+    private SmartPlayer.OnPreloadCompleteListener smartPreloadCompleteListener = new SmartPlayer.OnPreloadCompleteListener() {
+        @Override
+        public void OnPreloadComplete(SmartPlayer smartPlayer) {
+            LogUtils.d(TAG,"OnPreloadComplete");
+            if (mPlayer == null || mPlayer != smartPlayer) {
+                return;
+            }
+            if (preloadMediaMeta != null) {
+                isPreloadCompleted = true;
+                logPreloadEnd();
+            }
+        }
+    };
+
     private SmartPlayer.OnPreparedListenerUrl onPreparedListenerUrl = new SmartPlayer.OnPreparedListenerUrl() {
         @Override
         public void onPrepared(SmartPlayer smartPlayer, String s) {
-            Log.v(TAG,"onprepared");
+            LogUtils.d(TAG,"onPrepared");
             if (mPlayer == null) {
                 return;
             }
@@ -336,9 +353,15 @@ public class DaisyPlayer extends IsmartvPlayer implements SurfaceHelper.SurfaceC
     private SmartPlayer.OnVideoSizeChangedListener onVideoSizeChangedListener = new SmartPlayer.OnVideoSizeChangedListener() {
         @Override
         public void onVideoSizeChanged(SmartPlayer smartPlayer, int width, int height) {
-            if (mPlayer == null) {
+            LogUtils.i(TAG, "onVideoSizeChanged:" + width + " " + height);
+            if (mPlayer == null || mSurfaceHelper == null || !mSurfaceHelper.isReady()) {
                 return;
             }
+            int[] outputSize = computeVideoSize(width, height);
+            LogUtils.i(TAG, "outSize:" + Arrays.toString(outputSize));
+            mSurfaceHelper.getSurfaceHolder().setFixedSize(outputSize[0], outputSize[1]);
+            smartPlayer.setDisplay(mSurfaceHelper.getSurfaceHolder());
+
             if (onStateChangedListener != null) {
                 onStateChangedListener.onVideoSizeChanged(width, height);
             }
@@ -437,7 +460,7 @@ public class DaisyPlayer extends IsmartvPlayer implements SurfaceHelper.SurfaceC
     private SmartPlayer.OnCompletionListenerUrl onCompletionListenerUrl = new SmartPlayer.OnCompletionListenerUrl() {
         @Override
         public void onCompletion(SmartPlayer smartPlayer, String s) {
-            if (mPlayer == null || mCurrentState == STATE_COMPLETED || mCurrentState == STATE_ERROR) {
+            if (mPlayer == null || mCurrentState == STATE_COMPLETED || mCurrentState == STATE_ERROR || mSurfaceView == null) {
                 return;
             }
             int currentIndex = smartPlayer.getCurrentPlayUrl();
@@ -532,7 +555,7 @@ public class DaisyPlayer extends IsmartvPlayer implements SurfaceHelper.SurfaceC
             if (CacheTime != null)
             {
                 int nCacheTime = Integer.parseInt(CacheTime);
-                Log.i(TAG, "current cache total time:" + nCacheTime);
+                LogUtils.i(TAG, "current cache total time:" + nCacheTime);
             }
             if (onStateChangedListener != null) {
                 onStateChangedListener.onTsInfo(map);
@@ -637,6 +660,7 @@ public class DaisyPlayer extends IsmartvPlayer implements SurfaceHelper.SurfaceC
                 LogUtils.d(TAG, "setUserAgent : " + userAgent);
                 mPlayer.setUserAgent(userAgent);
                 if (ispreload) {
+                    mPlayer.setOnPreloadCompleteListener(smartPreloadCompleteListener);
                     mPlayer.setDataSource(mediaMeta.getUrls());
                     mPlayer.prepareAsync();
                 } else {
@@ -667,6 +691,37 @@ public class DaisyPlayer extends IsmartvPlayer implements SurfaceHelper.SurfaceC
                 "265".equals(mMediaEntity.getClipEntity().getCode_version()),
                 mMediaEntity.getStartPosition()
         );
+    }
+
+    protected int[] computeVideoSize(int videoWidth, int videoHeight) {
+        if (mSurfaceView == null || mSurfaceView.getContext() == null) {
+            return null;
+        }
+        int[] size = new int[2];
+        int screenWidth = DeviceUtils.getDisplayPixelWidth(mSurfaceView.getContext().getApplicationContext());
+        int screenHeight = DeviceUtils.getDisplayPixelHeight(mSurfaceView.getContext().getApplicationContext());
+        double dw = screenWidth;
+        double dh = screenHeight;
+        if (videoWidth == videoHeight) {
+            if (dw > dh) {
+                dw = screenHeight;
+            } else {
+                dh = screenWidth;
+            }
+        } else {
+            double dar = dw / dh;
+            double ar = videoWidth / videoHeight;
+            if (dar < ar) {
+                double widthScale = videoWidth / dw;
+                dh = videoHeight / widthScale;
+            } else {
+                double heightScale = videoHeight / dh;
+                dw = videoWidth / heightScale;
+            }
+        }
+        size[0] = (int) Math.ceil(dw);
+        size[1] = (int) Math.ceil(dh);
+        return size;
     }
 
 }

@@ -1,6 +1,7 @@
 package tv.ismar.channel;
 import cn.ismartv.truetime.TrueTime;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -32,6 +33,7 @@ import java.util.TimeZone;
 import java.util.concurrent.ConcurrentHashMap;
 import okhttp3.ResponseBody;
 import retrofit2.adapter.rxjava.HttpException;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import tv.ismar.Utils.LogUtils;
@@ -118,6 +120,7 @@ public class HistoryFragment extends Fragment implements ScrollableSectionList.O
 	private View gideview_layuot;
 	private SkyService skyService;
 	private TextView clerHistory;
+	private Subscription netSub;
 	private long getTodayStartPoint() {
 		long currentTime = TrueTime.now().getTime();
 		GregorianCalendar currentCalendar = new GregorianCalendar();
@@ -347,6 +350,12 @@ public class HistoryFragment extends Fragment implements ScrollableSectionList.O
     }
 
 	@Override
+	public void onAttach(Activity activity) {
+
+		super.onAttach(activity);
+	}
+
+	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 							 Bundle savedInstanceState) {
 		View fragmentView = inflater.inflate(R.layout.historycollectlist_view, container, false);
@@ -355,7 +364,7 @@ public class HistoryFragment extends Fragment implements ScrollableSectionList.O
 	}
 	private ArrayList<ItemCollection> mItemCollections;
 	private void getHistoryByNet(){
-		skyService.getHistoryByNet().subscribeOn(Schedulers.io())
+		 netSub= skyService.getHistoryByNet().subscribeOn(Schedulers.io())
 				.observeOn(AndroidSchedulers.mainThread())
 				.subscribe(((BaseActivity) getActivity()).new BaseObserver<Item[]>() {
 					@Override
@@ -521,6 +530,7 @@ public class HistoryFragment extends Fragment implements ScrollableSectionList.O
 			new Handler().postDelayed(new Runnable() {
 				@Override
 				public void run() {
+					if(isAdded())
 					getHistoryByNet();
 				}
 			},2000);
@@ -543,6 +553,9 @@ public class HistoryFragment extends Fragment implements ScrollableSectionList.O
 	public void onPause() {
 		if(mHGridAdapter!=null) {
 			mHGridAdapter.cancel();
+		}
+		if(netSub!=null&&netSub.isUnsubscribed()){
+			netSub.unsubscribe();
 		}
 		((ChannelListActivity)getActivity()).unregisterOnMenuToggleListener();
 		HashMap<String, Object> properties = mDataCollectionProperties;
@@ -600,7 +613,7 @@ public class HistoryFragment extends Fragment implements ScrollableSectionList.O
 								}
 							}
 						} else {
-							mDataCollectionProperties.put("to_subitem", item.clip.pk);
+							mDataCollectionProperties.put("to_subitem", 0);
 						}
 						mDataCollectionProperties.put("to_title", item.title);
 						mDataCollectionProperties.put("position", history.last_position/1000);

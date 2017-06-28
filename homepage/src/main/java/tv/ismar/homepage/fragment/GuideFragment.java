@@ -415,6 +415,9 @@ public class GuideFragment extends ChannelBaseFragment {
 
     private void initCarousel(ArrayList<HomePagerEntity.Carousel> carousels) {
         carousels = new ArrayList<>(carousels);
+        if(carousels.size()>=3) {
+            carousels = new ArrayList<>(carousels.subList(0, 3));
+        }
         mCarousels = carousels;
         allItem = new ArrayList<>();
         allVideoUrl = new ArrayList<>();

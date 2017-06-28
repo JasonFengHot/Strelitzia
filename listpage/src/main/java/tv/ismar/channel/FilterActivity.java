@@ -28,6 +28,7 @@ import rx.schedulers.Schedulers;
 import tv.ismar.adapter.FilterPosterAdapter;
 import tv.ismar.adapter.FocusGridLayoutManager;
 import tv.ismar.adapter.SpaceItemDecoration;
+import tv.ismar.app.AppConstant;
 import tv.ismar.app.BaseActivity;
 import tv.ismar.app.core.PageIntent;
 import tv.ismar.app.core.Source;
@@ -81,6 +82,8 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
     @Override
     protected void onResume() {
         super.onResume();
+        AppConstant.purchase_entrance_page = "filter";
+        AppConstant.purchase_page = "filter";
         if(filter_checked_conditiion.getChildCount()>1){
             filter_checked_conditiion.setVisibility(View.VISIBLE);
         }else{
@@ -197,7 +200,6 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
             return true;
         }
 
-        if(!filterPopup.isShowing()) {
         if(keyCode==21){
                 if(filter_arrow_up.isFocused()){
                     for (int i = 1; i <=spanCount ; i++) {
@@ -209,7 +211,7 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
 
                 }
             }
-        }
+
         return super.onKeyDown(keyCode, event);
     }
 
@@ -241,13 +243,16 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                         if(filterConditions.getAttributes().getFeature()!=null)
                             fillConditionLayout(filterConditions.getAttributes().getFeature().getLabel(),filterConditions.getAttributes().getFeature().getValues());
                         fetchFilterResult(filterConditions.getContent_model(),filterConditions.getDefaultX());
+                        String conditionsForLog="";
                         for (int i = 0; i <filter_conditions.getChildCount() ; i++) {
                             FilterConditionGroupView filter= (FilterConditionGroupView) filter_conditions.getChildAt(i);
                             if(filter_conditions.getChildAt(i-1)!=null)
                                 filter.setNextUpView(filter_conditions.getChildAt(i-1));
                             if(filter_conditions.getChildAt(i+1)!=null)
                                 filter.setNextDownView(filter_conditions.getChildAt(i+1));
+                            conditionsForLog+=";";
                         }
+                        AppConstant.purchase_entrance_keyword = conditionsForLog.substring(0,conditionsForLog.lastIndexOf(";"));
                         showFilterPopup();
                     }
 
@@ -326,7 +331,7 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                             filter_arrow_down.setVisibility(View.INVISIBLE);
                         }
                         filterPosterAdapter = new FilterPosterAdapter(FilterActivity.this,itemList,isVertical);
-                        poster_recyclerview.setAdapter(filterPosterAdapter);
+                        poster_recyclerview.swapAdapter(filterPosterAdapter,true);
                         filterPosterAdapter.setItemClickListener(new OnItemClickListener() {
                             @Override
                             public void onItemClick(View view, int position) {
@@ -380,6 +385,7 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
         View view=filter_checked_conditiion.getChildAt(0);
         filter_checked_conditiion.removeAllViews();
         filter_checked_conditiion.addView(view);
+        String conditionForLog = "";
         for (int i = 0; i <filter_conditions.getChildCount() ; i++) {
             FilterConditionGroupView filterConditionGroupView=(FilterConditionGroupView)filter_conditions.getChildAt(i);
             RadioButton radio= (RadioButton) filterConditionGroupView.filter_condition_radio_group.findViewById(filterConditionGroupView.filter_condition_radio_group.getCheckedRadioButtonId());
@@ -396,6 +402,9 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                 checked.setGravity(Gravity.CENTER);
                 checked.setTag(radio.getTag());
                 filter_checked_conditiion.addView(checked);
+                conditionForLog+=radio.getText()+";";
+            }else{
+                conditionForLog+=";";
             }
         }
         if(filter_checked_conditiion.getChildCount()>1){
@@ -407,12 +416,14 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
         String condition = "";
 
         for (int i = 1; i <filter_checked_conditiion.getChildCount() ; i++) {
-            if(filter_checked_conditiion.getChildAt(i)!=null)
-                condition +=filter_checked_conditiion.getChildAt(i).getTag().toString()+"!";
+            if(filter_checked_conditiion.getChildAt(i)!=null) {
+                condition += filter_checked_conditiion.getChildAt(i).getTag().toString() + "!";
+            }
         }
         if(filter_checked_conditiion.getChildCount()==1){
             condition=mFilterConditions.getDefaultX()+"!";
         }
+        AppConstant.purchase_entrance_keyword = conditionForLog.substring(0,conditionForLog.lastIndexOf(";"));
         fetchFilterResult(content_model,condition.substring(0,condition.lastIndexOf("!")));
     }
 
@@ -428,7 +439,9 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
         }else if(i==R.id.filter_tab){
             filter_tab.setFocusable(false);
             getRootView().requestFocus();
-            showFilterPopup();
+            if(filterPopup!=null&&!filterPopup.isShowing()) {
+                showFilterPopup();
+            }
         }
     }
 
@@ -470,5 +483,7 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
     protected void onDestroy() {
         super.onDestroy();
         baseSection="";
+        filter_conditions.removeAllViews();
+        poster_recyclerview.swapAdapter(null,true);
     }
 }

@@ -1,8 +1,11 @@
 package tv.ismar.detailpage.view;
 import com.google.gson.GsonBuilder;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -26,6 +29,7 @@ import tv.ismar.app.BaseActivity;
 import tv.ismar.app.VodApplication;
 import tv.ismar.app.core.PageIntent;
 import tv.ismar.app.core.PageIntentInterface;
+import tv.ismar.app.core.Source;
 import tv.ismar.app.db.HistoryManager;
 import tv.ismar.app.entity.ClipEntity;
 import tv.ismar.app.entity.History;
@@ -33,9 +37,14 @@ import tv.ismar.app.network.entity.ItemEntity;
 import tv.ismar.app.util.Utils;
 import tv.ismar.app.widget.LoadingDialog;
 import tv.ismar.detailpage.R;
+import tv.ismar.library.util.DateUtils;
 import tv.ismar.library.util.LogUtils;
 import tv.ismar.library.util.StringUtils;
+import tv.ismar.player.IsmartvPlayer;
+import tv.ismar.player.gui.PlaybackFragment;
 import tv.ismar.player.gui.PlaybackService;
+import tv.ismar.player.widget.ExitToast;
+import tv.ismar.statistics.DetailPageStatistics;
 
 import static tv.ismar.app.core.PageIntentInterface.DETAIL_TYPE_ITEM;
 import static tv.ismar.app.core.PageIntentInterface.DETAIL_TYPE_PKG;
@@ -56,8 +65,8 @@ public class DetailPageActivity extends BaseActivity implements PlaybackService.
     private Subscription apiClipSubsc;// 需要知道当前是视云还是爱奇艺影片，只有是视云影片才加载播放器
     private HistoryManager historyManager;// 多集影片，需要查询历史记录，历史剧集的片源
     private History mHistory;
-    private boolean goPlayPage;// 是否点击播放，非点击播放，需要将当前预加载停止
     private boolean sharpSetupKeyClick; // 部分夏普设备弹出设置菜单是Dialog Activity样式
+    private long preloadStartTime;
 
     private Subscription apiItemSubsc;
     private String source;
@@ -78,23 +87,35 @@ public class DetailPageActivity extends BaseActivity implements PlaybackService.
             return false;
         }
     });
+    public String to;
+    private DetailPageStatistics mPageStatistics;
+    public boolean sendLog=false;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 //        getWindow().setFormat(PixelFormat.TRANSLUCENT);
+        mPageStatistics = new DetailPageStatistics();
         setContentView(R.layout.activity_detailpage);
         Intent intent = getIntent();
 
         itemPK = intent.getIntExtra(EXTRA_PK, -1);
         String itemJson = intent.getStringExtra(EXTRA_ITEM_JSON);
         source = intent.getStringExtra(EXTRA_SOURCE);
+        to = intent.getStringExtra("to");
         if (source != null && source.equals("launcher")) {
             AppConstant.purchase_entrance_page = "launcher";
         }
         int type = intent.getIntExtra(EXTRA_TYPE, 0);
         String url = intent.getStringExtra("url");
+        if(TextUtils.isEmpty(to)) {
+            if (!TextUtils.isEmpty(source)) {
+                if (!(source.equals(Source.RELATED.getValue()) || source.equals(Source.FINISHED.getValue()) || source.equals(Source.EXIT_LIKE.getValue()) || source.equals(Source.EXIT_NOT_LIKE.getValue()))) {
+                    to = source;
+                }
+            }
+        }
 
         if (TextUtils.isEmpty(itemJson) && itemPK == -1 && TextUtils.isEmpty(url)) {
             finish();
@@ -130,7 +151,6 @@ public class DetailPageActivity extends BaseActivity implements PlaybackService.
     }
 
     public void goPlayer() {
-        goPlayPage = true;
         Log.i("contentMode","contentMode : "+mItemEntity.getContentModel());
         Intent intent = new Intent();
         intent.setAction("tv.ismar.daisy.Player");
@@ -138,6 +158,7 @@ public class DetailPageActivity extends BaseActivity implements PlaybackService.
 //        intent.putExtra(PageIntentInterface.EXTRA_SUBITEM_PK, mSubItemPk);
         intent.putExtra(PageIntentInterface.EXTRA_SOURCE, source);
         intent.putExtra(PageIntentInterface.QIYIFLAG, isqiyi);
+        intent.putExtra(PageIntentInterface.EXTRA_TO, to);
         intent.putExtra("contentMode",mItemEntity.getContentModel());
         startActivity(intent);
 
@@ -296,6 +317,16 @@ public class DetailPageActivity extends BaseActivity implements PlaybackService.
         mLoadingDialog.showDialog();
     }
 
+    // 此方法必须在clic事件之后调用
+    public void stopPreload() {
+        if (mPlaybackService != null) {
+            if (!IsmartvPlayer.isPreloadCompleted && mPlaybackService.getMediaPlayer() != null) {
+                mPlaybackService.getMediaPlayer().logPreloadEnd();
+            }
+            mPlaybackService.stopPlayer(false);
+        }
+    }
+
     @Override
     protected void onResume() {
 //        isClickPlay = false;
@@ -304,15 +335,16 @@ public class DetailPageActivity extends BaseActivity implements PlaybackService.
         super.onResume();
         AppConstant.purchase_referer = "video";
         AppConstant.purchase_page = "detail";
-        goPlayPage = false;
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    showLoginHint();
-                }
-            },1000);
+            new Handler().postDelayed(mRunnable,1000);
+        registerClosePlayerReceiver();
     }
 
+    Runnable mRunnable=new Runnable() {
+        @Override
+        public void run() {
+            showLoginHint();
+        }
+    };
     @Override
     protected void onPause() {
         super.onPause();
@@ -322,11 +354,6 @@ public class DetailPageActivity extends BaseActivity implements PlaybackService.
         }
         if (apiClipSubsc != null && !apiClipSubsc.isUnsubscribed()) {
             apiClipSubsc.unsubscribe();
-        }
-        if (!goPlayPage) {
-            if (mPlaybackService != null) {
-                mPlaybackService.stopPlayer(false);
-            }
         }
         mClient.disconnect();
         mPlaybackService = null;
@@ -372,7 +399,8 @@ public class DetailPageActivity extends BaseActivity implements PlaybackService.
 
     @Override
     public void onConnected(PlaybackService service) {
-        LogUtils.d(TAG, "service connected : " + goPlayPage);
+        LogUtils.d(TAG, "service connected : ");
+        preloadStartTime = DateUtils.currentTimeMillis();
         mPlaybackService = service;
         mPlaybackService.preparePlayer(mItemEntity, source);
 
@@ -380,15 +408,21 @@ public class DetailPageActivity extends BaseActivity implements PlaybackService.
 
     @Override
     public void onDisconnected() {
-        LogUtils.e(TAG, "service disconnected : " + goPlayPage);
+        LogUtils.e(TAG, "service disconnected : ");
     }
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+        stopPreload();
         if (mPackageDetailFragment != null) {
             mPackageDetailFragment.onActivityBackPressed();
         }
+        sendLog=true;
+        if (TextUtils.isEmpty(to)) {
+            to=Source.RELATED.getValue();
+        }
+        mPageStatistics.videoDetailOut(mItemEntity,to);
+        super.onBackPressed();
     }
 
     @Override
@@ -397,7 +431,34 @@ public class DetailPageActivity extends BaseActivity implements PlaybackService.
         intent.putExtra("pk", itemPK);
         setResult(1, intent);
         handler.removeMessages(0);
+        handler.removeCallbacks(mRunnable);
         handler = null;
+        unRegisterClosePlayerReceiver();
+        mLoadingDialog=null;
         super.onDestroy();
     }
+    private ClosePlayerReceiver closePlayerReceiver;
+
+    private void registerClosePlayerReceiver() {
+        IntentFilter filter = new IntentFilter("tv.ismar.daisy.closeplayer");
+        closePlayerReceiver = new ClosePlayerReceiver();
+        registerReceiver(closePlayerReceiver, filter);
+    }
+
+    private void unRegisterClosePlayerReceiver() {
+        if (closePlayerReceiver != null) {
+            unregisterReceiver(closePlayerReceiver);
+        }
+    }
+
+    private class ClosePlayerReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if(intent.getIntExtra("closeid",0)==mItemEntity.getPk()) {
+                finish();
+            }
+        }
+    }
+
 }

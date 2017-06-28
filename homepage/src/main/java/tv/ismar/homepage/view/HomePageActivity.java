@@ -55,7 +55,9 @@ import cn.ismartv.truetime.TrueTime;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+import tv.ismar.account.ActiveService;
 import tv.ismar.account.IsmartvActivator;
+import tv.ismar.account.statistics.LogQueue;
 import tv.ismar.app.AppConstant;
 import tv.ismar.app.BaseActivity;
 import tv.ismar.app.VodApplication;
@@ -412,7 +414,7 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
             fetchChannels();
             startAdsService();
         }
-//        startIntervalActive();
+        startIntervalActive();
 
         final String fromPage = getIntent().getStringExtra("fromPage");
         app_start_time = TrueTime.now().getTime();
@@ -768,6 +770,7 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
 
                     @Override
                     public void onNext(ChannelEntity[] channelEntities) {
+                        LogQueue.getInstance().init(IsmartvActivator.getInstance().getApiDomain());
                         fillChannelLayout(channelEntities);
                     }
 
@@ -1253,6 +1256,8 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
         }
         BaseActivity.baseChannel = "";
         BaseActivity.baseSection = "";
+        mHandler.removeCallbacks(mRunnable);
+        mHandler=null;
         super.onDestroy();
     }
 
@@ -1432,6 +1437,10 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
                             if (playIndex == 0) {
                                 mHandler.sendEmptyMessage(MSG_AD_COUNTDOWN);
                             }
+                            if(launchAds.get(playIndex).media_id!=null) {
+                                int media_id = Integer.parseInt(launchAds.get(playIndex).media_id);
+                                advertisement.getRepostAdUrl(media_id, "startAd");
+                            }
                         }
 
                         @Override
@@ -1447,8 +1456,6 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
                         }
                     });
         }
-        advertisement.getRepostAdUrl(playIndex,"startAd");
-
     }
 
     private MediaPlayer.OnPreparedListener onPreparedListener = new MediaPlayer.OnPreparedListener() {
@@ -1457,6 +1464,10 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
             home_ad_video.start();
             if (playIndex == 0) {
                 mHandler.sendEmptyMessage(MSG_AD_COUNTDOWN);
+            }
+            if(launchAds.get(playIndex).media_id!=null) {
+                int media_id = Integer.parseInt(launchAds.get(playIndex).media_id);
+                advertisement.getRepostAdUrl(media_id, "startAd");
             }
         }
     };
@@ -1564,15 +1575,16 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
             showNoNetConnectDialog();
         }
         startAdsService();
+        mHandler.sendEmptyMessageDelayed(0,1000);
 
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                showLoginHint();
-            }
-        },1000);
+        new Handler().postDelayed(mRunnable,1000);
     }
-
+    private Runnable mRunnable=new Runnable() {
+        @Override
+        public void run() {
+            showLoginHint();
+        }
+    };
     private int getAdCountDownTime() {
         if (launchAds == null || launchAds.isEmpty() || !isPlayingVideo) {
             return 0;
@@ -1593,22 +1605,24 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
         return countTime;
     }
 
+    /**
+     * advertisement end
+     */
     private void startAdsService() {
         Intent intent = new Intent();
         intent.setClass(this, AdsUpdateService.class);
         startService(intent);
     }
 
-    /**
-     * advertisement end
-     */
-
+    private void startIntervalActive() {
+        Intent intent = new Intent();
+        intent.setClass(this, ActiveService.class);
+        startService(intent);
+    }
 
     private void startTrueTimeService() {
         Intent intent = new Intent();
         intent.setClass(this, TrueTimeService.class);
         startService(intent);
     }
-
-
 }

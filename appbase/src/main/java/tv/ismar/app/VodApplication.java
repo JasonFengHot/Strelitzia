@@ -24,6 +24,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -37,6 +38,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import cn.ismartv.injectdb.library.ActiveAndroid;
 import cn.ismartv.injectdb.library.app.Application;
 import cn.ismartv.truetime.TrueTime;
+import okhttp3.Cache;
 import okhttp3.OkHttpClient;
 import okhttp3.ResponseBody;
 import rx.Observer;
@@ -132,7 +134,8 @@ public class VodApplication extends Application {
         Parse.iCallLog = new ICallLog() {
             @Override
             public void addParseError(String json, String msg) throws Exception {
-                Log.e(TAG, "日志输出：内容：" + json + ", 异常：" + msg);
+                Log.e(TAG, "日志输出：内容：" + json);
+                Log.e(TAG, "日志输出：异常：" + msg);
                 LogEntity logEntity = new LogEntity("gson_error");
                 LogEntity.LogContent logContent = new LogEntity.LogContent();
                 logContent.setError_source(json);
@@ -147,6 +150,9 @@ public class VodApplication extends Application {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         C.snToken = sharedPreferences.getString("sn_token", "");
         C.ip = sharedPreferences.getString("ip", "");
+        C.isReportLog = sharedPreferences.getInt("is_report_log", 1);
+        C.report_log_size = sharedPreferences.getInt("report_log_size", 256);
+        C.report_log_time_interval = sharedPreferences.getInt("report_log_time_interval", 60);
 
         PackageManager packageManager = getPackageManager();
         PackageInfo packageInfo;
@@ -159,8 +165,11 @@ public class VodApplication extends Application {
     }
 
     private void initPicasso(){
+        File cacheFile = new File(getCacheDir(), "picasso_cache");
+        Cache cache = new Cache(cacheFile, 1024 * 1024 * 100); //100Mb
         OkHttpClient client = new OkHttpClient.Builder()
                 .addInterceptor(new UserAgentInterceptor())
+                .cache(cache)
                 .build();
 
         ExecutorService executorService = Executors.newSingleThreadExecutor();
@@ -434,7 +443,7 @@ public class VodApplication extends Application {
         if(sn==null||sn.equals("")){
         }else {
             SkyService skyService = SkyService.ServiceManager.getService();
-            String url = "http://weixin.test.tvxio.com/Hibiscus/Hibiscus/uploadclientip";
+            String url = "http://wx.api.tvxio.com/weixin4server/uploadclientip";
             skyService.weixinIp(url, DeviceUtils.getLocalInetAddress().toString(), sn, Build.MODEL, DeviceUtils.getLocalMacAddress(this)).subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<ResponseBody>() {
                 @Override

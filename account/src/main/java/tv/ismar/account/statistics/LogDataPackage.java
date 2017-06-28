@@ -9,6 +9,8 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import tv.ismar.library.util.C;
+
 /**
  * Created by huibin on 6/9/17.
  */
@@ -35,11 +37,11 @@ public class LogDataPackage {
     }
 
     private boolean isTimeOut() {
-        return SystemClock.elapsedRealtime() - mTime > 1000 * 60;
+        return SystemClock.elapsedRealtime() - mTime > 1000 * C.report_log_time_interval;
     }
 
     private boolean isSizeOut() {
-        return mSize > 256 * 1024;
+        return mSize > C.report_log_size * 1024;
     }
 
     public boolean isFull() {

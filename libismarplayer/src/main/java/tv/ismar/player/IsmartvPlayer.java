@@ -24,6 +24,7 @@ import tv.ismar.library.util.LogUtils;
 import tv.ismar.library.util.MD5;
 import tv.ismar.library.util.StringUtils;
 import tv.ismar.player.event.PlayerEvent;
+import tv.ismar.player.gui.PlaybackService;
 import tv.ismar.player.media.DaisyPlayer;
 import tv.ismar.player.media.QiyiPlayer;
 import tv.ismar.player.model.MediaEntity;
@@ -73,7 +74,8 @@ public abstract class IsmartvPlayer implements IPlayer {
     protected ClipEntity.Quality mCurrentQuality;
     protected List<ClipEntity.Quality> mQualities;
     protected int[] mBestvAdTime;
-    private MediaMeta preloadMediaMeta;
+    protected MediaMeta preloadMediaMeta;
+    public static boolean isPreloadCompleted;
     // 奇艺
     private boolean isQiyiSdkInit;
 
@@ -143,8 +145,10 @@ public abstract class IsmartvPlayer implements IPlayer {
                             @Override
                             public void onSuccess() {
                                 Log.d(TAG, "QiYiSdk init success.");
-                                isQiyiSdkInit = true;
-                                createPlayer(qiyiUserInit());
+                                if (mQiyiContainer != null) {
+                                    isQiyiSdkInit = true;
+                                    createPlayer(qiyiUserInit());
+                                }
                             }
 
                             @Override
@@ -207,7 +211,7 @@ public abstract class IsmartvPlayer implements IPlayer {
         if (isInPlaybackState()) {
             logBufferStartTime = DateUtils.currentTimeMillis();
             if (!logSeekStartPosition || playerMode == MODE_QIYI_PLAYER) {
-                PlayerEvent.videoPlaySeek(logPlayerEvent, logSpeed, getCurrentPosition(), logPlayerFlag);
+                PlayerEvent.videoPlaySeek(logPlayerEvent, logSpeed, position, logPlayerFlag);
             }
         }
     }
@@ -231,6 +235,10 @@ public abstract class IsmartvPlayer implements IPlayer {
 
     public abstract IAdController getAdController();
 
+    public String getPlayerType() {
+        return logPlayerFlag;
+    }
+
     public void logVideoExit(int exitPosition, String source) {
         PlayerEvent.videoExit(
                 logPlayerEvent,
@@ -241,6 +249,15 @@ public abstract class IsmartvPlayer implements IPlayer {
                 logPlayerFlag);
     }
 
+    public void logAdExit(){
+        PlayerEvent.ad_play_exit(
+                logPlayerEvent,
+                (DateUtils.currentTimeMillis() - logPlayerOpenTime),
+                logMediaIp,
+                logAdMediaId,
+                logPlayerFlag);
+    }
+
     public void logExpenseAdClick() {
         PlayerEvent.expenseAdClick(
                 logPlayerEvent,
@@ -248,6 +265,12 @@ public abstract class IsmartvPlayer implements IPlayer {
                 DateUtils.currentTimeMillis(),
                 logPlayerFlag
         );
+    }
+
+    public void logPreloadEnd() {
+        PlayerEvent.preloadStart(logPlayerEvent.clipPk,
+                (DateUtils.currentTimeMillis() - PlaybackService.prepareStartTime) / 1000, PlayerEvent.getQuality(qualityToInt(mCurrentQuality)),
+                logPlayerEvent.title, logPlayerEvent.pk, logPlayerEvent.subItemPk, DateUtils.currentTimeMillis());
     }
 
     private MediaMeta bestvUserInit() {

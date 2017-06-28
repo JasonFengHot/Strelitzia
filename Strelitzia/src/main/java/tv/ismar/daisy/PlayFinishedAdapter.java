@@ -1,6 +1,7 @@
 package tv.ismar.daisy;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.Gravity;
@@ -10,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -80,7 +82,7 @@ public class PlayFinishedAdapter extends RecyclerView.Adapter<PlayFinishedAdapte
 			holder.item_vertical_poster_title.setText(item.getTitle());
 			if(!TextUtils.isEmpty(item.getVertical_url())){
 				Picasso.with(mContext).load(item.getVertical_url()).placeholder(R.drawable.list_item_ppreview_bg)
-						.error(R.drawable.list_item_ppreview_bg).into(holder.item_vertical_poster_image);
+						.error(R.drawable.list_item_ppreview_bg).memoryPolicy(MemoryPolicy.NO_STORE).memoryPolicy(MemoryPolicy.NO_CACHE).config(Bitmap.Config.RGB_565).into(holder.item_vertical_poster_image);
 			}
 		}else {
 			holder.item_horizontal_poster_title.setText(item.getTitle());
@@ -91,7 +93,7 @@ public class PlayFinishedAdapter extends RecyclerView.Adapter<PlayFinishedAdapte
 			}
 			if (!TextUtils.isEmpty(item.getPoster_url())) {
 				Picasso.with(mContext).load(item.getPoster_url()).placeholder(R.drawable.list_item_preview_bg)
-						.error(R.drawable.list_item_preview_bg).into(holder.item_horizontal_poster_image);
+						.error(R.drawable.list_item_preview_bg).memoryPolicy(MemoryPolicy.NO_STORE).memoryPolicy(MemoryPolicy.NO_CACHE).config(Bitmap.Config.RGB_565).into(holder.item_horizontal_poster_image);
 
 			}
 		}
@@ -102,7 +104,7 @@ public class PlayFinishedAdapter extends RecyclerView.Adapter<PlayFinishedAdapte
 			return mData.size();
 		}
 
-	public class PlayViewHolder extends RecyclerView.ViewHolder{
+	public static class PlayViewHolder extends RecyclerView.ViewHolder{
 
 		private final ImageView item_horizontal_poster_image;
 		private final TextView item_horizontal_poster_title;

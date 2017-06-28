@@ -37,75 +37,75 @@ public class ActiveAndroidTest {
 
     @Before
     public void setUp() throws Exception {
-        Configuration configuration = new Configuration.Builder(RuntimeEnvironment.application)
-                .setDatabaseName("active_android_test.db")
-                .setDatabaseVersion(1)
-                .create();
-        ActiveAndroid.initialize(configuration);
+//        Configuration configuration = new Configuration.Builder(RuntimeEnvironment.application)
+//                .setDatabaseName("active_android_test.db")
+//                .setDatabaseVersion(1)
+//                .create();
+//        ActiveAndroid.initialize(configuration);
         Log.i(TAG, "initialize");
     }
 
     @After
     public void tearDown() {
-        ActiveAndroid.dispose();
+//        ActiveAndroid.dispose();
         Log.i(TAG, "dispose");
     }
 
     @Test
     public void testActiveAndroid() throws Exception {
         // 当条数据
-        AccountDao accountDao = new AccountDao();
-        accountDao.username = "zhangsan";
-        accountDao.password = "123456";
-        accountDao.save();
+//        AccountDao accountDao = new AccountDao();
+//        accountDao.username = "zhangsan";
+//        accountDao.password = "123456";
+//        accountDao.save();
         Log.i(TAG, "------------------saved--------------------");
-
-        // 多条数据插入
-        ActiveAndroid.beginTransaction();
-        try {
-            for (int i = 0; i < 10; i++) {
-                AccountDao account = new AccountDao();
-                account.username = "Example " + i;
-                account.password = "pwd" + i;
-                account.save();
-            }
-            ActiveAndroid.setTransactionSuccessful();
-        } finally {
-            ActiveAndroid.endTransaction();
-        }
-
-        // 查询
-        List<AccountDao> selectDao = new Select().from(AccountDao.class)
-                .execute();
-        Log.i(TAG, "Query:\n" + new Gson().toJson(selectDao));
-        AccountDao selectSingle = new Select().from(AccountDao.class)
-                .where("username=?", "zhangsan")
-                .executeSingle();
-        Assert.assertNotNull(selectSingle);
-        Log.i(TAG, "QuerySingle:\n" + selectSingle.password);
-
-        new Delete().from(AccountDao.class)
-                .where("username=?", "Example 4")
-                .execute();
-        List<AccountDao> deleteDao = new Select().from(AccountDao.class)
-                .execute();
-        Log.i(TAG, "DeleteQuery:\n" + new Gson().toJson(deleteDao));
-
-        new Update(AccountDao.class)
-                .set("username='Example LongHai'").where("username='Example 5'").execute();
-        List<AccountDao> updateDao = new Select().from(AccountDao.class)
-                .execute();
-        Log.i(TAG, "UpdateQuery:\n" + new Gson().toJson(updateDao));
-
-        selectSingle.password = "pwd zhangsan";
-        selectSingle.save();
-        List<AccountDao> saveSingleDao = new Select().from(AccountDao.class)
-                .execute();
-        Log.i(TAG, "SaveSingleQuery:\n" + new Gson().toJson(saveSingleDao));
-        selectSingle.delete();
-        List<AccountDao> deleteSingleDao = new Select().from(AccountDao.class)
-                .execute();
-        Log.i(TAG, "DeleteSingleDao:\n" + new Gson().toJson(deleteSingleDao));
+//
+//        // 多条数据插入
+//        ActiveAndroid.beginTransaction();
+//        try {
+//            for (int i = 0; i < 10; i++) {
+//                AccountDao account = new AccountDao();
+//                account.username = "Example " + i;
+//                account.password = "pwd" + i;
+//                account.save();
+//            }
+//            ActiveAndroid.setTransactionSuccessful();
+//        } finally {
+//            ActiveAndroid.endTransaction();
+//        }
+//
+//        // 查询
+//        List<AccountDao> selectDao = new Select().from(AccountDao.class)
+//                .execute();
+//        Log.i(TAG, "Query:\n" + new Gson().toJson(selectDao));
+//        AccountDao selectSingle = new Select().from(AccountDao.class)
+//                .where("username=?", "zhangsan")
+//                .executeSingle();
+//        Assert.assertNotNull(selectSingle);
+//        Log.i(TAG, "QuerySingle:\n" + selectSingle.password);
+//
+//        new Delete().from(AccountDao.class)
+//                .where("username=?", "Example 4")
+//                .execute();
+//        List<AccountDao> deleteDao = new Select().from(AccountDao.class)
+//                .execute();
+//        Log.i(TAG, "DeleteQuery:\n" + new Gson().toJson(deleteDao));
+//
+//        new Update(AccountDao.class)
+//                .set("username='Example LongHai'").where("username='Example 5'").execute();
+//        List<AccountDao> updateDao = new Select().from(AccountDao.class)
+//                .execute();
+//        Log.i(TAG, "UpdateQuery:\n" + new Gson().toJson(updateDao));
+//
+//        selectSingle.password = "pwd zhangsan";
+//        selectSingle.save();
+//        List<AccountDao> saveSingleDao = new Select().from(AccountDao.class)
+//                .execute();
+//        Log.i(TAG, "SaveSingleQuery:\n" + new Gson().toJson(saveSingleDao));
+//        selectSingle.delete();
+//        List<AccountDao> deleteSingleDao = new Select().from(AccountDao.class)
+//                .execute();
+//        Log.i(TAG, "DeleteSingleDao:\n" + new Gson().toJson(deleteSingleDao));
 
     }
 

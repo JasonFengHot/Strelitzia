@@ -2,6 +2,7 @@ package tv.ismar.app.network.entity;
 
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by longhai on 16-9-12.
@@ -27,6 +28,15 @@ public class AdElementEntity implements Serializable {
     private String end_date;
     private String start_time;
     private String end_time;
+    private List<MonitorBean> monitor;
+
+    public List<MonitorBean> getMonitor() {
+        return monitor;
+    }
+
+    public void setMonitor(List<MonitorBean> monitor) {
+        this.monitor = monitor;
+    }
 
     public int getRetcode() {
         return retcode;
@@ -162,5 +172,31 @@ public class AdElementEntity implements Serializable {
 
     public void setEnd_time(String end_time) {
         this.end_time = end_time;
+    }
+
+    public static class MonitorBean {
+        /**
+         * name : admaster
+         * monitor_url : http://v.admaster.com.cn999/i/a85525,b1706616,c3276,i0,m202,8a3,8b1,f116.228.50.238,0a0,0ce845711ccbed3aab8e7e15742a29857e,h
+         */
+
+        private String name;
+        private String monitor_url;
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public String getMonitor_url() {
+            return monitor_url;
+        }
+
+        public void setMonitor_url(String monitor_url) {
+            this.monitor_url = monitor_url;
+        }
     }
 }

@@ -14,9 +14,8 @@ import rx.Observable;
 
 public interface UploadLogService {
     @Multipart
-    @POST
+    @POST("Elderberry/client/uploadLog")
     Observable<ResponseBody> uploadLog(
-            @Url String url,
             @Part("parameters") RequestBody parameters,
             @Part("data") RequestBody data
     );

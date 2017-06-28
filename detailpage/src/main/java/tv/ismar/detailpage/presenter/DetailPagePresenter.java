@@ -271,6 +271,7 @@ public class DetailPagePresenter implements DetailPageContract.Presenter {
 
     @Override
     public void handlePurchase() {
+        ((DetailPageActivity) mDetailView.getActivity()).stopPreload();
         int pk = mItemEntity.getPk();
         int jumpTo = mItemEntity.getExpense().getJump_to();
         int cpid = mItemEntity.getExpense().getCpid();
@@ -290,6 +291,7 @@ public class DetailPagePresenter implements DetailPageContract.Presenter {
 
     @Override
     public void handleMoreRelate() {
+        ((DetailPageActivity) mDetailView.getActivity()).stopPreload();
         AppConstant.purchase_entrance_related_item = String.valueOf(mItemEntity.getItemPk());
         AppConstant.purchase_entrance_related_title = mItemEntity.getTitle();
         AppConstant.purchase_entrance_related_channel = AppConstant.purchase_channel;
@@ -306,6 +308,7 @@ public class DetailPagePresenter implements DetailPageContract.Presenter {
 
     @Override
     public void handleEpisode() {
+        ((DetailPageActivity) mDetailView.getActivity()).stopPreload();
         Intent intent = new Intent();
         intent.setAction("tv.ismar.daisy.episode");
         intent.putExtra(EXTRA_ITEM_JSON, new GsonBuilder().create().toJson(mItemEntity));

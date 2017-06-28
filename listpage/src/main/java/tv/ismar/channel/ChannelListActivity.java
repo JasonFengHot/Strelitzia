@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -147,13 +148,22 @@ public class ChannelListActivity extends BaseActivity {
 	@Override
 	protected void onResume() {
 		super.onResume();
-		new Handler().postDelayed(new Runnable() {
-			@Override
-			public void run() {
-				showLoginHint();
-			}
-		},1000);
+		mHandler.sendEmptyMessageDelayed(0,1000);
+//		new Handler().postDelayed(new Runnable() {
+//			@Override
+//			public void run() {
+//				showLoginHint();
+//			}
+//		},1000);
 	}
+	private Handler mHandler=new Handler(new Handler.Callback() {
+		@Override
+		public boolean handleMessage(Message msg) {
+			showLoginHint();
+			return false;
+		}
+	});
+
 	public void addHead(String title){
 		headFragment = new HeadFragment();
 		Bundle bundle = new Bundle();
@@ -233,6 +243,8 @@ public class ChannelListActivity extends BaseActivity {
 	protected void onDestroy() {
 		channelFragment=null;
 		headFragment=null;
+		mHandler.removeMessages(0);
+		mHandler=null;
 		super.onDestroy();
 	}
 

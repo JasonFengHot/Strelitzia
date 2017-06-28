@@ -30,6 +30,7 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
 import okhttp3.Cache;
+import okhttp3.HttpUrl;
 import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.ResponseBody;
@@ -678,7 +679,7 @@ public interface SkyService {
     );
 
 
-    @GET("http://sky.test.tvxio.com/wheat/v2_0/sky/tos0/api/recommend/exits_play/")
+    @GET("wheat/api/recommend/exits_play/")
     Observable<PlayRecommend> apiPlayExitRecommend(
             @Query("sn") String sn,
             @Query("item_id") int item_id,
@@ -704,10 +705,11 @@ public interface SkyService {
         private SkyService lilyHostService;
         private SkyService mCacheSkyService;
         private SkyService mCacheSkyService2;
+        private SkyService logSkyService;
 
         public static boolean executeActive = true;
 
-        private static String[] domain = new String[]{"1.1.1.1", "1.1.1.2", "1.1.1.3", "1.1.1.4"};
+        private static String[] domain = new String[]{"1.1.1.1", "1.1.1.2", "1.1.1.3", "1.1.1.4", "1.1.1.5"};
 
         TrustManager[] trustAllCerts = new TrustManager[]{new X509TrustManager() {
 
@@ -858,6 +860,19 @@ public interface SkyService {
                     .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                     .build();
             mCacheSkyService2 = cacheSkyRetrofit2.create(SkyService.class);
+
+
+            OkHttpClient mLogClient = new OkHttpClient.Builder()
+                    .connectTimeout(DEFAULT_CONNECT_TIMEOUT, TimeUnit.SECONDS)
+                    .readTimeout(DEFAULT_READ_TIMEOUT, TimeUnit.SECONDS)
+                    .addInterceptor(new UserAgentInterceptor())
+                    .addInterceptor(interceptor)
+                    .build();
+//            Retrofit logRetrofit = new Retrofit.Builder()
+//                    .baseUrl(appendProtocol(HttpUrl.parse(domain[4]).host()))
+//                    .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+//                    .client(mLogClient)
+//                    .build();
         }
 
 

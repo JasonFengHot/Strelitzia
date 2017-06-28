@@ -159,7 +159,6 @@ public class DetailPageFragment extends Fragment implements DetailPageContract.V
             position = bundle.getInt(POSITION,-1);
             type=bundle.getString(TYPE);
             mItemEntity = new GsonBuilder().create().fromJson(itemJson, ItemEntity.class);
-
         }
 
         if (!(getActivity() instanceof BaseActivity)) {
@@ -229,12 +228,11 @@ public class DetailPageFragment extends Fragment implements DetailPageContract.V
 
         mModel.notifyBookmark(true);
         mPresenter.fetchItemRelate(String.valueOf(mItemEntity.getPk()));
+        to=fromPage;
     }
 
     @Override
     public void onPause() {
-        if(!to.equals(""))
-        mPageStatistics.videoDetailOut(mItemEntity,to);
         mPresenter.stop();
         super.onPause();
     }
@@ -243,13 +241,15 @@ public class DetailPageFragment extends Fragment implements DetailPageContract.V
     public void onStop() {
 //        String sn = IsmartvActivator.getInstance().getSnToken();
 //        Log.i("LH/", "sn:" + sn);
+        if(!((DetailPageActivity)getActivity()).sendLog)
+        mPageStatistics.videoDetailOut(mItemEntity,to);
         super.onStop();
     }
 
     @Override
     public void onDestroy() {
-        mPageStatistics.videoDetailOut(mItemEntity,fromPage);
         super.onDestroy();
+        handler=null;
     }
 
     @Override
@@ -476,13 +476,15 @@ public class DetailPageFragment extends Fragment implements DetailPageContract.V
     private View.OnClickListener relateItemOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+            ((DetailPageActivity) getActivity()).stopPreload();
             AppConstant.purchase_entrance_page = "related";
             ItemEntity item = relateItems[(int) v.getTag()];
             AppConstant.purchase_entrance_related_item = String.valueOf(mItemEntity.getItemPk());
             AppConstant.purchase_entrance_related_title = mItemEntity.getTitle();
             AppConstant.purchase_entrance_related_channel = AppConstant.purchase_channel;
             mPageStatistics.videoRelateClick(mItemEntity.getPk(), item);
-            new PageIntent().toDetailPage(getContext(), Source.RELATED.getValue(), item.getPk());
+            DetailPageActivity act = (DetailPageActivity)getActivity();
+            new PageIntent().toDetailPage(getContext(), Source.RELATED.getValue(),act.to, item.getPk());
             to="relate";
             getActivity().finish();
         }

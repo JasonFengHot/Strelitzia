@@ -93,4 +93,10 @@ public interface IPlayer {
 
     }
 
+    interface OnPreloadCompletedListener {
+
+        void onPreloadCompleted();
+
+    }
+
 }

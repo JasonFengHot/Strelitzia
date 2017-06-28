@@ -18,6 +18,7 @@ import com.qiyi.sdk.player.IMediaPlayer;
 
 import java.io.IOException;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,16 +41,19 @@ import tv.ismar.app.entity.DBQuality;
 import tv.ismar.app.entity.History;
 import tv.ismar.app.network.SkyService;
 import tv.ismar.app.network.entity.AdElementEntity;
+import tv.ismar.app.network.entity.EventProperty;
 import tv.ismar.app.network.entity.ItemEntity;
 import tv.ismar.app.network.entity.PlayCheckEntity;
 import tv.ismar.app.util.Utils;
 import tv.ismar.library.network.HttpManager;
 import tv.ismar.library.util.AppUtils;
+import tv.ismar.library.util.DateUtils;
 import tv.ismar.library.util.DeviceUtils;
 import tv.ismar.library.util.LogUtils;
 import tv.ismar.library.util.StringUtils;
 import tv.ismar.player.IPlayer;
 import tv.ismar.player.IsmartvPlayer;
+import tv.ismar.player.event.PlayerEvent;
 import tv.ismar.player.model.MediaEntity;
 import tv.ismar.statistics.PurchaseStatistics;
 
@@ -103,6 +107,7 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
     private boolean mIsPlayingAd;// 判断是否正在播放广告
     private boolean mIsPlayerOnStarted;
     private boolean mIsPlayerStopping = false;// 播放器stop，release需要时间较长
+    public static long prepareStartTime;// 预加载开始时间
 
     public PlaybackService() {
     }
@@ -157,6 +162,10 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
 
     public void resetPreload() {
         mIsPreload = false;
+    }
+
+    public int getStartPosition() {
+        return mStartPosition;
     }
 
     @Override
@@ -245,6 +254,7 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
         this.subItemPk = 0;// 当前多集片pk值,通过/api/subitem/{pk}可获取详细信息
         this.source = source;
         this.mItemEntity = itemEntity;
+        prepareStartTime = DateUtils.currentTimeMillis();
         cancelRequest();
         initUserInfo();
         mIsPreload = true;
@@ -523,17 +533,19 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
         mClipEntity = clipEntity;
         initVariable();
         String iqiyi = mClipEntity.getIqiyi_4_0();
-        if (!mIsPreview && Utils.isEmptyText(iqiyi)) {
+        if (!mIsPreview && Utils.isEmptyText(iqiyi) && !mItemEntity.getLiveVideo()) {
             // 视云影片获取前贴片广告
             mAdvertisement.fetchVideoStartAd(mItemEntity, Advertisement.AD_MODE_ONSTART, source);
         } else {
             createPlayer(null);
         }
     }
-
+    private List<AdElementEntity> adElementEntityList=new ArrayList<>();
+    private boolean isSendlog=false;
     @Override
     public void loadVideoStartAd(List<AdElementEntity> adList) {
         createPlayer(adList);
+        adElementEntityList=adList;
     }
 
     private void createPlayer(List<AdElementEntity> adList) {
@@ -544,6 +556,7 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
         builder.setSnToken(snToken);
         if (Utils.isEmptyText(iqiyi)) {
             // 片源为视云
+            isSendlog=true;
             builder.setPlayerMode(IsmartvPlayer.MODE_SMART_PLAYER);
             builder.setDeviceToken(deviceToken);
             if (mIsPreload) {
@@ -556,6 +569,7 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
                 hlsPlayer = builder.build();
             }
         } else {
+            isSendlog=false;
             if (mQiyiContainer == null) {
                 throw new IllegalArgumentException("奇艺播放器，显示组件不能为空");
             }
@@ -678,6 +692,10 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
             mIsPlayingAd = true;
             if (serviceCallback != null) {
                 serviceCallback.showAdvertisement(true);
+                if(isSendlog) {
+                    serviceCallback.sendAdlog(adElementEntityList);
+                }
+//                Advertisement advertisement=new Advertisement()
             }
         }
 
@@ -744,6 +762,7 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
     private IPlayer.OnStateChangedListener onStateChangedListener = new IPlayer.OnStateChangedListener() {
         @Override
         public void onPrepared() {
+            LogUtils.d(TAG, "onPrepared");
             if (hlsPlayer == null) {
                 LogUtils.e(TAG, "Called onPrepared but player is null");
                 return;
@@ -756,6 +775,7 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
 
         @Override
         public void onStarted() {
+            LogUtils.d(TAG, "onStarted : " + mIsPlayerOnStarted);
             if (hlsPlayer == null) {
                 LogUtils.e(TAG, "Called onStarted but player is null");
                 return;
@@ -777,6 +797,7 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
 
         @Override
         public void onPaused() {
+            LogUtils.d(TAG, "onPaused");
             if (hlsPlayer == null) {
                 return;
             }
@@ -787,6 +808,7 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
 
         @Override
         public void onSeekCompleted() {
+            LogUtils.d(TAG, "onSeekCompleted");
             if (hlsPlayer == null) {
                 return;
             }
@@ -797,6 +819,7 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
 
         @Override
         public void onCompleted() {
+            LogUtils.d(TAG, "onCompleted");
             if (hlsPlayer == null) {
                 return;
             }
@@ -871,6 +894,8 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
         void showBuffering(boolean showBuffer);
 
         void onBufferUpdate(long value);
+
+        void sendAdlog(List<AdElementEntity> adlist);
     }
 
     enum PlayerStatus {
@@ -955,13 +980,9 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
 
     public void logExpenseVideoPreview(int position, String result) {
         if (hlsPlayer != null) {
-            String player = hlsPlayer.getPlayerMode() == IsmartvPlayer.MODE_QIYI_PLAYER ? "qiyi" : "bestv";
+            String player = hlsPlayer.getPlayerType();
             int clipPk = mItemEntity.getClip() == null ? 0 : mItemEntity.getClip().getPk();
             float price = mItemEntity.getExpense() == null ? 0 : mItemEntity.getExpense().getPrice();
-            int duration = position;
-            if (result.equals("purchase")) {
-                duration = hlsPlayer.getDuration();
-            }
             new PurchaseStatistics().expenseVideoPreview(
                     itemPk,
                     clipPk,
@@ -971,7 +992,7 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
                     price,
                     player,
                     result,
-                    duration / 1000
+                    position / 1000
             );
         }
     }

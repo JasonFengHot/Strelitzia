@@ -96,12 +96,12 @@
     android:orientation="vertical"
     android:layout_centerVertical="true"
     android:layout_marginTop="@dimen/play_exit_error_mt"
-    android:visibility="gone">
+    android:visibility="invisible">
     
     <ImageView
+        android:id="@+id/play_exit_error_img"
         android:layout_width="@dimen/play_exit_error_icon_w"
         android:layout_height="@dimen/play_exit_error_icon_w"
-        android:background="@drawable/play_exit_error"
         android:layout_gravity="center_horizontal"
         />
     <TextView

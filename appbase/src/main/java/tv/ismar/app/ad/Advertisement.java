@@ -156,15 +156,15 @@ public class Advertisement {
                         List<AdElementEntity> adElementEntityList = parseAdResult(result, adPid);
                         if (adPid.equals(Advertisement.AD_MODE_ONPAUSE) && mOnPauseVideoAdListener != null) {
                             mOnPauseVideoAdListener.loadPauseAd(adElementEntityList);
-                            createAdSp("zangtingAd",result,adPid);
+                            createAdSp("zangtingAd", result, adPid);
                         } else if (adPid.equals(Advertisement.AD_MODE_ONSTART) && mOnVideoPlayAdListener != null) {
                             mOnVideoPlayAdListener.loadVideoStartAd(adElementEntityList);
-                            createAdSp("qiantieAd",result,adPid);
+                            createAdSp("qiantieAd", result, adPid);
                         }
                         if (mApiVideoStartSubsc != null && !mApiVideoStartSubsc.isUnsubscribed()) {
                             mApiVideoStartSubsc.unsubscribe();
                         }
-                        Log.i("ADSMon","video AD  "+adPid);
+                        Log.i("ADSMon", "video AD  " + adPid);
                     }
                 });
 
@@ -216,8 +216,8 @@ public class Advertisement {
                         if (mApiAppStartSubsc != null && !mApiAppStartSubsc.isUnsubscribed()) {
                             mApiAppStartSubsc.unsubscribe();
                         }
-                        Log.i("ADSMon","get ad "+adPid);
-                        createAdSp("startAd",result,adPid);
+                        Log.i("ADSMon", "get ad " + adPid);
+                        createAdSp("startAd", result, adPid);
                     }
                 });
 
@@ -377,7 +377,7 @@ public class Advertisement {
                     }
                 }
                 if (!adElementEntities.isEmpty()) {
-                  //  Log.i("AD Sort","start serial:  "+adElementEntities.get(0).getSerial()+"");
+                    Log.i("AD Sort", "start serial:  " + adElementEntities.get(0).getSerial() + "");
                     Collections.sort(adElementEntities, new Comparator<AdElementEntity>() {
                         @Override
                         public int compare(AdElementEntity lhs, AdElementEntity rhs) {
@@ -392,15 +392,16 @@ public class Advertisement {
         }
         return adElementEntities;
     }
-    private void createAdSp(String name,String result,String adPid){
-        SharedPreferences sp=mContext.getSharedPreferences(name, Activity.MODE_PRIVATE);
-        SharedPreferences.Editor editor=sp.edit();
-        editor.putString("result",result);
-        editor.putString("adPid",adPid);
+
+    private void createAdSp(String name, String result, String adPid) {
+        SharedPreferences sp = mContext.getSharedPreferences(name, Activity.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putString("result", result);
+        editor.putString("adPid", adPid);
         editor.commit();
     }
 
-    private void repostAdLog(String url){
+    private void repostAdLog(String url) {
         SkyService skyService = SkyService.ServiceManager.getAdService();
         skyService.repostAdLog(url).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -412,7 +413,7 @@ public class Advertisement {
 
                     @Override
                     public void onError(Throwable throwable) {
-                        Log.i("ADSMon",throwable.toString()+"  onerror");
+                        Log.i("ADSMon", throwable.toString() + "  onerror");
                     }
 
                     @Override
@@ -423,23 +424,28 @@ public class Advertisement {
 
     }
 
-    public void getRepostAdUrl(int index,String adName){
-        SharedPreferences sp=mContext.getSharedPreferences(adName, Activity.MODE_PRIVATE);
-        String adResult=sp.getString("result","");
-        String adId=sp.getString("adPid","");
-        Log.i("ADSMon", "adId  "+ adId+" ");
+    public void getRepostAdUrl(int index, String adName) {
+        SharedPreferences sp = mContext.getSharedPreferences(adName, Activity.MODE_PRIVATE);
+        String adResult = sp.getString("result", "");
+        String adId = sp.getString("adPid", "");
+        Log.i("ADSMon", "adId  " + adId + " ");
         try {
             JSONObject jsonObject = new JSONObject(adResult);
             JSONObject body = jsonObject.getJSONObject("ads");
             JSONArray arrays = body.getJSONArray(adId);
-            JSONObject element = arrays.getJSONObject(index);
-            JSONArray monitor=element.getJSONArray("monitor");
-                for(int j=0;j<monitor.length();j++){
-                    JSONObject child = monitor.getJSONObject(j);
-                    String monitor_url=child.optString("monitor_url");
-                    Log.i("adimagelog","J="+j+"index="+index+"  monitor_url: "+monitor_url);
-                    repostAdLog(monitor_url);
+            for (int i = 0; i < arrays.length(); i++) {
+                JSONObject element = arrays.getJSONObject(i);
+                int media_id = element.optInt("media_id");
+                if (media_id == index) {
+                    JSONArray monitor = element.getJSONArray("monitor");
+                    for (int j = 0; j < monitor.length(); j++) {
+                        JSONObject child = monitor.getJSONObject(j);
+                        String monitor_url = child.optString("monitor_url");
+                        Log.i("AdverstimentId", "J=" + j + "index=" + index + "  monitor_url: " + monitor_url);
+                        repostAdLog(monitor_url);
+                    }
                 }
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

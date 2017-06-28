@@ -2,6 +2,7 @@ package tv.ismar.daisy;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.widget.StaggeredGridLayoutManager;
@@ -10,6 +11,7 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -30,7 +32,9 @@ import tv.ismar.app.models.PlayfinishedRecommend;
 import tv.ismar.app.network.SkyService;
 import tv.ismar.app.ui.adapter.OnItemClickListener;
 import tv.ismar.app.ui.adapter.OnItemFocusedListener;
+import tv.ismar.app.util.BitmapDecoder;
 import tv.ismar.app.widget.MyRecyclerView;
+import tv.ismar.library.injectdb.util.Log;
 import tv.ismar.searchpage.utils.JasmineUtil;
 
 
@@ -55,6 +59,7 @@ public class PlayFinishedActivity extends BaseActivity implements View.OnClickLi
     private Subscription playExitSub;
     private View play_exit_error;
     private String type="exit_unknown";
+    private Source source=Source.FINISHED;
     private String action="exit";
     private int itemPk;
     private int clip;
@@ -62,6 +67,10 @@ public class PlayFinishedActivity extends BaseActivity implements View.OnClickLi
     private int location;
     private int order;
     private boolean backToPlay=false;
+    private String to;
+    private String frompage;
+    private ImageView play_exit_error_img;
+    private BitmapDecoder bitmapDecoder;
 
 
     @Override
@@ -73,8 +82,18 @@ public class PlayFinishedActivity extends BaseActivity implements View.OnClickLi
         playScale = intent.getIntExtra("play_scale", 1);
         hasHistory = intent.getBooleanExtra("has_history", false);
         channel = intent.getStringExtra("channel");
+        frompage = intent.getStringExtra("frompage");
+        to = intent.getStringExtra("to");
         initView();
         initData();
+        if(TextUtils.isEmpty(to)) {
+            if (!frompage.equals(Source.RELATED.getValue())) {
+                to = frompage;
+            }
+        }
+        if(TextUtils.isEmpty(frompage)){
+            return;
+        }
     }
 
 
@@ -87,6 +106,7 @@ public class PlayFinishedActivity extends BaseActivity implements View.OnClickLi
         vertical_poster_focus = findViewById(R.id.vertical_poster_focus);
         horizontal_poster_focus = findViewById(R.id.horizontal_poster_focus);
         play_exit_error = findViewById(R.id.play_exit_error);
+        play_exit_error_img = (ImageView) findViewById(R.id.play_exit_error_img);
         play_finished_confirm_btn.setOnClickListener(this);
         play_finished_cancel_btn.setOnClickListener(this);
         play_finished_confirm_btn.setOnHoverListener(this);
@@ -103,6 +123,7 @@ public class PlayFinishedActivity extends BaseActivity implements View.OnClickLi
     }
 
     private void initData() {
+        bitmapDecoder = new BitmapDecoder();
         if(playScale==100) {
             //播放完成页
             play_finished_confirm_btn.setVisibility(View.GONE);
@@ -127,6 +148,12 @@ public class PlayFinishedActivity extends BaseActivity implements View.OnClickLi
                         @Override
                         public void onError(Throwable e) {
                             type="exit_unknown";
+                            bitmapDecoder.decode(PlayFinishedActivity.this, R.drawable.play_exit_error, new BitmapDecoder.Callback() {
+                                @Override
+                                public void onSuccess(BitmapDrawable bitmapDrawable) {
+                                    play_exit_error_img.setBackgroundDrawable(bitmapDrawable);
+                                }
+                            });
                             play_exit_error.setVisibility(View.VISIBLE);
                             play_finished_cancel_btn.setNextFocusUpId(R.id.play_finished_cancel_btn);
                             play_finished_confirm_btn.setNextFocusUpId(R.id.play_finished_confirm_btn);
@@ -135,7 +162,8 @@ public class PlayFinishedActivity extends BaseActivity implements View.OnClickLi
                         @Override
                         public void onNext(Item[] playfinishedRecommend) {
                             ArrayList<PlayfinishedRecommend.RecommendItem> list=new ArrayList<>();
-                            for (int i = 0; i <playfinishedRecommend.length ; i++) {
+                            int length=playfinishedRecommend.length;
+                            for (int i = 0; i <length ; i++) {
                                 PlayfinishedRecommend.RecommendItem item=new PlayfinishedRecommend.RecommendItem();
                                 item.setPk(playfinishedRecommend[i].pk);
                                 item.setContent_model(playfinishedRecommend[i].content_model);
@@ -152,6 +180,7 @@ public class PlayFinishedActivity extends BaseActivity implements View.OnClickLi
                 setOrientation(false);
                 play_finished_title.setText("今日热播内容推荐");
                 type="exit_not_like";
+                source=Source.EXIT_NOT_LIKE;
             }else{
                 if("movie".equals(channel)){
                     setOrientation(true);
@@ -164,6 +193,7 @@ public class PlayFinishedActivity extends BaseActivity implements View.OnClickLi
                     play_finished_title.setText("其他用户正在观看");
                 }
                 type="exit_like";
+                source= Source.EXIT_LIKE;
             }
             playExitSub = SkyService.ServiceManager.getCacheSkyService2().apiPlayExitRecommend(SimpleRestClient.sn_token, itemId,channel,playScale)
                     .subscribeOn(Schedulers.io())
@@ -178,6 +208,12 @@ public class PlayFinishedActivity extends BaseActivity implements View.OnClickLi
                         @Override
                         public void onError(Throwable e) {
                             type="exit_unknown";
+                            bitmapDecoder.decode(PlayFinishedActivity.this, R.drawable.play_exit_error, new BitmapDecoder.Callback() {
+                                @Override
+                                public void onSuccess(BitmapDrawable bitmapDrawable) {
+                                    play_exit_error_img.setBackgroundDrawable(bitmapDrawable);
+                                }
+                            });
                             play_exit_error.setVisibility(View.VISIBLE);
                             play_finished_cancel_btn.setNextFocusUpId(R.id.play_finished_cancel_btn);
                             play_finished_confirm_btn.setNextFocusUpId(R.id.play_finished_confirm_btn);
@@ -226,13 +262,14 @@ public class PlayFinishedActivity extends BaseActivity implements View.OnClickLi
                 String contentModel=item.getContent_model();
                 if(contentModel!=null) {
                     Intent intent=new Intent("tv.ismar.daisy.closeplayer");
+                    intent.putExtra("closeid",itemId);
                     sendBroadcast(intent);
                     finish();
                     PageIntent pageIntent = new PageIntent();
                     if (contentModel.equals("music") || (contentModel.equals("sport") && item.getExpense_info() == null) || contentModel.equals("game")) {
-                        pageIntent.toPlayPage(PlayFinishedActivity.this, item.getPk(), 0, Source.RELATED);
+                        pageIntent.toPlayPage(PlayFinishedActivity.this, item.getPk(), 0,source);
                     } else {
-                        pageIntent.toDetailPage(PlayFinishedActivity.this, Source.RELATED.getValue(), item.getPk());
+                        pageIntent.toDetailPage(PlayFinishedActivity.this, source.getValue(),to==null?"":to, item.getPk());
                     }
                 }
             }
@@ -339,6 +376,15 @@ public class PlayFinishedActivity extends BaseActivity implements View.OnClickLi
             String userid = sharedPreferences.getString("username", "");
             LogUtils.video_exit_recommend(itemId, type, action, itemPk, clip, subitem, "finished", location, order, userid);
         }
+        play_finished_horizontal_recylerview.setAdapter(null);
+        play_finished_vertical_recylerview.setAdapter(null);
+        play_finished_horizontal_recylerview=null;
+        play_finished_vertical_recylerview=null;
+        playFinishedAdapter=null;
+        if (bitmapDecoder != null && bitmapDecoder.isAlive()) {
+            bitmapDecoder.interrupt();
+        }
+
     }
 
 
