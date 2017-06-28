@@ -15,17 +15,16 @@ import android.widget.TextView;
 
 import java.util.List;
 
-import tv.ismar.app.util.BitmapDecoder;
-import tv.ismar.helperpage.LauncherActivity;
-import tv.ismar.helperpage.R;
-import tv.ismar.helperpage.ui.activity.HomeActivity;
-import tv.ismar.helperpage.utils.DeviceUtils;
 import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import tv.ismar.app.core.SimpleRestClient;
 import tv.ismar.app.core.VodUserAgent;
 import tv.ismar.app.network.entity.TeleEntity;
+import tv.ismar.app.util.BitmapDecoder;
+import tv.ismar.helperpage.R;
+import tv.ismar.helperpage.ui.activity.HomeActivity;
+import tv.ismar.helperpage.utils.DeviceUtils;
 
 /**
  * Created by huaijie on 2015/4/8.
@@ -42,6 +41,7 @@ public class HelpFragment extends Fragment {
     private TextView deviceCode;
     private Context mContext;
     private BitmapDecoder bitmapDecoder;
+
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
@@ -61,8 +61,8 @@ public class HelpFragment extends Fragment {
         view.getViewTreeObserver().addOnGlobalFocusChangeListener(new ViewTreeObserver.OnGlobalFocusChangeListener() {
             @Override
             public void onGlobalFocusChanged(View oldFocus, View newFocus) {
-                if(newFocus!=null){
-                    Log.i(TAG,"newFocus: "+newFocus.toString());
+                if (newFocus != null) {
+                    Log.i(TAG, "newFocus: " + newFocus.toString());
                 }
             }
         });
@@ -79,7 +79,7 @@ public class HelpFragment extends Fragment {
         deviceCode = (TextView) view.findViewById(R.id.device_code);
         try {
             deviceCode.setText(" " + DeviceUtils.ipToHex());
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -88,8 +88,8 @@ public class HelpFragment extends Fragment {
     }
 
     private void fetchTel(String model, String snCode) {
-         String ACTION = "getContact";
-         ((HomeActivity)getActivity()).mWxApiService.FetchTel(ACTION,model,snCode)
+        String ACTION = "getContact";
+        ((HomeActivity) getActivity()).mWxApiService.FetchTel(ACTION, model, snCode)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<List<TeleEntity>>() {

@@ -1,11 +1,10 @@
 package tv.ismar.app.core;
-import com.google.gson.GsonBuilder;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
-import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -14,7 +13,6 @@ import java.io.InputStreamReader;
 import java.util.concurrent.TimeUnit;
 
 import cn.ismartv.injectdb.library.ActiveAndroid;
-import cn.ismartv.injectdb.library.query.Delete;
 import cn.ismartv.injectdb.library.query.Select;
 import okhttp3.Call;
 import okhttp3.Interceptor;
@@ -23,12 +21,8 @@ import okhttp3.Request;
 import okhttp3.Response;
 import tv.ismar.account.IsmartvActivator;
 import tv.ismar.app.R;
-import tv.ismar.app.db.location.CdnTable;
 import tv.ismar.app.db.location.CityTable;
-import tv.ismar.app.db.location.DistrictTable;
-import tv.ismar.app.db.location.IspTable;
 import tv.ismar.app.db.location.ProvinceTable;
-import tv.ismar.app.network.entity.CdnListEntity;
 import tv.ismar.app.network.entity.IpLookUpEntity;
 import tv.ismar.app.util.NetworkUtils;
 import tv.ismar.app.util.Utils;
@@ -58,7 +52,6 @@ public class InitializeProcess implements Runnable {
     private SharedPreferences mSharedPreferences;
     private OkHttpClient mOkHttpClient;
     private final String[] mDistrictArray;
-    private final String[] mIspArray;
     public static boolean flag = false;
 
     Interceptor mHeaderInterceptor = new Interceptor() {
@@ -76,7 +69,6 @@ public class InitializeProcess implements Runnable {
         this.mContext = context;
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
         mDistrictArray = mContext.getResources().getStringArray(R.array.district);
-        mIspArray = mContext.getResources().getStringArray(R.array.isp);
         mOkHttpClient = new OkHttpClient.Builder()
                 .retryOnConnectionFailure(true)
                 .connectTimeout(3000, TimeUnit.MILLISECONDS)
@@ -93,35 +85,13 @@ public class InitializeProcess implements Runnable {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        initializeDistrict();
         initializeProvince();
         initalizeCity();
-        initializeIsp();
-        fetchCdnList();
         String city = mSharedPreferences.getString(CITY, "");
         if (Utils.isEmptyText(city)) {
             fetchLocationByIP();
         }
 
-    }
-
-
-    private void initializeDistrict() {
-        if (new Select().from(DistrictTable.class).executeSingle() == null) {
-            ActiveAndroid.beginTransaction();
-            try {
-
-                for (String district : mDistrictArray) {
-                    DistrictTable districtTable = new DistrictTable();
-                    districtTable.district_id = Utils.getMd5Code(district);
-                    districtTable.district_name = district;
-                    districtTable.save();
-                }
-                ActiveAndroid.setTransactionSuccessful();
-            } finally {
-                ActiveAndroid.endTransaction();
-            }
-        }
     }
 
     private void initializeProvince() {
@@ -186,71 +156,6 @@ public class InitializeProcess implements Runnable {
         }
     }
 
-
-    private void initializeIsp() {
-        if (new Select().from(IspTable.class).executeSingle() == null) {
-            ActiveAndroid.beginTransaction();
-            try {
-                for (String isp : mIspArray) {
-                    IspTable ispTable = new IspTable();
-                    ispTable.isp_id = Utils.getMd5Code(isp);
-                    ispTable.isp_name = isp;
-                    ispTable.save();
-                }
-                ActiveAndroid.setTransactionSuccessful();
-            } finally {
-                ActiveAndroid.endTransaction();
-            }
-        }
-    }
-
-    private void fetchCdnList() {
-        if(!NetworkUtils.isConnected(mContext)){// 断开网络做如下请求时出错
-            return;
-        }
-        String resultString = null;
-        Request request = new Request.Builder()
-                .url("http://wx.api.tvxio.com/shipinkefu/getCdninfo?actiontype=getcdnlist")
-                .build();
-        Call call = mOkHttpClient.newCall(request);
-        try {
-            Response response = call.execute();
-            if (response.isSuccessful()) {
-                resultString = response.body().string();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        if (!Utils.isEmptyText(resultString)) {
-            CdnListEntity cdnListEntity = new GsonBuilder().create().fromJson(resultString, CdnListEntity.class);
-            initializeCdnTable(cdnListEntity);
-        }
-    }
-
-    private void initializeCdnTable(CdnListEntity cdnListEntity) {
-        new Delete().from(CdnTable.class).execute();
-        ActiveAndroid.beginTransaction();
-        try {
-            for (CdnListEntity.CdnEntity cdnEntity : cdnListEntity.getCdn_list()) {
-                CdnTable cdnTable = new CdnTable();
-                cdnTable.cdn_id = cdnEntity.getCdnID();
-                cdnTable.cdn_name = cdnEntity.getName();
-                cdnTable.cdn_nick = cdnEntity.getNick();
-                cdnTable.cdn_flag = cdnEntity.getFlag();
-                cdnTable.cdn_ip = cdnEntity.getUrl();
-                cdnTable.district_id = getDistrictId(cdnEntity.getNick());
-                cdnTable.isp_id = getIspId(cdnEntity.getNick());
-                cdnTable.route_trace = cdnEntity.getRoute_trace();
-                cdnTable.speed = 0;
-                cdnTable.checked = false;
-                cdnTable.save();
-            }
-            ActiveAndroid.setTransactionSuccessful();
-        } finally {
-            ActiveAndroid.endTransaction();
-        }
-    }
-
     private void fetchLocationByIP() {
         if(!NetworkUtils.isConnected(mContext)){// 断开网络做如下请求时出错
             return;
@@ -287,24 +192,5 @@ public class InitializeProcess implements Runnable {
         if (provinceTable != null) {
             activator.setProvince(ipLookUpEntity.getProv(), provinceTable.pinyin);
         }
-    }
-
-    private String getDistrictId(String cdnNick) {
-        for (String district : mDistrictArray) {
-            if (cdnNick.contains(district)) {
-                return Utils.getMd5Code(district);
-            }
-        }
-        // 第三方节点返回 "0"
-        return "0";
-    }
-
-    private String getIspId(String cdnNick) {
-        for (String isp : mIspArray) {
-            if (cdnNick.contains(isp)) {
-                return Utils.getMd5Code(isp);
-            }
-        }
-        return Utils.getMd5Code(mIspArray[mIspArray.length - 1]);
     }
 }

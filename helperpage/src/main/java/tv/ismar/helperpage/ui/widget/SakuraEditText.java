@@ -29,7 +29,6 @@ public class SakuraEditText extends EditText {
     }
 
 
-
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         Intent intent = new Intent();

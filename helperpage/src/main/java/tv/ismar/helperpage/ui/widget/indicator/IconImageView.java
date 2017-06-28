@@ -30,20 +30,20 @@ public class IconImageView extends ImageView {
 
 
     private void scaleToLarge(View view) {
-        ObjectAnimator objectAnimatorX = ObjectAnimator.ofFloat(view, SCALE_X, new float[]{1.0F, 1.5F});
+        ObjectAnimator objectAnimatorX = ObjectAnimator.ofFloat(view, SCALE_X, 1.0F, 1.5F);
         objectAnimatorX.setDuration(100L);
         objectAnimatorX.start();
-        ObjectAnimator objectAnimatorY = ObjectAnimator.ofFloat(view, SCALE_Y, new float[]{1.0F, 1.5F});
+        ObjectAnimator objectAnimatorY = ObjectAnimator.ofFloat(view, SCALE_Y, 1.0F, 1.5F);
         objectAnimatorY.setDuration(100L);
         objectAnimatorY.start();
     }
 
 
     private void scaleToNormal(View view) {
-        ObjectAnimator objectAnimatorX = ObjectAnimator.ofFloat(view, SCALE_X, new float[]{1.5F, 1.0F});
+        ObjectAnimator objectAnimatorX = ObjectAnimator.ofFloat(view, SCALE_X, 1.5F, 1.0F);
         objectAnimatorX.setDuration(100L);
         objectAnimatorX.start();
-        ObjectAnimator objectAnimatorY = ObjectAnimator.ofFloat(view, SCALE_Y, new float[]{1.5F, 1.0F});
+        ObjectAnimator objectAnimatorY = ObjectAnimator.ofFloat(view, SCALE_Y, 1.5F, 1.0F);
         objectAnimatorY.setDuration(100L);
         objectAnimatorY.start();
     }

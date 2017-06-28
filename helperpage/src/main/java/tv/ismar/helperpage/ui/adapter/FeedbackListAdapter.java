@@ -9,9 +9,9 @@ import android.widget.TextView;
 
 import java.util.List;
 
-import tv.ismar.helperpage.R;
 import tv.ismar.app.core.VodUserAgent;
 import tv.ismar.app.network.entity.ChatMsgEntity;
+import tv.ismar.helperpage.R;
 
 
 /**

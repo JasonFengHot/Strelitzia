@@ -56,11 +56,11 @@ public class SakuraButton extends Button {
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent event) {
-        if (isEnabled()){
+        if (isEnabled()) {
             switch (event.getAction()) {
                 case MotionEvent.ACTION_DOWN:
                     performClick();
-                    return  true;
+                    return true;
             }
         }
 

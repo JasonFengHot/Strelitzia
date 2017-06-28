@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 
 import java.util.ArrayList;
 
@@ -15,7 +14,6 @@ import tv.ismar.helperpage.R;
 import tv.ismar.helperpage.ui.adapter.IndicatorAdapter;
 import tv.ismar.helperpage.ui.fragment.FeedbackFragment;
 import tv.ismar.helperpage.ui.fragment.HelpFragment;
-import tv.ismar.helperpage.ui.fragment.NodeFragment;
 import tv.ismar.helperpage.ui.widget.indicator.IconPagerIndicator;
 import tv.ismar.helperpage.ui.widget.indicator.RotationPagerTransformer;
 import tv.ismar.helperpage.ui.widget.indicator.ViewPagerScroller;
@@ -29,7 +27,6 @@ public class HomeActivity extends BaseActivity {
 
     private ViewPager viewPager;
     private IconPagerIndicator pagerIndicator;
-    private NodeFragment nodeFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,9 +38,7 @@ public class HomeActivity extends BaseActivity {
 
         viewPager = (ViewPager) findViewById(R.id.pager);
         pagerIndicator = (IconPagerIndicator) findViewById(R.id.indicator);
-        nodeFragment=new NodeFragment();
         fragments = new ArrayList<Fragment>();
-     //   fragments.add(nodeFragment);
         fragments.add(new FeedbackFragment());
         fragments.add(new HelpFragment());
 
@@ -60,10 +55,11 @@ public class HomeActivity extends BaseActivity {
         pagerIndicator.setCurrentItem(position);
 
     }
-    public void showPop(Throwable e){
-        if(!NetworkUtils.isConnected(this)){
+
+    public void showPop(Throwable e) {
+        if (!NetworkUtils.isConnected(this)) {
             showNoNetConnectDialog();
-        }else if (e instanceof HttpException) {
+        } else if (e instanceof HttpException) {
             HttpException httpException = (HttpException) e;
             if (httpException.code() == 401) {
                 showExpireAccessTokenPop();

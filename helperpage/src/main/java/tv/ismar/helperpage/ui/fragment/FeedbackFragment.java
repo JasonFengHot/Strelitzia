@@ -1,17 +1,14 @@
 package tv.ismar.helperpage.ui.fragment;
-import com.google.gson.GsonBuilder;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -23,22 +20,17 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import okhttp3.ResponseBody;
-import retrofit2.adapter.rxjava.HttpException;
 import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
-import tv.ismar.account.IsmartvActivator;
-import tv.ismar.app.BaseActivity;
-import tv.ismar.app.core.SimpleRestClient;
 import tv.ismar.app.core.preferences.AccountSharedPrefs;
 import tv.ismar.app.network.SkyService;
 import tv.ismar.app.network.entity.ChatMsgEntity;
@@ -48,12 +40,11 @@ import tv.ismar.app.ui.MessageDialogFragment;
 import tv.ismar.app.util.BitmapDecoder;
 import tv.ismar.helperpage.R;
 import tv.ismar.helperpage.core.FeedbackProblem;
-import tv.ismar.helperpage.core.UploadFeedback;
+import tv.ismar.helperpage.ui.activity.HomeActivity;
 import tv.ismar.helperpage.ui.adapter.FeedbackListAdapter;
 import tv.ismar.helperpage.ui.widget.FeedBackListView;
 import tv.ismar.helperpage.ui.widget.MessageSubmitButton;
 import tv.ismar.helperpage.ui.widget.SakuraEditText;
-import tv.ismar.helperpage.ui.activity.HomeActivity;
 
 
 /**
@@ -261,10 +252,10 @@ public class FeedbackFragment extends Fragment implements RadioGroup.OnCheckedCh
             feedBack.setDescription(descriptioinText.getText().toString());
             feedBack.setPhone(contactNumber);
             feedBack.setOption(problemTextFlag);
-            feedBack.setCity(accountSharedPrefs.getSharedPrefs(AccountSharedPrefs.CITY));
-            feedBack.setIp(accountSharedPrefs.getSharedPrefs(AccountSharedPrefs.IP));
-            feedBack.setIsp(accountSharedPrefs.getSharedPrefs(AccountSharedPrefs.ISP));
-            feedBack.setLocation(accountSharedPrefs.getSharedPrefs(AccountSharedPrefs.PROVINCE));
+            feedBack.setCity(AccountSharedPrefs.getSharedPrefs(AccountSharedPrefs.CITY));
+            feedBack.setIp(AccountSharedPrefs.getSharedPrefs(AccountSharedPrefs.IP));
+            feedBack.setIsp(AccountSharedPrefs.getSharedPrefs(AccountSharedPrefs.ISP));
+            feedBack.setLocation(AccountSharedPrefs.getSharedPrefs(AccountSharedPrefs.PROVINCE));
             String userAgent = android.os.Build.MODEL.replaceAll(" ", "_") + "/" + android.os.Build.ID + " " + snCode;
             String q = new GsonBuilder().create().toJson(feedBack);
             ((HomeActivity) getActivity()).mIrisService.UploadFeedback(userAgent, q)

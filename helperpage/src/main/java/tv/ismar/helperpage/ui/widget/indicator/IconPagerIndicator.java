@@ -70,11 +70,10 @@ public class IconPagerIndicator extends LinearLayout implements PagerIndicator, 
         feedbackIcon.setImageResource(R.drawable.sakura_tab_feedback);
         helpIcon.setImageResource(R.drawable.sakura_tab_help);
 
-      //  icons[0] = nodeIcon;
+        //  icons[0] = nodeIcon;
         icons[0] = feedbackIcon;
         icons[1] = helpIcon;
 
-        
 
         for (IconImageView imageView : icons)
             imageView.setOnClickListener(this);
