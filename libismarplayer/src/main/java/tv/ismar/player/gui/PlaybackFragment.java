@@ -346,10 +346,15 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
         LogUtils.i(TAG, "resultCode:" + resultCode + " request:" + requestCode);
         // 从播放完成页面退出播放器
         if (resultCode == 200) {
+            if (mPlaybackService == null) {
+                return;
+            }
+            if (mPlaybackService.getMediaPlayer() != null && !IsmartvPlayer.isPreloadCompleted) {
+                mPlaybackService.getMediaPlayer().logPreloadEnd();
+            }
             if (mPlaybackService.isPreview()) {
                 mPlaybackService.logExpenseVideoPreview(mCurrentPosition, "cancel");
             }
-            ExitToast.createToastConfig().dismiss();
             mHandler.removeCallbacksAndMessages(null);
             timerStop();
             removeBufferingLongTime();
@@ -2029,10 +2034,15 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
 
         @Override
         public void onReceive(Context context, Intent intent) {
+            if (mPlaybackService == null) {
+                return;
+            }
             if (mPlaybackService.isPreview()) {
                 mPlaybackService.logExpenseVideoPreview(mCurrentPosition, "cancel");
             }
-            ExitToast.createToastConfig().dismiss();
+            if (mPlaybackService.getMediaPlayer() != null && !IsmartvPlayer.isPreloadCompleted) {
+                mPlaybackService.getMediaPlayer().logPreloadEnd();
+            }
             mHandler.removeCallbacksAndMessages(null);
             timerStop();
             removeBufferingLongTime();
