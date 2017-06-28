@@ -6,8 +6,10 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
@@ -65,12 +67,19 @@ public class HeadFragment extends Fragment implements View.OnClickListener, View
     private LinearLayout guideLayout;
     private List<View> indicatorTableList;
     private ImageView bestv_logo;
+    private Context mContext;
+    private SharedPreferences preferences;
 
 
     public HeadFragment() {
 
     }
 
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mContext = context;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -94,7 +103,6 @@ public class HeadFragment extends Fragment implements View.OnClickListener, View
 
 
         createGuideIndicator();
-
 
     }
 
@@ -169,12 +177,24 @@ public class HeadFragment extends Fragment implements View.OnClickListener, View
         HashMap<String, String> hashMap = IsmartvActivator.getInstance().getCity();
         String geoId = hashMap.get("geo_id");
         fetchWeatherInfo(geoId);
+        registerListener();
     }
 
     private void showLogo() {
         bestv_logo.setVisibility(View.VISIBLE);
     }
 
+    @Override
+    public void onStop() {
+        unregisterListener();
+        super.onStop();
+    }
+
+    @Override
+    public void onDestroyView() {
+
+        super.onDestroyView();
+    }
 
     @Override
     public void onPause() {
@@ -380,4 +400,25 @@ public class HeadFragment extends Fragment implements View.OnClickListener, View
             fetchWeatherInfo(geoId);
         }
     };
+
+    private void registerListener(){
+        preferences = PreferenceManager.getDefaultSharedPreferences(mContext);
+        preferences.registerOnSharedPreferenceChangeListener(sharedPreferenceChangeListener);
+    }
+
+   SharedPreferences.OnSharedPreferenceChangeListener sharedPreferenceChangeListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
+        @Override
+        public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+            HashMap<String, String> hashMap = IsmartvActivator.getInstance().getCity();
+            String geoId = hashMap.get("geo_id");
+            fetchWeatherInfo(geoId);
+        }
+    };
+
+
+    private void unregisterListener(){
+        if (preferences != null){
+            preferences.unregisterOnSharedPreferenceChangeListener(sharedPreferenceChangeListener);
+        }
+    }
 }

@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
+import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -49,7 +50,8 @@ public class SystemReporterReceiver extends BroadcastReceiver {
         if (!TextUtils.isEmpty(action)) {
             if (action.equals(ACTION_BOOT_COMPLETED)) {
                 long lastUseTme = settings.getLong(lastUseTime, 0);
-                if (lastUseTme > 0) {
+                long lastOnTime =settings.getLong(tv_on_time,0);
+                if (lastUseTme > 0&&lastOnTime>0) {
                     HashMap<String, Object> properties = new HashMap<String, Object>();
                     properties.put("duration", lastUseTme / 1000);      // int类型 单位 s
                     properties.put("version", getVersionCode());   // 软件版本号, 例如: S-1-1030-F
@@ -57,20 +59,21 @@ public class SystemReporterReceiver extends BroadcastReceiver {
                     properties.put("welcome", "TV");                    // 开机界面, (TV|Smart), 例如: TV
                     properties.put("os_version",Build.VERSION.RELEASE);
                     NetworkUtils.SaveLogToLocal(eventName, properties);
-                    Log.i("reporter", "lastUseTime:" + lastUseTme);
+                    new Thread(mUpLoadLogRunnable).start();
+                    Log.i(TAG, "duration:" + lastUseTme+" lastOnTime: "+lastOnTime);
                 }
                 long tvOnTime = TrueTime.now().getTime();
-                Log.d(TAG, "tvOnTime:" + tvOnTime+"  lastUseTme:"+lastUseTme);
-                editor.putLong(tv_on_time, TrueTime.now().getTime());
+//                long tvOnTime= System.currentTimeMillis();
+                Log.d(TAG, "tvOnTime:" + tvOnTime);
+                editor.putLong(tv_on_time, tvOnTime);
                 editor.apply();
-                new Thread(mUpLoadLogRunnable).start();
             } else if (action.equals(ACTION_SHUTDOWN)) {
                 long lastTvOnTime = settings.getLong(tv_on_time, 0);
                 long useTime = 0;
                 if (lastTvOnTime > 0) {
                     useTime = TrueTime.now().getTime() - lastTvOnTime;
                 }
-                    Log.d(TAG, "lastUseTime:" + useTime);
+                    Log.d(TAG, "lastUseTime:" + useTime+ " tv_on_time: "+lastTvOnTime);
                     editor.putLong(lastUseTime, useTime);
                     editor.apply();
             }else if(action.equals(ACTION_REPORTER)){
