@@ -335,15 +335,16 @@ public class DetailPageActivity extends BaseActivity implements PlaybackService.
         super.onResume();
         AppConstant.purchase_referer = "video";
         AppConstant.purchase_page = "detail";
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    showLoginHint();
-                }
-            },1000);
+            new Handler().postDelayed(mRunnable,1000);
         registerClosePlayerReceiver();
     }
 
+    Runnable mRunnable=new Runnable() {
+        @Override
+        public void run() {
+            showLoginHint();
+        }
+    };
     @Override
     protected void onPause() {
         super.onPause();
@@ -430,8 +431,10 @@ public class DetailPageActivity extends BaseActivity implements PlaybackService.
         intent.putExtra("pk", itemPK);
         setResult(1, intent);
         handler.removeMessages(0);
+        handler.removeCallbacks(mRunnable);
         handler = null;
         unRegisterClosePlayerReceiver();
+        mLoadingDialog=null;
         super.onDestroy();
     }
     private ClosePlayerReceiver closePlayerReceiver;

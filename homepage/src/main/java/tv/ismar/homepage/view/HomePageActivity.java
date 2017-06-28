@@ -1255,6 +1255,8 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
         }
         BaseActivity.baseChannel = "";
         BaseActivity.baseSection = "";
+        mHandler.removeCallbacks(mRunnable);
+        mHandler=null;
         super.onDestroy();
     }
 
@@ -1572,15 +1574,16 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
             showNoNetConnectDialog();
         }
         startAdsService();
+        mHandler.sendEmptyMessageDelayed(0,1000);
 
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                showLoginHint();
-            }
-        },1000);
+        new Handler().postDelayed(mRunnable,1000);
     }
-
+    private Runnable mRunnable=new Runnable() {
+        @Override
+        public void run() {
+            showLoginHint();
+        }
+    };
     private int getAdCountDownTime() {
         if (launchAds == null || launchAds.isEmpty() || !isPlayingVideo) {
             return 0;

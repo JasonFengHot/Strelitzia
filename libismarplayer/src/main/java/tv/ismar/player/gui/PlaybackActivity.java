@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.KeyEvent;
 
@@ -50,14 +51,15 @@ public class PlaybackActivity extends BaseActivity {
         filter.setPriority(1000);
         filter.addDataScheme("file");
         registerReceiver(mountReceiver, filter);
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                showLoginHint();
-            }
-        },1000);
+        mHandler.sendEmptyMessageDelayed(0,1000);
     }
-
+    private Handler mHandler=new Handler(new Handler.Callback() {
+        @Override
+        public boolean handleMessage(Message msg) {
+            showLoginHint();
+            return false;
+        }
+    });
     @Override
     protected void onPause() {
         super.onPause();
@@ -91,6 +93,12 @@ public class PlaybackActivity extends BaseActivity {
         }
     };
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mHandler.removeMessages(0);
+        mHandler=null;
+    }
     // 移至PlaybackFragment
 //    @Override
 //    protected void onActivityResult(int requestCode, int resultCode, Intent data) {

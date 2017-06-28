@@ -679,7 +679,7 @@ public interface SkyService {
     );
 
 
-    @GET("http://sky.test.tvxio.com/wheat/v2_0/sky/tos0/api/recommend/exits_play/")
+    @GET("wheat/api/recommend/exits_play/")
     Observable<PlayRecommend> apiPlayExitRecommend(
             @Query("sn") String sn,
             @Query("item_id") int item_id,
