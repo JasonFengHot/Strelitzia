@@ -171,20 +171,30 @@ public class PaymentActivity extends BaseActivity implements View.OnClickListene
         super.onResume();
 
     }
+    int lastfocusId=0;
     @Override
     public void onFocusChange(View v, boolean hasFocus) {
         int i = v.getId();
         if(hasFocus&&!ishover){
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             if (i == R.id.weixin) {
-                transaction.replace(R.id.fragment_page, weixinFragment).commit();
+                if(lastfocusId!=i) {
+                    transaction.replace(R.id.fragment_page, weixinFragment).commit();
+                }
             } else if (i == R.id.alipay) {
-                alipayClick();
+                if(lastfocusId!=i) {
+                    alipayClick();
+                }
             }else if (i == R.id.videocard) {
-                transaction.replace(R.id.fragment_page, cardpayFragment).commit();
+                if(lastfocusId!=i) {
+                    transaction.replace(R.id.fragment_page, cardpayFragment).commit();
+                }
             } else if (i == R.id.balance_pay) {
-                transaction.replace(R.id.fragment_page, balanceFragment).commit();
+                if(lastfocusId!=i) {
+                    transaction.replace(R.id.fragment_page, balanceFragment).commit();
+                }
             }
+            lastfocusId=i;
         }
     }
 
@@ -195,12 +205,13 @@ public class PaymentActivity extends BaseActivity implements View.OnClickListene
         if (i == R.id.weixin) {
             transaction.replace(R.id.fragment_page, weixinFragment).commit();
         } else if (i == R.id.alipay) {
-            alipayClick();
+                alipayClick();
         } else if (i == R.id.videocard) {
             transaction.replace(R.id.fragment_page, cardpayFragment).commit();
         } else if (i == R.id.balance_pay) {
             transaction.replace(R.id.fragment_page, balanceFragment).commit();
         }
+        lastfocusId=i;
     }
 
     public void fetchAccountBalance() {
