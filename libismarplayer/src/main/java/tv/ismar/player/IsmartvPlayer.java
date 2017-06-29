@@ -203,7 +203,7 @@ public abstract class IsmartvPlayer implements IPlayer {
 
     @Override
     public void pause() {
-        if (isInPlaybackState() && mCurrentState == STATE_PLAYING && !isS3Seeking) {
+        if (isInPlaybackState() && mCurrentState == STATE_PLAYING) {
             PlayerEvent.videoPlayPause(logPlayerEvent, logSpeed, getCurrentPosition(), logPlayerFlag);
         }
     }
