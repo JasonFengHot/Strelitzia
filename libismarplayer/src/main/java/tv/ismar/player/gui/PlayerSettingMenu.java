@@ -64,6 +64,7 @@ public class PlayerSettingMenu extends PopupWindow implements HorizontalEpisodeL
     private MenuHandler menuHandler;
     private Animation episode_hide;
     private String contentMode="";
+    private boolean wheelIsShow=false;
     public PlayerSettingMenu(Context context, List<ItemEntity> entities, int subitem, EpisodeOnclickListener episodeOnclickListener1, ArrayList<QuailtyEntity> quailist,int position,OnMenuListItmeClickListener listener1,String contentmode){
         mContext=context;
         pk=subitem;
@@ -103,11 +104,10 @@ public class PlayerSettingMenu extends PopupWindow implements HorizontalEpisodeL
         relativeLayout.addView(contentView, layoutParams);
         setContentView(relativeLayout);
 
-//        setBackgroundDrawable(mContext.getResources().getDrawable(R.drawable.transparent));
+        setBackgroundDrawable(mContext.getResources().getDrawable(R.drawable.transparent));
         setFocusable(true);
         menuHandler=new MenuHandler();
         episode_hide= AnimationUtils.loadAnimation(mContext,R.anim.episode_hide);
-        
     }
     public void removeAllMsg(){
         menuHandler.removeCallbacksAndMessages(null);
@@ -151,19 +151,6 @@ public class PlayerSettingMenu extends PopupWindow implements HorizontalEpisodeL
         listAdapter.setOnMenuListItmeClickListener(menuListener);
         listAdapter.setOnKeyListener(this);
         menu_list.setAdapter(listAdapter);
-//        wheelView= (WheelView) menuView.findViewById(R.id.wheel_view);
-//        wheelView.setWheelAdapter(new myWheelViewAdapter(mContext));
-//        wheelView.setWheelSize(3);
-//        wheelView.setSkin(WheelView.Skin.None);
-//        wheelView.setWheelData(quailtyList);
-//        wheelView.setSelection(currentQuailty);
-//
-//        WheelView.WheelViewStyle style = new WheelView.WheelViewStyle();
-//        style.textColor = R.color._666666;
-//        style.selectedTextColor = R.color._f0f0f0;
-//        style.textSize=R.dimen.text_size_24sp;
-//        style.selectedTextSize=30;
-//        wheelView.setStyle(style);
 
         menu_select.setText(quailtyList.get(currentQuailty).getName());
         menu_select.setOnFocusChangeListener(new View.OnFocusChangeListener() {
@@ -201,12 +188,14 @@ public class PlayerSettingMenu extends PopupWindow implements HorizontalEpisodeL
                         hideMenu();
                         reSendMsg();
                     }
+                    return false;
                 }else if(event.getAction()==KeyEvent.ACTION_DOWN&&keyCode==4){
                     dismiss();
                     menuHandler.removeMessages(1);
                     return true;
+                }else {
+                    return false;
                 }
-                return false;
             }
         });
         menu_layout.addView(menuView);
@@ -376,8 +365,8 @@ public class PlayerSettingMenu extends PopupWindow implements HorizontalEpisodeL
 
     @Override
     public void onkeyBack(int keycode) {
-        Log.i("menu_select","WheelkeyBack");
-        hideWheel();
+       // Log.i("menu_select","WheelkeyBack");
+        //hideWheel();
     }
     private void hideWheel(){
         ObjectAnimator show_wheel=ObjectAnimator.ofFloat(setting_layout,"translationY",-mContext.getResources().getDimensionPixelSize(R.dimen.player_35),0);
@@ -389,7 +378,7 @@ public class PlayerSettingMenu extends PopupWindow implements HorizontalEpisodeL
         RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(mContext.getResources().getDimensionPixelSize(R.dimen.player_250), mContext.getResources().getDimensionPixelSize(R.dimen.player_146));
         lp.setMargins(0, 0, 0, 0);
         menu_list.setLayoutParams(lp);
-
+        wheelIsShow=false;
     }
     private void showWheel(){
         ObjectAnimator show_wheel=ObjectAnimator.ofFloat(setting_layout,"translationY",0,-mContext.getResources().getDimensionPixelSize(R.dimen.player_35));
@@ -397,6 +386,7 @@ public class PlayerSettingMenu extends PopupWindow implements HorizontalEpisodeL
         show_wheel.start();
         wheel.setVisibility(View.VISIBLE);
         menu_select.setVisibility(View.GONE);
+        wheelIsShow=true;
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -539,6 +529,17 @@ public class PlayerSettingMenu extends PopupWindow implements HorizontalEpisodeL
         if(menuHandler!=null) {
             menuHandler.removeMessages(1);
             menuHandler.sendEmptyMessageDelayed(1, 10 * 1000);
+        }
+    }
+
+    @Override
+    public void dismiss() {
+        if(wheelIsShow){
+            if(wheel!=null){
+                hideWheel();
+            }
+        }else {
+            super.dismiss();
         }
     }
 }
