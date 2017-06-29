@@ -1254,6 +1254,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
             mIsOnPaused = false;
             if(!isPlayExitLayerShow)
             mPlaybackService.startPlayer();
+            timerStart(0);
         }
     }
 
