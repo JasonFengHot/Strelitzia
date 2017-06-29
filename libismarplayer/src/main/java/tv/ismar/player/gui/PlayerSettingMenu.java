@@ -110,15 +110,16 @@ public class PlayerSettingMenu extends PopupWindow implements HorizontalEpisodeL
         setFocusable(true);
         menuHandler=new MenuHandler();
         episode_hide= AnimationUtils.loadAnimation(mContext,R.anim.episode_hide);
-//        bg= (ImageView) contentView.findViewById(R.id.bg);
-//        bg.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                if(wheelIsShow){
-//                    hideWheel();
-//                }
-//            }
-//        });
+        bg= (ImageView) contentView.findViewById(R.id.bg);
+        bg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(wheelIsShow){
+                    Log.i("onclikholder","onclick bg");
+                    hideWheel();
+                }
+            }
+        });
     }
     public void removeAllMsg(){
         menuHandler.removeCallbacksAndMessages(null);
@@ -170,6 +171,7 @@ public class PlayerSettingMenu extends PopupWindow implements HorizontalEpisodeL
                 if(hasFocus){
                     menu_select.setTextColor(mContext.getResources().getColor(R.color._ff9c3c));
                 }else{
+                    Log.i("onclikholder","select nofocus");
                     menu_select.setTextColor(mContext.getResources().getColor(R.color._f0f0f0));
                 }
             }
