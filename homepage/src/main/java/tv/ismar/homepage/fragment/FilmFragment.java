@@ -527,14 +527,14 @@ public class FilmFragment extends ChannelBaseFragment {
                     "", 0, "",
                     SimpleRestClient.appVersion, "client", ""
             );
+            e.printStackTrace();
         }
 
         firstcarousel = film_carous_imageView1;
 
         isCarouselInit = true;
-        resetBorder();
 
-        carouselMap = new HashMap<>();
+      //  carouselMap = new HashMap<>();
         if(mCarousels.size()>0)
         carouselMap.put(0, film_carous_imageView1.getId());
         if(mCarousels.size()>1)
@@ -545,6 +545,9 @@ public class FilmFragment extends ChannelBaseFragment {
         carouselMap.put(3, film_carous_imageView4.getId());
         if(mCarousels.size()>4)
         carouselMap.put(4, film_carous_imageView5.getId());
+
+        resetBorder();
+        if(carouselMap.size()>0)
         playCarousel(0);
     }
 

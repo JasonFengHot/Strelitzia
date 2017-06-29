@@ -705,7 +705,9 @@ public class FavoriteFragment extends Fragment implements ScrollableSectionList.
 
 					@Override
 					public void onNext(VideoEntity videoEntity) {
-						setTvHome(videoEntity);
+						if(videoEntity!=null) {
+							setTvHome(videoEntity);
+						}
 					}
 
 					@Override
