@@ -92,6 +92,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
     private static final int MSG_SHOW_BUFFERING_LONG = 105;
     private static final int MSG_UPDATE_PROGRESS = 106;
     private static final int MSG_HIDE_PANEL = 107;
+    private static final int MSG_DELAY_PLAY = 108;
     private static final int EVENT_CLICK_VIP_BUY = 0x10;
     private static final int EVENT_CLICK_KEFU = 0x11;
     private static final int EVENT_COMPLETE_BUY = 0x12;
@@ -148,6 +149,8 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
     private boolean mIsClickKefu;// 点击客服中心，返回不应再加载广告
     private int mAdCount;// 广告总倒计时，广告倒计时从3位数变为2位数时，2位数前面添0
     private boolean isErrorPopUp;// 播放器同时回调多个onError情况
+    private boolean isSeekingExit;
+    private int mSeekToPosition;
 
     private PlaybackHandler mHandler;
     private boolean backpress=false;
@@ -232,10 +235,14 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
         isPlayExitLayerShow=false;
         if(backpress && mPlaybackService != null){
             mPlaybackService.startPlayer();
-            if (!mPlaybackService.getItemEntity().getLiveVideo()) {
+            if (!mPlaybackService.getItemEntity().getLiveVideo() && !isSeekingExit) {
                 showBuffer(null);
             }
             timerStart(0);
+            if (isSeekingExit) {
+                isSeekingExit = false;
+//                mHandler.sendEmptyMessageDelayed(MSG_DELAY_PLAY, 1000);
+            }
         }
         backpress=false;
     }
@@ -814,7 +821,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
                 if (!mPlaybackService.getMediaPlayer().isPlaying()&&!isPlayExitLayerShow) {
                     mPlaybackService.startPlayer();
                 }
-                timerStart(500);
+                timerStart(2000);
                 break;
             case COMPLETED:
                 hideMenu();
@@ -1045,6 +1052,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
                     removeBufferingLongTime();
                     timerStop();
                     isPlayExitLayerShow = true;
+                    isSeekingExit = isSeeking;
                     mPlaybackService.pausePlayer();
                     goOtherPage(EVENT_PLAY_EXIT);
 //                    return true;
@@ -1375,6 +1383,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
             mCurrentPosition = clipLength - 3000;
         }
         player_seekBar.setProgress(mCurrentPosition);
+        mSeekToPosition = mCurrentPosition;
     }
 
     private void fastBackward(int step) {
@@ -1402,6 +1411,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
         if (mCurrentPosition <= 0)
             mCurrentPosition = 0;
         player_seekBar.setProgress(mCurrentPosition);
+        mSeekToPosition = mCurrentPosition;
     }
     private void createMenu(){
         List<ItemEntity> list = new ArrayList<>();
@@ -1831,7 +1841,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
                     if (service.getMediaPlayer().isPlaying()) {
                         int mediaPosition = service.getMediaPlayer().getCurrentPosition();
                         // 播放过程中网络相关
-                        if (!fragment.isSeeking && fragment.mCurrentPosition == mediaPosition && mediaPosition != fragment.historyPosition) {
+                        if (!fragment.isSeeking && fragment.mSeekToPosition == 0 && fragment.mCurrentPosition == mediaPosition && mediaPosition != fragment.historyPosition) {
                             LogUtils.d("LH/PlaybackHandler", "Network videoBufferingShow：" + fragment.isBufferShow() + " " + mediaPosition + " " + fragment.mCurrentPosition);
                             if (!NetworkUtils.isConnected(fragment.getActivity())) {
                                 // 断开网络，连接网络后会在广播接收中恢复
@@ -1854,6 +1864,20 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
                         }
                         // 播放过程中网络相关End
 
+                        if (service.getMediaPlayer().getPlayerMode() == IsmartvPlayer.MODE_SMART_PLAYER && fragment.isSeeking && fragment.mSeekToPosition > 0) {
+                            boolean flag = (Math.abs(fragment.mSeekToPosition - mediaPosition) > 5000);
+                            if (flag) {
+                                sendEmptyMessageDelayed(MSG_UPDATE_PROGRESS, 1000);
+                                return;
+                            }
+                        }
+
+                        if (fragment.isSeeking) {
+                            fragment.isSeeking = false;
+                            fragment.mSeekToPosition = 0;
+                            fragment.showPannelDelayOut();
+                        }
+
                         bufferingCount = 0;
                         if (fragment.isBufferShow()) {
                             // 画面开始播放，buffer就需要消失
@@ -1864,21 +1888,6 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
                             fragment.removeBufferingLongTime();
                         }
 
-                        if (service.getMediaPlayer().getPlayerMode() == IsmartvPlayer.MODE_SMART_PLAYER) {
-                            // 视云播放器，onSeekComplete回调完成后，getCurrentPosition获取位置不是最新seekTo的位置,2s以后再更新进度条
-                            if (fragment.isSeeking) {
-                                fragment.isSeeking = false;
-                                fragment.showPannelDelayOut();
-                                sendEmptyMessageDelayed(MSG_UPDATE_PROGRESS, 2000);
-                                return;
-                            }
-                        } else {
-                            if (fragment.isSeeking) {// 奇艺视频seek结束后需要置为false
-                                fragment.isSeeking = false;
-                                fragment.showPannelDelayOut();
-                            }
-                        }
-
                         // 更新进度条
                         fragment.mCurrentPosition = mediaPosition;
                         fragment.player_seekBar.setProgress(fragment.mCurrentPosition);
@@ -1887,6 +1896,10 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
                     break;
                 case MSG_HIDE_PANEL:
                     fragment.hidePanel();
+                    break;
+                case MSG_DELAY_PLAY:
+                    fragment.mPlaybackService.pausePlayer();
+                    fragment.mPlaybackService.startPlayer();
                     break;
             }
         }
