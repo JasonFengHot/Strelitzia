@@ -278,7 +278,7 @@ public class HeadFragment extends Fragment implements View.OnClickListener, View
 
 
     public void fetchWeatherInfo(String geoId) {
-        if (!NetworkUtils.isConnected(getActivity())) {// 断开网络做如下请求时出错
+        if (!NetworkUtils.isConnected(getActivity()) || TextUtils.isEmpty(geoId) || "0".equals(geoId)) {// 断开网络做如下请求时出错
             return;
         }
         ((BaseActivity) getActivity()).mWeatherSkyService.apifetchWeatherInfo(geoId).subscribeOn(Schedulers.io())
@@ -409,9 +409,11 @@ public class HeadFragment extends Fragment implements View.OnClickListener, View
    SharedPreferences.OnSharedPreferenceChangeListener sharedPreferenceChangeListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
         @Override
         public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-            HashMap<String, String> hashMap = IsmartvActivator.getInstance().getCity();
-            String geoId = hashMap.get("geo_id");
-            fetchWeatherInfo(geoId);
+            if (key.equals("geo_id")) {
+                HashMap<String, String> hashMap = IsmartvActivator.getInstance().getCity();
+                String geoId = hashMap.get("geo_id");
+                fetchWeatherInfo(geoId);
+            }
         }
     };
 
