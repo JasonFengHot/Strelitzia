@@ -516,7 +516,7 @@ public class BaseActivity extends AppCompatActivity {
 
     private void showUpdatePopup(final View view, final Stack<Bundle> stack) {
         String currentActivityName = getCurrentActivityName(this);
-        if (!stack.isEmpty() && !currentActivityName.equals("tv.ismar.player.view.PlayerActivity")) {
+        if (!stack.isEmpty() && !currentActivityName.equals("tv.ismar.player.gui.PlaybackActivity")) {
             updateBundle = stack.pop();
             updatePopupWindow = new UpdatePopupWindow(this, updateBundle);
             updatePopupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
