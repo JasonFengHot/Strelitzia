@@ -401,14 +401,17 @@ public class IsmartvActivator {
     }
 
     public int getH264PlayerType() {
+//        return 0;
         return mSharedPreferences.getInt("h264_player", 0);// 0-smartplayer，1-系统mediaplayer,2-自有
 
     }
     public int getH265PlayerType() {
+//        return 0;
         return mSharedPreferences.getInt("h265_player", 0);// 0-smartplayer，1-系统mediaplayer,2-自有
 
     }
     public int getLivePlayerType() {
+//        return 1;
         return mSharedPreferences.getInt("live_player", 0);// 0-smartplayer，1-系统mediaplayer,2-自有
 
     }

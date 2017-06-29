@@ -492,8 +492,12 @@ public class EntertainmentFragment extends ChannelBaseFragment {
             Log.i("entertain","Looppost"+looppost.size());
 //            if (looppost.size() < 3)
 //                return;
-            Picasso.with(mContext).load(looppost.get(++loopindex)).memoryPolicy(MemoryPolicy.NO_STORE)
-                    .into(vaiety_post);
+            try {
+                Picasso.with(mContext).load(looppost.get(++loopindex)).memoryPolicy(MemoryPolicy.NO_STORE)
+                        .into(vaiety_post);
+            }catch (Exception e){
+                e.printStackTrace();
+            }
             if (loopindex == 0) {
                 vaiety_thumb1.setPadding(0, 0, 0, 0);
                 vaiety_thumb2.setPadding(0, PADDING, 0, -PADDING);
