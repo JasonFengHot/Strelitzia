@@ -5,24 +5,15 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParseException;
 
 import java.io.File;
-import java.lang.reflect.Type;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
 import javax.net.ssl.SSLContext;
@@ -30,8 +21,6 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
 import okhttp3.Cache;
-import okhttp3.HttpUrl;
-import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -46,9 +35,7 @@ import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.Headers;
-import retrofit2.http.Multipart;
 import retrofit2.http.POST;
-import retrofit2.http.Part;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 import retrofit2.http.Streaming;
@@ -753,7 +740,7 @@ public interface SkyService {
                     .build();
 
             Gson gson = new GsonBuilder()
-                    .registerTypeAdapter(Date.class, new DateDeserializer())
+                    .setDateFormat("yyyy-MM-dd hh:mm:ss")
                     .create();
             Retrofit retrofit = new Retrofit.Builder()
                     .baseUrl(appendProtocol(domain[0]))
@@ -949,20 +936,20 @@ public interface SkyService {
     }
 
 
-    class DateDeserializer implements JsonDeserializer<Date> {
-        @Override
-        public Date deserialize(JsonElement element, Type arg1, JsonDeserializationContext arg2) throws JsonParseException {
-            String date = element.getAsString();
-
-            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            formatter.setTimeZone(TimeZone.getTimeZone("Asia/Shanghai"));
-
-            try {
-                return formatter.parse(date);
-            } catch (ParseException e) {
-                e.printStackTrace();
-                return null;
-            }
-        }
-    }
+//    class DateDeserializer implements JsonDeserializer<Date> {
+//        @Override
+//        public Date deserialize(JsonElement element, Type arg1, JsonDeserializationContext arg2) throws JsonParseException {
+//            String date = element.getAsString();
+//
+//            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//            formatter.setTimeZone(TimeZone.getTimeZone("Asia/Shanghai"));
+//
+//            try {
+//                return formatter.parse(date);
+//            } catch (ParseException e) {
+//                e.printStackTrace();
+//                return null;
+//            }
+//        }
+//    }
 }
