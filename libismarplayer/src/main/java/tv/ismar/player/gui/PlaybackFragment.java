@@ -346,10 +346,15 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
         LogUtils.i(TAG, "resultCode:" + resultCode + " request:" + requestCode);
         // 从播放完成页面退出播放器
         if (resultCode == 200) {
+            if (mPlaybackService == null) {
+                return;
+            }
+            if (mPlaybackService.getMediaPlayer() != null && !IsmartvPlayer.isPreloadCompleted) {
+                mPlaybackService.getMediaPlayer().logPreloadEnd();
+            }
             if (mPlaybackService.isPreview()) {
                 mPlaybackService.logExpenseVideoPreview(mCurrentPosition, "cancel");
             }
-            ExitToast.createToastConfig().dismiss();
             mHandler.removeCallbacksAndMessages(null);
             timerStop();
             removeBufferingLongTime();
@@ -1753,6 +1758,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
     private static class PlaybackHandler extends Handler {
 
         private WeakReference<PlaybackFragment> weakReference;
+        private int bufferingCount;
 
         public PlaybackHandler(PlaybackFragment playbackFragment) {
             weakReference = new WeakReference<>(playbackFragment);
@@ -1834,19 +1840,21 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
                                 ((BaseActivity) fragment.getActivity()).showNoNetConnectDialog(null);
                                 LogUtils.d("LH/PlaybackHandler", "Network error on timer runnable.");
                                 return;
-                            } else {
-                                // 画面卡住不动，显示loading,由于网速恢复后timerRunnable需要继续显示,故此处需要不断postDelayed
-                                // 由于部分机型，画面停止后，多次调用getCurrentPosition会导致onError回调，故时间间隔尽可能长
-                                // 还应注意不能一直显示，让buffering的handler清除计时消息
-                                if (!fragment.isBufferShow()) {
-                                    fragment.showBuffer(null);
-                                }
-                                sendEmptyMessageDelayed(MSG_UPDATE_PROGRESS, 2000);
-                                return;
                             }
+                            // 画面卡住不动，显示loading,由于网速恢复后timerRunnable需要继续显示,故此处需要不断postDelayed
+                            // 由于部分机型，画面停止后，多次调用getCurrentPosition会导致onError回调，故时间间隔尽可能长
+                            // 还应注意不能一直显示，让buffering的handler清除计时消息
+                            LogUtils.d("LH/PlaybackHandler", "bufferingCount：" + bufferingCount);
+                            if (bufferingCount > 2 && !fragment.isBufferShow()) {
+                                fragment.showBuffer(null);
+                            }
+                            sendEmptyMessageDelayed(MSG_UPDATE_PROGRESS, 2000);
+                            bufferingCount++;
+                            return;
                         }
                         // 播放过程中网络相关End
 
+                        bufferingCount = 0;
                         if (fragment.isBufferShow()) {
                             // 画面开始播放，buffer就需要消失
                             fragment.hideBuffer();
@@ -2026,10 +2034,15 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
 
         @Override
         public void onReceive(Context context, Intent intent) {
+            if (mPlaybackService == null) {
+                return;
+            }
             if (mPlaybackService.isPreview()) {
                 mPlaybackService.logExpenseVideoPreview(mCurrentPosition, "cancel");
             }
-            ExitToast.createToastConfig().dismiss();
+            if (mPlaybackService.getMediaPlayer() != null && !IsmartvPlayer.isPreloadCompleted) {
+                mPlaybackService.getMediaPlayer().logPreloadEnd();
+            }
             mHandler.removeCallbacksAndMessages(null);
             timerStop();
             removeBufferingLongTime();
@@ -2038,5 +2051,11 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
             mPlaybackService.addHistory(mCurrentPosition,true);
             closeActivity("source");
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        mClient=null;
+        super.onDestroy();
     }
 }

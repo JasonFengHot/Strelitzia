@@ -84,6 +84,7 @@ public abstract class IsmartvPlayer implements IPlayer {
         if (playerMode != MODE_SMART_PLAYER || mediaSource == null || mediaSource.getClipEntity() == null) {
             throw new IllegalArgumentException("preparePreloadPlayer mediaSource can't be null");
         }
+        isPreloadCompleted = false;
         mMediaEntity = mediaSource;
         logPlayerEvent.pk = mediaSource.getPk();
         logPlayerEvent.subItemPk = mediaSource.getSubItemPk();
@@ -98,6 +99,7 @@ public abstract class IsmartvPlayer implements IPlayer {
         if (mediaSource == null || mediaSource.getClipEntity() == null || (hasPreload && mSurfaceView == null)) {
             throw new IllegalArgumentException("prepare mediaSource can't be null");
         }
+        isPreloadCompleted = false;
         if (!hasPreload) {
             mMediaEntity = mediaSource;
             logPlayerEvent.pk = mediaSource.getPk();
