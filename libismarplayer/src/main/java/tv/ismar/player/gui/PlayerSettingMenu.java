@@ -14,6 +14,7 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
 import android.view.animation.AnimationUtils;
@@ -65,6 +66,7 @@ public class PlayerSettingMenu extends PopupWindow implements HorizontalEpisodeL
     private Animation episode_hide;
     private String contentMode="";
     private boolean wheelIsShow=false;
+    private ImageView bg;
     public PlayerSettingMenu(Context context, List<ItemEntity> entities, int subitem, EpisodeOnclickListener episodeOnclickListener1, ArrayList<QuailtyEntity> quailist,int position,OnMenuListItmeClickListener listener1,String contentmode){
         mContext=context;
         pk=subitem;
@@ -108,6 +110,15 @@ public class PlayerSettingMenu extends PopupWindow implements HorizontalEpisodeL
         setFocusable(true);
         menuHandler=new MenuHandler();
         episode_hide= AnimationUtils.loadAnimation(mContext,R.anim.episode_hide);
+//        bg= (ImageView) contentView.findViewById(R.id.bg);
+//        bg.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                if(wheelIsShow){
+//                    hideWheel();
+//                }
+//            }
+//        });
     }
     public void removeAllMsg(){
         menuHandler.removeCallbacksAndMessages(null);
@@ -361,6 +372,7 @@ public class PlayerSettingMenu extends PopupWindow implements HorizontalEpisodeL
             lastfocusID = pos;
             reSendMsg();
         }
+
     }
 
     @Override
@@ -417,6 +429,8 @@ public class PlayerSettingMenu extends PopupWindow implements HorizontalEpisodeL
                 arrow_right.setVisibility(View.INVISIBLE);
             }
             reSendMsg();
+        }else {
+            Log.i("onclikholder","onclick ep");
         }
     }
 
@@ -515,6 +529,7 @@ public class PlayerSettingMenu extends PopupWindow implements HorizontalEpisodeL
         @Override
         public void handleMessage(Message msg) {
             if(msg.what==1){
+                wheelIsShow=false;
                 dismiss();
             }
             super.handleMessage(msg);

@@ -4,6 +4,7 @@
     android:layout_height="match_parent"
     android:focusable="true"
     android:focusableInTouchMode="false"
+    android:id="@+id/menu_list_item"
     >
     <LinearLayout
         android:id="@+id/line"
