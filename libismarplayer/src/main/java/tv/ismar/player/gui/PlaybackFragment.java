@@ -93,6 +93,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
     private static final int MSG_UPDATE_PROGRESS = 106;
     private static final int MSG_HIDE_PANEL = 107;
     private static final int MSG_DELAY_PLAY = 108;
+    private static final int MENU_HIDE=109;
     private static final int EVENT_CLICK_VIP_BUY = 0x10;
     private static final int EVENT_CLICK_KEFU = 0x11;
     private static final int EVENT_COMPLETE_BUY = 0x12;
@@ -1218,6 +1219,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
                 return;
             }
             if(settingMenu!=null){
+                settingMenu.wheelIsShow=false;
                 settingMenu.dismiss();
                 settingMenu=null;
             }
@@ -1443,12 +1445,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
                 }
             }
             settingMenu = new PlayerSettingMenu(getActivity().getApplicationContext(), list, mPlaybackService.getSubItemPk(), this, quailtyEntities, currentQuality, this,contentMode);
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    settingMenu.sendMsg();
-                }
-            }, 1000);
+            mHandler.sendEmptyMessageDelayed(MENU_HIDE,1000);
     }
 
     private void showMenu(int type) {
@@ -1465,12 +1462,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
         }
         settingMenu.setAnimationStyle(R.style.PopupAnimation);
         settingMenu.showAtLocation(parentView,Gravity.BOTTOM,0,0);
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                settingMenu.sendMsg();
-            }
-        },1000);
+        mHandler.sendEmptyMessageDelayed(MENU_HIDE,1000);
     }
 
     private void hideMenu() {
@@ -1901,6 +1893,9 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
                 case MSG_DELAY_PLAY:
                     fragment.mPlaybackService.pausePlayer();
                     fragment.mPlaybackService.startPlayer();
+                    break;
+                case MENU_HIDE:
+                    fragment.settingMenu.sendMsg();
                     break;
             }
         }
