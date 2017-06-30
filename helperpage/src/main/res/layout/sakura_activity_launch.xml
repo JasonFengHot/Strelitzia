@@ -27,7 +27,6 @@
             >
 
             <ImageView
-                android:focusableInTouchMode="true"
                 android:focusable="true"
                 android:clickable="true"
                 android:id="@+id/indicator_node_image"
@@ -59,7 +58,6 @@
             android:layout_height="wrap_content">
 
             <ImageView
-                android:focusableInTouchMode="true"
                 android:focusable="true"
                 android:clickable="true"
                 android:id="@+id/indicator_feedback_image"
@@ -92,7 +90,6 @@
             android:layout_height="wrap_content">
 
             <ImageView
-                android:focusableInTouchMode="true"
                 android:focusable="true"
                 android:clickable="true"
                 android:id="@+id/indicator_help_image"
