@@ -773,12 +773,6 @@ public class ScrollableSectionList extends HorizontalScrollView {
                 arrow_right.setVisibility(View.INVISIBLE);
                 shade_arrow_right.setVisibility(View.INVISIBLE);
             }
-            if(title.equals("商城")){
-                if(arrow_left!=null){
-                    arrow_left.setVisibility(VISIBLE);
-                    shade_arrow_left.setVisibility(VISIBLE);
-                }
-            }
             View currentView = mContainer.getChildAt(currentPosition);
             int[] currentPos = new int[2];
             currentView.getLocationOnScreen(currentPos);

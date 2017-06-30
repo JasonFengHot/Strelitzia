@@ -2,6 +2,7 @@ package tv.ismar.helperpage;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -15,7 +16,7 @@ import tv.ismar.app.network.entity.ProblemEntity;
 import tv.ismar.helperpage.core.FeedbackProblem;
 import tv.ismar.helperpage.ui.activity.HomeActivity;
 
-public class LauncherActivity extends BaseActivity implements View.OnClickListener {
+public class LauncherActivity extends BaseActivity implements View.OnClickListener, View.OnHoverListener {
     private static final String TAG = "LauncherActivity";
 
 
@@ -40,6 +41,8 @@ public class LauncherActivity extends BaseActivity implements View.OnClickListen
         indicatorNode.setOnClickListener(this);
         indicatorFeedback.setOnClickListener(this);
         indicatorHelp.setOnClickListener(this);
+        indicatorFeedback.setOnHoverListener(this);
+        indicatorHelp.setOnHoverListener(this);
 
         skyService = SkyService.ServiceManager.getService();
 
@@ -85,5 +88,19 @@ public class LauncherActivity extends BaseActivity implements View.OnClickListen
                     }
                 });
 
+    }
+
+    @Override
+    public boolean onHover(View v, MotionEvent event) {
+        switch (event.getAction()){
+            case MotionEvent.ACTION_HOVER_MOVE:
+            case MotionEvent.ACTION_HOVER_ENTER:
+                v.requestFocus();
+                break;
+            case MotionEvent.ACTION_HOVER_EXIT:
+                indicatorNode.requestFocus();
+                break;
+        }
+        return true;
     }
 }

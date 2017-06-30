@@ -653,7 +653,7 @@ public class DetailPageViewModel extends BaseObservable {
             currentCalendar.setTime(TrueTime.now());
             Calendar startCalendar = new GregorianCalendar(TimeZone.getTimeZone("Asia/Shanghai"), Locale.CHINA);
             startCalendar.setTime(startDate);
-            if (currentCalendar.after(startCalendar)) {
+            if (startCalendar.getTimeInMillis()-currentCalendar.getTimeInMillis()<15*60*1000) {
                 return true;
             } else {
                 return false;

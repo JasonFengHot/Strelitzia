@@ -822,7 +822,9 @@ public class HistoryFragment extends Fragment implements ScrollableSectionList.O
 					}
 					@Override
 					public void onNext(VideoEntity videoEntity) {
-						setTvHome(videoEntity);
+						if(videoEntity!=null) {
+							setTvHome(videoEntity);
+						}
 					}
 
 					@Override

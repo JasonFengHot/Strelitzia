@@ -433,7 +433,7 @@ public class SportSubjectFragment extends Fragment implements View.OnHoverListen
             currentCalendar.setTime(TrueTime.now());
             Calendar startCalendar = new GregorianCalendar(TimeZone.getTimeZone("Asia/Shanghai"), Locale.CHINA);
             startCalendar.setTime(time);
-            if(currentCalendar.after(startCalendar)){
+            if(startCalendar.getTimeInMillis()-currentCalendar.getTimeInMillis()<15*60*1000){
                 return true;
             }else{
                 return false;

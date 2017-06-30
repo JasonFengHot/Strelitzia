@@ -65,7 +65,7 @@ public class PlayerSettingMenu extends PopupWindow implements HorizontalEpisodeL
     private MenuHandler menuHandler;
     private Animation episode_hide;
     private String contentMode="";
-    private boolean wheelIsShow=false;
+    public boolean wheelIsShow=false;
     private ImageView bg;
     public PlayerSettingMenu(Context context, List<ItemEntity> entities, int subitem, EpisodeOnclickListener episodeOnclickListener1, ArrayList<QuailtyEntity> quailist,int position,OnMenuListItmeClickListener listener1,String contentmode){
         mContext=context;
