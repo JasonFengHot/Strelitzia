@@ -811,9 +811,11 @@ public class HGridView extends AdapterView<HGridAdapter> {
             if(rightbtn!=null&&leftbtn!=null){
                 rightbtn.setVisibility(View.VISIBLE);
                 count--;
-                if(count==0){
+				if(count==0){
                  leftbtn.setVisibility(View.INVISIBLE);
                 }
+				if(mNextSelectedPosition!=1&&mNextSelectedPosition!=0&&mNextSelectedPosition!=2)
+					leftbtn.setVisibility(VISIBLE);
             }
 
 			offsetChildrenLeftAndRight(offset);
