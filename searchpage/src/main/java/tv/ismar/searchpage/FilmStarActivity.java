@@ -334,6 +334,10 @@ public class FilmStarActivity extends BaseActivity implements OnFocusChangeListe
                                JasmineUtil.loadException("search","","","", (int) pk, IsmartvActivator.getInstance().getApiDomain()+"api/tv/actorrelate/", DeviceUtils.getVersionCode(FilmStarActivity.this),"data","");
                                return;
                             }
+                            if(semanticSearchResponseEntity.getFacet()!=null&&semanticSearchResponseEntity.getFacet().size()==0){
+                                showItemOffLinePop();
+                                return;
+                            }
                             SemanticSearchResponseEntity entity = semanticSearchResponseEntity;
                             indicatorListLayout.removeAllViews();
                             horizontalScrollView.scrollTo(0, 0);
