@@ -242,17 +242,17 @@ public class SportFragment extends ChannelBaseFragment {
     @Override
     public void onPause() {
         super.onPause();
-        if (dataSubscription != null && !dataSubscription.isUnsubscribed()) {
+        if (dataSubscription != null && dataSubscription.isUnsubscribed()) {
             dataSubscription.unsubscribe();
         }
-        if (sportSubscription != null && !sportSubscription.isUnsubscribed()) {
+        if (sportSubscription != null && sportSubscription.isUnsubscribed()) {
             sportSubscription.unsubscribe();
         }
-        if (gameSubscription != null && !gameSubscription.isUnsubscribed()) {
+        if (gameSubscription != null && gameSubscription.isUnsubscribed()) {
             gameSubscription.unsubscribe();
         }
 
-        if (smartRecommendPostSub != null && !smartRecommendPostSub.isUnsubscribed()) {
+        if (smartRecommendPostSub != null && smartRecommendPostSub.isUnsubscribed()) {
             smartRecommendPostSub.unsubscribe();
         }
     }
