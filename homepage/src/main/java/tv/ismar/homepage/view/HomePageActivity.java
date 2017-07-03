@@ -1495,6 +1495,7 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
             if (isFinishing()) {
                 return true;
             }
+            Log.i(TAG, "onError : " + playIndex);
             if (playIndex == launchAds.size() - 1) {
                 mHandler.removeMessages(MSG_AD_COUNTDOWN);
                 goNextPage();
