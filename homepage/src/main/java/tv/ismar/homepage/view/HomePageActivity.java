@@ -1461,7 +1461,7 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
         @Override
         public void onPrepared(MediaPlayer mp) {
             home_ad_video.start();
-            if (playIndex == 0) {
+            if (!mHandler.hasMessages(MSG_AD_COUNTDOWN)) {
                 mHandler.sendEmptyMessage(MSG_AD_COUNTDOWN);
             }
             if(launchAds.get(playIndex).media_id!=null) {
