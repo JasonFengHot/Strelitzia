@@ -204,10 +204,10 @@ public class EntertainmentFragment extends ChannelBaseFragment {
     public void onPause() {
         imageswitch.removeMessages(IMAGE_SWITCH_KEY);
         super.onPause();
-        if (dataSubscription != null && dataSubscription.isUnsubscribed()) {
+        if (dataSubscription != null && !dataSubscription.isUnsubscribed()) {
             dataSubscription.unsubscribe();
         }
-        if (smartRecommendPostSub != null && smartRecommendPostSub.isUnsubscribed()) {
+        if (smartRecommendPostSub != null && !smartRecommendPostSub.isUnsubscribed()) {
             smartRecommendPostSub.unsubscribe();
         }
     }

@@ -131,10 +131,10 @@ public class ChildFragment extends ChannelBaseFragment implements Flag.ChangeCal
     @Override
     public void onPause() {
         super.onPause();
-        if (dataSubscription != null && dataSubscription.isUnsubscribed()) {
+        if (dataSubscription != null && !dataSubscription.isUnsubscribed()) {
             dataSubscription.unsubscribe();
         }
-        if (smartRecommendPostSub != null && smartRecommendPostSub.isUnsubscribed()) {
+        if (smartRecommendPostSub != null && !smartRecommendPostSub.isUnsubscribed()) {
             smartRecommendPostSub.unsubscribe();
         }
     }
