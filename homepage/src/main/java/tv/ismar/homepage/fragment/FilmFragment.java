@@ -229,10 +229,10 @@ public class FilmFragment extends ChannelBaseFragment {
     @Override
     public void onPause() {
         super.onPause();
-        if (dataSubscription != null && dataSubscription.isUnsubscribed()) {
+        if (dataSubscription != null && !dataSubscription.isUnsubscribed()) {
             dataSubscription.unsubscribe();
         }
-        if (smartRecommendPostSub != null && smartRecommendPostSub.isUnsubscribed()) {
+        if (smartRecommendPostSub != null && !smartRecommendPostSub.isUnsubscribed()) {
             smartRecommendPostSub.unsubscribe();
         }
         if (playSubscription != null && !playSubscription.isUnsubscribed()) {
