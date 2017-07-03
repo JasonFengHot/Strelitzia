@@ -96,8 +96,10 @@ public class LauncherActivity extends BaseActivity implements View.OnClickListen
             case MotionEvent.ACTION_HOVER_MOVE:
             case MotionEvent.ACTION_HOVER_ENTER:
                 v.requestFocus();
+                v.requestFocusFromTouch();
                 break;
             case MotionEvent.ACTION_HOVER_EXIT:
+                indicatorNode.requestFocusFromTouch();
                 indicatorNode.requestFocus();
                 break;
         }
