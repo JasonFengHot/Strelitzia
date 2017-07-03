@@ -1900,6 +1900,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
                     fragment.mPlaybackService.startPlayer();
                     break;
                 case MENU_HIDE:
+                    if(fragment.settingMenu!=null)
                     fragment.settingMenu.sendMsg();
                     break;
             }
