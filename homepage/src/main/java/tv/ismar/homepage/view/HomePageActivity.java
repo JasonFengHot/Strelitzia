@@ -1636,7 +1636,7 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
     private void startIntervalActive() {
         Intent intent = new Intent();
         intent.setClass(this, ActiveService.class);
-        startService(intent);
+//        startService(intent);
     }
 
     private void startTrueTimeService() {
