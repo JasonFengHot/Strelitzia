@@ -435,11 +435,15 @@ public class VodApplication extends Application {
     private void reportIp(){
         SharedPreferences sharedPreferences= PreferenceManager.getDefaultSharedPreferences(this);
         String sn=sharedPreferences.getString("sn_token","");
+        String ip="";
         if(sn==null||sn.equals("")){
         }else {
             SkyService skyService = SkyService.ServiceManager.getService();
             String url = "http://wx.api.tvxio.com/weixin4server/uploadclientip";
-            skyService.weixinIp(url, DeviceUtils.getLocalInetAddress().toString(), sn, Build.MODEL, DeviceUtils.getLocalMacAddress(this)).subscribeOn(Schedulers.io())
+            if(DeviceUtils.getLocalInetAddress()!=null) {
+                 ip= DeviceUtils.getLocalInetAddress().toString();
+            }
+            skyService.weixinIp(url, ip, sn, Build.MODEL, DeviceUtils.getLocalMacAddress(this)).subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<ResponseBody>() {
                 @Override
                 public void onCompleted() {
@@ -448,7 +452,7 @@ public class VodApplication extends Application {
 
                 @Override
                 public void onError(Throwable e) {
-
+                    e.printStackTrace();
                 }
 
                 @Override

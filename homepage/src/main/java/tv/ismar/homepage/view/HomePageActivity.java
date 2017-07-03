@@ -576,8 +576,7 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
 //                Log.i("LH/","onKeyDown:");
                 int selectedPosition = recyclerAdapter.getSelectedPosition();
                 boolean isHandled = false;
-                if (event.getAction() == KeyEvent.ACTION_DOWN) {
-                    switch (keyCode) {
+                if (event.getAction() == KeyEvent.ACTION_DOWN) {switch (keyCode) {
                         case KeyEvent.KEYCODE_DPAD_UP:
                         case KeyEvent.KEYCODE_DPAD_DOWN:
                             if (recyclerAdapter.getOnHoveredPosition() != -1) {
@@ -1636,7 +1635,7 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
     private void startIntervalActive() {
         Intent intent = new Intent();
         intent.setClass(this, ActiveService.class);
-//        startService(intent);
+        startService(intent);
     }
 
     private void startTrueTimeService() {

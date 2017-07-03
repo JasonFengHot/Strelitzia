@@ -243,6 +243,7 @@ public class BaseActivity extends AppCompatActivity {
                 }
             }
         });
+        Log.i("netERRor","show popwindow!"+netErrorPopWindow.isShowing());
         try {
             netErrorPopWindow.showAtLocation(getRootView(), Gravity.CENTER, 0, 0, new ModuleMessagePopWindow.ConfirmListener() {
                         @Override
@@ -282,6 +283,9 @@ public class BaseActivity extends AppCompatActivity {
 
     public void showNoNetConnectDialog(final OnNoNetConfirmListener onNoNetConfirmListener) {
         Log.i("onNoNet", "showNet!!!");
+        if(dialog!=null&&dialog.isShowing()){
+            return;
+        }
         if(dialog==null) {
             dialog = new NoNetConnectDialog(this, R.style.NoNetDialog);
             dialog.setFirstMessage(getString(R.string.no_connectNet));
@@ -313,28 +317,9 @@ public class BaseActivity extends AppCompatActivity {
 
     public void showNoNetConnectDialog() {
         Log.i("onNoNet", "showNet!!!");
-//        noNetConnectWindow = new NoNetConnectWindow(this);
-//        noNetConnectWindow.setFirstMessage(getString(R.string.no_connectNet));
-//        noNetConnectWindow.setConfirmBtn(getString(R.string.setting_network));
-//        noNetConnectWindow.setCancelBtn(getString(R.string.exit_app));
-//        noNetConnectWindow.showAtLocation(getRootView(), Gravity.CENTER, 0, 0, new ModuleMessagePopWindow.ConfirmListener() {
-//                    @Override
-//                    public void confirmClick(View view) {
-//                        noNetConnectWindow.dismiss();
-//                        Intent intent = new Intent(Settings.ACTION_SETTINGS);
-//                        startActivity(intent);
-//
-//                    }
-//                },
-//                new ModuleMessagePopWindow.CancelListener() {
-//                    @Override
-//                    public void cancelClick(View view) {
-//                        noNetConnectWindow.dismiss();
-//                        Intent intent = new Intent();
-//                        intent.setAction(NO_NET_CONNECT_ACTION);
-//                        sendBroadcast(intent);
-//                    }
-//                });
+        if(dialog!=null&&dialog.isShowing()){
+            return;
+        }
         if(dialog==null) {
             dialog = new NoNetConnectDialog(this, R.style.NoNetDialog);
             dialog.setFirstMessage(getString(R.string.no_connectNet));
@@ -387,8 +372,6 @@ public class BaseActivity extends AppCompatActivity {
             }
         }
     }
-
-
     public void showExpireAccessTokenPop() {
         expireAccessTokenPop = ExpireAccessTokenPop.getInstance(this);
         expireAccessTokenPop.setFirstMessage(getString(R.string.access_token_expire));
