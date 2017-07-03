@@ -152,6 +152,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
     private boolean isErrorPopUp;// 播放器同时回调多个onError情况
     private boolean isSeekingExit;
     private int mSeekToPosition;
+    private boolean isPreloadIn;
 
     private PlaybackHandler mHandler;
     private boolean backpress=false;
@@ -331,12 +332,14 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
         player_shadow.setVisibility(View.VISIBLE);
         if (mPlaybackService.isPreload() && !isqiyi) {
             // 视云影片详情页预加载
+            isPreloadIn = true;
             mPlaybackService.startPlayWhenPrepared();
         } else {
             if (mIsClickKefu) {
                 // 点击客服后返回，不加载广告
                 mPlaybackService.onResumeFromKefu();
             } else {
+                isPreloadIn = false;
                 mPlaybackService.resetPreload();
                 mPlaybackService.preparePlayer(extraItemPk, extraSubItemPk, extraSource);
             }
@@ -357,7 +360,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
             if (mPlaybackService == null) {
                 return;
             }
-            if (mPlaybackService.getMediaPlayer() != null && !IsmartvPlayer.isPreloadCompleted) {
+            if (mPlaybackService.getMediaPlayer() != null && !IsmartvPlayer.isPreloadCompleted && isPreloadIn) {
                 mPlaybackService.getMediaPlayer().logPreloadEnd();
             }
             if (mPlaybackService.isPreview()) {
@@ -1166,6 +1169,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
             mPlaybackService.pausePlayer();
             LogUtils.e(TAG, "Network error switch quality.");
         }
+        isPreloadIn = false;
         for (ItemEntity subItem : mPlaybackService.getItemEntity().getSubitems()) {
             if (subItem.getPk() == id) {
                 mPlaybackService.logVideoExit(mCurrentPosition, "next");
@@ -1231,6 +1235,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
             if (!mPlaybackService.getItemEntity().getLiveVideo()) {
                 mCurrentPosition = mPlaybackService.getMediaPlayer().getCurrentPosition();
             }
+            isPreloadIn = false;
             // 点击菜单后延迟400ms处理，菜单不会有卡顿现象
             new Handler().postDelayed(new Runnable() {
                 @Override
@@ -2049,7 +2054,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
             if (mPlaybackService.isPreview()) {
                 mPlaybackService.logExpenseVideoPreview(mCurrentPosition, "cancel");
             }
-            if (mPlaybackService.getMediaPlayer() != null && !IsmartvPlayer.isPreloadCompleted) {
+            if (mPlaybackService.getMediaPlayer() != null && !IsmartvPlayer.isPreloadCompleted && isPreloadIn) {
                 mPlaybackService.getMediaPlayer().logPreloadEnd();
             }
             mHandler.removeCallbacksAndMessages(null);

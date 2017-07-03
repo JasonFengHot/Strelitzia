@@ -1421,6 +1421,7 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
             home_ad_video.setVideoPath(launchAds.get(index).location);
             home_ad_video.setOnPreparedListener(onPreparedListener);
             home_ad_video.setOnCompletionListener(onCompletionListener);
+            home_ad_video.setOnErrorListener(onErrorListener);
         } else {
             if (home_ad_pic.getVisibility() != View.VISIBLE) {
                 home_ad_video.setVisibility(View.GONE);
@@ -1487,6 +1488,24 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
             playLaunchAd(playIndex);
         }
     };
+
+    private MediaPlayer.OnErrorListener onErrorListener = new MediaPlayer.OnErrorListener() {
+        @Override
+        public boolean onError(MediaPlayer mp, int what, int extra) {
+            if (isFinishing()) {
+                return true;
+            }
+            if (playIndex == launchAds.size() - 1) {
+                mHandler.removeMessages(MSG_AD_COUNTDOWN);
+                goNextPage();
+                return true;
+            }
+            playIndex += 1;
+            playLaunchAd(playIndex);
+            return true;
+        }
+    };
+
     private boolean Adend=false;
     private Handler mHandler = new Handler(Looper.getMainLooper()) {
         @Override

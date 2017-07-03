@@ -168,6 +168,7 @@ public class AdvertiseManager {
                 new CallaPlay().bootAdvExcept(
                         BOOT_ADV_DOWNLOAD_EXCEPTION_CODE, BOOT_ADV_DOWNLOAD_EXCEPTION_STRING
                 );
+                tv.ismar.library.util.FileUtils.deleteFile(filePath);
             }
 
             @Override
@@ -194,6 +195,7 @@ public class AdvertiseManager {
                             BOOT_ADV_DOWNLOAD_EXCEPTION_CODE, BOOT_ADV_DOWNLOAD_EXCEPTION_STRING
                     );
                     Log.e(TAG, e.toString());
+                    tv.ismar.library.util.FileUtils.deleteFile(filePath);
                 } finally {
                     try {
                         if (is != null) {
