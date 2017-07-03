@@ -168,6 +168,7 @@ public class AdvertiseManager {
                 new CallaPlay().bootAdvExcept(
                         BOOT_ADV_DOWNLOAD_EXCEPTION_CODE, BOOT_ADV_DOWNLOAD_EXCEPTION_STRING
                 );
+                tv.ismar.library.util.FileUtils.deleteFile(filePath);
             }
 
             @Override
@@ -177,23 +178,29 @@ public class AdvertiseManager {
                 int len = 0;
                 FileOutputStream fos = null;
                 try {
-                    long total = response.body().contentLength();
-                    Log.i(TAG, "total------>" + total);
-                    long current = 0;
-                    is = response.body().byteStream();
-                    fos = new FileOutputStream(filePath);
-                    while ((len = is.read(buf)) != -1) {
-                        current += len;
-                        fos.write(buf, 0, len);
-                        Log.i(TAG, "download------>" + current);
+                    int responseCode = response.code();
+                    if (responseCode == 200) {
+                        long total = response.body().contentLength();
+                        Log.i(TAG, "total------>" + total);
+                        long current = 0;
+                        is = response.body().byteStream();
+                        fos = new FileOutputStream(filePath);
+                        while ((len = is.read(buf)) != -1) {
+                            current += len;
+                            fos.write(buf, 0, len);
+                            Log.i(TAG, "download------>" + current);
+                        }
+                        saveToDb(adElementEntity);
+                        fos.flush();
+                    } else {
+                        tv.ismar.library.util.FileUtils.deleteFile(filePath);
                     }
-                    saveToDb(adElementEntity);
-                    fos.flush();
                 } catch (IOException e) {
                     new CallaPlay().bootAdvExcept(
                             BOOT_ADV_DOWNLOAD_EXCEPTION_CODE, BOOT_ADV_DOWNLOAD_EXCEPTION_STRING
                     );
                     Log.e(TAG, e.toString());
+                    tv.ismar.library.util.FileUtils.deleteFile(filePath);
                 } finally {
                     try {
                         if (is != null) {

@@ -495,9 +495,7 @@ public class EntertainmentFragment extends ChannelBaseFragment {
             try {
                 Picasso.with(mContext).load(looppost.get(++loopindex)).memoryPolicy(MemoryPolicy.NO_STORE)
                         .into(vaiety_post);
-            }catch (Exception e){
-                e.printStackTrace();
-            }
+
             if (loopindex == 0) {
                 vaiety_thumb1.setPadding(0, 0, 0, 0);
                 vaiety_thumb2.setPadding(0, PADDING, 0, -PADDING);
@@ -520,7 +518,9 @@ public class EntertainmentFragment extends ChannelBaseFragment {
                         R.id.vaiety_post).toString());
                 vaiety_post.setTag(R.drawable.launcher_selector, vaiety_thumb3.getTag(R.drawable.launcher_selector));
             }
-
+            }catch (Exception e){
+                e.printStackTrace();
+            }
             if (loopindex >= looppost.size()-1)
                 loopindex = -1;
             if (imageswitch.hasMessages(IMAGE_SWITCH_KEY))

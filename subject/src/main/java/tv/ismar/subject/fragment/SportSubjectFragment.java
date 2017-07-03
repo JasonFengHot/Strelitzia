@@ -911,4 +911,15 @@ public class SportSubjectFragment extends Fragment implements View.OnHoverListen
             payHandler.postDelayed(payRunnable, 500);
         }
     }
+
+    @Override
+    public void onDestroy() {
+        payHandler.removeCallbacks(payRunnable);
+        relateHandler.removeCallbacks(runnable);
+        dialogHandler.removeMessages(1);
+        dialogHandler=null;
+        relateHandler=null;
+        payHandler=null;
+        super.onDestroy();
+    }
 }
