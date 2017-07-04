@@ -21,6 +21,8 @@ import android.view.ViewGroup;
 import android.widget.PopupWindow;
 
 
+import com.orhanobut.logger.Logger;
+
 import java.util.Stack;
 
 import cn.ismartv.truetime.TrueTime;
@@ -223,11 +225,16 @@ public class BaseActivity extends AppCompatActivity {
     public View getRootView() {
         return ((ViewGroup) (getWindow().getDecorView().findViewById(android.R.id.content))).getChildAt(0);
     }
-
+    long showTime=0;
+    long nowTime=0;
     public void showNetWorkErrorDialog(Throwable e) {
+        nowTime=System.currentTimeMillis();
         if (netErrorPopWindow != null && netErrorPopWindow.isShowing()) {
             return;
         }
+        Log.i("nowTime",nowTime-showTime+"");
+        if(nowTime-showTime<8000)
+            return;
         final String act = getCurrentActivityName(BaseActivity.this);
         netErrorPopWindow = new NetErrorPopWindow(this);
         netErrorPopWindow.setFirstMessage(getString(R.string.fetch_net_data_error));
@@ -243,7 +250,6 @@ public class BaseActivity extends AppCompatActivity {
                 }
             }
         });
-        Log.i("netERRor","show popwindow!"+netErrorPopWindow.isShowing());
         try {
             netErrorPopWindow.showAtLocation(getRootView(), Gravity.CENTER, 0, 0, new ModuleMessagePopWindow.ConfirmListener() {
                         @Override
@@ -265,6 +271,7 @@ public class BaseActivity extends AppCompatActivity {
                             }
                         }
                     });
+            showTime=System.currentTimeMillis();
         } catch (Exception exception) {
             exception.printStackTrace();
         }
