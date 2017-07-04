@@ -260,6 +260,9 @@ public class FilmFragment extends ChannelBaseFragment {
 
     private void fetchHomePage(String url) {
         mChannelName = getChannelEntity().getChannel();
+        if (dataSubscription != null && dataSubscription.isUnsubscribed()) {
+            dataSubscription.unsubscribe();
+        }
         dataSubscription = ((HomePageActivity) getActivity()).mSkyService.fetchHomePage(url)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -723,41 +726,43 @@ public class FilmFragment extends ChannelBaseFragment {
     private String tempCarouselUrl;
 
     private void playImage() {
-        if (mSurfaceView.getVisibility() == View.VISIBLE) {
-            mSurfaceView.setVisibility(View.GONE);
-        }
-
-        if (linkedVideoImage.getVisibility() == View.GONE) {
-            linkedVideoImage.setVisibility(View.VISIBLE);
-        }
-
-
-        final String url = mCarousels.get(mCurrentCarouselIndex).getVideo_image();
-        String intro = mCarousels.get(mCurrentCarouselIndex).getIntroduction();
-        if (!StringUtils.isEmpty(intro)) {
-            film_linked_title.setVisibility(View.VISIBLE);
-            film_linked_title.setText(intro);
-        } else {
-            film_linked_title.setVisibility(View.GONE);
-        }
-        final int pauseTime = Integer.parseInt(mCarousels.get(mCurrentCarouselIndex).getPause_time());
-        if (!TextUtils.isEmpty(tempCarouselUrl) && tempCarouselUrl.equals(url)) {
-            mHandler.sendEmptyMessageDelayed(CAROUSEL_NEXT, pauseTime * 1000);
-            return;
-        }
-        Picasso.with(mContext).load(url).memoryPolicy(MemoryPolicy.NO_STORE).into(linkedVideoImage, new Callback() {
-
-            @Override
-            public void onSuccess() {
-                tempCarouselUrl = url;
-                mHandler.sendEmptyMessageDelayed(CAROUSEL_NEXT, pauseTime * 1000);
+        try {
+            if (mSurfaceView.getVisibility() == View.VISIBLE) {
+                mSurfaceView.setVisibility(View.GONE);
             }
 
-            @Override
-            public void onError(Exception e) {
-                mHandler.sendEmptyMessageDelayed(CAROUSEL_NEXT, pauseTime * 1000);
+            if (linkedVideoImage.getVisibility() == View.GONE) {
+                linkedVideoImage.setVisibility(View.VISIBLE);
             }
-        });
+
+
+            final String url = mCarousels.get(mCurrentCarouselIndex).getVideo_image();
+            String intro = mCarousels.get(mCurrentCarouselIndex).getIntroduction();
+            if (!StringUtils.isEmpty(intro)) {
+                film_linked_title.setVisibility(View.VISIBLE);
+                film_linked_title.setText(intro);
+            } else {
+                film_linked_title.setVisibility(View.GONE);
+            }
+            final int pauseTime = Integer.parseInt(mCarousels.get(mCurrentCarouselIndex).getPause_time());
+            if (!TextUtils.isEmpty(tempCarouselUrl) && tempCarouselUrl.equals(url)) {
+                mHandler.sendEmptyMessageDelayed(CAROUSEL_NEXT, pauseTime * 1000);
+                return;
+            }
+            Picasso.with(mContext).load(url).memoryPolicy(MemoryPolicy.NO_STORE).into(linkedVideoImage, new Callback() {
+
+                @Override
+                public void onSuccess() {
+                    tempCarouselUrl = url;
+                    mHandler.sendEmptyMessageDelayed(CAROUSEL_NEXT, pauseTime * 1000);
+                }
+
+                @Override
+                public void onError(Exception e) {
+                    mHandler.sendEmptyMessageDelayed(CAROUSEL_NEXT, pauseTime * 1000);
+                }
+            });
+        }catch (Exception e){}
     }
 
     private void playVideo(int delay) {
@@ -874,6 +879,9 @@ public class FilmFragment extends ChannelBaseFragment {
     }
 
     private void checkExternalIsEnable() {
+        if (checkSubscription != null && checkSubscription.isUnsubscribed()) {
+            checkSubscription.unsubscribe();
+        }
         checkSubscription = Observable
                 .create(new Observable.OnSubscribe<String>() {
                     @Override
@@ -912,6 +920,9 @@ public class FilmFragment extends ChannelBaseFragment {
     }
 
     private void smartRecommendPost(String url, final ArrayList<HomePagerEntity.Poster>  posters) {
+        if (smartRecommendPostSub != null && smartRecommendPostSub.isUnsubscribed()) {
+            smartRecommendPostSub.unsubscribe();
+        }
         smartRecommendPostSub =   SkyService.ServiceManager.getCacheSkyService2().smartRecommendPost(url, IsmartvActivator.getInstance().getSnToken())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

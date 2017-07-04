@@ -1328,9 +1328,9 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
                     player_top_panel.startAnimation(top_fly_down);
                     player_top_panel.setVisibility(View.VISIBLE);
                 }
-                timerStop();
-                isSeeking = true;
             }
+            timerStop();
+            isSeeking = true;
             if (mHandler.hasMessages(MSG_SEK_ACTION))
                 mHandler.removeMessages(MSG_SEK_ACTION);
             fastBackward(SHORT_STEP);
@@ -1352,9 +1352,9 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
                     player_top_panel.startAnimation(top_fly_down);
                     player_top_panel.setVisibility(View.VISIBLE);
                 }
-                timerStop();
-                isSeeking = true;
             }
+            timerStop();
+            isSeeking = true;
             if (mHandler.hasMessages(MSG_SEK_ACTION))
                 mHandler.removeMessages(MSG_SEK_ACTION);
             fastForward(SHORT_STEP);
