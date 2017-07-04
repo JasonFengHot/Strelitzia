@@ -518,7 +518,6 @@ public class FavoriteFragment extends Fragment implements ScrollableSectionList.
 				mNoVideoContainer.setBackground(bitmapDrawable);
 			}
 		});
-		mNoVideoContainer.setBackgroundResource(R.drawable.no_record);
         gideview_layuot.setVisibility(View.GONE);
 //		mScrollableSectionList.setVisibility(View.GONE);
 		mHGridView.setVisibility(View.GONE);
