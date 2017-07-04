@@ -547,7 +547,7 @@ public class EntertainmentFragment extends ChannelBaseFragment {
     }
 
     private void fetchPage(String url) {
-        if (dataSubscription != null && dataSubscription.isUnsubscribed()) {
+        if (dataSubscription != null && !dataSubscription.isUnsubscribed()) {
             dataSubscription.unsubscribe();
         }
         dataSubscription = ((HomePageActivity) getActivity()).mSkyService.fetchHomePage(url)
@@ -590,7 +590,7 @@ public class EntertainmentFragment extends ChannelBaseFragment {
 
 
     private void smartRecommendPost(String url, final ArrayList<HomePagerEntity.Poster>  posters,final ArrayList<Carousel> carousellist) {
-        if (smartRecommendPostSub != null && smartRecommendPostSub.isUnsubscribed()) {
+        if (smartRecommendPostSub != null && !smartRecommendPostSub.isUnsubscribed()) {
             smartRecommendPostSub.unsubscribe();
         }
         smartRecommendPostSub = SkyService.ServiceManager.getCacheSkyService2().smartRecommendPost(url, IsmartvActivator.getInstance().getSnToken())
