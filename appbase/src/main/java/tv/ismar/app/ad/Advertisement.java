@@ -366,7 +366,7 @@ public class Advertisement {
                             long date_end = dateFormat.parse(end_date).getTime();
                             Date todayDate = TrueTime.now();
                             long todayDateTime = todayDate.getTime();
-                            if (todayDateTime > date_start && todayDateTime < date_end) {
+                            if (todayDateTime > date_start && todayDateTime < date_end && !adElementEntities.contains(ad)) {
                                 adElementEntities.add(ad);
                             }
                         } catch (ParseException e) {
