@@ -879,7 +879,7 @@ public class FilmFragment extends ChannelBaseFragment {
     }
 
     private void checkExternalIsEnable() {
-        if (checkSubscription != null && checkSubscription.isUnsubscribed()) {
+        if (checkSubscription != null && !checkSubscription.isUnsubscribed()) {
             checkSubscription.unsubscribe();
         }
         checkSubscription = Observable
@@ -920,7 +920,7 @@ public class FilmFragment extends ChannelBaseFragment {
     }
 
     private void smartRecommendPost(String url, final ArrayList<HomePagerEntity.Poster>  posters) {
-        if (smartRecommendPostSub != null && smartRecommendPostSub.isUnsubscribed()) {
+        if (smartRecommendPostSub != null && !smartRecommendPostSub.isUnsubscribed()) {
             smartRecommendPostSub.unsubscribe();
         }
         smartRecommendPostSub =   SkyService.ServiceManager.getCacheSkyService2().smartRecommendPost(url, IsmartvActivator.getInstance().getSnToken())
