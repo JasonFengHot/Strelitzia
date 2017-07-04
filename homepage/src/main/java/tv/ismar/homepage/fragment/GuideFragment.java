@@ -190,10 +190,10 @@ public class GuideFragment extends ChannelBaseFragment {
     @Override
     public void onPause() {
         super.onPause();
-        if (homePageSub != null && homePageSub.isUnsubscribed()) {
+        if (homePageSub != null && !homePageSub.isUnsubscribed()) {
             homePageSub.unsubscribe();
         }
-        if (smartRecommendPostSub != null && smartRecommendPostSub.isUnsubscribed()) {
+        if (smartRecommendPostSub != null && !smartRecommendPostSub.isUnsubscribed()) {
             smartRecommendPostSub.unsubscribe();
         }
     }
