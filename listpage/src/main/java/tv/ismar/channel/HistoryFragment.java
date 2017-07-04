@@ -649,7 +649,6 @@ public class HistoryFragment extends Fragment implements ScrollableSectionList.O
 	}
 	public void showData(){
 		mNoVideoContainer.setVisibility(View.GONE);
-		mNoVideoContainer.setBackgroundResource(R.drawable.no_record);
 		gideview_layuot.setVisibility(View.VISIBLE);
 		mScrollableSectionList.setVisibility(View.VISIBLE);
 		mHGridView.setVisibility(View.VISIBLE);

@@ -1,15 +1,11 @@
 package tv.ismar.subject;
 
 import android.app.FragmentTransaction;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.util.Log;
 
 import java.util.HashMap;
-import java.util.concurrent.TimeoutException;
 
 import tv.ismar.account.IsmartvActivator;
 import tv.ismar.app.AppConstant;
@@ -23,7 +19,6 @@ import tv.ismar.app.player.CallaPlay;
 import tv.ismar.app.util.DeviceUtils;
 import tv.ismar.app.util.SPUtils;
 import tv.ismar.app.util.SystemFileUtil;
-import tv.ismar.app.widget.LoadingDialog;
 import tv.ismar.subject.fragment.MovieTVSubjectFragment;
 import tv.ismar.subject.fragment.SportSubjectFragment;
 
@@ -41,24 +36,12 @@ public class SubjectActivity extends BaseActivity{
     private String title;
     public String fromPage;
     public String channel;
-    public LoadingDialog mLoadingDialog;
-    private Handler handler=new Handler(new Handler.Callback() {
-        @Override
-        public boolean handleMessage(Message msg) {
-            if(mLoadingDialog.isShowing()) {
-                mLoadingDialog.dismiss();
-                showNetWorkErrorDialog(new TimeoutException());
-            }
-            return false;
-        }
-    });
     private SportSubjectFragment sportSubjectFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.subject_main_activity);
-    //    showDialog();
         Intent intent=getIntent();
         gather_type = intent.getStringExtra("gather_type");
         itemid = intent.getIntExtra("itemid",709759);
@@ -116,20 +99,6 @@ public class SubjectActivity extends BaseActivity{
         }
     }
 
-    public void showDialog() {
-        handler.sendEmptyMessageDelayed(0,15000);
-        start_time=System.currentTimeMillis();
-        mLoadingDialog = new LoadingDialog(this, R.style.LoadingDialog);
-        mLoadingDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
-            @Override
-            public void onCancel(DialogInterface dialog) {
-                dialog.dismiss();
-                finish();
-            }
-        });
-        mLoadingDialog.showDialog();
-    }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         Log.i("OnActivity",resultCode+" code  "+PAYMENT_SUCCESS_CODE);
@@ -139,5 +108,10 @@ public class SubjectActivity extends BaseActivity{
             }
         }
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
     }
 }
