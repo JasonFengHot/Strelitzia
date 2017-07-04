@@ -6,6 +6,7 @@ import android.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -61,6 +62,7 @@ import tv.ismar.app.ui.ZGridView;
 import tv.ismar.app.ui.adapter.HGridAdapterImpl;
 import tv.ismar.app.ui.view.AlertDialogFragment;
 import tv.ismar.app.ui.view.MenuFragment;
+import tv.ismar.app.util.BitmapDecoder;
 import tv.ismar.app.widget.ItemOffLinePopWindow;
 import tv.ismar.app.widget.LoadingDialog;
 import tv.ismar.app.widget.ModuleMessagePopWindow;
@@ -639,7 +641,13 @@ public class HistoryFragment extends Fragment implements ScrollableSectionList.O
 	}
 	private void no_video() {
 		mNoVideoContainer.setVisibility(View.VISIBLE);
-		mNoVideoContainer.setBackgroundResource(R.drawable.no_record);
+		BitmapDecoder bitmapDecoder=new BitmapDecoder();
+		bitmapDecoder.decode(getActivity(), R.drawable.no_record, new BitmapDecoder.Callback() {
+			@Override
+			public void onSuccess(BitmapDrawable bitmapDrawable) {
+				mNoVideoContainer.setBackground(bitmapDrawable);
+			}
+		});
 		gideview_layuot.setVisibility(View.GONE);
 		mScrollableSectionList.setVisibility(View.GONE);
 		mHGridView.setVisibility(View.GONE);
