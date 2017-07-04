@@ -352,6 +352,7 @@ public class Advertisement {
             if (!Utils.isEmptyText(retcode) && retcode.equals("200")) {
                 JSONObject body = jsonObject.getJSONObject("ads");
                 JSONArray arrays = body.getJSONArray(adPid);
+                outer:
                 for (int i = 0; i < arrays.length(); i++) {
                     JSONObject element = arrays.getJSONObject(i);
                     String elementRetCode = element.getString("retcode");
@@ -366,7 +367,12 @@ public class Advertisement {
                             long date_end = dateFormat.parse(end_date).getTime();
                             Date todayDate = TrueTime.now();
                             long todayDateTime = todayDate.getTime();
-                            if (todayDateTime > date_start && todayDateTime < date_end && !adElementEntities.contains(ad)) {
+                            if (todayDateTime > date_start && todayDateTime < date_end) {
+                                for (AdElementEntity adElement : adElementEntities) {
+                                    if (adElement.getMedia_url().equals(ad.getMedia_url())) {
+                                        continue outer;
+                                    }
+                                }
                                 adElementEntities.add(ad);
                             }
                         } catch (ParseException e) {
