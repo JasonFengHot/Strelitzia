@@ -260,7 +260,7 @@ public class FilmFragment extends ChannelBaseFragment {
 
     private void fetchHomePage(String url) {
         mChannelName = getChannelEntity().getChannel();
-        if (dataSubscription != null && dataSubscription.isUnsubscribed()) {
+        if (dataSubscription != null && !dataSubscription.isUnsubscribed()) {
             dataSubscription.unsubscribe();
         }
         dataSubscription = ((HomePageActivity) getActivity()).mSkyService.fetchHomePage(url)
