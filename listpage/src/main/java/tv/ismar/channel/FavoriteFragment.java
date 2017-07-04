@@ -746,10 +746,5 @@ public class FavoriteFragment extends Fragment implements ScrollableSectionList.
 		clertFavorite.setVisibility(View.VISIBLE);
 	}
 
-	@Override
-	public void onDestroy() {
-		super.onDestroy();
-		bitmapDecoder.removeAllCallback();
-		bitmapDecoder=null;
-	}
+
 }

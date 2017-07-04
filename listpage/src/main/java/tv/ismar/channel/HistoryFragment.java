@@ -855,10 +855,5 @@ public class HistoryFragment extends Fragment implements ScrollableSectionList.O
 		intent.toHelpPage(context);
 	}
 
-	@Override
-	public void onDestroy() {
-		super.onDestroy();
-		bitmapDecoder.removeAllCallback();
-		bitmapDecoder=null;
-	}
+
 }
