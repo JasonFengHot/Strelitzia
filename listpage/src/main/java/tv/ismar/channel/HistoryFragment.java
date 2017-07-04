@@ -123,6 +123,8 @@ public class HistoryFragment extends Fragment implements ScrollableSectionList.O
 	private SkyService skyService;
 	private TextView clerHistory;
 	private Subscription netSub;
+	private BitmapDecoder bitmapDecoder;
+
 	private long getTodayStartPoint() {
 		long currentTime = TrueTime.now().getTime();
 		GregorianCalendar currentCalendar = new GregorianCalendar();
@@ -641,7 +643,7 @@ public class HistoryFragment extends Fragment implements ScrollableSectionList.O
 	}
 	private void no_video() {
 		mNoVideoContainer.setVisibility(View.VISIBLE);
-		BitmapDecoder bitmapDecoder=new BitmapDecoder();
+		bitmapDecoder = new BitmapDecoder();
 		bitmapDecoder.decode(getActivity(), R.drawable.no_record, new BitmapDecoder.Callback() {
 			@Override
 			public void onSuccess(BitmapDrawable bitmapDrawable) {
@@ -851,5 +853,12 @@ public class HistoryFragment extends Fragment implements ScrollableSectionList.O
 	private void startSakura(Context context){
 		PageIntent intent=new PageIntent();
 		intent.toHelpPage(context);
+	}
+
+	@Override
+	public void onDestroy() {
+		super.onDestroy();
+		bitmapDecoder.removeAllCallback();
+		bitmapDecoder=null;
 	}
 }
