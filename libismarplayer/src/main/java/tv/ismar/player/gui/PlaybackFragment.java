@@ -534,6 +534,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
                 return;
             }
             isSeeking = true;
+            mIsOnPaused = false;
             showBuffer(null);
             int seekProgress = seekBar.getProgress();
             int maxSeek = mPlaybackService.getMediaPlayer().getDuration() - 3 * 1000;
