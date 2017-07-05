@@ -307,7 +307,7 @@ public class LoginFragment extends BaseFragment implements View.OnHoverListener 
                     @Override
                     public void onError(Throwable e) {
                         identifyCodeBtn.setEnabled(true);
-                        identifyCodeBtn.setBackgroundResource(R.drawable.channel_item_normal);
+                        identifyCodeBtn.setBackgroundResource(R.drawable.selector_button);
                         identifyCodeBtn.setText("获取验证码");
                         setcount_tipText("获取验证码失败\n");
                     }

@@ -3,6 +3,7 @@ package tv.ismar.channel;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -51,6 +52,7 @@ import tv.ismar.app.ui.ZGridView;
 import tv.ismar.app.ui.adapter.HGridAdapterImpl;
 import tv.ismar.app.ui.view.AlertDialogFragment;
 import tv.ismar.app.ui.view.MenuFragment;
+import tv.ismar.app.util.BitmapDecoder;
 import tv.ismar.app.widget.LoadingDialog;
 import tv.ismar.app.widget.ScrollableSectionList;
 import tv.ismar.listpage.R;
@@ -104,6 +106,8 @@ public class FavoriteFragment extends Fragment implements ScrollableSectionList.
 	private SkyService skyService;
 	private TextView clertFavorite;
 	private Subscription netSub;
+	private BitmapDecoder bitmapDecoder;
+
 	private void initViews(View fragmentView) {
         View vv = fragmentView.findViewById(R.id.tabs_layout);
         vv.setVisibility(View.GONE);
@@ -507,7 +511,13 @@ public class FavoriteFragment extends Fragment implements ScrollableSectionList.
 
 	private void no_video() {
 		mNoVideoContainer.setVisibility(View.VISIBLE);
-		mNoVideoContainer.setBackgroundResource(R.drawable.no_record);
+		bitmapDecoder = new BitmapDecoder();
+		bitmapDecoder.decode(getActivity(), R.drawable.no_record, new BitmapDecoder.Callback() {
+			@Override
+			public void onSuccess(BitmapDrawable bitmapDrawable) {
+				mNoVideoContainer.setBackground(bitmapDrawable);
+			}
+		});
         gideview_layuot.setVisibility(View.GONE);
 //		mScrollableSectionList.setVisibility(View.GONE);
 		mHGridView.setVisibility(View.GONE);
@@ -729,11 +739,12 @@ public class FavoriteFragment extends Fragment implements ScrollableSectionList.
 	}
 	public void showData(){
 		mNoVideoContainer.setVisibility(View.GONE);
-		mNoVideoContainer.setBackgroundResource(R.drawable.no_record);
 		gideview_layuot.setVisibility(View.VISIBLE);
 		mScrollableSectionList.setVisibility(View.VISIBLE);
 		mHGridView.setVisibility(View.VISIBLE);
 		collect_or_history_txt.setVisibility(View.GONE);
 		clertFavorite.setVisibility(View.VISIBLE);
 	}
+
+
 }
