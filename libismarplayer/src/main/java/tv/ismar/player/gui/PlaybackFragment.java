@@ -1863,9 +1863,13 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
                         // 播放过程中网络相关End
 
                         if (service.getMediaPlayer().getPlayerMode() == IsmartvPlayer.MODE_SMART_PLAYER && fragment.isSeeking && fragment.mSeekToPosition > 0) {
-                            boolean flag = (Math.abs(fragment.mSeekToPosition - mediaPosition) > 5000);
+                            boolean flag = (Math.abs(fragment.mSeekToPosition - mediaPosition) > 10000);
+                            LogUtils.d("LH/PlaybackHandler", "seek : " + flag + " - " + mediaPosition + " - " + fragment.mSeekToPosition);
                             if (flag) {
-                                sendEmptyMessageDelayed(MSG_UPDATE_PROGRESS, 2000);
+                                if (!fragment.isBufferShow()) {
+                                    fragment.showBuffer(null);
+                                }
+                                sendEmptyMessageDelayed(MSG_UPDATE_PROGRESS, 500);
                                 return;
                             }
                         }
