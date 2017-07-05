@@ -153,6 +153,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
     private boolean isSeekingExit;
     private int mSeekToPosition;
     private boolean isPreloadIn;
+    private int touchPosition;
 
     private PlaybackHandler mHandler;
     private boolean backpress=false;
@@ -533,6 +534,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
             if (mPlaybackService.getItemEntity() == null || mPlaybackService.getMediaPlayer() == null) {
                 return;
             }
+            touchPosition = mPlaybackService.getMediaPlayer().getCurrentPosition();
             isSeeking = true;
             mIsOnPaused = false;
             showBuffer(null);
@@ -1864,8 +1866,10 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
                         // 播放过程中网络相关End
 
                         if (service.getMediaPlayer().getPlayerMode() == IsmartvPlayer.MODE_SMART_PLAYER && fragment.isSeeking && fragment.mSeekToPosition > 0) {
-                            boolean flag = (Math.abs(fragment.mSeekToPosition - mediaPosition) > 10000) || (fragment.mSeekToPosition == mediaPosition);
-                            LogUtils.d("LH/PlaybackHandler", "seek : " + flag + " - " + mediaPosition + " - " + fragment.mSeekToPosition);
+                            boolean flag = (Math.abs(fragment.mSeekToPosition - mediaPosition) > 10000)
+                                    || (fragment.mSeekToPosition == mediaPosition)
+                                    || (fragment.touchPosition > 0 && Math.abs(fragment.touchPosition - mediaPosition) < 6000);
+                            LogUtils.d("LH/PlaybackHandler", "seek : " + flag + " - " + mediaPosition + " - " + fragment.mSeekToPosition + " - " + fragment.touchPosition);
                             if (flag) {
                                 if (!fragment.isBufferShow()) {
                                     fragment.showBuffer(null);
@@ -1878,6 +1882,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
                         if (fragment.isSeeking) {
                             fragment.isSeeking = false;
                             fragment.mSeekToPosition = 0;
+                            fragment.touchPosition = 0;
                             fragment.showPannelDelayOut();
                         }
 
