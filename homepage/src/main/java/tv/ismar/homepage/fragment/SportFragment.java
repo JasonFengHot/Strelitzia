@@ -344,7 +344,9 @@ public class SportFragment extends ChannelBaseFragment {
                             return;
                         }
                         games.clear();
+                        if(sport.getLiving()!=null)
                         games.addAll(sport.getLiving());
+                        if(sport.getHighlight()!=null)
                         games.addAll(sport.getHighlight());
                         fillLiveData();
                     }
@@ -377,7 +379,9 @@ public class SportFragment extends ChannelBaseFragment {
                             return;
                         }
                         games.clear();
+                        if(game.getHighlight()!=null)
                         games.addAll(game.getHighlight());
+                        if(game.getLiving()!=null)
                         games.addAll(game.getLiving());
                         fillLiveData();
                     }
