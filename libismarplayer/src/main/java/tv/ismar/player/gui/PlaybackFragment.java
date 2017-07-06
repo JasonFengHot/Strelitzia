@@ -1835,9 +1835,9 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
                     }
                     LogUtils.i("LH/PlaybackHandler", "isPlaying : " + service.getMediaPlayer().isPlaying());
                     if (fragment.isPlayExitLayerShow) {
-                        if (service.getMediaPlayer().isPlaying()) {
+//                        if (service.getMediaPlayer().isPlaying()) {
                             service.pausePlayer();
-                        }
+//                        }
                         fragment.timerStop();
                         return;
                     }
