@@ -164,6 +164,7 @@ public class PlayerSettingMenu extends PopupWindow implements HorizontalEpisodeL
         listAdapter.setOnKeyListener(this);
         menu_list.setAdapter(listAdapter);
 
+        if(quailtyList.get(currentQuailty)!=null)
         menu_select.setText(quailtyList.get(currentQuailty).getName());
         menu_select.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
@@ -188,7 +189,9 @@ public class PlayerSettingMenu extends PopupWindow implements HorizontalEpisodeL
         menu_select.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showWheel();
+                if(quailtyList.size()>0) {
+                    showWheel();
+                }
                 reSendMsg();
             }
         });

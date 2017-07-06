@@ -1444,14 +1444,13 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
                 for (int i = 0; i < qualities.size(); i++) {
                     ClipEntity.Quality quality = qualities.get(i);
                     QuailtyEntity quailtyEntity = new QuailtyEntity();
-                    quailtyEntity.setName(ClipEntity.Quality.getString(quality));
-                    quailtyEntity.setValue(quality.getValue() + 1);
+                    if(quality!=null) {
+                        quailtyEntity.setName(ClipEntity.Quality.getString(quality));
+                        quailtyEntity.setValue(quality.getValue() + 1);
+                    }
                     if (mPlaybackService.getMediaPlayer().getCurrentQuality() == quality) {
                         currentQuality = i;
                     }
-//                    QuailtyEntity quailtyEntity=new QuailtyEntity();
-//                    quailtyEntity.setName("高清"+i);
-//                    quailtyEntity.setValue(i);
                     quailtyEntities.add(quailtyEntity);
                 }
             }
