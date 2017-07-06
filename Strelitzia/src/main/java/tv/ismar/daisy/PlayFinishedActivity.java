@@ -169,7 +169,7 @@ public class PlayFinishedActivity extends BaseActivity implements View.OnClickLi
                                 item.setContent_model(playfinishedRecommend[i].content_model);
                                 item.setTitle(playfinishedRecommend[i].title);
                                 item.setPoster_url(playfinishedRecommend[i].poster_url);
-                                item.setVertical_url(playfinishedRecommend[i].vertical_url);
+                                item.setVertical_url(playfinishedRecommend[i].list_url);
                                 list.add(item);
                             }
                             processData(list);
