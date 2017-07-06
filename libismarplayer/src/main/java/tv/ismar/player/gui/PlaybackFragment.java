@@ -745,6 +745,9 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
             if (baseActivity == null) {
                 return;
             }
+            if (mPlaybackService != null) {
+                mPlaybackService.addHistory(0, true);
+            }
             if (NetworkUtils.isConnected(getActivity())) {
                 baseActivity.showNetWorkErrorDialog(throwable);
             } else {

@@ -324,7 +324,7 @@ public class PlayerEvent {
         tempMap.put("title", title);
         tempMap.put("item", item);
         tempMap.put("subitem", subitem);
-        tempMap.put("time", time);
+        tempMap.put("time", time / 1000);
         new DataCollectionTask().execute(VIDEO_START, tempMap);
     }
 
@@ -410,7 +410,7 @@ public class PlayerEvent {
         tempMap.put("userid", userId);
         tempMap.put(TITLE, media.title);
         tempMap.put(CLIP, media.clipPk);
-        tempMap.put("time", time);
+        tempMap.put("time", time / 1000);
         new DataCollectionTask().execute(EXPENSE_AD_CLICK, tempMap);
     }
 

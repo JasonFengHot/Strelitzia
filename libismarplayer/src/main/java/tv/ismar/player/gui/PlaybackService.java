@@ -334,9 +334,9 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
     }
 
     public void switchTelevision(int historyPosition, int subPk, String clipUrl) {
-        addHistory(historyPosition, false);
         isSwitchTelevision = true;
         subItemPk = subPk;
+        addHistory(historyPosition, false);
         fetchClipUrl(clipUrl);
     }
 
