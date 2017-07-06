@@ -3,12 +3,12 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:descendantFocusability="afterDescendants"
+    android:paddingBottom="@dimen/filter_condition_group_mb"
     >
 
 <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="@dimen/filter_condition_group_h"
-    android:layout_marginBottom="@dimen/filter_condition_group_mb"
     android:gravity="center_vertical"
     android:descendantFocusability="afterDescendants"
     android:orientation="horizontal">
