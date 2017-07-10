@@ -1449,11 +1449,11 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
                     if(quality!=null) {
                         quailtyEntity.setName(ClipEntity.Quality.getString(quality));
                         quailtyEntity.setValue(quality.getValue() + 1);
+                        quailtyEntities.add(quailtyEntity);
                     }
                     if (mPlaybackService.getMediaPlayer().getCurrentQuality() == quality) {
                         currentQuality = i;
                     }
-                    quailtyEntities.add(quailtyEntity);
                 }
             }
             settingMenu = new PlayerSettingMenu(getActivity().getApplicationContext(), list, mPlaybackService.getSubItemPk(), this, quailtyEntities, currentQuality, this,contentMode);
