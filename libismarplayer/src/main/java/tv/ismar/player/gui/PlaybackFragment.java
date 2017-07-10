@@ -706,13 +706,15 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
     }
     @Override
     public void sendAdlog(List<AdElementEntity> adlist) {
-        int length=adlist.get(AdIndex).getMonitor().size();
-        for(int i=0;i<length;i++){
-            Log.i("adverSendLog","ADIndex: "+AdIndex);
-            Log.i("adverSendLog",adlist.get(AdIndex).getMonitor().get(i).getMonitor_url());
-            repostAdLog(adlist.get(AdIndex).getMonitor().get(i).getMonitor_url());
+        if(AdIndex<=adlist.size()-1) {
+            int length = adlist.get(AdIndex).getMonitor().size();
+            for (int i = 0; i < length; i++) {
+                Log.i("adverSendLog", "ADIndex: " + AdIndex);
+                Log.i("adverSendLog", adlist.get(AdIndex).getMonitor().get(i).getMonitor_url());
+                repostAdLog(adlist.get(AdIndex).getMonitor().get(i).getMonitor_url());
+            }
+            AdIndex++;
         }
-        AdIndex++;
     }
     private void repostAdLog(String url) {
         SkyService skyService = SkyService.ServiceManager.getAdService();
