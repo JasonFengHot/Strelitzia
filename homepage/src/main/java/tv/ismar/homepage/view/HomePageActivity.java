@@ -456,6 +456,7 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         }
+        Log.i("SanZHou","fromPage: "+fromPage+"  product: "+product);
         if((fromPage==null||fromPage.equals(""))&&product.equals("sanzhou")){
             return true;
        }else {
