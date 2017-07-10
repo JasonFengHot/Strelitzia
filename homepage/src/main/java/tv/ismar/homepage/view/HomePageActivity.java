@@ -450,6 +450,7 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
     private Boolean isSanzhou() {
         String product="";
         try {
+            AppConfigHelper.init(this);
            product= AppConfigHelper.getPlatform();
         } catch (IOException e) {
             e.printStackTrace();
