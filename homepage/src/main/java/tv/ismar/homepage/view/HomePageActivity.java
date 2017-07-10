@@ -919,6 +919,7 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
         sanZhouPop.showAtLocation(contentView, Gravity.CENTER, 0, 0, new ModuleMessagePopWindow.ConfirmListener() {
                     @Override
                     public void confirmClick(View view) {
+                        sanZhouPop.dismiss();
                         finish();
                     }
                 },
