@@ -80,11 +80,13 @@ import tv.ismar.app.service.HttpProxyService;
 import tv.ismar.app.service.TrueTimeService;
 import tv.ismar.app.ui.HeadFragment;
 import tv.ismar.app.update.UpdateService;
+import tv.ismar.app.util.AppConfigHelper;
 import tv.ismar.app.util.BitmapDecoder;
 import tv.ismar.app.util.DeviceUtils;
 import tv.ismar.app.util.NetworkUtils;
 import tv.ismar.app.util.SPUtils;
 import tv.ismar.app.util.SystemFileUtil;
+import tv.ismar.app.widget.ExpireAccessTokenPop;
 import tv.ismar.app.widget.ModuleMessagePopWindow;
 import tv.ismar.homepage.R;
 import tv.ismar.homepage.adapter.ChannelRecyclerAdapter;
@@ -139,6 +141,7 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
     private RelativeLayout home_layout_advertisement;
     private FrameLayout layout_homepage;
     public boolean isPlayingStartAd = false;
+    private ModuleMessagePopWindow sanZhouPop;
     /**
      * advertisement end
      */
@@ -159,6 +162,7 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
     private FragmentSwitchHandler fragmentSwitch;
     private BitmapDecoder bitmapDecoder;
     private Subscription channelsSub;
+    private String fromPage;
 
     @Override
     public void onUserCenterClick() {
@@ -349,6 +353,7 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
         } catch (Exception e) {
             e.printStackTrace();
         }
+        fromPage = getIntent().getStringExtra("fromPage");
 
         fragmentSwitch = new FragmentSwitchHandler(this);
         homepage_template = getIntent().getStringExtra("homepage_template");
@@ -415,7 +420,6 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
         }
         startIntervalActive();
 
-        final String fromPage = getIntent().getStringExtra("fromPage");
         app_start_time = TrueTime.now().getTime();
         final CallaPlay callaPlay = new CallaPlay();
         if (fromPage != null) {
@@ -441,6 +445,22 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
             }
         }.start();
        // Log.i("MacLog",DeviceUtils.getLocalMacAddress(HomePageActivity.this));
+    }
+
+    private Boolean isSanzhou() {
+        String product="";
+        try {
+           product= AppConfigHelper.getPlatform();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        if(fromPage==null||fromPage.equals("")&&product.equals("sanzhou")){
+            return true;
+       }else {
+            return false;
+        }
     }
 
     private boolean hoverOnArrow;
@@ -883,7 +903,25 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
                 }
         );
     }
-
+    private void showSanzhouPop(){
+        sanZhouPop = ExpireAccessTokenPop.getInstance(this);
+        sanZhouPop.setFirstMessage("服务类程序禁止操作!");
+        sanZhouPop.setBackground();
+        sanZhouPop.setConfirmBtn(getString(tv.ismar.app.R.string.confirm));
+        sanZhouPop.setOnDismissListener(new PopupWindow.OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                finish();
+            }
+        });
+        sanZhouPop.showAtLocation(contentView, Gravity.CENTER, 0, 0, new ModuleMessagePopWindow.ConfirmListener() {
+                    @Override
+                    public void confirmClick(View view) {
+                        finish();
+                    }
+                },
+                null);
+    }
 
     private boolean neterrorshow = false;
 
@@ -1513,6 +1551,10 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
             switch (msg.what) {
                 case MSG_AD_COUNTDOWN:
                     Log.i(TAG, "ad handler");
+                    if(isSanzhou()){
+                        showSanzhouPop();
+                        return;
+                    }
                     if (home_ad_timer == null) {
                         return;
                     }

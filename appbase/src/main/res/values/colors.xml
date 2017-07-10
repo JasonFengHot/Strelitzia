@@ -131,4 +131,5 @@
 
     <color name="login_hint_focus">#F0F0F0</color>
     <color name="login_hint_nomarl">#999999</color>
+    <drawable name="sanzhou_bg">#000000</drawable>
 </resources>

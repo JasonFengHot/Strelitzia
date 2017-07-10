@@ -1,6 +1,7 @@
 package tv.ismar.app.widget;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -129,6 +130,9 @@ public class ModuleMessagePopWindow extends PopupWindow implements View.OnClickL
         height = ((int) (mContext.getResources().getDimension(R.dimen.module_pop_double_line_height)));
         secondMessage.setVisibility(View.VISIBLE);
         secondMessage.setText(message);
+    }
+    public void setBackground(){
+        setBackgroundDrawable(mContext.getResources().getDrawable(R.drawable.sanzhou_bg));
     }
 
     public void hideCancelBtn() {
