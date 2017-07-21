@@ -1,0 +1,20 @@
+http://res.tvxio.bestv.com.cn/media/upload/20160420/0626zhizhuxia11.jpg
+GET
+0
+HTTP/1.1 200 OK
+15
+Server: marco/1.4
+Date: Mon, 17 Jul 2017 02:04:30 GMT
+Content-Type: image/jpeg
+Content-Length: 14888
+Connection: keep-alive
+X-Source: C/200
+Last-Modified: Mon, 26 Jun 2017 07:59:10 GMT
+Accept-Ranges: bytes
+Expires: Mon, 25 Sep 2017 13:37:44 GMT
+Cache-Control: max-age=7776000
+Age: 1686407
+X-Request-Id: 8258f0fa9be4b76a85f464fd3a24c476; 5dfae61e5ebc9adb00b4c594e4e8d27f
+Via: S.mix-sd-tna-133, T.216133.H.1, V.mix-sd-tna-135, T.187.H.1, M.ctn-js-taz-007
+OkHttp-Sent-Millis: 1500257070889
+OkHttp-Received-Millis: 1500257070899

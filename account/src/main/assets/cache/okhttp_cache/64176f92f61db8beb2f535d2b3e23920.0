@@ -1,0 +1,18 @@
+http://sky.tvxio.bestv.com.cn/v4_0/SKY2/touc/api/tv/homepage/sport/?token_check=1&device_token=w09XUS18yu-Iisuqcc_zivPu83LZwhRk3pgejl9arUs%3D
+GET
+1
+Accept-Encoding: gzip
+HTTP/1.1 200 OK
+12
+Server: nginx
+Date: Mon, 17 Jul 2017 02:03:21 GMT
+Content-Type: text/html
+Transfer-Encoding: chunked
+Connection: keep-alive
+Vary: Accept-Encoding
+Last-Modified: Mon, 17 Jul 2017 01:57:33 GMT
+Etag: 45325f5a2f6fe2d197bb873328bf5a8d
+Content-Encoding: gzip
+Cache-Control: public, max-age=5
+OkHttp-Sent-Millis: 1500257001180
+OkHttp-Received-Millis: 1500257001190

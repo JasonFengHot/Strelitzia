@@ -1,0 +1,20 @@
+http://res.tvxio.bestv.com.cn/media/upload/20160420/upload/20140922/bianxingjingang5yugao0626.jpg
+GET
+0
+HTTP/1.1 200 OK
+15
+Server: marco/1.4
+Date: Mon, 17 Jul 2017 02:02:34 GMT
+Content-Type: image/jpeg
+Content-Length: 128686
+Connection: keep-alive
+X-Source: C/200
+Last-Modified: Mon, 26 Jun 2017 02:26:24 GMT
+Accept-Ranges: bytes
+Expires: Sun, 24 Sep 2017 02:38:07 GMT
+Cache-Control: max-age=7776000
+Age: 1812267
+X-Request-Id: e0b44e0378674584b1ee7df56f06a2f1; 921dc4578dc6cd138590a6208b0a80d1
+Via: S.mix-sd-tna-136, T.216133.H.1, V.mix-sd-tna-131, T.183.H.1, M.ctn-js-taz-007
+OkHttp-Sent-Millis: 1500256954574
+OkHttp-Received-Millis: 1500256954641

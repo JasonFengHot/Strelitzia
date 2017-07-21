@@ -1,0 +1,20 @@
+http://res.tvxio.bestv.com.cn/media/upload/20160420/qianghong170626.jpg
+GET
+0
+HTTP/1.1 200 OK
+15
+Server: marco/1.4
+Date: Mon, 17 Jul 2017 02:04:53 GMT
+Content-Type: image/jpeg
+Content-Length: 50737
+Connection: keep-alive
+X-Source: C/200
+Last-Modified: Mon, 26 Jun 2017 07:37:53 GMT
+Accept-Ranges: bytes
+Expires: Sun, 24 Sep 2017 07:54:37 GMT
+Cache-Control: max-age=7776000
+Age: 1793416
+X-Request-Id: b1c70e080c4630860c276fc83ec3017a; 05cbbbe3e5734b4ffdcd01ed65fd84cd
+Via: S.mix-sd-tna-136, T.216131.H.1, V.mix-sd-tna-131, T.186.H.1, M.ctn-js-taz-007
+OkHttp-Sent-Millis: 1500257092989
+OkHttp-Received-Millis: 1500257093012

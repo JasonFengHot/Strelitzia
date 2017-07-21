@@ -3,6 +3,7 @@ package tv.ismar.homepage.fragment;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -30,6 +31,7 @@ import tv.ismar.app.core.SimpleRestClient;
 import tv.ismar.app.entity.HomePagerEntity;
 import tv.ismar.app.network.SkyService;
 import tv.ismar.app.player.CallaPlay;
+import tv.ismar.app.util.NetworkUtils;
 import tv.ismar.homepage.R;
 import tv.ismar.homepage.view.HomePageActivity;
 import tv.ismar.homepage.widget.ChildThumbImageView;
@@ -178,12 +180,12 @@ public class ChildFragment extends ChannelBaseFragment implements Flag.ChangeCal
                         if (TextUtils.isEmpty(homePagerEntity.getRecommend_homepage_url())) {
                             initPosters(posters);
                         }else {
-                            if (TrueTime.now().getTime() -  getSmartPostErrorTime()> C.SMART_POST_NEXT_REQUEST_TIME){
+                            if (TrueTime.now().getTime() -  getSmartPostErrorTime()> C.SMART_POST_NEXT_REQUEST_TIME ||
+                                    NetworkUtils.isReachability(homePagerEntity.getRecommend_homepage_url())){
                                 smartRecommendPost(homePagerEntity.getRecommend_homepage_url(), posters);
                             }else {
                                 initPosters(posters);
                             }
-
                         }
 
                         initCarousel(carousels);
@@ -431,7 +433,10 @@ public class ChildFragment extends ChannelBaseFragment implements Flag.ChangeCal
         if(StringUtils.isEmpty(carousels.get(flag.getPosition()).getVideo_image()))
         carousels.get(flag.getPosition()).setVideo_image("error");
         if(mContext!=null) {
-            Picasso.with(mContext).load(carousels.get(flag.getPosition()).getVideo_image()).memoryPolicy(MemoryPolicy.NO_STORE).into(imageSwitcher, new Callback() {
+            Picasso.with(mContext).load(carousels.get(flag.getPosition()).getVideo_image()).memoryPolicy(MemoryPolicy.NO_STORE)
+                    .error(R.drawable.list_item_preview_bg)
+                    .placeholder(R.drawable.list_item_preview_bg)
+                    .into(imageSwitcher, new Callback() {
                 int pauseTime = Integer.parseInt(carousels.get(flag.getPosition()).getPause_time());
 
                 @Override
@@ -480,7 +485,8 @@ public class ChildFragment extends ChannelBaseFragment implements Flag.ChangeCal
         }
     }
     private void smartRecommendPost(String url, final ArrayList<HomePagerEntity.Poster>  posters) {
-        smartRecommendPostSub =   SkyService.ServiceManager.getCacheSkyService2().smartRecommendPost(url, IsmartvActivator.getInstance().getSnToken())
+        String sn_token = PreferenceManager.getDefaultSharedPreferences(mContext).getString("sn_token", "");
+        smartRecommendPostSub =   SkyService.ServiceManager.getCacheSkyService2().smartRecommendPost(url, sn_token)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<ArrayList<HomePagerEntity.Poster>>() {
@@ -505,6 +511,7 @@ public class ChildFragment extends ChannelBaseFragment implements Flag.ChangeCal
                         if (smartPosters.size() < 7){
                             initPosters(posters);
                         }else {
+                            smartPosters.addAll(0, posters);
                             ArrayList<HomePagerEntity.Poster> posterArrayList = new ArrayList<>();
                             if (smartPosters.size() - posterStartTag - 7 >= 0) {
                                 posterArrayList.addAll(smartPosters.subList(posterStartTag, posterStartTag + 7));

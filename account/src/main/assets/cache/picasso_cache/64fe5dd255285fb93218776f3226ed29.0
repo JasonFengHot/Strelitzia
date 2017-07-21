@@ -1,0 +1,20 @@
+http://res.tvxio.bestv.com.cn/media/upload/20160420/zhangyingg0170714095424.jpg
+GET
+0
+HTTP/1.1 200 OK
+15
+Server: marco/1.4
+Date: Mon, 17 Jul 2017 02:02:14 GMT
+Content-Type: image/jpeg
+Content-Length: 49352
+Connection: keep-alive
+X-Source: C/200
+Last-Modified: Fri, 14 Jul 2017 02:45:58 GMT
+Accept-Ranges: bytes
+Expires: Thu, 12 Oct 2017 02:48:08 GMT
+Cache-Control: max-age=7776000
+Age: 256446
+X-Request-Id: 638e65e9bb3998d76b04350351788cd0; 7b76473083638d383cc02188c293fbec
+Via: S.mix-sd-tna-139, T.216139.M.1, V.mix-sd-tna-134, T.185.R.1, M.ctn-js-taz-007
+OkHttp-Sent-Millis: 1500256934199
+OkHttp-Received-Millis: 1500256934213

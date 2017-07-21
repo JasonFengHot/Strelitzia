@@ -4,7 +4,15 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+
+import okhttp3.HttpUrl;
+import tv.ismar.account.IsmartvActivator;
+
 public class NetworkUtils {
+    private static final int TIMEOUT = 1000;
 
     /**
      * 是否已有网络连接
@@ -22,6 +30,13 @@ public class NetworkUtils {
             return true;
         }
         return false;
+    }
+
+
+    public static boolean isReachability(String url) {
+            String host = HttpUrl.parse(url).host();
+            String ip = IsmartvActivator.getHostByName(host);
+            return !ip.equals("0.0.0.0");
     }
 
     /**

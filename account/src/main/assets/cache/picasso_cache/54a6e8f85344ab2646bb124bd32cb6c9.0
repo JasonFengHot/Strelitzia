@@ -1,0 +1,20 @@
+http://res.tvxio.bestv.com.cn/media/upload/20160420/0717wuliangyeziyoushmingpin12ping.jpg
+GET
+0
+HTTP/1.1 200 OK
+15
+Server: marco/1.4
+Date: Mon, 17 Jul 2017 02:02:14 GMT
+Content-Type: image/jpeg
+Content-Length: 35175
+Connection: keep-alive
+X-Source: C/200
+Last-Modified: Fri, 14 Jul 2017 08:08:40 GMT
+Accept-Ranges: bytes
+Expires: Sat, 14 Oct 2017 01:28:04 GMT
+Cache-Control: max-age=7776000
+Age: 88451
+X-Request-Id: bba19778bf92db7681e53c6b40da9ee4; 3fb89c4e8db3d91b160ecf21daae8280
+Via: S.mix-sd-tna-135, T.216137.M.1, V.mix-sd-tna-140, T.184.H.1, M.ctn-js-taz-007
+OkHttp-Sent-Millis: 1500256934130
+OkHttp-Received-Millis: 1500256934142

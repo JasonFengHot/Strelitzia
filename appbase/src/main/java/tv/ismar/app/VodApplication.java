@@ -25,8 +25,11 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.lang.ref.WeakReference;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -37,6 +40,7 @@ import cn.ismartv.injectdb.library.ActiveAndroid;
 import cn.ismartv.injectdb.library.app.Application;
 import cn.ismartv.truetime.TrueTime;
 import okhttp3.Cache;
+import okhttp3.Dns;
 import okhttp3.OkHttpClient;
 import okhttp3.ResponseBody;
 import rx.Observer;
@@ -164,6 +168,15 @@ public class VodApplication extends Application {
         Cache cache = new Cache(cacheFile, 1024 * 1024 * 100); //100Mb
         OkHttpClient client = new OkHttpClient.Builder()
                 .addInterceptor(new UserAgentInterceptor())
+                .addInterceptor(new HttpCacheInterceptor(getApplicationContext()))
+                .dns(new Dns() {
+                    @Override
+                    public List<InetAddress> lookup(String s) throws UnknownHostException {
+                        String ipAddress = IsmartvActivator.getHostByName(s);
+                        Log.d(TAG, "ip: " + ipAddress);
+                        return Dns.SYSTEM.lookup(ipAddress);
+                    }
+                })
                 .cache(cache)
                 .build();
 

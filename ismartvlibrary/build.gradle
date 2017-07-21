@@ -45,13 +45,6 @@ dependencies {
     testCompile 'org.robolectric:robolectric:3.3.2'
     compile rootDependence.appCompat
     compile rootDependence.support_v4
-    compile 'com.squareup.retrofit2:retrofit:2.2.0'
-    compile('com.squareup.retrofit2:converter-simplexml:2.2.0') {
-        exclude module: 'stax-api'
-        exclude module: 'stax'
-        exclude module: 'xpp3'
-    }
-    compile 'com.squareup.retrofit2:adapter-rxjava:2.2.0'
     compile 'io.reactivex:rxandroid:1.2.1'
 }
 

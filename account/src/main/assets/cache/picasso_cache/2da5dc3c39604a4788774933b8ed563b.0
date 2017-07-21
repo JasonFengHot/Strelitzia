@@ -1,0 +1,20 @@
+http://res.tvxio.bestv.com.cn/media/upload/20160420/20170704bpb918516.jpg
+GET
+0
+HTTP/1.1 200 OK
+15
+Server: marco/1.4
+Date: Mon, 17 Jul 2017 02:03:18 GMT
+Content-Type: image/jpeg
+Content-Length: 544663
+Connection: keep-alive
+X-Source: C/200
+Last-Modified: Tue, 04 Jul 2017 03:31:42 GMT
+Accept-Ranges: bytes
+Expires: Mon, 02 Oct 2017 03:51:06 GMT
+Cache-Control: max-age=7776000
+Age: 1116732
+X-Request-Id: 89aaaef31f60a20d57b305f889c225e5; 9bf0c43802816d3dd0f472f162de460b
+Via: S.mix-sd-tna-135, T.216134.R.1, V.mix-sd-tna-140, T.187.H.1, M.ctn-js-taz-007
+OkHttp-Sent-Millis: 1500256998614
+OkHttp-Received-Millis: 1500256998634

@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.preference.Preference;
+import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -46,6 +48,7 @@ import tv.ismar.app.network.SkyService;
 import tv.ismar.app.player.CallaPlay;
 import tv.ismar.app.util.BitmapDecoder;
 import tv.ismar.app.util.HardwareUtils;
+import tv.ismar.app.util.NetworkUtils;
 import tv.ismar.homepage.R;
 import tv.ismar.homepage.view.HomePageActivity;
 import tv.ismar.homepage.widget.DaisyVideoView;
@@ -302,7 +305,8 @@ public class FilmFragment extends ChannelBaseFragment {
         if (TextUtils.isEmpty(homePagerEntity.getRecommend_homepage_url())) {
             initPosters(posters);
         } else {
-            if (TrueTime.now().getTime() -  getSmartPostErrorTime()> C.SMART_POST_NEXT_REQUEST_TIME){
+            if (TrueTime.now().getTime() -  getSmartPostErrorTime()> C.SMART_POST_NEXT_REQUEST_TIME
+                    && NetworkUtils.isReachability(homePagerEntity.getRecommend_homepage_url())){
                 smartRecommendPost(homePagerEntity.getRecommend_homepage_url(), posters);
             }else {
                 initPosters(posters);
@@ -346,7 +350,8 @@ public class FilmFragment extends ChannelBaseFragment {
         if (TextUtils.isEmpty(imageUrl0)) {
             imageUrl0 = posters.get(0).getVertical_url();
         }
-        film_lefttop_image.setUrl(imageUrl0);
+//        film_lefttop_image.setUrl(imageUrl0);
+        Picasso.with(mContext).load(imageUrl0).memoryPolicy(MemoryPolicy.NO_STORE).into(film_lefttop_image);
         film_lefttop_image.setTitle(posters.get(0).getIntroduction());
         film_lefttop_image.setOnClickListener(ItemClickListener);
         film_lefttop_image.setTag(posters.get(0));
@@ -923,7 +928,8 @@ public class FilmFragment extends ChannelBaseFragment {
         if (smartRecommendPostSub != null && !smartRecommendPostSub.isUnsubscribed()) {
             smartRecommendPostSub.unsubscribe();
         }
-        smartRecommendPostSub =   SkyService.ServiceManager.getCacheSkyService2().smartRecommendPost(url, IsmartvActivator.getInstance().getSnToken())
+        String snToken = PreferenceManager.getDefaultSharedPreferences(mContext).getString("sn_token", "");
+        smartRecommendPostSub =   SkyService.ServiceManager.getCacheSkyService2().smartRecommendPost(url, snToken)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<ArrayList<HomePagerEntity.Poster>>() {
@@ -950,6 +956,7 @@ public class FilmFragment extends ChannelBaseFragment {
                         if (smartPosters.size() < 7){
                             initPosters(posters);
                         }else {
+                            smartPosters.addAll(0, posters);
                             ArrayList<HomePagerEntity.Poster> posterArrayList = new ArrayList<>();
                             posterArrayList.add(posters.get(0));
                             if (smartPosters.size() - posterStartTag - 7 >= 0) {

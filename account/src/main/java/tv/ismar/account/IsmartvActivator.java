@@ -5,8 +5,6 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
-import android.os.Handler;
-import android.os.Looper;
 import android.preference.PreferenceManager;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
@@ -23,11 +21,18 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.RandomAccessFile;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+import okhttp3.Dns;
 import okhttp3.OkHttpClient;
 import okhttp3.ResponseBody;
 import retrofit2.Response;
@@ -48,7 +53,7 @@ import tv.ismar.library.util.DeviceUtils;
  */
 public class IsmartvActivator {
     static {
-        System.loadLibrary("native-lib");
+        System.loadLibrary("ismartv-lib");
     }
 
     private static final String TAG = "IsmartvActivator";
@@ -111,7 +116,7 @@ public class IsmartvActivator {
         mSharedPreferences.registerOnSharedPreferenceChangeListener(new SharedPreferences.OnSharedPreferenceChangeListener() {
             @Override
             public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-                switch (key){
+                switch (key) {
                     case "ip":
                         C.ip = sharedPreferences.getString("ip", "");
                         break;
@@ -135,7 +140,16 @@ public class IsmartvActivator {
                 .connectTimeout(DEFAULT_CONNECT_TIMEOUT, TimeUnit.SECONDS)
                 .readTimeout(DEFAULT_READ_TIMEOUT, TimeUnit.SECONDS)
                 .addInterceptor(interceptor)
+//                .addInterceptor(new HttpCacheInterceptor())
                 .addInterceptor(new UserAgentInterceptor())
+                .dns(new Dns() {
+                    @Override
+                    public List<InetAddress> lookup(String hostName) throws UnknownHostException {
+                        String ipAddress = getHostByName(hostName);
+                        Log.d(TAG, "ip: " + ipAddress);
+                        return Dns.SYSTEM.lookup(ipAddress);
+                    }
+                })
                 .build();
 
         SKY_Retrofit = new Retrofit.Builder()
@@ -165,14 +179,8 @@ public class IsmartvActivator {
         }
 
         if (resultEntity == null) {
-            new Handler(Looper.getMainLooper()).post(new Runnable() {
-                @Override
-                public void run() {
-                    Log.e(TAG, "激活失败!!!");
-//                    Toast.makeText(mContext, "激活失败！", Toast.LENGTH_SHORT).show();
-                }
-            });
-
+            Log.e(TAG, "激活失败!!!");
+            initHttpCache();
             resultEntity = new ResultEntity();
         }
         HttpManager.getInstance().setAccessToken(IsmartvActivator.getInstance().getAuthToken());
@@ -228,41 +236,43 @@ public class IsmartvActivator {
             return null;
         }
     }
-    public static boolean isactive=false;
+
+    public static boolean isactive = false;
+
     public ResultEntity active() {
-        Log.d(TAG, "active    "+"isactive: "+isactive);
+        Log.d(TAG, "active    " + "isactive: " + isactive);
         String sign = "ismartv=201415&kind=" + kind + "&sn=" + sn;
         String rsaEncryptResult = encryptWithPublic(sign);
-        if(isactive==false) {
+        if (isactive == false) {
             try {
                 isactive = true;
                 Response<ResultEntity> resultResponse = SKY_Retrofit.create(HttpService.class).
                         trustSecurityActive(sn, manufacture, kind, version, rsaEncryptResult,
-                                fingerprint, "v4_0", getAndroidDevicesInfo(), DeviceUtils.getLocalwlanAddress(),DeviceUtils.getLocalHardwareAddress())
+                                fingerprint, "v4_0", getAndroidDevicesInfo(), DeviceUtils.getLocalwlanAddress(), DeviceUtils.getLocalHardwareAddress())
                         .execute();
-                Log.i(TAG,DeviceUtils.getLocalwlanAddress()+"MAC: "+DeviceUtils.getLocalHardwareAddress());
+                Log.i(TAG, DeviceUtils.getLocalwlanAddress() + "MAC: " + DeviceUtils.getLocalHardwareAddress());
                 if (resultResponse.errorBody() == null) {
                     mResult = resultResponse.body();
                     saveAccountInfo(mResult);
                     reportIp(mResult.getSn_Token());
                     return mResult;
-                } else if(resultResponse.code()==424){
-                    isactive=false;
+                } else if (resultResponse.code() == 424) {
+                    isactive = false;
                     return getLicence();
-                }else{
-                    isactive=false;
+                } else {
+                    isactive = false;
                     return null;
                 }
             } catch (IOException e) {
-                isactive=false;
+                isactive = false;
                 e.printStackTrace();
                 Log.e(TAG, "active error!!!");
                 return null;
             }
         }
-        if(mResult==null){
+        if (mResult == null) {
             return null;
-        }else{
+        } else {
             return mResult;
         }
     }
@@ -322,9 +332,9 @@ public class IsmartvActivator {
 
     public String encryptWithPublic(String string) {
         try {
-        String signPath = mContext.getFileStreamPath(SIGN_FILE_NAME).getAbsolutePath();
-        String result = decryptSign(sn, signPath);
-        String publicKey = result.split("\\$\\$\\$")[1];
+            String signPath = mContext.getFileStreamPath(SIGN_FILE_NAME).getAbsolutePath();
+            String result = decryptSign(sn, signPath);
+            String publicKey = result.split("\\$\\$\\$")[1];
 
             String input = Md5.md5(string);
             Log.d(TAG, "md5: " + input);
@@ -342,14 +352,14 @@ public class IsmartvActivator {
     }
 
     public String getDeviceToken() {
-        String deviceToken = mSharedPreferences.getString("device_token", "");
-        if (TextUtils.isEmpty(deviceToken)) {
-            ResultEntity resultEntity = execute();
-            saveAccountInfo(resultEntity);
-            return resultEntity.getDevice_token();
-        } else {
-            return deviceToken;
-        }
+        return mSharedPreferences.getString("device_token", "");
+//        if (TextUtils.isEmpty(deviceToken)) {
+//            ResultEntity resultEntity = execute();
+//            saveAccountInfo(resultEntity);
+//            return resultEntity.getDevice_token();
+//        } else {
+//            return deviceToken;
+//        }
     }
 
     public String getApiDomain() {
@@ -364,38 +374,38 @@ public class IsmartvActivator {
     }
 
     public String getUpgradeDomain() {
-        String upgradeDomain = mSharedPreferences.getString("upgrade_domain", "");
-        if (TextUtils.isEmpty(upgradeDomain) || upgradeDomain.equals("1.1.1.3")) {
-            ResultEntity resultEntity = execute();
-            saveAccountInfo(resultEntity);
-            return resultEntity.getUpgrade_domain();
-        } else {
-            return upgradeDomain;
-        }
+        return mSharedPreferences.getString("upgrade_domain", "1.1.1.3");
+//        if (TextUtils.isEmpty(upgradeDomain) || upgradeDomain.equals("1.1.1.3")) {
+//            ResultEntity resultEntity = execute();
+//            saveAccountInfo(resultEntity);
+//            return resultEntity.getUpgrade_domain();
+//        } else {
+//            return upgradeDomain;
+//        }
     }
 
     public String getAdDomain() {
         // 广告测试地址
 //        return "124.42.65.66:8082";
-        String adDomain = mSharedPreferences.getString("ad_domain", "");
-        if (TextUtils.isEmpty(adDomain) || adDomain.equals("1.1.1.3")) {
-            ResultEntity resultEntity = execute();
-            saveAccountInfo(resultEntity);
-            return resultEntity.getAd_domain();
-        } else {
-            return adDomain;
-        }
+       return mSharedPreferences.getString("ad_domain", "1.1.1.2");
+//        if (TextUtils.isEmpty(adDomain) || adDomain.equals("1.1.1.3")) {
+//            ResultEntity resultEntity = execute();
+//            saveAccountInfo(resultEntity);
+//            return resultEntity.getAd_domain();
+//        } else {
+//            return adDomain;
+//        }
     }
 
     public String getLogDomain() {
-        String logDomain = mSharedPreferences.getString("log_domain", "");
-        if (TextUtils.isEmpty(logDomain) || logDomain.equals("1.1.1.4")) {
-            ResultEntity resultEntity = execute();
-            saveAccountInfo(resultEntity);
-            return resultEntity.getLog_Domain();
-        } else {
-            return logDomain;
-        }
+        return mSharedPreferences.getString("log_domain", "1.1.1.4");
+//        if (TextUtils.isEmpty(logDomain) || logDomain.equals("1.1.1.4")) {
+//            ResultEntity resultEntity = execute();
+//            saveAccountInfo(resultEntity);
+//            return resultEntity.getLog_Domain();
+//        } else {
+//            return logDomain;
+//        }
     }
 
     public String getAuthToken() {
@@ -408,11 +418,13 @@ public class IsmartvActivator {
         return mSharedPreferences.getInt("h264_player", 0);// 0-smartplayer，1-系统mediaplayer,2-自有
 
     }
+
     public int getH265PlayerType() {
 //        return 0;
         return mSharedPreferences.getInt("h265_player", 0);// 0-smartplayer，1-系统mediaplayer,2-自有
 
     }
+
     public int getLivePlayerType() {
 //        return 1;
         return mSharedPreferences.getInt("live_player", 0);// 0-smartplayer，1-系统mediaplayer,2-自有
@@ -501,11 +513,12 @@ public class IsmartvActivator {
             }
         }
     }
-    private void reportIp(String sn_token){
-            String url = "http://wx.api.tvxio.com/weixin4server/uploadclientip";
+
+    private void reportIp(String sn_token) {
+        String url = "http://wx.api.tvxio.com/weixin4server/uploadclientip";
         try {
-            Response<ResultEntity> resultResponse=SKY_Retrofit.create(HttpService.class).weixinIp(url, DeviceUtils.getLocalInetAddress().toString(), sn_token, Build.MODEL, DeviceUtils.getLocalMacAddress(mContext)).execute();
-            Log.i("ismartvRIP",resultResponse.code()+"   code"+ sn_token);
+            Response<ResultEntity> resultResponse = SKY_Retrofit.create(HttpService.class).weixinIp(url, DeviceUtils.getLocalInetAddress().toString(), sn_token, Build.MODEL, DeviceUtils.getLocalMacAddress(mContext)).execute();
+            Log.i("ismartvRIP", resultResponse.code() + "   code" + sn_token);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -599,7 +612,7 @@ public class IsmartvActivator {
 
     private String generateSn() {
         String mysn;
-        mysn = stringFromJNI();
+        mysn = nativeMacAddress();
         Log.d(TAG, "stringFromJNI: " + mysn);
         if ("noaddress".equals(mysn)) {
             mysn = Md5.md5(getDeviceId() + Build.SERIAL);
@@ -610,10 +623,7 @@ public class IsmartvActivator {
         return mysn;
     }
 
-    public native String stringFromJNI();
-
-
-    public native String helloMd5(String str);
+    public native String nativeMacAddress();
 
     public interface AccountChangeCallback {
         void onLogout();
@@ -629,4 +639,74 @@ public class IsmartvActivator {
         mAccountChangeCallbacks.remove(callback);
     }
 
+    private void initHttpCache() {
+        //cache is empty file, just for test
+        if (!new File(mContext.getCacheDir(), "cache").exists()) {
+            int processorCount = Runtime.getRuntime().availableProcessors();
+            ExecutorService executorService = Executors.newFixedThreadPool(100);
+            for (final String file : getAllCacheFile()) {
+//                executorService.execute(new Runnable() {
+                    new Thread() {
+                    @Override
+                    public void run() {
+                        try {
+                            RandomAccessFile writeFile = null;
+                            InputStream assetsInputStream = mContext.getAssets().open(file);
+                            byte[] buffer = new byte[512];
+                            int readCount;
+
+                            File cacheFile = new File(mContext.getCacheDir().getParentFile(), file);
+                            if (!cacheFile.getParentFile().exists()) {
+                                cacheFile.getParentFile().mkdirs();
+                            }
+
+                            writeFile = new RandomAccessFile(cacheFile, "rw");
+                            while ((readCount = assetsInputStream.read(buffer)) != -1) {
+                                writeFile.write(buffer, 0, readCount);
+                            }
+                            writeFile.close();
+                            assetsInputStream.close();
+
+                            String[] args2 = {"chmod", "604", cacheFile.getAbsolutePath()};
+                            Runtime.getRuntime().exec(args2);
+                        } catch (IOException e) {
+                            Log.e(TAG, "initialize http cache: " + e.getMessage());
+                            e.printStackTrace();
+                        }
+
+                    }
+                }.start();
+            }
+        }
+    }
+
+    private void chmodAllFiles(File file) throws IOException {
+        if (file.isDirectory()) {
+            for (File f : file.listFiles()) {
+                chmodAllFiles(f);
+            }
+        } else if (file.isFile()) {
+            String[] args2 = {"chmod", "604", file.getAbsolutePath()};
+            Runtime.getRuntime().exec(args2);
+        }
+    }
+
+    private String[] getAllCacheFile()  {
+        List<String> files = new ArrayList<>();
+        files.add("cache/cache");
+        try {
+            for (String f1 : mContext.getAssets().list("cache/okhttp_cache")) {
+                files.add("cache/okhttp_cache/" + f1);
+            }
+            for (String f2 : mContext.getAssets().list("cache/picasso_cache")) {
+                files.add("cache/picasso_cache/" + f2);
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return files.toArray(new String[files.size()]);
+    }
+
+    public static native String getHostByName(String hostName);
 }

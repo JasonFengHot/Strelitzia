@@ -1,0 +1,20 @@
+http://res.tvxio.bestv.com.cn/media/upload/20160420/anjishuqixiapu0711.jpg
+GET
+0
+HTTP/1.1 200 OK
+15
+Server: marco/1.4
+Date: Mon, 17 Jul 2017 02:04:14 GMT
+Content-Type: image/jpeg
+Content-Length: 72885
+Connection: keep-alive
+X-Source: C/200
+Last-Modified: Tue, 11 Jul 2017 05:46:39 GMT
+Accept-Ranges: bytes
+Expires: Mon, 09 Oct 2017 05:50:51 GMT
+Cache-Control: max-age=7776000
+Age: 504803
+X-Request-Id: d6cc094fe039580d95c8cb5190a31682; cef68c0c2bdd52c155522c5d65ae74b8
+Via: S.mix-sd-tna-131, T.216132.M.1, V.mix-sd-tna-140, T.184.H.1, M.ctn-js-taz-007
+OkHttp-Sent-Millis: 1500257054296
+OkHttp-Received-Millis: 1500257054323

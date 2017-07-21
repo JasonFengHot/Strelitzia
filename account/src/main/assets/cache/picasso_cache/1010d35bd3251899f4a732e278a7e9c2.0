@@ -1,0 +1,20 @@
+http://res.tvxio.bestv.com.cn/media/upload/20160420/20170713_ccda_1.jpg
+GET
+0
+HTTP/1.1 200 OK
+15
+Server: marco/1.4
+Date: Mon, 17 Jul 2017 02:02:13 GMT
+Content-Type: image/jpeg
+Content-Length: 78752
+Connection: keep-alive
+X-Source: C/200
+Last-Modified: Thu, 13 Jul 2017 09:53:52 GMT
+Accept-Ranges: bytes
+Expires: Wed, 11 Oct 2017 10:18:12 GMT
+Cache-Control: max-age=7776000
+Age: 315842
+X-Request-Id: 2a00527073bed8b37cd738dac34529a7; 1228503bd6ec1cfbedd27b3988d89c20
+Via: S.mix-sd-tna-134, T.216140.M.1, V.mix-sd-tna-132, T.185.R.1, M.ctn-js-taz-007
+OkHttp-Sent-Millis: 1500256933636
+OkHttp-Received-Millis: 1500256933658

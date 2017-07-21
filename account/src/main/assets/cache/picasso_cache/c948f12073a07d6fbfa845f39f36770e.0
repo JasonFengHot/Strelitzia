@@ -1,0 +1,20 @@
+http://res.tvxio.bestv.com.cn/media/upload/20160420/yaogunsnaguo170710.jpg
+GET
+0
+HTTP/1.1 200 OK
+15
+Server: marco/1.4
+Date: Mon, 17 Jul 2017 02:02:28 GMT
+Content-Type: image/jpeg
+Content-Length: 64898
+Connection: keep-alive
+X-Source: C/200
+Last-Modified: Mon, 10 Jul 2017 06:27:19 GMT
+Accept-Ranges: bytes
+Expires: Sun, 08 Oct 2017 06:52:14 GMT
+Cache-Control: max-age=7776000
+Age: 587414
+X-Request-Id: 7747e10633c8d7be91c9e5b3f5466fce; 5b307eedcb8bc14cdbc022841854a351
+Via: S.mix-sd-tna-136, T.216133.M.1, V.mix-sd-tna-139, T.187.H.1, M.ctn-js-taz-007
+OkHttp-Sent-Millis: 1500256948499
+OkHttp-Received-Millis: 1500256948545

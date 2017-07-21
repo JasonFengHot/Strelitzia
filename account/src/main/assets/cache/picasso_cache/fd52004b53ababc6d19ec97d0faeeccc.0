@@ -1,0 +1,20 @@
+http://res.tvxio.bestv.com.cn/media/upload/20160420/juezhanjangqiao0812.jpg
+GET
+0
+HTTP/1.1 200 OK
+15
+Server: marco/1.4
+Date: Mon, 17 Jul 2017 02:02:41 GMT
+Content-Type: image/jpeg
+Content-Length: 45877
+Connection: keep-alive
+X-Source: C/200
+Last-Modified: Mon, 10 Jul 2017 08:48:46 GMT
+Accept-Ranges: bytes
+Expires: Sun, 08 Oct 2017 09:21:07 GMT
+Cache-Control: max-age=7776000
+Age: 578494
+X-Request-Id: fc5d4f5deddd95070ab469fea634b994; a5dea1d483f24d603dc6ac8368fc21ec
+Via: S.mix-sd-tna-132, T.216134.H.1, V.mix-sd-tna-131, T.187.H.1, M.ctn-js-taz-007
+OkHttp-Sent-Millis: 1500256961709
+OkHttp-Received-Millis: 1500256961723
