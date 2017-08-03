@@ -38,6 +38,7 @@ import tv.ismar.account.core.http.HttpService;
 import tv.ismar.account.core.rsa.RSACoder;
 import tv.ismar.account.core.rsa.SkyAESTool2;
 import tv.ismar.account.data.ResultEntity;
+import tv.ismar.library.network.HttpManager;
 import tv.ismar.library.network.UserAgentInterceptor;
 import tv.ismar.library.util.C;
 import tv.ismar.library.util.DeviceUtils;
@@ -174,6 +175,8 @@ public class IsmartvActivator {
 
             resultEntity = new ResultEntity();
         }
+        HttpManager.getInstance().setAccessToken(IsmartvActivator.getInstance().getAuthToken());
+        HttpManager.getInstance().init(IsmartvActivator.getInstance().getApiDomain(), IsmartvActivator.getInstance().getUpgradeDomain(), IsmartvActivator.getInstance().getDeviceToken());
         saveAccountInfo(resultEntity);
         return resultEntity;
     }
