@@ -649,6 +649,7 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
         }
         String sign = "";
         String code = "1";
+        initUserInfo();
         mApiMediaUrlSubsc = HttpManager.getDomainService(SkyService.class).fetchMediaUrl(clipUrl, sign, code)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
