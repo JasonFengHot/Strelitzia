@@ -366,6 +366,7 @@
 <dimen name="filter_condition_layout_horizontal_line_ml">31.56dp</dimen>
 <dimen name="filter_condition_layout_filter_conditions_pl">32.89dp</dimen>
 <dimen name="filter_condition_layout_filter_conditions_mt">8.44dp</dimen>
+<dimen name="filter_condition_layout_pb">11.56dp</dimen>
 
 <!--filter_condition_group-->
 <dimen name="filter_condition_group_h">22.22dp</dimen>
