@@ -9,9 +9,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal"
+    android:clipChildren="false"
+    android:clipToPadding="false"
     >
 <LinearLayout
-    android:layout_width="@dimen/filter_layout_left_view_w"
+    android:layout_width="wrap_content"
     android:layout_height="match_parent"
     android:orientation="vertical">
     
@@ -24,36 +26,54 @@
         android:layout_marginTop="@dimen/filter_layout_left_view_title_mt"
         android:gravity="center"
         />
-
-    <Button
+    <ScrollView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:scrollbars="none"
+        >
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingTop="@dimen/filter_layout_left_view_tab_mt">
+<RadioGroup
+    android:id="@+id/section_group"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    >
+    <RadioButton
         android:id="@+id/filter_tab"
         android:layout_width="@dimen/filter_layout_left_view_tab_w"
         android:layout_height="@dimen/filter_layout_left_view_tab_h"
         android:background="@drawable/filter_tab_selector"
-        android:focusable="false"
+        android:focusable="true"
+        android:button="@null"
         android:layout_marginLeft="@dimen/filter_layout_left_view_tab_ml"
-        android:layout_marginTop="@dimen/filter_layout_left_view_tab_mt"
-        android:nextFocusDown="@id/filter_tab"/>
-    
+        />
+    </RadioGroup>
+            <View
+                android:id="@+id/current_tab_arrow"
+                android:layout_width="@dimen/filter_layout_current_tab_arrow_w"
+                android:layout_height="@dimen/filter_layout_left_view_tab_h"
+                android:background="@drawable/current_tab_arrow"
+                />
+        </LinearLayout>
+    </ScrollView>
 </LinearLayout>
     <View
         android:layout_width="@dimen/filter_layout_left_vertical_view_w"
         android:layout_height="match_parent"
         android:background="#f0f0f0"
+        android:layout_marginLeft="-16dp"
         android:alpha="0.1"/>
-    <View
-        android:id="@+id/current_tab_arrow"
-        android:layout_width="@dimen/filter_layout_current_tab_arrow_w"
-        android:layout_height="@dimen/filter_layout_current_tab_arrow_h"
-        android:background="@drawable/current_tab_arrow"
-        android:layout_marginLeft="@dimen/filter_layout_current_tab_arrow_ml"
-        android:layout_marginTop="@dimen/filter_layout_current_tab_arrow_mt"/>
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:clipChildren="false"
         android:clipToPadding="false"
+        android:layout_marginLeft="@dimen/filter_layout_current_tab_arrow_w"
         >
 
         <tv.ismar.app.widget.MyRecyclerView
