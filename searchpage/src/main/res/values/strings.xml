@@ -3,12 +3,8 @@
     <string name="app_name">Jasmine</string>
 
     <string name="search_all">搜索全部</string>
-    <string name="entertainment">娱乐综艺</string>
-    <string name="film">电影</string>
-    <string name="full_keyboard">全键盘</string>
 
     <string name="network_error">网络异常！</string>
-    <string name="check_connect">请检查网络！</string>
     <!--keyboard_keys-->
     <string-array name="key">
         <item>A</item>

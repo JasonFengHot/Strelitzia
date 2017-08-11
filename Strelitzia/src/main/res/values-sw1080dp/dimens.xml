@@ -5,7 +5,6 @@
     <dimen name="play_finished_title_h">67dp</dimen>
     <dimen name="play_finished_title_ts">48dp</dimen>
     <dimen name="play_finished_title_mt">145dp</dimen>
-    <dimen name="play_finished_title_ml">693dp</dimen>
     <dimen name="play_finished_horizontal_recylerview_h">391dp</dimen>
     <dimen name="play_finished_horizontal_recylerview_mt">137dp</dimen>
     <dimen name="play_finished_horizontal_recylerview_ml">193dp</dimen>
@@ -48,7 +47,6 @@
 
     <!--scroll_size-->
     <dimen name="scroll_395">395dp</dimen>
-    <dimen name="scroll_396">396dp</dimen>
     <dimen name="scroll_238">238dp</dimen>
     <dimen name="scroll_337">337dp</dimen>
     <dimen name="scroll_1127">1127dp</dimen>

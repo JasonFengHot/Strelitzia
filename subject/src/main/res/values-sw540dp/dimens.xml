@@ -40,8 +40,7 @@
 <dimen name="subject_item_score_ml">6.50dp</dimen>
 <dimen name="subject_item_textsize">15.00dp</dimen>
 <dimen name="subject_item_mark_w">54.50dp</dimen>
-<dimen name="subject_item_mark_textsize">10.00dp</dimen>
-<dimen name="subject_item_tv_title_h">36.00dp</dimen>
+    <dimen name="subject_item_tv_title_h">36.00dp</dimen>
 <dimen name="subject_item_tv_title_ts">18.00dp</dimen>
 <dimen name="subject_movie_item_mr">14.00dp</dimen>
 <dimen name="subject_movie_item_w">147.00dp</dimen>
@@ -53,12 +52,8 @@
 <dimen name="toast_layout_H">86.00dip</dimen>
 <dimen name="toast_textsize">20.00sp</dimen>
 <dimen name="toast_padding">20.00dip</dimen>
-<dimen name="movie_relate_width">510.00dp</dimen>
-<dimen name="normal_linespacingextra">8.50dp</dimen>
-<dimen name="detail_text_mt4">10.00dp</dimen>
-<dimen name="detail_header_height">50.00dp</dimen>
 
-<!--sport-->
+    <!--sport-->
 <dimen name="sport_left_w">377.00dp</dimen>
 <dimen name="sport_left_up_imageW">334.00dp</dimen>
 <dimen name="sport_left_up_imageH">26.00dp</dimen>
@@ -68,8 +63,7 @@
 <dimen name="sport_list_H">356.00dp</dimen>
 <dimen name="sport_list_MT">10.00dp</dimen>
 
-<dimen name="sport_right_w">573.00dp</dimen>
-<dimen name="sport_right_ML">10.00dp</dimen>
+    <dimen name="sport_right_ML">10.00dp</dimen>
 <dimen name="sport_right_MT">75.00dp</dimen>
 
 <dimen name="sport_right_rel_W">240.00dp</dimen>
@@ -77,8 +71,7 @@
 <dimen name="sport_right_rel_ML">10.00dp</dimen>
 
 <dimen name="sport_right_image_title_W">54.50dp</dimen>
-<dimen name="sport_right_image_price_W">108.00dp</dimen>
-<dimen name="sport_right_image_price_H">14.00dp</dimen>
+    <dimen name="sport_right_image_price_H">14.00dp</dimen>
 
 <dimen name="sport_right_image_havebuy_W">116.00dp</dimen>
 <dimen name="sport_right_image_havebuy_H">16.50dp</dimen>
@@ -96,8 +89,7 @@
 <dimen name="subject_20">10.00dp</dimen>
 <dimen name="subject_216">108.00dp</dimen>
 <dimen name="subject_74">37.00dp</dimen>
-<dimen name="subject_10">5.00dp</dimen>
-<dimen name="subject_7">3.50dp</dimen>
+    <dimen name="subject_7">3.50dp</dimen>
 <dimen name="subject_127">63.50dp</dimen>
 <dimen name="subject_43">21.50dp</dimen>
 <dimen name="subject_266">133.00dp</dimen>
@@ -137,8 +129,7 @@
 <dimen name="subject_24">12.00dp</dimen>
 <dimen name="subject_53">26.50dp</dimen>
 <dimen name="subject_29">14.50dp</dimen>
-<dimen name="subject_34">17.00dp</dimen>
-<dimen name="subject_731">365.50dp</dimen>
+    <dimen name="subject_731">365.50dp</dimen>
 <dimen name="subject_202">101.00dp</dimen>
 <dimen name="subject_23">11.50dp</dimen>
 <dimen name="subject_17">8.50dp</dimen>
@@ -153,9 +144,6 @@
 <dimen name="subject_754">377.00dp</dimen>
 <dimen name="subject_704">352.00dp</dimen>
 <dimen name="subject_852">426.00dp</dimen>
-<dimen name="subject_63">31.50dp</dimen>
-<dimen name="subject_111">55.50dp</dimen>
-<dimen name="subject_61">30.50dp</dimen>
-<dimen name="subject_606">303.00dp</dimen>
+    <dimen name="subject_111">55.50dp</dimen>
 
 </resources>

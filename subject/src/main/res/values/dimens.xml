@@ -40,7 +40,6 @@
     <dimen name="subject_item_score_ml">13dp</dimen>
     <dimen name="subject_item_textsize">30dp</dimen>
     <dimen name="subject_item_mark_w">109dp</dimen>
-    <dimen name="subject_item_mark_textsize">20dp</dimen>
     <dimen name="subject_item_tv_title_h">72dp</dimen>
     <dimen name="subject_item_tv_title_ts">36dp</dimen>
     <dimen name="subject_movie_item_mr">28dp</dimen>
