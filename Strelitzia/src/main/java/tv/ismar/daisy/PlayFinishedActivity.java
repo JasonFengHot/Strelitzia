@@ -34,7 +34,6 @@ import tv.ismar.app.ui.adapter.OnItemClickListener;
 import tv.ismar.app.ui.adapter.OnItemFocusedListener;
 import tv.ismar.app.util.BitmapDecoder;
 import tv.ismar.app.widget.MyRecyclerView;
-import tv.ismar.library.injectdb.util.Log;
 import tv.ismar.searchpage.utils.JasmineUtil;
 
 

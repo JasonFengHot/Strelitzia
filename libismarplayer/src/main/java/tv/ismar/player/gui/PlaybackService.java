@@ -225,8 +225,6 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
         username = IsmartvActivator.getInstance().getUsername();
         zuserToken = IsmartvActivator.getInstance().getZUserToken();
         zdeviceToken = IsmartvActivator.getInstance().getDeviceToken();
-        HttpManager.getInstance().setAccessToken(authToken);
-        HttpManager.getInstance().init(IsmartvActivator.getInstance().getApiDomain(), IsmartvActivator.getInstance().getUpgradeDomain(), deviceToken);
     }
 
     /**
