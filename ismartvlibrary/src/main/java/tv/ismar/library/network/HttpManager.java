@@ -30,6 +30,7 @@ import okhttp3.Cache;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.FormBody;
+import okhttp3.Interceptor;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -47,25 +48,34 @@ import tv.ismar.library.util.StringUtils;
 
 public class HttpManager {
 
+    private static final String HOST_WEATHER = "http://media.lily.tvxio.com/";
+    private static final String HOST_WX_API = "http://wx.api.tvxio.com/";
+    private static final String HOST_IRIS = "http://iris.tvxio.com/";
+    //    private static final String HOST_SPEED_CALLA = "http://speed.calla.tvxio.com/";
+    //    private static final String HOST_LILY = "http://lily.tvxio.com/";
     private static final int DEFAULT_CONNECT_TIMEOUT = 6;
     private static final int DEFAULT_READ_TIMEOUT = 15;
     private static HttpManager instance;
     private OkHttpClient okHttpClient;
+    private OkHttpClient okHttpCacheClient;
 
-    private String domain, upgrade_domain;
-    private static final String HOST_WEATHER = "http://media.lily.tvxio.com/";
-    private static final String HOST_WX_API = "http://wx.api.tvxio.com/";
-    private static final String HOST_IRIS = "http://iris.tvxio.com/";
-//    private static final String HOST_SPEED_CALLA = "http://speed.calla.tvxio.com/";
-//    private static final String HOST_LILY = "http://lily.tvxio.com/";
-
-    static String DEVICE_TOKEN, ACCESS_TOKEN;
+    private Gson gson;
+    private String apiDomain = "1.1.1.1";
+    private String adDomain = "1.1.1.2";
+    private String upgradeDomain = "1.1.1.3";
+    private String logDomain = "1.1.1.4";
 
     private Object domainService;
+    private Object domainCacheService;
+    private Object adService;
     private Object upgradeService;
+    private Object logService;
     private Object weatherService;
     private Object wxApiService;
     private Object irisService;
+
+    private HttpManager() {
+    }
 
     public static HttpManager getInstance() {
         if (instance == null) {
@@ -78,21 +88,9 @@ public class HttpManager {
         return instance;
     }
 
-    public void init(String domain, String upgrade_domain, String deviceToken) {
-        this.domain = domain;
-        this.upgrade_domain = upgrade_domain;
-        DEVICE_TOKEN = deviceToken;
-    }
-
-    public void setAccessToken(String accessToken) {
-        ACCESS_TOKEN = accessToken;
-    }
-
-    private HttpManager() {
+    public void initialize(Interceptor httpParamsInterceptor, Interceptor httpCacheInterceptor, File cacheDir) {
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
-        HttpParamsInterceptor paramsInterceptor = new HttpParamsInterceptor.Builder()
-                .build();
 
         SSLSocketFactory ssf = null;
         try {
@@ -104,63 +102,93 @@ public class HttpManager {
             e.printStackTrace();
         }
 
+        gson = new GsonBuilder()
+                .registerTypeAdapter(Date.class, new DateDeserializer())
+                .create();
+
         okHttpClient = new OkHttpClient.Builder()
                 .connectTimeout(DEFAULT_CONNECT_TIMEOUT, TimeUnit.SECONDS)
                 .readTimeout(DEFAULT_READ_TIMEOUT, TimeUnit.SECONDS)
                 .addInterceptor(interceptor)
-                .addInterceptor(paramsInterceptor)
-                .addInterceptor(new UserAgentInterceptor())
+                .addInterceptor(httpParamsInterceptor)
                 .sslSocketFactory(ssf)
+                .build();
+
+        File cacheFile = new File(cacheDir, "okhttp_cache");
+        Cache cache = new Cache(cacheFile, 1024 * 1024 * 100); //100Mb
+        okHttpCacheClient = new OkHttpClient.Builder()
+                .connectTimeout(DEFAULT_CONNECT_TIMEOUT, TimeUnit.SECONDS)
+                .readTimeout(DEFAULT_READ_TIMEOUT, TimeUnit.SECONDS)
+                .addInterceptor(httpParamsInterceptor)
+                .addInterceptor(httpCacheInterceptor)
+                .addInterceptor(interceptor)
+                .addNetworkInterceptor(httpCacheInterceptor)
+                .cache(cache)
                 .build();
     }
 
     private static Retrofit getRetrofit(String baseUrl) {
-        Gson gson = new GsonBuilder()
-                .registerTypeAdapter(Date.class, new JsonDeserializer<Date>(){
-                    @Override
-                    public Date deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
-                        String date = jsonElement.getAsString();
-                        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                        formatter.setTimeZone(TimeZone.getTimeZone("Asia/Shanghai"));
-                        try {
-                            return formatter.parse(date);
-                        } catch (ParseException e) {
-                            e.printStackTrace();
-                            return null;
-                        }
-                    }
-                })
-                .create();
+        if (getInstance().okHttpClient == null) {
+            throw new ParameterException(HttpManager.class.getSimpleName() + " > getRetrofit not initialize");
+        }
         return new Retrofit.Builder()
                 .baseUrl(appendProtocol(baseUrl))
-                .addConverterFactory(GsonConverterFactory.create(gson))
+                .addConverterFactory(GsonConverterFactory.create(getInstance().gson))
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .client(getInstance().okHttpClient)
                 .build();
     }
 
+    private static Retrofit getCacheRetrofit(String baseUrl) {
+        if (getInstance().okHttpCacheClient == null) {
+            throw new ParameterException(HttpManager.class.getSimpleName() + " > getCacheRetrofit not initialize");
+        }
+        return new Retrofit.Builder()
+                .baseUrl(appendProtocol(baseUrl))
+                .addConverterFactory(GsonConverterFactory.create(getInstance().gson))
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                .client(getInstance().okHttpCacheClient)
+                .build();
+    }
+
     @SuppressWarnings("unchecked")
     public synchronized static <T> T getDomainService(Class<T> service) {
-        String domain = getInstance().domain;
-        if (StringUtils.isEmpty(domain)) {
-            throw new ParameterException(HttpManager.class.getSimpleName() + " > getDomainService");
-        }
         if (getInstance().domainService == null) {
-            getInstance().domainService = getRetrofit(domain).create(service);
+            getInstance().domainService = getRetrofit(getInstance().apiDomain).create(service);
         }
         return (T) getInstance().domainService;
     }
 
     @SuppressWarnings("unchecked")
-    public synchronized static <T> T getUpgradeService(Class<T> service) {
-        String upgrade_domain = getInstance().upgrade_domain;
-        if (StringUtils.isEmpty(upgrade_domain)) {
-            throw new ParameterException(HttpManager.class.getSimpleName() + " > getUpgradeService");
+    public synchronized static <T> T getCacheDomainService(Class<T> service) {
+        if (getInstance().domainCacheService == null) {
+            getInstance().domainCacheService = getCacheRetrofit(getInstance().apiDomain).create(service);
         }
+        return (T) getInstance().domainCacheService;
+    }
+
+    @SuppressWarnings("unchecked")
+    public synchronized static <T> T getAdService(Class<T> service) {
+        if (getInstance().adService == null) {
+            getInstance().adService = getRetrofit(getInstance().adDomain).create(service);
+        }
+        return (T) getInstance().adService;
+    }
+
+    @SuppressWarnings("unchecked")
+    public synchronized static <T> T getUpgradeService(Class<T> service) {
         if (getInstance().upgradeService == null) {
-            getInstance().upgradeService = getRetrofit(upgrade_domain).create(service);
+            getInstance().upgradeService = getRetrofit(getInstance().upgradeDomain).create(service);
         }
         return (T) getInstance().upgradeService;
+    }
+
+    @SuppressWarnings("unchecked")
+    public synchronized static <T> T getLogService(Class<T> service) {
+        if (getInstance().logService == null) {
+            getInstance().logService = getRetrofit(getInstance().logDomain).create(service);
+        }
+        return (T) getInstance().logService;
     }
 
     @SuppressWarnings("unchecked")
@@ -259,6 +287,9 @@ public class HttpManager {
     }
 
     private static String appendProtocol(String host) {
+        if (StringUtils.isEmpty(host)) {
+            return "";
+        }
         Uri uri = Uri.parse(host);
         String url = uri.toString();
         if (!uri.toString().startsWith("http://") && !uri.toString().startsWith("https://")) {
@@ -289,6 +320,23 @@ public class HttpManager {
         }
         for (Call call : getInstance().okHttpClient.dispatcher().runningCalls()) {
             call.cancel();
+        }
+    }
+
+    private class DateDeserializer implements JsonDeserializer<Date> {
+        @Override
+        public Date deserialize(JsonElement element, Type arg1, JsonDeserializationContext arg2) throws JsonParseException {
+            String date = element.getAsString();
+
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            formatter.setTimeZone(TimeZone.getTimeZone("Asia/Shanghai"));
+
+            try {
+                return formatter.parse(date);
+            } catch (ParseException e) {
+                e.printStackTrace();
+                return null;
+            }
         }
     }
 

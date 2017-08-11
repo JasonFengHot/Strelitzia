@@ -6,8 +6,8 @@
 package retrofit2.converter.gson;
 
 import com.google.gson.Gson;
-import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
+
 import java.io.IOException;
 import java.lang.reflect.Type;
 

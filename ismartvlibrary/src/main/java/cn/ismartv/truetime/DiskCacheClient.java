@@ -9,9 +9,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.SystemClock;
 
-import cn.ismartv.truetime.SntpClient;
-import cn.ismartv.truetime.TrueLog;
-
 class DiskCacheClient {
     private static final String KEY_CACHED_SHARED_PREFS = "cn.ismartv.truetime.shared_preferences";
     private static final String KEY_CACHED_BOOT_TIME = "cn.ismartv.truetime.cached_boot_time";

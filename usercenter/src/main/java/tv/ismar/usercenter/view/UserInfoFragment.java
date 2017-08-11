@@ -288,7 +288,6 @@ public class UserInfoFragment extends BaseFragment implements UserInfoContract.V
                     public void confirmClick(View view) {
                         dialog.dismiss();
                         IsmartvActivator.getInstance().removeUserInfo();
-                        HttpManager.getInstance().setAccessToken(null);
                     }
                 },
                 new MessageDialogFragment.CancelListener() {
