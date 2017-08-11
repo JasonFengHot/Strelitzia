@@ -107,8 +107,7 @@ public class VodApplication extends Application {
         ActiveAndroid.initialize(this);
         AccountSharedPrefs.initialize(this);
         load(this);
-//        mHttpTrafficInterceptor = new HttpTrafficInterceptor(this);
-//        mHttpTrafficInterceptor.setTrafficType(HttpTrafficInterceptor.TrafficType.UNLIMITED);
+
         mHttpParamsInterceptor = new HttpParamsInterceptor.Builder()
                 .build();
 
@@ -164,6 +163,10 @@ public class VodApplication extends Application {
     }
 
     private void initPicasso(){
+        /*图片加载线程池*/
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
+
+        /*普通图片缓存HttpClient*/
         File cacheFile = new File(getCacheDir(), "picasso_cache");
         Cache cache = new Cache(cacheFile, 1024 * 1024 * 100); //100Mb
         OkHttpClient client = new OkHttpClient.Builder()
@@ -173,24 +176,41 @@ public class VodApplication extends Application {
                     @Override
                     public List<InetAddress> lookup(String s) throws UnknownHostException {
                         String ipAddress = IsmartvActivator.getHostByName(s);
-                        Log.d(TAG, "ip: " + ipAddress);
                         return Dns.SYSTEM.lookup(ipAddress);
                     }
                 })
                 .cache(cache)
                 .build();
 
-        ExecutorService executorService = Executors.newSingleThreadExecutor();
         Picasso picasso = new Picasso.Builder(this)
                 .executor(executorService)
                 .downloader(new OkHttp3Downloader(client))
                 .build();
         Picasso.setSingletonInstance(picasso);
+
+        /*首页图片缓存HttpClient*/
+        File homepageCacheFile = new File(getCacheDir(), "homepage_picasso_cache");
+        Cache homepageCache = new Cache(homepageCacheFile , 1024 * 1024 * 100); //100Mb
+        OkHttpClient homepageClient = new OkHttpClient.Builder()
+                .addInterceptor(new UserAgentInterceptor())
+                .addInterceptor(new HttpCacheInterceptor(getApplicationContext()))
+                .dns(new Dns() {
+                    @Override
+                    public List<InetAddress> lookup(String s) throws UnknownHostException {
+                        String ipAddress = IsmartvActivator.getHostByName(s);
+                        return Dns.SYSTEM.lookup(ipAddress);
+                    }
+                })
+                .cache(homepageCache)
+                .build();
+
+        Picasso homepagePicasso = new Picasso.Builder(this)
+                .executor(executorService)
+                .downloader(new OkHttp3Downloader(homepageClient))
+                .build();
+        Picasso.setSingletonInstanceHomepage(homepagePicasso);
     }
 
-    public SharedPreferences getPreferences() {
-        return mPreferences;
-    }
 
     public SharedPreferences.Editor getEditor() {
         return mEditor;
@@ -201,17 +221,12 @@ public class VodApplication extends Application {
     }
 
     public VodApplication() {
-        mLowMemoryListeners = new ArrayList<WeakReference<OnLowMemoryListener>>();
-        //   mActivityPool = new ConcurrentHashMap<String, Activity>();
+        mLowMemoryListeners = new ArrayList<>();
     }
 
     public static VodApplication get(Context context) {
         return (VodApplication) context.getApplicationContext();
     }
-
-//    public static HttpTrafficInterceptor getHttpTrafficInterceptor() {
-//        return mHttpTrafficInterceptor;
-//    }
 
     public static HttpParamsInterceptor getHttpParamsInterceptor() {
         return mHttpParamsInterceptor;
@@ -234,10 +249,8 @@ public class VodApplication extends Application {
             mEditor = mPreferences.edit();
             Set<String> cached_log = mPreferences.getStringSet(CACHED_LOG, null);
             mEditor.remove(CACHED_LOG).commit();
-//            if (!isFinish) {
             new Thread(mUpLoadLogRunnable).start();
             isFinish = true;
-//            }
             if (cached_log != null) {
                 Iterator<String> it = cached_log.iterator();
                 while (it.hasNext()) {
@@ -313,27 +326,6 @@ public class VodApplication extends Application {
         }
     }
 
-    /**
-     * Remove a previously registered listener
-     *
-     * @param listener The listener to unregister
-     * @see OnLowMemoryListener
-     */
-
-    public void unregisterOnLowMemoryListener(OnLowMemoryListener listener) {
-        if (listener != null) {
-            int i = 0;
-            while (i < mLowMemoryListeners.size()) {
-                final OnLowMemoryListener l = mLowMemoryListeners.get(i).get();
-                if (l == null || l == listener) {
-                    mLowMemoryListeners.remove(i);
-                } else {
-                    i++;
-                }
-            }
-        }
-    }
-
     private static final ThreadFactory sThreadFactory = new ThreadFactory() {
         private final AtomicInteger mCount = new AtomicInteger(1);
 
@@ -384,15 +376,12 @@ public class VodApplication extends Application {
 
     @Override
     public void onTrimMemory(int level) {
-        // TODO Auto-generated method stub
         super.onTrimMemory(level);
     }
 
     private Runnable mUpLoadLogRunnable = new Runnable() {
-
         @Override
         public void run() {
-
             while (isFinish) {
                 try {
                     Thread.sleep(1 * 30 * 1000);
@@ -415,11 +404,7 @@ public class VodApplication extends Application {
                             tv.ismar.app.core.client.NetworkUtils.LogSender(s.toString());
                         }
                     }
-                } catch (InterruptedException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                } catch (java.lang.IndexOutOfBoundsException e) {
-                    // TODO Auto-generated catch block
+                } catch (InterruptedException | IndexOutOfBoundsException e) {
                     e.printStackTrace();
                 }
             }
@@ -441,10 +426,11 @@ public class VodApplication extends Application {
     private void initLogger() {
         Logger
                 .init("VOD_APPLICATION")                 // default PRETTYLOGGER or use just init()
-                .methodCount(10)                 // default 2
-                .logLevel(LogLevel.FULL)        // default LogLevel.FULL
-                .methodOffset(2);      // default 0
+                .methodCount(10)                         // default 2
+                .logLevel(LogLevel.FULL)                 // default LogLevel.FULL
+                .methodOffset(2);                        // default 0
     }
+
     private void reportIp(){
         SharedPreferences sharedPreferences= PreferenceManager.getDefaultSharedPreferences(this);
         String sn=sharedPreferences.getString("sn_token","");

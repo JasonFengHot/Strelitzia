@@ -19,7 +19,6 @@ import tv.ismar.app.entity.ChannelEntity;
 import tv.ismar.app.entity.HomePagerEntity.Carousel;
 import tv.ismar.app.entity.HomePagerEntity.Poster;
 import tv.ismar.app.player.CallaPlay;
-import tv.ismar.app.player.InitPlayerTool;
 import tv.ismar.app.util.Utils;
 import tv.ismar.homepage.R;
 import tv.ismar.homepage.view.HomePageActivity;

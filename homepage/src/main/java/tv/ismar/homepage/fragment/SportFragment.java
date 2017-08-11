@@ -37,7 +37,6 @@ import tv.ismar.app.models.Sport;
 import tv.ismar.app.models.SportGame;
 import tv.ismar.app.network.SkyService;
 import tv.ismar.app.player.CallaPlay;
-import tv.ismar.app.player.InitPlayerTool;
 import tv.ismar.app.util.NetworkUtils;
 import tv.ismar.app.util.PicassoUtils;
 import tv.ismar.app.util.Utils;
@@ -78,7 +77,6 @@ public class SportFragment extends ChannelBaseFragment {
     private ArrayList<Carousel> looppost = new ArrayList<Carousel>();
     private int loopindex = -1;
     private int currentLiveIndex = 0;
-    private InitPlayerTool tool;
     private Subscription dataSubscription;
     private Subscription sportSubscription;
     private Subscription gameSubscription;
@@ -235,8 +233,6 @@ public class SportFragment extends ChannelBaseFragment {
     @Override
     public void onDetach() {
         super.onDetach();
-        if(tool != null)
-        	tool.removeAsycCallback();
         imageswitch.removeMessages(IMAGE_SWITCH_KEY);
         test.removeMessages(0);
     }
