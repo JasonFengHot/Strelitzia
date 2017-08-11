@@ -21,7 +21,6 @@ import com.blankj.utilcode.utils.StringUtils;
 import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
 
-import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -30,7 +29,6 @@ import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
-import tv.ismar.account.IsmartvActivator;
 import tv.ismar.app.AppConstant;
 import tv.ismar.app.core.SimpleRestClient;
 import tv.ismar.app.core.cache.CacheManager;

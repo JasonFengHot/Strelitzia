@@ -1,7 +1,5 @@
 package tv.ismar.pay;
 
-import cn.ismartv.truetime.TrueTime;
-
 import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
@@ -15,7 +13,6 @@ import android.view.View.OnHoverListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.gson.JsonParser;
 
@@ -31,7 +28,6 @@ import rx.schedulers.Schedulers;
 import tv.ismar.account.IsmartvActivator;
 import tv.ismar.app.network.entity.AccountBalanceEntity;
 import tv.ismar.app.network.entity.ItemEntity;
-import tv.ismar.statistics.PurchaseStatistics;
 
 import static tv.ismar.app.AppConstant.Payment.PAYMENT_SUCCESS_CODE;
 

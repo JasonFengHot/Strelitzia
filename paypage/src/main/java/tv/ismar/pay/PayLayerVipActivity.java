@@ -1,16 +1,13 @@
 package tv.ismar.pay;
 
 import android.content.Intent;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnHoverListener;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -19,27 +16,22 @@ import android.widget.TextView;
 import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
 
-import cn.ismartv.truetime.TrueTime;
 import cn.ismartv.tvhorizontalscrollview.TvHorizontalScrollView;
-import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
-import tv.ismar.account.IsmartvActivator;
 import tv.ismar.app.BaseActivity;
 import tv.ismar.app.core.PageIntent;
 import tv.ismar.app.core.PageIntentInterface;
 import tv.ismar.app.core.Source;
 import tv.ismar.app.network.entity.PayLayerVipEntity;
 import tv.ismar.app.network.entity.SubjectPayLayerEntity;
-import tv.ismar.app.util.BitmapDecoder;
 import tv.ismar.statistics.DetailPageStatistics;
 import tv.ismar.statistics.PurchaseStatistics;
 
 import static tv.ismar.app.AppConstant.Payment.PAYMENT_FAILURE_CODE;
 import static tv.ismar.app.AppConstant.Payment.PAYMENT_REQUEST_CODE;
 import static tv.ismar.app.AppConstant.Payment.PAYMENT_SUCCESS_CODE;
-import static tv.ismar.app.core.PageIntentInterface.ProductCategory.item;
 
 /**
  * Created by huaijie on 4/12/16.

@@ -22,7 +22,6 @@ import tv.ismar.library.util.StringUtils;
 import tv.ismar.player.IsmartvPlayer;
 import tv.ismar.player.SmartPlayer;
 import tv.ismar.player.event.PlayerEvent;
-import tv.ismar.player.gui.PlaybackService;
 import tv.ismar.player.model.MediaMeta;
 
 /**

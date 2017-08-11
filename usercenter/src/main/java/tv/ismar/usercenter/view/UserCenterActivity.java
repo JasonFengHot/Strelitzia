@@ -13,8 +13,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.blankj.utilcode.utils.StringUtils;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -26,7 +24,6 @@ import tv.ismar.app.AppConstant;
 import tv.ismar.app.BaseActivity;
 import tv.ismar.app.core.DaisyUtils;
 import tv.ismar.app.core.InitializeProcess;
-import tv.ismar.app.core.preferences.AccountSharedPrefs;
 import tv.ismar.app.entity.Favorite;
 import tv.ismar.app.entity.History;
 import tv.ismar.app.entity.Item;

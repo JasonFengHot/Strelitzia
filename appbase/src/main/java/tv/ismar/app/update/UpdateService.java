@@ -1,5 +1,4 @@
 package tv.ismar.app.update;
-import com.google.gson.GsonBuilder;
 
 import android.app.Service;
 import android.content.Context;
@@ -23,7 +22,7 @@ import android.util.Log;
 
 import com.blankj.utilcode.utils.AppUtils;
 import com.blankj.utilcode.utils.FileUtils;
-import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.io.File;
 import java.io.IOException;

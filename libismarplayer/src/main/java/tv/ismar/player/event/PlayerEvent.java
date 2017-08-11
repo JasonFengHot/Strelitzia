@@ -6,14 +6,12 @@ import android.text.TextUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
 
 import tv.ismar.app.core.client.MessageQueue;
 import tv.ismar.library.util.DateUtils;
 import tv.ismar.library.util.LogUtils;
-import tv.ismar.library.util.MD5;
 
 public class PlayerEvent {
 

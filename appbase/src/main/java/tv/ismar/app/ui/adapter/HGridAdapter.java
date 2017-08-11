@@ -5,8 +5,6 @@ import android.widget.BaseAdapter;
 
 import java.util.ArrayList;
 
-import tv.ismar.app.entity.ItemCollection;
-
 public abstract class HGridAdapter<E> extends BaseAdapter {
 	
 	protected ArrayList<E> mList;

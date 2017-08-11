@@ -20,7 +20,6 @@ import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-
 import java.util.ArrayList;
 
 import tv.ismar.app.R;

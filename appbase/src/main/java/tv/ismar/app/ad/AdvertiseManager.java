@@ -1,5 +1,4 @@
 package tv.ismar.app.ad;
-import cn.ismartv.truetime.TrueTime;
 
 import android.content.Context;
 import android.util.Log;
@@ -19,6 +18,7 @@ import java.util.concurrent.TimeUnit;
 
 import cn.ismartv.injectdb.library.query.Delete;
 import cn.ismartv.injectdb.library.query.Select;
+import cn.ismartv.truetime.TrueTime;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;

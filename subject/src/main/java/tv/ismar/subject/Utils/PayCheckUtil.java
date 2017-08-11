@@ -1,24 +1,15 @@
 package tv.ismar.subject.Utils;
-import com.google.gson.GsonBuilder;
 
 import android.app.Activity;
-import android.content.Context;
 
-import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
-import java.io.IOException;
 import java.text.ParseException;
 
-import okhttp3.ResponseBody;
-import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 import tv.ismar.account.IsmartvActivator;
-import tv.ismar.app.BaseActivity;
 import tv.ismar.app.core.PageIntent;
 import tv.ismar.app.core.PageIntentInterface;
 import tv.ismar.app.entity.Objects;
-import tv.ismar.app.network.SkyService;
 import tv.ismar.app.network.entity.PlayCheckEntity;
 import tv.ismar.app.util.Utils;
 import tv.ismar.statistics.PurchaseStatistics;

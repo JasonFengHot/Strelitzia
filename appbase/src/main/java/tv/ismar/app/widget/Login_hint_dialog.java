@@ -1,15 +1,11 @@
 package tv.ismar.app.widget;
 
-import android.app.ActivityManager;
-import android.app.Dialog;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.PopupWindow;
@@ -17,7 +13,6 @@ import android.widget.RelativeLayout;
 
 import tv.ismar.app.BaseActivity;
 import tv.ismar.app.R;
-import tv.ismar.app.core.PageIntent;
 
 /**
  * Created by liucan on 2017/5/11.

@@ -5,7 +5,6 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import tv.ismar.searchpage.weight.RotateTextView;
 import tv.ismar.subject.R;
 
 /**

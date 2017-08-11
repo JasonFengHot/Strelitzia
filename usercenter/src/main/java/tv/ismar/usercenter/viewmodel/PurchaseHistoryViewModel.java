@@ -3,7 +3,6 @@ package tv.ismar.usercenter.viewmodel;
 import android.content.Context;
 import android.databinding.BaseObservable;
 
-import tv.ismar.usercenter.presenter.ProductPresenter;
 import tv.ismar.usercenter.presenter.PurchaseHistoryPresenter;
 
 /**

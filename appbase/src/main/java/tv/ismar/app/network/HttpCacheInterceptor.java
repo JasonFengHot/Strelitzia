@@ -3,8 +3,6 @@ package tv.ismar.app.network;
 import android.content.Context;
 
 import java.io.IOException;
-import java.net.SocketException;
-import java.net.UnknownHostException;
 
 import okhttp3.CacheControl;
 import okhttp3.Interceptor;

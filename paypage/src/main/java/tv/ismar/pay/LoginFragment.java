@@ -16,8 +16,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
-
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.ResponseBody;
@@ -30,10 +28,6 @@ import rx.schedulers.Schedulers;
 import tv.ismar.account.IsmartvActivator;
 import tv.ismar.app.BaseActivity;
 import tv.ismar.app.BaseFragment;
-import tv.ismar.app.core.DaisyUtils;
-import tv.ismar.app.entity.Favorite;
-import tv.ismar.app.entity.History;
-import tv.ismar.app.entity.Item;
 import tv.ismar.app.network.SkyService;
 import tv.ismar.app.network.entity.AccountsLoginEntity;
 import tv.ismar.app.widget.ModuleMessagePopWindow;

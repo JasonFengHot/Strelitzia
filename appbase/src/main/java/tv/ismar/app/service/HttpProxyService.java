@@ -13,8 +13,6 @@ import com.koushikdutta.async.http.server.AsyncHttpServerRequest;
 import com.koushikdutta.async.http.server.AsyncHttpServerResponse;
 import com.koushikdutta.async.http.server.HttpServerRequestCallback;
 
-import cn.ismartv.injectdb.library.query.Delete;
-
 /**
  * Created by liucan on 2017/5/18.
  */

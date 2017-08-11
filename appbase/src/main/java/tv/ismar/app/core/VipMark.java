@@ -12,7 +12,6 @@ import cn.ismartv.injectdb.library.query.Delete;
 import cn.ismartv.injectdb.library.query.Select;
 import rx.Observer;
 import rx.schedulers.Schedulers;
-import tv.ismar.account.IsmartvActivator;
 import tv.ismar.app.database.DpiTable2;
 import tv.ismar.app.network.SkyService;
 import tv.ismar.app.network.entity.DpiEntity;

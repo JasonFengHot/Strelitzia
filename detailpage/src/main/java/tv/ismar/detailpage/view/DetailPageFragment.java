@@ -1,5 +1,4 @@
 package tv.ismar.detailpage.view;
-import com.google.gson.GsonBuilder;
 
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -9,7 +8,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
@@ -20,7 +18,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -35,7 +33,6 @@ import cn.ismartv.truetime.TrueTime;
 import tv.ismar.account.IsmartvActivator;
 import tv.ismar.app.AppConstant;
 import tv.ismar.app.BaseActivity;
-import tv.ismar.app.core.DaisyUtils;
 import tv.ismar.app.core.InitializeProcess;
 import tv.ismar.app.core.PageIntent;
 import tv.ismar.app.core.SimpleRestClient;

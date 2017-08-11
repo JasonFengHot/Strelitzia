@@ -2,7 +2,6 @@ package tv.ismar.pay;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -15,18 +14,10 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
-
 import okhttp3.ResponseBody;
-import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
-import tv.ismar.app.BaseActivity;
 import tv.ismar.app.network.SkyService;
-import tv.ismar.app.network.entity.ChoosewayEntity;
-import tv.ismar.app.network.entity.OpenRenewEntity;
-
-import static tv.ismar.pay.PaymentActivity.OderType.alipay_renewal;
 
 /**
  * Created by huibin on 17-2-16.

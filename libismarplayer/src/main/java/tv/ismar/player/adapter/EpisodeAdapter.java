@@ -8,8 +8,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.util.ArrayList;
-
 import tv.ismar.app.network.entity.ItemEntity;
 import tv.ismar.player.R;
 import tv.ismar.player.listener.EpisodeOnFocusListener;

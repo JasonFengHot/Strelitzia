@@ -2,7 +2,6 @@ package tv.ismar.app.entity;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by liucan on 2017/3/20.

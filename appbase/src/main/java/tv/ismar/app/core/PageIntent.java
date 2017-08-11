@@ -1,7 +1,6 @@
 package tv.ismar.app.core;
 
 import android.app.Activity;
-import android.app.LauncherActivity;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
@@ -11,7 +10,6 @@ import android.view.Gravity;
 import android.view.View;
 
 import tv.ismar.app.R;
-import tv.ismar.app.network.entity.FeedBackEntity;
 import tv.ismar.app.ui.MessageDialogFragment;
 
 /**

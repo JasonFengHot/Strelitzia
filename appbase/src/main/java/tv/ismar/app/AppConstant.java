@@ -1,9 +1,5 @@
 package tv.ismar.app;
 
-import android.app.Application;
-import android.content.Context;
-import android.content.SharedPreferences;
-
 /**
  * Created by huaijie on 3/9/15.
  */

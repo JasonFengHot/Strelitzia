@@ -1,12 +1,8 @@
 package tv.ismar.pay;
-import com.google.gson.GsonBuilder;
-
-import cn.ismartv.truetime.TrueTime;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.media.Image;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -19,17 +15,15 @@ import android.view.View.OnHoverListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
-import com.squareup.picasso.Picasso;
+import com.google.gson.GsonBuilder;
 
 import java.io.IOException;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
+import cn.ismartv.truetime.TrueTime;
 import okhttp3.ResponseBody;
 import rx.Observable;
 import rx.Observer;

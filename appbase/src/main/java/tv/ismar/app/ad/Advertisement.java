@@ -1,5 +1,4 @@
 package tv.ismar.app.ad;
-import com.google.gson.GsonBuilder;
 
 import android.app.Activity;
 import android.content.Context;
@@ -7,7 +6,7 @@ import android.content.SharedPreferences;
 import android.util.Base64;
 import android.util.Log;
 
-import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import org.json.JSONArray;
 import org.json.JSONException;

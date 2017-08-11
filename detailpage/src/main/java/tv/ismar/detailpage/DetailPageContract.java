@@ -1,7 +1,6 @@
 package tv.ismar.detailpage;
 
 import android.app.Activity;
-import android.content.Context;
 
 import tv.ismar.app.BasePresenter;
 import tv.ismar.app.BaseView;

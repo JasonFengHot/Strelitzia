@@ -1,7 +1,5 @@
 package tv.ismar.pay;
 
-import cn.ismartv.truetime.TrueTime;
-
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -16,7 +14,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
@@ -30,8 +27,6 @@ import rx.schedulers.Schedulers;
 import tv.ismar.account.IsmartvActivator;
 import tv.ismar.app.network.SkyService;
 import tv.ismar.app.network.entity.PayVerifyEntity;
-
-import static android.widget.Toast.LENGTH_LONG;
 
 /**
  * Created by huibin on 2016/9/14.

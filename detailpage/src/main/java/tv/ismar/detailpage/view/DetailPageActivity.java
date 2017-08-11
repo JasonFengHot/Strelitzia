@@ -1,9 +1,5 @@
 package tv.ismar.detailpage.view;
-import com.google.gson.GsonBuilder;
 
-import android.app.Activity;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -16,7 +12,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 
-import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.util.concurrent.TimeoutException;
 
@@ -42,9 +38,7 @@ import tv.ismar.library.util.DateUtils;
 import tv.ismar.library.util.LogUtils;
 import tv.ismar.library.util.StringUtils;
 import tv.ismar.player.IsmartvPlayer;
-import tv.ismar.player.gui.PlaybackFragment;
 import tv.ismar.player.gui.PlaybackService;
-import tv.ismar.player.widget.ExitToast;
 import tv.ismar.statistics.DetailPageStatistics;
 
 import static tv.ismar.app.core.PageIntentInterface.DETAIL_TYPE_ITEM;

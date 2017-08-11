@@ -19,7 +19,6 @@ import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import tv.ismar.account.ActiveService;
-import tv.ismar.account.IsmartvActivator;
 import tv.ismar.app.network.SkyService;
 import tv.ismar.app.update.UpdateService;
 import tv.ismar.library.util.DeviceUtils;

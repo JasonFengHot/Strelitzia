@@ -1,14 +1,12 @@
 package tv.ismar.app.core;
-import com.google.gson.GsonBuilder;
 
-import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.io.IOException;
 import java.text.ParseException;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
-import retrofit2.Callback;
 import retrofit2.Response;
 import tv.ismar.app.network.SkyService;
 

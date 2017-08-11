@@ -1,7 +1,5 @@
 package tv.ismar.player;
 
-import android.view.SurfaceView;
-
 import java.util.List;
 import java.util.Map;
 

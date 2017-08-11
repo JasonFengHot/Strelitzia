@@ -1,16 +1,14 @@
 package tv.ismar.detailpage.presenter;
-import com.google.gson.GsonBuilder;
 
 import android.content.Intent;
 import android.text.TextUtils;
 
-import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
 
-import cn.ismartv.truetime.TrueTime;
 import okhttp3.ResponseBody;
 import rx.Observer;
 import rx.Subscription;

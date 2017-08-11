@@ -1,8 +1,6 @@
 package tv.ismar.app.widget;
 
 import android.content.Context;
-import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;

@@ -11,8 +11,8 @@ import android.widget.TextView;
 
 import java.util.List;
 
-import tv.ismar.homepage.R;
 import tv.ismar.app.entity.ChannelEntity;
+import tv.ismar.homepage.R;
 
 /**
  * Created by Beaver on 2016/5/5.

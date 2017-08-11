@@ -43,7 +43,6 @@ import tv.ismar.account.core.http.HttpService;
 import tv.ismar.account.core.rsa.RSACoder;
 import tv.ismar.account.core.rsa.SkyAESTool2;
 import tv.ismar.account.data.ResultEntity;
-import tv.ismar.library.network.HttpManager;
 import tv.ismar.library.network.UserAgentInterceptor;
 import tv.ismar.library.util.C;
 import tv.ismar.library.util.DeviceUtils;

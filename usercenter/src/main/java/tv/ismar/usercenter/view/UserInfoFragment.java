@@ -16,7 +16,6 @@ import android.view.View;
 import android.view.View.OnFocusChangeListener;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,7 +35,6 @@ import tv.ismar.app.core.Util;
 import tv.ismar.app.network.entity.AccountBalanceEntity;
 import tv.ismar.app.network.entity.AccountPlayAuthEntity;
 import tv.ismar.app.ui.MessageDialogFragment;
-import tv.ismar.library.network.HttpManager;
 import tv.ismar.usercenter.R;
 import tv.ismar.usercenter.UserInfoContract;
 import tv.ismar.usercenter.databinding.FragmentUserinfoBinding;

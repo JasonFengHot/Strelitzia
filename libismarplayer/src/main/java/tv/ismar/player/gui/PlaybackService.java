@@ -41,7 +41,6 @@ import tv.ismar.app.entity.DBQuality;
 import tv.ismar.app.entity.History;
 import tv.ismar.app.network.SkyService;
 import tv.ismar.app.network.entity.AdElementEntity;
-import tv.ismar.app.network.entity.EventProperty;
 import tv.ismar.app.network.entity.ItemEntity;
 import tv.ismar.app.network.entity.PlayCheckEntity;
 import tv.ismar.app.util.Utils;
@@ -53,7 +52,6 @@ import tv.ismar.library.util.LogUtils;
 import tv.ismar.library.util.StringUtils;
 import tv.ismar.player.IPlayer;
 import tv.ismar.player.IsmartvPlayer;
-import tv.ismar.player.event.PlayerEvent;
 import tv.ismar.player.model.MediaEntity;
 import tv.ismar.statistics.PurchaseStatistics;
 

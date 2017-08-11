@@ -1,31 +1,23 @@
 package tv.ismar.detailpage.view;
-import com.google.gson.GsonBuilder;
 
 import android.content.Context;
 import android.graphics.Rect;
 import android.os.Bundle;
-import android.support.annotation.IntegerRes;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
-import com.open.androidtvwidget.leanback.recycle.RecyclerViewTV;
+import com.google.gson.GsonBuilder;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import cn.ismartv.injectdb.library.util.Log;
 import tv.ismar.app.BaseActivity;
 import tv.ismar.app.core.PageIntent;
 import tv.ismar.app.core.Source;

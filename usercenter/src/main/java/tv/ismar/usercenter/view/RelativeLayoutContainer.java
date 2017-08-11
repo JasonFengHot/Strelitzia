@@ -6,6 +6,7 @@ import android.graphics.Rect;
 import android.graphics.drawable.NinePatchDrawable;
 import android.util.AttributeSet;
 import android.widget.RelativeLayout;
+
 import tv.ismar.usercenter.R;
 
 public class RelativeLayoutContainer extends RelativeLayout {

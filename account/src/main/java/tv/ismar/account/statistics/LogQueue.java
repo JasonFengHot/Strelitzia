@@ -23,7 +23,6 @@ import okio.GzipSink;
 import okio.Okio;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
-import retrofit2.http.Url;
 import rx.Observer;
 import rx.schedulers.Schedulers;
 import tv.ismar.library.network.UserAgentInterceptor;

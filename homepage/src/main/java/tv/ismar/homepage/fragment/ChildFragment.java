@@ -26,7 +26,6 @@ import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
-import tv.ismar.account.IsmartvActivator;
 import tv.ismar.app.core.SimpleRestClient;
 import tv.ismar.app.entity.HomePagerEntity;
 import tv.ismar.app.network.SkyService;

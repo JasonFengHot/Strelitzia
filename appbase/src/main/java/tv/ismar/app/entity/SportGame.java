@@ -1,5 +1,4 @@
 package tv.ismar.app.entity;
-import cn.ismartv.truetime.TrueTime;
 
 import android.text.TextUtils;
 
@@ -7,6 +6,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
+
+import cn.ismartv.truetime.TrueTime;
 
 public class SportGame {
 	private String start_time;

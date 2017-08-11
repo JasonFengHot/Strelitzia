@@ -8,7 +8,6 @@ import java.util.HashMap;
 import tv.ismar.account.IsmartvActivator;
 import tv.ismar.app.core.client.NetworkUtils;
 import tv.ismar.app.entity.History;
-import tv.ismar.app.entity.Item;
 import tv.ismar.app.network.entity.EventProperty;
 import tv.ismar.app.reporter.IsmartvMedia;
 import tv.ismar.app.util.Utils;

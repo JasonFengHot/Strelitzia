@@ -1,5 +1,4 @@
 //package tv.ismar.app.update;
-import com.google.gson.GsonBuilder;
 //
 //import android.app.ActivityManager;
 //import android.content.ComponentName;

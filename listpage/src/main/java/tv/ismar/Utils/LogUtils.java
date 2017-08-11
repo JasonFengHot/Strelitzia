@@ -1,7 +1,5 @@
 package tv.ismar.Utils;
 
-import android.util.Log;
-
 import java.util.HashMap;
 
 import tv.ismar.app.core.client.NetworkUtils;
