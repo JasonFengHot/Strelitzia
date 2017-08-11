@@ -17,7 +17,7 @@ import android.view.MotionEvent;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 
-import com.blankj.utilcode.utils.StringUtils;
+import com.blankj.utilcode.util.StringUtils;
 
 import tv.ismar.app.widget.AsyncImageView;
 import tv.ismar.homepage.R;

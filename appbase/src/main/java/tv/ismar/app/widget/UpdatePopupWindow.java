@@ -13,7 +13,8 @@ import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.blankj.utilcode.utils.AppUtils;
+
+import com.blankj.utilcode.util.AppUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -110,7 +111,7 @@ public class UpdatePopupWindow extends PopupWindow implements View.OnHoverListen
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                AppUtils.installApp(context, path);
+                AppUtils.installApp(path, "tv.ismar.daisy.provider");
 
                 SharedPreferences sp=context.getSharedPreferences("Daisy",0);
                 if(sp!=null&&!IsmartvActivator.getInstance().isLogin()) {

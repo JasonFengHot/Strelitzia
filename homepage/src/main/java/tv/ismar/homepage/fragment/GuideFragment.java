@@ -17,7 +17,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.blankj.utilcode.utils.StringUtils;
+import com.blankj.utilcode.util.StringUtils;
 import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
 

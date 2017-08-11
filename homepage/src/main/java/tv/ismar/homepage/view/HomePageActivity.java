@@ -36,7 +36,8 @@ import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.blankj.utilcode.utils.StringUtils;
+//import com.blankj.utilcode.util.StringUtils;
+import com.blankj.utilcode.util.StringUtils;
 import com.konka.android.media.KKMediaPlayer;
 import com.orhanobut.logger.Logger;
 import com.squareup.picasso.Callback;

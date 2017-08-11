@@ -7,7 +7,7 @@ import android.media.AudioManager;
 import android.os.IBinder;
 import android.util.Log;
 
-import com.blankj.utilcode.utils.DeviceUtils;
+import com.blankj.utilcode.util.DeviceUtils;
 import com.koushikdutta.async.http.server.AsyncHttpServer;
 import com.koushikdutta.async.http.server.AsyncHttpServerRequest;
 import com.koushikdutta.async.http.server.AsyncHttpServerResponse;

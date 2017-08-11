@@ -12,8 +12,10 @@ import android.support.multidex.MultiDex;
 import android.util.DisplayMetrics;
 import android.util.Log;
 
+import com.blankj.utilcode.util.Utils;
 import com.ismartv.lion.custom.ICallLog;
 import com.ismartv.lion.custom.Parse;
+import com.koushikdutta.async.Util;
 import com.orhanobut.logger.LogLevel;
 import com.orhanobut.logger.Logger;
 import com.squareup.picasso.OkHttp3Downloader;
@@ -103,6 +105,7 @@ public class VodApplication extends Application {
         Log.i("LH/", "applicationOnCreate:" + TrueTime.now().getTime());
         initLogger();
         SPUtils.init(this);
+        Utils.init(this);
         appInstance = this;
         ActiveAndroid.initialize(this);
         AccountSharedPrefs.initialize(this);

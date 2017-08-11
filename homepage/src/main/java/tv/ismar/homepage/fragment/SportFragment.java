@@ -14,7 +14,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.blankj.utilcode.utils.StringUtils;
+import com.blankj.utilcode.util.StringUtils;
 
 import java.util.ArrayList;
 

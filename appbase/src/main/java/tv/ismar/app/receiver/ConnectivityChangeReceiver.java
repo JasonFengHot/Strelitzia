@@ -12,7 +12,8 @@ import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.blankj.utilcode.utils.AppUtils;
+
+import com.blankj.utilcode.util.AppUtils;
 
 import okhttp3.ResponseBody;
 import rx.Observer;
@@ -62,8 +63,8 @@ public class ConnectivityChangeReceiver extends BroadcastReceiver {
 
     private void checkUpdate(final Context context) {
         Log.d(TAG, "onReceive Update App");
-        Log.d(TAG, "AppUtils appInfo: " + AppUtils.isSystemApp(context));
-        Log.d(TAG, "AppUtils getAppVersionCode: " + AppUtils.getAppVersionCode(context));
+        Log.d(TAG, "AppUtils appInfo: " + AppUtils.isSystemApp());
+        Log.d(TAG, "AppUtils getAppVersionCode: " + AppUtils.getAppVersionCode());
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
