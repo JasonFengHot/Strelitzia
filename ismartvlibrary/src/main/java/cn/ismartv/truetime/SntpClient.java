@@ -13,9 +13,9 @@ import java.math.BigDecimal;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
+import okhttp3.OkHttpClient.Builder;
 import okhttp3.Request;
 import okhttp3.Response;
-import okhttp3.OkHttpClient.Builder;
 import tv.ismar.library.network.HttpLoggingInterceptor;
 
 public class SntpClient {
@@ -42,7 +42,7 @@ public class SntpClient {
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
         OkHttpClient client = (new Builder()).connectTimeout((long) timeoutInMillis, TimeUnit.MILLISECONDS).addInterceptor(interceptor).build();
-        Request request = (new okhttp3.Request.Builder()).url(ntpHost).build();
+        Request request = (new Request.Builder()).url(ntpHost).build();
         long responseTicks = SystemClock.elapsedRealtime();
         Response response = client.newCall(request).execute();
         long sentTime = response.sentRequestAtMillis();

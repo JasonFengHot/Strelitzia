@@ -175,8 +175,6 @@ public class IsmartvActivator {
 
             resultEntity = new ResultEntity();
         }
-        HttpManager.getInstance().setAccessToken(IsmartvActivator.getInstance().getAuthToken());
-        HttpManager.getInstance().init(IsmartvActivator.getInstance().getApiDomain(), IsmartvActivator.getInstance().getUpgradeDomain(), IsmartvActivator.getInstance().getDeviceToken());
         saveAccountInfo(resultEntity);
         return resultEntity;
     }

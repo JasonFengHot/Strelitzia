@@ -9,9 +9,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
-import cn.ismartv.truetime.TrueLog;
-import cn.ismartv.truetime.TrueTime;
-
 public class BootCompletedBroadcastReceiver extends BroadcastReceiver {
     private static final String TAG = BootCompletedBroadcastReceiver.class.getSimpleName();
 

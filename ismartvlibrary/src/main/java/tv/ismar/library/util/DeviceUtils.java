@@ -1,8 +1,6 @@
 package tv.ismar.library.util;
 
 import android.content.Context;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.graphics.Point;
 import android.os.Build;
 import android.os.Environment;
@@ -15,7 +13,6 @@ import java.io.File;
 import java.math.BigDecimal;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
-import java.net.SocketException;
 import java.util.Enumeration;
 
 /**

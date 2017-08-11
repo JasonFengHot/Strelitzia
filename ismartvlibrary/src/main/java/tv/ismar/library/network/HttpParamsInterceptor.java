@@ -1,5 +1,6 @@
 package tv.ismar.library.network;
 
+import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -32,6 +33,8 @@ public class HttpParamsInterceptor implements Interceptor {
     private Map<String, String> paramsMap = new HashMap<>();
     private Map<String, String> headerParamsMap = new HashMap<>();
     private List<String> headerLinesList = new ArrayList<>();
+    private String apiDomain, adDomain, upgradeDomain, logDomain, deviceToken;
+    public static String ACCESS_TOKEN;
 
     private HttpParamsInterceptor() {
     }
@@ -41,15 +44,15 @@ public class HttpParamsInterceptor implements Interceptor {
         Log.i(TAG, "HttpParamsInterceptor: thread ===> " + Thread.currentThread().getName());
         Request request = chain.request();
         Request.Builder requestBuilder = request.newBuilder();
-//        HttpUrl.Builder hostBuilder = request.url().newBuilder();
-//        refactorRequest(request, hostBuilder);
-//        requestBuilder.url(hostBuilder.build());
+        HttpUrl.Builder hostBuilder = request.url().newBuilder();
+        refactorRequest(request, hostBuilder);
+        requestBuilder.url(hostBuilder.build());
 
         paramsMap = new HashMap<>();
-        paramsMap.put("device_token", HttpManager.DEVICE_TOKEN);
+        paramsMap.put("device_token", deviceToken);
         paramsMap.put("token_check", "1");
-        if (!TextUtils.isEmpty(HttpManager.ACCESS_TOKEN)) {
-            paramsMap.put("access_token", HttpManager.ACCESS_TOKEN);
+        if (!TextUtils.isEmpty(ACCESS_TOKEN)) {
+            paramsMap.put("access_token", ACCESS_TOKEN);
         }
 
         // process header params inject
@@ -200,55 +203,95 @@ public class HttpParamsInterceptor implements Interceptor {
             return this;
         }
 
+        public Builder setApiDomain(String apiDomain) {
+            interceptor.apiDomain = apiDomain;
+            return this;
+        }
+
+        public Builder setAdDomain(String adDomain) {
+            interceptor.adDomain = adDomain;
+            return this;
+        }
+
+        public Builder setUpgradeDomain(String upgradeDomain) {
+            interceptor.upgradeDomain = upgradeDomain;
+            return this;
+        }
+
+        public Builder setLogDomain(String logDomain) {
+            interceptor.logDomain = logDomain;
+            return this;
+        }
+
+        public Builder setDeviceToken(String deviceToken) {
+            interceptor.deviceToken = deviceToken;
+            return this;
+        }
+
         public HttpParamsInterceptor build() {
             return interceptor;
         }
 
     }
 
-//    public void refactorRequest(Request request, HttpUrl.Builder httpUrlBuilder) {
-//        String domain;
-//        switch (request.url().host()) {
-//            //api domain
-//            case "1.1.1.1":
-//                domain = appendProtocol(IsmartvActivator.getInstance().getApiDomain());
-//                break;
-//            //advertisement domain
-//            case "1.1.1.2":
-//                domain = appendProtocol(IsmartvActivator.getInstance().getAdDomain());
-//                break;
-//            //upgrade domain
-//            case "1.1.1.3":
-//                domain = appendProtocol(IsmartvActivator.getInstance().getUpgradeDomain());
-//                break;
-//            //log domain
-//            case "1.1.1.4":
-//                domain = appendProtocol(IsmartvActivator.getInstance().getLogDomain());
-//                break;
-//            default:
-//                return;
-//        }
-//
-//        HttpUrl httpUrl = HttpUrl.parse(domain);
-//
-//        httpUrlBuilder.host(httpUrl.host());
-//        httpUrlBuilder.port(httpUrl.port());
-//
-//        List<String> segments = httpUrl.pathSegments();
-//
-//        List<String> originalSegments = request.url().pathSegments();
-//
-//        List<String> requestSegments = new ArrayList<>();
-//        requestSegments.addAll(segments);
-//        requestSegments.addAll(originalSegments);
-//
-//        for (int i = 0; i < originalSegments.size(); i++) {
-//            httpUrlBuilder.removePathSegment(originalSegments.size() - 1 - i);
-//        }
-//
-//        for (String segment : requestSegments) {
-//            httpUrlBuilder.addPathSegment(segment);
-//        }
-//    }
+    public void refactorRequest(Request request, HttpUrl.Builder httpUrlBuilder) {
+        String domain;
+        switch (request.url().host()) {
+            //api domain
+            case "1.1.1.1":
+                domain = appendProtocol(apiDomain);
+                break;
+            //advertisement domain
+            case "1.1.1.2":
+                domain = appendProtocol(adDomain);
+                break;
+            //upgrade domain
+            case "1.1.1.3":
+                domain = appendProtocol(upgradeDomain);
+                break;
+            //log domain
+            case "1.1.1.4":
+                domain = appendProtocol(logDomain);
+                break;
+            default:
+                return;
+        }
+
+        HttpUrl httpUrl = HttpUrl.parse(domain);
+
+        httpUrlBuilder.host(httpUrl.host());
+        httpUrlBuilder.port(httpUrl.port());
+
+        List<String> segments = httpUrl.pathSegments();
+
+        List<String> originalSegments = request.url().pathSegments();
+
+        List<String> requestSegments = new ArrayList<>();
+        requestSegments.addAll(segments);
+        requestSegments.addAll(originalSegments);
+
+        for (int i = 0; i < originalSegments.size(); i++) {
+            httpUrlBuilder.removePathSegment(originalSegments.size() - 1 - i);
+        }
+
+        for (String segment : requestSegments) {
+            httpUrlBuilder.addPathSegment(segment);
+        }
+    }
+
+    private static String appendProtocol(String host) {
+        if (TextUtils.isEmpty(host)) {
+            return "";
+        }
+        Uri uri = Uri.parse(host);
+        String url = uri.toString();
+        if (!uri.toString().startsWith("http://") && !uri.toString().startsWith("https://")) {
+            url = "http://" + host;
+        }
+        if (!url.endsWith("/")) {
+            url = url + "/";
+        }
+        return url;
+    }
 
 }
