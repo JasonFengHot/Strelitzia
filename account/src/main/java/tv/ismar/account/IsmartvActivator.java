@@ -240,7 +240,7 @@ public class IsmartvActivator {
         Log.d(TAG, "active    " + "isactive: " + isactive);
         String sign = "ismartv=201415&kind=" + kind + "&sn=" + sn;
         String rsaEncryptResult = encryptWithPublic(sign);
-        if (isactive == false) {
+        if (!isactive) {
             try {
                 isactive = true;
                 Response<ResultEntity> resultResponse = SKY_Retrofit.create(HttpService.class).
@@ -604,7 +604,7 @@ public class IsmartvActivator {
     }
 
     public boolean isLogin() {
-        return TextUtils.isEmpty(getUsername()) ? false : true;
+        return !TextUtils.isEmpty(getUsername());
     }
 
     private String generateSn() {

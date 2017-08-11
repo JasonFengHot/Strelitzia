@@ -30,14 +30,12 @@ public class Coder {
     }
   //解密
     public static byte[] UrlSafeBase64_decode(String data) throws UnsupportedEncodingException {
-     byte[] b= Base64.decode(data, Base64.URL_SAFE);
-     return b;
+        return Base64.decode(data, Base64.URL_SAFE);
     }
     //解密
     public static String UrlSafeBase64_encode(byte[] data) throws UnsupportedEncodingException {
      //byte[] b= Base64.encode(data, Base64.URL_SAFE);
-     String b =  Base64.encodeToString(data, Base64.URL_SAFE);
-     return b;
+        return Base64.encodeToString(data, Base64.URL_SAFE);
     }
     /**将16进制转换为二进制 
      * @param hexStr 
