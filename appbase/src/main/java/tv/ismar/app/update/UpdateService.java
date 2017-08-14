@@ -43,6 +43,7 @@ import tv.ismar.account.core.Md5;
 import tv.ismar.app.network.SkyService;
 import tv.ismar.app.network.entity.UpgradeRequestEntity;
 import tv.ismar.app.network.entity.VersionInfoV2Entity;
+import tv.ismar.library.exception.ExceptionUtils;
 
 
 /**
@@ -239,6 +240,7 @@ public class UpdateService extends Service implements Loader.OnLoadCompleteListe
                                         String[] args2 = {"chmod", "604", path};
                                         Runtime.getRuntime().exec(args2);
                                     } catch (IOException e) {
+                                        ExceptionUtils.sendProgramError(e);
                                         e.printStackTrace();
                                     }
                                     boolean installSilentSuccess = installAppSilent(path);

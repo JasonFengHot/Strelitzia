@@ -27,6 +27,7 @@ import rx.schedulers.Schedulers;
 import tv.ismar.account.IsmartvActivator;
 import tv.ismar.app.network.SkyService;
 import tv.ismar.app.network.entity.PayVerifyEntity;
+import tv.ismar.library.exception.ExceptionUtils;
 
 /**
  * Created by huibin on 2016/9/14.
@@ -96,8 +97,10 @@ public class CardPayFragment extends Fragment implements View.OnClickListener, O
         try {
             card_secret = pwd_prefix + SHA1(user + sur_prefix + timestamp);
         } catch (NoSuchAlgorithmException e) {
+            ExceptionUtils.sendProgramError(e);
             e.printStackTrace();
         } catch (UnsupportedEncodingException e) {
+            ExceptionUtils.sendProgramError(e);
             e.printStackTrace();
         }
 

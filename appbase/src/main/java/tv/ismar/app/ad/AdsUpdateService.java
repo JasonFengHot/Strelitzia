@@ -23,6 +23,7 @@ import cn.ismartv.injectdb.library.query.Select;
 import tv.ismar.app.db.AdvertiseTable;
 import tv.ismar.app.network.entity.AdElementEntity;
 import tv.ismar.app.util.FileUtils;
+import tv.ismar.library.exception.ExceptionUtils;
 
 public class AdsUpdateService extends Service implements Advertisement.OnAppStartAdListener {
 
@@ -117,6 +118,7 @@ public class AdsUpdateService extends Service implements Advertisement.OnAppStar
                             adStartDate = dateFormat.parse(start_date).getTime();
                             adEndDate = dateFormat.parse(end_date).getTime();
                         } catch (ParseException e) {
+                            ExceptionUtils.sendProgramError(e);
                             e.printStackTrace();
                         }
                         String adTitle = adElementEntity.getTitle();
@@ -163,6 +165,7 @@ public class AdsUpdateService extends Service implements Advertisement.OnAppStar
             try {
                 FileUtils.deleteDir(getFilesDir() + "/" + AdvertiseManager.AD_DIR);
             } catch (IOException e) {
+                ExceptionUtils.sendProgramError(e);
                 e.printStackTrace();
                 Log.e(TAG, "delete ads file exception");
             }

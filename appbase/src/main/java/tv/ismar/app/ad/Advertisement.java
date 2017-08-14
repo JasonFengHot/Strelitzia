@@ -40,6 +40,7 @@ import tv.ismar.app.network.entity.ItemEntity;
 import tv.ismar.app.util.DeviceUtils;
 import tv.ismar.app.util.SPUtils;
 import tv.ismar.app.util.Utils;
+import tv.ismar.library.exception.ExceptionUtils;
 
 /**
  * Created by longhai on 16-10-24.
@@ -140,6 +141,7 @@ public class Advertisement {
                         try {
                             result = responseBody.string();
                         } catch (IOException e) {
+                            ExceptionUtils.sendProgramError(e);
                             e.printStackTrace();
                         }
 
@@ -198,6 +200,7 @@ public class Advertisement {
                         try {
                             result = responseBody.string();
                         } catch (IOException e) {
+                            ExceptionUtils.sendProgramError(e);
                             e.printStackTrace();
                         }
                         if (mOnAppStartAdListener == null) {
@@ -393,6 +396,7 @@ public class Advertisement {
                 }
             }
         } catch (JSONException e) {
+            ExceptionUtils.sendProgramError(e);
             e.printStackTrace();
         }
         return adElementEntities;
@@ -452,6 +456,7 @@ public class Advertisement {
                 }
             }
         } catch (Exception e) {
+            ExceptionUtils.sendProgramError(e);
             e.printStackTrace();
         }
     }

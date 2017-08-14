@@ -15,6 +15,7 @@ import rx.schedulers.Schedulers;
 import tv.ismar.app.database.DpiTable2;
 import tv.ismar.app.network.SkyService;
 import tv.ismar.app.network.entity.DpiEntity;
+import tv.ismar.library.exception.ExceptionUtils;
 
 /**
  * Created by huibin on 8/30/16.
@@ -93,6 +94,7 @@ public class VipMark {
                     .orderBy("abs(" + height + " - name) asc")
                     .executeSingle();
         } catch (SQLiteException e) {
+            ExceptionUtils.sendProgramError(e);
             Log.e(TAG, e.getMessage());
         }
         return dpiTable == null ? "test" : dpiTable.image;

@@ -45,6 +45,7 @@ import tv.ismar.homepage.widget.DaisyVideoView;
 import tv.ismar.homepage.widget.DaisyViewContainer;
 import tv.ismar.homepage.widget.HomeItemContainer;
 import tv.ismar.homepage.widget.LabelImageView3;
+import tv.ismar.library.exception.ExceptionUtils;
 import tv.ismar.library.util.C;
 
 //import org.apache.commons.lang3.StringUtils;
@@ -470,6 +471,7 @@ public class GuideFragment extends ChannelBaseFragment {
                     "", 0, "",
                     SimpleRestClient.appVersion, "client", ""
             );
+            ExceptionUtils.sendProgramError(e);
         }
 
         isCarouselInit = true;
@@ -563,6 +565,7 @@ public class GuideFragment extends ChannelBaseFragment {
                     "", 0, "",
                     SimpleRestClient.appVersion, "client", ""
             );
+            ExceptionUtils.sendProgramError(e);
         }
 
 
@@ -616,6 +619,7 @@ public class GuideFragment extends ChannelBaseFragment {
                     "", 0, "",
                     SimpleRestClient.appVersion, "client", ""
             );
+            ExceptionUtils.sendProgramError(e);
         }
     }
 

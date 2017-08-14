@@ -20,6 +20,7 @@ import java.util.HashMap;
 import cn.ismartv.truetime.TrueTime;
 import tv.ismar.app.core.client.MessageQueue;
 import tv.ismar.app.core.client.NetworkUtils;
+import tv.ismar.library.exception.ExceptionUtils;
 
 
 /**
@@ -109,6 +110,7 @@ public class SystemReporterReceiver extends BroadcastReceiver {
                                 obj = new JSONObject(list.get(i).toString());
                                 s.put(obj);
                             } catch (JSONException e) {
+                                ExceptionUtils.sendProgramError(e);
                                 // TODO Auto-generated catch block
                                 e.printStackTrace();
                             }

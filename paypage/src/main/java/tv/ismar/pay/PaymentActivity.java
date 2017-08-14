@@ -41,6 +41,7 @@ import tv.ismar.app.network.entity.ChoosewayEntity;
 import tv.ismar.app.network.entity.GoodsRenewStatusEntity;
 import tv.ismar.app.network.entity.ItemEntity;
 import tv.ismar.app.network.entity.PayWhStatusEntity;
+import tv.ismar.library.exception.ExceptionUtils;
 import tv.ismar.pay.LoginFragment.LoginCallback;
 import tv.ismar.statistics.PurchaseStatistics;
 
@@ -313,6 +314,7 @@ public class PaymentActivity extends BaseActivity implements View.OnClickListene
                                     return mSkyService.playcheck(item, pkg, subItem)
                                             .execute().body().string();
                                 } catch (IOException e) {
+                                    ExceptionUtils.sendProgramError(e);
                                     e.printStackTrace();
                                 }
 
@@ -321,6 +323,7 @@ public class PaymentActivity extends BaseActivity implements View.OnClickListene
                                     return mSkyService.orderpurchase(item, pkg, subItem)
                                             .execute().body().string();
                                 } catch (IOException e) {
+                                    ExceptionUtils.sendProgramError(e);
                                     e.printStackTrace();
                                 }
                         }

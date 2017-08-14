@@ -35,6 +35,7 @@ import tv.ismar.app.core.Util;
 import tv.ismar.app.network.entity.AccountBalanceEntity;
 import tv.ismar.app.network.entity.AccountPlayAuthEntity;
 import tv.ismar.app.ui.MessageDialogFragment;
+import tv.ismar.library.exception.ExceptionUtils;
 import tv.ismar.usercenter.R;
 import tv.ismar.usercenter.UserInfoContract;
 import tv.ismar.usercenter.databinding.FragmentUserinfoBinding;
@@ -447,6 +448,7 @@ public class UserInfoFragment extends BaseFragment implements UserInfoContract.V
             try {
                 return Util.daysBetween(Util.getTime(), exprieTime) + 1;
             } catch (ParseException e) {
+                ExceptionUtils.sendProgramError(e);
                 e.printStackTrace();
             }
             return 0;

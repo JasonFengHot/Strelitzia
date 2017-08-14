@@ -58,6 +58,7 @@ import tv.ismar.detailpage.databinding.FragmentDetailpageMovieSharpBinding;
 import tv.ismar.detailpage.databinding.FragmentDetailpageNormalSharpBinding;
 import tv.ismar.detailpage.presenter.DetailPagePresenter;
 import tv.ismar.detailpage.viewmodel.DetailPageViewModel;
+import tv.ismar.library.exception.ExceptionUtils;
 import tv.ismar.statistics.DetailPageStatistics;
 
 import static tv.ismar.app.core.PageIntentInterface.EXTRA_ITEM_JSON;
@@ -354,6 +355,7 @@ public class DetailPageFragment extends Fragment implements DetailPageContract.V
                 try {
                     score = Float.parseFloat(scoreStr);
                 } catch (NumberFormatException e) {
+                    ExceptionUtils.sendProgramError(e);
                     e.printStackTrace();
                 }
                 if (score > 0) {
@@ -423,6 +425,7 @@ public class DetailPageFragment extends Fragment implements DetailPageContract.V
                 ((DetailPageActivity) getActivity()).mLoadingDialog.dismiss();
             }
         }catch (Exception e){
+            ExceptionUtils.sendProgramError(e);
             e.printStackTrace();
         }
 
@@ -661,6 +664,7 @@ public class DetailPageFragment extends Fragment implements DetailPageContract.V
             if(mItemEntity.getStartTime()!=null)
             startDate = sdf.parse(mItemEntity.getStartTime());
         } catch (ParseException e) {
+            ExceptionUtils.sendProgramError(e);
             System.out.println(e.getMessage());
         }
         if (startDate != null) {
@@ -693,6 +697,7 @@ public class DetailPageFragment extends Fragment implements DetailPageContract.V
                     PackageInfo info = manager.getPackageInfo(getActivity().getPackageName(), 0);
                     SimpleRestClient.appVersion = info.versionCode;
                 } catch (PackageManager.NameNotFoundException e) {
+                    ExceptionUtils.sendProgramError(e);
                     e.printStackTrace();
                 }
                 String apiDomain = IsmartvActivator.getInstance().getApiDomain();

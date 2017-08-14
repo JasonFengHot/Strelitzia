@@ -20,6 +20,7 @@ import java.util.Locale;
 
 import tv.ismar.app.core.VodUserAgent;
 import tv.ismar.app.network.entity.FeedBackEntity;
+import tv.ismar.library.exception.ExceptionUtils;
 
 
 /**
@@ -95,9 +96,10 @@ public class UploadFeedback implements Runnable {
             }
             connection.disconnect();
         } catch (MalformedURLException e) {
-
+            ExceptionUtils.sendProgramError(e);
             Log.e(TAG, e.getMessage());
         } catch (IOException e) {
+            ExceptionUtils.sendProgramError(e);
             Log.e(TAG, e.getMessage());
         }
 

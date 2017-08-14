@@ -13,6 +13,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import tv.ismar.app.R;
+import tv.ismar.library.exception.ExceptionUtils;
 
 
 /**
@@ -145,6 +146,8 @@ public class MessageDialogFragment extends PopupWindow implements View.OnClickLi
             this.confirmListener = confirmListener;
             this.cancleListener = cancleListener;
             super.showAtLocation(parent, gravity, 0, 0);
-        }catch (Exception e){}
+        }catch (Exception e){
+            ExceptionUtils.sendProgramError(e);
+        }
     }
 }

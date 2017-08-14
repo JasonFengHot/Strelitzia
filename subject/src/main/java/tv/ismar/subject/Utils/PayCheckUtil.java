@@ -12,6 +12,7 @@ import tv.ismar.app.core.PageIntentInterface;
 import tv.ismar.app.entity.Objects;
 import tv.ismar.app.network.entity.PlayCheckEntity;
 import tv.ismar.app.util.Utils;
+import tv.ismar.library.exception.ExceptionUtils;
 import tv.ismar.statistics.PurchaseStatistics;
 
 import static tv.ismar.app.core.PageIntentInterface.FromPage.unknown;
@@ -37,6 +38,7 @@ public class PayCheckUtil {
                 try {
                     remainDay = Utils.daysBetween(Utils.getTime(), playCheckEntity.getExpiry_date()) + 1;
                 } catch (ParseException e) {
+                    ExceptionUtils.sendProgramError(e);
                     remainDay = 0;
                 }
                 playCheckEntity.setRemainDay(remainDay);

@@ -44,6 +44,7 @@ import tv.ismar.app.network.entity.AdElementEntity;
 import tv.ismar.app.network.entity.ItemEntity;
 import tv.ismar.app.network.entity.PlayCheckEntity;
 import tv.ismar.app.util.Utils;
+import tv.ismar.library.exception.ExceptionUtils;
 import tv.ismar.library.network.HttpManager;
 import tv.ismar.library.util.AppUtils;
 import tv.ismar.library.util.DateUtils;
@@ -421,6 +422,7 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
                                 result = responseBody.string();
                                 LogUtils.i(TAG, "play check result:" + result);
                             } catch (IOException e) {
+                                ExceptionUtils.sendProgramError(e);
                                 e.printStackTrace();
                             }
                             if (!Utils.isEmptyText(result)) {
@@ -452,6 +454,7 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
                 try {
                     remainDay = Utils.daysBetween(Utils.getTime(), playCheckEntity.getExpiry_date()) + 1;
                 } catch (ParseException e) {
+                    ExceptionUtils.sendProgramError(e);
                     remainDay = 0;
                 }
                 playCheckEntity.setRemainDay(remainDay);
@@ -1064,6 +1067,7 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
                 try {
                     result = response.body().string();
                 } catch (Exception e) {
+                    ExceptionUtils.sendProgramError(e);
                     e.printStackTrace();
                 }
                 LogUtils.i(TAG, "SendHistory : " + result);

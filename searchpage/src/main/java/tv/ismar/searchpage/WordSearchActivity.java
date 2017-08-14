@@ -41,6 +41,7 @@ import tv.ismar.app.models.VodSearchRequestEntity;
 import tv.ismar.app.util.DeviceUtils;
 import tv.ismar.app.util.NetworkUtils;
 import tv.ismar.app.util.SystemFileUtil;
+import tv.ismar.library.exception.ExceptionUtils;
 import tv.ismar.searchpage.adapter.KeyboardAdapter;
 import tv.ismar.searchpage.adapter.PosterAdapter;
 import tv.ismar.searchpage.adapter.RecommendAdapter;
@@ -382,6 +383,7 @@ public class WordSearchActivity extends BaseActivity implements View.OnClickList
                     fileDescriptor.getLength());
             mediaPlayer.prepare();
         } catch (IOException e) {
+            ExceptionUtils.sendProgramError(e);
             JasmineUtil.loadException("search", "", "", "", 0, "", DeviceUtils.getVersionCode(this), "client", e.getMessage());
             e.printStackTrace();
         }

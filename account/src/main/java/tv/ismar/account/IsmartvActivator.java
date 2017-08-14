@@ -44,6 +44,7 @@ import tv.ismar.account.core.http.HttpService;
 import tv.ismar.account.core.rsa.RSACoder;
 import tv.ismar.account.core.rsa.SkyAESTool2;
 import tv.ismar.account.data.ResultEntity;
+import tv.ismar.library.exception.ExceptionUtils;
 import tv.ismar.library.network.UserAgentInterceptor;
 import tv.ismar.library.util.C;
 import tv.ismar.library.util.DeviceUtils;
@@ -164,6 +165,7 @@ public final class IsmartvActivator {
             TelephonyManager tm = (TelephonyManager) mContext.getSystemService(Context.TELEPHONY_SERVICE);
             deviceId = tm.getDeviceId();
         } catch (Exception e) {
+            ExceptionUtils.sendProgramError(e);
             e.printStackTrace();
         }
         return deviceId;
@@ -204,6 +206,7 @@ public final class IsmartvActivator {
             PackageInfo pi = pm.getPackageInfo(mContext.getPackageName(), 0);
             appVersionName = pi.versionName;
         } catch (Exception e) {
+            ExceptionUtils.sendProgramError(e);
             e.printStackTrace();
         }
         return appVersionName;
@@ -229,6 +232,7 @@ public final class IsmartvActivator {
 
         } catch (IOException e) {
             e.printStackTrace();
+            ExceptionUtils.sendProgramError(e);
             Log.e(TAG, "getLicence error!!!");
             return null;
         }
@@ -263,6 +267,7 @@ public final class IsmartvActivator {
             } catch (IOException e) {
                 isactive = false;
                 e.printStackTrace();
+                ExceptionUtils.sendProgramError(e);
                 Log.e(TAG, "active error!!!");
                 return null;
             }
@@ -289,6 +294,7 @@ public final class IsmartvActivator {
             json.put("deviceId", deviceId);
             return json.toString() + "///" + this.location;
         } catch (JSONException e) {
+            ExceptionUtils.sendProgramError(e);
             e.printStackTrace();
         }
         return "";
@@ -305,6 +311,7 @@ public final class IsmartvActivator {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
+            ExceptionUtils.sendProgramError(e);
         }
     }
 
@@ -320,6 +327,7 @@ public final class IsmartvActivator {
                 fileInputStream.close();
                 decryptResult = SkyAESTool2.decrypt(key.substring(0, 16), Base64.decode(bytes, Base64.URL_SAFE));
             } catch (Exception e) {
+                ExceptionUtils.sendProgramError(e);
                 file.delete();
             }
         }
@@ -338,6 +346,7 @@ public final class IsmartvActivator {
             byte[] rsaResult = RSACoder.encryptByPublicKey(input.getBytes(), publicKey);
             return Base64.encodeToString(rsaResult, Base64.DEFAULT);
         } catch (Exception e) {
+            ExceptionUtils.sendProgramError(e);
             e.printStackTrace();
         }
         return null;
@@ -539,6 +548,7 @@ public final class IsmartvActivator {
             Response<ResultEntity> resultResponse = SKY_Retrofit.create(HttpService.class).weixinIp(url, DeviceUtils.getLocalInetAddress().toString(), sn_token, Build.MODEL, DeviceUtils.getLocalMacAddress(mContext)).execute();
             Log.i("ismartvRIP", resultResponse.code() + "   code" + sn_token);
         } catch (IOException e) {
+            ExceptionUtils.sendProgramError(e);
             e.printStackTrace();
         }
     }
@@ -688,6 +698,7 @@ public final class IsmartvActivator {
                             String[] args2 = {"chmod", "604", cacheFile.getAbsolutePath()};
                             Runtime.getRuntime().exec(args2);
                         } catch (IOException e) {
+                            ExceptionUtils.sendProgramError(e);
                             Log.e(TAG, "initialize http cache: " + e.getMessage());
                             e.printStackTrace();
                         }
@@ -721,6 +732,7 @@ public final class IsmartvActivator {
             }
 
         } catch (IOException e) {
+            ExceptionUtils.sendProgramError(e);
             e.printStackTrace();
         }
         return files.toArray(new String[files.size()]);

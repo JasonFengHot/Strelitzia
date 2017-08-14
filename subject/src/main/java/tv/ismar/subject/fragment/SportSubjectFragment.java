@@ -56,6 +56,7 @@ import tv.ismar.app.network.SkyService;
 import tv.ismar.app.network.entity.EventProperty;
 import tv.ismar.app.network.entity.PlayCheckEntity;
 import tv.ismar.app.widget.LoadingDialog;
+import tv.ismar.library.exception.ExceptionUtils;
 import tv.ismar.subject.R;
 import tv.ismar.subject.Utils.LableImageSubject;
 import tv.ismar.subject.Utils.PayCheckUtil;
@@ -329,6 +330,7 @@ public class SportSubjectFragment extends Fragment implements View.OnHoverListen
                                 hasbuy.setText("已付费：有效期"+objects.expense.duration+"天");  // 购买了，剩余天数大于0
                             }
                         } catch (Exception e) {
+                            ExceptionUtils.sendProgramError(e);
                             e.printStackTrace();
                         }
                     }
