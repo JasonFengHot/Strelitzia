@@ -50,7 +50,7 @@ import static okhttp3.internal.platform.Platform.INFO;
  * this class should not be considered stable and may change slightly between releases. If you need
  * a stable logging format, use your own interceptor.
  */
-public final class HttpLoggingInterceptor implements Interceptor {
+public final class IsmartvHttpLoggingInterceptor implements Interceptor {
     private static final Charset UTF8 = Charset.forName("UTF-8");
 
     public enum Level {
@@ -125,11 +125,11 @@ public final class HttpLoggingInterceptor implements Interceptor {
         };
     }
 
-    public HttpLoggingInterceptor() {
+    public IsmartvHttpLoggingInterceptor() {
         this(Logger.DEFAULT);
     }
 
-    public HttpLoggingInterceptor(Logger logger) {
+    public IsmartvHttpLoggingInterceptor(Logger logger) {
         this.logger = logger;
     }
 
@@ -140,7 +140,7 @@ public final class HttpLoggingInterceptor implements Interceptor {
     /**
      * Change the level at which this interceptor logs.
      */
-    public HttpLoggingInterceptor setLevel(Level level) {
+    public IsmartvHttpLoggingInterceptor setLevel(Level level) {
         if (level == null) throw new NullPointerException("level == null. Use Level.NONE instead.");
         this.level = level;
         return this;

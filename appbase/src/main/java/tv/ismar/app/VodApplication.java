@@ -15,7 +15,6 @@ import android.util.Log;
 import com.blankj.utilcode.util.Utils;
 import com.ismartv.lion.custom.ICallLog;
 import com.ismartv.lion.custom.Parse;
-import com.koushikdutta.async.Util;
 import com.orhanobut.logger.LogLevel;
 import com.orhanobut.logger.Logger;
 import com.squareup.picasso.OkHttp3Downloader;
@@ -48,7 +47,7 @@ import okhttp3.ResponseBody;
 import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
-import tv.ismar.account.HttpParamsInterceptor;
+import tv.ismar.account.IsmartvHttpParamsInterceptor;
 import tv.ismar.account.IsmartvActivator;
 import tv.ismar.account.statistics.LogEntity;
 import tv.ismar.account.statistics.LogQueue;
@@ -78,7 +77,7 @@ import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
  */
 public class VodApplication extends Application {
     private static final String TAG = "VodApplication";
-    private static HttpParamsInterceptor mHttpParamsInterceptor;
+    private static IsmartvHttpParamsInterceptor mIsmartvHttpParamsInterceptor;
     private HttpCacheInterceptor mHttpCacheInterceptor;
     public static final boolean DEBUG = true;
     private ArrayList<WeakReference<OnLowMemoryListener>> mLowMemoryListeners;
@@ -111,7 +110,7 @@ public class VodApplication extends Application {
         AccountSharedPrefs.initialize(this);
         load(this);
 
-        mHttpParamsInterceptor = new HttpParamsInterceptor.Builder()
+        mIsmartvHttpParamsInterceptor = new IsmartvHttpParamsInterceptor.Builder()
                 .build();
 
         CalligraphyConfig.initDefault(new CalligraphyConfig.Builder()
@@ -231,8 +230,8 @@ public class VodApplication extends Application {
         return (VodApplication) context.getApplicationContext();
     }
 
-    public static HttpParamsInterceptor getHttpParamsInterceptor() {
-        return mHttpParamsInterceptor;
+    public static IsmartvHttpParamsInterceptor getHttpParamsInterceptor() {
+        return mIsmartvHttpParamsInterceptor;
     }
 
     public HttpCacheInterceptor getCacheInterceptor() {

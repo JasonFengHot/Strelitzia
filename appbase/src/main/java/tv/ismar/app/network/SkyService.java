@@ -43,7 +43,7 @@ import retrofit2.http.Query;
 import retrofit2.http.Streaming;
 import retrofit2.http.Url;
 import rx.Observable;
-import tv.ismar.account.HttpLoggingInterceptor;
+import tv.ismar.account.IsmartvHttpLoggingInterceptor;
 import tv.ismar.account.IsmartvActivator;
 import tv.ismar.app.VodApplication;
 import tv.ismar.app.core.OfflineCheckManager;
@@ -715,8 +715,8 @@ public interface SkyService {
         }};
 
         private ServiceManager() {
-            HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
-            interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+            IsmartvHttpLoggingInterceptor interceptor = new IsmartvHttpLoggingInterceptor();
+            interceptor.setLevel(IsmartvHttpLoggingInterceptor.Level.BODY);
 
             SSLContext sc = null;
             try {

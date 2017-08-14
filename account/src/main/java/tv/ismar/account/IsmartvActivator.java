@@ -11,6 +11,7 @@ import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
 
+import com.blankj.utilcode.util.SPUtils;
 import com.orhanobut.logger.Logger;
 
 import org.json.JSONException;
@@ -50,7 +51,7 @@ import tv.ismar.library.util.DeviceUtils;
 /**
  * Created by huaijie on 5/17/16.
  */
-public class IsmartvActivator {
+public final class IsmartvActivator {
     static {
         System.loadLibrary("ismartv-lib");
     }
@@ -133,13 +134,12 @@ public class IsmartvActivator {
         sn = generateSn();
         fingerprint = Md5.md5(sn);
 
-        HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
-        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+        IsmartvHttpLoggingInterceptor interceptor = new IsmartvHttpLoggingInterceptor();
+        interceptor.setLevel(IsmartvHttpLoggingInterceptor.Level.BODY);
         OkHttpClient client = new OkHttpClient.Builder()
                 .connectTimeout(DEFAULT_CONNECT_TIMEOUT, TimeUnit.SECONDS)
                 .readTimeout(DEFAULT_READ_TIMEOUT, TimeUnit.SECONDS)
                 .addInterceptor(interceptor)
-//                .addInterceptor(new HttpCacheInterceptor())
                 .addInterceptor(new UserAgentInterceptor())
                 .dns(new Dns() {
                     @Override
@@ -349,18 +349,26 @@ public class IsmartvActivator {
     }
 
     public String getDeviceToken() {
-        return mSharedPreferences.getString("device_token", "");
-//        if (TextUtils.isEmpty(deviceToken)) {
-//            ResultEntity resultEntity = execute();
-//            saveAccountInfo(resultEntity);
-//            return resultEntity.getDevice_token();
-//        } else {
-//            return deviceToken;
-//        }
+        return SPUtils.getInstance().getString("device_token", "");
+    }
+
+    protected String getInternalDeviceToken() {
+        String deviceToken = SPUtils.getInstance().getString("device_token", "");
+        if (TextUtils.isEmpty(deviceToken)) {
+            ResultEntity resultEntity = execute();
+            saveAccountInfo(resultEntity);
+            return resultEntity.getDevice_token();
+        } else {
+            return deviceToken;
+        }
     }
 
     public String getApiDomain() {
-        String apiDomain = mSharedPreferences.getString("api_domain", "");
+        return SPUtils.getInstance().getString("api_domain", "");
+    }
+
+    protected String getInternalApiDomain() {
+        String apiDomain = SPUtils.getInstance().getString("api_domain", "");
         if (TextUtils.isEmpty(apiDomain) || apiDomain.equals("1.1.1.1")) {
             ResultEntity resultEntity = execute();
             saveAccountInfo(resultEntity);
@@ -371,43 +379,53 @@ public class IsmartvActivator {
     }
 
     public String getUpgradeDomain() {
-        return mSharedPreferences.getString("upgrade_domain", "1.1.1.3");
-//        if (TextUtils.isEmpty(upgradeDomain) || upgradeDomain.equals("1.1.1.3")) {
-//            ResultEntity resultEntity = execute();
-//            saveAccountInfo(resultEntity);
-//            return resultEntity.getUpgrade_domain();
-//        } else {
-//            return upgradeDomain;
-//        }
+        return SPUtils.getInstance().getString("upgrade_domain", "1.1.1.3");
+    }
+
+    protected String getInternalUpgradeDomain() {
+        String upgradeDomain = mSharedPreferences.getString("upgrade_domain", "1.1.1.3");
+        if (TextUtils.isEmpty(upgradeDomain) || upgradeDomain.equals("1.1.1.3")) {
+            ResultEntity resultEntity = execute();
+            saveAccountInfo(resultEntity);
+            return resultEntity.getUpgrade_domain();
+        } else {
+            return upgradeDomain;
+        }
     }
 
     public String getAdDomain() {
+        return SPUtils.getInstance().getString("ad_domain", "1.1.1.2");
+    }
+
+    protected String getInternalAdDomain() {
         // 广告测试地址
-//        return "124.42.65.66:8082";
-       return mSharedPreferences.getString("ad_domain", "1.1.1.2");
-//        if (TextUtils.isEmpty(adDomain) || adDomain.equals("1.1.1.3")) {
-//            ResultEntity resultEntity = execute();
-//            saveAccountInfo(resultEntity);
-//            return resultEntity.getAd_domain();
-//        } else {
-//            return adDomain;
-//        }
+        String adDomain = SPUtils.getInstance().getString("ad_domain", "1.1.1.2");
+        if (TextUtils.isEmpty(adDomain) || adDomain.equals("1.1.1.3")) {
+            ResultEntity resultEntity = execute();
+            saveAccountInfo(resultEntity);
+            return resultEntity.getAd_domain();
+        } else {
+            return adDomain;
+        }
     }
 
     public String getLogDomain() {
-        return mSharedPreferences.getString("log_domain", "1.1.1.4");
-//        if (TextUtils.isEmpty(logDomain) || logDomain.equals("1.1.1.4")) {
-//            ResultEntity resultEntity = execute();
-//            saveAccountInfo(resultEntity);
-//            return resultEntity.getLog_Domain();
-//        } else {
-//            return logDomain;
-//        }
+        return SPUtils.getInstance().getString("log_domain", "1.1.1.4");
+    }
+
+    protected String getInternalLogDomain() {
+        String logDomain = SPUtils.getInstance().getString("log_domain", "1.1.1.4");
+        if (TextUtils.isEmpty(logDomain) || logDomain.equals("1.1.1.4")) {
+            ResultEntity resultEntity = execute();
+            saveAccountInfo(resultEntity);
+            return resultEntity.getLog_Domain();
+        } else {
+            return logDomain;
+        }
     }
 
     public String getAuthToken() {
-        return mSharedPreferences.getString("auth_token", "");
-
+        return SPUtils.getInstance().getString("auth_token", "");
     }
 
     public int getH264PlayerType() {
@@ -429,19 +447,7 @@ public class IsmartvActivator {
     }
 
     public String getZUserToken() {
-        return mSharedPreferences.getString("zuser_token", "");
-    }
-
-    public String getSnToken() {
-        String snToken = mSharedPreferences.getString("sn_token", "");
-        if (TextUtils.isEmpty(snToken)) {
-            ResultEntity resultEntity = execute();
-            saveAccountInfo(resultEntity);
-            return resultEntity.getSn_Token();
-        } else {
-            return snToken;
-        }
-
+        return SPUtils.getInstance().getString("zuser_token", "");
     }
 
     public String getZDeviceToken() {
@@ -456,28 +462,44 @@ public class IsmartvActivator {
 
     }
 
-    public void saveAccountInfo(ResultEntity resultEntity) {
-        SharedPreferences.Editor editor = mSharedPreferences.edit();
-        editor.putString("device_token", resultEntity.getDevice_token());
-        editor.putString("sn_token", resultEntity.getSn_Token());
-        editor.putString("api_domain", resultEntity.getDomain());
-        editor.putString("log_domain", resultEntity.getLog_Domain());
-        editor.putString("ad_domain", resultEntity.getAd_domain());
-        editor.putString("upgrade_domain", resultEntity.getUpgrade_domain());
-        editor.putString("zdevice_token", resultEntity.getZdevice_token());
-        editor.putLong("smart_post_next_request_time", resultEntity.getSmart_post_next_request_time());
+    protected String getInternalSnToken() {
+        String snToken = mSharedPreferences.getString("sn_token", "");
+        if (TextUtils.isEmpty(snToken)) {
+            ResultEntity resultEntity = execute();
+            saveAccountInfo(resultEntity);
+            return resultEntity.getSn_Token();
+        } else {
+            return snToken;
+        }
+    }
+
+    public String getSnToken() {
+        String snToken = mSharedPreferences.getString("sn_token", "");
+        return snToken;
+    }
+
+
+    private void saveAccountInfo(ResultEntity resultEntity) {
+        SPUtils spUtils = SPUtils.getInstance();
+        spUtils.put("device_token", resultEntity.getDevice_token());
+        spUtils.put("sn_token", resultEntity.getSn_Token());
+        spUtils.put("api_domain", resultEntity.getDomain());
+        spUtils.put("log_domain", resultEntity.getLog_Domain());
+        spUtils.put("ad_domain", resultEntity.getAd_domain());
+        spUtils.put("upgrade_domain", resultEntity.getUpgrade_domain());
+        spUtils.put("zdevice_token", resultEntity.getZdevice_token());
+        spUtils.put("smart_post_next_request_time", resultEntity.getSmart_post_next_request_time());
         C.SMART_POST_NEXT_REQUEST_TIME = resultEntity.getSmart_post_next_request_time();
         C.snToken = resultEntity.getSn_Token();
         C.isReportLog = resultEntity.getIs_report_log();
         C.report_log_size = resultEntity.getReport_log_size();
         C.report_log_time_interval = resultEntity.getReport_log_time_interval();
-        editor.putInt("h264_player", resultEntity.getH264_player());
-        editor.putInt("h265_player", resultEntity.getH265_player());
-        editor.putInt("live_player", resultEntity.getLive_player());
-        editor.putInt("is_report_log", resultEntity.getIs_report_log());
-        editor.putInt("report_log_time_interval", resultEntity.getReport_log_time_interval());
-        editor.putInt("report_log_size", resultEntity.getReport_log_size());
-        editor.commit();
+        spUtils.put("h264_player", resultEntity.getH264_player());
+        spUtils.put("h265_player", resultEntity.getH265_player());
+        spUtils.put("live_player", resultEntity.getLive_player());
+        spUtils.put("is_report_log", resultEntity.getIs_report_log());
+        spUtils.put("report_log_time_interval", resultEntity.getReport_log_time_interval());
+        spUtils.put("report_log_size", resultEntity.getReport_log_size());
 
         // 获取老版本的
         // Daisy(auth_token, mobile_number, device_token),
@@ -620,7 +642,6 @@ public class IsmartvActivator {
         return mysn;
     }
 
-    public native String nativeMacAddress();
 
     public interface AccountChangeCallback {
         void onLogout();
@@ -643,7 +664,7 @@ public class IsmartvActivator {
             ExecutorService executorService = Executors.newFixedThreadPool(100);
             for (final String file : getAllCacheFile()) {
 //                executorService.execute(new Runnable() {
-                    new Thread() {
+                new Thread() {
                     @Override
                     public void run() {
                         try {
@@ -688,7 +709,7 @@ public class IsmartvActivator {
         }
     }
 
-    private String[] getAllCacheFile()  {
+    private String[] getAllCacheFile() {
         List<String> files = new ArrayList<>();
         files.add("cache/cache");
         try {
@@ -704,6 +725,8 @@ public class IsmartvActivator {
         }
         return files.toArray(new String[files.size()]);
     }
+
+    public native String nativeMacAddress();
 
     public static native String getHostByName(String hostName);
 }

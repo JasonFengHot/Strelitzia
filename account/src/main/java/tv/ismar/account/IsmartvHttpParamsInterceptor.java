@@ -25,20 +25,19 @@ import okio.Buffer;
 /**
  * Created by huibin on 8/25/16.
  */
-public class HttpParamsInterceptor implements Interceptor {
+public class IsmartvHttpParamsInterceptor implements Interceptor {
     private static final String TAG = "HttpParamsInterceptor";
     Map<String, String> queryParamsMap = new HashMap<>();
     Map<String, String> paramsMap = new HashMap<>();
     Map<String, String> headerParamsMap = new HashMap<>();
     List<String> headerLinesList = new ArrayList<>();
 
-    private HttpParamsInterceptor() {
+    private IsmartvHttpParamsInterceptor() {
 
     }
 
     @Override
     public Response intercept(Chain chain) throws IOException {
-        Log.i(TAG, "HttpParamsInterceptor: thread ===> " + Thread.currentThread().getName());
         Request request = chain.request();
         Request.Builder requestBuilder = request.newBuilder();
 
@@ -59,7 +58,6 @@ public class HttpParamsInterceptor implements Interceptor {
         if (!TextUtils.isEmpty(accessToken)) {
             paramsMap.put("access_token", accessToken);
         }
-
 
         // process header params inject
         Headers.Builder headerBuilder = request.headers().newBuilder();
@@ -159,10 +157,10 @@ public class HttpParamsInterceptor implements Interceptor {
 
     public static class Builder {
 
-        HttpParamsInterceptor interceptor;
+        IsmartvHttpParamsInterceptor interceptor;
 
         public Builder() {
-            interceptor = new HttpParamsInterceptor();
+            interceptor = new IsmartvHttpParamsInterceptor();
         }
 
         public Builder addParam(String key, String value) {
@@ -215,7 +213,7 @@ public class HttpParamsInterceptor implements Interceptor {
             return this;
         }
 
-        public HttpParamsInterceptor build() {
+        public IsmartvHttpParamsInterceptor build() {
             return interceptor;
         }
 
@@ -240,19 +238,19 @@ public class HttpParamsInterceptor implements Interceptor {
         switch (request.url().host()) {
             //api domain
             case "1.1.1.1":
-                domain = appendProtocol(IsmartvActivator.getInstance().getApiDomain());
+                domain = appendProtocol(IsmartvActivator.getInstance().getInternalApiDomain());
                 break;
             //advertisement domain
             case "1.1.1.2":
-                domain = appendProtocol(IsmartvActivator.getInstance().getAdDomain());
+                domain = appendProtocol(IsmartvActivator.getInstance().getInternalAdDomain());
                 break;
             //upgrade domain
             case "1.1.1.3":
-                domain = appendProtocol(IsmartvActivator.getInstance().getUpgradeDomain());
+                domain = appendProtocol(IsmartvActivator.getInstance().getInternalUpgradeDomain());
                 break;
             //log domain
             case "1.1.1.4":
-                domain = appendProtocol(IsmartvActivator.getInstance().getLogDomain());
+                domain = appendProtocol(IsmartvActivator.getInstance().getInternalLogDomain());
                 break;
             default:
                 return;
