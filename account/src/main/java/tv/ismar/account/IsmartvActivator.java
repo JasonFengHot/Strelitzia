@@ -130,6 +130,7 @@ public final class IsmartvActivator {
         });
 
         manufacture = Build.BRAND.replace(" ", "_");
+        kind = IsmartvPlatform.getKind();
         version = String.valueOf(getAppVersionCode());
         deviceId = getDeviceId();
         sn = generateSn();
