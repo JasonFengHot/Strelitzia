@@ -36,9 +36,7 @@ import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-//import com.blankj.utilcode.util.StringUtils;
 import com.blankj.utilcode.util.StringUtils;
-import com.konka.android.media.KKMediaPlayer;
 import com.orhanobut.logger.Logger;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.MemoryPolicy;
@@ -48,6 +46,7 @@ import com.squareup.picasso.Picasso;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.ref.WeakReference;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -1224,18 +1223,21 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
         }
         neterrorshow = false;
         if (!TextUtils.isEmpty(brandName) && brandName.equalsIgnoreCase("konka")) {
-            try {
-                Class.forName("com.konka.android.media.KKMediaPlayer");
-                KKMediaPlayer localKKMediaPlayer1 = new KKMediaPlayer();
-                KKMediaPlayer.setContext(this);
-                localKKMediaPlayer1.setAspectRatio(0);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            setAspectRatio();
         }
         Log.e(TAG, "onresume Isnetwork"+Adend);
         if (!NetworkUtils.isConnected(this) && !NetworkUtils.isWifi(this)&&Adend)
             showNoNetConnectDelay();
+    }
+
+    private void setAspectRatio() {
+        try {
+            Class<?> clazz =  Class.forName("com.konka.android.media.KKMediaPlayer");
+            Method method = clazz.getMethod("setAspectRatio", int.class);
+            method.invoke(null, 0);
+        }catch (Exception e){
+            Log.e("KKMediaPlayer", "setAspectRatio method.invoke error!");
+        }
     }
 
     @Override

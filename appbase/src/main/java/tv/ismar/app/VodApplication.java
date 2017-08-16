@@ -26,6 +26,7 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.lang.ref.WeakReference;
+import java.lang.reflect.Method;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
@@ -109,6 +110,7 @@ public class VodApplication extends Application {
         ActiveAndroid.initialize(this);
         AccountSharedPrefs.initialize(this);
         load(this);
+        initKKMediaPlayer();
 
         mIsmartvHttpParamsInterceptor = new IsmartvHttpParamsInterceptor.Builder()
                 .build();
@@ -461,6 +463,16 @@ public class VodApplication extends Application {
 
                 }
             });
+        }
+    }
+
+    private void initKKMediaPlayer() {
+        try {
+            Class<?> clazz = Class.forName("com.konka.android.media.KKMediaPlayer");
+            Method method = clazz.getMethod("setContext", Context.class);
+            method.invoke(null, getApplicationContext());
+        } catch (Exception e) {
+            Log.e("KKMediaPlayer", "setContext method.invoke error!");
         }
     }
 }
