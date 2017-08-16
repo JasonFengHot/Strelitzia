@@ -25,6 +25,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Method;
 import java.net.InetAddress;
@@ -32,6 +34,7 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -50,6 +53,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import tv.ismar.account.IsmartvHttpParamsInterceptor;
 import tv.ismar.account.IsmartvActivator;
+import tv.ismar.account.IsmartvPlatform;
 import tv.ismar.account.statistics.LogEntity;
 import tv.ismar.account.statistics.LogQueue;
 import tv.ismar.app.core.ImageCache;
@@ -98,11 +102,13 @@ public class VodApplication extends Application {
     public static final String PREFERENCE_FILE_NAME = "Daisy";
     private boolean isFinish = true;
 
+
     @Override
     public void onCreate() {
         super.onCreate();
         CrashHandler crashHandler = CrashHandler.getInstance();
         crashHandler.init();
+        IsmartvPlatform.initPlatform(getApplicationContext());
         Log.i("LH/", "applicationOnCreate:" + TrueTime.now().getTime());
         initLogger();
         SPUtils.init(this);
@@ -478,4 +484,5 @@ public class VodApplication extends Application {
             Log.e("KKMediaPlayer", "setContext method.invoke error!");
         }
     }
+
 }

@@ -36,6 +36,7 @@ import java.util.concurrent.TimeUnit;
 import okhttp3.Dns;
 import okhttp3.OkHttpClient;
 import okhttp3.ResponseBody;
+import okhttp3.internal.platform.Platform;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -129,7 +130,6 @@ public final class IsmartvActivator {
         });
 
         manufacture = Build.BRAND.replace(" ", "_");
-        kind = Build.PRODUCT.replaceAll(" ", "_").toLowerCase();
         version = String.valueOf(getAppVersionCode());
         deviceId = getDeviceId();
         sn = generateSn();

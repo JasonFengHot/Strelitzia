@@ -60,6 +60,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import tv.ismar.account.ActiveService;
 import tv.ismar.account.IsmartvActivator;
+import tv.ismar.account.IsmartvPlatform;
 import tv.ismar.account.statistics.LogQueue;
 import tv.ismar.app.AppConstant;
 import tv.ismar.app.BaseActivity;
@@ -82,7 +83,6 @@ import tv.ismar.app.player.CallaPlay;
 import tv.ismar.app.service.TrueTimeService;
 import tv.ismar.app.ui.HeadFragment;
 import tv.ismar.app.update.UpdateService;
-import tv.ismar.app.util.AppConfigHelper;
 import tv.ismar.app.util.BitmapDecoder;
 import tv.ismar.app.util.DeviceUtils;
 import tv.ismar.app.util.NetworkUtils;
@@ -443,19 +443,9 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
     }
 
     private Boolean isSanzhou() {
-        String product="";
-        try {
-            AppConfigHelper.init(this);
-           product= AppConfigHelper.getPlatform();
-        } catch (IOException e) {
-            ExceptionUtils.sendProgramError(e);
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            ExceptionUtils.sendProgramError(e);
-            e.printStackTrace();
-        }
-        Log.i("SanZHou","fromPage: "+fromPage+"  product: "+product);
-        if((fromPage==null||fromPage.equals(""))&&product.equals("sanzhou")){
+
+        Log.i("SanZHou","fromPage: "+fromPage+"  product: "+ IsmartvPlatform.getKind());
+        if((fromPage==null||fromPage.equals(""))&&IsmartvPlatform.isForbiddenLauncher()){
             return true;
        }else {
             return false;
