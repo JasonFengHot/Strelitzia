@@ -25,6 +25,7 @@ import tv.ismar.app.util.BitmapDecoder;
 import tv.ismar.helperpage.R;
 import tv.ismar.helperpage.ui.activity.HomeActivity;
 import tv.ismar.helperpage.utils.DeviceUtils;
+import tv.ismar.library.exception.ExceptionUtils;
 
 /**
  * Created by huaijie on 2015/4/8.
@@ -80,6 +81,7 @@ public class HelpFragment extends Fragment {
         try {
             deviceCode.setText(" " + DeviceUtils.ipToHex());
         } catch (Exception e) {
+            ExceptionUtils.sendProgramError(e);
             e.printStackTrace();
         }
 

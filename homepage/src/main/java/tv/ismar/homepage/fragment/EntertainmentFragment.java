@@ -36,6 +36,7 @@ import tv.ismar.homepage.R;
 import tv.ismar.homepage.view.HomePageActivity;
 import tv.ismar.homepage.widget.HomeItemContainer;
 import tv.ismar.homepage.widget.LabelImageView3;
+import tv.ismar.library.exception.ExceptionUtils;
 import tv.ismar.library.util.C;
 
 /**
@@ -522,6 +523,7 @@ public class EntertainmentFragment extends ChannelBaseFragment {
                 vaiety_post.setTag(R.drawable.launcher_selector, vaiety_thumb3.getTag(R.drawable.launcher_selector));
             }
             }catch (Exception e){
+                ExceptionUtils.sendProgramError(e);
                 e.printStackTrace();
             }
             if (loopindex >= looppost.size()-1)

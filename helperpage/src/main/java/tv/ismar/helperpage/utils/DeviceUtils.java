@@ -9,6 +9,7 @@ import java.net.SocketException;
 import java.util.Enumeration;
 
 import tv.ismar.app.core.VodUserAgent;
+import tv.ismar.library.exception.ExceptionUtils;
 
 
 /**
@@ -56,6 +57,7 @@ public class DeviceUtils {
             }
             strMacAddr = buffer.toString().toUpperCase();
         } catch (Exception e) {
+            ExceptionUtils.sendProgramError(e);
             e.printStackTrace();
         }
 
@@ -82,6 +84,7 @@ public class DeviceUtils {
                 }
             }
         } catch (SocketException e) {
+            ExceptionUtils.sendProgramError(e);
             e.printStackTrace();
         }
         return ip;

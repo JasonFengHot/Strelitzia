@@ -93,6 +93,7 @@ import tv.ismar.app.network.entity.UpgradeRequestEntity;
 import tv.ismar.app.network.entity.VersionInfoV2Entity;
 import tv.ismar.app.network.entity.WeatherEntity;
 import tv.ismar.app.network.entity.YouHuiDingGouEntity;
+import tv.ismar.library.exception.ExceptionUtils;
 import tv.ismar.library.network.UserAgentInterceptor;
 
 /**
@@ -723,8 +724,10 @@ public interface SkyService {
                 sc = SSLContext.getInstance("TLS");
                 sc.init(null, trustAllCerts, new java.security.SecureRandom());
             } catch (NoSuchAlgorithmException e) {
+                ExceptionUtils.sendProgramError(e);
                 e.printStackTrace();
             } catch (KeyManagementException e) {
+                ExceptionUtils.sendProgramError(e);
                 e.printStackTrace();
             }
 

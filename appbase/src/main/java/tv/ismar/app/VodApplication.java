@@ -68,6 +68,7 @@ import tv.ismar.app.network.HttpCacheInterceptor;
 import tv.ismar.app.network.SkyService;
 import tv.ismar.app.service.HttpProxyService;
 import tv.ismar.app.util.SPUtils;
+import tv.ismar.library.exception.ExceptionUtils;
 import tv.ismar.library.network.UserAgentInterceptor;
 import tv.ismar.library.util.C;
 import tv.ismar.library.util.DeviceUtils;
@@ -399,6 +400,7 @@ public class VodApplication extends Application {
                                 obj = new JSONObject(list.get(i).toString());
                                 s.put(obj);
                             } catch (JSONException e) {
+                                ExceptionUtils.sendProgramError(e);
                                 e.printStackTrace();
                             }
 
@@ -409,6 +411,7 @@ public class VodApplication extends Application {
                         }
                     }
                 } catch (InterruptedException | IndexOutOfBoundsException e) {
+                    ExceptionUtils.sendProgramError(e);
                     e.printStackTrace();
                 }
             }

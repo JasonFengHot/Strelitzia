@@ -24,6 +24,7 @@ import java.util.ArrayList;
 
 import tv.ismar.app.R;
 import tv.ismar.app.ui.adapter.HGridAdapter;
+import tv.ismar.library.exception.ExceptionUtils;
 
 
 /**
@@ -471,6 +472,7 @@ public class HGridView extends AdapterView<HGridAdapter> {
 					}
 				}
 				catch(Exception e){
+					ExceptionUtils.sendProgramError(e);
 					e.printStackTrace();
 				}
 				// measureMinSingleTextDimension();
@@ -510,7 +512,9 @@ public class HGridView extends AdapterView<HGridAdapter> {
 			} else {
 				return null;
 			}
-		}catch (Exception e){}
+		}catch (Exception e){
+			ExceptionUtils.sendProgramError(e);
+		}
 		return null;
 	}
 

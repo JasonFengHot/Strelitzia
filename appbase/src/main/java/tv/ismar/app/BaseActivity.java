@@ -37,6 +37,7 @@ import tv.ismar.app.widget.NetErrorPopWindow;
 import tv.ismar.app.widget.NoNetConnectDialog;
 import tv.ismar.app.widget.NoNetModuleMessagePop;
 import tv.ismar.app.widget.UpdatePopupWindow;
+import tv.ismar.library.exception.ExceptionUtils;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 import static tv.ismar.app.update.UpdateService.APP_UPDATE_ACTION;
@@ -158,6 +159,7 @@ public class BaseActivity extends AppCompatActivity {
         try {
             unregisterReceiver(mUpdateReceiver);
         } catch (Exception e) {
+            ExceptionUtils.sendProgramError(e);
             e.printStackTrace();
         }
         if (updateAgainHandler != null) {
@@ -263,6 +265,7 @@ public class BaseActivity extends AppCompatActivity {
                     });
             showTime=System.currentTimeMillis();
         } catch (Exception exception) {
+            ExceptionUtils.sendProgramError(e);
             exception.printStackTrace();
         }
 
@@ -522,6 +525,7 @@ public class BaseActivity extends AppCompatActivity {
         try {
             unregisterReceiver(onNetConnectReceiver);
         } catch (Exception e) {
+            ExceptionUtils.sendProgramError(e);
             e.printStackTrace();
         }
         super.onDestroy();

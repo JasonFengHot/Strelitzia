@@ -4,6 +4,8 @@ import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+import tv.ismar.library.exception.ExceptionUtils;
+
 public class StringUtils {
     private static final String TAG = "StringUtilities";
     private static final String NORTH_CHINA_STRING = "北京市, 天津市, 河北省, 山西省,山东省,内蒙古自治区";
@@ -123,6 +125,7 @@ public class StringUtils {
             messageDigest.update(string.getBytes());
             value = new BigInteger(1, messageDigest.digest()).toString(16);
         } catch (NoSuchAlgorithmException e) {
+            ExceptionUtils.sendProgramError(e);
             e.printStackTrace();
         }
         return value;

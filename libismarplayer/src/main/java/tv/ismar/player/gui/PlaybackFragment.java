@@ -58,6 +58,7 @@ import tv.ismar.app.network.entity.AdElementEntity;
 import tv.ismar.app.network.entity.ItemEntity;
 import tv.ismar.app.player.OnNoNetConfirmListener;
 import tv.ismar.app.widget.ModuleMessagePopWindow;
+import tv.ismar.library.exception.ExceptionUtils;
 import tv.ismar.library.util.LogUtils;
 import tv.ismar.library.util.NetworkUtils;
 import tv.ismar.library.util.StringUtils;
@@ -557,6 +558,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
         try {
             adImageDialog.show();
         } catch (android.view.WindowManager.BadTokenException e) {
+            ExceptionUtils.sendProgramError(e);
             LogUtils.i(TAG, "Pause advertisement dialog show error.");
             e.printStackTrace();
         }

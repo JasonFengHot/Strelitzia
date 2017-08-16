@@ -33,6 +33,7 @@ import tv.ismar.app.BaseFragment;
 import tv.ismar.app.core.PageIntent;
 import tv.ismar.app.core.Util;
 import tv.ismar.app.network.entity.AccountsOrdersEntity;
+import tv.ismar.library.exception.ExceptionUtils;
 import tv.ismar.usercenter.PurchaseHistoryContract;
 import tv.ismar.usercenter.R;
 import tv.ismar.usercenter.databinding.FragmentPurchasehistoryBinding;
@@ -374,6 +375,7 @@ public class PurchaseHistoryFragment extends BaseFragment implements PurchaseHis
         try {
             return Util.daysBetween(Util.getTime(), exprieTime) + 1;
         } catch (ParseException e) {
+            ExceptionUtils.sendProgramError(e);
             e.printStackTrace();
         }
         return 0;

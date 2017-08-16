@@ -13,6 +13,8 @@ import com.koushikdutta.async.http.server.AsyncHttpServerRequest;
 import com.koushikdutta.async.http.server.AsyncHttpServerResponse;
 import com.koushikdutta.async.http.server.HttpServerRequestCallback;
 
+import tv.ismar.library.exception.ExceptionUtils;
+
 /**
  * Created by liucan on 2017/5/18.
  */
@@ -60,7 +62,7 @@ public class HttpProxyService extends Service implements HttpServerRequestCallba
                     Instrumentation inst=new Instrumentation();
                     inst.sendKeyDownUpSync(KeyCode);
                 } catch (Exception e) {
-
+                    ExceptionUtils.sendProgramError(e);
                     // TODO: handle exception
                 }
             }

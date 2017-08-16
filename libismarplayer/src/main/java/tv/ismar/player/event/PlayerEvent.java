@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.Set;
 
 import tv.ismar.app.core.client.MessageQueue;
+import tv.ismar.library.exception.ExceptionUtils;
 import tv.ismar.library.util.DateUtils;
 import tv.ismar.library.util.LogUtils;
 
@@ -453,6 +454,7 @@ public class PlayerEvent {
                         // 添加到原先项目日志
                         MessageQueue.addQueue(event);
                     } catch (JSONException e) {
+                        ExceptionUtils.sendProgramError(e);
                         e.printStackTrace();
                     }
                 }

@@ -52,6 +52,7 @@ import tv.ismar.homepage.view.HomePageActivity;
 import tv.ismar.homepage.widget.DaisyVideoView;
 import tv.ismar.homepage.widget.HomeItemContainer;
 import tv.ismar.homepage.widget.LabelImageView3;
+import tv.ismar.library.exception.ExceptionUtils;
 import tv.ismar.library.util.C;
 
 //import org.apache.commons.lang3.StringUtils;
@@ -534,6 +535,7 @@ public class FilmFragment extends ChannelBaseFragment {
                     SimpleRestClient.appVersion, "client", ""
             );
             e.printStackTrace();
+            ExceptionUtils.sendProgramError(e);
         }
 
         firstcarousel = film_carous_imageView1;
@@ -717,6 +719,7 @@ public class FilmFragment extends ChannelBaseFragment {
                 fileReader.close();
                 return true;
             } catch (IOException e) {
+                ExceptionUtils.sendProgramError(e);
                 Log.i(TAG, "externalStorageIsEnable IOException: " + e.getMessage());
                 return false;
             }
@@ -765,7 +768,9 @@ public class FilmFragment extends ChannelBaseFragment {
                     mHandler.sendEmptyMessageDelayed(CAROUSEL_NEXT, pauseTime * 1000);
                 }
             });
-        }catch (Exception e){}
+        }catch (Exception e){
+            ExceptionUtils.sendProgramError(e);
+        }
     }
 
     private void playVideo(int delay) {

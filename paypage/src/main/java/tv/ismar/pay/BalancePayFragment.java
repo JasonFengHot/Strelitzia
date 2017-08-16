@@ -28,6 +28,7 @@ import rx.schedulers.Schedulers;
 import tv.ismar.account.IsmartvActivator;
 import tv.ismar.app.network.entity.AccountBalanceEntity;
 import tv.ismar.app.network.entity.ItemEntity;
+import tv.ismar.library.exception.ExceptionUtils;
 
 import static tv.ismar.app.AppConstant.Payment.PAYMENT_SUCCESS_CODE;
 
@@ -153,6 +154,7 @@ public class BalancePayFragment extends Fragment implements View.OnClickListener
                         try {
                             json = responseBody.string();
                         } catch (IOException e) {
+                            ExceptionUtils.sendProgramError(e);
                             e.printStackTrace();
                         }
                         float result = new JsonParser().parse(json).getAsJsonObject().get("balance").getAsFloat();

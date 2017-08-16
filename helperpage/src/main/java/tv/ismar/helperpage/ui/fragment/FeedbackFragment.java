@@ -45,6 +45,7 @@ import tv.ismar.helperpage.ui.adapter.FeedbackListAdapter;
 import tv.ismar.helperpage.ui.widget.FeedBackListView;
 import tv.ismar.helperpage.ui.widget.MessageSubmitButton;
 import tv.ismar.helperpage.ui.widget.SakuraEditText;
+import tv.ismar.library.exception.ExceptionUtils;
 
 
 /**
@@ -226,6 +227,7 @@ public class FeedbackFragment extends Fragment implements RadioGroup.OnCheckedCh
                             }
                             feedBackListView.setAdapter(new FeedbackListAdapter(FeedbackFragment.this.mContext, chatMsgEntity.getData()));
                         } catch (JsonSyntaxException e) {
+                            ExceptionUtils.sendProgramError(e);
                             arrowDown.setVisibility(View.INVISIBLE);
                             arrowUp.setVisibility(View.INVISIBLE);
                         }

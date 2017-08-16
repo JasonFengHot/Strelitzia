@@ -28,6 +28,7 @@ import tv.ismar.app.network.entity.PlayCheckEntity;
 import tv.ismar.app.util.Utils;
 import tv.ismar.detailpage.DetailPageContract;
 import tv.ismar.detailpage.view.DetailPageActivity;
+import tv.ismar.library.exception.ExceptionUtils;
 import tv.ismar.statistics.PurchaseStatistics;
 
 import static tv.ismar.app.core.PageIntentInterface.EXTRA_ITEM_JSON;
@@ -177,6 +178,7 @@ public class DetailPagePresenter implements DetailPageContract.Presenter {
                             PlayCheckEntity playCheckEntity = calculateRemainDay(responseBody.string());
                             mDetailView.notifyPlayCheck(playCheckEntity);
                         } catch (IOException e) {
+                            ExceptionUtils.sendProgramError(e);
                             e.printStackTrace();
                         }
                     }
@@ -197,6 +199,7 @@ public class DetailPagePresenter implements DetailPageContract.Presenter {
                 try {
                     remainDay = Utils.daysBetween(Utils.getTime(), playCheckEntity.getExpiry_date()) + 1;
                 } catch (ParseException e) {
+                    ExceptionUtils.sendProgramError(e);
                     remainDay = 0;
                 }
                 playCheckEntity.setRemainDay(remainDay);

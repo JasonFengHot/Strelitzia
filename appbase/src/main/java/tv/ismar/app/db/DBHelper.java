@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import tv.ismar.app.entity.DBQuality;
 import tv.ismar.app.entity.Favorite;
 import tv.ismar.app.entity.History;
+import tv.ismar.library.exception.ExceptionUtils;
 
 public class DBHelper extends SQLiteOpenHelper {
 
@@ -184,6 +185,7 @@ public class DBHelper extends SQLiteOpenHelper {
             db.setTransactionSuccessful();
         } catch (Exception e) {
             // TODO Auto-generated catch block
+            ExceptionUtils.sendProgramError(e);
             e.printStackTrace();
         } finally {
             db.endTransaction();

@@ -28,6 +28,7 @@ import tv.ismar.app.db.AdvertiseTable;
 import tv.ismar.app.network.entity.AdElementEntity;
 import tv.ismar.app.player.CallaPlay;
 import tv.ismar.app.util.FileUtils;
+import tv.ismar.library.exception.ExceptionUtils;
 import tv.ismar.library.network.UserAgentInterceptor;
 
 public class AdvertiseManager {
@@ -56,6 +57,7 @@ public class AdvertiseManager {
             try {
                 fileUtils.createDir(context.getFilesDir() + "/" + AdvertiseManager.AD_DIR);
             } catch (IOException e) {
+                ExceptionUtils.sendProgramError(e);
                 e.printStackTrace();
             }
         }
@@ -137,6 +139,7 @@ public class AdvertiseManager {
 //            advertiseTable.everyday_time_from = timeFormat.parse().getTime();
 //            advertiseTable.everyday_time_to = timeFormat.parse().getTime();
         } catch (ParseException e) {
+            ExceptionUtils.sendProgramError(e);
             e.printStackTrace();
         }
 
@@ -210,6 +213,7 @@ public class AdvertiseManager {
                             fos.close();
                         }
                     } catch (IOException e) {
+                        ExceptionUtils.sendProgramError(e);
                         Log.e(TAG, e.toString());
                     }
                 }

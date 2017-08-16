@@ -103,6 +103,7 @@ import tv.ismar.homepage.fragment.MessageDialogFragment;
 import tv.ismar.homepage.fragment.SportFragment;
 import tv.ismar.homepage.fragment.UpdateSlienceLoading;
 import tv.ismar.homepage.widget.DaisyVideoView;
+import tv.ismar.library.exception.ExceptionUtils;
 import tv.ismar.player.gui.PlaybackService;
 
 /**
@@ -342,6 +343,7 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
         try {
             System.setProperty("http.keepAlive", "false");
         } catch (Exception e) {
+            ExceptionUtils.sendProgramError(e);
             e.printStackTrace();
         }
         fromPage = getIntent().getStringExtra("fromPage");
@@ -382,6 +384,7 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
             sysProperties.load(is);
             brandName = sysProperties.getProperty("platform");
         } catch (IOException e) {
+            ExceptionUtils.sendProgramError(e);
             e.printStackTrace();
         }
 
@@ -445,8 +448,10 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
             AppConfigHelper.init(this);
            product= AppConfigHelper.getPlatform();
         } catch (IOException e) {
+            ExceptionUtils.sendProgramError(e);
             e.printStackTrace();
         } catch (IllegalAccessException e) {
+            ExceptionUtils.sendProgramError(e);
             e.printStackTrace();
         }
         Log.i("SanZHou","fromPage: "+fromPage+"  product: "+product);
@@ -854,6 +859,7 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
                 transaction.replace(R.id.home_container, currentFragment, "template").commitAllowingStateLoss();
                 home_tab_list.requestFocus();
             } catch (IllegalStateException e) {
+                ExceptionUtils.sendProgramError(e);
             }
 
         }
@@ -953,6 +959,7 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
             });
             neterrorshow = true;
         } catch (android.view.WindowManager.BadTokenException e) {
+            ExceptionUtils.sendProgramError(e);
             e.printStackTrace();
         }
     }

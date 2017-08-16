@@ -43,6 +43,7 @@ import android.widget.OverScroller;
 import java.util.ArrayList;
 import java.util.List;
 
+import tv.ismar.library.exception.ExceptionUtils;
 import tv.ismar.searchpage.R;
 
 public class ZGridView extends AdapterView<ListAdapter> {
@@ -2710,6 +2711,7 @@ public class ZGridView extends AdapterView<ListAdapter> {
 		} else {
 			return null;
 		}}catch (Exception e){
+			ExceptionUtils.sendProgramError(e);
 			e.printStackTrace();
 			return null;
 		}

@@ -48,6 +48,7 @@ import tv.ismar.app.util.SPUtils;
 import tv.ismar.app.util.SystemFileUtil;
 import tv.ismar.app.util.Utils;
 import tv.ismar.detailpage.R;
+import tv.ismar.library.exception.ExceptionUtils;
 import tv.ismar.statistics.DetailPageStatistics;
 import tv.ismar.statistics.PurchaseStatistics;
 
@@ -430,6 +431,7 @@ public class PackageDetailFragment extends BaseFragment {
                             PlayCheckEntity playCheckEntity = calculateRemainDay(responseBody.string());
                             refreshPayInfo(playCheckEntity);
                         } catch (IOException e) {
+                            ExceptionUtils.sendProgramError(e);
                             e.printStackTrace();
                         }
                     }
@@ -487,6 +489,7 @@ public class PackageDetailFragment extends BaseFragment {
                 try {
                     remainDay = Utils.daysBetween(Utils.getTime(), playCheckEntity.getExpiry_date())+1 ;
                 } catch (ParseException e) {
+                    ExceptionUtils.sendProgramError(e);
                     remainDay = 0;
                 }
                 playCheckEntity.setRemainDay(remainDay);
