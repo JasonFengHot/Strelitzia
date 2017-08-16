@@ -13,6 +13,7 @@ import java.util.Properties;
 
 public class IsmartvPlatform {
     private static String platform;
+    private static String apiVersion;
 
     public static void initPlatform(Context context) {
         Properties sysProperties = new Properties();
@@ -20,8 +21,10 @@ public class IsmartvPlatform {
             InputStream is = context.getAssets().open("configure/setup.properties");
             sysProperties.load(is);
             platform = sysProperties.getProperty("platform");
+            apiVersion = sysProperties.getProperty("api_version");
         } catch (IOException e) {
             platform = "sharp";
+            apiVersion = "v4_0";
         }
     }
 
