@@ -133,7 +133,6 @@ public class VodApplication extends Application {
         Intent ootStartIntent = new Intent(this, HttpProxyService.class);
         this.startService(ootStartIntent);
         IsmartvActivator.initialize(this);
-        reportIp();
         initLogCallback();
         initConstants();
         initPicasso();
@@ -442,37 +441,6 @@ public class VodApplication extends Application {
                 .methodCount(10)                         // default 2
                 .logLevel(LogLevel.FULL)                 // default LogLevel.FULL
                 .methodOffset(2);                        // default 0
-    }
-
-    private void reportIp(){
-        SharedPreferences sharedPreferences= PreferenceManager.getDefaultSharedPreferences(this);
-        String sn=sharedPreferences.getString("sn_token","");
-        String ip="";
-        if(sn==null||sn.equals("")){
-        }else {
-            SkyService skyService = SkyService.ServiceManager.getService();
-            String url = "http://wx.api.tvxio.com/weixin4server/uploadclientip";
-            if(DeviceUtils.getLocalInetAddress()!=null) {
-                 ip= DeviceUtils.getLocalInetAddress().toString();
-            }
-            skyService.weixinIp(url, ip, sn, Build.MODEL, DeviceUtils.getLocalMacAddress(this)).subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<ResponseBody>() {
-                @Override
-                public void onCompleted() {
-
-                }
-
-                @Override
-                public void onError(Throwable e) {
-                    e.printStackTrace();
-                }
-
-                @Override
-                public void onNext(ResponseBody responseBody) {
-
-                }
-            });
-        }
     }
 
     private void initKKMediaPlayer() {
