@@ -1,5 +1,4 @@
 package tv.ismar.detailpage.view;
-import com.google.gson.GsonBuilder;
 
 import android.content.Context;
 import android.content.Intent;
@@ -19,7 +18,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.open.androidtvwidget.leanback.recycle.RecyclerViewTV;
 import com.squareup.picasso.Picasso;
 
@@ -28,7 +27,6 @@ import java.text.ParseException;
 import java.util.Arrays;
 import java.util.List;
 
-import cn.ismartv.truetime.TrueTime;
 import okhttp3.ResponseBody;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -38,7 +36,6 @@ import tv.ismar.app.BaseFragment;
 import tv.ismar.app.core.DaisyUtils;
 import tv.ismar.app.core.InitializeProcess;
 import tv.ismar.app.core.PageIntent;
-import tv.ismar.app.core.PageIntentInterface;
 import tv.ismar.app.core.PageIntentInterface.PaymentInfo;
 import tv.ismar.app.core.SimpleRestClient;
 import tv.ismar.app.core.VodUserAgent;
@@ -51,7 +48,7 @@ import tv.ismar.app.util.SPUtils;
 import tv.ismar.app.util.SystemFileUtil;
 import tv.ismar.app.util.Utils;
 import tv.ismar.detailpage.R;
-import tv.ismar.pay.PaymentActivity;
+import tv.ismar.library.exception.ExceptionUtils;
 import tv.ismar.statistics.DetailPageStatistics;
 import tv.ismar.statistics.PurchaseStatistics;
 
@@ -434,6 +431,7 @@ public class PackageDetailFragment extends BaseFragment {
                             PlayCheckEntity playCheckEntity = calculateRemainDay(responseBody.string());
                             refreshPayInfo(playCheckEntity);
                         } catch (IOException e) {
+                            ExceptionUtils.sendProgramError(e);
                             e.printStackTrace();
                         }
                     }
@@ -491,6 +489,7 @@ public class PackageDetailFragment extends BaseFragment {
                 try {
                     remainDay = Utils.daysBetween(Utils.getTime(), playCheckEntity.getExpiry_date())+1 ;
                 } catch (ParseException e) {
+                    ExceptionUtils.sendProgramError(e);
                     remainDay = 0;
                 }
                 playCheckEntity.setRemainDay(remainDay);

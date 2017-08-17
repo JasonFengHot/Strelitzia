@@ -1,0 +1,20 @@
+http://res.tvxio.bestv.com.cn/media/upload/20160420/0626chuanyuehuoxian.jpg
+GET
+0
+HTTP/1.1 200 OK
+15
+Server: marco/1.4
+Date: Mon, 17 Jul 2017 02:04:36 GMT
+Content-Type: image/jpeg
+Content-Length: 126569
+Connection: keep-alive
+X-Source: C/200
+Last-Modified: Mon, 26 Jun 2017 07:53:08 GMT
+Accept-Ranges: bytes
+Expires: Tue, 26 Sep 2017 09:56:21 GMT
+Cache-Control: max-age=7776000
+Age: 1613295
+X-Request-Id: a7c3045973f11886e5e692c8d65d651d; fe8d74188b31dae0a3eca46398e7a046
+Via: S.mix-sd-tna-136, T.216132.M.1, V.mix-sd-tna-135, T.185.H.1, M.ctn-js-taz-007
+OkHttp-Sent-Millis: 1500257076919
+OkHttp-Received-Millis: 1500257076936

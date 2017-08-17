@@ -1,7 +1,5 @@
 package tv.ismar.app.core.client;
-import cn.ismartv.truetime.TrueTime;
 
-import android.content.Context;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Base64;
@@ -44,7 +42,6 @@ import tv.ismar.account.IsmartvActivator;
 import tv.ismar.app.VodApplication;
 import tv.ismar.app.core.SimpleRestClient;
 import tv.ismar.app.core.VodUserAgent;
-import tv.ismar.app.core.preferences.AccountSharedPrefs;
 import tv.ismar.app.entity.AdElement;
 import tv.ismar.app.exception.ItemOfflineException;
 import tv.ismar.app.exception.NetworkException;

@@ -6,6 +6,8 @@ import android.widget.Scroller;
 
 import java.lang.reflect.Field;
 
+import tv.ismar.library.exception.ExceptionUtils;
+
 /**
  * Created by huaijie on 3/6/15.
  */
@@ -36,6 +38,7 @@ public class ViewPagerScroller extends Scroller {
             mScroller.setAccessible(true);
             mScroller.set(viewPager, this);
         } catch (Exception e) {
+            ExceptionUtils.sendProgramError(e);
             e.printStackTrace();
         }
     }

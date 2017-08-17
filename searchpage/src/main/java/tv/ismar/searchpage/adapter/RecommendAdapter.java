@@ -13,9 +13,9 @@ import com.squareup.picasso.Transformation;
 
 import java.util.List;
 
+import tv.ismar.app.models.Recommend;
 import tv.ismar.searchpage.R;
 import tv.ismar.searchpage.model.Expense;
-import tv.ismar.app.models.Recommend;
 import tv.ismar.searchpage.weight.ItemContainer;
 import tv.ismar.searchpage.weight.ReflectionTransformationBuilder;
 import tv.ismar.searchpage.weight.RotateTextView;

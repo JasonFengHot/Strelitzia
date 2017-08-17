@@ -1,0 +1,20 @@
+http://res.tvxio.bestv.com.cn/media/upload/20160420/liutaojianaixiapuxiaotu0710.jpg
+GET
+0
+HTTP/1.1 200 OK
+15
+Server: marco/1.4
+Date: Mon, 17 Jul 2017 02:04:14 GMT
+Content-Type: image/jpeg
+Content-Length: 13951
+Connection: keep-alive
+X-Source: C/200
+Last-Modified: Mon, 10 Jul 2017 07:25:21 GMT
+Accept-Ranges: bytes
+Expires: Mon, 09 Oct 2017 03:28:47 GMT
+Cache-Control: max-age=7776000
+Age: 513327
+X-Request-Id: 4564419eb6361200bd612d0ac0f1c3c3; e8f42116bc5042cee90c17c4fe5373a9
+Via: S.mix-sd-tna-132, T.216132.M.1, V.mix-sd-tna-138, T.186.H.1, M.ctn-js-taz-007
+OkHttp-Sent-Millis: 1500257054265
+OkHttp-Received-Millis: 1500257054292

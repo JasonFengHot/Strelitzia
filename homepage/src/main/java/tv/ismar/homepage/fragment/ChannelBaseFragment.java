@@ -2,8 +2,6 @@ package tv.ismar.homepage.fragment;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.util.Log;
@@ -19,7 +17,6 @@ import tv.ismar.app.entity.ChannelEntity;
 import tv.ismar.app.entity.HomePagerEntity.Carousel;
 import tv.ismar.app.entity.HomePagerEntity.Poster;
 import tv.ismar.app.player.CallaPlay;
-import tv.ismar.app.player.InitPlayerTool;
 import tv.ismar.app.util.Utils;
 import tv.ismar.homepage.R;
 import tv.ismar.homepage.view.HomePageActivity;

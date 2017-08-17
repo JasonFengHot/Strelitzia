@@ -1,0 +1,18 @@
+http://sky.tvxio.bestv.com.cn/v4_0/SKY2/touc/api/tv/homepage/teleplay/?token_check=1&device_token=w09XUS18yu-Iisuqcc_zivPu83LZwhRk3pgejl9arUs%3D
+GET
+1
+Accept-Encoding: gzip
+HTTP/1.1 200 OK
+12
+Server: nginx
+Date: Mon, 17 Jul 2017 02:02:41 GMT
+Content-Type: text/html
+Transfer-Encoding: chunked
+Connection: keep-alive
+Vary: Accept-Encoding
+Last-Modified: Mon, 17 Jul 2017 01:57:33 GMT
+Etag: bf50e642cd3dbbc5cecd4f2598503c5d
+Content-Encoding: gzip
+Cache-Control: public, max-age=5
+OkHttp-Sent-Millis: 1500256961594
+OkHttp-Received-Millis: 1500256961630

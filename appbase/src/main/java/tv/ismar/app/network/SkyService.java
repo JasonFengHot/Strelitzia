@@ -7,6 +7,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import java.io.File;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
@@ -21,6 +23,7 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
 import okhttp3.Cache;
+import okhttp3.Dns;
 import okhttp3.OkHttpClient;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -34,14 +37,14 @@ import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
-import retrofit2.http.Headers;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 import retrofit2.http.Streaming;
 import retrofit2.http.Url;
 import rx.Observable;
-import tv.ismar.account.HttpLoggingInterceptor;
+import tv.ismar.account.IsmartvHttpLoggingInterceptor;
+import tv.ismar.account.IsmartvActivator;
 import tv.ismar.app.VodApplication;
 import tv.ismar.app.core.OfflineCheckManager;
 import tv.ismar.app.entity.ChannelEntity;
@@ -90,6 +93,7 @@ import tv.ismar.app.network.entity.UpgradeRequestEntity;
 import tv.ismar.app.network.entity.VersionInfoV2Entity;
 import tv.ismar.app.network.entity.WeatherEntity;
 import tv.ismar.app.network.entity.YouHuiDingGouEntity;
+import tv.ismar.library.exception.ExceptionUtils;
 import tv.ismar.library.network.UserAgentInterceptor;
 
 /**
@@ -476,11 +480,11 @@ public interface SkyService {
     Observable<Item> apifetchItem(
             @Url String url
     );
-
     @GET
     Observable<ResponseBody> apiCheckItem(
             @Url String url
     );
+
 
     @GET
     Observable<HomePagerEntity> fetchHomePage(
@@ -497,7 +501,6 @@ public interface SkyService {
             @Url String url
     );
 
-    @Headers("Cache-Control: public, max-age=5")
     @GET("api/tv/homepage/top/")
     Observable<HomePagerEntity> TvHomepageTop();
 
@@ -507,7 +510,6 @@ public interface SkyService {
     @GET("api/tv/living_video/game/")
     Observable<Game> apiGame();
 
-    @Headers("Cache-Control: public, max-age=5")
     @GET("api/tv/channels/")
     Observable<ChannelEntity[]> apiTvChannels();
 
@@ -714,28 +716,42 @@ public interface SkyService {
         }};
 
         private ServiceManager() {
-            HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
-            interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
-
+            IsmartvHttpLoggingInterceptor interceptor = new IsmartvHttpLoggingInterceptor();
+            interceptor.setLevel(IsmartvHttpLoggingInterceptor.Level.BODY);
 
             SSLContext sc = null;
             try {
                 sc = SSLContext.getInstance("TLS");
                 sc.init(null, trustAllCerts, new java.security.SecureRandom());
             } catch (NoSuchAlgorithmException e) {
+                ExceptionUtils.sendProgramError(e);
                 e.printStackTrace();
             } catch (KeyManagementException e) {
+                ExceptionUtils.sendProgramError(e);
                 e.printStackTrace();
             }
 
+            File cacheFile = new File(VodApplication.getModuleAppContext().getCacheDir(), "okhttp_cache");
+            Cache cache = new Cache(cacheFile, 1024 * 1024 * 100); //100Mb
             final OkHttpClient mClient = new OkHttpClient.Builder()
                     .connectTimeout(DEFAULT_CONNECT_TIMEOUT, TimeUnit.SECONDS)
                     .readTimeout(DEFAULT_READ_TIMEOUT, TimeUnit.SECONDS)
                     .addInterceptor(VodApplication.getHttpParamsInterceptor())
-//                    .addNetworkInterceptor(VodApplication.getHttpTrafficInterceptor())
-//                    .retryOnConnectionFailure(true)
+                    .addInterceptor(VodApplication.getModuleAppContext().getCacheInterceptor())
                     .addInterceptor(interceptor)
+                    .addNetworkInterceptor(VodApplication.getModuleAppContext().getCacheInterceptor())
                     .addInterceptor(new UserAgentInterceptor())
+                    .dns(new Dns() {
+                        @Override
+                        public List<InetAddress> lookup(String hostName) throws UnknownHostException {
+                            String ipAddress = IsmartvActivator.getHostByName(hostName);
+                            if (ipAddress.endsWith("0.0.0.0")){
+                                throw new  UnknownHostException("can't connect to internet");
+                            }
+                            return Dns.SYSTEM.lookup(ipAddress);
+                        }
+                    })
+                    .cache(cache)
                     .sslSocketFactory(sc.getSocketFactory())
                     .build();
 
@@ -809,39 +825,16 @@ public interface SkyService {
                     .build();
             lilyHostService = lilyHostServiceRetrofit.create(SkyService.class);
 
-            File cacheFile = new File(VodApplication.getModuleAppContext().getCacheDir(), "okhttp_cache");
-            Cache cache = new Cache(cacheFile, 1024 * 1024 * 100); //100Mb
-            OkHttpClient cacheClient = new OkHttpClient.Builder()
-                    .connectTimeout(DEFAULT_CONNECT_TIMEOUT, TimeUnit.SECONDS)
-                    .readTimeout(DEFAULT_READ_TIMEOUT, TimeUnit.SECONDS)
-                    .addInterceptor(VodApplication.getHttpParamsInterceptor())
-                    .addInterceptor(VodApplication.getModuleAppContext().getCacheInterceptor())
-                    .addInterceptor(interceptor)
-                    .addNetworkInterceptor(VodApplication.getModuleAppContext().getCacheInterceptor())
-                    .addInterceptor(new UserAgentInterceptor())
-                    .cache(cache)
-                    .build();
             Retrofit cacheSkyRetrofit = new Retrofit.Builder()
-                    .client(cacheClient)
+                    .client(mClient)
                     .baseUrl(appendProtocol(domain[0]))
                     .addConverterFactory(GsonConverterFactory.create(gson))
                     .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                     .build();
             mCacheSkyService = cacheSkyRetrofit.create(SkyService.class);
 
-
-            File cacheFile2 = new File(VodApplication.getModuleAppContext().getCacheDir(), "okhttp_cache");
-            Cache cache2 = new Cache(cacheFile2, 1024 * 1024 * 100); //100Mb
-            OkHttpClient cacheClient2 = new OkHttpClient.Builder()
-                    .connectTimeout(DEFAULT_CONNECT_TIMEOUT, TimeUnit.SECONDS)
-                    .readTimeout(DEFAULT_READ_TIMEOUT, TimeUnit.SECONDS)
-                    .addInterceptor(VodApplication.getHttpParamsInterceptor())
-                    .addInterceptor(interceptor)
-                    .addInterceptor(new UserAgentInterceptor())
-                    .cache(cache2)
-                    .build();
             Retrofit cacheSkyRetrofit2 = new Retrofit.Builder()
-                    .client(cacheClient2)
+                    .client(mClient)
                     .baseUrl(appendProtocol(domain[0]))
                     .addConverterFactory(GsonConverterFactory.create(gson))
                     .addCallAdapterFactory(RxJavaCallAdapterFactory.create())

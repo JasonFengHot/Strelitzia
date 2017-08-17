@@ -5,6 +5,7 @@ import android.content.DialogInterface.OnCancelListener;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -13,7 +14,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.blankj.utilcode.utils.StringUtils;
+import com.blankj.utilcode.util.StringUtils;
 
 import java.util.ArrayList;
 
@@ -22,7 +23,6 @@ import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
-import tv.ismar.account.IsmartvActivator;
 import tv.ismar.app.AppConstant;
 import tv.ismar.app.BaseActivity;
 import tv.ismar.app.core.PageIntent;
@@ -36,7 +36,7 @@ import tv.ismar.app.models.Sport;
 import tv.ismar.app.models.SportGame;
 import tv.ismar.app.network.SkyService;
 import tv.ismar.app.player.CallaPlay;
-import tv.ismar.app.player.InitPlayerTool;
+import tv.ismar.app.util.NetworkUtils;
 import tv.ismar.app.util.PicassoUtils;
 import tv.ismar.app.util.Utils;
 import tv.ismar.homepage.R;
@@ -76,7 +76,6 @@ public class SportFragment extends ChannelBaseFragment {
     private ArrayList<Carousel> looppost = new ArrayList<Carousel>();
     private int loopindex = -1;
     private int currentLiveIndex = 0;
-    private InitPlayerTool tool;
     private Subscription dataSubscription;
     private Subscription sportSubscription;
     private Subscription gameSubscription;
@@ -233,8 +232,6 @@ public class SportFragment extends ChannelBaseFragment {
     @Override
     public void onDetach() {
         super.onDetach();
-        if(tool != null)
-        	tool.removeAsycCallback();
         imageswitch.removeMessages(IMAGE_SWITCH_KEY);
         test.removeMessages(0);
     }
@@ -307,7 +304,8 @@ public class SportFragment extends ChannelBaseFragment {
 
                             fillData(carousels, postlist);
                         }else {
-                            if (TrueTime.now().getTime() -  getSmartPostErrorTime()> C.SMART_POST_NEXT_REQUEST_TIME){
+                            if (TrueTime.now().getTime() -  getSmartPostErrorTime()> C.SMART_POST_NEXT_REQUEST_TIME ||
+                                    NetworkUtils.isReachability(homePagerEntity.getRecommend_homepage_url())){
                                 smartRecommendPost( homePagerEntity.getRecommend_homepage_url(), postlist, carousels);
                             }else {
                                 fillData(carousels, postlist);
@@ -513,6 +511,7 @@ public class SportFragment extends ChannelBaseFragment {
             if(looppost.size() < 3)
             	return;
             PicassoUtils.load(mContext, looppost.get(++loopindex).getVideo_image(), sportspost);
+
             sportspost.setTag(R.drawable.launcher_selector,
                     looppost.get(loopindex));
             if (!StringUtils.isEmpty(looppost.get(loopindex)
@@ -730,7 +729,8 @@ public class SportFragment extends ChannelBaseFragment {
 	    }
 
     private void smartRecommendPost(String url, final ArrayList<HomePagerEntity.Poster>  posters,final ArrayList<Carousel> carousellist) {
-        smartRecommendPostSub = SkyService.ServiceManager.getCacheSkyService2().smartRecommendPost(url, IsmartvActivator.getInstance().getSnToken())
+        String sn_token = PreferenceManager.getDefaultSharedPreferences(mContext).getString("sn_token", "");
+        smartRecommendPostSub = SkyService.ServiceManager.getCacheSkyService2().smartRecommendPost(url, sn_token)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<ArrayList<HomePagerEntity.Poster>>() {
@@ -757,6 +757,7 @@ public class SportFragment extends ChannelBaseFragment {
                         if (smartPosters.size() < 4){
                             fillData(carousellist, posters);
                         }else {
+                            smartPosters.addAll(0, posters);
                             ArrayList<HomePagerEntity.Poster> posterArrayList = new ArrayList<>();
                             if (smartPosters.size() - posterStartTag - 4 >= 0) {
                                 posterArrayList.addAll(smartPosters.subList(posterStartTag, posterStartTag + 4));

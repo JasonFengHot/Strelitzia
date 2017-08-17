@@ -1,0 +1,20 @@
+http://res.tvxio.bestv.com.cn/media/upload/20160420/taiguidabsdhahfjkasfadfa-2.jpg
+GET
+0
+HTTP/1.1 200 OK
+15
+Server: marco/1.4
+Date: Mon, 17 Jul 2017 02:03:36 GMT
+Content-Type: image/jpeg
+Content-Length: 47767
+Connection: keep-alive
+X-Source: C/200
+Last-Modified: Wed, 12 Jul 2017 08:28:10 GMT
+Accept-Ranges: bytes
+Expires: Tue, 10 Oct 2017 08:48:48 GMT
+Cache-Control: max-age=7776000
+Age: 407689
+X-Request-Id: 47f48d41b10042e4088d009d194023e0; e4ee4df687db899b5df5aa6231220f19
+Via: S.mix-sd-tna-131, T.216132.M.1, V.mix-sd-tna-132, T.183.H.1, M.ctn-js-taz-007
+OkHttp-Sent-Millis: 1500257016295
+OkHttp-Received-Millis: 1500257016317

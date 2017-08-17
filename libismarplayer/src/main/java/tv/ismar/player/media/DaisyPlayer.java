@@ -15,6 +15,7 @@ import java.util.Map;
 import tv.ismar.account.IsmartvActivator;
 import tv.ismar.app.core.VodUserAgent;
 import tv.ismar.app.entity.ClipEntity;
+import tv.ismar.library.exception.ExceptionUtils;
 import tv.ismar.library.util.DateUtils;
 import tv.ismar.library.util.DeviceUtils;
 import tv.ismar.library.util.LogUtils;
@@ -22,7 +23,6 @@ import tv.ismar.library.util.StringUtils;
 import tv.ismar.player.IsmartvPlayer;
 import tv.ismar.player.SmartPlayer;
 import tv.ismar.player.event.PlayerEvent;
-import tv.ismar.player.gui.PlaybackService;
 import tv.ismar.player.model.MediaMeta;
 
 /**
@@ -486,6 +486,7 @@ public class DaisyPlayer extends IsmartvPlayer implements SurfaceHelper.SurfaceC
                     try {
                         smartPlayer.playUrl(currentIndex); // 准备播放第二个影片，传入参数为1，第二个影片在数组中的下标。
                     } catch (IOException e) {
+                        ExceptionUtils.sendProgramError(e);
                         e.printStackTrace();
                         LogUtils.e(TAG, "smartPlayer play next video IOException.");
                         if (onStateChangedListener != null) {
@@ -548,6 +549,7 @@ public class DaisyPlayer extends IsmartvPlayer implements SurfaceHelper.SurfaceC
             try {
                 logSpeed = Integer.parseInt(spd) / (1024 * 8);
             } catch (NumberFormatException e) {
+                ExceptionUtils.sendProgramError(e);
                 e.printStackTrace();
             }
             String CacheTime = map.get("TsCacheTime");

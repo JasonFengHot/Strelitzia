@@ -29,21 +29,17 @@ public class HttpCacheInterceptor implements Interceptor {
             request = request.newBuilder()
                     .cacheControl(CacheControl.FORCE_CACHE)
                     .build();
+
         }
-        okhttp3.Response originalResponse = chain.proceed(request);
-        if (NetworkUtils.isConnected(mContext)) {
-            //有网的时候读接口上的@Headers里的配置，你可以在这里进行统一的设置
-            String cacheControl = request.cacheControl().toString();
-            return originalResponse.newBuilder()
-                    .header("Cache-Control", cacheControl)
-                    .removeHeader("Pragma")
+
+        try {
+            return chain.proceed(request);
+        }catch (Exception e){
+            e.printStackTrace();
+            request = request.newBuilder()
+                    .cacheControl(CacheControl.FORCE_CACHE)
                     .build();
-        } else {
-            return originalResponse.newBuilder()
-                    .header("Cache-Control", "public, only-if-cached, max-stale=2419200")
-                    .removeHeader("Pragma")
-                    .build();
+            return chain.proceed(request);
         }
     }
-
 }

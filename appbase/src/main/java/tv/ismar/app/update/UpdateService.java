@@ -1,5 +1,4 @@
 package tv.ismar.app.update;
-import com.google.gson.GsonBuilder;
 
 import android.app.Service;
 import android.content.Context;
@@ -21,9 +20,10 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.blankj.utilcode.utils.AppUtils;
-import com.blankj.utilcode.utils.FileUtils;
-import com.google.gson.Gson;
+import com.blankj.utilcode.util.AppUtils;
+import com.blankj.utilcode.util.FileUtils;
+import com.blankj.utilcode.util.ShellUtils;
+import com.google.gson.GsonBuilder;
 
 import java.io.File;
 import java.io.IOException;
@@ -43,6 +43,7 @@ import tv.ismar.account.core.Md5;
 import tv.ismar.app.network.SkyService;
 import tv.ismar.app.network.entity.UpgradeRequestEntity;
 import tv.ismar.app.network.entity.VersionInfoV2Entity;
+import tv.ismar.library.exception.ExceptionUtils;
 
 
 /**
@@ -239,9 +240,10 @@ public class UpdateService extends Service implements Loader.OnLoadCompleteListe
                                         String[] args2 = {"chmod", "604", path};
                                         Runtime.getRuntime().exec(args2);
                                     } catch (IOException e) {
+                                        ExceptionUtils.sendProgramError(e);
                                         e.printStackTrace();
                                     }
-                                    boolean installSilentSuccess = installAppSilent(path, getApplicationContext());
+                                    boolean installSilentSuccess = installAppSilent(path);
                                     if (!installSilentSuccess) {
 //                                        installAppLoading = false;
                                     }
@@ -315,11 +317,12 @@ public class UpdateService extends Service implements Loader.OnLoadCompleteListe
         DownloadManager.getInstance().start(url, title, json, filePath);
     }
 
-    public static boolean installAppSilent(String filePath, Context context) {
+    public static boolean installAppSilent(final String filePath) {
         File file = FileUtils.getFileByPath(filePath);
         if (!FileUtils.isFileExists(file)) return false;
-        boolean isSuccess = AppUtils.installAppSilent(context, filePath);
-        return isSuccess;
+        String command = "pm install -r" + filePath;
+        ShellUtils.CommandResult commandResult = ShellUtils.execCmd(command, false, true);
+        return commandResult.successMsg != null && commandResult.successMsg.toLowerCase().contains("success");
     }
 
     @Override
@@ -355,7 +358,7 @@ public class UpdateService extends Service implements Loader.OnLoadCompleteListe
         List<DownloadEntity> downloadEntities = new Select().from(DownloadEntity.class).execute();
         for (DownloadEntity entity : downloadEntities) {
             VersionInfoV2Entity.ApplicationEntity applicationEntity = new GsonBuilder().create().fromJson(entity.json, VersionInfoV2Entity.ApplicationEntity.class);
-            int versionCode = AppUtils.getAppVersionCode(this, applicationEntity.getProduct());
+            int versionCode = AppUtils.getAppVersionCode(applicationEntity.getProduct());
             int saveFileVersionCode = getLocalApkVersionCode(entity.savePath);
             Log.d(TAG, "checkRemaindUpdateFile: versionCode " + versionCode);
             Log.d(TAG, "checkRemaindUpdateFile: saveFileVersionCode " + saveFileVersionCode);

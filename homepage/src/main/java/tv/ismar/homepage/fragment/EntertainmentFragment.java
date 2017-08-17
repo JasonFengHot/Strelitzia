@@ -5,6 +5,7 @@ import android.content.DialogInterface.OnCancelListener;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -24,17 +25,18 @@ import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
-import tv.ismar.account.IsmartvActivator;
 import tv.ismar.app.core.SimpleRestClient;
 import tv.ismar.app.entity.HomePagerEntity;
 import tv.ismar.app.entity.HomePagerEntity.Carousel;
 import tv.ismar.app.entity.HomePagerEntity.Poster;
 import tv.ismar.app.network.SkyService;
 import tv.ismar.app.player.CallaPlay;
+import tv.ismar.app.util.NetworkUtils;
 import tv.ismar.homepage.R;
 import tv.ismar.homepage.view.HomePageActivity;
 import tv.ismar.homepage.widget.HomeItemContainer;
 import tv.ismar.homepage.widget.LabelImageView3;
+import tv.ismar.library.exception.ExceptionUtils;
 import tv.ismar.library.util.C;
 
 /**
@@ -494,6 +496,8 @@ public class EntertainmentFragment extends ChannelBaseFragment {
 //                return;
             try {
                 Picasso.with(mContext).load(looppost.get(++loopindex)).memoryPolicy(MemoryPolicy.NO_STORE)
+                        .placeholder(R.drawable.list_item_preview_bg)
+                        .error(R.drawable.list_item_preview_bg)
                         .into(vaiety_post);
 
             if (loopindex == 0) {
@@ -519,6 +523,7 @@ public class EntertainmentFragment extends ChannelBaseFragment {
                 vaiety_post.setTag(R.drawable.launcher_selector, vaiety_thumb3.getTag(R.drawable.launcher_selector));
             }
             }catch (Exception e){
+                ExceptionUtils.sendProgramError(e);
                 e.printStackTrace();
             }
             if (loopindex >= looppost.size()-1)
@@ -578,7 +583,9 @@ public class EntertainmentFragment extends ChannelBaseFragment {
                         if (TextUtils.isEmpty(homePagerEntity.getRecommend_homepage_url())){
                             fillData(carousellist, postlist);
                         }else {
-                            if (TrueTime.now().getTime() -  getSmartPostErrorTime()> C.SMART_POST_NEXT_REQUEST_TIME){
+                            if (TrueTime.now().getTime() -  getSmartPostErrorTime()> C.SMART_POST_NEXT_REQUEST_TIME ||
+                                    NetworkUtils.isReachability(homePagerEntity.getRecommend_homepage_url())){
+
                                 smartRecommendPost(homePagerEntity.getRecommend_homepage_url(), postlist, carousellist);
                             }else {
                                 fillData(carousellist, postlist);
@@ -593,7 +600,8 @@ public class EntertainmentFragment extends ChannelBaseFragment {
         if (smartRecommendPostSub != null && !smartRecommendPostSub.isUnsubscribed()) {
             smartRecommendPostSub.unsubscribe();
         }
-        smartRecommendPostSub = SkyService.ServiceManager.getCacheSkyService2().smartRecommendPost(url, IsmartvActivator.getInstance().getSnToken())
+        String sn_token = PreferenceManager.getDefaultSharedPreferences(mContext).getString("sn_token", "");
+        smartRecommendPostSub = SkyService.ServiceManager.getCacheSkyService2().smartRecommendPost(url, sn_token)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<ArrayList<HomePagerEntity.Poster>>() {
@@ -620,6 +628,7 @@ public class EntertainmentFragment extends ChannelBaseFragment {
                         if (smartPosters.size() < 8){
                             fillData(carousellist, posters);
                         }else {
+                            smartPosters.addAll(0, posters);
                             ArrayList<HomePagerEntity.Poster> posterArrayList = new ArrayList<>();
                             if (smartPosters.size() - posterStartTag - 8 >= 0) {
                                 posterArrayList.addAll(smartPosters.subList(posterStartTag, posterStartTag + 8));

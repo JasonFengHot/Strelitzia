@@ -26,7 +26,6 @@ android {
 
 dependencies {
     Map<String, String> dependencies = rootProject.ext.dependencies
-    compile fileTree(include: ['*.jar'], dir: 'libs')
     compile project(':account')
     compile project(':ismartv_downloader')
     compile project(':ismartv_imagereflection')
@@ -34,11 +33,8 @@ dependencies {
     compile project(':ismartv_foregroundimageview')
     compile project(':ismartv_tvhorizontalscrollview')
     compile project(':calligraphy-2.2.0')
-    compile project(':utilcode-1.3.0')
     compile dependencies.appCompat
     compile dependencies.recyclerView
-    compile 'com.android.support:multidex:1.0.1'
-    compile 'com.koushikdutta.async:androidasync:2.+'
 }
 
 tasks.withType(JavaCompile) {

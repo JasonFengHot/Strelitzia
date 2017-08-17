@@ -1,5 +1,4 @@
 package tv.ismar.searchpage;
-import cn.ismartv.truetime.TrueTime;
 
 import android.content.res.AssetFileDescriptor;
 import android.graphics.drawable.AnimationDrawable;
@@ -7,8 +6,6 @@ import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.os.SystemClock;
-import android.provider.UserDictionary;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -28,6 +25,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.ismartv.truetime.TrueTime;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import tv.ismar.account.IsmartvActivator;
@@ -36,16 +34,14 @@ import tv.ismar.app.BaseActivity;
 import tv.ismar.app.core.PageIntent;
 import tv.ismar.app.core.Source;
 import tv.ismar.app.core.VodUserAgent;
-import tv.ismar.app.exception.NetworkException;
 import tv.ismar.app.models.HotWords;
 import tv.ismar.app.models.Recommend;
-import tv.ismar.app.models.Section;
 import tv.ismar.app.models.VodFacetEntity;
 import tv.ismar.app.models.VodSearchRequestEntity;
-import tv.ismar.app.network.SkyService;
 import tv.ismar.app.util.DeviceUtils;
 import tv.ismar.app.util.NetworkUtils;
 import tv.ismar.app.util.SystemFileUtil;
+import tv.ismar.library.exception.ExceptionUtils;
 import tv.ismar.searchpage.adapter.KeyboardAdapter;
 import tv.ismar.searchpage.adapter.PosterAdapter;
 import tv.ismar.searchpage.adapter.RecommendAdapter;
@@ -387,6 +383,7 @@ public class WordSearchActivity extends BaseActivity implements View.OnClickList
                     fileDescriptor.getLength());
             mediaPlayer.prepare();
         } catch (IOException e) {
+            ExceptionUtils.sendProgramError(e);
             JasmineUtil.loadException("search", "", "", "", 0, "", DeviceUtils.getVersionCode(this), "client", e.getMessage());
             e.printStackTrace();
         }

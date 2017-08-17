@@ -31,6 +31,8 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
 
+import tv.ismar.library.exception.ExceptionUtils;
+
 public class ReflectionDrawable extends Drawable {
 
     private static final String TAG = "ReflectionDrawable";
@@ -133,6 +135,7 @@ public class ReflectionDrawable extends Drawable {
             drawable.draw(canvas);
         } catch (Exception e) {
             e.printStackTrace();
+            ExceptionUtils.sendProgramError(e);
             Log.w(TAG, "Failed to create bitmap from drawable!");
             bitmap = null;
         }

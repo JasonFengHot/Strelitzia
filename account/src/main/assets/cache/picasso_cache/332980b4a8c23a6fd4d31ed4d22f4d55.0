@@ -1,0 +1,20 @@
+http://res.tvxio.bestv.com.cn/media/upload/20160420/image_product_918_516_lk_miananzhuangjingshuiqi.jpg
+GET
+0
+HTTP/1.1 200 OK
+15
+Server: marco/1.4
+Date: Mon, 17 Jul 2017 02:05:41 GMT
+Content-Type: image/jpeg
+Content-Length: 276052
+Connection: keep-alive
+X-Source: C/200
+Last-Modified: Tue, 11 Apr 2017 09:42:16 GMT
+Accept-Ranges: bytes
+Expires: Mon, 25 Sep 2017 15:53:05 GMT
+Cache-Control: max-age=7776000
+Age: 1678357
+X-Request-Id: 1c91e3c36779f33aa21113021cbeec5e; eeebdec343e074ff0a4398ed59605893
+Via: S.mix-sd-tna-134, T.216132.M.1, V.mix-sd-tna-131, T.183.H.1, M.ctn-js-taz-007
+OkHttp-Sent-Millis: 1500257141844
+OkHttp-Received-Millis: 1500257141903

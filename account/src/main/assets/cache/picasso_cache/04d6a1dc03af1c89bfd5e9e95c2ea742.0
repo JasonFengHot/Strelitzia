@@ -1,0 +1,20 @@
+http://res.tvxio.bestv.com.cn/media/upload/20160420/guoiwenguiziyoukehuduanxi.jpg
+GET
+0
+HTTP/1.1 200 OK
+15
+Server: marco/1.4
+Date: Mon, 17 Jul 2017 02:03:36 GMT
+Content-Type: image/jpeg
+Content-Length: 85078
+Connection: keep-alive
+X-Source: C/200
+Last-Modified: Wed, 12 Jul 2017 08:28:09 GMT
+Accept-Ranges: bytes
+Expires: Tue, 10 Oct 2017 08:48:50 GMT
+Cache-Control: max-age=7776000
+Age: 407686
+X-Request-Id: 70c892123fd3228aff952519c960b7c6; 690acc29183376309d1b8a79714d5440
+Via: S.mix-sd-tna-132, T.216134.M.1, V.mix-sd-tna-137, T.183.H.1, M.ctn-js-taz-007
+OkHttp-Sent-Millis: 1500257016423
+OkHttp-Received-Millis: 1500257016446

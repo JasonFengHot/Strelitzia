@@ -2,13 +2,10 @@ package tv.ismar.usercenter.provider;
 
 import android.content.ContentProvider;
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.preference.PreferenceManager;
-
-import tv.ismar.account.IsmartvActivator;
 
 public class LocationProvider extends ContentProvider {
     private static final String AUTOR = "cn.ismartv.daisy.provider.location";

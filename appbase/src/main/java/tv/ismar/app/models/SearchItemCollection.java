@@ -5,8 +5,6 @@ import android.util.SparseArray;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-import tv.ismar.app.entity.Item;
-
 /**
  * This is a easy to operated model of ItemList.
  * It can remember which page of the section has been filled.

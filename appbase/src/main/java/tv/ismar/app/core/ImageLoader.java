@@ -14,6 +14,8 @@ import java.net.URL;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 
+import tv.ismar.library.exception.ExceptionUtils;
+
 public class ImageLoader {
 
 	private static final String TAG = "ImageLoader";
@@ -112,6 +114,7 @@ public class ImageLoader {
 
             } catch (Exception e) {
                 // An error occured while retrieving the image
+                ExceptionUtils.sendProgramError(e);
             	e.printStackTrace();
                 throwable = e;
             }

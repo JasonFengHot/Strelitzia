@@ -14,24 +14,26 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
+
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+
 import tv.ismar.account.IsmartvActivator;
 import tv.ismar.app.AppConstant;
 import tv.ismar.app.BaseFragment;
 import tv.ismar.app.core.PageIntent;
 import tv.ismar.app.core.Util;
 import tv.ismar.app.network.entity.AccountsOrdersEntity;
+import tv.ismar.library.exception.ExceptionUtils;
 import tv.ismar.usercenter.PurchaseHistoryContract;
 import tv.ismar.usercenter.R;
 import tv.ismar.usercenter.databinding.FragmentPurchasehistoryBinding;
@@ -373,6 +375,7 @@ public class PurchaseHistoryFragment extends BaseFragment implements PurchaseHis
         try {
             return Util.daysBetween(Util.getTime(), exprieTime) + 1;
         } catch (ParseException e) {
+            ExceptionUtils.sendProgramError(e);
             e.printStackTrace();
         }
         return 0;

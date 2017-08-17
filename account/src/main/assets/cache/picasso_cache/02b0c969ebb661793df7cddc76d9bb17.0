@@ -1,0 +1,20 @@
+http://res.tvxio.bestv.com.cn/media/upload/20160420/wmdsnsdkeshuuhsoye1.jpg
+GET
+0
+HTTP/1.1 200 OK
+15
+Server: marco/1.4
+Date: Mon, 17 Jul 2017 02:02:13 GMT
+Content-Type: image/jpeg
+Content-Length: 44895
+Connection: keep-alive
+X-Source: C/200
+Last-Modified: Fri, 14 Jul 2017 06:42:57 GMT
+Accept-Ranges: bytes
+Expires: Fri, 13 Oct 2017 02:28:20 GMT
+Cache-Control: max-age=7776000
+Age: 171233
+X-Request-Id: 2928f4c902b9fd2813e14008d1b6b0db; 909825b0a5c27d5fd4ad3cf09b4a795a
+Via: S.mix-sd-tna-132, T.216136.M.1, V.mix-sd-tna-138, T.184.H.1, M.ctn-js-taz-007
+OkHttp-Sent-Millis: 1500256933846
+OkHttp-Received-Millis: 1500256933861

@@ -1,6 +1,4 @@
 package tv.ismar.detailpage.viewmodel;
-import cn.ismartv.injectdb.library.util.Log;
-import cn.ismartv.truetime.TrueTime;
 
 import android.app.Activity;
 import android.content.Context;
@@ -26,6 +24,7 @@ import java.util.GregorianCalendar;
 import java.util.Locale;
 import java.util.TimeZone;
 
+import cn.ismartv.injectdb.library.util.Log;
 import cn.ismartv.truetime.TrueTime;
 import tv.ismar.account.IsmartvActivator;
 import tv.ismar.app.VodApplication;

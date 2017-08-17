@@ -1,9 +1,8 @@
 package tv.ismar.app.core;
-import com.google.gson.GsonBuilder;
 
 import android.util.Log;
 
-import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.io.IOException;
 
@@ -12,6 +11,7 @@ import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import tv.ismar.app.network.SkyService;
+import tv.ismar.library.exception.ExceptionUtils;
 
 /**
  * Created by huibin on 6/8/16.
@@ -55,6 +55,7 @@ public class OfflineCheckManager {
                         try {
                             result = responseBody.string();
                         } catch (IOException e) {
+                            ExceptionUtils.sendProgramError(e);
                             e.printStackTrace();
                             mCallback.netError();
                             return;

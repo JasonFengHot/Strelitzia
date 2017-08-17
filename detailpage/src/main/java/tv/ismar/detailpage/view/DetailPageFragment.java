@@ -1,5 +1,4 @@
 package tv.ismar.detailpage.view;
-import com.google.gson.GsonBuilder;
 
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -9,7 +8,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
@@ -20,7 +18,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -35,7 +33,6 @@ import cn.ismartv.truetime.TrueTime;
 import tv.ismar.account.IsmartvActivator;
 import tv.ismar.app.AppConstant;
 import tv.ismar.app.BaseActivity;
-import tv.ismar.app.core.DaisyUtils;
 import tv.ismar.app.core.InitializeProcess;
 import tv.ismar.app.core.PageIntent;
 import tv.ismar.app.core.SimpleRestClient;
@@ -61,6 +58,7 @@ import tv.ismar.detailpage.databinding.FragmentDetailpageMovieSharpBinding;
 import tv.ismar.detailpage.databinding.FragmentDetailpageNormalSharpBinding;
 import tv.ismar.detailpage.presenter.DetailPagePresenter;
 import tv.ismar.detailpage.viewmodel.DetailPageViewModel;
+import tv.ismar.library.exception.ExceptionUtils;
 import tv.ismar.statistics.DetailPageStatistics;
 
 import static tv.ismar.app.core.PageIntentInterface.EXTRA_ITEM_JSON;
@@ -357,6 +355,7 @@ public class DetailPageFragment extends Fragment implements DetailPageContract.V
                 try {
                     score = Float.parseFloat(scoreStr);
                 } catch (NumberFormatException e) {
+                    ExceptionUtils.sendProgramError(e);
                     e.printStackTrace();
                 }
                 if (score > 0) {
@@ -426,6 +425,7 @@ public class DetailPageFragment extends Fragment implements DetailPageContract.V
                 ((DetailPageActivity) getActivity()).mLoadingDialog.dismiss();
             }
         }catch (Exception e){
+            ExceptionUtils.sendProgramError(e);
             e.printStackTrace();
         }
 
@@ -664,6 +664,7 @@ public class DetailPageFragment extends Fragment implements DetailPageContract.V
             if(mItemEntity.getStartTime()!=null)
             startDate = sdf.parse(mItemEntity.getStartTime());
         } catch (ParseException e) {
+            ExceptionUtils.sendProgramError(e);
             System.out.println(e.getMessage());
         }
         if (startDate != null) {
@@ -696,6 +697,7 @@ public class DetailPageFragment extends Fragment implements DetailPageContract.V
                     PackageInfo info = manager.getPackageInfo(getActivity().getPackageName(), 0);
                     SimpleRestClient.appVersion = info.versionCode;
                 } catch (PackageManager.NameNotFoundException e) {
+                    ExceptionUtils.sendProgramError(e);
                     e.printStackTrace();
                 }
                 String apiDomain = IsmartvActivator.getInstance().getApiDomain();

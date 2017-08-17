@@ -1,0 +1,20 @@
+http://res.tvxio.bestv.com.cn/media/upload/20160420/xuelangquan170623.jpg
+GET
+0
+HTTP/1.1 200 OK
+15
+Server: marco/1.4
+Date: Mon, 17 Jul 2017 02:02:28 GMT
+Content-Type: image/jpeg
+Content-Length: 36468
+Connection: keep-alive
+X-Source: C/200
+Last-Modified: Mon, 26 Jun 2017 07:13:24 GMT
+Accept-Ranges: bytes
+Expires: Sun, 24 Sep 2017 07:27:11 GMT
+Cache-Control: max-age=7776000
+Age: 1794917
+X-Request-Id: f2069cb34532cca8903a45e3fe90e778; 7cf3eafaf2f9795ecf926cb2f04df73b
+Via: S.mix-sd-tna-132, T.216134.H.1, V.mix-sd-tna-140, T.184.H.1, M.ctn-js-taz-007
+OkHttp-Sent-Millis: 1500256947996
+OkHttp-Received-Millis: 1500256948052

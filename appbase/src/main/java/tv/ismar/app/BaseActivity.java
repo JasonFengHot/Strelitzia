@@ -8,10 +8,8 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -20,17 +18,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.PopupWindow;
 
-
-import com.orhanobut.logger.Logger;
-
 import java.util.Stack;
 
 import cn.ismartv.truetime.TrueTime;
-import okhttp3.ResponseBody;
 import retrofit2.adapter.rxjava.HttpException;
 import rx.Observer;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 import tv.ismar.account.IsmartvActivator;
 import tv.ismar.app.network.SkyService;
 import tv.ismar.app.player.OnNoNetConfirmListener;
@@ -43,10 +35,9 @@ import tv.ismar.app.widget.Login_hint_dialog;
 import tv.ismar.app.widget.ModuleMessagePopWindow;
 import tv.ismar.app.widget.NetErrorPopWindow;
 import tv.ismar.app.widget.NoNetConnectDialog;
-import tv.ismar.app.widget.NoNetConnectWindow;
 import tv.ismar.app.widget.NoNetModuleMessagePop;
 import tv.ismar.app.widget.UpdatePopupWindow;
-import tv.ismar.library.util.DeviceUtils;
+import tv.ismar.library.exception.ExceptionUtils;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 import static tv.ismar.app.update.UpdateService.APP_UPDATE_ACTION;
@@ -168,6 +159,7 @@ public class BaseActivity extends AppCompatActivity {
         try {
             unregisterReceiver(mUpdateReceiver);
         } catch (Exception e) {
+            ExceptionUtils.sendProgramError(e);
             e.printStackTrace();
         }
         if (updateAgainHandler != null) {
@@ -273,6 +265,7 @@ public class BaseActivity extends AppCompatActivity {
                     });
             showTime=System.currentTimeMillis();
         } catch (Exception exception) {
+            ExceptionUtils.sendProgramError(e);
             exception.printStackTrace();
         }
 
@@ -532,6 +525,7 @@ public class BaseActivity extends AppCompatActivity {
         try {
             unregisterReceiver(onNetConnectReceiver);
         } catch (Exception e) {
+            ExceptionUtils.sendProgramError(e);
             e.printStackTrace();
         }
         super.onDestroy();

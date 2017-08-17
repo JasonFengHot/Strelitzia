@@ -47,7 +47,6 @@ import okhttp3.ResponseBody;
 import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
-import tv.ismar.account.IsmartvActivator;
 import tv.ismar.app.BaseActivity;
 import tv.ismar.app.ad.Advertisement;
 import tv.ismar.app.core.PageIntent;
@@ -59,7 +58,7 @@ import tv.ismar.app.network.entity.AdElementEntity;
 import tv.ismar.app.network.entity.ItemEntity;
 import tv.ismar.app.player.OnNoNetConfirmListener;
 import tv.ismar.app.widget.ModuleMessagePopWindow;
-import tv.ismar.library.network.HttpManager;
+import tv.ismar.library.exception.ExceptionUtils;
 import tv.ismar.library.util.LogUtils;
 import tv.ismar.library.util.NetworkUtils;
 import tv.ismar.library.util.StringUtils;
@@ -69,7 +68,6 @@ import tv.ismar.player.listener.EpisodeOnclickListener;
 import tv.ismar.player.listener.OnMenuListItmeClickListener;
 import tv.ismar.player.model.QuailtyEntity;
 import tv.ismar.player.widget.AdImageDialog;
-import tv.ismar.player.widget.ExitToast;
 
 public class PlaybackFragment extends Fragment implements PlaybackService.Client.Callback,
         PlayerMenu.OnCreateMenuListener, Advertisement.OnPauseVideoAdListener, PlaybackService.ServiceCallback ,EpisodeOnclickListener,OnMenuListItmeClickListener{
@@ -560,6 +558,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
         try {
             adImageDialog.show();
         } catch (android.view.WindowManager.BadTokenException e) {
+            ExceptionUtils.sendProgramError(e);
             LogUtils.i(TAG, "Pause advertisement dialog show error.");
             e.printStackTrace();
         }

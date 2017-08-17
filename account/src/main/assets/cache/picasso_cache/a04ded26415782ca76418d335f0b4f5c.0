@@ -1,0 +1,20 @@
+http://res.tvxio.bestv.com.cn/media/upload/20160420/tukugiongchen0705.jpg
+GET
+0
+HTTP/1.1 200 OK
+15
+Server: marco/1.4
+Date: Mon, 17 Jul 2017 02:02:41 GMT
+Content-Type: image/jpeg
+Content-Length: 37954
+Connection: keep-alive
+X-Source: C/200
+Last-Modified: Wed, 05 Jul 2017 09:39:58 GMT
+Accept-Ranges: bytes
+Expires: Tue, 03 Oct 2017 09:52:15 GMT
+Cache-Control: max-age=7776000
+Age: 1008626
+X-Request-Id: 62d23d968f5ff23a26ed5d63bc10d075; 171d43489b83d95044ecdcfc7cf11bbc
+Via: S.mix-sd-tna-132, T.216132.H.1, V.mix-sd-tna-138, T.186.H.1, M.ctn-js-taz-007
+OkHttp-Sent-Millis: 1500256961788
+OkHttp-Received-Millis: 1500256961807

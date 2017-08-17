@@ -14,11 +14,9 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.example.foregroundimageview.ForegroundImageView;
 import com.squareup.picasso.Picasso;
 
 import cn.ismartv.tvhorizontalscrollview.TvHorizontalScrollView;
-import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;

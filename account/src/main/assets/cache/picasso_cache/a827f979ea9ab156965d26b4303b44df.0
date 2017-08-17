@@ -1,0 +1,20 @@
+http://res.tvxio.bestv.com.cn/media/upload/20160420/mangxialvshihaibao0626.jpg
+GET
+0
+HTTP/1.1 200 OK
+15
+Server: marco/1.4
+Date: Mon, 17 Jul 2017 02:02:41 GMT
+Content-Type: image/jpeg
+Content-Length: 30678
+Connection: keep-alive
+X-Source: C/200
+Last-Modified: Mon, 26 Jun 2017 08:10:58 GMT
+Accept-Ranges: bytes
+Expires: Sun, 24 Sep 2017 08:22:09 GMT
+Cache-Control: max-age=7776000
+Age: 1791632
+X-Request-Id: f87a54c32971c934af69d0efe29f8f29; 47af39bbc1216c1290a5b1c08e092601
+Via: S.mix-sd-tna-137, T.216137.M.1, V.mix-sd-tna-135, T.186.H.1, M.ctn-js-taz-007
+OkHttp-Sent-Millis: 1500256961842
+OkHttp-Received-Millis: 1500256961856

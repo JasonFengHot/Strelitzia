@@ -7,13 +7,13 @@ import android.media.AudioManager;
 import android.os.IBinder;
 import android.util.Log;
 
-import com.blankj.utilcode.utils.DeviceUtils;
+import com.blankj.utilcode.util.DeviceUtils;
 import com.koushikdutta.async.http.server.AsyncHttpServer;
 import com.koushikdutta.async.http.server.AsyncHttpServerRequest;
 import com.koushikdutta.async.http.server.AsyncHttpServerResponse;
 import com.koushikdutta.async.http.server.HttpServerRequestCallback;
 
-import cn.ismartv.injectdb.library.query.Delete;
+import tv.ismar.library.exception.ExceptionUtils;
 
 /**
  * Created by liucan on 2017/5/18.
@@ -62,7 +62,7 @@ public class HttpProxyService extends Service implements HttpServerRequestCallba
                     Instrumentation inst=new Instrumentation();
                     inst.sendKeyDownUpSync(KeyCode);
                 } catch (Exception e) {
-
+                    ExceptionUtils.sendProgramError(e);
                     // TODO: handle exception
                 }
             }

@@ -5,6 +5,7 @@ import java.io.StringWriter;
 
 import tv.ismar.account.statistics.LogEntity;
 import tv.ismar.account.statistics.LogQueue;
+import tv.ismar.library.exception.ExceptionUtils;
 
 /**
  * Created by huibin on 2016/12/15.
@@ -51,6 +52,7 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
+                ExceptionUtils.sendProgramError(e);
                 e.printStackTrace();
             }
             mDefaultHandler.uncaughtException(thread, ex);

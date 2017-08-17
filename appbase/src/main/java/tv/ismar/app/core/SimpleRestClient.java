@@ -22,10 +22,7 @@ import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 import tv.ismar.account.IsmartvActivator;
-import tv.ismar.app.BaseActivity;
 import tv.ismar.app.core.client.NetworkUtils;
 import tv.ismar.app.entity.Attribute;
 import tv.ismar.app.entity.ChannelList;

@@ -1,5 +1,4 @@
 package tv.ismar.app.entity;
-import cn.ismartv.truetime.TrueTime;
 
 import android.text.TextUtils;
 
@@ -7,6 +6,9 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
+
+import cn.ismartv.truetime.TrueTime;
+import tv.ismar.library.exception.ExceptionUtils;
 
 public class SportGame {
 	private String start_time;
@@ -89,6 +91,7 @@ public class SportGame {
 				if (TrueTime.now().getTime() > expirytime.getTime())
 					return 6;
 			} catch (ParseException e) {
+				ExceptionUtils.sendProgramError(e);
 				e.printStackTrace();
 			}
 		}

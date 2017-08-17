@@ -1,5 +1,4 @@
 package tv.ismar.app.core.receiver;
-import cn.ismartv.truetime.TrueTime;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -8,7 +7,6 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
-import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -19,8 +17,10 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import cn.ismartv.truetime.TrueTime;
 import tv.ismar.app.core.client.MessageQueue;
 import tv.ismar.app.core.client.NetworkUtils;
+import tv.ismar.library.exception.ExceptionUtils;
 
 
 /**
@@ -110,6 +110,7 @@ public class SystemReporterReceiver extends BroadcastReceiver {
                                 obj = new JSONObject(list.get(i).toString());
                                 s.put(obj);
                             } catch (JSONException e) {
+                                ExceptionUtils.sendProgramError(e);
                                 // TODO Auto-generated catch block
                                 e.printStackTrace();
                             }

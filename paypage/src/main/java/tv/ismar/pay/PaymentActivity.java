@@ -1,12 +1,8 @@
 package tv.ismar.pay;
-import com.google.gson.GsonBuilder;
-
-import cn.ismartv.truetime.TrueTime;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.media.Image;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -19,17 +15,15 @@ import android.view.View.OnHoverListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
-import com.squareup.picasso.Picasso;
+import com.google.gson.GsonBuilder;
 
 import java.io.IOException;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
+import cn.ismartv.truetime.TrueTime;
 import okhttp3.ResponseBody;
 import rx.Observable;
 import rx.Observer;
@@ -47,6 +41,7 @@ import tv.ismar.app.network.entity.ChoosewayEntity;
 import tv.ismar.app.network.entity.GoodsRenewStatusEntity;
 import tv.ismar.app.network.entity.ItemEntity;
 import tv.ismar.app.network.entity.PayWhStatusEntity;
+import tv.ismar.library.exception.ExceptionUtils;
 import tv.ismar.pay.LoginFragment.LoginCallback;
 import tv.ismar.statistics.PurchaseStatistics;
 
@@ -319,6 +314,7 @@ public class PaymentActivity extends BaseActivity implements View.OnClickListene
                                     return mSkyService.playcheck(item, pkg, subItem)
                                             .execute().body().string();
                                 } catch (IOException e) {
+                                    ExceptionUtils.sendProgramError(e);
                                     e.printStackTrace();
                                 }
 
@@ -327,6 +323,7 @@ public class PaymentActivity extends BaseActivity implements View.OnClickListene
                                     return mSkyService.orderpurchase(item, pkg, subItem)
                                             .execute().body().string();
                                 } catch (IOException e) {
+                                    ExceptionUtils.sendProgramError(e);
                                     e.printStackTrace();
                                 }
                         }

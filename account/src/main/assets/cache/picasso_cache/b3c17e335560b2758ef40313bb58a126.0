@@ -1,0 +1,20 @@
+http://res.tvxio.bestv.com.cn/media/upload/20160420/yongbingdezhanzheng170714.jpg
+GET
+0
+HTTP/1.1 200 OK
+15
+Server: marco/1.4
+Date: Mon, 17 Jul 2017 02:02:27 GMT
+Content-Type: image/jpeg
+Content-Length: 41215
+Connection: keep-alive
+X-Source: C/200
+Last-Modified: Fri, 14 Jul 2017 08:01:19 GMT
+Accept-Ranges: bytes
+Expires: Thu, 12 Oct 2017 08:29:35 GMT
+Cache-Control: max-age=7776000
+Age: 235972
+X-Request-Id: 654ad8f9397176f2b77417cd91dc3822; e376b030051332fde86d4db205073787
+Via: S.mix-sd-tna-135, T.216140.M.1, V.mix-sd-tna-135, T.184.H.1, M.ctn-js-taz-007
+OkHttp-Sent-Millis: 1500256947325
+OkHttp-Received-Millis: 1500256947364

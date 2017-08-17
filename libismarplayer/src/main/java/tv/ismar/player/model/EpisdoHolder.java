@@ -5,8 +5,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.qiyi.tvapi.tv2.model.Episode;
-
 import tv.ismar.player.R;
 
 /**

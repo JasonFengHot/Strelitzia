@@ -1,17 +1,14 @@
 package tv.ismar.channel;
-import cn.ismartv.truetime.TrueTime;
 
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -21,17 +18,17 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.Button;
-import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import com.google.gson.JsonSyntaxException;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.TimeZone;
-import java.util.concurrent.ConcurrentHashMap;
+
+import cn.ismartv.truetime.TrueTime;
 import okhttp3.ResponseBody;
 import retrofit2.adapter.rxjava.HttpException;
 import rx.Subscription;
@@ -53,8 +50,6 @@ import tv.ismar.app.entity.Item;
 import tv.ismar.app.entity.ItemCollection;
 import tv.ismar.app.entity.SectionList;
 import tv.ismar.app.entity.VideoEntity;
-import tv.ismar.app.exception.ItemOfflineException;
-import tv.ismar.app.exception.NetworkException;
 import tv.ismar.app.network.SkyService;
 import tv.ismar.app.network.entity.EventProperty;
 import tv.ismar.app.ui.HGridView;
@@ -63,9 +58,7 @@ import tv.ismar.app.ui.adapter.HGridAdapterImpl;
 import tv.ismar.app.ui.view.AlertDialogFragment;
 import tv.ismar.app.ui.view.MenuFragment;
 import tv.ismar.app.util.BitmapDecoder;
-import tv.ismar.app.widget.ItemOffLinePopWindow;
 import tv.ismar.app.widget.LoadingDialog;
-import tv.ismar.app.widget.ModuleMessagePopWindow;
 import tv.ismar.app.widget.ScrollableSectionList;
 import tv.ismar.listpage.R;
 

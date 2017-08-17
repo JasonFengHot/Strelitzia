@@ -1,5 +1,7 @@
 package tv.ismar.app.core;
 
+import tv.ismar.library.exception.ExceptionUtils;
+
 /**
  * Created by longhai on 16-10-14.
  */
@@ -39,6 +41,7 @@ public enum Source {
         try {
             return Source.valueOf(source.toUpperCase());
         } catch (IllegalArgumentException e) {
+            ExceptionUtils.sendProgramError(e);
             e.printStackTrace();
         }
         return UNKNOWN;

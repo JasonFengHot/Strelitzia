@@ -1,8 +1,6 @@
 package tv.ismar.homepage.widget;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
@@ -20,11 +18,9 @@ import android.widget.MediaController;
 import android.widget.MediaController.MediaPlayerControl;
 
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.Map;
 
 import tv.ismar.app.core.VodUserAgent;
-import tv.ismar.homepage.R;
 
 /**
  * Created by huaijie on 6/15/15.

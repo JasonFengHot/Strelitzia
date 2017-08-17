@@ -1,5 +1,7 @@
 package tv.ismar.account.core.rsa;
 
+import android.util.Base64;
+
 import java.security.Key;
 import java.security.KeyFactory;
 import java.security.KeyPair;
@@ -19,7 +21,7 @@ import javax.crypto.Cipher;
 /**
  * Created by Administrator on 2014/10/10.
  */
-public class RSACoder extends Coder {
+public class RSACoder {
 
     public static final String KEY_ALGORITHM = "RSA";
     public static final String SIGNATURE_ALGORITHM = "MD5withRSA";
@@ -43,7 +45,7 @@ public class RSACoder extends Coder {
         PKCS8EncodedKeySpec pkcs8KeySpec = new PKCS8EncodedKeySpec(keyBytes);
 
         // KEY_ALGORITHM 指定的加密算法
-        KeyFactory keyFactory = KeyFactory.getInstance(KEY_ALGORITHM,"BC");
+        KeyFactory keyFactory = KeyFactory.getInstance(KEY_ALGORITHM, "BC");
 
         // 取私钥匙对象
         PrivateKey priKey = keyFactory.generatePrivate(pkcs8KeySpec);
@@ -75,7 +77,7 @@ public class RSACoder extends Coder {
         X509EncodedKeySpec keySpec = new X509EncodedKeySpec(keyBytes);
 
         // KEY_ALGORITHM 指定的加密算法
-        KeyFactory keyFactory = KeyFactory.getInstance(KEY_ALGORITHM,"BC");
+        KeyFactory keyFactory = KeyFactory.getInstance(KEY_ALGORITHM, "BC");
 
         // 取公钥匙对象
         PublicKey pubKey = keyFactory.generatePublic(keySpec);
@@ -104,7 +106,7 @@ public class RSACoder extends Coder {
 
         // 取得私钥
         PKCS8EncodedKeySpec pkcs8KeySpec = new PKCS8EncodedKeySpec(keyBytes);
-        KeyFactory keyFactory = KeyFactory.getInstance(KEY_ALGORITHM,"BC");
+        KeyFactory keyFactory = KeyFactory.getInstance(KEY_ALGORITHM, "BC");
         Key privateKey = keyFactory.generatePrivate(pkcs8KeySpec);
 
         // 对数据解密
@@ -130,7 +132,7 @@ public class RSACoder extends Coder {
 
         // 取得公钥
         X509EncodedKeySpec x509KeySpec = new X509EncodedKeySpec(keyBytes);
-        KeyFactory keyFactory = KeyFactory.getInstance(KEY_ALGORITHM,"BC");
+        KeyFactory keyFactory = KeyFactory.getInstance(KEY_ALGORITHM, "BC");
         Key publicKey = keyFactory.generatePublic(x509KeySpec);
 
         // 对数据解密
@@ -156,7 +158,7 @@ public class RSACoder extends Coder {
 
         // 取得公钥
         X509EncodedKeySpec x509KeySpec = new X509EncodedKeySpec(keyBytes);
-        KeyFactory keyFactory = KeyFactory.getInstance(KEY_ALGORITHM,"BC");
+        KeyFactory keyFactory = KeyFactory.getInstance(KEY_ALGORITHM, "BC");
         Key publicKey = keyFactory.generatePublic(x509KeySpec);
 
         // 对数据加密
@@ -182,7 +184,7 @@ public class RSACoder extends Coder {
 
         // 取得私钥
         PKCS8EncodedKeySpec pkcs8KeySpec = new PKCS8EncodedKeySpec(keyBytes);
-        KeyFactory keyFactory = KeyFactory.getInstance(KEY_ALGORITHM,"BC");
+        KeyFactory keyFactory = KeyFactory.getInstance(KEY_ALGORITHM, "BC");
         Key privateKey = keyFactory.generatePrivate(pkcs8KeySpec);
 
         // 对数据加密
@@ -228,7 +230,7 @@ public class RSACoder extends Coder {
      */
     public static Map<String, Object> initKey() throws Exception {
         KeyPairGenerator keyPairGen = KeyPairGenerator
-                .getInstance(KEY_ALGORITHM,"BC");
+                .getInstance(KEY_ALGORITHM, "BC");
         keyPairGen.initialize(1024);
 
         KeyPair keyPair = keyPairGen.generateKeyPair();
@@ -244,5 +246,14 @@ public class RSACoder extends Coder {
         keyMap.put(PUBLIC_KEY, publicKey);
         keyMap.put(PRIVATE_KEY, privateKey);
         return keyMap;
+    }
+
+    public static byte[] decryptBASE64(String key) {
+        return Base64.decode(key, Base64.DEFAULT);
+    }
+
+    public static String encryptBASE64(byte[] sign) {
+        return Base64.encodeToString(sign, Base64.DEFAULT);
+
     }
 }

@@ -1,5 +1,4 @@
 package tv.ismar.app.widget;
-import cn.ismartv.truetime.TrueTime;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -23,6 +22,7 @@ import java.util.List;
 import java.util.TimeZone;
 
 import cn.ismartv.injectdb.library.query.Select;
+import cn.ismartv.truetime.TrueTime;
 import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;

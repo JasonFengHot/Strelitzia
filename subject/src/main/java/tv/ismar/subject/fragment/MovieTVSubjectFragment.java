@@ -43,6 +43,7 @@ import tv.ismar.app.ui.adapter.OnItemClickListener;
 import tv.ismar.app.ui.adapter.OnItemFocusedListener;
 import tv.ismar.app.util.Utils;
 import tv.ismar.app.widget.MyRecyclerView;
+import tv.ismar.library.exception.ExceptionUtils;
 import tv.ismar.searchpage.utils.JasmineUtil;
 import tv.ismar.statistics.PurchaseStatistics;
 import tv.ismar.subject.R;
@@ -403,6 +404,7 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnClickList
                     showToast("取消收藏成功");
                 }
             }catch (Exception e){
+                ExceptionUtils.sendProgramError(e);
                 e.printStackTrace();
             }
         }else if (i == R.id.subject_btn_buy) {

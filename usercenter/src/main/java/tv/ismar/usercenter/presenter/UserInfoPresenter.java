@@ -3,8 +3,6 @@ package tv.ismar.usercenter.presenter;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
-import cn.ismartv.truetime.TrueTime;
-
 import java.math.BigDecimal;
 
 import cn.ismartv.truetime.TrueTime;

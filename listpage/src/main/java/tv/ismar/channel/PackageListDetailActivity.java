@@ -2,7 +2,6 @@ package tv.ismar.channel;
 
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.MotionEvent;
@@ -15,7 +14,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 
-import com.blankj.utilcode.utils.StringUtils;
+import com.blankj.utilcode.util.StringUtils;
 
 import java.util.ArrayList;
 
@@ -23,11 +22,9 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import tv.ismar.account.IsmartvActivator;
 import tv.ismar.app.BaseActivity;
-import tv.ismar.app.core.DaisyUtils;
 import tv.ismar.app.core.InitializeProcess;
 import tv.ismar.app.core.PageIntent;
 import tv.ismar.app.core.SimpleRestClient;
-import tv.ismar.app.core.Source;
 import tv.ismar.app.core.VipMark;
 import tv.ismar.app.core.VodUserAgent;
 import tv.ismar.app.entity.Item;
@@ -38,7 +35,6 @@ import tv.ismar.app.network.SkyService;
 import tv.ismar.app.player.CallaPlay;
 import tv.ismar.app.ui.HGridView;
 import tv.ismar.app.ui.adapter.HGridAdapterImpl;
-import tv.ismar.app.util.BitmapDecoder;
 import tv.ismar.app.util.DeviceUtils;
 import tv.ismar.app.util.SPUtils;
 import tv.ismar.app.util.SystemFileUtil;

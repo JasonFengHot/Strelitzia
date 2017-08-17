@@ -1,0 +1,20 @@
+http://res.tvxio.bestv.com.cn/media/upload/20160420/xihuani170714.jpg
+GET
+0
+HTTP/1.1 200 OK
+15
+Server: marco/1.4
+Date: Mon, 17 Jul 2017 02:02:27 GMT
+Content-Type: image/jpeg
+Content-Length: 43528
+Connection: keep-alive
+X-Source: C/200
+Last-Modified: Fri, 14 Jul 2017 07:58:18 GMT
+Accept-Ranges: bytes
+Expires: Thu, 12 Oct 2017 08:29:35 GMT
+Cache-Control: max-age=7776000
+Age: 235972
+X-Request-Id: 723d7acce51f9cfa0f5c4e89df76f40f; 9be49cba33d2e3e57e6f16080b93023c
+Via: S.mix-sd-tna-131, T.216140.M.1, V.mix-sd-tna-138, T.185.H.1, M.ctn-js-taz-007
+OkHttp-Sent-Millis: 1500256947590
+OkHttp-Received-Millis: 1500256947636

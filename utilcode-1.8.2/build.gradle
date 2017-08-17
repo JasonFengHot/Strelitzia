@@ -1,0 +1,2 @@
+configurations.maybeCreate("default")
+artifacts.add("default", file('utilcode-1.8.2.aar'))

@@ -1,0 +1,20 @@
+http://res.tvxio.bestv.com.cn/media/upload/20160420/image_product_151prev_cjbed_ganhong.jpg
+GET
+0
+HTTP/1.1 200 OK
+15
+Server: marco/1.4
+Date: Mon, 17 Jul 2017 02:05:29 GMT
+Content-Type: image/jpeg
+Content-Length: 31535
+Connection: keep-alive
+X-Source: C/200
+Last-Modified: Wed, 05 Jul 2017 02:01:33 GMT
+Accept-Ranges: bytes
+Expires: Tue, 03 Oct 2017 02:15:08 GMT
+Cache-Control: max-age=7776000
+Age: 1036221
+X-Request-Id: ddffa03ea342758e2890b7aa26827b2c; 0b0ffe46e1112bf8c22d21853b11c067
+Via: S.mix-sd-tna-131, T.216139.R.1, V.mix-sd-tna-132, T.184.H.1, M.ctn-js-taz-007
+OkHttp-Sent-Millis: 1500257129844
+OkHttp-Received-Millis: 1500257129856

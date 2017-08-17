@@ -1,0 +1,20 @@
+http://res.tvxio.bestv.com.cn/media/upload/20160420/170630ip_wly_ptvipmingpin12ping.jpg
+GET
+0
+HTTP/1.1 200 OK
+15
+Server: marco/1.4
+Date: Mon, 17 Jul 2017 02:05:30 GMT
+Content-Type: image/jpeg
+Content-Length: 97900
+Connection: keep-alive
+X-Source: C/200
+Last-Modified: Thu, 29 Jun 2017 05:45:21 GMT
+Accept-Ranges: bytes
+Expires: Mon, 09 Oct 2017 08:18:29 GMT
+Cache-Control: max-age=7776000
+Age: 496021
+X-Request-Id: 2ff822b83a4cb4f3ff400c2cee9494f5; de3db438f46c5446d46a2fe8f76284b7
+Via: S.mix-sd-tna-136, T.216138.M.1, V.mix-sd-tna-134, T.184.H.1, M.ctn-js-taz-007
+OkHttp-Sent-Millis: 1500257130160
+OkHttp-Received-Millis: 1500257130181
