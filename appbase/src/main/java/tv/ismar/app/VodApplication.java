@@ -138,7 +138,7 @@ public class VodApplication extends Application {
         initConstants();
         initPicasso();
         File cacheFile = new File(VodApplication.getModuleAppContext().getCacheDir(), "");
-        HttpManager.getInstance().initialize(mIsmartvHttpParamsInterceptor, mHttpCacheInterceptor, cacheFile);
+        HttpManager.getInstance().initialize(mIsmartvHttpParamsInterceptor, getCacheInterceptor(), cacheFile);
     }
 
     private void initLogCallback() {
