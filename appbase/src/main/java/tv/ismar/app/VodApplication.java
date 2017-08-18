@@ -73,6 +73,7 @@ import tv.ismar.app.network.SkyService;
 import tv.ismar.app.service.HttpProxyService;
 import tv.ismar.app.util.SPUtils;
 import tv.ismar.library.exception.ExceptionUtils;
+import tv.ismar.library.network.HttpManager;
 import tv.ismar.library.network.UserAgentInterceptor;
 import tv.ismar.library.util.C;
 import tv.ismar.library.util.DeviceUtils;
@@ -136,6 +137,8 @@ public class VodApplication extends Application {
         initLogCallback();
         initConstants();
         initPicasso();
+        File cacheFile = new File(VodApplication.getModuleAppContext().getCacheDir(), "");
+        HttpManager.getInstance().initialize(mIsmartvHttpParamsInterceptor, mHttpCacheInterceptor, cacheFile);
     }
 
     private void initLogCallback() {
