@@ -383,14 +383,6 @@ public class DaisyPlayer extends IsmartvPlayer implements SurfaceHelper.SurfaceC
                     }
                     logBufferStartTime = DateUtils.currentTimeMillis();
                     break;
-                case 1002:
-                    if (isS3Seeking) {
-                        isS3Seeking = false;
-                        if (onBufferChangedListener != null) {
-                            onBufferChangedListener.onBufferEnd();
-                        }
-                    }
-                    break;
                 case SmartPlayer.MEDIA_INFO_BUFFERING_END:
                 case 3:
                     if (!mSurfaceAttached) {
