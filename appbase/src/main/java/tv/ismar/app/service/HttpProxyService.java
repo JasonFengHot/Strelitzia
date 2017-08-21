@@ -3,8 +3,11 @@ package tv.ismar.app.service;
 import android.app.Instrumentation;
 import android.app.Service;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.media.AudioManager;
+import android.os.Build;
 import android.os.IBinder;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.blankj.utilcode.util.DeviceUtils;
@@ -13,6 +16,16 @@ import com.koushikdutta.async.http.server.AsyncHttpServerRequest;
 import com.koushikdutta.async.http.server.AsyncHttpServerResponse;
 import com.koushikdutta.async.http.server.HttpServerRequestCallback;
 
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.Socket;
+import java.net.UnknownHostException;
+
+import okhttp3.ResponseBody;
+import rx.Observer;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
+import tv.ismar.app.network.SkyService;
 import tv.ismar.library.exception.ExceptionUtils;
 
 /**
@@ -31,14 +44,21 @@ public class HttpProxyService extends Service implements HttpServerRequestCallba
     private static final int VOL_SEEK_EVENT = 2;
     private static final int PLAY_VIDEO_EVENT = 3;
     private static final int DELETE_CDN = 4;
+    private int port;
 
     @Override
     public void onCreate() {
-        server = new AsyncHttpServer();
-        server.listen(10114);
-        audioManager= (AudioManager) getSystemService(AUDIO_SERVICE);
         super.onCreate();
-
+        server = new AsyncHttpServer();
+        audioManager= (AudioManager) getSystemService(AUDIO_SERVICE);
+        new Thread(){
+            @Override
+            public void run() {
+                port = getAvailablePort();
+                server.listen(port);
+                reportIp();
+            }
+        }.start();
     }
 
     @Override
@@ -99,5 +119,62 @@ public class HttpProxyService extends Service implements HttpServerRequestCallba
 
         }
         response.end();
+    }
+
+
+    public boolean isPortUsing(int port) {
+        boolean flag;
+        try {
+            InetAddress theAddress = InetAddress.getByName("127.0.0.1");
+            new Socket(theAddress, port);
+            flag = true;
+        } catch (IOException e) {
+            flag = false;
+        }
+        return flag;
+    }
+
+    private int getAvailablePort(){
+        int defaultPort = 10114;
+        for (int i = 10114; i < 65536; i++){
+            if (!isPortUsing(i)){
+                defaultPort = i;
+                break;
+            }
+        }
+        return defaultPort;
+    }
+
+    private void reportIp() {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        String sn = sharedPreferences.getString("sn_token", "");
+        String ip = "";
+        if (sn == null || sn.equals("")) {
+        } else {
+            SkyService skyService = SkyService.ServiceManager.getService();
+            String url = "http://wx.api.tvxio.com/weixin4server/uploadclientip";
+            if (tv.ismar.library.util.DeviceUtils.getLocalInetAddress() != null) {
+                ip = tv.ismar.library.util.DeviceUtils.getLocalInetAddress().toString() + ":" + port;
+            }
+            skyService.weixinIp(url, ip, sn, Build.MODEL, tv.ismar.library.util.DeviceUtils.getLocalMacAddress(this))
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Observer<ResponseBody>() {
+                        @Override
+                        public void onCompleted() {
+
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            e.printStackTrace();
+                        }
+
+                        @Override
+                        public void onNext(ResponseBody responseBody) {
+
+                        }
+                    });
+        }
     }
 }
