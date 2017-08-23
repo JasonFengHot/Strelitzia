@@ -155,15 +155,15 @@
 <dimen name="gridview_item_expense_txt_size">7.41sp</dimen>
 <!-- popup_2btn -->
 
-    <!-- related_item -->
-    <!-- <dimen name="related_item_image_paddingleft">7dip</dimen> -->
+<!-- related_item -->
+<!-- <dimen name="related_item_image_paddingleft">7dip</dimen> -->
 <!-- <dimen name="related_item_image_paddingtop">3dip</dimen> -->
 <!-- <dimen name="related_item_image_paddingright">7dip</dimen> -->
 <!-- <dimen name="related_item_image_paddingbottom">12dip</dimen> -->
-    <!-- vod_player -->
-    <dimen name="vod_player_titletext_marginleft">81.48dip</dimen>
+<!-- vod_player -->
+<dimen name="vod_player_titletext_marginleft">81.48dip</dimen>
 
-    <!-- related_view -->
+<!-- related_view -->
 <dimen name="related_view_img_W">236.67dip</dimen>
 <dimen name="related_view_img_H">56.30dip</dimen>
 <dimen name="related_view_tabs_marginleft">37.04dip</dimen>
@@ -206,7 +206,7 @@
 <dimen name="menu_item_menutext_marginleft">14.81dip</dimen>
 
 <!-- dramaList -->
-    <dimen name="drama_gridview_margintop">37.04dip</dimen>
+<dimen name="drama_gridview_margintop">37.04dip</dimen>
 <dimen name="drama_gridview_verticalspacing">1.85dip</dimen>
 <dimen name="drama_gridview_item_btn_textsize">13.33dip</dimen>
 <dimen name="drama_gridview_item_btn_marginleft">0.74dip</dimen>
@@ -216,7 +216,7 @@
 
 <!-- alert_dialog -->
 
-    <!-- search -->
+<!-- search -->
 <dimen name="search_main_tv_search_text_marginL">5.56dip</dimen>
 <dimen name="search_main_tv_search_text_PT">11.11dip</dimen>
 <dimen name="search_main_tv_search_text_textsize">11.85dip</dimen>
@@ -325,11 +325,11 @@
 <dimen name="HGridView_label_textleft">8.89dip</dimen>
 <dimen name="HGridView_label_texttop">20.74dip</dimen>
 <!-- LoadingDialog -->
-    <!-- Launcher -->
-    <!-- DetailAttributeContainer -->
-    <!-- package detail -->
-    <dimen name="vod_payment_price_textsize">8.89sp</dimen>
-    <dimen name="vod_payment_packageDescribe_textsize">11.11sp</dimen>
+<!-- Launcher -->
+<!-- DetailAttributeContainer -->
+<!-- package detail -->
+<dimen name="vod_payment_price_textsize">8.89sp</dimen>
+<dimen name="vod_payment_packageDescribe_textsize">11.11sp</dimen>
 
 <!-- package detail item -->
 <dimen name="package_item_default_W">134.81dip</dimen>
@@ -348,14 +348,14 @@
 <dimen name="list_view_search_ML">366.67dip</dimen>
 
 <!-- pay panel -->
-    <!-- person center -->
+<!-- person center -->
 
-    <!-- privilege -->
+<!-- privilege -->
 
-    <!-- launcher activity -->
+<!-- launcher activity -->
 
 
-    <!-- recommend -->
+<!-- recommend -->
 <dimen name="recommend_item__W">85.19dip</dimen>
 <dimen name="recommend_item_image__H">55.56dip</dimen>
 
@@ -365,25 +365,25 @@
 <dimen name="menu_item_text_size">17.78sp</dimen>
 
 <!-- activity_tv_guide -->
-    <!-- guide activity -->
+<!-- guide activity -->
 
-    <!-- fragment guide -->
+<!-- fragment guide -->
 
-    <!-- tv guide activity -->
+<!-- tv guide activity -->
 
 
 <!-- top page template -->
 <dimen name="tv_guide_top_section_padding">5.19dp</dimen>
-    <!-- top page template end -->
-    <dimen name="tv_guide_channel_margin_lr">18.89dp</dimen>
+<!-- top page template end -->
+<dimen name="tv_guide_channel_margin_lr">18.89dp</dimen>
 
 <!-- guide fragment -->
 
-    <!-- user center fragment -->
+<!-- user center fragment -->
 
-    <!-- child fragment -->
+<!-- child fragment -->
 
-    <!-- Filter -->
+<!-- Filter -->
 <dimen name="condition_height">37.04dip</dimen>
 <dimen name="submit_btn_width">55.56dip</dimen>
 <dimen name="submit_btn_height">37.04dip</dimen>
@@ -447,17 +447,17 @@
 
 <!-- text size -->
 
-    <!-- launcher activity -->
+<!-- launcher activity -->
 
-    <!-- activity_home -->
+<!-- activity_home -->
 
-    <!-- fragment_node -->
+<!-- fragment_node -->
 
-    <!-- sakura_item_node_list -->
+<!-- sakura_item_node_list -->
 
-    <!-- feedback fragment -->
+<!-- feedback fragment -->
 
-    <!-- help fragment -->
+<!-- help fragment -->
 <dimen name="help_item__h_margin">3.70dp</dimen>
 <dimen name="test_height">111.11dip</dimen>
 <dimen name="weather_guide_text_margin_lr">7.41dp</dimen>
@@ -475,16 +475,16 @@
 <dimen name="location_area_pop_height">250.00dp</dimen>
 
 <!-- sakura -->
-    <!-- fragment film -->
-    <!-- fragment film end -->
+<!-- fragment film -->
+<!-- fragment film end -->
 <!-- fragment entertainment -->
-    <dimen name="entertainment_vaiety_card_image_h">84.07dp</dimen>
-    <dimen name="entertainment_vaiety_channel_title_textsize">11.11sp</dimen>
+<dimen name="entertainment_vaiety_card_image_h">84.07dp</dimen>
+<dimen name="entertainment_vaiety_channel_title_textsize">11.11sp</dimen>
 <!-- fragment entertainment end -->
 
 
-    <!-- fragment sport -->
-    <!-- fragment sport end -->
+<!-- fragment sport -->
+<!-- fragment sport end -->
 <!-- listportait -->
 <dimen name="listportait_top_column_layout_h">41.48dp</dimen>
 <dimen name="listportait_imageview_margin">9.63dp</dimen>
@@ -494,7 +494,7 @@
 <dimen name="listportait_shadow_mt">131.11dip</dimen>
 <dimen name="listportait_shadow_w">15.19dip</dimen>
 <dimen name="listportait_shadow_h">30.37dip</dimen>
-    <!-- listportait end -->
+<!-- listportait end -->
 <!-- listportait item -->
 <dimen name="list_item_preview_img_w">94.07dp</dimen>
 <dimen name="list_item_preview_img_h">131.48dp</dimen>
@@ -538,13 +538,13 @@
 <dimen name="locationFragment_currentPositionTitle_marginLeft">18.89dp</dimen>
 <dimen name="locationFragment_selectedPositionTitle_marginLeft">37.04dp</dimen>
 <dimen name="locationFragment_todayLayout_marginLeft">29.63dp</dimen>
-    <dimen name="locatiionFragment_areaPop_height">153.70dp</dimen>
-    <dimen name="locatoinFragment_areaPop_cancelBtn_marginLeft">31.48dp</dimen>
+<dimen name="locatiionFragment_areaPop_height">153.70dp</dimen>
+<dimen name="locatoinFragment_areaPop_cancelBtn_marginLeft">31.48dp</dimen>
 <dimen name="locationFragment_areaPop_Btn_marginTop">14.81dp</dimen>
 <dimen name="locationFragment_weatherLayout_width">66.67dp</dimen>
 
 
-    <!-- zjq -->
+<!-- zjq -->
 <dimen name="top_panel_view_height">41.48dip</dimen>
 <dimen name="divider_margin_MLR">9.63dip</dimen>
 <!-- filmportait item -->
@@ -589,15 +589,15 @@
 <dimen name="filmitem_portrait_tongleituijian_textview_mt">11.11dip</dimen>
 <!-- filmportait item end -->
 <!-- list_view_item -->
-    <!-- list_view_item end -->
+<!-- list_view_item end -->
 <!-- entertainment_detail_view -->
-    <!-- entertainment_detail_view end -->
+<!-- entertainment_detail_view end -->
 <!-- realte_entertainment_item -->
 
-    <!-- realte_entertainment_item end-->
+<!-- realte_entertainment_item end-->
 
-    <dimen name="variety_dramalist_focustextsize">10.00sp</dimen>
-    <dimen name="variety_dramalist_gridview_mlr">8.89dip</dimen>
+<dimen name="variety_dramalist_focustextsize">10.00sp</dimen>
+<dimen name="variety_dramalist_gridview_mlr">8.89dip</dimen>
 <dimen name="variety_dramalist_gridview_mb">6.30dip</dimen>
 <dimen name="variety_dramalist_gridview_pt">1.48dip</dimen>
 <dimen name="variety_dramalist_gridview_plr">1.85dip</dimen>
@@ -605,13 +605,13 @@
 <dimen name="variety_dramalist_gridview_month_item_pt">10.74dip</dimen>
 <dimen name="variety_dramalist_gridview_month_item_pb">27.78dip</dimen>
 <!-- pay_person_login -->
-    <!-- pay_person_login end-->
+<!-- pay_person_login end-->
 
 <!-- history and collect -->
 <dimen name="history_collect_shadow_mt">130.37dip</dimen>
 
 
-    <!-- pop-->
+<!-- pop-->
 <dimen name="pop_btn_width">66.67dp</dimen>
 <dimen name="pop_btn_height">20.00dp</dimen>
 
@@ -619,7 +619,7 @@
 <dimen name="pop_height">112.96dp</dimen>
 <dimen name="pop_double_line_height">130.00dp</dimen>
 
-    <dimen name="pop_text_width">255.93dp</dimen>
+<dimen name="pop_text_width">255.93dp</dimen>
 <dimen name="pop_text_height">13.70dp</dimen>
 
 <dimen name="pop_first_text_margin_top">18.15dp</dimen>
@@ -629,12 +629,12 @@
 <dimen name="pop_btn_margin_lr">45.56dp</dimen>
 <dimen name="pop_text_layout_height">40.74dp</dimen>
 
-    <dimen name="app_update_bg_height">324.81dp</dimen>
+<dimen name="app_update_bg_height">324.81dp</dimen>
 <dimen name="app_update_bg_width">188.52dp</dimen>
 <dimen name="app_update_content_margin_left">44.44dp</dimen>
 <dimen name="app_update_line_margin_">9.26dp</dimen>
 
-    <dimen name="VIP_tag_w">40.37dip</dimen>
+<dimen name="VIP_tag_w">40.37dip</dimen>
 <dimen name="VIP_tag_h">40.37dip</dimen>
 <dimen name="film_VIP_tag_ml">110.37dip</dimen>
 <dimen name="item_VIP_tag_ml">392.59dip</dimen>
@@ -685,7 +685,7 @@
 <dimen name="qiyi_ad_width">128.52dp</dimen>
 <dimen name="qiyi_ad_height">26.67dp</dimen>
 
-    <dimen name="ad_timer_wh">35.19dp</dimen>
+<dimen name="ad_timer_wh">35.19dp</dimen>
 <dimen name="ad_timer_mt">14.81dp</dimen>
 <dimen name="ad_timer_mr">14.81dp</dimen>
 
@@ -732,7 +732,7 @@
 <dimen name="entertainment_top_left_w">340.00dp</dimen>
 <dimen name="entertainment_thumb_w">48.89dp</dimen>
 <dimen name="entertainment_thumb_h1">27.41dp</dimen>
-    <dimen name="entertainment_thumb_ml">0.37dp</dimen>
+<dimen name="entertainment_thumb_ml">0.37dp</dimen>
 <dimen name="entertainment_thumb_text_h">19.26dp</dimen>
 <dimen name="entertainment_top_right_ml">9.63dp</dimen>
 <dimen name="entertainment_top_right_item_linear_w">148.89dp</dimen>
@@ -748,7 +748,7 @@
 <dimen name="entertainment_bottom_item_space1">10.74dp</dimen>
 <dimen name="entertainment_bottom_item_space2">10.37dp</dimen>
 <dimen name="entertainment_bottom_text_mt">7.78dp</dimen>
-    <dimen name="entertainment_top_label_pt">1.11dp</dimen>
+<dimen name="entertainment_top_label_pt">1.11dp</dimen>
 <dimen name="entertainment_top_label_pb">2.22dp</dimen>
 <dimen name="entertainment_bottom_label_pt">0.74dp</dimen>
 <dimen name="entertainment_bottom_label_pb">2.96dp</dimen>
@@ -793,7 +793,7 @@
 <dimen name="child_thumb_h2">20.37dp</dimen>
 <dimen name="child_right_h">188.89dp</dimen>
 <dimen name="child_more_w">156.67dp</dimen>
-    <dimen name="child_more_mt">22.59dp</dimen>
+<dimen name="child_more_mt">22.59dp</dimen>
 <dimen name="child_more_ml">19.26dp</dimen>
 
 <!--longhai 首页相关ui End -->

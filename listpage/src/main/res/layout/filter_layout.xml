@@ -3,15 +3,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:focusable="true"
-    android:background="#0e163a"
+    android:background="@drawable/bg"
     >
 <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal"
+    android:clipChildren="false"
+    android:clipToPadding="false"
     >
 <LinearLayout
-    android:layout_width="@dimen/filter_layout_left_view_w"
+    android:layout_width="@dimen/filter_layout_left_view_tab_w"
     android:layout_height="match_parent"
     android:orientation="vertical">
     
@@ -24,30 +26,52 @@
         android:layout_marginTop="@dimen/filter_layout_left_view_title_mt"
         android:gravity="center"
         />
-
-    <Button
+    <ScrollView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:scrollbars="none"
+        android:layout_marginTop="@dimen/filter_layout_left_view_tab_mt"
+        >
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        >
+<RadioGroup
+    android:id="@+id/section_group"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    >
+    <RadioButton
         android:id="@+id/filter_tab"
         android:layout_width="@dimen/filter_layout_left_view_tab_w"
         android:layout_height="@dimen/filter_layout_left_view_tab_h"
-        android:background="@drawable/filter_tab_selector"
-        android:focusable="false"
-        android:layout_marginLeft="@dimen/filter_layout_left_view_tab_ml"
+        android:text="筛选"
+        android:textSize="36dp"
+        android:textColor="@color/filter_text"
+        android:drawableLeft="@drawable/filter_icon_selector"
+        android:background="@drawable/section_tab_selector"
+        android:drawablePadding="10dp"
+        android:paddingLeft="97dp"
+        android:paddingRight="97dp"
+        android:paddingTop="25dp"
+        android:paddingBottom="25dp"
+        android:focusable="true"
+        android:button="@null"
+        android:gravity="center"
+        android:checked="true"
         android:layout_marginTop="@dimen/filter_layout_left_view_tab_mt"
-        android:nextFocusDown="@id/filter_tab"/>
-    
+        />
+    </RadioGroup>
+        </LinearLayout>
+    </ScrollView>
 </LinearLayout>
     <View
         android:layout_width="@dimen/filter_layout_left_vertical_view_w"
         android:layout_height="match_parent"
-        android:background="#f0f0f0"
-        android:alpha="0.1"/>
-    <View
-        android:id="@+id/current_tab_arrow"
-        android:layout_width="@dimen/filter_layout_current_tab_arrow_w"
-        android:layout_height="@dimen/filter_layout_current_tab_arrow_h"
-        android:background="@drawable/current_tab_arrow"
-        android:layout_marginLeft="@dimen/filter_layout_current_tab_arrow_ml"
-        android:layout_marginTop="@dimen/filter_layout_current_tab_arrow_mt"/>
+        android:background="#ffffff"
+        android:alpha="0.25"/>
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -56,20 +80,36 @@
         android:clipToPadding="false"
         >
 
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="1080dp"
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            android:scrollbars="none">
+            <LinearLayout
+                android:id="@+id/lister_poster"
+                android:layout_width="match_parent"
+                android:layout_height="1080dp"
+                android:orientation="vertical"
+                android:clipChildren="false"
+                android:clipToPadding="false"
+                android:gravity="center_horizontal">
         <tv.ismar.app.widget.MyRecyclerView
             android:id="@+id/poster_recyclerview"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_width="1415dp"
+            android:layout_height="992dp"
             android:layout_marginTop="@dimen/filter_layout_poster_recyclerview_mt"
-            android:layout_marginLeft="@dimen/filter_layout_poster_recyclerview_ml"
-            android:layout_marginRight="@dimen/filter_layout_poster_recyclerview_mr"
             android:clipToPadding="false"
             android:clipChildren="false"
             />
+
+            </LinearLayout>
+        </ScrollView>
+
         <View
             android:layout_width="match_parent"
             android:layout_height="@dimen/filter_layout_filter_checked_conditiion_h"
-            android:background="#0e163a"
+            android:background="#000000"
         />
         <LinearLayout
             android:id="@+id/filter_checked_conditiion"
@@ -102,11 +142,7 @@
         android:layout_height="@dimen/filter_layout_filter_arrow_w"
         android:layout_marginTop="@dimen/filter_layout_filter_arrow_up_mt"
         android:layout_marginRight="@dimen/filter_layout_filter_arrow_mr"
-        android:background="@drawable/filter_arrow_up_normal"
-        android:nextFocusUp="@id/filter_arrow_up"
         android:layout_alignParentRight="true"
-        android:nextFocusDown="@id/filter_arrow_up"
-        android:nextFocusRight="@id/filter_arrow_up"
         android:visibility="invisible"/>
 
     <Button
@@ -116,10 +152,6 @@
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="@dimen/filter_layout_filter_arrow_down_mb"
         android:layout_marginRight="@dimen/filter_layout_filter_arrow_mr"
-        android:background="@drawable/filter_arrow_down_normal"
-        android:nextFocusDown="@id/filter_arrow_down"
-        android:nextFocusUp="@id/filter_arrow_down"
-        android:nextFocusRight="@id/filter_arrow_down"
         android:layout_alignParentRight="true"
         android:visibility="invisible"/>
 
