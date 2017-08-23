@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
+import tv.ismar.app.BaseActivity;
 import tv.ismar.homepage.R;
 
 /**
@@ -12,7 +13,7 @@ import tv.ismar.homepage.R;
  * @DESC: 主页
  */
 
-public class HomePageActivity extends Activity{
+public class HomePageActivity extends BaseActivity{
 
     
 
