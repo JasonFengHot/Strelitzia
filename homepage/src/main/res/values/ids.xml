@@ -13,4 +13,5 @@
     <item type="id" name="childfragment_lefttop"/>
     <item type="id" name="childfragment_leftbottom"/>
     <item type="id" name="childfragment_righttop"/>
+    <item type="id" name="libbeaver_tab_item"/>
 </resources>

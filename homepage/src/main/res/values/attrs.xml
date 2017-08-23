@@ -180,6 +180,24 @@
 
     <declare-styleable name="DaisyVideoView"/>
 
+    <declare-styleable name="HorizontalTabView">
+        <attr name="tvTabSelectedDrawable" format="reference"/>
+        <attr name="tvTabWidth" format="dimension"/>
+        <attr name="tvTabHeight" format="dimension"/>
+        <attr name="tvTabSpace" format="dimension"/>
+        <attr name="tvTabStartEndPadding" format="dimension"/>
+        <attr name="tvTabScaleBaseline">
+            <enum name="none" value="0"/>
+            <enum name="fromCenter" value="1"/>
+            <enum name="fromTop" value="2"/>
+            <enum name="fromBottom" value="3"/>
+        </attr>
+        <attr name="tvTabScaleMultiple" format="float"/>
+        <attr name="tvTabTextSize" format="dimension"/>
+        <attr name="tvTabTextColor" format="color"/>
+        <attr name="tvTabSelectTextColor" format="color"/>
+        <attr name="tvTabFocusTextColor" format="color"/>
+    </declare-styleable>
 
 
 </resources>
