@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 <dimen name="tv_guide_top_section_padding">12.44dp</dimen>
-    <dimen name="filmitem_portrait_detail_title_size">42.67sp</dimen>
+<dimen name="filmitem_portrait_detail_title_size">42.67sp</dimen>
 <dimen name="item_detail_more_content_marginT">44.44dip</dimen>
 <dimen name="item_detail_btn_layout_marginB">4.44dip</dimen>
 
@@ -11,10 +11,12 @@
 
 <!-- list_view -->
 
-    <!-- package detail item -->
+<!-- package detail item -->
 <dimen name="package_item_default_W">323.56dip</dimen>
 <dimen name="package_item_default_H">199.11dip</dimen>
-    <dimen name="package_item_ItemImage_MT">19.56dip</dimen>
+<dimen name="package_item_ItemImage_W">284.44dip</dimen>
+<dimen name="package_item_ItemImage_H">160.00dip</dimen>
+<dimen name="package_item_ItemImage_MT">19.56dip</dimen>
 <dimen name="package_item_ItemText_MT">6.22dip</dimen>
 <dimen name="package_item_ItemText_PLR">7.11dip</dimen>
 <!-- recommend -->
@@ -28,15 +30,15 @@
 <!-- related_view -->
 <dimen name="related_view_img_W">568.00dip</dimen>
 <dimen name="related_view_img_H">135.11dip</dimen>
-    <dimen name="related_view_gridview_W">225.78dip</dimen>
+<dimen name="related_view_gridview_W">225.78dip</dimen>
 <dimen name="related_view_gridview_ltr">4.44dip</dimen>
-    <dimen name="related_view_hgridview_item_textview_h">73.78dip</dimen>
+<dimen name="related_view_hgridview_item_textview_h">73.78dip</dimen>
 <dimen name="related_view_hgridview_item_pt">13.33dip</dimen>
 <dimen name="related_view_hgridview_item_pb">30.22dip</dimen>
-    <dimen name="related_view_gridview_item_text_pt">1.78dip</dimen>
+<dimen name="related_view_gridview_item_text_pt">1.78dip</dimen>
 <dimen name="related_view_gridview_item_text_h">45.33dip</dimen>
 
-    <dimen name="entertainment_vaiety_channel_title_textsize">26.67sp</dimen>
+<dimen name="entertainment_vaiety_channel_title_textsize">26.67sp</dimen>
 
 <dimen name="list_item_preview_img_w">225.78dp</dimen>
 <dimen name="list_item_preview_img_h">315.56dp</dimen>
@@ -179,17 +181,17 @@
 <dimen name="filter_portraitresult_top_layout_ml">100.44dp</dimen>
 <dimen name="filter_portraitresult_filter_percentage_w">1502.22dip</dimen>
 <dimen name="filter_portraitresult_filter_percentage_h">3.56dip</dimen>
-    <dimen name="filter_portraitresult_shadow_ml">27.56dip</dimen>
+<dimen name="filter_portraitresult_shadow_ml">27.56dip</dimen>
 <dimen name="filter_portraitresult_shadow_mt">316.44dip</dimen>
-    <dimen name="filter_portraitresult_shadow_w">36.44dip</dimen>
+<dimen name="filter_portraitresult_shadow_w">36.44dip</dimen>
 <dimen name="filter_portraitresult_shadow_h">72.89dip</dimen>
 <dimen name="filter_portraitresult_filter_grid_horizontalSpacing">30.22dip</dimen>
-    <dimen name="filter_portraitresult_filter_grid_rowHeight">360.89dip</dimen>
+<dimen name="filter_portraitresult_filter_grid_rowHeight">360.89dip</dimen>
 <dimen name="filter_portraitresult_filter_grid_mt">1.78dip</dimen>
 <dimen name="filter_portraitresult_filter_grid_pt">8.89dip</dimen>
-    <dimen name="filter_portraitresult_filter_grid_ml">30.22dip</dimen>
-    <dimen name="filter_portraitresult_filter_grid_pl">8.00dip</dimen>
-    <dimen name="filter_result_list_view_rowHeight">241.78dip</dimen>
+<dimen name="filter_portraitresult_filter_grid_ml">30.22dip</dimen>
+<dimen name="filter_portraitresult_filter_grid_pl">8.00dip</dimen>
+<dimen name="filter_result_list_view_rowHeight">241.78dip</dimen>
 <dimen name="filter_result_list_filter_grid_pt">3.56dip</dimen>
 <dimen name="filter_result_list_filter_grid_mt">7.11dip</dimen>
 <dimen name="filter_result_list_filter_grid_ml">32.89dip</dimen>
@@ -199,7 +201,7 @@
 <dimen name="filter_view_scrollView_h">612.44dip</dimen>
 <dimen name="filter_view_filtermenulayout_pt">40.89dp</dimen>
 <dimen name="filter_view_filtermenulayout_ml">197.33dip</dimen>
-    <dimen name="filter_view_filter_submit_mt">83.56dp</dimen>
+<dimen name="filter_view_filter_submit_mt">83.56dp</dimen>
 <dimen name="filter_view_filter_submit_ml">731.56dp</dimen>
 <dimen name="filter_view_filter_submit_w">243.56dp</dimen>
 <dimen name="filter_view_filter_submit_h">64.00dp</dimen>
@@ -207,18 +209,18 @@
 <dimen name="filter_condition_item_condition_txt_mt">17.78dip</dimen>
 <dimen name="filter_condition_item_condition_txt_w">107.56dp</dimen>
 <dimen name="filter_condition_item_condition_txt_h">42.67dp</dimen>
-    <dimen name="filter_noresult_layout_h">346.67dp</dimen>
+<dimen name="filter_noresult_layout_h">346.67dp</dimen>
 
-    <dimen name="filter_Hgride_select_padding">18.67dp</dimen>
-    <dimen name="filter_Hgride_select_paddingBttom">-35.56dp</dimen>
+<dimen name="filter_Hgride_select_padding">18.67dp</dimen>
+<dimen name="filter_Hgride_select_paddingBttom">-35.56dp</dimen>
 <dimen name="filter_Hgride_select_hasresult_PB">-53.33dp</dimen>
-    <dimen name="filter_Hgride_noresult_ML">137.78dp</dimen>
+<dimen name="filter_Hgride_noresult_ML">137.78dp</dimen>
 <dimen name="filter_Hgride_noresult_PL">14.22dp</dimen>
 <dimen name="filter_Hgride_PT">13.33dp</dimen>
 <dimen name="filter_Hgride_MT">6.22dp</dimen>
 <dimen name="filter_Hgride_noresult_PT">10.67dp</dimen>
 <dimen name="filter_Hgride_noresult_MT">35.56dp</dimen>
-    <!-- channel_section_tabs -->
+<!-- channel_section_tabs -->
 <dimen name="channel_section_tabs_W">207.11dip</dimen>
 <dimen name="channel_section_tabs_H">75.56dip</dimen>
 <dimen name="channel_section_tabs_label_marginL">8.89dip</dimen>
@@ -246,7 +248,7 @@
 <dimen name="history_top_textBl">25.78dp</dimen>
 <dimen name="clear_history_Ml">1317.33dp</dimen>
 <dimen name="divider_1dp">0.89dp</dimen>
-    <dimen name="history_Hgride_PT">13.33dp</dimen>
+<dimen name="history_Hgride_PT">13.33dp</dimen>
 <dimen name="history_Hgride_MT">66.67dp</dimen>
 <dimen name="history_arrow_MT">368.00dp</dimen>
 <dimen name="history_Hgride_Margin">18.67dp</dimen>
@@ -255,19 +257,19 @@
 <dimen name="filter_layout_left_view_w">318.22dp</dimen>
 <dimen name="filter_layout_left_view_title_h">73.78dp</dimen>
 <dimen name="filter_layout_left_view_title_ts">53.33dp</dimen>
-<dimen name="filter_layout_left_view_title_mt">16.00dp</dimen>
-<dimen name="filter_layout_left_view_tab_w">295.11dp</dimen>
+<dimen name="filter_layout_left_view_title_mt">24.89dp</dimen>
+<dimen name="filter_layout_left_view_tab_w">284.44dp</dimen>
 <dimen name="filter_layout_left_view_tab_h">90.67dp</dimen>
 <dimen name="filter_layout_left_view_tab_ml">9.78dp</dimen>
-<dimen name="filter_layout_left_view_tab_mt">26.67dp</dimen>
+<dimen name="filter_layout_left_view_tab_mt">17.78dp</dimen>
 <dimen name="filter_layout_left_vertical_view_w">1.78dp</dimen>
 <dimen name="filter_layout_current_tab_arrow_w">14.22dp</dimen>
 <dimen name="filter_layout_current_tab_arrow_h">129.78dp</dimen>
 <dimen name="filter_layout_current_tab_arrow_ml">-2.67dp</dimen>
 <dimen name="filter_layout_current_tab_arrow_mt">96.89dp</dimen>
 <dimen name="filter_layout_poster_recyclerview_mt">78.22dp</dimen>
-<dimen name="filter_layout_poster_recyclerview_ml">4.44dp</dimen>
-<dimen name="filter_layout_poster_recyclerview_mr">90.67dp</dimen>
+<dimen name="filter_layout_poster_recyclerview_ml">80.89dp</dimen>
+<dimen name="filter_layout_poster_recyclerview_mr">81.78dp</dimen>
 <dimen name="filter_layout_filter_checked_conditiion_h">67.56dp</dimen>
 <dimen name="filter_layout_filter_checked_conditiion_pt">29.33dp</dimen>
 <dimen name="filter_layout_checked_title_w">120.89dp</dimen>
@@ -306,7 +308,7 @@
 <dimen name="filter_condition_group_arrow_ml">15.11dp</dimen>
 <dimen name="filter_condition_group_recycler_w">1448.00dp</dimen>
 <dimen name="filter_condition_group_recycler_h">38.22dp</dimen>
-    <dimen name="filter_condition_group_layer_w">69.33dp</dimen>
+<dimen name="filter_condition_group_layer_w">69.33dp</dimen>
 <dimen name="filter_condition_group_layer_h">42.67dp</dimen>
 <dimen name="filter_condition_group_layer_ml">134.22dp</dimen>
 <dimen name="filter_condition_group_layer_mr">58.67dp</dimen>
@@ -315,8 +317,8 @@
 <!--filter_group_radio_button-->
 <dimen name="filter_group_radio_button_ts">26.67dp</dimen>
 
-    <!--filter_item_vertical_poster-->
-    <dimen name="filter_item_vertical_poster_mb">14.22dp</dimen>
+<!--filter_item_vertical_poster-->
+<dimen name="filter_item_vertical_poster_mb">14.22dp</dimen>
 <dimen name="item_vertical_poster_img_w">216.00dp</dimen>
 <dimen name="item_vertical_poster_img_h">302.22dp</dimen>
 <dimen name="item_vertical_poster_vip_w">96.89dp</dimen>
@@ -330,7 +332,7 @@
 <dimen name="item_vertical_poster_title_ts">32.00dp</dimen>
 
 <!--filter_item_horizontal_poster-->
-    <dimen name="filter_item_horizontal_poster_mr">1.78dp</dimen>
+<dimen name="filter_item_horizontal_poster_mr">1.78dp</dimen>
 <dimen name="filter_item_horizontal_poster_mb">14.22dp</dimen>
 <dimen name="item_horizontal_poster_img_w">384.00dp</dimen>
 <dimen name="item_horizontal_poster_img_h">216.00dp</dimen>
@@ -346,6 +348,7 @@
 <dimen name="item_horizontal_poster_title_w">384.00dp</dimen>
 <dimen name="item_horizontal_poster_title_h">56.00dp</dimen>
 <dimen name="item_horizontal_poster_title_ts">32.00dp</dimen>
+<dimen name="filter_recycler_scroll_offset">231.11dp</dimen>
 
 <!--incode-->
 <dimen name="filter_condition_radio_mr">34.67dp</dimen>
@@ -361,6 +364,6 @@
 <dimen name="filter_checked_condition_ts">26.67dp</dimen>
 <dimen name="filter_poster_vertical_scroll_space_up">28.44dp</dimen>
 <dimen name="filter_poster_vertical_scroll_space">29.33dp</dimen>
-<dimen name="filter_poster_start_scroll_length">444.44dp</dimen>
+<dimen name="filter_poster_start_scroll_length">800.00dp</dimen>
 <dimen name="filter_condition_group_item_space_2">88.89dp</dimen>
 </resources>

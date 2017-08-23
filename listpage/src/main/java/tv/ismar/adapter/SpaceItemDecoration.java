@@ -13,7 +13,15 @@ public class SpaceItemDecoration extends RecyclerView.ItemDecoration {
     private int spaceH;
     private int spaceV;
 
-    public SpaceItemDecoration(int spaceH,int spaceV) {
+    public int getSpaceH() {
+        return spaceH;
+    }
+
+    public int getSpaceV() {
+        return spaceV;
+    }
+
+    public SpaceItemDecoration(int spaceH, int spaceV) {
         this.spaceH= spaceH;
         this.spaceV=spaceV;
     }

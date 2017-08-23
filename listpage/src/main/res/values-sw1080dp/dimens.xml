@@ -257,19 +257,19 @@
     <dimen name="filter_layout_left_view_w">358dp</dimen>
     <dimen name="filter_layout_left_view_title_h">83dp</dimen>
     <dimen name="filter_layout_left_view_title_ts">60dp</dimen>
-    <dimen name="filter_layout_left_view_title_mt">18dp</dimen>
-    <dimen name="filter_layout_left_view_tab_w">332dp</dimen>
+    <dimen name="filter_layout_left_view_title_mt">28dp</dimen>
+    <dimen name="filter_layout_left_view_tab_w">320dp</dimen>
     <dimen name="filter_layout_left_view_tab_h">102dp</dimen>
     <dimen name="filter_layout_left_view_tab_ml">11dp</dimen>
-    <dimen name="filter_layout_left_view_tab_mt">30dp</dimen>
+    <dimen name="filter_layout_left_view_tab_mt">20dp</dimen>
     <dimen name="filter_layout_left_vertical_view_w">2dp</dimen>
     <dimen name="filter_layout_current_tab_arrow_w">16dp</dimen>
     <dimen name="filter_layout_current_tab_arrow_h">146dp</dimen>
     <dimen name="filter_layout_current_tab_arrow_ml">-3dp</dimen>
     <dimen name="filter_layout_current_tab_arrow_mt">109dp</dimen>
     <dimen name="filter_layout_poster_recyclerview_mt">88dp</dimen>
-    <dimen name="filter_layout_poster_recyclerview_ml">5dp</dimen>
-    <dimen name="filter_layout_poster_recyclerview_mr">102dp</dimen>
+    <dimen name="filter_layout_poster_recyclerview_ml">91dp</dimen>
+    <dimen name="filter_layout_poster_recyclerview_mr">92dp</dimen>
     <dimen name="filter_layout_filter_checked_conditiion_h">76dp</dimen>
     <dimen name="filter_layout_filter_checked_conditiion_pt">33dp</dimen>
     <dimen name="filter_layout_checked_title_w">136dp</dimen>
@@ -348,6 +348,7 @@
     <dimen name="item_horizontal_poster_title_w">432dp</dimen>
     <dimen name="item_horizontal_poster_title_h">63dp</dimen>
     <dimen name="item_horizontal_poster_title_ts">36dp</dimen>
+    <dimen name="filter_recycler_scroll_offset">260dp</dimen>
 
     <!--incode-->
     <dimen name="filter_condition_radio_mr">39dp</dimen>
@@ -363,6 +364,6 @@
     <dimen name="filter_checked_condition_ts">30dp</dimen>
     <dimen name="filter_poster_vertical_scroll_space_up">32dp</dimen>
     <dimen name="filter_poster_vertical_scroll_space">33dp</dimen>
-    <dimen name="filter_poster_start_scroll_length">500dp</dimen>
+    <dimen name="filter_poster_start_scroll_length">900dp</dimen>
     <dimen name="filter_condition_group_item_space_2">100dp</dimen>
 </resources>

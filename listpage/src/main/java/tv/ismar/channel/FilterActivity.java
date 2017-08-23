@@ -4,7 +4,6 @@ package tv.ismar.channel;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Message;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
@@ -71,7 +70,10 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
     private boolean canScroll=true;
     private boolean isFocused;
     private RadioGroup section_group;
-    private View current_tab_arrow;
+    private FocusGridLayoutManager mFocusGridLayoutManager;
+    private SpaceItemDecoration mSpaceItemDecoration;
+    private LinearLayout lister_poster;
+    private String checkedTitle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,7 +105,6 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
         filter_title = (TextView) findViewById(R.id.filter_title);
         section_group = (RadioGroup) findViewById(R.id.section_group);
         filter_tab = (RadioButton) findViewById(R.id.filter_tab);
-        current_tab_arrow = findViewById(R.id.current_tab_arrow);
         filter_checked_conditiion = (LinearLayout) findViewById(R.id.filter_checked_conditiion);
         poster_recyclerview = (MyRecyclerView) findViewById(R.id.poster_recyclerview);
         poster_recyclerview.setHasFixedSize(true);
@@ -111,17 +112,21 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
         filter_conditions = (LinearLayout)filter_condition_layout.findViewById(R.id.filter_conditions);
         filter_arrow_up = findView(R.id.filter_arrow_up);
         filter_arrow_down = findView(R.id.filter_arrow_down);
+        lister_poster = (LinearLayout) findViewById(R.id.lister_poster);
 
         if(isVertical) {
             spanCount = 5;
-            poster_recyclerview.addItemDecoration(new SpaceItemDecoration(0,getResources().getDimensionPixelOffset(R.dimen.filter_item_vertical_poster_mb)));
+            mSpaceItemDecoration = new SpaceItemDecoration(0,getResources().getDimensionPixelOffset(R.dimen.filter_item_vertical_poster_mb));
+            poster_recyclerview.addItemDecoration(mSpaceItemDecoration);
             poster_recyclerview.setPadding(0,0,0,getResources().getDimensionPixelOffset(R.dimen.vertical_recycler_padding_bottom));
         }else{
             spanCount = 3;
+            mSpaceItemDecoration=new SpaceItemDecoration(getResources().getDimensionPixelOffset(R.dimen.filter_item_horizontal_poster_mr),getResources().getDimensionPixelOffset(R.dimen.filter_item_horizontal_poster_mb));
             poster_recyclerview.setPadding(0,0,0,getResources().getDimensionPixelOffset(R.dimen.horizontal_recycler_padding_bottom));
-            poster_recyclerview.addItemDecoration(new SpaceItemDecoration(getResources().getDimensionPixelOffset(R.dimen.filter_item_horizontal_poster_mr),getResources().getDimensionPixelOffset(R.dimen.filter_item_horizontal_poster_mb)));
+            poster_recyclerview.addItemDecoration(mSpaceItemDecoration);
         }
-        poster_recyclerview.setLayoutManager(new FocusGridLayoutManager(this, spanCount));
+        mFocusGridLayoutManager = new FocusGridLayoutManager(this,spanCount);
+        poster_recyclerview.setLayoutManager(mFocusGridLayoutManager);
         filter_tab.setOnClickListener(this);
         filter_tab.setOnHoverListener(this);
         filter_tab.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -209,12 +214,8 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                 @Override
                 public void onFocusChange(View v, boolean hasFocus) {
                     if(hasFocus){
-                        radioButton.setPadding(40,0,40,0);
-                        radioButton.setGravity(Gravity.CENTER);
                         radioButton.setEllipsize(TextUtils.TruncateAt.MARQUEE);
                     }else{
-                        radioButton.setPadding(40,0,75,0);
-                        radioButton.setGravity(Gravity.CENTER_VERTICAL|Gravity.RIGHT);
                         radioButton.setEllipsize(TextUtils.TruncateAt.END);
                     }
                 }
@@ -223,11 +224,11 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     if(isChecked){
+                        checkedTitle = section.title;
                         if(filterPopup!=null&&filterPopup.isShowing())
                             filterPopup.dismiss();
                         filter_checked_conditiion.setVisibility(View.INVISIBLE);
                         filter_checked_conditiion.requestLayout();
-                        current_tab_arrow.setY(radioButton.getY()+getResources().getDimensionPixelOffset(R.dimen.filter_layout_left_view_tab_mt));
                         fetchSectionData(section.url);
                     }
                 }
@@ -436,6 +437,7 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                 });
     }
 
+    private boolean isFirst=true;
     private void processResultData(final ItemList itemList) {
         filter_arrow_up.setVisibility(View.INVISIBLE);
         if(itemList.objects.size()!=0){
@@ -448,7 +450,7 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
             filter_arrow_down.setVisibility(View.INVISIBLE);
         }
         filterPosterAdapter = new FilterPosterAdapter(FilterActivity.this,itemList,isVertical);
-        poster_recyclerview.swapAdapter(filterPosterAdapter,true);
+        poster_recyclerview.swapAdapter(filterPosterAdapter, true);
         filterPosterAdapter.setItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
@@ -470,7 +472,9 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                 if(hasFocus){
                     isFocused = true;
                     focusedPos =poster_recyclerview.indexOfChild(view);
+                    Log.e("postery",view.getY()+"");
                     if(view.getY()>getResources().getDimensionPixelOffset(R.dimen.filter_poster_start_scroll_length)){
+//                        mFocusGridLayoutManager.scrollToPositionWithOffset(position, view.getHeight()+mSpaceItemDecoration.getSpaceV());
                         if(canScroll) {
                             poster_recyclerview.smoothScrollBy(0, (int) (view.getY() - view.getHeight() - getResources().getDimensionPixelOffset(R.dimen.filter_item_vertical_poster_mb)));
                         }else{
@@ -493,6 +497,7 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                 }
             }
         });
+        isFirst=false;
     }
 
     private void filter() {
@@ -553,7 +558,6 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
         }else if(i==R.id.filter_tab){
             filter_tab.setFocusable(false);
             getRootView().requestFocus();
-            current_tab_arrow.setY(filter_tab.getY()+getResources().getDimensionPixelOffset(R.dimen.filter_layout_left_view_tab_mt));
             if(filter_checked_conditiion.getChildCount()>1){
                 filter_checked_conditiion.setVisibility(View.VISIBLE);
             }
