@@ -15,8 +15,6 @@ import tv.ismar.homepage.R;
 
 public class HomePageActivity extends BaseActivity{
 
-    
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
