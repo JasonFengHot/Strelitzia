@@ -37,11 +37,13 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.text.Layout;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Animation;
@@ -49,6 +51,8 @@ import android.view.animation.ScaleAnimation;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import org.w3c.dom.Text;
 
 import java.util.List;
 
@@ -158,8 +162,13 @@ public class HorizontalTabView extends HorizontalScrollView implements View.OnCl
         LinearLayout.LayoutParams layoutParams;
         layoutParams = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT);
-
-        TextView item = new TextView(mContext);
+        TextView item;
+        if (label.equals("搜索")) {
+            item = (TextView) LayoutInflater.from(getContext()).inflate(R.layout.item_channel_search, null);
+            item.setCompoundDrawablePadding(10);
+        } else {
+            item = new TextView(mContext);
+        }
         if (tabHeight > 0) {
             item.setHeight(tabHeight);
         }

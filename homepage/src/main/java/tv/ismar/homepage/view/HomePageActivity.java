@@ -191,7 +191,7 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
         pageIntent.toSearch(this);
     }
 
-    private void handlerSwitchPage(int position){
+    private void handlerSwitchPage(int position) {
         if (channelEntityList.isEmpty()) {
             return;
         }
@@ -317,7 +317,7 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
 
         advertiseManager = new AdvertiseManager(getApplicationContext());
         launchAds = advertiseManager.getAppLaunchAdvertisement();
-        advertisement=new Advertisement(this);
+        advertisement = new Advertisement(this);
         for (AdvertiseTable tab : launchAds) {
             totalAdsMills = totalAdsMills + tab.duration * 1000;
         }
@@ -344,7 +344,7 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
 
         large_layout = (FrameLayout) findViewById(R.id.large_layout);
         bitmapDecoder = new BitmapDecoder();
-        bitmapDecoder.decode(this, R.drawable.main_bg, new BitmapDecoder.Callback() {
+        bitmapDecoder.decode(this, R.drawable.homepage_background, new BitmapDecoder.Callback() {
             @Override
             public void onSuccess(BitmapDrawable bitmapDrawable) {
                 large_layout.setBackground(bitmapDrawable);
@@ -375,7 +375,7 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
                     "section", -1, homepage_template, -1
             );
         }
-        new Thread(){
+        new Thread() {
             @Override
             public void run() {
                 // 日志上报
@@ -393,15 +393,15 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
                         SimpleRestClient.app, getPackageName());
             }
         }.start();
-        Log.i("MacLog",DeviceUtils.getLocalMacAddress(HomePageActivity.this));
+        Log.i("MacLog", DeviceUtils.getLocalMacAddress(HomePageActivity.this));
     }
 
     private Boolean isSanzhou() {
 
-        Log.i("SanZHou","fromPage: "+fromPage+"  product: "+ IsmartvPlatform.getKind());
-        if((fromPage==null||fromPage.equals(""))&&IsmartvPlatform.isForbiddenLauncher()){
+        Log.i("SanZHou", "fromPage: " + fromPage + "  product: " + IsmartvPlatform.getKind());
+        if ((fromPage == null || fromPage.equals("")) && IsmartvPlatform.isForbiddenLauncher()) {
             return true;
-       }else {
+        } else {
             return false;
         }
     }
@@ -495,7 +495,7 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
                 accountSharedPrefs.setSharedPrefs(AccountSharedPrefs.APP_UPDATE_DOMAIN, upgrade_domain);
                 accountSharedPrefs.setSharedPrefs(AccountSharedPrefs.LOG_DOMAIN, log_domain);
                 accountSharedPrefs.setSharedPrefs(AccountSharedPrefs.API_DOMAIN, apiDomain);
-                accountSharedPrefs.setSharedPrefs(AccountSharedPrefs.ADVERTISEMENT_DOMAIN,ad_domain);
+                accountSharedPrefs.setSharedPrefs(AccountSharedPrefs.ADVERTISEMENT_DOMAIN, ad_domain);
                 accountSharedPrefs.setSharedPrefs(AccountSharedPrefs.DEVICE_TOKEN, IsmartvActivator.getInstance().getDeviceToken());
                 accountSharedPrefs.setSharedPrefs(AccountSharedPrefs.SN_TOKEN, IsmartvActivator.getInstance().getSnToken());
                 if (apiDomain != null && !apiDomain.contains("http")) {
@@ -527,14 +527,14 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
 
     @Override
     public void onBackPressed() {
-            if (countAdTime > 0) {
-                if (mHandler.hasMessages(MSG_AD_COUNTDOWN)) {
-                    mHandler.removeMessages(MSG_AD_COUNTDOWN);
-                }
-                finish();
-            } else {
-                showExitPopup(contentView);
+        if (countAdTime > 0) {
+            if (mHandler.hasMessages(MSG_AD_COUNTDOWN)) {
+                mHandler.removeMessages(MSG_AD_COUNTDOWN);
             }
+            finish();
+        } else {
+            showExitPopup(contentView);
+        }
     }
 
     /**
@@ -553,7 +553,7 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
 
                     @Override
                     public void onError(Throwable e) {
-                        Log.i("ADBUg",isPlayingStartAd+"totalADs: "+totalAdsMills);
+                        Log.i("ADBUg", isPlayingStartAd + "totalADs: " + totalAdsMills);
                         if (isPlayingStartAd) {
                             if (!NetworkUtils.isConnected(HomePageActivity.this) && !NetworkUtils.isWifi(HomePageActivity.this)) {
                                 mHandler.sendEmptyMessageDelayed(MSG_SHOW_NO_NET, totalAdsMills);
@@ -572,7 +572,7 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
                     @Override
                     public void onNext(ChannelEntity[] channelEntities) {
                         String apiDomain = PreferenceManager.getDefaultSharedPreferences(HomePageActivity.this).getString("api_domain", "");
-                        if (!TextUtils.isEmpty(apiDomain)){
+                        if (!TextUtils.isEmpty(apiDomain)) {
                             LogQueue.getInstance().init(apiDomain);
                         }
 //                        fillChannelLayout(channelEntities);
@@ -584,11 +584,13 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
 
     private void fillChannelTab(ChannelEntity[] channelEntities) {
         List<HorizontalTabView.Tab> tabs = new ArrayList<>();
-        for (ChannelEntity entity : channelEntities){
+        HorizontalTabView.Tab searchTab = new HorizontalTabView.Tab("", "搜索");
+        tabs.add(searchTab);
+        for (ChannelEntity entity : channelEntities) {
             HorizontalTabView.Tab tab = new HorizontalTabView.Tab("", entity.getName());
             tabs.add(tab);
         }
-        for (ChannelEntity entity : channelEntities){
+        for (ChannelEntity entity : channelEntities) {
             HorizontalTabView.Tab tab = new HorizontalTabView.Tab("", entity.getName());
             tabs.add(tab);
         }
@@ -705,7 +707,8 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
                 }
         );
     }
-    private void showSanzhouPop(){
+
+    private void showSanzhouPop() {
         sanZhouPop = ExpireAccessTokenPop.getInstance(this);
         sanZhouPop.setFirstMessage("服务类程序禁止操作!");
         sanZhouPop.setBackground();
@@ -1022,7 +1025,7 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
     protected void onResume() {
         super.onResume();
         AppConstant.purchase_referer = "homepage";
-        AppConstant.purchase_entrance_page="homepage";
+        AppConstant.purchase_entrance_page = "homepage";
         if (!isneedpause) {
             return;
         }
@@ -1030,17 +1033,17 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
         if (!TextUtils.isEmpty(brandName) && brandName.equalsIgnoreCase("konka")) {
             setAspectRatio();
         }
-        Log.e(TAG, "onresume Isnetwork"+Adend);
-        if (!NetworkUtils.isConnected(this) && !NetworkUtils.isWifi(this)&&Adend)
+        Log.e(TAG, "onresume Isnetwork" + Adend);
+        if (!NetworkUtils.isConnected(this) && !NetworkUtils.isWifi(this) && Adend)
             showNoNetConnectDelay();
     }
 
     private void setAspectRatio() {
         try {
-            Class<?> clazz =  Class.forName("com.konka.android.media.KKMediaPlayer");
+            Class<?> clazz = Class.forName("com.konka.android.media.KKMediaPlayer");
             Method method = clazz.getMethod("setAspectRatio", int.class);
             method.invoke(null, 0);
-        }catch (Exception e){
+        } catch (Exception e) {
             Log.e("KKMediaPlayer", "setAspectRatio method.invoke error!");
         }
     }
@@ -1100,7 +1103,7 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
         BaseActivity.baseChannel = "";
         BaseActivity.baseSection = "";
         mHandler.removeCallbacks(mRunnable);
-        mHandler=null;
+        mHandler = null;
         super.onDestroy();
     }
 
@@ -1279,7 +1282,7 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
                             if (playIndex == 0) {
                                 mHandler.sendEmptyMessage(MSG_AD_COUNTDOWN);
                             }
-                            if(launchAds.get(playIndex).media_id!=null) {
+                            if (launchAds.get(playIndex).media_id != null) {
                                 int media_id = Integer.parseInt(launchAds.get(playIndex).media_id);
                                 advertisement.getRepostAdUrl(media_id, "startAd");
                             }
@@ -1307,7 +1310,7 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
             if (!mHandler.hasMessages(MSG_AD_COUNTDOWN)) {
                 mHandler.sendEmptyMessage(MSG_AD_COUNTDOWN);
             }
-            if(launchAds.get(playIndex).media_id!=null) {
+            if (launchAds.get(playIndex).media_id != null) {
                 int media_id = Integer.parseInt(launchAds.get(playIndex).media_id);
                 advertisement.getRepostAdUrl(media_id, "startAd");
             }
@@ -1349,14 +1352,14 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
         }
     };
 
-    private boolean Adend=false;
+    private boolean Adend = false;
     private Handler mHandler = new Handler(Looper.getMainLooper()) {
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case MSG_AD_COUNTDOWN:
                     Log.i(TAG, "ad handler");
-                    if(isSanzhou()){
+                    if (isSanzhou()) {
                         showSanzhouPop();
                         return;
                     }
@@ -1365,7 +1368,7 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
                     }
                     if (!isPlayingVideo && countAdTime == 0) {
                         mHandler.removeMessages(MSG_AD_COUNTDOWN);
-                        Adend=true;
+                        Adend = true;
                         goNextPage();
                         return;
                     }
@@ -1422,7 +1425,7 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
     private void goNextPage() {
         Log.i(TAG, "goNextPage");
         isPlayingStartAd = false;
-        if(home_ad_video != null){
+        if (home_ad_video != null) {
             home_ad_video.stopPlayback();
             home_ad_video = null;
         }
@@ -1440,16 +1443,18 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
 //            showNoNetConnectDialog();
 //        }
         startAdsService();
-        mHandler.sendEmptyMessageDelayed(0,1000);
+        mHandler.sendEmptyMessageDelayed(0, 1000);
 
-        new Handler().postDelayed(mRunnable,1000);
+        new Handler().postDelayed(mRunnable, 1000);
     }
-    private Runnable mRunnable=new Runnable() {
+
+    private Runnable mRunnable = new Runnable() {
         @Override
         public void run() {
             showLoginHint();
         }
     };
+
     private int getAdCountDownTime() {
         if (launchAds == null || launchAds.isEmpty() || !isPlayingVideo) {
             return 0;
