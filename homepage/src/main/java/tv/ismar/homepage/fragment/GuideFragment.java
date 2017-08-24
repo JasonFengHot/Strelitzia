@@ -58,4 +58,32 @@ public class GuideFragment extends ChannelBaseFragment {
 }
 
 
+class Flag {
+
+    private ChangeCallback changeCallback;
+
+    public Flag(ChangeCallback changeCallback) {
+        this.changeCallback = changeCallback;
+    }
+
+    private int position;
+
+    public void setPosition(int position) {
+        this.position = position;
+        changeCallback.change(position);
+
+    }
+
+    public int getPosition() {
+        return position;
+    }
+
+    public interface ChangeCallback {
+        void change(int position);
+    }
+
+
+}
+
+
 
