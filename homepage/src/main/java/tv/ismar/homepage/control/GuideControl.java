@@ -16,6 +16,11 @@ public class GuideControl extends BaseControl{
         super(context);
     }
 
+    public GuideControl(Context context, ControlCallBack callBack){
+        super(context, callBack);
+
+    }
+
     /*获取网络数据*/
     public void fetchNetData(){
 

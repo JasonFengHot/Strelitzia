@@ -24,12 +24,22 @@ public class BaseControl {
         this.mActivity = activity;
     }
 
+    public BaseControl(Context context, ControlCallBack callBack){
+        this(context);
+        setCallBack(callBack);
+    }
+
+    public BaseControl(Activity activity, ControlCallBack callBack){
+        this(activity);
+        setCallBack(callBack);
+    }
+
     public void setCallBack(ControlCallBack callBack){
         this.mCallBack = callBack;
     }
 
     /*回调控制视图*/
-    interface ControlCallBack {
+    public interface ControlCallBack {
         void callBack();
     }
 }
