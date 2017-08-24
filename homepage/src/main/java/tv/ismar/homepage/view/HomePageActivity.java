@@ -1,6 +1,7 @@
 package tv.ismar.homepage.view;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
@@ -12,6 +13,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -34,8 +36,8 @@ import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.blankj.utilcode.utils.StringUtils;
-import com.konka.android.media.KKMediaPlayer;
+import com.blankj.utilcode.util.StringUtils;
+import com.orhanobut.logger.Logger;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.NetworkPolicy;
@@ -44,6 +46,7 @@ import com.squareup.picasso.Picasso;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.ref.WeakReference;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -57,6 +60,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import tv.ismar.account.ActiveService;
 import tv.ismar.account.IsmartvActivator;
+import tv.ismar.account.IsmartvPlatform;
 import tv.ismar.account.statistics.LogQueue;
 import tv.ismar.app.AppConstant;
 import tv.ismar.app.BaseActivity;
@@ -79,7 +83,6 @@ import tv.ismar.app.player.CallaPlay;
 import tv.ismar.app.service.TrueTimeService;
 import tv.ismar.app.ui.HeadFragment;
 import tv.ismar.app.update.UpdateService;
-import tv.ismar.app.util.AppConfigHelper;
 import tv.ismar.app.util.BitmapDecoder;
 import tv.ismar.app.util.DeviceUtils;
 import tv.ismar.app.util.NetworkUtils;
@@ -100,6 +103,7 @@ import tv.ismar.homepage.fragment.MessageDialogFragment;
 import tv.ismar.homepage.fragment.SportFragment;
 import tv.ismar.homepage.fragment.UpdateSlienceLoading;
 import tv.ismar.homepage.widget.DaisyVideoView;
+import tv.ismar.library.exception.ExceptionUtils;
 import tv.ismar.player.gui.PlaybackService;
 
 /**
@@ -335,21 +339,11 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
             getSupportFragmentManager().beginTransaction().replace(android.R.id.content, new UpdateSlienceLoading()).commit();
             return;
         }
-//        contentView.getViewTreeObserver().addOnGlobalFocusChangeListener(new ViewTreeObserver.OnGlobalFocusChangeListener() {
-//            @Override
-//            public void onGlobalFocusChanged(View oldFocus, View newFocus) {
-//                if(newFocus!=null&&oldFocus!=null) {
-//                    if(newFocus.getId()==R.id.large_layout){
-//                        Log.i("newFocus", "larg_layout: "+newFocus.toString());
-//                    }
-//                    Log.i("newFocus", newFocus.toString());
-//                }
-//            }
-//        });
 
         try {
             System.setProperty("http.keepAlive", "false");
         } catch (Exception e) {
+            ExceptionUtils.sendProgramError(e);
             e.printStackTrace();
         }
         fromPage = getIntent().getStringExtra("fromPage");
@@ -390,6 +384,7 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
             sysProperties.load(is);
             brandName = sysProperties.getProperty("platform");
         } catch (IOException e) {
+            ExceptionUtils.sendProgramError(e);
             e.printStackTrace();
         }
 
@@ -433,7 +428,8 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
                 String province = (String) SPUtils.getValue(InitializeProcess.PROVINCE_PY, "");
                 String city = (String) SPUtils.getValue(InitializeProcess.CITY, "");
                 String isp = (String) SPUtils.getValue(InitializeProcess.ISP, "");
-                callaPlay.app_start(IsmartvActivator.getInstance().getSnToken(),
+                String snToken = PreferenceManager.getDefaultSharedPreferences(HomePageActivity.this).getString("sn_token", "");
+                callaPlay.app_start(snToken,
                         VodUserAgent.getModelName(), DeviceUtils.getScreenInch(HomePageActivity.this),
                         android.os.Build.VERSION.RELEASE,
                         SimpleRestClient.appVersion,
@@ -443,21 +439,13 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
                         SimpleRestClient.app, getPackageName());
             }
         }.start();
-       // Log.i("MacLog",DeviceUtils.getLocalMacAddress(HomePageActivity.this));
+        Log.i("MacLog",DeviceUtils.getLocalMacAddress(HomePageActivity.this));
     }
 
     private Boolean isSanzhou() {
-        String product="";
-        try {
-            AppConfigHelper.init(this);
-           product= AppConfigHelper.getPlatform();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        }
-        Log.i("SanZHou","fromPage: "+fromPage+"  product: "+product);
-        if((fromPage==null||fromPage.equals(""))&&product.equals("sanzhou")){
+
+        Log.i("SanZHou","fromPage: "+fromPage+"  product: "+ IsmartvPlatform.getKind());
+        if((fromPage==null||fromPage.equals(""))&&IsmartvPlatform.isForbiddenLauncher()){
             return true;
        }else {
             return false;
@@ -705,10 +693,12 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
                 } catch (NameNotFoundException e) {
                     e.printStackTrace();
                 }
-                String apiDomain = IsmartvActivator.getInstance().getApiDomain();
-                String ad_domain = IsmartvActivator.getInstance().getAdDomain();
-                String log_domain = IsmartvActivator.getInstance().getLogDomain();
-                String upgrade_domain = IsmartvActivator.getInstance().getUpgradeDomain();
+                SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(HomePageActivity.this);
+                String apiDomain = sharedPreferences.getString("api_domain", "");
+                String ad_domain = sharedPreferences.getString("ad_domain", "");
+                String log_domain = sharedPreferences.getString("log_domain", "");
+                String upgrade_domain = sharedPreferences.getString("upgrade_domain", "");
+
                 AccountSharedPrefs accountSharedPrefs = AccountSharedPrefs.getInstance();
                 accountSharedPrefs.setSharedPrefs(AccountSharedPrefs.APP_UPDATE_DOMAIN, upgrade_domain);
                 accountSharedPrefs.setSharedPrefs(AccountSharedPrefs.LOG_DOMAIN, log_domain);
@@ -759,7 +749,7 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
      * fetch channel
      */
     private void fetchChannels() {
-
+        Logger.d("fetch channel");
         channelsSub = SkyService.ServiceManager.getCacheSkyService().apiTvChannels()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -780,7 +770,7 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
                             }
                         } else {
                             if (!NetworkUtils.isConnected(HomePageActivity.this) && !NetworkUtils.isWifi(HomePageActivity.this)) {
-                                showNoNetConnectDialog();
+//                                showNoNetConnectDialog();
                             } else {
                                 showNetWorkErrorDialog(e);
                             }
@@ -789,10 +779,12 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
 
                     @Override
                     public void onNext(ChannelEntity[] channelEntities) {
-                        LogQueue.getInstance().init(IsmartvActivator.getInstance().getApiDomain());
+                        String apiDomain = PreferenceManager.getDefaultSharedPreferences(HomePageActivity.this).getString("api_domain", "");
+                        if (!TextUtils.isEmpty(apiDomain)){
+                            LogQueue.getInstance().init(apiDomain);
+                        }
                         fillChannelLayout(channelEntities);
                     }
-
                 });
     }
 
@@ -857,6 +849,7 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
                 transaction.replace(R.id.home_container, currentFragment, "template").commitAllowingStateLoss();
                 home_tab_list.requestFocus();
             } catch (IllegalStateException e) {
+                ExceptionUtils.sendProgramError(e);
             }
 
         }
@@ -956,6 +949,7 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
             });
             neterrorshow = true;
         } catch (android.view.WindowManager.BadTokenException e) {
+            ExceptionUtils.sendProgramError(e);
             e.printStackTrace();
         }
     }
@@ -1226,18 +1220,21 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
         }
         neterrorshow = false;
         if (!TextUtils.isEmpty(brandName) && brandName.equalsIgnoreCase("konka")) {
-            try {
-                Class.forName("com.konka.android.media.KKMediaPlayer");
-                KKMediaPlayer localKKMediaPlayer1 = new KKMediaPlayer();
-                KKMediaPlayer.setContext(this);
-                localKKMediaPlayer1.setAspectRatio(0);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            setAspectRatio();
         }
         Log.e(TAG, "onresume Isnetwork"+Adend);
         if (!NetworkUtils.isConnected(this) && !NetworkUtils.isWifi(this)&&Adend)
             showNoNetConnectDelay();
+    }
+
+    private void setAspectRatio() {
+        try {
+            Class<?> clazz =  Class.forName("com.konka.android.media.KKMediaPlayer");
+            Method method = clazz.getMethod("setAspectRatio", int.class);
+            method.invoke(null, 0);
+        }catch (Exception e){
+            Log.e("KKMediaPlayer", "setAspectRatio method.invoke error!");
+        }
     }
 
     @Override
@@ -1600,7 +1597,7 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
                     }
                     break;
                 case MSG_SHOW_NO_NET:
-                    showNoNetConnectDialog();
+//                    showNoNetConnectDialog();
                     break;
                 case MSG_SHOW_NET_ERROR:
                     break;
@@ -1633,9 +1630,9 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
             mHandler.removeMessages(MSG_AD_COUNTDOWN);
         }
         isneedpause = true;
-        if (!NetworkUtils.isConnected(this)) {// 首页有数据缓存
-            showNoNetConnectDialog();
-        }
+//        if (!NetworkUtils.isConnected(this)) {// 首页有数据缓存
+//            showNoNetConnectDialog();
+//        }
         startAdsService();
         mHandler.sendEmptyMessageDelayed(0,1000);
 
