@@ -1,6 +1,5 @@
 package tv.ismar.homepage.fragment;
 
-
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -15,10 +14,13 @@ import tv.ismar.homepage.widget.scroll.VerticalBanner;
 
 /**
  * 首页
+ * 注：1.保证方法职责单一（只做一件事情） 2.业务相关的写到control里面，视图相关的写到fragment里面
+ *     3.必要的注释要有奥，如flag标记，说清楚不同的值代表啥意思，其他的自己斟酌
+ *     4.用工程化思维去写代码
  */
 public class GuideFragment extends ChannelBaseFragment implements BaseControl.ControlCallBack {
 
-    private GuideControl mControl = null;
+    private GuideControl mControl = null;//业务类引用
 
     private VerticalBanner mContainer;
 
