@@ -1,60 +1,61 @@
 package tv.ismar.homepage.fragment;
 
+
 import android.app.Activity;
-import android.graphics.drawable.BitmapDrawable;
-import android.media.AudioManager;
-import android.media.MediaPlayer;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
-import android.preference.PreferenceManager;
-import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
-import android.widget.TextView;
 
-import com.blankj.utilcode.util.StringUtils;
-import com.squareup.picasso.MemoryPolicy;
-import com.squareup.picasso.Picasso;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-
-import cn.ismartv.truetime.TrueTime;
-import rx.Observer;
-import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
-import tv.ismar.app.AppConstant;
-import tv.ismar.app.core.SimpleRestClient;
-import tv.ismar.app.core.cache.CacheManager;
-import tv.ismar.app.core.cache.DownloadClient;
-import tv.ismar.app.entity.HomePagerEntity;
-import tv.ismar.app.entity.HomePagerEntity.Carousel;
-import tv.ismar.app.network.SkyService;
-import tv.ismar.app.player.CallaPlay;
-import tv.ismar.app.util.BitmapDecoder;
-import tv.ismar.app.util.NetworkUtils;
+import tv.ismar.app.BaseControl;
 import tv.ismar.homepage.R;
-import tv.ismar.homepage.view.HomePageActivity;
-import tv.ismar.homepage.widget.DaisyVideoView;
-import tv.ismar.homepage.widget.DaisyViewContainer;
-import tv.ismar.homepage.widget.HomeItemContainer;
-import tv.ismar.homepage.widget.LabelImageView3;
-import tv.ismar.library.exception.ExceptionUtils;
-import tv.ismar.library.util.C;
+import tv.ismar.homepage.control.GuideControl;
+import tv.ismar.homepage.widget.scroll.VerticalBanner;
 
-//import org.apache.commons.lang3.StringUtils;
 
 /**
  * 首页
  */
-public class GuideFragment extends ChannelBaseFragment {
+public class GuideFragment extends ChannelBaseFragment implements BaseControl.ControlCallBack {
 
+    private GuideControl mControl = null;
+
+    private VerticalBanner mContainer;
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        mControl = new GuideControl(getContext(), this);
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_guide, null);
+        findViews(view);
+        initListener();
+        return view;
+    }
+
+    /*获取控件实例*/
+    private void findViews(View view){
+        mContainer = (VerticalBanner) view.findViewById(R.id.guide_container);
+    }
+
+    /*初始化监听*/
+    private void initListener(){
+
+    }
+
+    private View createView(int layoutId){
+        return LayoutInflater.from(getContext()).inflate(layoutId, null);
+    }
+
+
+    /*用于业务类回调控制UI*/
+    @Override
+    public void callBack(int flag) {
+
+    }
 }
 
 
