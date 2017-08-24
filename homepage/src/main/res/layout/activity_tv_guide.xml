@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/large_layout"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+             xmlns:app="http://schemas.android.com/apk/res-auto"
+             android:id="@+id/large_layout"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
     >
 
     <FrameLayout
@@ -23,7 +24,26 @@
                 android:id="@+id/home_head"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="top" />
+                android:layout_gravity="top"/>
+
+            <tv.ismar.homepage.widget.HorizontalTabView
+                android:id="@+id/channel_tab"
+                android:layout_width="@dimen/channel_tab_width"
+                android:layout_height="100dp"
+                android:layout_gravity="top"
+                android:layout_marginLeft="@dimen/channel_tab_ml"
+                android:layout_marginRight="@dimen/channel_tab_ml"
+                android:layout_marginTop="@dimen/channel_tab_mt"
+                app:tvTabFocusTextColor="#ff9c3c"
+                app:tvTabHeight="80dp"
+                app:tvTabScaleBaseline="fromCenter"
+                app:tvTabScaleMultiple="1.1"
+                app:tvTabSelectedDrawable="@drawable/channel_indicator_focus"
+                app:tvTabSpace="@dimen/channel_tab_space"
+                app:tvTabStartEndPadding="16dp"
+                app:tvTabTextColor="#999999"
+                app:tvTabTextSize="@dimen/text_size_36sp"
+                />
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -39,7 +59,7 @@
                     android:layout_marginRight="@dimen/home_container_mlr"
                     android:layout_marginTop="@dimen/home_container_mt"
                     android:clipChildren="false"
-                    android:clipToPadding="false" />
+                    android:clipToPadding="false"/>
 
                 <ImageView
                     android:id="@+id/home_scroll_left"
@@ -52,7 +72,7 @@
                     android:focusable="true"
                     android:nextFocusLeft="@id/home_scroll_left"
                     android:src="@drawable/scroll_left_normal"
-                    android:visibility="invisible" />
+                    android:visibility="invisible"/>
 
                 <ImageView
                     android:id="@+id/home_scroll_right"
@@ -66,23 +86,12 @@
                     android:nextFocusRight="@+id/home_scroll_right"
                     android:nextFocusUp="@+id/home_scroll_right"
                     android:src="@drawable/scroll_right_normal"
-                    android:visibility="invisible" />
+                    android:visibility="invisible"/>
 
             </RelativeLayout>
 
         </LinearLayout>
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/home_tab_list"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/home_tab_list_h"
-            android:layout_gravity="bottom"
-            android:layout_marginBottom="@dimen/home_tab_list_mb"
-            android:descendantFocusability="blocksDescendants"
-            android:focusable="true"
-            android:nextFocusLeft="@+id/home_tab_list"
-            android:nextFocusRight="@+id/home_tab_list"
-            android:nextFocusUp="@+id/guidefragment_firstpost" />
 
     </FrameLayout>
 
@@ -96,14 +105,14 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_centerInParent="true"
-            android:visibility="gone" />
+            android:visibility="gone"/>
 
         <ImageView
             android:id="@+id/home_ad_pic"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="centerCrop"
-            android:visibility="gone" />
+            android:visibility="gone"/>
 
         <Button
             android:id="@+id/home_ad_timer"
@@ -119,6 +128,6 @@
             android:textAllCaps="false"
             android:textColor="@color/color_base_white"
             android:textSize="@dimen/text_size_48sp"
-            android:visibility="gone" />
+            android:visibility="gone"/>
     </RelativeLayout>
 </FrameLayout>

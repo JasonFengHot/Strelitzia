@@ -103,6 +103,7 @@ import tv.ismar.homepage.fragment.MessageDialogFragment;
 import tv.ismar.homepage.fragment.SportFragment;
 import tv.ismar.homepage.fragment.UpdateSlienceLoading;
 import tv.ismar.homepage.widget.DaisyVideoView;
+import tv.ismar.homepage.widget.HorizontalTabView;
 import tv.ismar.library.exception.ExceptionUtils;
 import tv.ismar.player.gui.PlaybackService;
 
@@ -120,8 +121,6 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
     private FrameLayout large_layout;
     private HeadFragment headFragment;
     private ModuleMessagePopWindow exitPopup;
-    private RecyclerView home_tab_list;
-    private ChannelRecyclerAdapter recyclerAdapter;
     private List<ChannelEntity> channelEntityList = new ArrayList<>();
     /**
      * advertisement start
@@ -166,6 +165,7 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
     private BitmapDecoder bitmapDecoder;
     private Subscription channelsSub;
     private String fromPage;
+    private HorizontalTabView channelTab;
 
     @Override
     public void onUserCenterClick() {
@@ -212,12 +212,10 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
                 if (i == R.id.home_scroll_left) {
                     scrollFromBorder = true;
                     scrollType = ScrollType.left;
-                    recyclerAdapter.arrowScroll(View.FOCUS_LEFT, true);
                     rightscroll = true;
                 } else if (i == R.id.home_scroll_right) {
                     scrollFromBorder = true;
                     scrollType = ScrollType.right;
-                    recyclerAdapter.arrowScroll(View.FOCUS_RIGHT, true);
                     rightscroll = false;
 
                 }
@@ -258,58 +256,14 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
         switch (direction) {
             case 0:// left
                 if (scrollPosition == 0) {
-                    home_tab_list.smoothScrollToPosition(0);
                 } else {
-                    home_tab_list.smoothScrollBy(-(width + mTabSpace), 0);
                 }
                 break;
             case 1:// right
-                if (scrollPosition == recyclerAdapter.getItemCount() - 1) {
-                    home_tab_list.smoothScrollToPosition(recyclerAdapter.getItemCount() - 1);
-                } else {
-                    home_tab_list.smoothScrollBy(width + mTabSpace, 0);
-                }
                 break;
         }
     }
 
-    private void checkScroll(int position, long delay) {
-        View view = home_tab_list.getLayoutManager().findViewByPosition(position);
-//        Log.i("LH/","checkPosition:" + position + " view : " + view);
-        if (view == null) {
-            home_tab_list.smoothScrollToPosition(position);
-            return;
-        }
-        int tabMargin = getResources().getDimensionPixelSize(R.dimen.tv_guide_channel_margin_lr) - mTabSpace;
-        int tabRightX = Util.getDisplayPixelWidth(HomePageActivity.this) - tabMargin;
-        int[] currentPos = new int[2];
-        view.getLocationOnScreen(currentPos);
-        int currentWidth = view.getWidth();
-        scrollPosition = position;
-
-        if (currentPos[0] + currentWidth > tabRightX + 1) {
-            if (delay == 0) {
-                autoScroll(1, currentWidth);
-            } else {
-                if (sensorTimer == null) {
-                    sensorTimer = new Timer();
-                    myTimerTask = new MyTimerTask(1, currentWidth);
-                    sensorTimer.schedule(myTimerTask, 500, 500);
-                }
-            }
-        } else if (currentPos[0] < tabMargin) {
-            if (delay == 0) {
-                autoScroll(0, currentWidth);
-            } else {
-                if (sensorTimer == null) {
-                    sensorTimer = new Timer();
-                    myTimerTask = new MyTimerTask(0, currentWidth);
-                    sensorTimer.schedule(myTimerTask, 500, 500);
-                }
-            }
-        }
-
-    }
 
     private void cancelTimer() {
         if (myTimerTask != null) {
@@ -483,19 +437,9 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
                 .add(R.id.home_head, headFragment)
                 .commit();
 
-        home_tab_list = (RecyclerView) findViewById(R.id.home_tab_list);
-        recyclerAdapter = new ChannelRecyclerAdapter(this, channelEntityList, home_tab_list);
-        home_tab_list.setAdapter(recyclerAdapter);
-        home_tab_list.setItemAnimator(new DefaultItemAnimator());
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
-        home_tab_list.setLayoutManager(layoutManager);
         mTabSpace = getResources().getDimensionPixelSize(R.dimen.home_tab_list_space);
-        HorizontalSpacesItemDecoration decoration = new HorizontalSpacesItemDecoration(
-                mTabSpace,
-                getResources().getDimensionPixelSize(R.dimen.home_tab_list_padding_lr),
-                recyclerAdapter);
-        home_tab_list.addItemDecoration(decoration);
 
         home_scroll_left = (ImageView) findViewById(R.id.home_scroll_left);
         home_scroll_right = (ImageView) findViewById(R.id.home_scroll_right);
@@ -505,7 +449,6 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
             public void onClick(View v) {
                 // longhai add
                 if (lastchannelindex != 0) {
-                    recyclerAdapter.arrowScroll(View.FOCUS_LEFT, false);
                 }
             }
         });
@@ -515,7 +458,6 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
             public void onClick(View v) {
                 // longhai add
                 if (lastchannelindex != channelEntityList.size() - 1) {
-                    recyclerAdapter.arrowScroll(View.FOCUS_RIGHT, false);
                 }
             }
         });
@@ -524,157 +466,7 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
         home_scroll_left.setOnFocusChangeListener(scrollViewListener);
         home_scroll_right.setOnFocusChangeListener(scrollViewListener);
 
-        home_tab_list.requestFocus();
-        recyclerAdapter.setOnItemActionListener(new OnItemActionListener() {
-
-            @Override
-            public void onItemHoverListener(View v, MotionEvent event, int position) {
-                switch (event.getAction()) {
-                    case MotionEvent.ACTION_HOVER_ENTER:
-                    case MotionEvent.ACTION_HOVER_MOVE:
-                        checkScroll(position, 500);
-                        break;
-                    case MotionEvent.ACTION_HOVER_EXIT:
-                        cancelTimer();
-                        break;
-                }
-            }
-
-            @Override
-            public void onItemFocusListener(View v, boolean hasFocus, int position) {
-
-            }
-
-            @Override
-            public void onItemClickListener(View v, int position) {
-                checkScroll(position, 0);
-                handlerSwitchPage(position);
-            }
-
-            @Override
-            public void onItemSelectedListener(int position) {
-                checkScroll(position, 0);
-                handlerSwitchPage(position);
-            }
-        });
-
-        home_tab_list.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                Log.i("LH/", "onFocusChange:" + hasFocus + " hover:" + hoverOnArrow + " v:" + v.isHovered());
-                View currentView = home_tab_list.getLayoutManager().findViewByPosition(recyclerAdapter.getSelectedPosition());
-                if (currentView != null) {
-                    if (hasFocus) {
-                        LinearLayout channel_item_back = (LinearLayout) currentView.findViewById(R.id.channel_item_back);
-                        if (v.isHovered() && !hoverOnArrow) {
-                            channel_item_back.setBackgroundResource(R.drawable.channel_item_focus);
-                        } else {
-                            channel_item_back.setBackgroundResource(R.drawable.channel_item_selectd_focus);
-                        }
-                    } else {
-                        LinearLayout channel_item_back = (LinearLayout) currentView.findViewById(R.id.channel_item_back);
-                        channel_item_back.setBackgroundResource(R.drawable.channel_item_focus);
-                    }
-                }
-            }
-        });
-
-        home_tab_list.setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-//                Log.i("LH/","onKeyDown:");
-                int selectedPosition = recyclerAdapter.getSelectedPosition();
-                boolean isHandled = false;
-                if (event.getAction() == KeyEvent.ACTION_DOWN) {switch (keyCode) {
-                        case KeyEvent.KEYCODE_DPAD_UP:
-                        case KeyEvent.KEYCODE_DPAD_DOWN:
-                            if (recyclerAdapter.getOnHoveredPosition() != -1) {
-                                if (recyclerAdapter.onHoveredView != null && recyclerAdapter.getOnHoveredPosition() != selectedPosition) {
-                                    LinearLayout channel_item_back1 = (LinearLayout) recyclerAdapter.onHoveredView.findViewById(R.id.channel_item_back);
-                                    channel_item_back1.setBackgroundResource(R.drawable.channel_item_normal);
-                                    TextView channel_item_text1 = (TextView) recyclerAdapter.onHoveredView.findViewById(R.id.channel_item);
-                                    channel_item_text1.setTextColor(getResources().getColor(R.color._ffffff));
-                                    recyclerAdapter.setOnHoveredPosition(-1);
-                                }
-                            }
-                            v.setHovered(false);
-                            break;
-                        case KeyEvent.KEYCODE_DPAD_LEFT:
-                            isHandled = true;
-                            if (recyclerAdapter.getOnHoveredPosition() >= 0) {
-                                if (recyclerAdapter.onHoveredView != null) {
-                                    LinearLayout channel_item_back = (LinearLayout) recyclerAdapter.onHoveredView.findViewById(R.id.channel_item_back);
-                                    channel_item_back.setBackgroundResource(R.drawable.channel_item_normal);
-                                    TextView channel_item_text = (TextView) recyclerAdapter.onHoveredView.findViewById(R.id.channel_item);
-                                    channel_item_text.setTextColor(getResources().getColor(R.color._ffffff));
-                                }
-
-                                if (recyclerAdapter.getOnHoveredPosition() == 0) {
-                                    if (selectedPosition > 0) {
-                                        recyclerAdapter.setLastSelectedPosition(selectedPosition);
-                                        recyclerAdapter.setSelectedPosition(0);
-                                        handlerSwitchPage(0);
-                                        recyclerAdapter.changeStatus();
-                                    }
-                                } else {
-                                    recyclerAdapter.setLastSelectedPosition(selectedPosition);
-                                    recyclerAdapter.setSelectedPosition(recyclerAdapter.getOnHoveredPosition() - 1);
-                                    handlerSwitchPage(recyclerAdapter.getOnHoveredPosition() - 1);
-                                    recyclerAdapter.changeStatus();
-                                }
-                                recyclerAdapter.setOnHoveredPosition(-1);
-                            } else {
-                                if (selectedPosition > 0) {
-                                    recyclerAdapter.setLastSelectedPosition(selectedPosition);
-                                    selectedPosition -= 1;
-                                    recyclerAdapter.setSelectedPosition(selectedPosition);
-                                    handlerSwitchPage(selectedPosition);
-                                    recyclerAdapter.changeStatus();
-                                }
-                            }
-                            checkScroll(recyclerAdapter.getSelectedPosition(), 0);
-                            break;
-                        case KeyEvent.KEYCODE_DPAD_RIGHT:
-                            isHandled = true;
-                            if (recyclerAdapter.getOnHoveredPosition() >= 0) {
-                                if (recyclerAdapter.onHoveredView != null) {
-                                    LinearLayout channel_item_back = (LinearLayout) recyclerAdapter.onHoveredView.findViewById(R.id.channel_item_back);
-                                    channel_item_back.setBackgroundResource(R.drawable.channel_item_normal);
-                                    TextView channel_item_text = (TextView) recyclerAdapter.onHoveredView.findViewById(R.id.channel_item);
-                                    channel_item_text.setTextColor(getResources().getColor(R.color._ffffff));
-                                }
-
-                                if (recyclerAdapter.getOnHoveredPosition() == recyclerAdapter.getItemCount() - 1) {
-                                    if (selectedPosition < recyclerAdapter.getItemCount() - 1) {
-                                        recyclerAdapter.setLastSelectedPosition(selectedPosition);
-                                        recyclerAdapter.setSelectedPosition(recyclerAdapter.getItemCount() - 1);
-                                        handlerSwitchPage(recyclerAdapter.getItemCount() - 1);
-                                        recyclerAdapter.changeStatus();
-                                    }
-                                } else {
-                                    recyclerAdapter.setLastSelectedPosition(selectedPosition);
-                                    recyclerAdapter.setSelectedPosition(recyclerAdapter.getOnHoveredPosition() + 1);
-                                    handlerSwitchPage(recyclerAdapter.getOnHoveredPosition() + 1);
-                                    recyclerAdapter.changeStatus();
-                                }
-                                recyclerAdapter.setOnHoveredPosition(-1);
-                            } else {
-                                if (selectedPosition < recyclerAdapter.getItemCount() - 1) {
-                                    recyclerAdapter.setLastSelectedPosition(selectedPosition);
-                                    selectedPosition += 1;
-                                    recyclerAdapter.setSelectedPosition(selectedPosition);
-                                    handlerSwitchPage(selectedPosition);
-                                    recyclerAdapter.changeStatus();
-                                }
-                            }
-                            checkScroll(recyclerAdapter.getSelectedPosition(), 0);
-                            break;
-                    }
-                }
-                return isHandled;
-            }
-        });
-
+        channelTab = (HorizontalTabView) findViewById(R.id.channel_tab);
     }
 
     private void tempInitStaticVariable() {
@@ -783,77 +575,93 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
                         if (!TextUtils.isEmpty(apiDomain)){
                             LogQueue.getInstance().init(apiDomain);
                         }
-                        fillChannelLayout(channelEntities);
+//                        fillChannelLayout(channelEntities);
+                        fillChannelTab(channelEntities);
                     }
                 });
     }
 
-    private void fillChannelLayout(ChannelEntity[] channelEntities) {
-        if (neterrorshow)
-            return;
-        home_scroll_right.setVisibility(View.VISIBLE);
-        ChannelEntity[] mChannelEntitys = channelEntities;
-        if (!channelEntityList.isEmpty()) {
-            return;
-        }
 
-        ChannelEntity launcher = new ChannelEntity();
-        launcher.setChannel("launcher");
-        launcher.setName("首页");
-        launcher.setHomepage_template("launcher");
-        channelEntityList.add(launcher);
-        int channelscrollIndex = 0;
+    private void fillChannelTab(ChannelEntity[] channelEntities) {
+        List<HorizontalTabView.Tab> tabs = new ArrayList<>();
+        for (ChannelEntity entity : channelEntities){
+            HorizontalTabView.Tab tab = new HorizontalTabView.Tab("", entity.getName());
+            tabs.add(tab);
+        }
+        for (ChannelEntity entity : channelEntities){
+            HorizontalTabView.Tab tab = new HorizontalTabView.Tab("", entity.getName());
+            tabs.add(tab);
+        }
+        channelTab.addAllViews(tabs, 0);
 
-        for (ChannelEntity e : mChannelEntitys) {
-            channelEntityList.add(e);
-        }
-        recyclerAdapter.notifyDataSetChanged();
-        if (brandName != null && brandName.toLowerCase().contains("changhong")) {
-            homepage_template = "template3";
-        }
-        if (!StringUtils.isEmpty(homepage_template)) {
-            for (int i = 0; i < mChannelEntitys.length; i++) {
-                if (brandName != null && brandName.toLowerCase().contains("changhong")) {
-                    if ("sport".equalsIgnoreCase(mChannelEntitys[i].getChannel())) {
-                        channelscrollIndex = i + 1;
-                        scrollType = ScrollType.none;
-                        recyclerAdapter.setSelectedPosition(channelscrollIndex);
-                        handlerSwitchPage(channelscrollIndex);
-                        headFragment.setSubTitle(mChannelEntitys[i].getName());
-                    }
-                } else {
-                    if (homepage_template.equals(mChannelEntitys[i].getHomepage_template()) && mChannelEntitys[i].getHomepage_url().contains(homepage_url)) {
-                        channelscrollIndex = i + 1;
-                        Log.i("LH/", "channelscrollIndex:" + channelscrollIndex);
-                        if (channelscrollIndex > 0 && !fragmentSwitch.hasMessages(SWITCH_PAGE_FROMLAUNCH)) {
-                            scrollType = ScrollType.none;
-                            recyclerAdapter.setSelectedPosition(channelscrollIndex);
-                            handlerSwitchPage(channelscrollIndex);
-                        }
-                        headFragment.setSubTitle(mChannelEntitys[i].getName());
-                        break;
-                    }
-                }
-            }
-        }
-        if (currentFragment == null && !isFinishing() && channelscrollIndex <= 0) {
-            try {
-                currentFragment = new GuideFragment();
-                ChannelEntity channelEntity = new ChannelEntity();
-                launcher.setChannel("launcher");
-                launcher.setName("首页");
-                launcher.setHomepage_template("launcher");
-                currentFragment.setChannelEntity(channelEntity);
-                FragmentTransaction transaction = getSupportFragmentManager()
-                        .beginTransaction();
-                transaction.replace(R.id.home_container, currentFragment, "template").commitAllowingStateLoss();
-                home_tab_list.requestFocus();
-            } catch (IllegalStateException e) {
-                ExceptionUtils.sendProgramError(e);
-            }
-
-        }
     }
+
+//    private void fillChannelLayout(ChannelEntity[] channelEntities) {
+//        if (neterrorshow)
+//            return;
+//        home_scroll_right.setVisibility(View.VISIBLE);
+//        ChannelEntity[] mChannelEntitys = channelEntities;
+//        if (!channelEntityList.isEmpty()) {
+//            return;
+//        }
+//
+//        ChannelEntity launcher = new ChannelEntity();
+//        launcher.setChannel("launcher");
+//        launcher.setName("首页");
+//        launcher.setHomepage_template("launcher");
+//        channelEntityList.add(launcher);
+//        int channelscrollIndex = 0;
+//
+//        for (ChannelEntity e : mChannelEntitys) {
+//            channelEntityList.add(e);
+//        }
+//        recyclerAdapter.notifyDataSetChanged();
+//        if (brandName != null && brandName.toLowerCase().contains("changhong")) {
+//            homepage_template = "template3";
+//        }
+//        if (!StringUtils.isEmpty(homepage_template)) {
+//            for (int i = 0; i < mChannelEntitys.length; i++) {
+//                if (brandName != null && brandName.toLowerCase().contains("changhong")) {
+//                    if ("sport".equalsIgnoreCase(mChannelEntitys[i].getChannel())) {
+//                        channelscrollIndex = i + 1;
+//                        scrollType = ScrollType.none;
+//                        recyclerAdapter.setSelectedPosition(channelscrollIndex);
+//                        handlerSwitchPage(channelscrollIndex);
+//                        headFragment.setSubTitle(mChannelEntitys[i].getName());
+//                    }
+//                } else {
+//                    if (homepage_template.equals(mChannelEntitys[i].getHomepage_template()) && mChannelEntitys[i].getHomepage_url().contains(homepage_url)) {
+//                        channelscrollIndex = i + 1;
+//                        Log.i("LH/", "channelscrollIndex:" + channelscrollIndex);
+//                        if (channelscrollIndex > 0 && !fragmentSwitch.hasMessages(SWITCH_PAGE_FROMLAUNCH)) {
+//                            scrollType = ScrollType.none;
+//                            recyclerAdapter.setSelectedPosition(channelscrollIndex);
+//                            handlerSwitchPage(channelscrollIndex);
+//                        }
+//                        headFragment.setSubTitle(mChannelEntitys[i].getName());
+//                        break;
+//                    }
+//                }
+//            }
+//        }
+//        if (currentFragment == null && !isFinishing() && channelscrollIndex <= 0) {
+//            try {
+//                currentFragment = new GuideFragment();
+//                ChannelEntity channelEntity = new ChannelEntity();
+//                launcher.setChannel("launcher");
+//                launcher.setName("首页");
+//                launcher.setHomepage_template("launcher");
+//                currentFragment.setChannelEntity(channelEntity);
+//                FragmentTransaction transaction = getSupportFragmentManager()
+//                        .beginTransaction();
+//                transaction.replace(R.id.home_container, currentFragment, "template").commitAllowingStateLoss();
+//                home_tab_list.requestFocus();
+//            } catch (IllegalStateException e) {
+//                ExceptionUtils.sendProgramError(e);
+//            }
+//
+//        }
+//    }
 
     private void showExitPopup(View view) {
         exitPopup = new ModuleMessagePopWindow(this);
@@ -1145,48 +953,48 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
                 replaceFragment(currentFragment, tag, transaction);
             }
         }
-        // longhai add
-        if (home_tab_list == null) {
-            return;
-        }
-        lastchannelindex = position;
-        switch (lastchannelindex) {
-            case 0:
-                home_tab_list.setNextFocusUpId(R.id.guidefragment_firstpost);
-                break;
-            case 1:
-                home_tab_list.setNextFocusUpId(R.id.filmfragment_secondpost);
-                break;
-            case 2:
-                home_tab_list.setNextFocusUpId(R.id.filmfragment_thirdpost);
-                break;
-            case 3:
-                home_tab_list.setNextFocusUpId(R.id.vaiety_channel2_image);
-                break;
-            case 4:
-                home_tab_list.setNextFocusUpId(R.id.vaiety_channel3_image);
-                break;
-            case 5:
-                home_tab_list.setNextFocusUpId(R.id.sport_channel4_image);
-                break;
-            case 6:
-                home_tab_list.setNextFocusUpId(R.id.vaiety_channel4_image);
-                break;
-            case 7:
-                home_tab_list.setNextFocusUpId(R.id.child_more);
-                break;
-            case 8:
-                home_tab_list.setNextFocusUpId(R.id.listmore);
-                break;
-            case 9:
-                home_tab_list.setNextFocusUpId(R.id.listmore);
-                break;
-            case 10:
-                home_tab_list.setNextFocusUpId(R.id.listmore);
-                break;
-            default:
-                break;
-        }
+//        // longhai add
+//        if (home_tab_list == null) {
+//            return;
+//        }
+//        lastchannelindex = position;
+//        switch (lastchannelindex) {
+//            case 0:
+//                home_tab_list.setNextFocusUpId(R.id.guidefragment_firstpost);
+//                break;
+//            case 1:
+//                home_tab_list.setNextFocusUpId(R.id.filmfragment_secondpost);
+//                break;
+//            case 2:
+//                home_tab_list.setNextFocusUpId(R.id.filmfragment_thirdpost);
+//                break;
+//            case 3:
+//                home_tab_list.setNextFocusUpId(R.id.vaiety_channel2_image);
+//                break;
+//            case 4:
+//                home_tab_list.setNextFocusUpId(R.id.vaiety_channel3_image);
+//                break;
+//            case 5:
+//                home_tab_list.setNextFocusUpId(R.id.sport_channel4_image);
+//                break;
+//            case 6:
+//                home_tab_list.setNextFocusUpId(R.id.vaiety_channel4_image);
+//                break;
+//            case 7:
+//                home_tab_list.setNextFocusUpId(R.id.child_more);
+//                break;
+//            case 8:
+//                home_tab_list.setNextFocusUpId(R.id.listmore);
+//                break;
+//            case 9:
+//                home_tab_list.setNextFocusUpId(R.id.listmore);
+//                break;
+//            case 10:
+//                home_tab_list.setNextFocusUpId(R.id.listmore);
+//                break;
+//            default:
+//                break;
+//        }
     }
 
     private void replaceFragment(Fragment fragment, String tag, FragmentTransaction transaction) {
@@ -1359,7 +1167,6 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
         }
         switch (keyCode) {
             case KeyEvent.KEYCODE_DPAD_DOWN:
-                home_tab_list.setHovered(false);
                 break;
             case KeyEvent.KEYCODE_HOME:
                 finish();
@@ -1409,7 +1216,6 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
                                 activity.home_scroll_right.setVisibility(View.VISIBLE);
                             }
                             if (!activity.scrollFromBorder) {
-                                activity.home_tab_list.requestFocus();
                             }
 
                             activity.selectChannelByPosition(position);
