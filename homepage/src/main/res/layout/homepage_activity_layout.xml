@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<LinearLayout
+<tv.ismar.homepage.widget.scroll.VerticalBanner
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
@@ -25,18 +24,4 @@
         app:tvTabTextColor="#999999"
         app:tvTabTextSize="@dimen/text_size_36sp"
         />
-
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <LinearLayout
-            android:id="@+id/homepage_container_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-        </LinearLayout>
-
-    </ScrollView>
-
-</LinearLayout>
+</tv.ismar.homepage.widget.scroll.VerticalBanner>
