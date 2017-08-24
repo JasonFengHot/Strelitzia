@@ -1,0 +1,538 @@
+package tv.ismar.homepage.fragment;
+
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.preference.PreferenceManager;
+import android.text.TextUtils;
+import android.view.LayoutInflater;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+
+import com.blankj.utilcode.util.StringUtils;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.MemoryPolicy;
+import com.squareup.picasso.Picasso;
+
+import java.util.ArrayList;
+
+import cn.ismartv.truetime.TrueTime;
+import rx.Observer;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
+import tv.ismar.app.core.SimpleRestClient;
+import tv.ismar.app.entity.HomePagerEntity;
+import tv.ismar.app.network.SkyService;
+import tv.ismar.app.player.CallaPlay;
+import tv.ismar.app.util.NetworkUtils;
+import tv.ismar.homepage.R;
+import tv.ismar.homepage.view.HomePageActivity;
+import tv.ismar.homepage.widget.ChildThumbImageView;
+import tv.ismar.homepage.widget.LabelImageView3;
+import tv.ismar.library.util.C;
+
+/**
+ * Created by huaijie on 5/18/15.
+ */
+@SuppressWarnings("ResourceType")
+public class ChildFragment extends ChannelBaseFragment implements Flag.ChangeCallback {
+    private static final String TAG = "ChildFragment";
+
+    private LinearLayout leftLayout;
+    private LinearLayout bottomLayout;
+    private LinearLayout rightLayout;
+    private ImageView imageSwitcher;
+    private LabelImageView3 image_switcher_focus;
+    private ChildThumbImageView[] indicatorImgs;
+    private TextView indicatorTitle;
+
+    private ImageButton childMore;
+
+    private boolean focusFlag = true;
+
+    private Flag flag;
+
+    private ArrayList<HomePagerEntity.Carousel> carousels;
+
+    private MessageHandler messageHandler;
+    private View lefttop;
+    private View leftBottom;
+    private View righttop;
+    private Subscription dataSubscription;
+    private Subscription smartRecommendPostSub;
+    private boolean isDestroyed = false;
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View mView = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_child, null);
+        leftLayout = (LinearLayout) mView.findViewById(R.id.left_layout);
+        bottomLayout = (LinearLayout) mView.findViewById(R.id.bottom_layout);
+        rightLayout = (LinearLayout) mView.findViewById(R.id.right_layout);
+        image_switcher_focus = (LabelImageView3) mView.findViewById(R.id.image_switcher_focus);
+        imageSwitcher = (ImageView) mView.findViewById(R.id.image_switcher);
+
+        indicatorImgs = new ChildThumbImageView[]{
+                (ChildThumbImageView) mView.findViewById(R.id.indicator_1),
+                (ChildThumbImageView) mView.findViewById(R.id.indicator_2),
+                (ChildThumbImageView) mView.findViewById(R.id.indicator_3)
+        };
+        indicatorTitle = (TextView) mView.findViewById(R.id.indicator_title);
+        childMore = (ImageButton) mView.findViewById(R.id.child_more);
+        childMore.setOnClickListener(ItemClickListener);
+        image_switcher_focus.setTag(R.id.view_position_tag, 2);
+        image_switcher_focus.setOnClickListener(ItemClickListener);
+        image_switcher_focus.setOnHoverListener(new View.OnHoverListener() {
+			
+			@Override
+			public boolean onHover(View v, MotionEvent event) {
+				if (event.getAction() == MotionEvent.ACTION_HOVER_ENTER
+						|| event.getAction() == MotionEvent.ACTION_HOVER_MOVE) {
+                      v.requestFocus();
+				}
+				return false;
+			}
+		});
+        flag = new Flag(this);
+        messageHandler = new MessageHandler();
+        childMore.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+
+			@Override
+			public void onFocusChange(View arg0, boolean arg1) {
+				if (arg1) {
+					((HomePageActivity) (getActivity())).setLastViewTag("bottom");
+				}
+			}
+		});
+        childMore.setOnHoverListener(new View.OnHoverListener() {
+
+            @Override
+            public boolean onHover(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_HOVER_ENTER
+                        || event.getAction() == MotionEvent.ACTION_HOVER_MOVE) {
+                    v.requestFocus();
+                }
+                return false;
+            }
+        });
+        return mView;
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+    	if(channelEntity != null)
+        fetchChild(channelEntity.getHomepage_url());
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (dataSubscription != null && !dataSubscription.isUnsubscribed()) {
+            dataSubscription.unsubscribe();
+        }
+        if (smartRecommendPostSub != null && !smartRecommendPostSub.isUnsubscribed()) {
+            smartRecommendPostSub.unsubscribe();
+        }
+    }
+
+    @Override
+    public void onDestroyView() {
+    	leftLayout.removeAllViews();
+    	bottomLayout.removeAllViews();
+    	rightLayout.removeAllViews();
+    	leftLayout = null;
+    	bottomLayout = null;
+    	rightLayout = null;
+        isDestroyed = true;
+        super.onDestroyView();
+
+    }
+
+    private void fetchChild(String url) {
+        dataSubscription = ((HomePageActivity)getActivity()).mSkyService.fetchHomePage(url).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(((HomePageActivity) getActivity()).new BaseObserver<HomePagerEntity>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onNext(HomePagerEntity homePagerEntity) {
+                        if(isDestroyed || mContext == null || leftLayout == null || rightLayout == null || bottomLayout ==null)
+                            return;
+                        if (homePagerEntity == null) {
+                            new CallaPlay().exception_except("launcher", "launcher", channelEntity.getChannel(),
+                                    "", 0, channelEntity.getHomepage_url(),
+                                    SimpleRestClient.appVersion, "data", ""
+                            );
+                            super.onError(new Exception("数据异常"));
+                            return;
+                        }
+                        ArrayList<HomePagerEntity.Poster> posters = homePagerEntity.getPosters();
+                        ArrayList<HomePagerEntity.Carousel> carousels = homePagerEntity.getCarousels();
+                        if (TextUtils.isEmpty(homePagerEntity.getRecommend_homepage_url())) {
+                            initPosters(posters);
+                        }else {
+                            if (TrueTime.now().getTime() -  getSmartPostErrorTime()> C.SMART_POST_NEXT_REQUEST_TIME ||
+                                    NetworkUtils.isReachability(homePagerEntity.getRecommend_homepage_url())){
+                                smartRecommendPost(homePagerEntity.getRecommend_homepage_url(), posters);
+                            }else {
+                                initPosters(posters);
+                            }
+                        }
+
+                        initCarousel(carousels);
+                    }
+                });
+    }
+
+    @Override
+    public void onDetach() {
+        messageHandler.removeMessages(0);
+        super.onDetach();
+    }
+
+    private void initPosters(ArrayList<HomePagerEntity.Poster> posters) {
+        if(mContext==null){
+            return;
+        }
+
+        int marginTP = getResources().getDimensionPixelOffset(R.dimen.child_img_small_space);
+        int itemWidth = getResources().getDimensionPixelOffset(R.dimen.child_img_small_w);
+        int itemHeight = getResources().getDimensionPixelOffset(R.dimen.child_img_small_h);
+
+        for (int i = 0; i < Math.min(7,posters.size()); i++) {
+            View itemContainer = LayoutInflater.from(mContext).inflate(R.layout.item_comic_fragment, null);
+            ImageView itemImg = (ImageView) itemContainer.findViewById(R.id.item_img);
+            TextView itemText = (TextView) itemContainer.findViewById(R.id.item_title);
+            LabelImageView3 item_img_focus = (LabelImageView3) itemContainer.findViewById(R.id.item_img_focus);
+
+            posters.get(i).setPosition(i);
+            item_img_focus.setTag(posters.get(i));
+
+            item_img_focus.setOnClickListener(ItemClickListener);
+            if (i == 0){
+                item_img_focus.setTag(R.id.view_position_tag, 1);
+            }
+
+            if (i == 1){
+                item_img_focus.setTag(R.id.view_position_tag, 4);
+            }
+
+            if (i == 2){
+                item_img_focus.setTag(R.id.view_position_tag, 6);
+            }
+
+            if (i == 3){
+                item_img_focus.setTag(R.id.view_position_tag, 7);
+            }
+
+            if (i == 4){
+                item_img_focus.setTag(R.id.view_position_tag, 8);
+            }
+
+            if (i == 5){
+                item_img_focus.setTag(R.id.view_position_tag, 3);
+            }
+
+            if (i == 6){
+                item_img_focus.setTag(R.id.view_position_tag, 5);
+            }
+//            item_img_focus.setOnHoverListener(new View.OnHoverListener() {
+//
+//				@Override
+//				public boolean onHover(View v, MotionEvent event) {
+//					if (event.getAction() == MotionEvent.ACTION_HOVER_ENTER
+//							|| event.getAction() == MotionEvent.ACTION_HOVER_MOVE) {
+//                          v.requestFocus();
+//					}
+//					return false;
+//				}
+//			});
+
+            if(mContext==null)
+                return;
+            String imageUrl = posters.get(i).getCustom_image();
+            if (TextUtils.isEmpty(imageUrl)){
+                imageUrl = posters.get(i).getPoster_url();
+                if(StringUtils.isEmpty(imageUrl))
+                    imageUrl = "error";
+            }
+            Picasso.with(mContext).load(imageUrl).memoryPolicy(MemoryPolicy.NO_STORE).into(itemImg);
+            itemText.setText(posters.get(i).getTitle());
+
+            /**
+             * left layout
+             */
+            if (i >= 0 && i < 3) {
+                LinearLayout.LayoutParams verticalParams = new LinearLayout.LayoutParams(itemWidth, itemHeight);
+                verticalParams.width = itemWidth;
+                verticalParams.height = itemHeight;
+                if (i == 1) {
+                    verticalParams.setMargins(0, marginTP, 0, marginTP);
+                }
+                if(i ==0){
+                	lefttop = item_img_focus;
+                }
+                if(i <2){
+                    item_img_focus.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+
+            			@Override
+            			public void onFocusChange(View arg0, boolean arg1) {
+            				if (arg1) {
+            					((HomePageActivity) (getActivity())).setLastViewTag("");
+            				}
+            			}
+            		});
+                }else{
+                	leftBottom = item_img_focus;
+//                	item_img_focus.setNextFocusDownId(R.id.toppage_divide_view);
+                    item_img_focus.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+
+            			@Override
+            			public void onFocusChange(View arg0, boolean arg1) {
+            				if (arg1) {
+            					((HomePageActivity) (getActivity())).setLastViewTag("bottom");
+            				}
+            			}
+            		});
+                }
+                itemContainer.setLayoutParams(verticalParams);
+                leftLayout.addView(itemContainer);
+            }
+
+            /**
+             * center layout
+             */
+            if (i >= 3 && i < 5) {
+                LinearLayout.LayoutParams horizontalParams = new LinearLayout.LayoutParams(itemWidth, itemHeight);
+                horizontalParams.width = itemWidth;
+                horizontalParams.height = itemHeight;
+
+                int marginLeft = getResources().getDimensionPixelOffset(R.dimen.child_bottom_space);
+
+                if (i == 4) {
+                    horizontalParams.setMargins(marginLeft, 0, 0, 0);
+                    item_img_focus.setId(12435688);
+                    childMore.setNextFocusLeftId(12435688);
+                }
+
+                itemContainer.setLayoutParams(horizontalParams);
+                bottomLayout.addView(itemContainer);
+            }
+
+            /**
+             * right layout
+             */
+            if (i >= 5 && i < 7) {
+                LinearLayout.LayoutParams verticalParams = new LinearLayout.LayoutParams(itemWidth, itemHeight);
+                verticalParams.width = itemWidth;
+                verticalParams.height = itemHeight;
+                if(i == 5){
+                    item_img_focus.setNextFocusRightId(R.id.home_scroll_right);
+                	righttop = item_img_focus;
+                }
+                if (i == 6) {
+                    verticalParams.setMargins(0, marginTP, 0, 0);
+                }
+                itemContainer.setLayoutParams(verticalParams);
+                rightLayout.addView(itemContainer);
+                item_img_focus.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+
+        			@Override
+        			public void onFocusChange(View arg0, boolean arg1) {
+        				if (arg1) {
+        					((HomePageActivity) (getActivity())).setLastViewTag("");
+        				}
+        			}
+        		});
+            }
+        }
+        rightLayout.requestLayout();
+
+        isPosterInit = true;
+        resetBorder();
+    }
+
+    private void initCarousel(ArrayList<HomePagerEntity.Carousel> carousels) {
+
+        this.carousels = carousels;
+//
+
+        View.OnFocusChangeListener itemFocusChangeListener = new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                focusFlag = true;
+                for (ChildThumbImageView imageView : indicatorImgs) {
+                    focusFlag = focusFlag && (!imageView.isFocused());
+                }
+
+                if (hasFocus) {
+                    int position = (Integer) v.getTag();
+                    flag.setPosition(position);
+                    playCarousel();
+                }
+            }
+        };
+
+
+        for (int i = 0; i < Math.min(3,carousels.size()); i++) {
+            indicatorImgs[i].setTag(i);
+            indicatorImgs[i].setOnFocusChangeListener(itemFocusChangeListener);
+            indicatorImgs[i].setOnClickListener(ItemClickListener);
+            indicatorImgs[i].setTag(R.drawable.launcher_selector, carousels.get(i));
+            if(StringUtils.isEmpty(carousels.get(i).getThumb_image()))
+                carousels.get(i).setThumb_image("error");
+            Picasso.with(mContext).load(carousels.get(i).getThumb_image()).memoryPolicy(MemoryPolicy.NO_STORE).into(indicatorImgs[i]);
+        }
+
+        flag.setPosition(0);
+
+        isCarouselInit = true;
+        resetBorder();
+
+        playCarousel();
+
+    }
+
+    private boolean isPosterInit, isCarouselInit;
+
+    private void resetBorder(){
+        if (isPosterInit && isCarouselInit) {
+            if(scrollFromBorder){
+                if(isRight){//右侧移入
+                    if("bottom".equals(bottomFlag)){//下边界移入
+                        childMore.requestFocus();
+                    }else{//上边界边界移入
+                        righttop.requestFocus();
+                    }
+//                  		}
+                }else{//左侧移入
+                    if("bottom".equals(bottomFlag)){
+                        leftBottom.requestFocus();
+                    }else{
+                        lefttop.requestFocus();
+                    }
+//                  	}
+                }
+                ((HomePageActivity)getActivity()).resetBorderFocus();
+            }
+        }
+    }
+
+    private void playCarousel() {
+        messageHandler.removeMessages(0);
+        image_switcher_focus.setTag(R.drawable.launcher_selector, carousels.get(flag.getPosition()));
+        if(StringUtils.isEmpty(carousels.get(flag.getPosition()).getVideo_image()))
+        carousels.get(flag.getPosition()).setVideo_image("error");
+        if(mContext!=null) {
+            Picasso.with(mContext).load(carousels.get(flag.getPosition()).getVideo_image()).memoryPolicy(MemoryPolicy.NO_STORE)
+                    .error(R.drawable.list_item_preview_bg)
+                    .placeholder(R.drawable.list_item_preview_bg)
+                    .into(imageSwitcher, new Callback() {
+                int pauseTime = Integer.parseInt(carousels.get(flag.getPosition()).getPause_time());
+
+                @Override
+                public void onSuccess() {
+                    messageHandler.sendEmptyMessageDelayed(0, pauseTime * 1000);
+                }
+
+                @Override
+                public void onError(Exception e) {
+                    messageHandler.sendEmptyMessageDelayed(0, pauseTime * 1000);
+                }
+            });
+        }
+    }
+
+    @Override
+    public void change(int position) {
+        for (int i = 0; i < indicatorImgs.length; i++) {
+            ChildThumbImageView imageView = indicatorImgs[i];
+            if (position != i) {
+                if (imageView.getAlpha() == 1) {
+                    imageView.zoomNormalImage();
+
+
+                }
+            } else {
+                imageView.zoomInImage();
+                imageView.setAlpha((float) 1);
+                indicatorTitle.setText(carousels.get(flag.getPosition()).getTitle());
+
+            }
+        }
+    }
+
+    private class MessageHandler extends Handler {
+        @Override
+        public void handleMessage(Message msg) {
+            if (focusFlag) {
+                if (flag.getPosition() + 1 >= carousels.size()) {
+                    flag.setPosition(0);
+                } else {
+                    flag.setPosition(flag.getPosition() + 1);
+                }
+            }
+            playCarousel();
+        }
+    }
+    private void smartRecommendPost(String url, final ArrayList<HomePagerEntity.Poster>  posters) {
+        String sn_token = PreferenceManager.getDefaultSharedPreferences(mContext).getString("sn_token", "");
+        smartRecommendPostSub =   SkyService.ServiceManager.getCacheSkyService2().smartRecommendPost(url, sn_token)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<ArrayList<HomePagerEntity.Poster>>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable throwable) {
+                        if (isDestroyed)
+                            return;
+                        throwable.printStackTrace();
+                        setSmartPostErrorTime();
+                        initPosters(posters);
+                    }
+
+                    @Override
+                    public void onNext(ArrayList<HomePagerEntity.Poster> smartPosters) {
+                        if (isDestroyed)
+                            return;
+                        if (smartPosters.size() < 7){
+                            initPosters(posters);
+                        }else {
+                            smartPosters.addAll(0, posters);
+                            ArrayList<HomePagerEntity.Poster> posterArrayList = new ArrayList<>();
+                            if (smartPosters.size() - posterStartTag - 7 >= 0) {
+                                posterArrayList.addAll(smartPosters.subList(posterStartTag, posterStartTag + 7));
+                                posterStartTag = posterStartTag + 7;
+                            } else {
+                                if (smartPosters.size() <= posterStartTag){
+                                    posterArrayList.addAll(smartPosters.subList(0, 7));
+                                    posterStartTag =  7;
+                                }else {
+                                    posterArrayList.addAll(smartPosters.subList(posterStartTag, smartPosters.size()));
+                                    posterArrayList.addAll(smartPosters.subList(0, Math.abs(smartPosters.size() - posterStartTag - 7)));
+                                    posterStartTag = Math.abs(smartPosters.size() - posterStartTag - 7);
+                                }
+                            }
+                            initPosters(posterArrayList);
+                        }
+
+                    }
+                });
+    }
+
+    public static int posterStartTag = 0;
+}
+
+
