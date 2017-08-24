@@ -13,8 +13,8 @@ public class BaseControl {
     private String TAG = this.getClass().getSimpleName();
 
     private Context mContext;
-
     private Activity mActivity;
+    private ControlCallBack mCallBack;
 
     public BaseControl(Context context){
         this.mContext = context;
@@ -24,6 +24,11 @@ public class BaseControl {
         this.mActivity = activity;
     }
 
+    public void setCallBack(ControlCallBack callBack){
+        this.mCallBack = callBack;
+    }
+
+    /*回调控制视图*/
     interface ControlCallBack {
         void callBack();
     }
