@@ -33,7 +33,7 @@ public class GuideFragment extends ChannelBaseFragment implements BaseControl.Co
         View view = inflater.inflate(R.layout.fragment_guide, null);
         findViews(view);
         initListener();
-        return super.onCreateView(inflater, container, savedInstanceState);
+        return view;
     }
 
     /*获取控件实例*/
@@ -46,10 +46,14 @@ public class GuideFragment extends ChannelBaseFragment implements BaseControl.Co
 
     }
 
+    private View createView(int layoutId){
+        return LayoutInflater.from(getContext()).inflate(layoutId, null);
+    }
+
 
     /*用于业务类回调控制UI*/
     @Override
-    public void callBack() {
+    public void callBack(int flag) {
 
     }
 }

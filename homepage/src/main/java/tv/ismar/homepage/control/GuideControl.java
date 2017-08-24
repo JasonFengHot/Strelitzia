@@ -23,9 +23,11 @@ public class GuideControl extends BaseControl{
 
     /*获取网络数据*/
     public void fetchNetData(){
-
+        if(true){//成功
+            if(mCallBack!=null) mCallBack.callBack(0x01);
+        } else {//失败
+            if(mCallBack!=null) mCallBack.callBack(0x02);
+        }
     }
-
-
 
 }

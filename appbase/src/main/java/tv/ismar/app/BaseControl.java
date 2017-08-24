@@ -12,9 +12,9 @@ import android.content.Context;
 public class BaseControl {
     private String TAG = this.getClass().getSimpleName();
 
-    private Context mContext;
-    private Activity mActivity;
-    private ControlCallBack mCallBack;
+    public Context mContext;
+    public Activity mActivity;
+    public ControlCallBack mCallBack;
 
     public BaseControl(Context context){
         this.mContext = context;
@@ -40,6 +40,6 @@ public class BaseControl {
 
     /*回调控制视图*/
     public interface ControlCallBack {
-        void callBack();
+        void callBack(int flag);//flag用于区分不同业务
     }
 }
