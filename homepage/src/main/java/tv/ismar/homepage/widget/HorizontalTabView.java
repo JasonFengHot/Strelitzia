@@ -36,6 +36,7 @@ package tv.ismar.homepage.widget;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
+import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.text.Layout;
 import android.util.AttributeSet;
@@ -383,16 +384,28 @@ public class HorizontalTabView extends HorizontalScrollView implements View.OnCl
         if (linearContainer.getChildCount() < 10) {
             return;
         }
+
         int baseRightX = getWidth() - mTabMargin;
         int[] currentRect = new int[2];
         view.getLocationOnScreen(currentRect);
-        if (currentRect[0] < mTabMargin) {// current view left less than left margin
+        //左滑
+//        Log.d(TAG, "currentRect[0] " + currentRect[0]);
+//        Log.d(TAG, "mTabMargin: " + mTabMargin);
+//        Log.d(TAG, "mTabSpace: " + tabSpace);
+
+
+        if (currentRect[0] - view.getWidth() - tabSpace <= mTabMargin) {// current view left less than left margin
             if (mSelectedIndex == 0) {
-                smoothScrollBy(currentRect[0] - mTabMargin, 0);
+                if (currentRect[0] - tabSpace > mTabMargin + tabSpace) {
+                    scrollChildPosition(linearContainer.getChildAt(0));
+                }
             } else {
                 int leftViewWidth = linearContainer.getChildAt(mSelectedIndex - 1).getWidth();
-                smoothScrollBy(currentRect[0] - mTabMargin - leftViewWidth / 2, 0);
+                int[] lastleftRect = new int[2];
+                linearContainer.getChildAt(mSelectedIndex - 1).getLocationOnScreen(lastleftRect);
+                smoothScrollBy(-(currentRect[0] - (lastleftRect[0] + leftViewWidth) + leftViewWidth / 2), 0);
             }
+            //右滑
         } else if (currentRect[0] + view.getWidth() >= baseRightX) {// current view right more than right margin
             if (mSelectedIndex == linearContainer.getChildCount() - 1) {
                 smoothScrollBy(currentRect[0] + view.getWidth() - baseRightX, 0);
