@@ -75,7 +75,7 @@ public class HorizontalTabView extends HorizontalScrollView implements View.OnCl
     private static final int STATE_LEAVE = 1;
 
     private Drawable selectedDrawable;
-    private int tabWidth, tabHeight;
+    private int tabHeight;
     private int tabSpace;
     private int startEndPadding;
     private int scaleBaseline;
@@ -106,7 +106,6 @@ public class HorizontalTabView extends HorizontalScrollView implements View.OnCl
         super(context, attrs, defStyleAttr);
         TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.HorizontalTabView);
         selectedDrawable = typedArray.getDrawable(R.styleable.HorizontalTabView_tvTabSelectedDrawable);
-        tabWidth = typedArray.getDimensionPixelSize(R.styleable.HorizontalTabView_tvTabWidth, 0);
         tabHeight = typedArray.getDimensionPixelSize(R.styleable.HorizontalTabView_tvTabHeight, 0);
         tabSpace = typedArray.getDimensionPixelSize(R.styleable.HorizontalTabView_tvTabSpace, dp2px(10));
         startEndPadding = typedArray.getDimensionPixelSize(R.styleable.HorizontalTabView_tvTabStartEndPadding, dp2px(16));
@@ -157,13 +156,8 @@ public class HorizontalTabView extends HorizontalScrollView implements View.OnCl
 
     private void addItemView(int dataSize, int i, String label) {
         LinearLayout.LayoutParams layoutParams;
-        if (tabWidth > 0) {
-            layoutParams = new LinearLayout.LayoutParams(
-                    tabWidth, LinearLayout.LayoutParams.MATCH_PARENT);
-        } else {
-            layoutParams = new LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT);
-        }
+        layoutParams = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT);
 
         TextView item = new TextView(mContext);
         if (tabHeight > 0) {
@@ -210,26 +204,17 @@ public class HorizontalTabView extends HorizontalScrollView implements View.OnCl
         }
 
         int[] size = getTextSize(item);
-        if (tabWidth <= 0) {
-            mTabMargin = (int) (startEndPadding - tabSpace / 2.0f);
-            layoutParams.width = size[0] + tabSpace;
-            if (i == 0) {
-                layoutParams.leftMargin = mTabMargin;
-            } else if (i == dataSize - 1) {
-                layoutParams.rightMargin = mTabMargin;
-            }
+        mTabMargin = startEndPadding;
+        if (i == 0) {
+            layoutParams.leftMargin = mTabMargin;
+        } else if (i == dataSize - 1) {
+            layoutParams.leftMargin = tabSpace;
+            layoutParams.rightMargin = mTabMargin;
         } else {
-            mTabMargin = startEndPadding;
-            if (i == 0) {
-                layoutParams.leftMargin = mTabMargin;
-            } else if (i == dataSize - 1) {
-                layoutParams.leftMargin = tabSpace;
-                layoutParams.rightMargin = mTabMargin;
-            } else {
-                layoutParams.leftMargin = tabSpace;
-            }
+            layoutParams.leftMargin = tabSpace;
         }
 
+//        item.setPadding(0,0,0,20);
         item.setLayoutParams(layoutParams);
         linearContainer.addView(item);
 
@@ -414,9 +399,6 @@ public class HorizontalTabView extends HorizontalScrollView implements View.OnCl
         this.selectedDrawable = selectedDrawable;
     }
 
-    public void setTabWidth(int tabWidth) {
-        this.tabWidth = tabWidth;
-    }
 
     public void setTabHeight(int tabHeight) {
         this.tabHeight = tabHeight;

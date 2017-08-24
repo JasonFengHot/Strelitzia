@@ -35,7 +35,7 @@ public class HomePageActivity extends BaseActivity {
 
 
     private void initViews() {
-        channelTab = findViewById(R.id.channel_tab);
+        channelTab = (HorizontalTabView) findViewById(R.id.channel_tab);
     }
 
     @Override
