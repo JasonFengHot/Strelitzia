@@ -25,4 +25,7 @@ public interface ScrollAction {
 
     /*纵向屏幕居中*/
     void scrollToCenterY();
+
+    /*滑动到顶部*/
+    void scrollToTop();
 }

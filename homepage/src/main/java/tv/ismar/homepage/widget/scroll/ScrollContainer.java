@@ -309,8 +309,29 @@ public abstract class ScrollContainer extends LinearLayout implements ScrollActi
         return offSet;
     }
 
-    /*单元格复用*/
-    class RecycleBin {
+    /*计算选中子view距离顶部的距离*/
+    private int getTopOffSet(){
+        int[] offSet = new int[]{0, 0};
+        android.view.View child = getChildAt(mSelectedChildIndex);
+        child.getLocationOnScreen(offSet);
 
+        return offSet[1];
+    }
+
+    /*选中子view滑动到顶部*/
+    @Override
+    public void scrollToTop() {
+        int offSet = getTopOffSet();
+
+        int firstLocation = getFirstChildLocation()[1];
+        int lastLocation = getLastChildLocation()[1];
+        int lastHeight = getChildAt(getChildCount()-1).getHeight();
+
+        if(offSet>0 && lastLocation-offSet<mScreenHeight) {//向下滑动
+            Log.i(TAG, "lastLocation:"+lastLocation+" lastWidth:"+lastHeight+ " mMarginL:"+mMarginT);
+            smoothScrollBy(0, lastLocation+lastHeight+mMarginT-mScreenHeight);
+            return;
+        }
+        smoothScrollBy(0, offSet);
     }
 }

@@ -56,7 +56,8 @@ public class VerticalBanner extends ScrollContainer {
             }
         }
         if(temp && mCanScroll){
-            scrollToCenterY();
+//            scrollToCenterY();
+            scrollToTop();
         }
     }
 
