@@ -40,6 +40,6 @@ public class BaseControl {
 
     /*回调控制视图*/
     public interface ControlCallBack {
-        void callBack(int flag);//flag用于区分不同业务
+        void callBack(int flags, Object... args);
     }
 }
