@@ -160,4 +160,18 @@ public class FocusGridLayoutManager extends GridLayoutManager {
             return newPos < 0 && newPos >= spanCount;
         }
     }
+
+    public boolean isCanScroll() {
+        return canScroll;
+    }
+
+    public void setCanScroll(boolean canScroll) {
+        this.canScroll = canScroll;
+    }
+
+    private boolean canScroll=false;
+    @Override
+    public boolean canScrollVertically() {
+        return canScroll;
+    }
 }
