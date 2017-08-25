@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:clipChildren="false"
+    android:clipToPadding="false"
+    android:orientation="vertical"
+    >
+
+    <tv.ismar.homepage.banner.IsmartvLinearLayout
+        android:id="@+id/item_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:background="#00000000"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:foreground="@drawable/selector_item_banner_subscribe"
+        android:orientation="vertical">
+
+
+        <RelativeLayout
+            android:layout_width="250dp"
+            android:layout_height="350dp"
+            >
+
+            <ImageView
+                android:scaleType="fitXY"
+                android:id="@+id/image_view"
+                android:layout_width="250dp"
+                android:layout_height="350dp"
+                android:clipChildren="false"
+                android:clipToPadding="false"
+                />
+
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="250dp"
+                android:layout_height="43dp"
+                android:layout_alignParentBottom="true"
+                android:background="@drawable/banner_subscrib_introduction_bg"
+                android:gravity="center"
+                android:textColor="@color/_ffffff"
+                android:textSize="@dimen/text_size_30sp"/>
+
+        </RelativeLayout>
+
+    </tv.ismar.homepage.banner.IsmartvLinearLayout>
+</LinearLayout>

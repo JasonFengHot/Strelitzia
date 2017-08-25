@@ -1,4 +1,4 @@
-package tv.ismar.homepage.banner.subscribe;
+package tv.ismar.homepage.banner;
 
 import android.content.Context;
 import android.content.res.TypedArray;

@@ -56,6 +56,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import cn.ismartv.truetime.TrueTime;
+import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -79,6 +80,7 @@ import tv.ismar.app.core.client.MessageQueue;
 import tv.ismar.app.core.preferences.AccountSharedPrefs;
 import tv.ismar.app.db.AdvertiseTable;
 import tv.ismar.app.entity.ChannelEntity;
+import tv.ismar.app.entity.banner.BannerSubscribeEntity;
 import tv.ismar.app.network.SkyService;
 import tv.ismar.app.player.CallaPlay;
 import tv.ismar.app.service.TrueTimeService;
@@ -95,8 +97,8 @@ import tv.ismar.homepage.R;
 import tv.ismar.homepage.adapter.ChannelRecyclerAdapter;
 import tv.ismar.homepage.adapter.HorizontalSpacesItemDecoration;
 import tv.ismar.homepage.adapter.OnItemActionListener;
+import tv.ismar.homepage.banner.subscribe.BannerMovieAdapter;
 import tv.ismar.homepage.banner.subscribe.BannerSubscribeAdapter;
-import tv.ismar.homepage.banner.subscribe.BannerSubscribeEntity;
 import tv.ismar.homepage.fragment.ChannelBaseFragment;
 import tv.ismar.homepage.fragment.ChildFragment;
 import tv.ismar.homepage.fragment.EntertainmentFragment;
@@ -167,9 +169,12 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
     private FragmentSwitchHandler fragmentSwitch;
     private BitmapDecoder bitmapDecoder;
     private Subscription channelsSub;
+    private Subscription bannerSubscribeSub;
     private String fromPage;
     private HorizontalTabView channelTab;
     private RecyclerView subscribeBanner;
+    private RecyclerView movieBanner;
+
 
     @Override
     public void onUserCenterClick() {
@@ -471,12 +476,16 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
         home_scroll_right.setOnFocusChangeListener(scrollViewListener);
 
         channelTab = (HorizontalTabView) findViewById(R.id.channel_tab);
-        subscribeBanner = (RecyclerView)findViewById(R.id.subscribe_banner);
+        subscribeBanner = (RecyclerView) findViewById(R.id.subscribe_banner);
         LinearLayoutManager subscribeLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         subscribeBanner.addItemDecoration(new BannerSubscribeAdapter.SpacesItemDecoration(20));
         subscribeBanner.setLayoutManager(subscribeLayoutManager);
-        subscribeBanner.setAdapter(null);
+//        subscribeBanner.setAdapter(null);
 
+        movieBanner = (RecyclerView) findViewById(R.id.movie_banner);
+        LinearLayoutManager movieLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        movieBanner.addItemDecoration(new BannerMovieAdapter.SpacesItemDecoration(20));
+        movieBanner.setLayoutManager(movieLayoutManager);
     }
 
     private void tempInitStaticVariable() {
@@ -577,8 +586,6 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
                                 showNetWorkErrorDialog(e);
                             }
                         }
-
-                        fetchSubscribeBanner();
                     }
 
                     @Override
@@ -590,6 +597,7 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
 //                        fillChannelLayout(channelEntities);
                         fillChannelTab(channelEntities);
                         fetchSubscribeBanner();
+                        fetchMovieBanner();
                     }
                 });
     }
@@ -610,24 +618,60 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
         channelTab.addAllViews(tabs, 0);
     }
 
-    private void fetchSubscribeBanner(){
-//        channelsSub = SkyService.ServiceManager.getCacheSkyService().apiTvChannels()
-//                .subscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe()
-        fillSubscribeBanner();
+    private void fetchSubscribeBanner() {
+        bannerSubscribeSub = SkyService.ServiceManager.getLocalTestService().apiTvBanner("overseas")
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<List<BannerSubscribeEntity>>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onNext(List<BannerSubscribeEntity> bannerSubscribeEntities) {
+                        List<BannerSubscribeEntity.PosterBean> posterBeanList = bannerSubscribeEntities.get(0).getPoster();
+                        fillSubscribeBanner(posterBeanList);
+                    }
+                });
     }
 
-    private void fillSubscribeBanner(){
-        List<BannerSubscribeEntity> bannerSubscribeEntities = new ArrayList<>();
-        for (int i = 0 ; i < 50; i++){
-            BannerSubscribeEntity  bannerSubscribeEntity = new BannerSubscribeEntity();
-            bannerSubscribeEntity.setImage_url("http://res.tvxio.bestv.com.cn/media/upload/20160420/upload/20170421/wukongzhuan170821ht_poster.jpg");
-            bannerSubscribeEntity.setTitle("预约");
-            bannerSubscribeEntities.add(bannerSubscribeEntity);
-        }
-        BannerSubscribeAdapter adapter = new BannerSubscribeAdapter(this, bannerSubscribeEntities);
+    private void fetchMovieBanner() {
+        bannerSubscribeSub = SkyService.ServiceManager.getLocalTestService().apiTvBanner("chinesemovie")
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<List<BannerSubscribeEntity>>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onNext(List<BannerSubscribeEntity> bannerSubscribeEntities) {
+                        List<BannerSubscribeEntity.PosterBean> posterBeanList = bannerSubscribeEntities.get(0).getPoster();
+                        fillMovieBanner(posterBeanList);
+                    }
+                });
+    }
+
+    private void fillSubscribeBanner(List<BannerSubscribeEntity.PosterBean> posterBeanList) {
+        BannerSubscribeAdapter adapter = new BannerSubscribeAdapter(this, posterBeanList);
         subscribeBanner.setAdapter(adapter);
+    }
+
+    private void fillMovieBanner(List<BannerSubscribeEntity.PosterBean> posterBeanList) {
+        BannerMovieAdapter adapter = new BannerMovieAdapter(this, posterBeanList);
+        movieBanner.setAdapter(adapter);
     }
 
 //    private void fillChannelLayout(ChannelEntity[] channelEntities) {
@@ -1095,6 +1139,11 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
         if (channelsSub != null && channelsSub.isUnsubscribed()) {
             channelsSub.unsubscribe();
         }
+
+        if (bannerSubscribeSub != null && bannerSubscribeSub.isUnsubscribed()) {
+            bannerSubscribeSub.unsubscribe();
+        }
+
         if (mHandler.hasMessages(MSG_FETCH_CHANNELS)) {
             mHandler.removeMessages(MSG_FETCH_CHANNELS);
         }

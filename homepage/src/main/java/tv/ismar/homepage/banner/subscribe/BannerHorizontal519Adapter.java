@@ -24,20 +24,20 @@ import static android.view.View.SCALE_Y;
  * Created by huibin on 25/08/2017.
  */
 
-public class BannerSubscribeAdapter extends RecyclerView.Adapter<BannerSubscribeAdapter.SubscribeViewHolder>{
+public class BannerHorizontal519Adapter extends RecyclerView.Adapter<BannerHorizontal519Adapter.SubscribeViewHolder>{
     private Context mContext;
 
     private List<BannerSubscribeEntity.PosterBean> mSubscribeEntityList;
 
 
-    public BannerSubscribeAdapter(Context context, List<BannerSubscribeEntity.PosterBean> subscribeEntityList) {
+    public BannerHorizontal519Adapter(Context context, List<BannerSubscribeEntity.PosterBean> subscribeEntityList) {
         mContext = context;
         mSubscribeEntityList = subscribeEntityList;
     }
 
     @Override
     public SubscribeViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.item_banner_subscribe, parent, false);
+        View view = LayoutInflater.from(mContext).inflate(R.layout.item_banner_movie, parent, false);
         SubscribeViewHolder holder = new SubscribeViewHolder(view);
         return holder;
     }
@@ -46,9 +46,7 @@ public class BannerSubscribeAdapter extends RecyclerView.Adapter<BannerSubscribe
     public void onBindViewHolder(SubscribeViewHolder holder, int position) {
         BannerSubscribeEntity.PosterBean entity = mSubscribeEntityList.get(position);
         Picasso.with(mContext).load(entity.getPoster_url()).into(holder.mImageView);
-        holder.mTitle.setText("预约");
-        holder.mPublishTime.setText("6月30日");
-        holder.mIntroduction.setText(entity.getIntroduction());
+        holder.mTitle.setText(entity.getTitle());
     }
 
     @Override
@@ -61,9 +59,7 @@ public class BannerSubscribeAdapter extends RecyclerView.Adapter<BannerSubscribe
 
         private ImageView mImageView;
         private TextView mTitle;
-        private TextView mPublishTime;
         private View mItemView;
-        private TextView mIntroduction;
 
 
         public SubscribeViewHolder(View itemView) {
@@ -73,8 +69,6 @@ public class BannerSubscribeAdapter extends RecyclerView.Adapter<BannerSubscribe
             mItemView.findViewById(R.id.item_layout).setOnFocusChangeListener(this);
             mImageView = (ImageView) itemView.findViewById(R.id.image_view);
             mTitle = (TextView) itemView.findViewById(R.id.title);
-            mPublishTime = (TextView)itemView.findViewById(R.id.publish_time);
-            mIntroduction = (TextView)itemView.findViewById(R.id.introduction);
         }
 
         @Override

@@ -56,6 +56,8 @@ import tv.ismar.app.entity.ItemList;
 import tv.ismar.app.entity.SectionList;
 import tv.ismar.app.entity.Subject;
 import tv.ismar.app.entity.VideoEntity;
+import tv.ismar.app.entity.banner.BannerMovieEntity;
+import tv.ismar.app.entity.banner.BannerSubscribeEntity;
 import tv.ismar.app.models.ActorRelateRequestParams;
 import tv.ismar.app.models.FilterConditions;
 import tv.ismar.app.models.Game;
@@ -653,11 +655,22 @@ public interface SkyService {
             @Path("item_id") String item_id
     );
 
+    @GET("/api/tv/banner/")
+    Observable<List<BannerSubscribeEntity>> apiTvBanner(
+            @Query("banner") String banner
+    );
+
+    @GET("/api/tv/banner/")
+    Observable<List<BannerMovieEntity>> apiTvMovieBanner(
+            @Query("banner") String banner
+    );
+
     @GET("accounts/sports/subscribe/")
     Observable<ResponseBody> getSubscribeImage(
             @Query("item_id") int pk,
             @Query("type") String type
     );
+
 
     @GET
     Observable<ResponseBody> repostAdLog(
@@ -701,6 +714,8 @@ public interface SkyService {
         private SkyService mCacheSkyService;
         private SkyService mCacheSkyService2;
         private SkyService logSkyService;
+
+        private SkyService localTestSkyService;
 
         public static boolean executeActive = true;
 
@@ -771,6 +786,14 @@ public interface SkyService {
                     .client(mClient)
                     .build();
             mSkyService = retrofit.create(SkyService.class);
+
+            Retrofit localTestRetrofit = new Retrofit.Builder()
+                    .baseUrl(appendProtocol("http://192.168.2.27:10082/"))
+                    .addConverterFactory(GsonConverterFactory.create(gson))
+                    .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                    .client(mClient)
+                    .build();
+            localTestSkyService = localTestRetrofit.create(SkyService.class);
 
             Retrofit adRetrofit = new Retrofit.Builder()
                     .baseUrl(appendProtocol(domain[1]))
@@ -923,6 +946,11 @@ public interface SkyService {
         public static SkyService getLilyHostService() {
 
             return getInstance().lilyHostService;
+        }
+
+        public static SkyService getLocalTestService() {
+
+            return getInstance().localTestSkyService;
         }
 
         public static SkyService getCacheSkyService() {

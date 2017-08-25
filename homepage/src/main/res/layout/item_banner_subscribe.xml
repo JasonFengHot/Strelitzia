@@ -1,29 +1,93 @@
 <?xml version="1.0" encoding="utf-8"?>
-<tv.ismar.homepage.banner.subscribe.IsmartvLinearLayout
+
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="370dp"
-    android:background="#00000000"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
     android:clipChildren="false"
     android:clipToPadding="false"
-    android:focusable="true"
-    android:focusableInTouchMode="true"
-    android:foreground="@drawable/ismartv_test"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    >
 
-    <ImageView
-        android:id="@+id/image_view"
-        android:layout_width="wrap_content"
+    <RelativeLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:clipChildren="false"
-        android:clipToPadding="false"/>
+        android:clipToPadding="false"
+        android:gravity="center">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="-50dp"
+            android:layout_marginRight="-50dp"
+            android:background="#333333"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:src="@drawable/banner_item_timepoint"/>
+    </RelativeLayout>
 
     <TextView
-        android:id="@+id/title"
-        android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:background="#ff9c3c"
+        android:id="@+id/publish_time"
+        android:layout_width="153dp"
+        android:layout_height="52dp"
+        android:layout_marginTop="5dp"
         android:gravity="center"
-        android:textSize="36dp"/>
+        android:textColor="@color/_cccccc"
+        android:textSize="@dimen/text_size_36sp"/>
 
-</tv.ismar.homepage.banner.subscribe.IsmartvLinearLayout>
+    <tv.ismar.homepage.banner.IsmartvLinearLayout
+        android:id="@+id/item_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:background="#00000000"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:foreground="@drawable/selector_item_banner_subscribe"
+        android:orientation="vertical">
+
+
+        <RelativeLayout
+            android:layout_width="388dp"
+            android:layout_height="219dp"
+            >
+
+            <ImageView
+                android:id="@+id/image_view"
+                android:layout_width="388dp"
+                android:layout_height="219dp"
+                android:clipChildren="false"
+                android:clipToPadding="false"
+                />
+
+            <TextView
+                android:id="@+id/introduction"
+                android:layout_width="388dp"
+                android:layout_height="47dp"
+                android:layout_alignParentBottom="true"
+                android:background="@drawable/banner_subscrib_introduction_bg"
+                android:gravity="center"
+                android:textColor="@color/_ffffff"
+                android:textSize="@dimen/text_size_30sp"/>
+
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="388dp"
+            android:layout_height="81dp"
+            android:background="@drawable/selector_item_banner_subscribe_text"
+            android:gravity="center"
+            android:textColor="@color/_cccccc"
+            android:textSize="@dimen/text_size_48sp"
+            />
+
+    </tv.ismar.homepage.banner.IsmartvLinearLayout>
+</LinearLayout>
