@@ -514,8 +514,10 @@ public interface SkyService {
     @GET("api/tv/channels/")
     Observable<ChannelEntity[]> apiTvChannels();
 
-    @GET("api/tv/homepage/banner")
-    Observable<GuideBanner> getGuideBanners();
+    @GET("api/{platform}/homepage/banner")
+    Observable<GuideBanner> getGuideBanners(
+            @Path("platform") String platform
+    );
 
     @GET
     Observable<ArrayList<HomePagerEntity.Poster>> smartRecommendPost(

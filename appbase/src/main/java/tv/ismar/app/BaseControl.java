@@ -3,6 +3,9 @@ package tv.ismar.app;
 import android.app.Activity;
 import android.content.Context;
 
+import rx.Observer;
+import tv.ismar.app.network.SkyService;
+
 /**
  * @AUTHOR: xi
  * @DATE: 2017/8/24
@@ -42,4 +45,6 @@ public class BaseControl {
     public interface ControlCallBack {
         void callBack(int flags, Object... args);
     }
+
+
 }
