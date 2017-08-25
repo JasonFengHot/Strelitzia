@@ -97,7 +97,9 @@ import tv.ismar.homepage.R;
 import tv.ismar.homepage.adapter.ChannelRecyclerAdapter;
 import tv.ismar.homepage.adapter.HorizontalSpacesItemDecoration;
 import tv.ismar.homepage.adapter.OnItemActionListener;
+import tv.ismar.homepage.banner.subscribe.BannerHorizontal519Adapter;
 import tv.ismar.homepage.banner.subscribe.BannerMovieAdapter;
+import tv.ismar.homepage.banner.subscribe.BannerMovieMixAdapter;
 import tv.ismar.homepage.banner.subscribe.BannerSubscribeAdapter;
 import tv.ismar.homepage.fragment.ChannelBaseFragment;
 import tv.ismar.homepage.fragment.ChildFragment;
@@ -174,6 +176,8 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
     private HorizontalTabView channelTab;
     private RecyclerView subscribeBanner;
     private RecyclerView movieBanner;
+    private RecyclerView horizontal519Banner;
+    private RecyclerView movieMixBanner;
 
 
     @Override
@@ -486,6 +490,17 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
         LinearLayoutManager movieLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         movieBanner.addItemDecoration(new BannerMovieAdapter.SpacesItemDecoration(20));
         movieBanner.setLayoutManager(movieLayoutManager);
+
+        horizontal519Banner = (RecyclerView) findViewById(R.id.horizontal_519_banner);
+        LinearLayoutManager horizontal519LayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        horizontal519Banner.addItemDecoration(new BannerHorizontal519Adapter.SpacesItemDecoration(20));
+        horizontal519Banner.setLayoutManager(horizontal519LayoutManager);
+
+        movieMixBanner = (RecyclerView) findViewById(R.id.movie_mix_banner);
+        LinearLayoutManager movieMixLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        movieMixBanner.addItemDecoration(new BannerMovieMixAdapter.SpacesItemDecoration(20));
+        movieMixBanner.setLayoutManager(movieMixLayoutManager);
+
     }
 
     private void tempInitStaticVariable() {
@@ -598,6 +613,8 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
                         fillChannelTab(channelEntities);
                         fetchSubscribeBanner();
                         fetchMovieBanner();
+                        fetchHorizontal519Banner();
+                        fetchMovieMixBanner();
                     }
                 });
     }
@@ -664,6 +681,52 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
                 });
     }
 
+    private void fetchHorizontal519Banner() {
+        bannerSubscribeSub = SkyService.ServiceManager.getLocalTestService().apiTvBanner("chinesemovie")
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<List<BannerSubscribeEntity>>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onNext(List<BannerSubscribeEntity> bannerSubscribeEntities) {
+                        List<BannerSubscribeEntity.PosterBean> posterBeanList = bannerSubscribeEntities.get(0).getPoster();
+                        fillHorizontal519Banner(posterBeanList);
+                    }
+                });
+    }
+
+    private void fetchMovieMixBanner() {
+        bannerSubscribeSub = SkyService.ServiceManager.getLocalTestService().apiTvBanner("chinesemovie")
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<List<BannerSubscribeEntity>>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onNext(List<BannerSubscribeEntity> bannerSubscribeEntities) {
+                        List<BannerSubscribeEntity.PosterBean> posterBeanList = bannerSubscribeEntities.get(0).getPoster();
+                        fillMovieMixBanner(posterBeanList);
+                    }
+                });
+    }
+
     private void fillSubscribeBanner(List<BannerSubscribeEntity.PosterBean> posterBeanList) {
         BannerSubscribeAdapter adapter = new BannerSubscribeAdapter(this, posterBeanList);
         subscribeBanner.setAdapter(adapter);
@@ -672,6 +735,16 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
     private void fillMovieBanner(List<BannerSubscribeEntity.PosterBean> posterBeanList) {
         BannerMovieAdapter adapter = new BannerMovieAdapter(this, posterBeanList);
         movieBanner.setAdapter(adapter);
+    }
+
+    private void fillHorizontal519Banner(List<BannerSubscribeEntity.PosterBean> posterBeanList) {
+        BannerHorizontal519Adapter adapter = new BannerHorizontal519Adapter(this, posterBeanList);
+        horizontal519Banner.setAdapter(adapter);
+    }
+
+    private void fillMovieMixBanner(List<BannerSubscribeEntity.PosterBean> posterBeanList) {
+        BannerMovieMixAdapter adapter = new BannerMovieMixAdapter(this, posterBeanList);
+        movieMixBanner.setAdapter(adapter);
     }
 
 //    private void fillChannelLayout(ChannelEntity[] channelEntities) {

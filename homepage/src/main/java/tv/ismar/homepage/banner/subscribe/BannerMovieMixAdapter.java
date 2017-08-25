@@ -24,20 +24,20 @@ import static android.view.View.SCALE_Y;
  * Created by huibin on 25/08/2017.
  */
 
-public class BannerHorizontal519Adapter extends RecyclerView.Adapter<BannerHorizontal519Adapter.SubscribeViewHolder>{
+public class BannerMovieMixAdapter extends RecyclerView.Adapter<BannerMovieMixAdapter.SubscribeViewHolder>{
     private Context mContext;
 
     private List<BannerSubscribeEntity.PosterBean> mSubscribeEntityList;
 
 
-    public BannerHorizontal519Adapter(Context context, List<BannerSubscribeEntity.PosterBean> subscribeEntityList) {
+    public BannerMovieMixAdapter(Context context, List<BannerSubscribeEntity.PosterBean> subscribeEntityList) {
         mContext = context;
         mSubscribeEntityList = subscribeEntityList;
     }
 
     @Override
     public SubscribeViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.item_banner_horizontal_519, parent, false);
+        View view = LayoutInflater.from(mContext).inflate(R.layout.item_banner_movie, parent, false);
         SubscribeViewHolder holder = new SubscribeViewHolder(view);
         return holder;
     }
