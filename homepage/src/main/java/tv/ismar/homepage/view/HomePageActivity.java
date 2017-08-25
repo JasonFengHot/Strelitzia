@@ -37,6 +37,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.blankj.utilcode.util.StringUtils;
+import com.open.androidtvwidget.leanback.recycle.LinearLayoutManagerTV;
 import com.orhanobut.logger.Logger;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.MemoryPolicy;
@@ -94,6 +95,8 @@ import tv.ismar.homepage.R;
 import tv.ismar.homepage.adapter.ChannelRecyclerAdapter;
 import tv.ismar.homepage.adapter.HorizontalSpacesItemDecoration;
 import tv.ismar.homepage.adapter.OnItemActionListener;
+import tv.ismar.homepage.banner.subscribe.BannerSubscribeAdapter;
+import tv.ismar.homepage.banner.subscribe.BannerSubscribeEntity;
 import tv.ismar.homepage.fragment.ChannelBaseFragment;
 import tv.ismar.homepage.fragment.ChildFragment;
 import tv.ismar.homepage.fragment.EntertainmentFragment;
@@ -166,6 +169,7 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
     private Subscription channelsSub;
     private String fromPage;
     private HorizontalTabView channelTab;
+    private RecyclerView subscribeBanner;
 
     @Override
     public void onUserCenterClick() {
@@ -467,6 +471,12 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
         home_scroll_right.setOnFocusChangeListener(scrollViewListener);
 
         channelTab = (HorizontalTabView) findViewById(R.id.channel_tab);
+        subscribeBanner = (RecyclerView)findViewById(R.id.subscribe_banner);
+        LinearLayoutManager subscribeLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        subscribeBanner.addItemDecoration(new BannerSubscribeAdapter.SpacesItemDecoration(20));
+        subscribeBanner.setLayoutManager(subscribeLayoutManager);
+        subscribeBanner.setAdapter(null);
+
     }
 
     private void tempInitStaticVariable() {
@@ -567,6 +577,8 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
                                 showNetWorkErrorDialog(e);
                             }
                         }
+
+                        fetchSubscribeBanner();
                     }
 
                     @Override
@@ -577,6 +589,7 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
                         }
 //                        fillChannelLayout(channelEntities);
                         fillChannelTab(channelEntities);
+                        fetchSubscribeBanner();
                     }
                 });
     }
@@ -595,7 +608,26 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
             tabs.add(tab);
         }
         channelTab.addAllViews(tabs, 0);
+    }
 
+    private void fetchSubscribeBanner(){
+//        channelsSub = SkyService.ServiceManager.getCacheSkyService().apiTvChannels()
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe()
+        fillSubscribeBanner();
+    }
+
+    private void fillSubscribeBanner(){
+        List<BannerSubscribeEntity> bannerSubscribeEntities = new ArrayList<>();
+        for (int i = 0 ; i < 50; i++){
+            BannerSubscribeEntity  bannerSubscribeEntity = new BannerSubscribeEntity();
+            bannerSubscribeEntity.setImage_url("http://res.tvxio.bestv.com.cn/media/upload/20160420/upload/20170421/wukongzhuan170821ht_poster.jpg");
+            bannerSubscribeEntity.setTitle("预约");
+            bannerSubscribeEntities.add(bannerSubscribeEntity);
+        }
+        BannerSubscribeAdapter adapter = new BannerSubscribeAdapter(this, bannerSubscribeEntities);
+        subscribeBanner.setAdapter(adapter);
     }
 
 //    private void fillChannelLayout(ChannelEntity[] channelEntities) {

@@ -199,5 +199,8 @@
         <attr name="tvTabFocusTextColor" format="color"/>
     </declare-styleable>
 
+    <declare-styleable name="IsmartvLinearLayout">
+        <attr name="android:foreground"/>
+    </declare-styleable>
 
 </resources>
