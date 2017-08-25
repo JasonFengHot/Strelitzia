@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import tv.ismar.app.BaseControl;
+import tv.ismar.app.entity.GuideBanner;
 import tv.ismar.homepage.R;
 import tv.ismar.homepage.control.GuideControl;
 import tv.ismar.homepage.widget.scroll.VerticalBanner;
@@ -55,10 +56,17 @@ public class GuideFragment extends ChannelBaseFragment implements BaseControl.Co
 
     /*用于业务类回调控制UI*/
     @Override
-    public void callBack(int flag) {
-
+    public void callBack(int flag, Object... args) {
+        if(flag == GuideControl.FETCH_GUIDE_BANNERS_FLAG){//这里通过flag严格区分不同的业务流程，避免业务之间的耦合
+            GuideBanner banners = (GuideBanner) args[0];
+            return;
+        }
     }
 }
+
+
+
+
 
 
 class Flag {

@@ -49,6 +49,7 @@ import tv.ismar.app.VodApplication;
 import tv.ismar.app.core.OfflineCheckManager;
 import tv.ismar.app.entity.ChannelEntity;
 import tv.ismar.app.entity.ClipEntity;
+import tv.ismar.app.entity.GuideBanner;
 import tv.ismar.app.entity.HomePagerEntity;
 import tv.ismar.app.entity.Item;
 import tv.ismar.app.entity.ItemList;
@@ -512,6 +513,11 @@ public interface SkyService {
 
     @GET("api/tv/channels/")
     Observable<ChannelEntity[]> apiTvChannels();
+
+    @GET("api/{platform}/homepage/banner")
+    Observable<GuideBanner> getGuideBanners(
+            @Path("platform") String platform
+    );
 
     @GET
     Observable<ArrayList<HomePagerEntity.Poster>> smartRecommendPost(
