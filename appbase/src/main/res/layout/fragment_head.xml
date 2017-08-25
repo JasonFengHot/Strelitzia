@@ -1,95 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:orientation="vertical">
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/header_fragment_h"
-        android:clipChildren="false"
-        android:clipToPadding="false"
-        android:orientation="vertical"
-        android:paddingLeft="@dimen/header_fragment_padding_l"
-        android:paddingRight="@dimen/header_fragment_padding_r">
+              android:layout_height="wrap_content">
+    <TextView
+        android:layout_width="@dimen/guide_title_logo_width"
+        android:layout_height="wrap_content" />
 
 
-        <TextView
-            android:id="@+id/title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_marginBottom="@dimen/header_fragment_padding_bottom1"
-            android:textColor="@color/color_base_white"
-            android:textSize="@dimen/text_size_48sp"/>
-
-        <LinearLayout
-            android:id="@+id/header_sub"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_marginBottom="@dimen/header_fragment_padding_bottom1"
-            android:layout_toRightOf="@id/title"
-            android:gravity="center">
-
-            <ImageView
-                android:id="@+id/divider"
-                android:layout_width="@dimen/header_fragment_title_divider_w"
-                android:layout_height="@dimen/header_fragment_title_divider_h"
-                android:src="@color/color_base_white"/>
-
-            <TextView
-                android:id="@+id/sub_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:layout_marginLeft="@dimen/header_fragment_subtitle_ml"
-                android:textColor="@color/color_base_white"
-                android:textSize="@dimen/text_size_36sp"/>
-
-        </LinearLayout>
-
-
-        <TextView
-            android:id="@+id/weather_info"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentLeft="true"
-            android:layout_marginBottom="@dimen/header_fragment_padding_bottom2"
-            android:layout_marginLeft="@dimen/header_fragment_weather_ml"
-            android:textColor="@color/color_base_white"
-            android:textSize="@dimen/text_size_24sp"/>
-
-        <ImageView
-            android:id="@+id/bestv_logo"
-            android:layout_width="@dimen/header_logo_w"
-            android:layout_height="@dimen/header_logo_h"
-            android:layout_alignParentRight="true"
-            android:layout_marginTop="@dimen/header_logo_mt"
-            android:src="@drawable/bestv_logo"
-            android:visibility="gone"/>
-
-        <LinearLayout
-            android:id="@+id/indicator_layout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_marginRight="@dimen/header_indicator_mr"
-            android:layout_toLeftOf="@id/bestv_logo"
-            android:layout_marginBottom="@dimen/header_fragment_padding_bottom1"
-            android:orientation="horizontal"/>
-
-
-    </RelativeLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_alignParentBottom="true"
-        android:layout_marginLeft="@dimen/header_fragment_divider_mlr"
-        android:layout_marginRight="@dimen/header_fragment_divider_mlr"
-        android:background="#33FFFFFF"/>
-
-
-</LinearLayout>
+</RelativeLayout>
