@@ -162,11 +162,6 @@ public class ChannelListActivity extends BaseActivity {
 
 	public void addHead(String title){
 		headFragment = new HeadFragment();
-		Bundle bundle = new Bundle();
-		bundle.putString("type", HeadFragment.HEADER_LISTPAGE);
-		bundle.putString("channel_name", title);
-		headFragment = new HeadFragment();
-		headFragment.setArguments(bundle);
 		getSupportFragmentManager().beginTransaction().add(R.id.head_layout, headFragment).commit();
 	}
 

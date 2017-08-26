@@ -90,10 +90,6 @@ public class EpisodeActivity extends BaseActivity implements View.OnHoverListene
         }
 
         HeadFragment headFragment = new HeadFragment();
-        Bundle headFragmentBundle = new Bundle();
-        headFragmentBundle.putString("type", HeadFragment.HEADER_DETAILPAGE);
-        headFragmentBundle.putString("channel_name", "剧集列表");
-        headFragment.setArguments(headFragmentBundle);
         getSupportFragmentManager().beginTransaction().add(R.id.detail_head, headFragment).commit();
 
         initLayout();

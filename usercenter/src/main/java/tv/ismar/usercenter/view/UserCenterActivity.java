@@ -601,14 +601,6 @@ public class UserCenterActivity extends BaseActivity implements LoginFragment.Lo
         super.onPause();
     }
 
-    public void refreshWeather() {
-        if (headFragment != null) {
-            HashMap<String, String> hashMap = IsmartvActivator.getInstance().getCity();
-            String geoId = hashMap.get("geo_id");
-            headFragment.fetchWeatherInfo(geoId);
-        }
-    }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == CardPayFragment.CHARGE_MONEY_SUCCESS) {
