@@ -1,4 +1,4 @@
-package tv.ismar.homepage.widget;
+package tv.ismar.app.widget;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
