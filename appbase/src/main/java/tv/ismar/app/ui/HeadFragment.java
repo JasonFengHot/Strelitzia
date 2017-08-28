@@ -21,7 +21,7 @@ import tv.ismar.app.widget.OpenView;
 public class HeadFragment extends Fragment implements View.OnClickListener, View.OnFocusChangeListener, View.OnHoverListener{
 
     private OpenView mHistoryTv;//历史记录
-    private TextView mPersonCenterTv;//个人中心
+    private OpenView mPersonCenterTv;//个人中心
     private TextView mTimeTv;//时间
 
     @Override
@@ -42,7 +42,7 @@ public class HeadFragment extends Fragment implements View.OnClickListener, View
     private void findView(View view){
         mHistoryTv = (OpenView) view.findViewById(R.id.guide_title_history_tv);
         mTimeTv = (TextView) view.findViewById(R.id.guide_title_time_tv);
-        mPersonCenterTv = (TextView) view.findViewById(R.id.guide_title_person_center_tv);
+        mPersonCenterTv = (OpenView) view.findViewById(R.id.guide_title_person_center_tv);
     }
 
     private void initListener(){

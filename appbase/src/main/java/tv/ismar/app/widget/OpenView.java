@@ -5,12 +5,10 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.TypedValue;
-import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -27,7 +25,7 @@ import tv.ismar.app.R;
 
 public class OpenView extends LinearLayout implements View.OnFocusChangeListener{
     private static final String TAG = OpenView.class.getSimpleName();
-    private int mHiddenViewWidth = 96;//隐藏的宽度
+    private int mHiddenViewWidth = 0;//隐藏的宽度
 
     private Context mContext;
     private TextView mTv;
@@ -46,7 +44,6 @@ public class OpenView extends LinearLayout implements View.OnFocusChangeListener
     private void init(Context context, AttributeSet attrs){
         this.mContext = context;
         setOrientation(LinearLayout.HORIZONTAL);
-        setGravity(Gravity.CENTER_VERTICAL);
         setFocusable(true);
         setOnFocusChangeListener(this);
 
@@ -55,17 +52,17 @@ public class OpenView extends LinearLayout implements View.OnFocusChangeListener
         Drawable icon = typedArray.getDrawable(R.styleable.OpenView_rightIcon);
         int iconSize = typedArray.getDimensionPixelSize(R.styleable.OpenView_rIconSize, 0);
         float textSize = typedArray.getDimension(R.styleable.OpenView_lTextSize, 0);
-        float paddingLeft = typedArray.getDimensionPixelSize(R.styleable.OpenView_iconPaddingLeft, 0);
+        int paddingLeft = typedArray.getDimensionPixelSize(R.styleable.OpenView_iconPaddingLeft, 0);
 
         mTv = new TextView(mContext);
         mTv.setText(text);
         mTv.setSingleLine(true);
         mTv.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
-//        mTv.setVisibility(GONE);
+        mTv.setVisibility(INVISIBLE);
 
         mIconTv = new TextView(mContext);
-        Log.i(TAG, "iconSize:"+iconSize);
-        ViewGroup.LayoutParams iconParams = new LayoutParams(iconSize, iconSize);
+        MarginLayoutParams iconParams = new LayoutParams(iconSize, iconSize);
+        iconParams.leftMargin = paddingLeft;
         mIconTv.setLayoutParams(iconParams);
         mIconTv.setBackground(icon);
 
@@ -100,7 +97,7 @@ public class OpenView extends LinearLayout implements View.OnFocusChangeListener
             animator.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
-                    mTv.setVisibility(View.GONE);
+                    mTv.setVisibility(View.INVISIBLE);
                 }
 
             });
@@ -118,29 +115,23 @@ public class OpenView extends LinearLayout implements View.OnFocusChangeListener
                 ViewGroup.LayoutParams layoutParams = v.getLayoutParams();
                 layoutParams.width = value;
                 v.setLayoutParams(layoutParams);
-
             }
         });
         return animator;
     }
 
     @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-    }
-
-    @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         super.onLayout(changed, l, t, r, b);
-        if(mTv.getWidth() > 0){
+        Log.i(TAG, "layout width:"+mTv.getWidth());
+        if(mTv.getWidth()>0 && mHiddenViewWidth==0){
             Log.i(TAG, "layout width:"+mTv.getWidth()+ " minWidth:"+mTv.getMinWidth());
-//            mHiddenViewWidth = mTv.getMinWidth();
+            mHiddenViewWidth = mTv.getWidth();
         }
     }
 
     @Override
     public void onFocusChange(View v, boolean hasFocus) {
-        Log.i(TAG, "onFocus:"+hasFocus);
         openOrClose(hasFocus);
     }
 }
