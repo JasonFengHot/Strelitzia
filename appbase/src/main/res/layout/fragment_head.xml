@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:gravity="center_vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
@@ -10,14 +11,17 @@
         android:layout_marginTop="@dimen/guide_title_logo_margin_top"
         android:background="@drawable/guide_title_logo"/>
 
-    <TextView
+    <tv.ismar.app.widget.OpenView
         android:id="@+id/guide_title_history_tv"
-        android:layout_width="@dimen/guide_title_icon_size"
-        android:layout_height="@dimen/guide_title_icon_size"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_toLeftOf="@+id/guide_title_person_center_tv"
+        app:lTextSize="@dimen/guide_title_icon_size"
+        app:rIconSize="@dimen/guide_title_icon_size"
         android:layout_marginRight="@dimen/guide_title_history_margin_person_center"
         android:layout_marginTop="@dimen/guide_title_histroy_margin_top"
-        android:background="@drawable/history_icon"/>
+        app:leftText="历史收藏"
+        app:rightIcon="@drawable/history_icon" />
 
     <TextView
         android:id="@+id/guide_title_person_center_tv"
