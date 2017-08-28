@@ -29,7 +29,7 @@ public class GuideControl extends BaseControl{
     }
 
     /**
-     * 获取banner列表
+     * ???
      * @param platform tv or mobile
      */
     public void fetchBannerList(String platform){

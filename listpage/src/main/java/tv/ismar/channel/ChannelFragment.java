@@ -61,7 +61,6 @@ import tv.ismar.app.ui.adapter.HGridAdapterImpl;
 import tv.ismar.app.ui.view.ActivityToFragmentListener;
 import tv.ismar.app.ui.view.AlertDialogFragment;
 import tv.ismar.app.ui.view.MenuFragment;
-import tv.ismar.app.widget.LaunchHeaderLayout;
 import tv.ismar.app.widget.LoadingDialog;
 import tv.ismar.app.widget.ScrollableSectionList;
 import tv.ismar.listpage.R;
@@ -116,7 +115,6 @@ public class ChannelFragment extends Fragment implements OnItemSelectedListener,
     ProgressBar percentage;
     private Button left_shadow;
     private Button right_shadow;
-    private LaunchHeaderLayout weatherFragment;
     private SkyService skyService;
     private Handler handler=new Handler(new Handler.Callback() {
         @Override
@@ -136,10 +134,6 @@ public class ChannelFragment extends Fragment implements OnItemSelectedListener,
 
         percentage = (ProgressBar) fragmentView.findViewById(R.id.section_percentage);
 
-        weatherFragment = (LaunchHeaderLayout) fragmentView.findViewById(R.id.top_column_layout);
-        weatherFragment.setTitle(mTitle);
-        weatherFragment.hideSubTiltle();
-        weatherFragment.hideIndicatorTable();
         large_layout = fragmentView.findViewById(R.id.large_layout);
         mHGridView = (HGridView) fragmentView.findViewById(R.id.h_grid_view);
         left_shadow = (Button) fragmentView.findViewById(R.id.left_shadow);
@@ -593,7 +587,6 @@ public class ChannelFragment extends Fragment implements OnItemSelectedListener,
                                     if (mLoadingDialog != null && mLoadingDialog.isShowing()) {
                                         mLoadingDialog.dismiss();
                                     }
-                                    weatherFragment.setVisibility(View.GONE);
                                     percentage.setVisibility(View.VISIBLE);
 
                                         if (mSectionList != null) {

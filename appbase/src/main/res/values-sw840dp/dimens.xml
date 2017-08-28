@@ -629,4 +629,26 @@
 <dimen name="hint_382">297.11dp</dimen>
 <dimen name="hint_63">49.00dp</dimen>
 <dimen name="hint_59">45.89dp</dimen>
+
+<!--首页 begin-->
+<!--标题尺寸-->
+<dimen name="guide_title_logo_width">327.44dp</dimen>
+<dimen name="guide_title_logo_height">48.22dp</dimen>
+<dimen name="guide_title_icon_size">28.00dp</dimen>
+<dimen name="guide_title_time_size">37.33dp</dimen>
+<dimen name="guide_title_logo_margin_top">8.56dp</dimen>
+<dimen name="guide_title_logo_margin_left">32.67dp</dimen>
+<dimen name="guide_title_time_margin_right">32.67dp</dimen>
+<dimen name="guide_title_time_margin_top">21.78dp</dimen>
+<dimen name="guide_title_histroy_margin_top">28.00dp</dimen>
+<dimen name="guide_title_person_center_margin_top">28.00dp</dimen>
+<dimen name="guide_title_person_center_margin_time">64.56dp</dimen>
+<dimen name="guide_title_history_margin_person_center">74.67dp</dimen>
+
+<!--栏目尺寸-->
+<dimen name="guide_column_item_width">298.67dp</dimen>
+<dimen name="guide_column_item_height">112.00dp</dimen>
+<dimen name="guide_column_item_padding">31.11dp</dimen>
+<dimen name="guide_column_item_margin_left">77.78dp</dimen>
+<!--首页 end-->
 </resources>

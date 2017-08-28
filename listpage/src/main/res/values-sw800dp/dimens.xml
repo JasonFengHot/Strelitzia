@@ -318,7 +318,7 @@
 <dimen name="filter_group_radio_button_ts">22.22dp</dimen>
 
 <!--filter_item_vertical_poster-->
-<dimen name="filter_item_vertical_poster_mb">11.85dp</dimen>
+<dimen name="filter_item_vertical_poster_mb">2.22dp</dimen>
 <dimen name="item_vertical_poster_img_w">180.00dp</dimen>
 <dimen name="item_vertical_poster_img_h">251.85dp</dimen>
 <dimen name="item_vertical_poster_vip_w">80.74dp</dimen>
@@ -364,6 +364,6 @@
 <dimen name="filter_checked_condition_ts">22.22dp</dimen>
 <dimen name="filter_poster_vertical_scroll_space_up">23.70dp</dimen>
 <dimen name="filter_poster_vertical_scroll_space">24.44dp</dimen>
-<dimen name="filter_poster_start_scroll_length">666.67dp</dimen>
+<dimen name="filter_poster_start_scroll_length">592.59dp</dimen>
 <dimen name="filter_condition_group_item_space_2">74.07dp</dimen>
 </resources>

@@ -17,7 +17,6 @@ import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -31,13 +30,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import com.blankj.utilcode.util.StringUtils;
-import com.open.androidtvwidget.leanback.recycle.LinearLayoutManagerTV;
 import com.orhanobut.logger.Logger;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.MemoryPolicy;
@@ -56,7 +52,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import cn.ismartv.truetime.TrueTime;
-import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -72,9 +67,7 @@ import tv.ismar.app.ad.AdvertiseManager;
 import tv.ismar.app.ad.Advertisement;
 import tv.ismar.app.core.DaisyUtils;
 import tv.ismar.app.core.InitializeProcess;
-import tv.ismar.app.core.PageIntent;
 import tv.ismar.app.core.SimpleRestClient;
-import tv.ismar.app.core.Util;
 import tv.ismar.app.core.VodUserAgent;
 import tv.ismar.app.core.client.MessageQueue;
 import tv.ismar.app.core.preferences.AccountSharedPrefs;
@@ -117,7 +110,7 @@ import tv.ismar.player.gui.PlaybackService;
 /**
  * Created by huaijie on 5/18/15.
  */
-public class HomePageActivity extends BaseActivity implements HeadFragment.HeadItemClickListener {
+public class HomePageActivity extends BaseActivity {
     private static final String TAG = "LH/HomePageActivity";
     private static final int SWITCH_PAGE = 0X01;
     private static final int SWITCH_PAGE_FROMLAUNCH = 0X02;
@@ -179,30 +172,6 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
     private RecyclerView horizontal519Banner;
     private RecyclerView movieMixBanner;
 
-
-    @Override
-    public void onUserCenterClick() {
-        PageIntent pageIntent = new PageIntent();
-        pageIntent.toUserCenter(this);
-    }
-
-    @Override
-    public void onHistoryClick() {
-        PageIntent pageIntent = new PageIntent();
-        pageIntent.toHistory(this);
-    }
-
-    @Override
-    public void onFavoriteClick() {
-        PageIntent pageIntent = new PageIntent();
-        pageIntent.toFavorite(this);
-    }
-
-    @Override
-    public void onSearchClick() {
-        PageIntent pageIntent = new PageIntent();
-        pageIntent.toSearch(this);
-    }
 
     private void handlerSwitchPage(int position) {
         if (channelEntityList.isEmpty()) {
@@ -441,10 +410,8 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
 
     private void initViews() {
         Bundle bundle = new Bundle();
-        bundle.putString("type", HeadFragment.HEADER_HOMEPAGE);
         bundle.putString("channel_name", getString(R.string.str_home));
         headFragment = new HeadFragment();
-        headFragment.setHeadItemClickListener(this);
         headFragment.setArguments(bundle);
         getSupportFragmentManager().beginTransaction()
                 .add(R.id.home_head, headFragment)
@@ -927,7 +894,6 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
         }
 
         ChannelEntity channelEntity = channelEntityList.get(position);
-        headFragment.setSubTitle(channelEntity.getName());
         currentFragment = null;
         if ("template1".equals(channelEntity.getHomepage_template())) {
             currentFragment = new FilmFragment();

@@ -61,7 +61,6 @@
         android:button="@null"
         android:gravity="center"
         android:checked="true"
-        android:layout_marginTop="@dimen/filter_layout_left_view_tab_mt"
         />
     </RadioGroup>
         </LinearLayout>
@@ -80,36 +79,37 @@
         android:clipToPadding="false"
         >
 
-        <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="1080dp"
-            android:clipChildren="false"
-            android:clipToPadding="false"
-            android:scrollbars="none">
-            <LinearLayout
-                android:id="@+id/lister_poster"
-                android:layout_width="match_parent"
-                android:layout_height="1080dp"
-                android:orientation="vertical"
-                android:clipChildren="false"
-                android:clipToPadding="false"
-                android:gravity="center_horizontal">
         <tv.ismar.app.widget.MyRecyclerView
             android:id="@+id/poster_recyclerview"
-            android:layout_width="1415dp"
+            android:layout_width="1460dp"
             android:layout_height="992dp"
             android:layout_marginTop="@dimen/filter_layout_poster_recyclerview_mt"
             android:clipToPadding="false"
             android:clipChildren="false"
+            android:layout_centerHorizontal="true"
             />
 
-            </LinearLayout>
-        </ScrollView>
+        <tv.ismar.app.widget.MyRecyclerView
+            android:id="@+id/list_poster_recyclerview"
+            android:layout_width="1460dp"
+            android:layout_height="992dp"
+            android:clipToPadding="false"
+            android:clipChildren="false"
+            android:visibility="gone"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="25dp"
+            />
 
-        <View
+
+        <TextView
+            android:id="@+id/current_section_title"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/filter_layout_filter_checked_conditiion_h"
+            android:layout_height="wrap_content"
             android:background="#000000"
+            android:textSize="48dp"
+            android:textColor="#ffffff"
+            android:paddingLeft="91dp"
+            android:paddingTop="40dp"
         />
         <LinearLayout
             android:id="@+id/filter_checked_conditiion"

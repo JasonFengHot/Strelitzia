@@ -802,12 +802,4 @@
     <dimen name="channel_tab_space">88dp</dimen>
 
     <!--longhai 首页相关ui End -->
-
-    <!--首页 begin-->
-    <!--栏目尺寸-->
-    <dimen name="guide_column_item_width">384dp</dimen>
-    <dimen name="guide_column_item_height">144dp</dimen>
-    <dimen name="guide_column_item_padding">40dp</dimen>
-    <dimen name="guide_column_item_margin_left">100dp</dimen>
-    <!--首页 end-->
 </resources>

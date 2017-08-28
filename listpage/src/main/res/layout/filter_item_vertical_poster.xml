@@ -27,6 +27,7 @@
         android:paddingRight="@dimen/item_vertical_poster_mark_pr"/>
 
     <View
+        android:id="@+id/item_vertical_title_bg"
         android:layout_width="@dimen/item_vertical_poster_title_w"
         android:layout_height="@dimen/item_vertical_poster_title_h"
         android:background="#000000"
