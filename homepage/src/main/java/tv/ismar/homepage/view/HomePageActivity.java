@@ -52,6 +52,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import cn.ismartv.truetime.TrueTime;
+import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
