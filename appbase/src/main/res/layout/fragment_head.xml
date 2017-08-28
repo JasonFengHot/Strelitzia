@@ -15,22 +15,27 @@
         android:id="@+id/guide_title_history_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toLeftOf="@+id/guide_title_person_center_tv"
-        app:lTextSize="@dimen/guide_title_icon_size"
+        android:layout_toLeftOf="@+id/guide_title_time_tv"
+        app:lTextSize="@dimen/guide_title_text_size"
         app:rIconSize="@dimen/guide_title_icon_size"
         android:layout_marginRight="@dimen/guide_title_history_margin_person_center"
         android:layout_marginTop="@dimen/guide_title_histroy_margin_top"
+        app:iconPaddingLeft="@dimen/guide_title_icon_padding_text"
         app:leftText="历史收藏"
         app:rightIcon="@drawable/history_icon" />
 
-    <TextView
+    <tv.ismar.app.widget.OpenView
         android:id="@+id/guide_title_person_center_tv"
-        android:layout_width="@dimen/guide_title_icon_size"
-        android:layout_height="@dimen/guide_title_icon_size"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_toLeftOf="@+id/guide_title_time_tv"
         android:layout_marginRight="@dimen/guide_title_person_center_margin_time"
         android:layout_marginTop="@dimen/guide_title_person_center_margin_top"
-        android:background="@drawable/person_center"/>
+        app:lTextSize="@dimen/guide_title_text_size"
+        app:rIconSize="@dimen/guide_title_icon_size"
+        app:iconPaddingLeft="@dimen/guide_title_icon_padding_text"
+        app:leftText="个人中心"
+        app:rightIcon="@drawable/person_center"/>
     
     <TextView
         android:id="@+id/guide_title_time_tv"

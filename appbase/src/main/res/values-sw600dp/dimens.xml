@@ -634,7 +634,9 @@
 <!--标题尺寸-->
 <dimen name="guide_title_logo_width">233.89dp</dimen>
 <dimen name="guide_title_logo_height">34.44dp</dimen>
+<dimen name="guide_title_text_size">16.67dp</dimen>
 <dimen name="guide_title_icon_size">20.00dp</dimen>
+<dimen name="guide_title_icon_padding_text">1.67dp</dimen>
 <dimen name="guide_title_time_size">26.67dp</dimen>
 <dimen name="guide_title_logo_margin_top">6.11dp</dimen>
 <dimen name="guide_title_logo_margin_left">23.33dp</dimen>
@@ -643,7 +645,7 @@
 <dimen name="guide_title_histroy_margin_top">20.00dp</dimen>
 <dimen name="guide_title_person_center_margin_top">20.00dp</dimen>
 <dimen name="guide_title_person_center_margin_time">46.11dp</dimen>
-<dimen name="guide_title_history_margin_person_center">53.33dp</dimen>
+<dimen name="guide_title_history_margin_person_center">125.00dp</dimen>
 
 <!--栏目尺寸-->
 <dimen name="guide_column_item_width">213.33dp</dimen>
