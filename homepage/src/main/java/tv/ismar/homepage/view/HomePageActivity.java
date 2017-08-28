@@ -612,8 +612,8 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
 //                        fillChannelLayout(channelEntities);
                         fillChannelTab(channelEntities);
                         fetchSubscribeBanner();
-                        fetchMovieBanner();
-                        fetchHorizontal519Banner();
+//                        fetchMovieBanner();
+//                        fetchHorizontal519Banner();
                         fetchMovieMixBanner();
                     }
                 });
@@ -636,10 +636,10 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
     }
 
     private void fetchSubscribeBanner() {
-        bannerSubscribeSub = SkyService.ServiceManager.getLocalTestService().apiTvBanner("overseas")
+        bannerSubscribeSub = SkyService.ServiceManager.getLocalTestService().apiTvBanner("overseas", "1")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<List<BannerSubscribeEntity>>() {
+                .subscribe(new Observer<BannerSubscribeEntity>() {
                     @Override
                     public void onCompleted() {
 
@@ -651,64 +651,64 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
                     }
 
                     @Override
-                    public void onNext(List<BannerSubscribeEntity> bannerSubscribeEntities) {
-                        List<BannerSubscribeEntity.PosterBean> posterBeanList = bannerSubscribeEntities.get(0).getPoster();
+                    public void onNext(BannerSubscribeEntity bannerSubscribeEntity) {
+                        List<BannerSubscribeEntity.PosterBean> posterBeanList = bannerSubscribeEntity.getPoster();
                         fillSubscribeBanner(posterBeanList);
                     }
                 });
     }
 
-    private void fetchMovieBanner() {
-        bannerSubscribeSub = SkyService.ServiceManager.getLocalTestService().apiTvBanner("chinesemovie")
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<List<BannerSubscribeEntity>>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        e.printStackTrace();
-                    }
-
-                    @Override
-                    public void onNext(List<BannerSubscribeEntity> bannerSubscribeEntities) {
-                        List<BannerSubscribeEntity.PosterBean> posterBeanList = bannerSubscribeEntities.get(0).getPoster();
-                        fillMovieBanner(posterBeanList);
-                    }
-                });
-    }
-
-    private void fetchHorizontal519Banner() {
-        bannerSubscribeSub = SkyService.ServiceManager.getLocalTestService().apiTvBanner("chinesemovie")
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<List<BannerSubscribeEntity>>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        e.printStackTrace();
-                    }
-
-                    @Override
-                    public void onNext(List<BannerSubscribeEntity> bannerSubscribeEntities) {
-                        List<BannerSubscribeEntity.PosterBean> posterBeanList = bannerSubscribeEntities.get(0).getPoster();
-                        fillHorizontal519Banner(posterBeanList);
-                    }
-                });
-    }
-
+//    private void fetchMovieBanner() {
+//        bannerSubscribeSub = SkyService.ServiceManager.getLocalTestService().apiTvBanner("chinesemovie", "1")
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(new Observer<List<BannerSubscribeEntity>>() {
+//                    @Override
+//                    public void onCompleted() {
+//
+//                    }
+//
+//                    @Override
+//                    public void onError(Throwable e) {
+//                        e.printStackTrace();
+//                    }
+//
+//                    @Override
+//                    public void onNext(List<BannerSubscribeEntity> bannerSubscribeEntities) {
+//                        List<BannerSubscribeEntity.PosterBean> posterBeanList =bannerSubscribeEntities.getPoster();
+//                        fillMovieBanner(posterBeanList);
+//                    }
+//                });
+//    }
+//
+//    private void fetchHorizontal519Banner() {
+//        bannerSubscribeSub = SkyService.ServiceManager.getLocalTestService().apiTvBanner("chinesemovie", "1")
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(new Observer<List<BannerSubscribeEntity>>() {
+//                    @Override
+//                    public void onCompleted() {
+//
+//                    }
+//
+//                    @Override
+//                    public void onError(Throwable e) {
+//                        e.printStackTrace();
+//                    }
+//
+//                    @Override
+//                    public void onNext(List<BannerSubscribeEntity> bannerSubscribeEntities) {
+//                        List<BannerSubscribeEntity.PosterBean> posterBeanList =bannerSubscribeEntities.getPoster();
+//                        fillHorizontal519Banner(posterBeanList);
+//                    }
+//                });
+//    }
+//
     private void fetchMovieMixBanner() {
-        bannerSubscribeSub = SkyService.ServiceManager.getLocalTestService().apiTvBanner("chinesemovie")
+        bannerSubscribeSub = SkyService.ServiceManager.getLocalTestService().apiTvBanner("chinesemovie", "1")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<List<BannerSubscribeEntity>>() {
+                .subscribe(new Observer<BannerSubscribeEntity>() {
                     @Override
                     public void onCompleted() {
 
@@ -720,8 +720,8 @@ public class HomePageActivity extends BaseActivity implements HeadFragment.HeadI
                     }
 
                     @Override
-                    public void onNext(List<BannerSubscribeEntity> bannerSubscribeEntities) {
-                        List<BannerSubscribeEntity.PosterBean> posterBeanList = bannerSubscribeEntities.get(0).getPoster();
+                    public void onNext(BannerSubscribeEntity bannerSubscribeEntities) {
+                        List<BannerSubscribeEntity.PosterBean> posterBeanList =bannerSubscribeEntities.getPoster();
                         fillMovieMixBanner(posterBeanList);
                     }
                 });

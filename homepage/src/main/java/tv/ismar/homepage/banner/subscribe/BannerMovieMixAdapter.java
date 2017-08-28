@@ -44,6 +44,12 @@ public class BannerMovieMixAdapter extends RecyclerView.Adapter<BannerMovieMixAd
 
     @Override
     public void onBindViewHolder(SubscribeViewHolder holder, int position) {
+        if (position == 0){
+            ViewGroup.LayoutParams layoutParams = holder.mImageView.getLayoutParams();
+            layoutParams.width = 720;
+            holder.mImageView.setLayoutParams(layoutParams);
+        }
+
         BannerSubscribeEntity.PosterBean entity = mSubscribeEntityList.get(position);
         Picasso.with(mContext).load(entity.getPoster_url()).into(holder.mImageView);
         holder.mTitle.setText(entity.getTitle());

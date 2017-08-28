@@ -655,15 +655,12 @@ public interface SkyService {
             @Path("item_id") String item_id
     );
 
-    @GET("/api/tv/banner/")
-    Observable<List<BannerSubscribeEntity>> apiTvBanner(
-            @Query("banner") String banner
+    @GET("/api/tv/banner/{banner_name}/{page}/")
+    Observable<BannerSubscribeEntity> apiTvBanner(
+            @Path("banner_name") String banner,
+            @Path("page") String page
     );
 
-    @GET("/api/tv/banner/")
-    Observable<List<BannerMovieEntity>> apiTvMovieBanner(
-            @Query("banner") String banner
-    );
 
     @GET("accounts/sports/subscribe/")
     Observable<ResponseBody> getSubscribeImage(
@@ -694,6 +691,9 @@ public interface SkyService {
             @Query("channel") String channel,
             @Query("play_scale") int play_scale
     );
+
+//    @GET("accounts/item/subscribe/")
+//    Observable<>
 
     class ServiceManager {
         private volatile static ServiceManager serviceManager;
