@@ -34,6 +34,10 @@ import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 
 import com.blankj.utilcode.util.StringUtils;
+import com.daimajia.androidanimations.library.Techniques;
+import com.daimajia.androidanimations.library.YoYo;
+import com.open.androidtvwidget.leanback.recycle.LinearLayoutManagerTV;
+import com.open.androidtvwidget.leanback.recycle.RecyclerViewTV;
 import com.orhanobut.logger.Logger;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.MemoryPolicy;
@@ -50,8 +54,10 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.TimeUnit;
 
 import cn.ismartv.truetime.TrueTime;
+import rx.Observable;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -88,9 +94,6 @@ import tv.ismar.app.util.SystemFileUtil;
 import tv.ismar.app.widget.ExpireAccessTokenPop;
 import tv.ismar.app.widget.ModuleMessagePopWindow;
 import tv.ismar.homepage.R;
-import tv.ismar.homepage.adapter.ChannelRecyclerAdapter;
-import tv.ismar.homepage.adapter.HorizontalSpacesItemDecoration;
-import tv.ismar.homepage.adapter.OnItemActionListener;
 import tv.ismar.homepage.banner.subscribe.BannerHorizontal519Adapter;
 import tv.ismar.homepage.banner.subscribe.BannerMovieAdapter;
 import tv.ismar.homepage.banner.subscribe.BannerMovieMixAdapter;
@@ -106,12 +109,13 @@ import tv.ismar.homepage.fragment.UpdateSlienceLoading;
 import tv.ismar.homepage.widget.DaisyVideoView;
 import tv.ismar.homepage.widget.HorizontalTabView;
 import tv.ismar.library.exception.ExceptionUtils;
+import tv.ismar.library.util.ConstUtils;
 import tv.ismar.player.gui.PlaybackService;
 
 /**
  * Created by huaijie on 5/18/15.
  */
-public class HomePageActivity extends BaseActivity {
+public class HomePageActivity extends BaseActivity implements LinearLayoutManagerTV.FocusSearchFailedListener{
     private static final String TAG = "LH/HomePageActivity";
     private static final int SWITCH_PAGE = 0X01;
     private static final int SWITCH_PAGE_FROMLAUNCH = 0X02;
@@ -168,10 +172,10 @@ public class HomePageActivity extends BaseActivity {
     private Subscription bannerSubscribeSub;
     private String fromPage;
     private HorizontalTabView channelTab;
-    private RecyclerView subscribeBanner;
-    private RecyclerView movieBanner;
-    private RecyclerView horizontal519Banner;
-    private RecyclerView movieMixBanner;
+    private RecyclerViewTV subscribeBanner;
+    private RecyclerViewTV movieBanner;
+    private RecyclerViewTV horizontal519Banner;
+    private RecyclerViewTV movieMixBanner;
 
 
     private void handlerSwitchPage(int position) {
@@ -448,28 +452,136 @@ public class HomePageActivity extends BaseActivity {
         home_scroll_right.setOnFocusChangeListener(scrollViewListener);
 
         channelTab = (HorizontalTabView) findViewById(R.id.channel_tab);
-        subscribeBanner = (RecyclerView) findViewById(R.id.subscribe_banner);
-        LinearLayoutManager subscribeLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        Observable.create(new ChannelChangeObservable(channelTab))
+                .throttleLast(1, TimeUnit.SECONDS)
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<Integer>() {
+                    @Override
+                    public void onCompleted() {
+//                        Log.d("channelTab", "channelTab ChannelChangeObservable onCompleted");
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(Integer position) {
+                        Log.d("channelTab", "channelTab ChannelChangeObservable");
+                    }
+                });
+
+
+        subscribeBanner = (RecyclerViewTV) findViewById(R.id.subscribe_banner);
+        LinearLayoutManagerTV subscribeLayoutManager = new LinearLayoutManagerTV(this, LinearLayoutManager.HORIZONTAL, false);
         subscribeBanner.addItemDecoration(new BannerSubscribeAdapter.SpacesItemDecoration(20));
         subscribeBanner.setLayoutManager(subscribeLayoutManager);
-//        subscribeBanner.setAdapter(null);
+        subscribeBanner.setSelectedItemAtCentered(false);
+        subscribeLayoutManager.setFocusSearchFailedListener(new LinearLayoutManagerTV.FocusSearchFailedListener() {
+            @Override
+            public View onFocusSearchFailed(View view, int focusDirection, RecyclerView.Recycler recycler, RecyclerView.State state) {
+                if (focusDirection == View.FOCUS_RIGHT || focusDirection == View.FOCUS_LEFT) {
+                    if (subscribeBanner.getChildAt(0).findViewById(R.id.item_layout) == view ||
+                            subscribeBanner.getChildAt(subscribeBanner.getChildCount() - 1).findViewById(R.id.item_layout) == view) {
+                        YoYo.with(Techniques.HorizontalShake).duration(1000).playOn(view);
+                    }
+                    return view;
+                }
+                return null;
+            }
+        });
 
-        movieBanner = (RecyclerView) findViewById(R.id.movie_banner);
-        LinearLayoutManager movieLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+
+        movieBanner = (RecyclerViewTV) findViewById(R.id.movie_banner);
+        LinearLayoutManagerTV movieLayoutManager = new LinearLayoutManagerTV(this, LinearLayoutManager.HORIZONTAL, false);
         movieBanner.addItemDecoration(new BannerMovieAdapter.SpacesItemDecoration(20));
         movieBanner.setLayoutManager(movieLayoutManager);
+        movieBanner.setSelectedItemAtCentered(false);
+        movieLayoutManager.setFocusSearchFailedListener(new LinearLayoutManagerTV.FocusSearchFailedListener() {
+            @Override
+            public View onFocusSearchFailed(View view, int focusDirection, RecyclerView.Recycler recycler, RecyclerView.State state) {
+                if (focusDirection == View.FOCUS_RIGHT || focusDirection == View.FOCUS_LEFT) {
+                    if (movieBanner.getChildAt(0).findViewById(R.id.item_layout) == view ||
+                            movieBanner.getChildAt(movieBanner.getChildCount() - 1).findViewById(R.id.item_layout) == view) {
+                        YoYo.with(Techniques.HorizontalShake).duration(1000).playOn(view);
+                    }
+                    return view;
+                }
+                return null;
+            }
+        });
 
-        horizontal519Banner = (RecyclerView) findViewById(R.id.horizontal_519_banner);
-        LinearLayoutManager horizontal519LayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        horizontal519Banner = (RecyclerViewTV) findViewById(R.id.horizontal_519_banner);
+        LinearLayoutManagerTV horizontal519LayoutManager = new LinearLayoutManagerTV(this, LinearLayoutManager.HORIZONTAL, false);
+        horizontal519LayoutManager.setFocusSearchFailedListener(this);
         horizontal519Banner.addItemDecoration(new BannerHorizontal519Adapter.SpacesItemDecoration(20));
         horizontal519Banner.setLayoutManager(horizontal519LayoutManager);
+        horizontal519Banner.setSelectedItemAtCentered(false);
+        horizontal519LayoutManager.setFocusSearchFailedListener(new LinearLayoutManagerTV.FocusSearchFailedListener() {
+            @Override
+            public View onFocusSearchFailed(View view, int focusDirection, RecyclerView.Recycler recycler, RecyclerView.State state) {
+                if (focusDirection == View.FOCUS_RIGHT || focusDirection == View.FOCUS_LEFT) {
+                    if (horizontal519Banner.getChildAt(0).findViewById(R.id.item_layout) == view ||
+                            horizontal519Banner.getChildAt(horizontal519Banner.getChildCount() - 1).findViewById(R.id.item_layout) == view) {
+                        YoYo.with(Techniques.HorizontalShake).duration(1000).playOn(view);
+                    }
+                    return view;
+                }
+                return null;
+            }
+        });
 
-        movieMixBanner = (RecyclerView) findViewById(R.id.movie_mix_banner);
-        LinearLayoutManager movieMixLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        movieMixBanner = (RecyclerViewTV) findViewById(R.id.movie_mix_banner);
+        LinearLayoutManagerTV movieMixLayoutManager = new LinearLayoutManagerTV(this, LinearLayoutManager.HORIZONTAL, false);
+        movieMixLayoutManager.setFocusSearchFailedListener(this);
         movieMixBanner.addItemDecoration(new BannerMovieMixAdapter.SpacesItemDecoration(20));
         movieMixBanner.setLayoutManager(movieMixLayoutManager);
+        movieMixBanner.setSelectedItemAtCentered(false);
+        movieMixLayoutManager.setFocusSearchFailedListener(new LinearLayoutManagerTV.FocusSearchFailedListener() {
+            @Override
+            public View onFocusSearchFailed(View view, int focusDirection, RecyclerView.Recycler recycler, RecyclerView.State state) {
+                if (focusDirection == View.FOCUS_RIGHT || focusDirection == View.FOCUS_LEFT) {
+                    if (movieMixBanner.getChildAt(0).findViewById(R.id.item_layout) == view ||
+                            movieMixBanner.getChildAt(movieMixBanner.getChildCount() - 1).findViewById(R.id.item_layout) == view) {
+                        YoYo.with(Techniques.HorizontalShake).duration(1000).playOn(view);
+                    }
+                    return view;
+                }
 
+                if (focusDirection == View.FOCUS_DOWN){
+                    YoYo.with(Techniques.VerticalShake).duration(1000).playOn(view);
+                    return view;
+                }
+                return null;
+            }
+        });
     }
+
+    @Override
+    public View onFocusSearchFailed(View view, int focusDirection, RecyclerView.Recycler recycler, RecyclerView.State state) {
+        if (focusDirection == View.FOCUS_RIGHT || focusDirection == View.FOCUS_LEFT) {
+
+            if (subscribeBanner.getChildAt(0).findViewById(R.id.item_layout) == view ||
+                    subscribeBanner.getChildAt(subscribeBanner.getChildCount() - 1).findViewById(R.id.item_layout) == view) {
+                YoYo.with(Techniques.HorizontalShake).duration(1000).playOn(view);
+            }
+            return view;
+        }
+
+        if (focusDirection == View.FOCUS_DOWN) {
+            YoYo.with(Techniques.VerticalShake).duration(1000).playOn(view);
+            return view;
+        }
+
+        return null;
+    }
+
+//    @Override
+//    public void onItemSelected(View v, int position) {
+//        Log.d(TAG, "name: " + v.getTag());
+//    }
+
 
     private void tempInitStaticVariable() {
         new Thread() {
@@ -580,8 +692,8 @@ public class HomePageActivity extends BaseActivity {
 //                        fillChannelLayout(channelEntities);
                         fillChannelTab(channelEntities);
                         fetchSubscribeBanner();
-//                        fetchMovieBanner();
-//                        fetchHorizontal519Banner();
+                        fetchMovieBanner();
+                        fetchHorizontal519Banner();
                         fetchMovieMixBanner();
                     }
                 });
@@ -604,7 +716,7 @@ public class HomePageActivity extends BaseActivity {
     }
 
     private void fetchSubscribeBanner() {
-        bannerSubscribeSub = SkyService.ServiceManager.getLocalTestService().apiTvBanner("overseas", "1")
+        bannerSubscribeSub = SkyService.ServiceManager.getLocalTestService().apiTvBanner("overseasbanner", "1")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<BannerSubscribeEntity>() {
@@ -626,54 +738,53 @@ public class HomePageActivity extends BaseActivity {
                 });
     }
 
-//    private void fetchMovieBanner() {
-//        bannerSubscribeSub = SkyService.ServiceManager.getLocalTestService().apiTvBanner("chinesemovie", "1")
-//                .subscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe(new Observer<List<BannerSubscribeEntity>>() {
-//                    @Override
-//                    public void onCompleted() {
-//
-//                    }
-//
-//                    @Override
-//                    public void onError(Throwable e) {
-//                        e.printStackTrace();
-//                    }
-//
-//                    @Override
-//                    public void onNext(List<BannerSubscribeEntity> bannerSubscribeEntities) {
-//                        List<BannerSubscribeEntity.PosterBean> posterBeanList =bannerSubscribeEntities.getPoster();
-//                        fillMovieBanner(posterBeanList);
-//                    }
-//                });
-//    }
-//
-//    private void fetchHorizontal519Banner() {
-//        bannerSubscribeSub = SkyService.ServiceManager.getLocalTestService().apiTvBanner("chinesemovie", "1")
-//                .subscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe(new Observer<List<BannerSubscribeEntity>>() {
-//                    @Override
-//                    public void onCompleted() {
-//
-//                    }
-//
-//                    @Override
-//                    public void onError(Throwable e) {
-//                        e.printStackTrace();
-//                    }
-//
-//                    @Override
-//                    public void onNext(List<BannerSubscribeEntity> bannerSubscribeEntities) {
-//                        List<BannerSubscribeEntity.PosterBean> posterBeanList =bannerSubscribeEntities.getPoster();
-//                        fillHorizontal519Banner(posterBeanList);
-//                    }
-//                });
-//    }
-//
+    private void fetchMovieBanner() {
+        bannerSubscribeSub = SkyService.ServiceManager.getLocalTestService().apiTvBanner("chinesemoviebanner", "1")
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<BannerSubscribeEntity>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onNext(BannerSubscribeEntity bannerSubscribeEntities) {
+                        List<BannerSubscribeEntity.PosterBean> posterBeanList =bannerSubscribeEntities.getPoster();
+                        fillMovieBanner(posterBeanList);
+                    }
+                });
+    }
+
+    private void fetchHorizontal519Banner() {
+        bannerSubscribeSub = SkyService.ServiceManager.getLocalTestService().apiTvBanner("chinesemoviebanner", "1")
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<BannerSubscribeEntity>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onNext(BannerSubscribeEntity bannerSubscribeEntities) {
+                        List<BannerSubscribeEntity.PosterBean> posterBeanList =bannerSubscribeEntities.getPoster();
+                        fillHorizontal519Banner(posterBeanList);
+                    }
+                });
+    }
     private void fetchMovieMixBanner() {
-        bannerSubscribeSub = SkyService.ServiceManager.getLocalTestService().apiTvBanner("chinesemovie", "1")
+        bannerSubscribeSub = SkyService.ServiceManager.getLocalTestService().apiTvBanner("chinesemoviebanner", "1")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<BannerSubscribeEntity>() {
@@ -713,6 +824,10 @@ public class HomePageActivity extends BaseActivity {
     private void fillMovieMixBanner(List<BannerSubscribeEntity.PosterBean> posterBeanList) {
         BannerMovieMixAdapter adapter = new BannerMovieMixAdapter(this, posterBeanList);
         movieMixBanner.setAdapter(adapter);
+    }
+
+    public void test(){
+//        RxView.focusChanges()
     }
 
 //    private void fillChannelLayout(ChannelEntity[] channelEntities) {

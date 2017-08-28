@@ -53,6 +53,9 @@ import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.daimajia.androidanimations.library.Techniques;
+import com.daimajia.androidanimations.library.YoYo;
+
 import org.w3c.dom.Text;
 
 import java.util.List;
@@ -488,15 +491,25 @@ public class HorizontalTabView extends HorizontalScrollView implements View.OnCl
 
     @Override
     public boolean onKey(View v, int keyCode, KeyEvent event) {
+
         switch (event.getAction()) {
             case KeyEvent.ACTION_DOWN:
                 if (keyCode == KeyEvent.KEYCODE_DPAD_DOWN || keyCode == KeyEvent.KEYCODE_DPAD_UP) {
                     mCurrentState = STATE_LEAVE;
                 }
+
+                if ((linearContainer.indexOfChild(v) == 0 && keyCode == KeyEvent.KEYCODE_DPAD_LEFT) ||
+                        (linearContainer.indexOfChild(v) == linearContainer.getChildCount() - 1 && keyCode == KeyEvent.KEYCODE_DPAD_RIGHT)) {
+                    YoYo.with(Techniques.HorizontalShake).duration(1000).playOn(v);
+                }
+
+
                 break;
             case KeyEvent.ACTION_UP:
                 mCurrentState = STATE_FOCUS;
                 break;
+
+
         }
         return false;
     }

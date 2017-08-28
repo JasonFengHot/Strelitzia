@@ -8,6 +8,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
@@ -45,9 +47,18 @@ public class BannerMovieMixAdapter extends RecyclerView.Adapter<BannerMovieMixAd
     @Override
     public void onBindViewHolder(SubscribeViewHolder holder, int position) {
         if (position == 0){
-            ViewGroup.LayoutParams layoutParams = holder.mImageView.getLayoutParams();
-            layoutParams.width = 720;
-            holder.mImageView.setLayoutParams(layoutParams);
+            ViewGroup.LayoutParams itemLayoutParams = holder.itemLayout.getLayoutParams();
+            itemLayoutParams.width = 720;
+            holder.itemLayout.setLayoutParams(itemLayoutParams);
+
+
+            ViewGroup.LayoutParams wrapperLayoutParams = holder.itemWrapper.getLayoutParams();
+            wrapperLayoutParams.width = 720;
+            holder.itemWrapper.setLayoutParams(wrapperLayoutParams);
+
+            ViewGroup.LayoutParams imageLayoutParams = holder.mImageView.getLayoutParams();
+            imageLayoutParams.width = 720;
+            holder.mImageView.setLayoutParams(imageLayoutParams);
         }
 
         BannerSubscribeEntity.PosterBean entity = mSubscribeEntityList.get(position);
@@ -66,11 +77,15 @@ public class BannerMovieMixAdapter extends RecyclerView.Adapter<BannerMovieMixAd
         private ImageView mImageView;
         private TextView mTitle;
         private View mItemView;
+        private LinearLayout itemLayout;
+        private RelativeLayout itemWrapper;
 
 
         public SubscribeViewHolder(View itemView) {
             super(itemView);
             mItemView = itemView;
+            itemLayout = (LinearLayout) mItemView.findViewById(R.id.item_layout);
+            itemWrapper = (RelativeLayout) mItemView.findViewById(R.id.item_wrapper);
             mItemView.findViewById(R.id.item_layout).setOnClickListener(this);
             mItemView.findViewById(R.id.item_layout).setOnFocusChangeListener(this);
             mImageView = (ImageView) itemView.findViewById(R.id.image_view);
