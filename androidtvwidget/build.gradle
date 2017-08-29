@@ -18,26 +18,12 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-
-    lintOptions {
-        abortOnError false
-    }
 }
 
 dependencies {
     Map<String, String> dependencies = rootProject.ext.dependencies
-    compile project(':account')
-    compile project(':ismartv_downloader')
-    compile project(':ismartv_imagereflection')
-    compile project(':androidtvwidget')
-    compile project(':ismartv_foregroundimageview')
-    compile project(':ismartv_tvhorizontalscrollview')
-    compile project(':calligraphy-2.2.0')
-    compile project(':animation')
+    compile fileTree(include: ['*.jar'], dir: 'libs')
     compile dependencies.appCompat
     compile dependencies.recyclerView
-}
-
-tasks.withType(JavaCompile) {
-    options.encoding = "UTF-8"
+    compile dependencies.gridlayout
 }
