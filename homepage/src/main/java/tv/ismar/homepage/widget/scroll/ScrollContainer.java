@@ -11,7 +11,6 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.OverScroller;
 
-import tv.ismar.homepage.widget.scroll.listener.AbsBannerAdapter;
 import tv.ismar.homepage.widget.scroll.listener.OnItemClickListener;
 import tv.ismar.homepage.widget.scroll.listener.OnItemFocuseChangeListener;
 import tv.ismar.homepage.widget.scroll.listener.OnScrollListener;

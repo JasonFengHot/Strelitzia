@@ -1,4 +1,4 @@
-package tv.ismar.homepage.widget.scroll.listener;
+package tv.ismar.homepage.widget.scroll;
 
 import android.content.Context;
 import android.view.View;
@@ -11,13 +11,11 @@ import android.view.View;
 
 public abstract class AbsBannerAdapter {
 
-    public AbsBannerAdapter(Context context){}
-
     /*视图数量*/
     public abstract int getCount();
 
     /*获取子视图*/
-    public abstract Object getItem();
+    public abstract Object getItem(int position);
 
     /*加载布局*/
     public abstract View getView(int position);

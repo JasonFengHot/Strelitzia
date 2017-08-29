@@ -2,6 +2,8 @@ package tv.ismar.homepage.control;
 
 import android.content.Context;
 
+import java.util.List;
+
 import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -17,7 +19,7 @@ import tv.ismar.app.network.SkyService;
 
 public class GuideControl extends BaseControl{
 
-    public static final int FETCH_GUIDE_BANNERS_FLAG = 0X01;
+    public static final int FETCH_GUIDE_BANNERS_FLAG = 0X01;//获取首页下所有列表标记
 
     public GuideControl(Context context) {
         super(context);
@@ -29,14 +31,14 @@ public class GuideControl extends BaseControl{
     }
 
     /**
-     * ???
+     *  获取首页下所有列表
      * @param platform tv or mobile
      */
     public void fetchBannerList(String platform){
         SkyService.ServiceManager.getCacheSkyService().getGuideBanners(platform)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<GuideBanner>() {
+                .subscribe(new Observer<GuideBanner[]>() {
                     @Override
                     public void onCompleted() {}
 
@@ -45,9 +47,9 @@ public class GuideControl extends BaseControl{
                     }
 
                     @Override
-                    public void onNext(GuideBanner guideBanner) {
-                        if(mCallBack!=null && guideBanner!=null){
-                            mCallBack.callBack(FETCH_GUIDE_BANNERS_FLAG, guideBanner);
+                    public void onNext(GuideBanner[] guideBanners) {
+                        if(mCallBack!=null && guideBanners!=null && guideBanners.length>0){
+                            mCallBack.callBack(FETCH_GUIDE_BANNERS_FLAG, guideBanners);
                         }
                     }
                 });
