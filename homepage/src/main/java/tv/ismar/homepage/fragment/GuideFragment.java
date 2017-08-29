@@ -10,9 +10,7 @@ import android.widget.ListView;
 import tv.ismar.app.BaseControl;
 import tv.ismar.app.entity.GuideBanner;
 import tv.ismar.homepage.R;
-import tv.ismar.homepage.adapter.GuideAdapter;
 import tv.ismar.homepage.control.GuideControl;
-import tv.ismar.homepage.widget.scroll.VerticalBanner;
 import tv.ismar.homepage.widget.scroll.listener.OnUseViewChange;
 
 
@@ -27,8 +25,6 @@ public class GuideFragment extends ChannelBaseFragment implements BaseControl.Co
     private GuideControl mControl = null;//业务类引用
 
     private ListView mContainer;
-
-    private GuideAdapter mAdapter = null;
 
     @Override
     public void onAttach(Activity activity) {
