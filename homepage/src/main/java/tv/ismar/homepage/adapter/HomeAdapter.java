@@ -1,6 +1,7 @@
 package tv.ismar.homepage.adapter;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +10,7 @@ import android.widget.BaseAdapter;
 import tv.ismar.app.BaseControl;
 import tv.ismar.app.entity.GuideBanner;
 import tv.ismar.homepage.R;
+import tv.ismar.homepage.template.Template1;
 
 /**
  * @AUTHOR: xi
@@ -65,8 +67,12 @@ public class HomeAdapter extends BaseAdapter{
         viewHolder.mVertical2Line.setVisibility(View.GONE);
 
         //TODO 根据数据标记来确定用那个模版，置为可见即可
-        if(mData[0].template.equals("home")){//应用首页模版
+        Bundle bundle = new Bundle();
+        bundle.putString("title", mData[position].title);
+        bundle.putString("url", mData[position].banner_url);
+        if(mData[position].template.equals("template1")){//模版1
             viewHolder.mHome.setVisibility(View.VISIBLE);
+            new Template1().setView(viewHolder.mHome, bundle);
         }
 
         return convertView;
