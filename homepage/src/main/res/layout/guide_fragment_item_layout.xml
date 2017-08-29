@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <include
+        android:id="@+id/banner_home"
+        layout="@layout/banner_home"/>
+
+    <include
+        android:id="@+id/banner_tv_play"
+        layout="@layout/banner_tv_play"/>
+
+    <include
+        android:id="@+id/banner_column"
+        layout="@layout/banner_column"/>
+
+    <include
+        android:id="@+id/banner_horizontal_tow_line"
+        layout="@layout/banner_horizontal_tow_line"/>
+
+    <include
+        android:id="@+id/banner_vertical_tow_line"
+        layout="@layout/banner_vertical_tow_line"/>
+
+</FrameLayout>
