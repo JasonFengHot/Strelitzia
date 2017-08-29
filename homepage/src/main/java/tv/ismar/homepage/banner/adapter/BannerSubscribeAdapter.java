@@ -12,11 +12,17 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import rx.Observer;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
+import tv.ismar.app.entity.banner.AccountsItemSubscribeExistsEntity;
 import tv.ismar.app.entity.banner.BannerEntity;
+import tv.ismar.app.network.SkyService;
 import tv.ismar.homepage.R;
 
 import static android.view.View.SCALE_X;
@@ -32,13 +38,24 @@ public class BannerSubscribeAdapter extends RecyclerView.Adapter<BannerSubscribe
     private List<BannerEntity.PosterBean> mSubscribeEntityList;
     private OnSubscribeClickListener mSubscribeClickListener;
 
+    private int subscribeStatusChangedItemId;
+
+    public void setSubscribeStatusChangedItemId(int subscribeStatusChangedItemId) {
+        this.subscribeStatusChangedItemId = subscribeStatusChangedItemId;
+    }
+
     public void setSubscribeEntityList(List<BannerEntity.PosterBean> subscribeEntityList) {
         mSubscribeEntityList = subscribeEntityList;
     }
 
     public BannerSubscribeAdapter(Context context, List<BannerEntity.PosterBean> subscribeEntityList) {
         mContext = context;
-        mSubscribeEntityList = subscribeEntityList;
+//        mSubscribeEntityList = subscribeEntityList;
+        mSubscribeEntityList = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            mSubscribeEntityList.addAll(subscribeEntityList);
+        }
+
     }
 
     @Override
@@ -52,14 +69,71 @@ public class BannerSubscribeAdapter extends RecyclerView.Adapter<BannerSubscribe
     public void onBindViewHolder(SubscribeViewHolder holder, int position) {
         BannerEntity.PosterBean entity = mSubscribeEntityList.get(position);
         Picasso.with(mContext).load(entity.getPoster_url()).into(holder.mImageView);
-        if (entity.isSubscribed()) {
+
+        int itemId = getMovieItemId(entity.getContent_url());
+
+        if (entity.getSubscribeStatus() == BannerEntity.SubscribeStatus.None) {
+            holder.mTitle.setText("");
+            loadSubscribeStatus(itemId, holder.mTitle, mSubscribeEntityList, position);
+        } else if (entity.getSubscribeStatus() == BannerEntity.SubscribeStatus.Yes) {
             holder.mTitle.setText("已预约");
-        } else {
+        } else if (entity.getSubscribeStatus() == BannerEntity.SubscribeStatus.No) {
             holder.mTitle.setText("预约");
+        }
+
+        if (itemId == subscribeStatusChangedItemId){
+            loadSubscribeStatus(itemId, holder.mTitle, mSubscribeEntityList, position);
         }
         holder.mPublishTime.setText("6月30日");
         holder.mIntroduction.setText(entity.getIntroduction());
         holder.mItemView.findViewById(R.id.item_layout).setTag(entity);
+
+    }
+
+    private int getMovieItemId(String url) {
+        int id = 0;
+        try {
+            Pattern p = Pattern.compile("/(\\d+)/?$");
+            Matcher m = p.matcher(url);
+            if (m.find()) {
+                String idStr = m.group(1);
+                if (idStr != null) {
+                    id = Integer.parseInt(idStr);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return id;
+    }
+
+    private void loadSubscribeStatus(int itemId, final TextView textView, final List<BannerEntity.PosterBean> subscribeEntityList, final int position) {
+        SkyService.ServiceManager.getService().accountsItemSubscribeExists(itemId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<AccountsItemSubscribeExistsEntity>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                        textView.setText("预约");
+                    }
+
+                    @Override
+                    public void onNext(AccountsItemSubscribeExistsEntity entity) {
+                        if (entity.getInfo().getStatus() == 1) {
+                            subscribeEntityList.get(position).setSubscribeStatus(BannerEntity.SubscribeStatus.Yes);
+                            textView.setText("已预约");
+                        } else if (entity.getInfo().getStatus() == 0) {
+                            subscribeEntityList.get(position).setSubscribeStatus(BannerEntity.SubscribeStatus.No);
+                            textView.setText("预约");
+                        }
+                    }
+                });
     }
 
     @Override

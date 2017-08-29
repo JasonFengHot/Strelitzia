@@ -827,7 +827,7 @@ public class HomePageActivity extends BaseActivity implements LinearLayoutManage
             public void onSubscribeClick(int pk, String contentModel) {
                 Log.d("onSubscribeClick", "pk: " + pk);
                 Log.d("onSubscribeClick", "contentModel: " + contentModel);
-                accountsItemSubscribe(pk, contentModel);
+//                accountsItemSubscribe(pk, contentModel);
             }
         });
         subscribeBanner.setAdapter(subscribeAdapter);
@@ -865,79 +865,16 @@ public class HomePageActivity extends BaseActivity implements LinearLayoutManage
 
                     @Override
                     public void onNext(ResponseBody responseBody) {
-                        for (BannerEntity.PosterBean bean : subscribePosterBeanList) {
-                            if (getItemId(bean.getContent_url()) == itemId) {
-                                bean.setSubscribed(true);
-                            }
-                        }
-                        subscribeAdapter.setSubscribeEntityList(subscribePosterBeanList);
-                        subscribeAdapter.notifyDataSetChanged();
+//                        for (BannerEntity.PosterBean bean : subscribePosterBeanList) {
+//                            if (getItemId(bean.getContent_url()) == itemId) {
+//                                bean.setSubscribed(true);
+//                            }
+//                        }
+//                        subscribeAdapter.setSubscribeEntityList(subscribePosterBeanList);
+//                        subscribeAdapter.notifyDataSetChanged();
                     }
                 });
     }
-
-//    private void accountsItemSubscribeExists(final List<BannerEntity.PosterBean> poster){
-////        SkyService.ServiceManager.getService().accountsItemSubscribeExists(itemId)
-////                .subscribeOn(Schedulers.io())
-////                .observeOn(AndroidSchedulers.mainThread())
-////                .subscribe(new Observer<ResponseBody>() {
-////                    @Override
-////                    public void onCompleted() {
-////
-////                    }
-////
-////                    @Override
-////                    public void onError(Throwable e) {
-////
-////                    }
-////
-////                    @Override
-////                    public void onNext(ResponseBody responseBody) {
-////
-////                    }
-////                });
-//        subscribePosterBeanList = new ArrayList<>();
-//
-//        Observable.from(poster)
-//                .subscribeOn(Schedulers.io())
-//                .observeOn(Schedulers.io())
-//                .map(new Func1<BannerEntity.PosterBean, BannerEntity.PosterBean>() {
-//                    @Override
-//                    public BannerEntity.PosterBean call(BannerEntity.PosterBean posterBean) {
-//                        int itemId = getItemId(posterBean.getContent_url());
-//                        try {
-//                            AccountsItemSubscribeExistsEntity entity = SkyService.ServiceManager.getService()
-//                                    .accountsItemSubscribeExists(itemId).execute().body();
-//                            if (entity.getInfo().getStatus() == 1){
-//                                posterBean.setSubscribed(true);
-//                            }else if (entity.getInfo().getStatus() == 0){
-//                                posterBean.setSubscribed(false);
-//                            }
-//                        } catch (IOException e) {
-//                            return posterBean;
-//                        }
-//                        return posterBean;
-//                    }
-//                })
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe(new Observer<BannerEntity.PosterBean>() {
-//                    @Override
-//                    public void onCompleted() {
-//                        fillSubscribeBanner(subscribePosterBeanList);
-//                    }
-//
-//                    @Override
-//                    public void onError(Throwable e) {
-//
-//                    }
-//
-//                    @Override
-//                    public void onNext(BannerEntity.PosterBean posterBean) {
-//                        subscribePosterBeanList.add(posterBean);
-//                    }
-//                });
-//    }
-
 
    private int getItemId(String url) {
         int id = 0;
@@ -955,18 +892,6 @@ public class HomePageActivity extends BaseActivity implements LinearLayoutManage
         }
         return id;
     }
-
-//    @POST("accounts/item/subscribe/")
-//    Observable<ResponseBody> accountsItemSubscribe(
-//            @Field("item_id") int itemId,
-//            @Field("content_model") String contentModel
-//    );
-//
-//    @GET("accounts/item/subscribe/exists/")
-//    Observable<ResponseBody> accountsItemSubscribeExists(
-//            @Query("item_id") int itemId
-//    );
-
 
 //    private void fillChannelLayout(ChannelEntity[] channelEntities) {
 //        if (neterrorshow)
