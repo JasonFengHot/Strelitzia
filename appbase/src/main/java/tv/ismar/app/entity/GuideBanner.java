@@ -9,7 +9,7 @@ import java.util.List;
  */
 
 public class GuideBanner {
-    public List banner_url;
+    public String banner_url;
     public String template;
     public String title;
 }

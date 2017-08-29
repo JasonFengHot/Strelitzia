@@ -29,10 +29,11 @@ dependencies {
     compile project(':account')
     compile project(':ismartv_downloader')
     compile project(':ismartv_imagereflection')
-    compile project(':ismartv_widget')
+    compile project(':androidtvwidget')
     compile project(':ismartv_foregroundimageview')
     compile project(':ismartv_tvhorizontalscrollview')
     compile project(':calligraphy-2.2.0')
+    compile project(':animation')
     compile dependencies.appCompat
     compile dependencies.recyclerView
 }

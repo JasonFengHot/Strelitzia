@@ -795,7 +795,11 @@
 <dimen name="child_more_w">188.00dp</dimen>
 <dimen name="child_more_mt">27.11dp</dimen>
 <dimen name="child_more_ml">23.11dp</dimen>
+<dimen name="channel_tab_width">764.44dp</dimen>
+<dimen name="channel_tab_ml">44.44dp</dimen>
+<dimen name="channel_tab_mt">12.89dp</dimen>
+<dimen name="channel_tab_height">23.11dp</dimen>
+<dimen name="channel_tab_space">39.11dp</dimen>
 
 <!--longhai 首页相关ui End -->
-
 </resources>

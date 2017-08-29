@@ -56,6 +56,9 @@ import tv.ismar.app.entity.ItemList;
 import tv.ismar.app.entity.SectionList;
 import tv.ismar.app.entity.Subject;
 import tv.ismar.app.entity.VideoEntity;
+import tv.ismar.app.entity.banner.AccountsItemSubscribeExistsEntity;
+import tv.ismar.app.entity.banner.BannerEntity;
+import tv.ismar.app.entity.banner.HomeEntity;
 import tv.ismar.app.models.ActorRelateRequestParams;
 import tv.ismar.app.models.FilterConditions;
 import tv.ismar.app.models.Game;
@@ -481,6 +484,7 @@ public interface SkyService {
     Observable<Item> apifetchItem(
             @Url String url
     );
+
     @GET
     Observable<ResponseBody> apiCheckItem(
             @Url String url
@@ -514,9 +518,19 @@ public interface SkyService {
     @GET("api/tv/channels/")
     Observable<ChannelEntity[]> apiTvChannels();
 
-    @GET("api/{platform}/homepage/banner")
-    Observable<GuideBanner> getGuideBanners(
-            @Path("platform") String platform
+    @GET("api/tv/homepage/banner/")
+    Observable<GuideBanner[]> getGuideBanners(
+    );
+
+    @GET("api/tv/banners/{channel}/")
+    Observable<GuideBanner[]> getChannelBanners(
+            @Path("channel") String channel
+    );
+
+    @GET("api/tv/banner/{banner}/{page}/")
+    Observable<HomeEntity> getBanners(
+            @Path("banner") String banner,
+            @Path("page") int page
     );
 
     @GET
@@ -653,7 +667,14 @@ public interface SkyService {
             @Path("item_id") String item_id
     );
 
-    @GET("accounts/sports/subscribe/")
+    @GET("/api/tv/banner/{banner_name}/{page}/")
+    Observable<BannerEntity> apiTvBanner(
+            @Path("banner_name") String banner,
+            @Path("page") String page
+    );
+
+
+    @GET("accounts/sports/adapter/")
     Observable<ResponseBody> getSubscribeImage(
             @Query("item_id") int pk,
             @Query("type") String type
@@ -682,6 +703,18 @@ public interface SkyService {
             @Query("play_scale") int play_scale
     );
 
+    @FormUrlEncoded
+    @POST("accounts/item/subscribe/")
+    Observable<ResponseBody> accountsItemSubscribe(
+            @Field("item_id") int itemId,
+            @Field("content_model") String contentModel
+    );
+
+    @GET("accounts/item/subscribe/exists/")
+    Observable<AccountsItemSubscribeExistsEntity> accountsItemSubscribeExists(
+            @Query("item_id") int itemId
+    );
+
     class ServiceManager {
         private volatile static ServiceManager serviceManager;
         private static final int DEFAULT_CONNECT_TIMEOUT = 6;
@@ -701,6 +734,8 @@ public interface SkyService {
         private SkyService mCacheSkyService;
         private SkyService mCacheSkyService2;
         private SkyService logSkyService;
+
+        private SkyService localTestSkyService;
 
         public static boolean executeActive = true;
 
@@ -751,8 +786,8 @@ public interface SkyService {
                         @Override
                         public List<InetAddress> lookup(String hostName) throws UnknownHostException {
                             String ipAddress = IsmartvActivator.getHostByName(hostName);
-                            if (ipAddress.endsWith("0.0.0.0")){
-                                throw new  UnknownHostException("can't connect to internet");
+                            if (ipAddress.endsWith("0.0.0.0")) {
+                                throw new UnknownHostException("can't connect to internet");
                             }
                             return Dns.SYSTEM.lookup(ipAddress);
                         }
@@ -771,6 +806,14 @@ public interface SkyService {
                     .client(mClient)
                     .build();
             mSkyService = retrofit.create(SkyService.class);
+
+            Retrofit localTestRetrofit = new Retrofit.Builder()
+                    .baseUrl(appendProtocol("http://192.168.2.27:10082/"))
+                    .addConverterFactory(GsonConverterFactory.create(gson))
+                    .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                    .client(mClient)
+                    .build();
+            localTestSkyService = localTestRetrofit.create(SkyService.class);
 
             Retrofit adRetrofit = new Retrofit.Builder()
                     .baseUrl(appendProtocol(domain[1]))
@@ -923,6 +966,11 @@ public interface SkyService {
         public static SkyService getLilyHostService() {
 
             return getInstance().lilyHostService;
+        }
+
+        public static SkyService getLocalTestService() {
+
+            return getInstance().localTestSkyService;
         }
 
         public static SkyService getCacheSkyService() {

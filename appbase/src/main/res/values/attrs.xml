@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="OpenView">
+        <attr name="leftText" format="reference|string"/>
+        <attr name="rightIcon" format="reference"/>
+        <attr name="rIconSize" format="dimension"/>
+        <attr name="lTextSize" format="dimension"/>
+        <attr name="iconPaddingLeft" format="dimension"/>
+    </declare-styleable>
+</resources>

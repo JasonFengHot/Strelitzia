@@ -627,11 +627,6 @@ public class DetailPageFragment extends Fragment implements DetailPageContract.V
             }
         }
         headFragment = new HeadFragment();
-        Bundle bundle = new Bundle();
-        bundle.putString("type", HeadFragment.HEADER_DETAILPAGE);
-        bundle.putString("channel_name", mHeadTitle);
-        headFragment = new HeadFragment();
-        headFragment.setArguments(bundle);
         getChildFragmentManager().beginTransaction().add(R.id.detail_head, headFragment).commit();
         return contentView;
     }
