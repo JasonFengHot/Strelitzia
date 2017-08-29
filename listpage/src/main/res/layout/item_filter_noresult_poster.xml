@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    android:background="@drawable/poster_focus_selector">
+
+    <ImageView
+        android:id="@+id/item_filter_noresult_img"
+        android:layout_width="336dp"
+        android:layout_height="189dp" />
+    <ImageView
+        android:id="@+id/item_filter_noresult_vip"
+        android:layout_width="109dp"
+        android:layout_height="109dp" />
+    
+    <TextView
+        android:id="@+id/item_filter_noresult_mark"
+        android:layout_width="78dp"
+        android:layout_height="40dp"
+        android:paddingRight="4dp"
+        android:textSize="30dp"
+        android:layout_centerVertical="true"
+        android:gravity="right"
+        android:textColor="@color/_ffffff"
+        android:background="@drawable/icon_mark_small"
+        android:layout_alignRight="@id/item_filter_noresult_img"
+        android:layout_marginTop="97dp"/>
+    
+    <TextView
+        android:id="@+id/item_filter_noresult_descrip"
+        android:layout_width="336dp"
+        android:layout_height="43dp"
+        android:textSize="30dp"
+        android:textColor="#cccccc"
+        android:gravity="center"
+        android:background="@drawable/filter_noresult_poster_layer"
+        android:layout_alignBottom="@id/item_filter_noresult_img"/>
+
+    <View
+        android:layout_width="336dp"
+        android:layout_height="63dp"
+        android:background="#000000"
+        android:alpha="0.25"
+        android:layout_below="@id/item_filter_noresult_img"
+        />
+    <TextView
+        android:id="@+id/item_filter_noresult_title"
+        android:layout_width="336dp"
+        android:layout_height="52dp"
+        android:textSize="36dp"
+        android:layout_marginTop="5dp"
+        android:textColor="@color/_ffffff"
+        android:gravity="center"
+        android:ellipsize="marquee"
+        android:marqueeRepeatLimit="marquee_forever"
+        android:focusable="true"
+        android:singleLine="true"
+        android:layout_below="@id/item_filter_noresult_img"/>
+</RelativeLayout>
