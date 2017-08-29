@@ -58,6 +58,7 @@ import tv.ismar.app.entity.Subject;
 import tv.ismar.app.entity.VideoEntity;
 import tv.ismar.app.entity.banner.AccountsItemSubscribeExistsEntity;
 import tv.ismar.app.entity.banner.BannerEntity;
+import tv.ismar.app.entity.banner.HomeEntity;
 import tv.ismar.app.models.ActorRelateRequestParams;
 import tv.ismar.app.models.FilterConditions;
 import tv.ismar.app.models.Game;
@@ -517,9 +518,19 @@ public interface SkyService {
     @GET("api/tv/channels/")
     Observable<ChannelEntity[]> apiTvChannels();
 
-    @GET("api/{platform}/homepage/banner")
+    @GET("api/tv/homepage/banner/")
     Observable<GuideBanner[]> getGuideBanners(
-            @Path("platform") String platform
+    );
+
+    @GET("api/tv/banners/{channel}/")
+    Observable<GuideBanner[]> getChannelBanners(
+            @Path("channel") String channel
+    );
+
+    @GET("api/tv/banner/{banner}/{page}/")
+    Observable<HomeEntity> getBanners(
+            @Path("banner") String banner,
+            @Path("page") int page
     );
 
     @GET

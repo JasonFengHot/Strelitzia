@@ -1,5 +1,6 @@
 package tv.ismar.homepage.template;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
 
@@ -10,16 +11,24 @@ import android.view.View;
  */
 
 public abstract class Template {
+    protected Context mContext;
+
+    public Template(Context context){
+        this.mContext = context;
+    }
 
     /*在adapter中调用*/
     public void setView(View view, Bundle bundle){
-        getView(view, bundle);
+        getView(view);
+        initData(bundle);
     }
 
     /**
      * 获取view
      * @param view 视图
-     * @param bundle 数据
      */
-    public abstract void getView(View view, Bundle bundle);
+    public abstract void getView(View view);
+
+
+    public abstract void initData(Bundle bundle);
 }

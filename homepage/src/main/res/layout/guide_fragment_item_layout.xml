@@ -20,7 +20,22 @@
         layout="@layout/banner_tv_play"/>
 
     <include
-        android:id="@+id/template5"
-        layout="@layout/banner_vertical_tow_line"/>
+        android:id="@+id/banner_519"
+        layout="@layout/banner_519"/>
 
+    <include
+        android:id="@+id/banner_conlumn"
+        layout="@layout/banner_conlumn"/>
+
+    <include
+        android:id="@+id/banner_big_small_ld"
+        layout="@layout/banner_big_small_ld"/>
+
+    <include
+        android:id="@+id/banner_double_md"
+        layout="@layout/banner_double_md"/>
+
+    <include
+        android:id="@+id/banner_double_ld"
+        layout="@layout/banner_double_ld"/>
 </merge>

@@ -1,5 +1,6 @@
 package tv.ismar.homepage.template;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
 
@@ -10,8 +11,17 @@ import android.view.View;
  */
 
 public class TemplateDoubleMd extends Template{
+    public TemplateDoubleMd(Context context) {
+        super(context);
+    }
+
     @Override
-    public void getView(View view, Bundle bundle) {
+    public void getView(View view) {
+
+    }
+
+    @Override
+    public void initData(Bundle bundle) {
 
     }
 }
