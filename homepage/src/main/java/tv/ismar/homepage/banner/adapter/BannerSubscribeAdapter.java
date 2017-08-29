@@ -85,7 +85,7 @@ public class BannerSubscribeAdapter extends RecyclerView.Adapter<BannerSubscribe
             loadSubscribeStatus(itemId, holder.mTitle, mSubscribeEntityList, position);
         }
         holder.mPublishTime.setText("6月30日");
-        holder.mIntroduction.setText(entity.getIntroduction());
+        holder.mIntroduction.setText(entity.getIntroduction() + "打飞机；大街上；发动快速路附近啊代课老师； ");
         holder.mItemView.findViewById(R.id.item_layout).setTag(entity);
 
     }
@@ -177,9 +177,11 @@ public class BannerSubscribeAdapter extends RecyclerView.Adapter<BannerSubscribe
             if (hasFocus) {
                 scaleToLarge(v.findViewById(R.id.item_layout));
                 v.findViewById(R.id.title).setSelected(true);
+                v.findViewById(R.id.introduction).setSelected(true);
             } else {
                 scaleToNormal(v.findViewById(R.id.item_layout));
                 v.findViewById(R.id.title).setSelected(false);
+                v.findViewById(R.id.introduction).setSelected(false);
             }
         }
 

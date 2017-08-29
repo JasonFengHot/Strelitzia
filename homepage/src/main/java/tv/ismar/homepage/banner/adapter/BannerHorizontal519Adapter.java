@@ -46,7 +46,7 @@ public class BannerHorizontal519Adapter extends RecyclerView.Adapter<BannerHoriz
     public void onBindViewHolder(SubscribeViewHolder holder, int position) {
         BannerEntity.PosterBean entity = mSubscribeEntityList.get(position);
         Picasso.with(mContext).load(entity.getPoster_url()).into(holder.mImageView);
-        holder.mTitle.setText(entity.getTitle());
+        holder.mTitle.setText(entity.getTitle() + "打飞机啊；代付款；案件的防控；大技术开发就撒旦");
     }
 
     @Override

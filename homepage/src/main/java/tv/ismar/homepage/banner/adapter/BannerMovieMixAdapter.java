@@ -59,11 +59,15 @@ public class BannerMovieMixAdapter extends RecyclerView.Adapter<BannerMovieMixAd
             ViewGroup.LayoutParams imageLayoutParams = holder.mImageView.getLayoutParams();
             imageLayoutParams.width = 720;
             holder.mImageView.setLayoutParams(imageLayoutParams);
+
+            ViewGroup.LayoutParams titleLayoutParams = holder.mTitle.getLayoutParams();
+            titleLayoutParams.width = 720;
+            holder.mTitle.setLayoutParams(titleLayoutParams);
         }
 
         BannerEntity.PosterBean entity = mSubscribeEntityList.get(position);
         Picasso.with(mContext).load(entity.getPoster_url()).into(holder.mImageView);
-        holder.mTitle.setText(entity.getTitle());
+        holder.mTitle.setText(entity.getTitle() + "大沙发发斯蒂芬骄傲的快速；房间爱的开始；就发阿打算开发阶段可莱丝；发简历；卡代课老师； ");
     }
 
     @Override

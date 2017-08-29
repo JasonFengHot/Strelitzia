@@ -44,7 +44,7 @@
                 android:layout_alignParentBottom="true"
                 android:background="@drawable/banner_subscrib_introduction_bg"
                 android:ellipsize="marquee"
-                android:maxLines="1"
+                android:singleLine="true"
                 android:gravity="center"
                 android:textColor="@color/_ffffff"
                 android:textSize="@dimen/text_size_30sp"/>

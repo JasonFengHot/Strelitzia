@@ -68,14 +68,14 @@
                 />
 
             <TextView
-                android:ellipsize="marquee"
-                android:maxLines="1"
                 android:id="@+id/introduction"
                 android:layout_width="388dp"
                 android:layout_height="47dp"
                 android:layout_alignParentBottom="true"
                 android:background="@drawable/banner_subscrib_introduction_bg"
+                android:ellipsize="marquee"
                 android:gravity="center"
+                android:singleLine="true"
                 android:textColor="@color/_ffffff"
                 android:textSize="@dimen/text_size_30sp"/>
 
