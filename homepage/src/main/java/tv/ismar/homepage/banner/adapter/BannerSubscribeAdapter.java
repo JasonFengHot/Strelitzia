@@ -88,6 +88,7 @@ public class BannerSubscribeAdapter extends RecyclerView.Adapter<BannerSubscribe
         holder.mIntroduction.setText(entity.getIntroduction() + "打飞机；大街上；发动快速路附近啊代课老师； ");
         holder.mItemView.findViewById(R.id.item_layout).setTag(entity);
 
+
     }
 
     private int getMovieItemId(String url) {

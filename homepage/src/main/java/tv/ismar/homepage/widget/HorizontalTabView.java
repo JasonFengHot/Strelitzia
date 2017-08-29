@@ -250,6 +250,29 @@ public class HorizontalTabView extends HorizontalScrollView implements View.OnCl
         return mSelectedIndex;
     }
 
+    private void changeLostFocusStatus(View view) {
+        if (view != null) {
+            TextView lastClickView = (TextView) linearContainer.getChildAt(mClickPosition);
+            if (view == lastClickView) {
+                lastClickView.setBackgroundResource(android.R.color.transparent);
+                lastClickView.setTextColor(textSelectColor);
+            }else {
+                TextView textView = (TextView) view;
+                textView.setBackgroundResource(android.R.color.transparent);
+                textView.setTextColor(textColor);
+            }
+        }
+    }
+
+    private void changeGainFocusStatus(View view) {
+        if (view != null) {
+            TextView textView = (TextView) view;
+            textView.setBackground(selectedDrawable);
+            textView.setTextColor(textFocusColor);
+        }
+    }
+
+
     private void changeSelection(final View v, final boolean callItemListener) {
         int tempIndex = (int) v.getTag();
         if (mSelectedIndex == tempIndex && v.getAnimation() != null) {
@@ -496,6 +519,7 @@ public class HorizontalTabView extends HorizontalScrollView implements View.OnCl
             case KeyEvent.ACTION_DOWN:
                 if (keyCode == KeyEvent.KEYCODE_DPAD_DOWN || keyCode == KeyEvent.KEYCODE_DPAD_UP) {
                     mCurrentState = STATE_LEAVE;
+                    changeLostFocusStatus(v);
                 }
 
                 if ((linearContainer.indexOfChild(v) == 0 && keyCode == KeyEvent.KEYCODE_DPAD_LEFT) ||
@@ -503,9 +527,9 @@ public class HorizontalTabView extends HorizontalScrollView implements View.OnCl
                     YoYo.with(Techniques.HorizontalShake).duration(1000).playOn(v);
                 }
 
-
                 break;
             case KeyEvent.ACTION_UP:
+                changeGainFocusStatus(v);
                 mCurrentState = STATE_FOCUS;
                 break;
 

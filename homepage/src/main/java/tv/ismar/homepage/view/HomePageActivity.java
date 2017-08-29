@@ -489,20 +489,32 @@ public class HomePageActivity extends BaseActivity implements LinearLayoutManage
         LinearLayoutManagerTV subscribeLayoutManager = new LinearLayoutManagerTV(this, LinearLayoutManager.HORIZONTAL, false);
         subscribeBanner.addItemDecoration(new BannerSubscribeAdapter.SpacesItemDecoration(20));
         subscribeBanner.setLayoutManager(subscribeLayoutManager);
-        subscribeBanner.setSelectedItemAtCentered(false);
+//        subscribeBanner.setSelectedItemAtCentered(false);
+        subscribeBanner.setSelectedItemOffset(100, 100);
+
         subscribeLayoutManager.setFocusSearchFailedListener(new LinearLayoutManagerTV.FocusSearchFailedListener() {
             @Override
             public View onFocusSearchFailed(View view, int focusDirection, RecyclerView.Recycler recycler, RecyclerView.State state) {
                 if (focusDirection == View.FOCUS_RIGHT || focusDirection == View.FOCUS_LEFT) {
+                    Log.d(TAG, "onFocusSearchFailed");
                     if (subscribeBanner.getChildAt(0).findViewById(R.id.item_layout) == view ||
                             subscribeBanner.getChildAt(subscribeBanner.getChildCount() - 1).findViewById(R.id.item_layout) == view) {
                         YoYo.with(Techniques.HorizontalShake).duration(1000).playOn(view);
+                    }else {
+//                        if (focusDirection == View.FOCUS_RIGHT){
+//                            subscribeBanner.smoothScrollBy(10, 0);
+//                        }else if (focusDirection == View.FOCUS_LEFT){
+//                            subscribeBanner.smoothScrollBy(-10, 0);
+//                        }
                     }
+                    Log.d(TAG, "onFocusSearchFailed: " + view);
                     return view;
                 }
                 return null;
             }
         });
+
+
 
 
         movieBanner = (RecyclerViewTV) findViewById(R.id.movie_banner);
