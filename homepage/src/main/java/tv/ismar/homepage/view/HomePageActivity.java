@@ -1,5 +1,6 @@
 package tv.ismar.homepage.view;
 
+import android.app.Service;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
@@ -55,12 +56,20 @@ import java.util.Properties;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import cn.ismartv.truetime.TrueTime;
+import okhttp3.ResponseBody;
+import retrofit2.http.Field;
+import retrofit2.http.GET;
+import retrofit2.http.POST;
+import retrofit2.http.Query;
 import rx.Observable;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import tv.ismar.account.ActiveService;
 import tv.ismar.account.IsmartvActivator;
@@ -80,7 +89,8 @@ import tv.ismar.app.core.client.MessageQueue;
 import tv.ismar.app.core.preferences.AccountSharedPrefs;
 import tv.ismar.app.db.AdvertiseTable;
 import tv.ismar.app.entity.ChannelEntity;
-import tv.ismar.app.entity.banner.BannerSubscribeEntity;
+import tv.ismar.app.entity.banner.AccountsItemSubscribeExistsEntity;
+import tv.ismar.app.entity.banner.BannerEntity;
 import tv.ismar.app.network.SkyService;
 import tv.ismar.app.player.CallaPlay;
 import tv.ismar.app.service.TrueTimeService;
@@ -94,10 +104,10 @@ import tv.ismar.app.util.SystemFileUtil;
 import tv.ismar.app.widget.ExpireAccessTokenPop;
 import tv.ismar.app.widget.ModuleMessagePopWindow;
 import tv.ismar.homepage.R;
-import tv.ismar.homepage.banner.subscribe.BannerHorizontal519Adapter;
-import tv.ismar.homepage.banner.subscribe.BannerMovieAdapter;
-import tv.ismar.homepage.banner.subscribe.BannerMovieMixAdapter;
-import tv.ismar.homepage.banner.subscribe.BannerSubscribeAdapter;
+import tv.ismar.homepage.banner.adapter.BannerHorizontal519Adapter;
+import tv.ismar.homepage.banner.adapter.BannerMovieAdapter;
+import tv.ismar.homepage.banner.adapter.BannerMovieMixAdapter;
+import tv.ismar.homepage.banner.adapter.BannerSubscribeAdapter;
 import tv.ismar.homepage.fragment.ChannelBaseFragment;
 import tv.ismar.homepage.fragment.ChildFragment;
 import tv.ismar.homepage.fragment.EntertainmentFragment;
@@ -109,7 +119,6 @@ import tv.ismar.homepage.fragment.UpdateSlienceLoading;
 import tv.ismar.homepage.widget.DaisyVideoView;
 import tv.ismar.homepage.widget.HorizontalTabView;
 import tv.ismar.library.exception.ExceptionUtils;
-import tv.ismar.library.util.ConstUtils;
 import tv.ismar.player.gui.PlaybackService;
 
 /**
@@ -176,6 +185,9 @@ public class HomePageActivity extends BaseActivity implements LinearLayoutManage
     private RecyclerViewTV movieBanner;
     private RecyclerViewTV horizontal519Banner;
     private RecyclerViewTV movieMixBanner;
+
+    private List<BannerEntity.PosterBean> subscribePosterBeanList;
+    private BannerSubscribeAdapter subscribeAdapter;
 
 
     private void handlerSwitchPage(int position) {
@@ -719,7 +731,7 @@ public class HomePageActivity extends BaseActivity implements LinearLayoutManage
         bannerSubscribeSub = SkyService.ServiceManager.getLocalTestService().apiTvBanner("overseasbanner", "1")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<BannerSubscribeEntity>() {
+                .subscribe(new Observer<BannerEntity>() {
                     @Override
                     public void onCompleted() {
 
@@ -731,18 +743,20 @@ public class HomePageActivity extends BaseActivity implements LinearLayoutManage
                     }
 
                     @Override
-                    public void onNext(BannerSubscribeEntity bannerSubscribeEntity) {
-                        List<BannerSubscribeEntity.PosterBean> posterBeanList = bannerSubscribeEntity.getPoster();
-                        fillSubscribeBanner(posterBeanList);
+                    public void onNext(BannerEntity bannerEntity) {
+//                        subscribePosterBeanList = bannerEntity.getPoster();
+                        fillSubscribeBanner(bannerEntity.getPoster());
+//                        accountsItemSubscribeExists(bannerEntity.getPoster());
                     }
                 });
     }
+
 
     private void fetchMovieBanner() {
         bannerSubscribeSub = SkyService.ServiceManager.getLocalTestService().apiTvBanner("chinesemoviebanner", "1")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<BannerSubscribeEntity>() {
+                .subscribe(new Observer<BannerEntity>() {
                     @Override
                     public void onCompleted() {
 
@@ -754,8 +768,8 @@ public class HomePageActivity extends BaseActivity implements LinearLayoutManage
                     }
 
                     @Override
-                    public void onNext(BannerSubscribeEntity bannerSubscribeEntities) {
-                        List<BannerSubscribeEntity.PosterBean> posterBeanList =bannerSubscribeEntities.getPoster();
+                    public void onNext(BannerEntity bannerSubscribeEntities) {
+                        List<BannerEntity.PosterBean> posterBeanList =bannerSubscribeEntities.getPoster();
                         fillMovieBanner(posterBeanList);
                     }
                 });
@@ -765,7 +779,7 @@ public class HomePageActivity extends BaseActivity implements LinearLayoutManage
         bannerSubscribeSub = SkyService.ServiceManager.getLocalTestService().apiTvBanner("chinesemoviebanner", "1")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<BannerSubscribeEntity>() {
+                .subscribe(new Observer<BannerEntity>() {
                     @Override
                     public void onCompleted() {
 
@@ -777,8 +791,8 @@ public class HomePageActivity extends BaseActivity implements LinearLayoutManage
                     }
 
                     @Override
-                    public void onNext(BannerSubscribeEntity bannerSubscribeEntities) {
-                        List<BannerSubscribeEntity.PosterBean> posterBeanList =bannerSubscribeEntities.getPoster();
+                    public void onNext(BannerEntity bannerSubscribeEntities) {
+                        List<BannerEntity.PosterBean> posterBeanList =bannerSubscribeEntities.getPoster();
                         fillHorizontal519Banner(posterBeanList);
                     }
                 });
@@ -787,7 +801,7 @@ public class HomePageActivity extends BaseActivity implements LinearLayoutManage
         bannerSubscribeSub = SkyService.ServiceManager.getLocalTestService().apiTvBanner("chinesemoviebanner", "1")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<BannerSubscribeEntity>() {
+                .subscribe(new Observer<BannerEntity>() {
                     @Override
                     public void onCompleted() {
 
@@ -799,36 +813,160 @@ public class HomePageActivity extends BaseActivity implements LinearLayoutManage
                     }
 
                     @Override
-                    public void onNext(BannerSubscribeEntity bannerSubscribeEntities) {
-                        List<BannerSubscribeEntity.PosterBean> posterBeanList =bannerSubscribeEntities.getPoster();
+                    public void onNext(BannerEntity bannerSubscribeEntities) {
+                        List<BannerEntity.PosterBean> posterBeanList =bannerSubscribeEntities.getPoster();
                         fillMovieMixBanner(posterBeanList);
                     }
                 });
     }
 
-    private void fillSubscribeBanner(List<BannerSubscribeEntity.PosterBean> posterBeanList) {
-        BannerSubscribeAdapter adapter = new BannerSubscribeAdapter(this, posterBeanList);
-        subscribeBanner.setAdapter(adapter);
+    private void fillSubscribeBanner(List<BannerEntity.PosterBean> posterBeanList) {
+         subscribeAdapter = new BannerSubscribeAdapter(this, posterBeanList);
+        subscribeAdapter.setSubscribeClickListener(new BannerSubscribeAdapter.OnSubscribeClickListener() {
+            @Override
+            public void onSubscribeClick(int pk, String contentModel) {
+                Log.d("onSubscribeClick", "pk: " + pk);
+                Log.d("onSubscribeClick", "contentModel: " + contentModel);
+                accountsItemSubscribe(pk, contentModel);
+            }
+        });
+        subscribeBanner.setAdapter(subscribeAdapter);
     }
 
-    private void fillMovieBanner(List<BannerSubscribeEntity.PosterBean> posterBeanList) {
+    private void fillMovieBanner(List<BannerEntity.PosterBean> posterBeanList) {
         BannerMovieAdapter adapter = new BannerMovieAdapter(this, posterBeanList);
         movieBanner.setAdapter(adapter);
     }
 
-    private void fillHorizontal519Banner(List<BannerSubscribeEntity.PosterBean> posterBeanList) {
+    private void fillHorizontal519Banner(List<BannerEntity.PosterBean> posterBeanList) {
         BannerHorizontal519Adapter adapter = new BannerHorizontal519Adapter(this, posterBeanList);
         horizontal519Banner.setAdapter(adapter);
     }
 
-    private void fillMovieMixBanner(List<BannerSubscribeEntity.PosterBean> posterBeanList) {
+    private void fillMovieMixBanner(List<BannerEntity.PosterBean> posterBeanList) {
         BannerMovieMixAdapter adapter = new BannerMovieMixAdapter(this, posterBeanList);
         movieMixBanner.setAdapter(adapter);
     }
 
-    public void test(){
-//        RxView.focusChanges()
+    private void accountsItemSubscribe(final int itemId, String contentModel) {
+        SkyService.ServiceManager.getService().accountsItemSubscribe(itemId, contentModel)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<ResponseBody>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(ResponseBody responseBody) {
+                        for (BannerEntity.PosterBean bean : subscribePosterBeanList) {
+                            if (getItemId(bean.getContent_url()) == itemId) {
+                                bean.setSubscribed(true);
+                            }
+                        }
+                        subscribeAdapter.setSubscribeEntityList(subscribePosterBeanList);
+                        subscribeAdapter.notifyDataSetChanged();
+                    }
+                });
     }
+
+//    private void accountsItemSubscribeExists(final List<BannerEntity.PosterBean> poster){
+////        SkyService.ServiceManager.getService().accountsItemSubscribeExists(itemId)
+////                .subscribeOn(Schedulers.io())
+////                .observeOn(AndroidSchedulers.mainThread())
+////                .subscribe(new Observer<ResponseBody>() {
+////                    @Override
+////                    public void onCompleted() {
+////
+////                    }
+////
+////                    @Override
+////                    public void onError(Throwable e) {
+////
+////                    }
+////
+////                    @Override
+////                    public void onNext(ResponseBody responseBody) {
+////
+////                    }
+////                });
+//        subscribePosterBeanList = new ArrayList<>();
+//
+//        Observable.from(poster)
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(Schedulers.io())
+//                .map(new Func1<BannerEntity.PosterBean, BannerEntity.PosterBean>() {
+//                    @Override
+//                    public BannerEntity.PosterBean call(BannerEntity.PosterBean posterBean) {
+//                        int itemId = getItemId(posterBean.getContent_url());
+//                        try {
+//                            AccountsItemSubscribeExistsEntity entity = SkyService.ServiceManager.getService()
+//                                    .accountsItemSubscribeExists(itemId).execute().body();
+//                            if (entity.getInfo().getStatus() == 1){
+//                                posterBean.setSubscribed(true);
+//                            }else if (entity.getInfo().getStatus() == 0){
+//                                posterBean.setSubscribed(false);
+//                            }
+//                        } catch (IOException e) {
+//                            return posterBean;
+//                        }
+//                        return posterBean;
+//                    }
+//                })
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(new Observer<BannerEntity.PosterBean>() {
+//                    @Override
+//                    public void onCompleted() {
+//                        fillSubscribeBanner(subscribePosterBeanList);
+//                    }
+//
+//                    @Override
+//                    public void onError(Throwable e) {
+//
+//                    }
+//
+//                    @Override
+//                    public void onNext(BannerEntity.PosterBean posterBean) {
+//                        subscribePosterBeanList.add(posterBean);
+//                    }
+//                });
+//    }
+
+
+   private int getItemId(String url) {
+        int id = 0;
+        try {
+            Pattern p = Pattern.compile("/(\\d+)/?$");
+            Matcher m = p.matcher(url);
+            if (m.find()) {
+                String idStr = m.group(1);
+                if (idStr != null) {
+                    id = Integer.parseInt(idStr);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return id;
+    }
+
+//    @POST("accounts/item/subscribe/")
+//    Observable<ResponseBody> accountsItemSubscribe(
+//            @Field("item_id") int itemId,
+//            @Field("content_model") String contentModel
+//    );
+//
+//    @GET("accounts/item/subscribe/exists/")
+//    Observable<ResponseBody> accountsItemSubscribeExists(
+//            @Query("item_id") int itemId
+//    );
+
 
 //    private void fillChannelLayout(ChannelEntity[] channelEntities) {
 //        if (neterrorshow)

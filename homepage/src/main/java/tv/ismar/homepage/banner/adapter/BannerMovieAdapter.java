@@ -1,4 +1,4 @@
-package tv.ismar.homepage.banner.subscribe;
+package tv.ismar.homepage.banner.adapter;
 
 import android.animation.ObjectAnimator;
 import android.content.Context;
@@ -14,7 +14,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-import tv.ismar.app.entity.banner.BannerSubscribeEntity;
+import tv.ismar.app.entity.banner.BannerEntity;
 import tv.ismar.homepage.R;
 
 import static android.view.View.SCALE_X;
@@ -24,29 +24,29 @@ import static android.view.View.SCALE_Y;
  * Created by huibin on 25/08/2017.
  */
 
-public class BannerHorizontal519Adapter extends RecyclerView.Adapter<BannerHorizontal519Adapter.SubscribeViewHolder>{
+public class BannerMovieAdapter extends RecyclerView.Adapter<BannerMovieAdapter.SubscribeViewHolder>{
     private Context mContext;
 
-    private List<BannerSubscribeEntity.PosterBean> mSubscribeEntityList;
+    private List<BannerEntity.PosterBean> mSubscribeEntityList;
 
 
-    public BannerHorizontal519Adapter(Context context, List<BannerSubscribeEntity.PosterBean> subscribeEntityList) {
+    public BannerMovieAdapter(Context context, List<BannerEntity.PosterBean> subscribeEntityList) {
         mContext = context;
         mSubscribeEntityList = subscribeEntityList;
     }
 
     @Override
     public SubscribeViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.item_banner_horizontal_519, parent, false);
+        View view = LayoutInflater.from(mContext).inflate(R.layout.item_banner_movie, parent, false);
         SubscribeViewHolder holder = new SubscribeViewHolder(view);
         return holder;
     }
 
     @Override
     public void onBindViewHolder(SubscribeViewHolder holder, int position) {
-        BannerSubscribeEntity.PosterBean entity = mSubscribeEntityList.get(position);
+        BannerEntity.PosterBean entity = mSubscribeEntityList.get(position);
         Picasso.with(mContext).load(entity.getPoster_url()).into(holder.mImageView);
-        holder.mTitle.setText(entity.getTitle());
+        holder.mTitle.setText(entity.getTitle() +" 大家发的；看时间发卡量；大家发可莱丝；");
     }
 
     @Override

@@ -6,7 +6,7 @@ import java.util.List;
  * Created by huibin on 25/08/2017.
  */
 
-public class BannerSubscribeEntity {
+public class BannerEntity {
 
     /**
      * count : 7
@@ -88,6 +88,15 @@ public class BannerSubscribeEntity {
         private String content_url;
         private String content_model;
         private String poster_url;
+        private boolean isSubscribed;
+
+        public boolean isSubscribed() {
+            return isSubscribed;
+        }
+
+        public void setSubscribed(boolean subscribed) {
+            isSubscribed = subscribed;
+        }
 
         public String getTitle() {
             return title;

@@ -56,8 +56,8 @@ import tv.ismar.app.entity.ItemList;
 import tv.ismar.app.entity.SectionList;
 import tv.ismar.app.entity.Subject;
 import tv.ismar.app.entity.VideoEntity;
-import tv.ismar.app.entity.banner.BannerMovieEntity;
-import tv.ismar.app.entity.banner.BannerSubscribeEntity;
+import tv.ismar.app.entity.banner.AccountsItemSubscribeExistsEntity;
+import tv.ismar.app.entity.banner.BannerEntity;
 import tv.ismar.app.models.ActorRelateRequestParams;
 import tv.ismar.app.models.FilterConditions;
 import tv.ismar.app.models.Game;
@@ -483,6 +483,7 @@ public interface SkyService {
     Observable<Item> apifetchItem(
             @Url String url
     );
+
     @GET
     Observable<ResponseBody> apiCheckItem(
             @Url String url
@@ -656,18 +657,17 @@ public interface SkyService {
     );
 
     @GET("/api/tv/banner/{banner_name}/{page}/")
-    Observable<BannerSubscribeEntity> apiTvBanner(
+    Observable<BannerEntity> apiTvBanner(
             @Path("banner_name") String banner,
             @Path("page") String page
     );
 
 
-    @GET("accounts/sports/subscribe/")
+    @GET("accounts/sports/adapter/")
     Observable<ResponseBody> getSubscribeImage(
             @Query("item_id") int pk,
             @Query("type") String type
     );
-
 
     @GET
     Observable<ResponseBody> repostAdLog(
@@ -692,8 +692,17 @@ public interface SkyService {
             @Query("play_scale") int play_scale
     );
 
-//    @GET("accounts/item/subscribe/")
-//    Observable<>
+    @FormUrlEncoded
+    @POST("accounts/item/subscribe/")
+    Observable<ResponseBody> accountsItemSubscribe(
+            @Field("item_id") int itemId,
+            @Field("content_model") String contentModel
+    );
+
+    @GET("accounts/item/subscribe/exists/")
+    Call<AccountsItemSubscribeExistsEntity> accountsItemSubscribeExists(
+            @Query("item_id") int itemId
+    );
 
     class ServiceManager {
         private volatile static ServiceManager serviceManager;
@@ -766,8 +775,8 @@ public interface SkyService {
                         @Override
                         public List<InetAddress> lookup(String hostName) throws UnknownHostException {
                             String ipAddress = IsmartvActivator.getHostByName(hostName);
-                            if (ipAddress.endsWith("0.0.0.0")){
-                                throw new  UnknownHostException("can't connect to internet");
+                            if (ipAddress.endsWith("0.0.0.0")) {
+                                throw new UnknownHostException("can't connect to internet");
                             }
                             return Dns.SYSTEM.lookup(ipAddress);
                         }

@@ -1,4 +1,4 @@
-package tv.ismar.homepage.banner.subscribe;
+package tv.ismar.homepage.banner.adapter;
 
 import android.animation.ObjectAnimator;
 import android.content.Context;
@@ -8,13 +8,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-import tv.ismar.app.entity.banner.BannerSubscribeEntity;
+import tv.ismar.app.entity.banner.BannerEntity;
 import tv.ismar.homepage.R;
 
 import static android.view.View.SCALE_X;
@@ -24,31 +26,44 @@ import static android.view.View.SCALE_Y;
  * Created by huibin on 25/08/2017.
  */
 
-public class BannerSubscribeAdapter extends RecyclerView.Adapter<BannerSubscribeAdapter.SubscribeViewHolder>{
+public class BannerMovieMixAdapter extends RecyclerView.Adapter<BannerMovieMixAdapter.SubscribeViewHolder>{
     private Context mContext;
 
-    private List<BannerSubscribeEntity.PosterBean> mSubscribeEntityList;
+    private List<BannerEntity.PosterBean> mSubscribeEntityList;
 
 
-    public BannerSubscribeAdapter(Context context, List<BannerSubscribeEntity.PosterBean> subscribeEntityList) {
+    public BannerMovieMixAdapter(Context context, List<BannerEntity.PosterBean> subscribeEntityList) {
         mContext = context;
         mSubscribeEntityList = subscribeEntityList;
     }
 
     @Override
     public SubscribeViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.item_banner_subscribe, parent, false);
+        View view = LayoutInflater.from(mContext).inflate(R.layout.item_banner_movie, parent, false);
         SubscribeViewHolder holder = new SubscribeViewHolder(view);
         return holder;
     }
 
     @Override
     public void onBindViewHolder(SubscribeViewHolder holder, int position) {
-        BannerSubscribeEntity.PosterBean entity = mSubscribeEntityList.get(position);
+        if (position == 0){
+            ViewGroup.LayoutParams itemLayoutParams = holder.itemLayout.getLayoutParams();
+            itemLayoutParams.width = 720;
+            holder.itemLayout.setLayoutParams(itemLayoutParams);
+
+
+            ViewGroup.LayoutParams wrapperLayoutParams = holder.itemWrapper.getLayoutParams();
+            wrapperLayoutParams.width = 720;
+            holder.itemWrapper.setLayoutParams(wrapperLayoutParams);
+
+            ViewGroup.LayoutParams imageLayoutParams = holder.mImageView.getLayoutParams();
+            imageLayoutParams.width = 720;
+            holder.mImageView.setLayoutParams(imageLayoutParams);
+        }
+
+        BannerEntity.PosterBean entity = mSubscribeEntityList.get(position);
         Picasso.with(mContext).load(entity.getPoster_url()).into(holder.mImageView);
-        holder.mTitle.setText("预约");
-        holder.mPublishTime.setText("6月30日");
-        holder.mIntroduction.setText(entity.getIntroduction());
+        holder.mTitle.setText(entity.getTitle());
     }
 
     @Override
@@ -61,20 +76,20 @@ public class BannerSubscribeAdapter extends RecyclerView.Adapter<BannerSubscribe
 
         private ImageView mImageView;
         private TextView mTitle;
-        private TextView mPublishTime;
         private View mItemView;
-        private TextView mIntroduction;
+        private LinearLayout itemLayout;
+        private RelativeLayout itemWrapper;
 
 
         public SubscribeViewHolder(View itemView) {
             super(itemView);
             mItemView = itemView;
+            itemLayout = (LinearLayout) mItemView.findViewById(R.id.item_layout);
+            itemWrapper = (RelativeLayout) mItemView.findViewById(R.id.item_wrapper);
             mItemView.findViewById(R.id.item_layout).setOnClickListener(this);
             mItemView.findViewById(R.id.item_layout).setOnFocusChangeListener(this);
             mImageView = (ImageView) itemView.findViewById(R.id.image_view);
             mTitle = (TextView) itemView.findViewById(R.id.title);
-            mPublishTime = (TextView)itemView.findViewById(R.id.publish_time);
-            mIntroduction = (TextView)itemView.findViewById(R.id.introduction);
         }
 
         @Override

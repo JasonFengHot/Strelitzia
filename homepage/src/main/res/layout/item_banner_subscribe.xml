@@ -68,6 +68,8 @@
                 />
 
             <TextView
+                android:ellipsize="marquee"
+                android:maxLines="1"
                 android:id="@+id/introduction"
                 android:layout_width="388dp"
                 android:layout_height="47dp"
