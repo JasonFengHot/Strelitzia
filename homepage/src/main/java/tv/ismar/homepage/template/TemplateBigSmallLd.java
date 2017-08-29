@@ -6,10 +6,10 @@ import android.view.View;
 /**
  * @AUTHOR: xi
  * @DATE: 2017/8/29
- * @DESC: 说明
+ * @DESC: 大横小竖模版
  */
 
-public class Template3 extends Template {
+public class TemplateBigSmallLd extends Template{
     @Override
     public void getView(View view, Bundle bundle) {
 

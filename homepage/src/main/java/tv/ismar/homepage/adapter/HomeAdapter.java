@@ -9,9 +9,9 @@ import android.widget.BaseAdapter;
 
 import tv.ismar.app.entity.GuideBanner;
 import tv.ismar.homepage.R;
-import tv.ismar.homepage.template.Template1;
-import tv.ismar.homepage.template.Template2;
-import tv.ismar.homepage.template.Template3;
+import tv.ismar.homepage.template.TemplateGuide;
+import tv.ismar.homepage.template.TemplateOrder;
+import tv.ismar.homepage.template.TemplateMovie;
 
 /**
  * @AUTHOR: xi
@@ -74,13 +74,13 @@ public class HomeAdapter extends BaseAdapter{
         String template = mData[position].template;
         if(template.equals("template1")){//模版1
             viewHolder.mTemplate1.setVisibility(View.VISIBLE);
-            new Template1().setView(viewHolder.mTemplate1, bundle);
+            new TemplateGuide().setView(viewHolder.mTemplate1, bundle);
         } else if(template.equals("template2")){
             viewHolder.mTemplate2.setVisibility(View.VISIBLE);
-            new Template2().setView(viewHolder.mTemplate2, bundle);
+            new TemplateOrder().setView(viewHolder.mTemplate2, bundle);
         } else if(template.equals("template3")){
             viewHolder.mTemplate3.setVisibility(View.VISIBLE);
-            new Template3().setView(viewHolder.mTemplate3, bundle);
+            new TemplateMovie().setView(viewHolder.mTemplate3, bundle);
         }
 
         return convertView;
