@@ -700,7 +700,7 @@ public interface SkyService {
     );
 
     @GET("accounts/item/subscribe/exists/")
-    Call<AccountsItemSubscribeExistsEntity> accountsItemSubscribeExists(
+    Observable<AccountsItemSubscribeExistsEntity> accountsItemSubscribeExists(
             @Query("item_id") int itemId
     );
 

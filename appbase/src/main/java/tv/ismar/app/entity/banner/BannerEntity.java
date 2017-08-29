@@ -88,14 +88,14 @@ public class BannerEntity {
         private String content_url;
         private String content_model;
         private String poster_url;
-        private boolean isSubscribed;
+        private SubscribeStatus subscribeStatus = SubscribeStatus.None;
 
-        public boolean isSubscribed() {
-            return isSubscribed;
+        public SubscribeStatus getSubscribeStatus() {
+            return subscribeStatus;
         }
 
-        public void setSubscribed(boolean subscribed) {
-            isSubscribed = subscribed;
+        public void setSubscribeStatus(SubscribeStatus subscribeStatus) {
+            this.subscribeStatus = subscribeStatus;
         }
 
         public String getTitle() {
@@ -145,5 +145,11 @@ public class BannerEntity {
         public void setPoster_url(String poster_url) {
             this.poster_url = poster_url;
         }
+    }
+
+    public enum SubscribeStatus {
+        None,
+        Yes,
+        No
     }
 }
