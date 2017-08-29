@@ -34,7 +34,7 @@ public class GuideControl extends BaseControl{
         SkyService.ServiceManager.getCacheSkyService().getBanners(banner, page)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<HomeEntity[]>() {
+                .subscribe(new Observer<HomeEntity>() {
                     @Override
                     public void onCompleted() {}
 
@@ -44,8 +44,8 @@ public class GuideControl extends BaseControl{
                     }
 
                     @Override
-                    public void onNext(HomeEntity[] homeEntities) {
-                        if(mCallBack!=null && homeEntities!=null && homeEntities.length>0){
+                    public void onNext(HomeEntity homeEntities) {
+                        if(mCallBack!=null && homeEntities!=null){
                             mCallBack.callBack(FETCH_BANNERS_LIST_FLAG, homeEntities);
                         }
                     }

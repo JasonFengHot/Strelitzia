@@ -8,7 +8,9 @@ import android.view.View;
 import android.widget.TextView;
 
 import tv.ismar.app.BaseControl;
+import tv.ismar.app.entity.banner.HomeEntity;
 import tv.ismar.homepage.R;
+import tv.ismar.homepage.adapter.ConlumnAdapter;
 import tv.ismar.homepage.control.GuideControl;
 
 /**
@@ -20,6 +22,7 @@ import tv.ismar.homepage.control.GuideControl;
 public class TemplateConlumn extends Template implements BaseControl.ControlCallBack {
     private TextView mTitle;
     private RecyclerView mRecyclerView;
+    private ConlumnAdapter mAdapter;
     private GuideControl mControl;
 
     public TemplateConlumn(Context context) {
@@ -45,7 +48,10 @@ public class TemplateConlumn extends Template implements BaseControl.ControlCall
     @Override
     public void callBack(int flags, Object... args) {
         if(flags == GuideControl.FETCH_BANNERS_LIST_FLAG){
-
+            if(mAdapter == null){
+                HomeEntity homeEntity = (HomeEntity) args[0];
+                mRecyclerView.setAdapter(new ConlumnAdapter(mContext, homeEntity));
+            }
         }
     }
 }
