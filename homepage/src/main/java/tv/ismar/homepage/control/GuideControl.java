@@ -32,10 +32,9 @@ public class GuideControl extends BaseControl{
 
     /**
      *  获取首页下所有列表
-     * @param platform tv or mobile
      */
-    public void fetchBannerList(String platform){
-        SkyService.ServiceManager.getCacheSkyService().getGuideBanners(platform)
+    public void fetchBannerList(){
+        SkyService.ServiceManager.getCacheSkyService().getGuideBanners()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<GuideBanner[]>() {

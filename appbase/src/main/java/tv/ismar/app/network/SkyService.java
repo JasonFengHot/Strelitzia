@@ -517,9 +517,13 @@ public interface SkyService {
     @GET("api/tv/channels/")
     Observable<ChannelEntity[]> apiTvChannels();
 
-    @GET("api/{platform}/homepage/banner")
+    @GET("api/tv/homepage/banner")
     Observable<GuideBanner[]> getGuideBanners(
-            @Path("platform") String platform
+    );
+
+    @GET("api/tv/banners/{channel}")
+    Observable<GuideBanner[]> getChannelBanners(
+            @Path("channel") String platform
     );
 
     @GET

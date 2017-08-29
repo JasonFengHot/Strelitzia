@@ -9,9 +9,15 @@ import android.widget.BaseAdapter;
 
 import tv.ismar.app.entity.GuideBanner;
 import tv.ismar.homepage.R;
+import tv.ismar.homepage.template.Template519;
+import tv.ismar.homepage.template.TemplateBigSmallLd;
+import tv.ismar.homepage.template.TemplateConlumn;
+import tv.ismar.homepage.template.TemplateDoubleLd;
+import tv.ismar.homepage.template.TemplateDoubleMd;
 import tv.ismar.homepage.template.TemplateGuide;
 import tv.ismar.homepage.template.TemplateOrder;
 import tv.ismar.homepage.template.TemplateMovie;
+import tv.ismar.homepage.template.TemplateTvPlay;
 
 /**
  * @AUTHOR: xi
@@ -92,22 +98,22 @@ public class HomeAdapter extends BaseAdapter{
             new TemplateMovie().setView(viewHolder.mTemplateMovie, bundle);
         } else if(template.equals("template_teleplay")){//电视剧模版
             viewHolder.mTemplateTvPlay.setVisibility(View.VISIBLE);
-            new TemplateMovie().setView(viewHolder.mTemplateMovie, bundle);
+            new TemplateTvPlay().setView(viewHolder.mTemplateMovie, bundle);
         } else if(template.equals("template_519")){//519横图模版
             viewHolder.mTemplate519.setVisibility(View.VISIBLE);
-            new TemplateMovie().setView(viewHolder.mTemplateMovie, bundle);
+            new Template519().setView(viewHolder.mTemplateMovie, bundle);
         }else if(template.equals("template_conlumn")){//栏目模版
-            viewHolder.mTemplateConlumn.setVisibility(View.VISIBLE);
-            new TemplateMovie().setView(viewHolder.mTemplateMovie, bundle);
+            viewHolder.mTemplateConlumn.setVisibility(View.VISIBLE);//栏目
+            new TemplateConlumn().setView(viewHolder.mTemplateMovie, bundle);
         }else if(template.equals("template_big_small_ld")){//大横小竖模版
             viewHolder.mTemplateBigSmallLd.setVisibility(View.VISIBLE);
-            new TemplateMovie().setView(viewHolder.mTemplateMovie, bundle);
+            new TemplateBigSmallLd().setView(viewHolder.mTemplateMovie, bundle);
         }else if(template.equals("template_double_md")){//竖版双行模版
             viewHolder.mTemplateDoubleMd.setVisibility(View.VISIBLE);
-            new TemplateMovie().setView(viewHolder.mTemplateMovie, bundle);
+            new TemplateDoubleMd().setView(viewHolder.mTemplateMovie, bundle);
         }else if(template.equals("template_double_ld")){//横版双行模版
             viewHolder.mTemplateDoubleLd.setVisibility(View.VISIBLE);
-            new TemplateMovie().setView(viewHolder.mTemplateMovie, bundle);
+            new TemplateDoubleLd().setView(viewHolder.mTemplateMovie, bundle);
         }
 
         return convertView;
