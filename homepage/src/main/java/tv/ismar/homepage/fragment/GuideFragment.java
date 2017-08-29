@@ -61,7 +61,7 @@ public class GuideFragment extends ChannelBaseFragment implements BaseControl.Co
     @Override
     public void callBack(int flag, Object... args) {
         //这里通过flag严格区分不同的业务流程，避免业务之间的耦合
-        if(flag == GuideControl.FETCH_GUIDE_BANNERS_FLAG){//处理获取首页banner列表
+        if(flag == GuideControl.FETCH_HOME_BANNERS_FLAG){//处理获取首页banner列表
             GuideBanner[] banners = (GuideBanner[]) args[0];
             if(mAdapter == null){
                 mAdapter = new HomeAdapter(mContext, banners);
