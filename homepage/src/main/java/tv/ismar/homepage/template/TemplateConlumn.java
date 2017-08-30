@@ -42,7 +42,7 @@ public class TemplateConlumn extends Template implements BaseControl.ControlCall
     @Override
     public void initData(Bundle bundle) {
         mTitle.setText(bundle.getString("title"));
-        mControl.fetchBanners(bundle.getString("url"), 1);
+        mControl.fetchBanners(bundle.getString("banner"), 1);
     }
 
     @Override

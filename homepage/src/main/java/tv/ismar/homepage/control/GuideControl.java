@@ -31,7 +31,7 @@ public class GuideControl extends BaseControl{
 
     }
 
-    public void fetchBanners(String banner, int page){
+    public synchronized void fetchBanners(String banner, int page){
         SkyService.ServiceManager.getLocalTestService().getBanners(banner, page)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -41,7 +41,7 @@ public class GuideControl extends BaseControl{
 
                     @Override
                     public void onError(Throwable e) {
-
+                        Log.i("onError", "onError");
                     }
 
                     @Override
