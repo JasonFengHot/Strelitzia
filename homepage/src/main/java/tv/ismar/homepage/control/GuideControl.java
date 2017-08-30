@@ -1,6 +1,7 @@
 package tv.ismar.homepage.control;
 
 import android.content.Context;
+import android.util.Log;
 
 import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
@@ -56,24 +57,29 @@ public class GuideControl extends BaseControl{
      *  获取首页下所有列表
      */
     public void fetchBannerList(){
-        SkyService.ServiceManager.getCacheSkyService().getGuideBanners()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<GuideBanner[]>() {
-                    @Override
-                    public void onCompleted() {}
+        try {
+            SkyService.ServiceManager.getCacheSkyService().getGuideBanners()
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Observer<GuideBanner[]>() {
+                        @Override
+                        public void onCompleted() {}
 
-                    @Override
-                    public void onError(Throwable e) {
-                    }
-
-                    @Override
-                    public void onNext(GuideBanner[] guideBanners) {
-                        if(mCallBack!=null && guideBanners!=null && guideBanners.length>0){
-                            mCallBack.callBack(FETCH_HOME_BANNERS_FLAG, guideBanners);
+                        @Override
+                        public void onError(Throwable e) {
+                            Log.i("onError", "onError");
                         }
-                    }
-                });
+
+                        @Override
+                        public void onNext(GuideBanner[] guideBanners) {
+                            if(mCallBack!=null && guideBanners!=null && guideBanners.length>0){
+                                mCallBack.callBack(FETCH_HOME_BANNERS_FLAG, guideBanners);
+                            }
+                        }
+                    });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 }

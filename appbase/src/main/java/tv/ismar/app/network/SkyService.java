@@ -518,7 +518,8 @@ public interface SkyService {
     @GET("api/tv/channels/")
     Observable<ChannelEntity[]> apiTvChannels();
 
-    @GET("api/tv/homepage/banner/")
+//    @GET("api/tv/homepage/banner/")
+    @POST("http://192.168.2.27:10082/api/tv/homepage/banner/")
     Observable<GuideBanner[]> getGuideBanners(
     );
 
@@ -777,7 +778,7 @@ public interface SkyService {
             final OkHttpClient mClient = new OkHttpClient.Builder()
                     .connectTimeout(DEFAULT_CONNECT_TIMEOUT, TimeUnit.SECONDS)
                     .readTimeout(DEFAULT_READ_TIMEOUT, TimeUnit.SECONDS)
-                    .addInterceptor(VodApplication.getHttpParamsInterceptor())
+//                    .addInterceptor(VodApplication.getHttpParamsInterceptor())
                     .addInterceptor(VodApplication.getModuleAppContext().getCacheInterceptor())
                     .addInterceptor(interceptor)
                     .addNetworkInterceptor(VodApplication.getModuleAppContext().getCacheInterceptor())
