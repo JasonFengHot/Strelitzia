@@ -32,7 +32,7 @@ public class GuideControl extends BaseControl{
     }
 
     public void fetchBanners(String banner, int page){
-        SkyService.ServiceManager.getCacheSkyService().getBanners(banner, page)
+        SkyService.ServiceManager.getLocalTestService().getBanners(banner, page)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<HomeEntity>() {
@@ -58,7 +58,7 @@ public class GuideControl extends BaseControl{
      */
     public void fetchBannerList(){
         try {
-            SkyService.ServiceManager.getCacheSkyService().getGuideBanners()
+            SkyService.ServiceManager.getLocalTestService().getGuideBanners()
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Observer<GuideBanner[]>() {

@@ -518,8 +518,7 @@ public interface SkyService {
     @GET("api/tv/channels/")
     Observable<ChannelEntity[]> apiTvChannels();
 
-//    @GET("api/tv/homepage/banner/")
-    @POST("http://192.168.2.27:10082/api/tv/homepage/banner/")
+    @GET("api/tv/homepage/banner/")
     Observable<GuideBanner[]> getGuideBanners(
     );
 
