@@ -2,6 +2,7 @@ package tv.ismar.homepage.adapter;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -51,6 +52,7 @@ public class HomeAdapter extends BaseAdapter{
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
+        Log.i("getView", "position:"+position);
         ViewHolder viewHolder = null;
         if(convertView == null){
             viewHolder = new ViewHolder();

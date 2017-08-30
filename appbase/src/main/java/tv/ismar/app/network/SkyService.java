@@ -533,6 +533,12 @@ public interface SkyService {
             @Path("page") int page
     );
 
+    @GET("/api/tv/mbanner/{banner}/")
+    Observable<HomeEntity[]> getMBanners(
+            @Path("banner") String banner,
+            @Path("page") int page
+    );
+
     @GET
     Observable<ArrayList<HomePagerEntity.Poster>> smartRecommendPost(
             @Url String url,
