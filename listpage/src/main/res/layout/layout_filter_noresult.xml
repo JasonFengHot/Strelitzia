@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clipChildren="false"
+    android:clipToPadding="false">
+<TextView
+    android:layout_width="1059dp"
+    android:layout_height="67dp"
+    android:textColor="@color/_ffffff"
+    android:gravity="center"
+    android:textSize="48dp"
+    android:text="抱歉您的筛选条件太多了，没有找到匹配的内容"
+    android:layout_marginLeft="269dp"
+    android:layout_marginTop="265dp"/>
+    
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="52dp"
+        android:layout_marginLeft="53dp"
+        android:layout_marginTop="97dp"
+        android:textSize="36dp"
+        android:textColor="#cccccc"
+        android:text="大家都在看"/>
+
+    <LinearLayout
+        android:id="@+id/filter_noresult_first_line"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+
+        />
+    <LinearLayout
+        android:id="@+id/filter_noresult_second_line"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        />
+</LinearLayout>
