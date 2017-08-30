@@ -6,16 +6,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/conlumn_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
     <com.open.androidtvwidget.leanback.recycle.RecyclerViewTV
         android:id="@+id/conlumn_recyclerview"
         android:layout_width="match_parent"
+        android:layout_marginLeft="@dimen/guide_column_item_margin_left"
         android:focusable="false"
-        android:layout_height="50dp"
-        android:background="#0000ff"/>
+        android:layout_height="@dimen/guide_column_item_height" />
 
 </LinearLayout>
