@@ -22,7 +22,7 @@ import tv.ismar.homepage.widget.scroll.listener.OnUseViewChange;
  *     3.必要的注释要有奥，如flag标记，说清楚不同的值代表啥意思，其他的自己斟酌
  *     4.用工程化思维去写代码
  */
-public class GuideFragment extends Fragment implements BaseControl.ControlCallBack {
+public class GuideFragment extends ChannelBaseFragment implements BaseControl.ControlCallBack {
 
     private GuideControl mControl = null;//业务类引用
 
