@@ -6,15 +6,6 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
-    <tv.ismar.app.widget.LaunchHeaderLayout
-        android:id="@+id/top_column_layout"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/list_head_H"
-        android:gravity="center_vertical"
-        android:paddingLeft="@dimen/list_head_paddingL"
-        android:paddingRight="@dimen/list_head_paddingL"
-        android:visibility="gone" >
-    </tv.ismar.app.widget.LaunchHeaderLayout>
 
     <ImageView
         android:layout_width="match_parent"

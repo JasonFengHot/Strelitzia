@@ -50,15 +50,15 @@
         android:layout_width="@dimen/filter_layout_left_view_tab_w"
         android:layout_height="@dimen/filter_layout_left_view_tab_h"
         android:text="筛选"
-        android:textSize="36dp"
+        android:textSize="@dimen/filter_layout_left_view_tab_ts"
         android:textColor="@color/filter_text"
         android:drawableLeft="@drawable/filter_icon_selector"
         android:background="@drawable/section_tab_selector"
-        android:drawablePadding="10dp"
-        android:paddingLeft="97dp"
-        android:paddingRight="97dp"
-        android:paddingTop="25dp"
-        android:paddingBottom="25dp"
+        android:drawablePadding="@dimen/filter_layout_left_view_tab_drawable_padding"
+        android:paddingLeft="@dimen/filter_layout_left_view_filter_tab_plr"
+        android:paddingRight="@dimen/filter_layout_left_view_filter_tab_plr"
+        android:paddingTop="@dimen/filter_layout_left_view_tab_ptb"
+        android:paddingBottom="@dimen/filter_layout_left_view_tab_ptb"
         android:focusable="true"
         android:button="@null"
         android:gravity="center"
@@ -83,23 +83,25 @@
 
         <tv.ismar.app.widget.MyRecyclerView
             android:id="@+id/poster_recyclerview"
-            android:layout_width="1460dp"
-            android:layout_height="992dp"
+            android:layout_width="@dimen/filter_layout_poster_recyclerview_w"
+            android:layout_height="@dimen/filter_layout_poster_recyclerview_h"
             android:layout_marginTop="@dimen/filter_layout_poster_recyclerview_mt"
             android:clipToPadding="false"
             android:clipChildren="false"
-            android:layout_centerHorizontal="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="91dp"
             />
 
         <tv.ismar.app.widget.MyRecyclerView
             android:id="@+id/list_poster_recyclerview"
-            android:layout_width="1460dp"
-            android:layout_height="992dp"
+            android:layout_width="@dimen/filter_layout_poster_recyclerview_w"
+            android:layout_height="@dimen/filter_layout_poster_recyclerview_h"
             android:clipToPadding="false"
             android:clipChildren="false"
             android:visibility="gone"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="25dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="91dp"
+            android:layout_marginTop="@dimen/filter_layout_poster_recyclerview_mt"
             />
 
         <include
@@ -113,10 +115,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="#000000"
-            android:textSize="48dp"
+            android:textSize="@dimen/filter_layout_current_section_title_ts"
             android:textColor="#ffffff"
-            android:paddingLeft="91dp"
-            android:paddingTop="40dp"
+            android:paddingLeft="@dimen/filter_layout_current_section_title_pl"
+            android:paddingTop="@dimen/filter_layout_current_section_title_pt"
             android:visibility="invisible"
         />
         <LinearLayout
@@ -146,17 +148,17 @@
 
     <Button
         android:id="@+id/tab_arrow_up"
-        android:layout_width="298dp"
-        android:layout_height="64dp"
-        android:layout_marginLeft="11dp"
+        android:layout_width="@dimen/filter_layout_tab_arrow_w"
+        android:layout_height="@dimen/filter_layout_tab_arrow_h"
+        android:layout_marginLeft="@dimen/filter_layout_tab_arrow_ml"
         android:focusable="true"
         android:visibility="gone"
         android:background="@drawable/tab_arrow_up_selector"/>
     <Button
         android:id="@+id/tab_arrow_dowm"
-        android:layout_width="298dp"
-        android:layout_height="64dp"
-        android:layout_marginLeft="11dp"
+        android:layout_width="@dimen/filter_layout_tab_arrow_w"
+        android:layout_height="@dimen/filter_layout_tab_arrow_h"
+        android:layout_marginLeft="@dimen/filter_layout_tab_arrow_ml"
         android:layout_alignParentBottom="true"
         android:focusable="true"
         android:visibility="gone"
@@ -164,9 +166,9 @@
 
     <Button
         android:id="@+id/poster_arrow_up"
-        android:layout_width="1415dp"
-        android:layout_height="130dp"
-        android:layout_marginRight="92dp"
+        android:layout_width="@dimen/filter_layout_poster_arrow_w"
+        android:layout_height="@dimen/filter_layout_poster_arrow_h"
+        android:layout_marginRight="@dimen/filter_layout_poster_arrow_mr"
         android:layout_alignParentRight="true"
         android:focusable="true"
         android:visibility="gone"
@@ -174,9 +176,9 @@
 
     <Button
         android:id="@+id/poster_arrow_down"
-        android:layout_width="1415dp"
-        android:layout_height="130dp"
-        android:layout_marginRight="92dp"
+        android:layout_width="@dimen/filter_layout_poster_arrow_w"
+        android:layout_height="@dimen/filter_layout_poster_arrow_h"
+        android:layout_marginRight="@dimen/filter_layout_poster_arrow_mr"
         android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"
         android:focusable="true"

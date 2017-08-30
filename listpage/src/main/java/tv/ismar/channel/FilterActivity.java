@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
@@ -96,6 +97,7 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
     private Handler mHandler=new Handler(new Handler.Callback() {
         @Override
         public boolean handleMessage(Message msg) {
+            //控制列表页左侧tab获取焦点1s后自动加载数据
             RadioButton radioButton= (RadioButton) msg.obj;
             radioButton.setChecked(true);
             radioButton.callOnClick();
@@ -109,20 +111,26 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.filter_layout);
+        //获取intent传递的数据，从而判断加载的列表页的类型
         Intent intent=getIntent();
         title = intent.getStringExtra("title");
         channel = intent.getStringExtra("channel");
         isVertical=intent.getBooleanExtra("isPortrait",true);
-        isVertical=true;
+        isVertical=false;
+        //view和data、监听事件的初始化操作
         initView();
+        initListener();
         initData();
     }
+
 
     @Override
     protected void onResume() {
         super.onResume();
+        //日志相关
         AppConstant.purchase_entrance_page = "filter";
         AppConstant.purchase_page = "filter";
+        //判断筛选页已选筛选条件的显示与隐藏
         if(filter_checked_conditiion.getChildCount()>1){
             filter_checked_conditiion.setVisibility(View.VISIBLE);
         }else{
@@ -133,20 +141,24 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
 
 
     private void initView() {
-        filter_root_view = (LocationRelativeLayout) findViewById(R.id.filter_root_view);
+        //左侧tab区view
         filter_title = (TextView) findViewById(R.id.filter_title);
         tab_scroll = (FullScrollView) findViewById(R.id.tab_scroll);
         section_group = (RadioGroup) findViewById(R.id.section_group);
         filter_tab = (RadioButton) findViewById(R.id.filter_tab);
+        //筛选区view
         filter_checked_conditiion = (LinearLayout) findViewById(R.id.filter_checked_conditiion);
         poster_recyclerview = (MyRecyclerView) findViewById(R.id.poster_recyclerview);
-        list_poster_recyclerview = (MyRecyclerView) findViewById(R.id.list_poster_recyclerview);
         poster_recyclerview.setHasFixedSize(true);
-        list_poster_recyclerview.setHasFixedSize(true);
         filter_condition_layout = View.inflate(this, R.layout.filter_condition_layout,null);
         filter_conditions = (LinearLayout)filter_condition_layout.findViewById(R.id.filter_conditions);
-        current_section_title = (TextView) findViewById(R.id.current_section_title);
         filter_noresult = findViewById(R.id.filter_noresult);
+        //列表区view
+        list_poster_recyclerview = (MyRecyclerView) findViewById(R.id.list_poster_recyclerview);
+        list_poster_recyclerview.setHasFixedSize(true);
+        current_section_title = (TextView) findViewById(R.id.current_section_title);
+        //空鼠箭头view
+        filter_root_view = (LocationRelativeLayout) findViewById(R.id.filter_root_view);
         tab_arrow_up = (Button)findViewById(R.id.tab_arrow_up);
         tab_arrow_dowm = (Button)findViewById(R.id.tab_arrow_dowm);
         poster_arrow_up = (Button)findViewById(R.id.poster_arrow_up);
@@ -155,7 +167,7 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
         filter_root_view.setArrow_down_left(tab_arrow_dowm);
         filter_root_view.setArrow_up_right(poster_arrow_up);
         filter_root_view.setArrow_down_right(poster_arrow_down);
-        filter_root_view.setxBoundary(320);
+        filter_root_view.setxBoundary(getResources().getDimensionPixelOffset(R.dimen.filter_layout_left_view_tab_w));
         tab_arrow_up.setOnHoverListener(this);
         tab_arrow_dowm.setOnHoverListener(this);
         poster_arrow_up.setOnHoverListener(this);
@@ -164,27 +176,30 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
         tab_arrow_dowm.setOnClickListener(this);
         poster_arrow_up.setOnClickListener(this);
         poster_arrow_down.setOnClickListener(this);
+        //根据不同的板式(横、竖版)设置不同的列表样式
         if(isVertical) {
             spanCount = 5;
-            mSpaceItemDecoration = new SpaceItemDecoration(0,0);
+            mSpaceItemDecoration = new SpaceItemDecoration(50,40);
             poster_recyclerview.addItemDecoration(mSpaceItemDecoration);
-            poster_recyclerview.setPadding(0,0,0,getResources().getDimensionPixelOffset(R.dimen.vertical_recycler_padding_bottom));
+//            poster_recyclerview.setPadding(0,0,0,getResources().getDimensionPixelOffset(R.dimen.vertical_recycler_padding_bottom));
             list_poster_recyclerview.addItemDecoration(mSpaceItemDecoration);
-            list_poster_recyclerview.setPadding(0,0,0,getResources().getDimensionPixelOffset(R.dimen.vertical_recycler_padding_bottom));
+//            list_poster_recyclerview.setPadding(0,0,0,getResources().getDimensionPixelOffset(R.dimen.vertical_recycler_padding_bottom));
         }else{
             spanCount = 3;
-            mSpaceItemDecoration=new SpaceItemDecoration(getResources().getDimensionPixelOffset(R.dimen.filter_item_horizontal_poster_mr),getResources().getDimensionPixelOffset(R.dimen.filter_item_horizontal_poster_mb));
-            poster_recyclerview.setPadding(0,0,0,getResources().getDimensionPixelOffset(R.dimen.horizontal_recycler_padding_bottom));
+            mSpaceItemDecoration=new SpaceItemDecoration(60,60);
+//            poster_recyclerview.setPadding(0,0,0,getResources().getDimensionPixelOffset(R.dimen.horizontal_recycler_padding_bottom));
             poster_recyclerview.addItemDecoration(mSpaceItemDecoration);
-            list_poster_recyclerview.setPadding(0,0,0,getResources().getDimensionPixelOffset(R.dimen.horizontal_recycler_padding_bottom));
+//            list_poster_recyclerview.setPadding(0,0,0,getResources().getDimensionPixelOffset(R.dimen.horizontal_recycler_padding_bottom));
             list_poster_recyclerview.addItemDecoration(mSpaceItemDecoration);
         }
         mFocusGridLayoutManager = new FocusGridLayoutManager(this,spanCount);
         mFilterFocusGridLayoutManager = new FocusGridLayoutManager(this,spanCount);
         poster_recyclerview.setLayoutManager(mFilterFocusGridLayoutManager);
         list_poster_recyclerview.setLayoutManager(mFocusGridLayoutManager);
+    }
+
+    private void initListener() {
         filter_tab.setOnClickListener(this);
-        filter_tab.setOnHoverListener(this);
         filter_tab.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
@@ -216,6 +231,7 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
+                //通过滑动停止后判断当前所在列表位置，进行数据更新操作(列表数据更新、列表区title更新、当前选中tab更新)
                 if(newState==0) {
                     int firstVisiablePos=mFocusGridLayoutManager.findFirstVisibleItemPosition();
                     showData(firstVisiablePos);
@@ -226,23 +242,24 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                         }
                         if(firstVisiablePos>=specialPos.get(i)&&firstVisiablePos<specialPos.get(i+1)) {
                             if(current_section_title.getText()!=null&&!sectionList.get(i).title.equals(current_section_title.getText()))
-                            current_section_title.setText(sectionList.get(i).title);
+                                current_section_title.setText(sectionList.get(i).title);
                         }
                     }
                 }
-                }
+            }
 
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
             }
         });
+
     }
 
     private void initData() {
+        filter_title.setText(title);
         fetchFilterCondition(channel);
         fetchChannelSection(channel);
-        filter_title.setText(title);
     }
 
     //请求list分类tab
@@ -285,7 +302,7 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                 @Override
                 public void onFocusChange(View v, boolean hasFocus) {
                     if(hasFocus){
-                        radioButton.setTextSize(40);
+                        radioButton.setTextSize(getResources().getDimensionPixelSize(R.dimen.filter_layout_left_view_tab_ts_scaled));
                         radioButton.setEllipsize(TextUtils.TruncateAt.MARQUEE);
                         Log.e("tabposition",v.getY()+"");
                         Message msg=new Message();
@@ -294,7 +311,7 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                         mHandler.sendMessageDelayed(msg,1000);
                     }else{
                         mHandler.removeMessages(finalI1+1);
-                        radioButton.setTextSize(36);
+                        radioButton.setTextSize(getResources().getDimensionPixelSize(R.dimen.filter_layout_left_view_tab_ts));
                         radioButton.setEllipsize(TextUtils.TruncateAt.END);
                     }
                 }
@@ -303,8 +320,9 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
             radioButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    v.requestFocus();
+                    radioButton.setChecked(true);
                     mFocusGridLayoutManager.scrollToPositionWithOffset(specialPos.get(checkedPos),0);
-//                    list_poster_recyclerview.smoothScrollBy(0,1);
                     showData(mFocusGridLayoutManager.findFirstVisibleItemPosition());
                     showData(mFocusGridLayoutManager.findLastVisibleItemPosition());
                     if(isFirst) {
@@ -362,7 +380,7 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
             @Override
             public int getSpanSize(int position) {
                 if(specialPos.contains(position)) {
-                    return 5;
+                    return spanCount;
                 }else{
                     return 1;
                 }
@@ -404,6 +422,7 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
         return super.onKeyUp(keyCode, event);
     }
 
+    //防止recyclerview焦点乱跑
     long mDownTime=0;
     long mUpTime=0;
     @Override
@@ -438,6 +457,9 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
     }
 
 
+    /**
+     * 筛选条件数据请求
+     */
     private void fetchFilterCondition(String channel) {
         mSkyService.getFilters(channel)
                 .subscribeOn(Schedulers.io())
@@ -454,6 +476,7 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                     public void onNext(FilterConditions filterConditions) {
                         content_model = filterConditions.getContent_model();
                         mFilterConditions = filterConditions;
+                        //填充筛选条件view
                         if(filterConditions.getAttributes().getGenre()!=null)
                             fillConditionLayout(filterConditions.getAttributes().getGenre().getLabel(),filterConditions.getAttributes().getGenre().getValues());
                         if(filterConditions.getAttributes().getArea()!=null)
@@ -465,6 +488,7 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                         if(filterConditions.getAttributes().getFeature()!=null)
                             fillConditionLayout(filterConditions.getAttributes().getFeature().getLabel(),filterConditions.getAttributes().getFeature().getValues());
                         fetchFilterResult(filterConditions.getContent_model(),filterConditions.getDefaultX());
+                        //筛选条件popup焦点控制
                         String conditionsForLog="";
                         for (int i = 0; i <filter_conditions.getChildCount() ; i++) {
                             FilterConditionGroupView filter= (FilterConditionGroupView) filter_conditions.getChildAt(i);
@@ -481,6 +505,9 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                 });
     }
 
+    /**
+     * 显示筛选条件popup
+     */
     private void showFilterPopup() {
         filterPopup = new PopupWindow(filter_condition_layout, getResources().getDimensionPixelOffset(R.dimen.filter_condition_popup_w), getResources().getDimensionPixelOffset(R.dimen.filter_condition_popup_h), true);
         filterPopup.setTouchable(true);
@@ -510,6 +537,11 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
         });
     }
 
+    /**
+     * 填充筛选条件layout
+     * @param label
+     * @param values
+     */
     private void fillConditionLayout(String label, final List<List<String>> values) {
 
         List<String> no_limit=new ArrayList<>();
@@ -527,6 +559,9 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
         filter_conditions.addView(filterConditionGroupView);
     }
 
+    /**
+     * 筛选无结果时显示默认推荐数据
+     */
         private void fetchFilterNoResult(){
             mSkyService.getFilterRequestNodata("movie","area*10022$10261$10263$10378$10479$10483$10484$10494",1).subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -545,6 +580,7 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                                 LinearLayout filter_noresult_second_line= (LinearLayout) filter_noresult.findViewById(R.id.filter_noresult_second_line);
                                 filter_noresult_first_line.removeAllViews();
                                 filter_noresult_second_line.removeAllViews();
+                                LinearLayout.LayoutParams params=new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                                 if(isVertical){
                                     for (int i = 0; i <5 ; i++) {
                                         final Item item = itemList.objects.get(i);
@@ -558,10 +594,16 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                                                     new PageIntent().toDetailPage(FilterActivity.this,Source.LIST.getValue(),item.pk);
                                                 }
                                             });
+                                                LinearLayoutCompat.LayoutParams p = new LinearLayoutCompat.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                                                params.rightMargin = 50;
+                                                recommendView.setLayoutParams(p);
                                             filter_noresult_first_line.addView(recommendView);
                                         }
 
                                     }
+                                    params.topMargin=getResources().getDimensionPixelOffset(R.dimen.filter_noresult_vertical_mt);
+                                    params.leftMargin=getResources().getDimensionPixelOffset(R.dimen.filter_noresult_vertical_ml);
+                                    filter_noresult_first_line.setLayoutParams(params);
                                 }else{
                                     for (int i = 0; i <8 ; i++) {
                                         final Item item = itemList.objects.get(i);
@@ -575,6 +617,7 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                                                     new PageIntent().toDetailPage(FilterActivity.this,Source.LIST.getValue(),item.pk);
                                                 }
                                             });
+
                                             if(i<4) {
                                                 filter_noresult_first_line.addView(recommendView);
                                             }else {
@@ -582,6 +625,9 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                                             }
                                         }
                                     }
+                                    params.topMargin=getResources().getDimensionPixelOffset(R.dimen.filter_noresult_horizontal_mt1);
+                                    params.leftMargin=getResources().getDimensionPixelOffset(R.dimen.filter_noresult_horizontal_ml);
+                                    filter_noresult_first_line.setLayoutParams(params);
                                 }
                             }
                         }
@@ -604,6 +650,11 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
             }
         };
 
+    /**
+     * 根据已选条件请求筛选结果
+     * @param content_model
+     * @param filterCondition
+     */
     private void fetchFilterResult(String content_model, String filterCondition) {
 
         mSkyService.getFilterRequest(content_model,filterCondition)
@@ -631,6 +682,9 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                 });
     }
 
+    /**
+     * 处理请求到的数据
+     */
     private boolean isFirst=true;
     private void processResultData(final ItemList itemList, final int flagSection) {
         if(flagSection==FLAG_FILTER){
@@ -658,13 +712,16 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                         isFocused = true;
                         focusedPos = poster_recyclerview.indexOfChild(view);
                         Log.e("postery",view.getY()+"");
-                        if(view.getY()>getResources().getDimensionPixelOffset(R.dimen.filter_poster_start_scroll_length)||view.getY()<0){
+                        if(view.getY()>getResources().getDimensionPixelOffset(R.dimen.filter_poster_start_scroll_length)){
                             mFilterFocusGridLayoutManager.setCanScroll(true);
                             if(canScroll) {
-                                mFilterFocusGridLayoutManager.scrollToPositionWithOffset(position,85);
+                                mFilterFocusGridLayoutManager.scrollToPositionWithOffset(position,getResources().getDimensionPixelOffset(R.dimen.list_scroll_up_offset));
                             }else{
                                 canScroll=true;
                             }
+                        }else if(view.getY()<0){
+                            mFilterFocusGridLayoutManager.setCanScroll(true);
+                            mFilterFocusGridLayoutManager.scrollToPositionWithOffset(position,getResources().getDimensionPixelOffset(R.dimen.list_scroll_down_offset));
                         }else{
                             mFilterFocusGridLayoutManager.setCanScroll(false);
                         }
@@ -720,14 +777,14 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                         if(view.getY()>getResources().getDimensionPixelOffset(R.dimen.filter_poster_start_scroll_length)){
                             mFocusGridLayoutManager.setCanScroll(true);
                             if(canScroll) {
-                                 mFocusGridLayoutManager.scrollToPositionWithOffset(position,85);
+                                 mFocusGridLayoutManager.scrollToPositionWithOffset(position,getResources().getDimensionPixelOffset(R.dimen.list_scroll_up_offset));
                             }else{
                                 canScroll=true;
                             }
                         }else if(view.getY()<0) {
                             mFocusGridLayoutManager.setCanScroll(true);
                             if(canScroll) {
-                                mFocusGridLayoutManager.scrollToPositionWithOffset(position, 500);
+                                mFocusGridLayoutManager.scrollToPositionWithOffset(position, getResources().getDimensionPixelOffset(R.dimen.list_scroll_down_offset));
                             }else{
                                 canScroll=true;
                             }
@@ -755,6 +812,9 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
 
     }
 
+    /**
+     * 根据用户对筛选条件的选择实时更新筛选条件及筛选结果
+     */
     private void filter() {
         View view=filter_checked_conditiion.getChildAt(0);
         filter_checked_conditiion.removeAllViews();
@@ -836,6 +896,10 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
         return false;
     }
 
+    /**
+     * 更新list数据区
+     * @param position
+     */
     private void showData(int position){
         for (int i = 0; i <sectionSize ; i++) {
             if(i==sectionSize-1){
@@ -858,5 +922,6 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
         baseSection="";
         filter_conditions.removeAllViews();
         poster_recyclerview.swapAdapter(null,true);
+        mHandler=null;
     }
 }

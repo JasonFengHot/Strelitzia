@@ -5,29 +5,29 @@
     android:clipChildren="false"
     android:clipToPadding="false">
 <TextView
-    android:layout_width="1059dp"
-    android:layout_height="67dp"
+    android:layout_width="@dimen/layout_filter_noresult_title1_w"
+    android:layout_height="@dimen/layout_filter_noresult_title1_h"
     android:textColor="@color/_ffffff"
     android:gravity="center"
-    android:textSize="48dp"
+    android:textSize="@dimen/layout_filter_noresult_title1_ts"
     android:text="抱歉您的筛选条件太多了，没有找到匹配的内容"
-    android:layout_marginLeft="269dp"
-    android:layout_marginTop="265dp"/>
+    android:layout_marginLeft="@dimen/layout_filter_noresult_title1_ml"
+    android:layout_marginTop="@dimen/layout_filter_noresult_title1_mt"/>
     
     <TextView
         android:layout_width="wrap_content"
-        android:layout_height="52dp"
-        android:layout_marginLeft="53dp"
-        android:layout_marginTop="97dp"
-        android:textSize="36dp"
+        android:layout_height="@dimen/layout_filter_noresult_title2_h"
+        android:layout_marginLeft="@dimen/layout_filter_noresult_title2_ml"
+        android:layout_marginTop="@dimen/layout_filter_noresult_title2_mt"
+        android:textSize="@dimen/layout_filter_noresult_title2_ts"
         android:textColor="#cccccc"
-        android:text="大家都在看"/>
+        android:text="大家都在看"
+        android:gravity="center_vertical"/>
 
     <LinearLayout
         android:id="@+id/filter_noresult_first_line"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
         android:orientation="horizontal"
         android:clipChildren="false"
         android:clipToPadding="false"
@@ -37,9 +37,10 @@
         android:id="@+id/filter_noresult_second_line"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
         android:orientation="horizontal"
         android:clipChildren="false"
         android:clipToPadding="false"
+        android:layout_marginLeft="60dp"
+        android:layout_marginTop="30dp"
         />
 </LinearLayout>
