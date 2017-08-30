@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<tv.ismar.view.LocationRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/filter_root_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:focusable="true"
@@ -26,7 +27,8 @@
         android:layout_marginTop="@dimen/filter_layout_left_view_title_mt"
         android:gravity="center"
         />
-    <ScrollView
+    <tv.ismar.view.FullScrollView
+        android:id="@+id/tab_scroll"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:scrollbars="none"
@@ -64,7 +66,7 @@
         />
     </RadioGroup>
         </LinearLayout>
-    </ScrollView>
+    </tv.ismar.view.FullScrollView>
 </LinearLayout>
     <View
         android:layout_width="@dimen/filter_layout_left_vertical_view_w"
@@ -100,6 +102,11 @@
             android:layout_marginTop="25dp"
             />
 
+        <include
+            android:id="@+id/filter_noresult"
+            layout="@layout/layout_filter_noresult"
+            android:visibility="gone"
+            />
 
         <TextView
             android:id="@+id/current_section_title"
@@ -110,6 +117,7 @@
             android:textColor="#ffffff"
             android:paddingLeft="91dp"
             android:paddingTop="40dp"
+            android:visibility="invisible"
         />
         <LinearLayout
             android:id="@+id/filter_checked_conditiion"
@@ -117,7 +125,7 @@
             android:layout_height="@dimen/filter_layout_filter_checked_conditiion_h"
             android:orientation="horizontal"
             android:paddingTop="@dimen/filter_layout_filter_checked_conditiion_pt"
-            android:background="#0e163a"
+            android:background="#000000"
             >
 
             <TextView
@@ -137,22 +145,41 @@
 
 
     <Button
-        android:id="@+id/filter_arrow_up"
-        android:layout_width="@dimen/filter_layout_filter_arrow_w"
-        android:layout_height="@dimen/filter_layout_filter_arrow_w"
-        android:layout_marginTop="@dimen/filter_layout_filter_arrow_up_mt"
-        android:layout_marginRight="@dimen/filter_layout_filter_arrow_mr"
-        android:layout_alignParentRight="true"
-        android:visibility="invisible"/>
+        android:id="@+id/tab_arrow_up"
+        android:layout_width="298dp"
+        android:layout_height="64dp"
+        android:layout_marginLeft="11dp"
+        android:focusable="true"
+        android:visibility="gone"
+        android:background="@drawable/tab_arrow_up_selector"/>
+    <Button
+        android:id="@+id/tab_arrow_dowm"
+        android:layout_width="298dp"
+        android:layout_height="64dp"
+        android:layout_marginLeft="11dp"
+        android:layout_alignParentBottom="true"
+        android:focusable="true"
+        android:visibility="gone"
+        android:background="@drawable/tab_arrow_down_selector"/>
 
     <Button
-        android:id="@+id/filter_arrow_down"
-        android:layout_width="@dimen/filter_layout_filter_arrow_w"
-        android:layout_height="@dimen/filter_layout_filter_arrow_w"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="@dimen/filter_layout_filter_arrow_down_mb"
-        android:layout_marginRight="@dimen/filter_layout_filter_arrow_mr"
+        android:id="@+id/poster_arrow_up"
+        android:layout_width="1415dp"
+        android:layout_height="130dp"
+        android:layout_marginRight="92dp"
         android:layout_alignParentRight="true"
-        android:visibility="invisible"/>
+        android:focusable="true"
+        android:visibility="gone"
+        android:background="@drawable/poster_arrow_up_selector"/>
 
-</RelativeLayout>
+    <Button
+        android:id="@+id/poster_arrow_down"
+        android:layout_width="1415dp"
+        android:layout_height="130dp"
+        android:layout_marginRight="92dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:focusable="true"
+        android:visibility="gone"
+        android:background="@drawable/poster_arrow_down_selector"/>
+</tv.ismar.view.LocationRelativeLayout>

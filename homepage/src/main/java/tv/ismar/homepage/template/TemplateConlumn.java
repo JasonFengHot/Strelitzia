@@ -50,7 +50,10 @@ public class TemplateConlumn extends Template implements BaseControl.ControlCall
         if(flags == GuideControl.FETCH_BANNERS_LIST_FLAG){
             if(mAdapter == null){
                 HomeEntity homeEntity = (HomeEntity) args[0];
-                mRecyclerView.setAdapter(new ConlumnAdapter(mContext, homeEntity));
+                mAdapter = new ConlumnAdapter(mContext, homeEntity);
+                mRecyclerView.setAdapter(mAdapter);
+            }else {
+                mAdapter.notifyDataSetChanged();
             }
         }
     }
