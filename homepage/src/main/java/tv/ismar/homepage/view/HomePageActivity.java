@@ -1,6 +1,5 @@
 package tv.ismar.homepage.view;
 
-import android.app.Service;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
@@ -61,15 +60,10 @@ import java.util.regex.Pattern;
 
 import cn.ismartv.truetime.TrueTime;
 import okhttp3.ResponseBody;
-import retrofit2.http.Field;
-import retrofit2.http.GET;
-import retrofit2.http.POST;
-import retrofit2.http.Query;
 import rx.Observable;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import tv.ismar.account.ActiveService;
 import tv.ismar.account.IsmartvActivator;
@@ -89,7 +83,6 @@ import tv.ismar.app.core.client.MessageQueue;
 import tv.ismar.app.core.preferences.AccountSharedPrefs;
 import tv.ismar.app.db.AdvertiseTable;
 import tv.ismar.app.entity.ChannelEntity;
-import tv.ismar.app.entity.banner.AccountsItemSubscribeExistsEntity;
 import tv.ismar.app.entity.banner.BannerEntity;
 import tv.ismar.app.network.SkyService;
 import tv.ismar.app.player.CallaPlay;
@@ -491,6 +484,33 @@ public class HomePageActivity extends BaseActivity implements LinearLayoutManage
         subscribeBanner.setLayoutManager(subscribeLayoutManager);
 //        subscribeBanner.setSelectedItemAtCentered(false);
         subscribeBanner.setSelectedItemOffset(100, 100);
+//        subscribeBanner.setOnKeyListener(new View.OnKeyListener() {
+//            @Override
+//            public boolean onKey(View v, int keyCode, KeyEvent event) {
+//                Log.d(TAG, "setOnKeyListener");
+//                return false;
+//            }
+//        });
+
+//        Observable.create(new KeyEventObservable(subscribeBanner))
+//                .throttleLast(1, TimeUnit.SECONDS)
+//                .subscribeOn(AndroidSchedulers.mainThread())
+//                .subscribe(new Observer<KeyEvent>() {
+//                    @Override
+//                    public void onCompleted() {
+//
+//                    }
+//
+//                    @Override
+//                    public void onError(Throwable e) {
+//
+//                    }
+//
+//                    @Override
+//                    public void onNext(KeyEvent keyEvent) {
+//
+//                    }
+//                });
 
         subscribeLayoutManager.setFocusSearchFailedListener(new LinearLayoutManagerTV.FocusSearchFailedListener() {
             @Override
