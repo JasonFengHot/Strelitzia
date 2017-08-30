@@ -75,11 +75,11 @@ public class ConlumnAdapter extends RecyclerView.Adapter<ConlumnAdapter.ConlumnV
         @Override
         public void onFocusChange(View v, boolean hasFocus) {
             if (hasFocus) {
-                scaleToLarge(v.findViewById(R.id.ismartv_linear_layout));
+                scaleToLarge(v.findViewById(R.id.conlumn_ismartv_linear_layout));
                 v.findViewById(R.id.title).setSelected(true);
                 v.findViewById(R.id.introduction).setSelected(true);
             } else {
-                scaleToNormal(v.findViewById(R.id.ismartv_linear_layout));
+                scaleToNormal(v.findViewById(R.id.conlumn_ismartv_linear_layout));
                 v.findViewById(R.id.title).setSelected(false);
                 v.findViewById(R.id.introduction).setSelected(false);
             }

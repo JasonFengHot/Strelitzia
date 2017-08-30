@@ -91,11 +91,11 @@ public class HomeAdapter extends BaseAdapter{
         bundle.putString("banner", mData[position].banner);
         String template = mData[position].template;
         if(template.equals("template_guide")){//导航
-//            viewHolder.mTemplateGuide.setVisibility(View.VISIBLE);
-//            new TemplateGuide(mContext).setView(viewHolder.mTemplateGuide, bundle);
-            //TODO 测试代码
-            viewHolder.mTemplateConlumn.setVisibility(View.VISIBLE);
-            new TemplateConlumn(mContext).setView(viewHolder.mTemplateConlumn, bundle);
+            viewHolder.mTemplateGuide.setVisibility(View.VISIBLE);
+            new TemplateGuide(mContext).setView(viewHolder.mTemplateGuide, bundle);
+            //TODO 测试栏目代码
+//            viewHolder.mTemplateConlumn.setVisibility(View.VISIBLE);
+//            new TemplateConlumn(mContext).setView(viewHolder.mTemplateConlumn, bundle);
         } else if(template.equals("template_order")){//订阅模版
             viewHolder.mTemplateOrder.setVisibility(View.VISIBLE);
             new TemplateOrder(mContext).setView(viewHolder.mTemplateOrder, bundle);

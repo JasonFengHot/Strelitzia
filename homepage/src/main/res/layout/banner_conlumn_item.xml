@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <tv.ismar.homepage.banner.IsmartvLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/ismartv_linear_layout"
+    android:id="@+id/conlumn_ismartv_linear_layout"
     android:layout_width="@dimen/guide_column_item_width"
     android:layout_height="@dimen/guide_column_item_height"
     android:background="#00ff00"
