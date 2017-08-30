@@ -48,6 +48,7 @@ public class RecyclerViewTV extends RecyclerView implements PrvInterface {
     private OnItemClickListener mOnItemClickListener; // item 单击事件.
     private ItemListener mItemListener;
     private int offset = -1;
+    private boolean isDispatch = true;
 
     private RecyclerViewTV.OnChildViewHolderSelectedListener mChildViewHolderSelectedListener;
 
@@ -441,18 +442,35 @@ public class RecyclerViewTV extends RecyclerView implements PrvInterface {
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
         int action = event.getAction();
-        int keyCode = event.getKeyCode();
         if (action == KeyEvent.ACTION_UP) {
-            if (!isHorizontalLayoutManger() && keyCode == KeyEvent.KEYCODE_DPAD_DOWN) {
-                // 垂直布局向下按键.
-                exeuteKeyEvent();
-            } else if (isHorizontalLayoutManger() && keyCode == KeyEvent.KEYCODE_DPAD_RIGHT) {
-                // 横向布局向右按键.
-                exeuteKeyEvent();
-            }
+            isDispatch = true;
         }
-        return super.dispatchKeyEvent(event);
+
+        if (isDispatch) {
+            isDispatch = false;
+            mKeyEventHandler.sendEmptyMessageDelayed(0, 100);
+            int keyCode = event.getKeyCode();
+            if (action == KeyEvent.ACTION_UP) {
+                if (!isHorizontalLayoutManger() && keyCode == KeyEvent.KEYCODE_DPAD_DOWN) {
+                    // 垂直布局向下按键.
+                    exeuteKeyEvent();
+                } else if (isHorizontalLayoutManger() && keyCode == KeyEvent.KEYCODE_DPAD_RIGHT) {
+                    // 横向布局向右按键.
+                    exeuteKeyEvent();
+                }
+            }
+            return super.dispatchKeyEvent(event);
+        } else {
+            return true;
+        }
     }
+
+    Handler mKeyEventHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            isDispatch = true;
+        }
+    };
 
     private boolean exeuteKeyEvent() {
         int totalItemCount = getLayoutManager().getItemCount();
