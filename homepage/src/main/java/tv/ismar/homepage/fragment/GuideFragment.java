@@ -2,6 +2,7 @@ package tv.ismar.homepage.fragment;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,7 +22,7 @@ import tv.ismar.homepage.widget.scroll.listener.OnUseViewChange;
  *     3.必要的注释要有奥，如flag标记，说清楚不同的值代表啥意思，其他的自己斟酌
  *     4.用工程化思维去写代码
  */
-public class GuideFragment extends ChannelBaseFragment implements BaseControl.ControlCallBack, OnUseViewChange {
+public class GuideFragment extends ChannelBaseFragment implements BaseControl.ControlCallBack {
 
     private GuideControl mControl = null;//业务类引用
 
@@ -62,20 +63,15 @@ public class GuideFragment extends ChannelBaseFragment implements BaseControl.Co
     public void callBack(int flag, Object... args) {
         //这里通过flag严格区分不同的业务流程，避免业务之间的耦合
         if(flag == GuideControl.FETCH_HOME_BANNERS_FLAG){//处理获取首页banner列表
-            GuideBanner[] banners = (GuideBanner[]) args[0];
+            GuideBanner[] banners = (GuideBanner[]) args;
             if(mAdapter == null){
-                mAdapter = new HomeAdapter(mContext, banners);
+                mAdapter = new HomeAdapter(getContext(), banners);
+                mListView.setAdapter(mAdapter);
             }else{
                 mAdapter.notifyDataSetChanged();
             }
             return;
         }
-    }
-
-    /*VerticalBanner当前使用的视图*/
-    @Override
-    public void useViewChange(View view, int position) {
-
     }
 }
 

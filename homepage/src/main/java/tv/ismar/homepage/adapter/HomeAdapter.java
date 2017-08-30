@@ -2,6 +2,7 @@ package tv.ismar.homepage.adapter;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -51,6 +52,7 @@ public class HomeAdapter extends BaseAdapter{
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
+        Log.i("getView", "position:"+position);
         ViewHolder viewHolder = null;
         if(convertView == null){
             viewHolder = new ViewHolder();
@@ -86,10 +88,14 @@ public class HomeAdapter extends BaseAdapter{
         Bundle bundle = new Bundle();
         bundle.putString("title", mData[position].title);
         bundle.putString("url", mData[position].banner_url);
+        bundle.putString("banner", mData[position].banner);
         String template = mData[position].template;
         if(template.equals("template_guide")){//导航
             viewHolder.mTemplateGuide.setVisibility(View.VISIBLE);
             new TemplateGuide(mContext).setView(viewHolder.mTemplateGuide, bundle);
+            //TODO 测试栏目代码
+//            viewHolder.mTemplateConlumn.setVisibility(View.VISIBLE);
+//            new TemplateConlumn(mContext).setView(viewHolder.mTemplateConlumn, bundle);
         } else if(template.equals("template_order")){//订阅模版
             viewHolder.mTemplateOrder.setVisibility(View.VISIBLE);
             new TemplateOrder(mContext).setView(viewHolder.mTemplateOrder, bundle);
@@ -98,22 +104,22 @@ public class HomeAdapter extends BaseAdapter{
             new TemplateMovie(mContext).setView(viewHolder.mTemplateMovie, bundle);
         } else if(template.equals("template_teleplay")){//电视剧模版
             viewHolder.mTemplateTvPlay.setVisibility(View.VISIBLE);
-            new TemplateTvPlay(mContext).setView(viewHolder.mTemplateMovie, bundle);
+            new TemplateTvPlay(mContext).setView(viewHolder.mTemplateTvPlay, bundle);
         } else if(template.equals("template_519")){//519横图模版
             viewHolder.mTemplate519.setVisibility(View.VISIBLE);
-            new Template519(mContext).setView(viewHolder.mTemplateMovie, bundle);
+            new Template519(mContext).setView(viewHolder.mTemplate519, bundle);
         }else if(template.equals("template_conlumn")){//栏目模版
-            viewHolder.mTemplateConlumn.setVisibility(View.VISIBLE);//栏目
-            new TemplateConlumn(mContext).setView(viewHolder.mTemplateMovie, bundle);
+            viewHolder.mTemplateConlumn.setVisibility(View.VISIBLE);
+            new TemplateConlumn(mContext).setView(viewHolder.mTemplateConlumn, bundle);
         }else if(template.equals("template_big_small_ld")){//大横小竖模版
             viewHolder.mTemplateBigSmallLd.setVisibility(View.VISIBLE);
-            new TemplateBigSmallLd(mContext).setView(viewHolder.mTemplateMovie, bundle);
+            new TemplateBigSmallLd(mContext).setView(viewHolder.mTemplateBigSmallLd, bundle);
         }else if(template.equals("template_double_md")){//竖版双行模版
             viewHolder.mTemplateDoubleMd.setVisibility(View.VISIBLE);
-            new TemplateDoubleMd(mContext).setView(viewHolder.mTemplateMovie, bundle);
+            new TemplateDoubleMd(mContext).setView(viewHolder.mTemplateDoubleMd, bundle);
         }else if(template.equals("template_double_ld")){//横版双行模版
             viewHolder.mTemplateDoubleLd.setVisibility(View.VISIBLE);
-            new TemplateDoubleLd(mContext).setView(viewHolder.mTemplateMovie, bundle);
+            new TemplateDoubleLd(mContext).setView(viewHolder.mTemplateDoubleLd, bundle);
         }
 
         return convertView;

@@ -648,7 +648,7 @@
 <dimen name="guide_title_history_margin_person_center">166.67dp</dimen>
 
 <!--栏目尺寸-->
-<dimen name="guide_column_item_width">284.44dp</dimen>
+<dimen name="column_item_width">284.44dp</dimen>
 <dimen name="guide_column_item_height">106.67dp</dimen>
 <dimen name="guide_column_item_padding">29.63dp</dimen>
 <dimen name="guide_column_item_margin_left">74.07dp</dimen>
