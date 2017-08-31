@@ -11,6 +11,8 @@ import tv.ismar.app.entity.banner.HomeEntity;
 import tv.ismar.homepage.R;
 import tv.ismar.homepage.adapter.DoubleMdAdapter;
 import tv.ismar.homepage.adapter.TvPlayAdapter;
+import tv.ismar.homepage.control.DoubleMdControl;
+import tv.ismar.homepage.control.FetchDataControl;
 import tv.ismar.homepage.control.GuideControl;
 
 /**
@@ -22,12 +24,12 @@ import tv.ismar.homepage.control.GuideControl;
 public class TemplateDoubleMd extends Template implements BaseControl.ControlCallBack{
     private ImageView mVerticalImg;
     private DoubleMdAdapter mAdapter;
-    private GuideControl mControl;
+    private DoubleMdControl mControl;
     private GridView mGridView;
 
     public TemplateDoubleMd(Context context) {
         super(context);
-        mControl = new GuideControl(mContext, this);
+        mControl = new DoubleMdControl(mContext, this);
     }
 
     @Override
@@ -37,12 +39,12 @@ public class TemplateDoubleMd extends Template implements BaseControl.ControlCal
 
     @Override
     public void initData(Bundle bundle) {
-        mControl.fetchBannerList();
+        mControl.getBanners(bundle.getString("banner"), 1);
     }
 
     @Override
     public void callBack(int flags, Object... args) {
-        if(flags == GuideControl.FETCH_BANNERS_LIST_FLAG){//获取单个banner业务
+        if(flags == FetchDataControl.FETCH_BANNERS_LIST_FLAG){//获取单个banner业务
             if(mAdapter == null){
                 HomeEntity homeEntity = (HomeEntity) args[0];
                 if(homeEntity != null){
@@ -52,7 +54,7 @@ public class TemplateDoubleMd extends Template implements BaseControl.ControlCal
             }else {
                 mAdapter.notifyDataSetChanged();
             }
-        } else if(flags == GuideControl.FETCH_M_BANNERS_LIST_FLAG){//获取多个banner业务
+        } else if(flags == FetchDataControl.FETCH_M_BANNERS_LIST_FLAG){//获取多个banner业务
 
         }
     }

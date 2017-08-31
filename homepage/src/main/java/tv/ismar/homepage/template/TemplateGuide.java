@@ -8,11 +8,17 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import tv.ismar.app.BaseControl;
+import tv.ismar.app.entity.banner.BannerCarousels;
+import tv.ismar.app.entity.banner.BannerPoster;
 import tv.ismar.app.entity.banner.HomeEntity;
 import tv.ismar.homepage.R;
 import tv.ismar.homepage.adapter.ConlumnAdapter;
 import tv.ismar.homepage.adapter.GuideAdapter;
+import tv.ismar.homepage.control.FetchDataControl;
 import tv.ismar.homepage.control.GuideControl;
 import tv.ismar.homepage.widget.DaisyVideoView;
 import tv.ismar.homepage.widget.HomeItemContainer;
@@ -59,23 +65,27 @@ public class TemplateGuide extends Template implements BaseControl.ControlCallBa
 
     @Override
     public void initData(Bundle bundle) {
-        mControl.fetchBannerList();
+        mControl.getBanners(bundle.getString("banner"), 1);
     }
 
     @Override
     public void callBack(int flags, Object... args) {
-        if(flags == GuideControl.FETCH_BANNERS_LIST_FLAG){//获取单个banner业务
+        if(flags == FetchDataControl.FETCH_BANNERS_LIST_FLAG){//获取单个banner业务
             if(mAdapter == null){
                 HomeEntity homeEntity = (HomeEntity) args[0];
                 if(homeEntity != null){
-                    mAdapter = new GuideAdapter(mContext, homeEntity.poster);
-                    mRecycleView.setAdapter(mAdapter);
+                    if(mAdapter == null){
+                        mAdapter = new GuideAdapter(mContext, homeEntity.poster);
+                        mRecycleView.setAdapter(mAdapter);
+                    }else {
+                        mAdapter.notifyDataSetChanged();
+                    }
                 }
-            }else {
-                mAdapter.notifyDataSetChanged();
             }
-        } else if(flags == GuideControl.FETCH_M_BANNERS_LIST_FLAG){//获取多个banner业务
+        } else if(flags == FetchDataControl.FETCH_M_BANNERS_LIST_FLAG){//获取多个banner业务
 
         }
     }
+
+
 }
