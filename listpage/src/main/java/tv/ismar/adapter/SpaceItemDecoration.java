@@ -17,6 +17,7 @@ public class SpaceItemDecoration extends RecyclerView.ItemDecoration {
 
     private int spaceH;
     private int spaceV;
+    private boolean isVertical;
     private ArrayList<Integer> specialPos;
 
     public int getSpaceH() {
@@ -27,17 +28,22 @@ public class SpaceItemDecoration extends RecyclerView.ItemDecoration {
         return spaceV;
     }
 
-    public SpaceItemDecoration(int spaceH, int spaceV) {
+    public SpaceItemDecoration(int spaceH, int spaceV,boolean isVertical) {
         this.spaceH= spaceH;
         this.spaceV=spaceV;
+        this.isVertical=isVertical;
     }
 
     @Override
     public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
 
         if(view instanceof TextView){
-            outRect.bottom=30;
-        }else{
+            outRect.bottom=spaceV/2;
+        }else if(isVertical&&(specialPos.contains(parent.getChildLayoutPosition(view)+1)||specialPos.contains(parent.getChildLayoutPosition(view)+2)||specialPos.contains(parent.getChildLayoutPosition(view)+3)||specialPos.contains(parent.getChildLayoutPosition(view)+4)||specialPos.contains(parent.getChildLayoutPosition(view)+5))) {
+            outRect.bottom=spaceV/2;
+        }else if(!isVertical&&(specialPos.contains(parent.getChildLayoutPosition(view)+1)||specialPos.contains(parent.getChildLayoutPosition(view)+2)||specialPos.contains(parent.getChildLayoutPosition(view)+3))){
+            outRect.bottom=spaceV/2;
+        }else {
             outRect.bottom=spaceV;
         }
         outRect.left = spaceH;

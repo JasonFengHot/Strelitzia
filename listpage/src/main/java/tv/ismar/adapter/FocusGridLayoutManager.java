@@ -1,16 +1,27 @@
 package tv.ismar.adapter;
 
 import android.content.Context;
+import android.support.v4.widget.TextViewCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.View;
+import android.widget.TextView;
+
+import com.daimajia.androidanimations.library.Techniques;
+import com.daimajia.androidanimations.library.YoYo;
+
+import java.util.ArrayList;
 
 /**
  * Created by admin on 2017/6/20.
  */
 
 public class FocusGridLayoutManager extends GridLayoutManager {
+
+    private ArrayList<Integer> specialPos;
+    private View leftFocusView;
+
     public FocusGridLayoutManager(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
     }
@@ -61,7 +72,13 @@ public class FocusGridLayoutManager extends GridLayoutManager {
     public View onInterceptFocusSearch(View focused, int direction) {
         if(direction==View.FOCUS_RIGHT){
             int index=getPosition(focused);
+            if(specialPos!=null&&specialPos.contains(index+1)){
+                int nextPos = getNextViewPos(getPosition(focused), direction);
+                View nextView=findViewByPosition(nextPos+1);
+                return nextView;
+            }
             if(index==getItemCount()-1){
+                YoYo.with(Techniques.HorizontalShake).duration(1000).playOn(focused);
                 return focused;
             }
         }
@@ -73,9 +90,8 @@ public class FocusGridLayoutManager extends GridLayoutManager {
 
         // Need to be called in order to layout new row/column
         View nextFocus = super.onFocusSearchFailed(focused, focusDirection, recycler, state);
-
         if (nextFocus == null&&focusDirection!=View.FOCUS_RIGHT) {
-            return null;
+            return leftFocusView;
         }
         /**
          * 获取当前焦点的位置
@@ -98,7 +114,7 @@ public class FocusGridLayoutManager extends GridLayoutManager {
         int offset = calcOffsetToNextView(direction);
 
         if (hitBorder(fromPos, offset)) {
-            return fromPos;
+            return fromPos+offset+1;
         }
 
         return fromPos + offset;
@@ -173,5 +189,13 @@ public class FocusGridLayoutManager extends GridLayoutManager {
     @Override
     public boolean canScrollVertically() {
         return canScroll;
+    }
+
+    public void setSpecialPos(ArrayList<Integer> specialPos) {
+        this.specialPos = specialPos;
+    }
+
+    public void setLeftFocusView(View leftFocusView) {
+        this.leftFocusView = leftFocusView;
     }
 }
