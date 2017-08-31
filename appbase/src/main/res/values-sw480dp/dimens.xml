@@ -647,6 +647,29 @@
 <dimen name="guide_title_person_center_margin_time">36.89dp</dimen>
 <dimen name="guide_title_history_margin_person_center">100.00dp</dimen>
 
+<!--导视尺寸-->
+<dimen name="guide_switch_container_margin_left">44.44dp</dimen>
+<dimen name="guide_switch_container_width">527.11dp</dimen>
+<dimen name="guide_switch_container_height">221.33dp</dimen>
+<dimen name="guide_video_title_width">404.89dp</dimen>
+<dimen name="guide_video_title_height">19.11dp</dimen>
+<dimen name="guide_video_title_size">17.33dp</dimen>
+<dimen name="guide_swithc_container_icon_size">14.22dp</dimen>
+<dimen name="guide_swithc_container_icon_margin_left">7.56dp</dimen>
+<dimen name="guide_swithc_container_icon_margin_right">9.78dp</dimen>
+<dimen name="guide_swithc_container_icon_padding">8.44dp</dimen>
+<dimen name="guide_swithc_container_icon_margin_top">3.11dp</dimen>
+<dimen name="guide_swithc_container_icon_margin_bottom">3.56dp</dimen>
+<dimen name="guide_recycle_margin_left">26.67dp</dimen>
+<dimen name="guide_recycle_item_padding">26.67dp</dimen>
+<dimen name="guide_recycle_item_width">221.33dp</dimen>
+<dimen name="guide_recycle_item_height">157.78dp</dimen>
+<dimen name="guide_recycle_item_title_height">19.11dp</dimen>
+<dimen name="guide_recycle_item_lt_icon_size">48.44dp</dimen>
+<dimen name="guide_recycle_item_rb_icon_width">27.56dp</dimen>
+<dimen name="guide_recycle_item_rb_icon_height">19.11dp</dimen>
+<dimen name="guide_recycle_item_rb_margin_bottom">3.56dp</dimen>
+
 <!--栏目尺寸-->
 <dimen name="column_item_width">170.67dp</dimen>
 <dimen name="guide_column_item_height">64.00dp</dimen>

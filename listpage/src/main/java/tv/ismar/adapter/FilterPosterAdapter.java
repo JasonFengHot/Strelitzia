@@ -91,7 +91,7 @@ public class FilterPosterAdapter extends RecyclerView.Adapter<FilterPosterAdapte
             textView.setTextSize(mContext.getResources().getDimensionPixelSize(R.dimen.filter_layout_current_section_title_ts));
             textView.setWidth(mContext.getResources().getDimensionPixelOffset(R.dimen.list_section_title_w));
             textView.setHeight(mContext.getResources().getDimensionPixelOffset(R.dimen.list_section_title_h));
-            textView.setPadding(mContext.getResources().getDimensionPixelOffset(R.dimen.list_section_title_p),0,0,0);
+            textView.setPadding(mContext.getResources().getDimensionPixelOffset(R.dimen.list_section_title_p),mContext.getResources().getDimensionPixelOffset(R.dimen.list_section_title_pt),0,0);
             textView.setGravity(Gravity.CENTER_VERTICAL);
             filterPosterHolder=new FilterPosterHolder(textView);
         }
