@@ -19,14 +19,12 @@ import tv.ismar.homepage.control.GuideControl;
  */
 
 public class TemplateTvPlay extends Template implements BaseControl.ControlCallBack{
-    private Context mContext;
     private RecyclerView mRecycleView;
     private TvPlayAdapter mAdapter;
     private GuideControl mControl;
 
     public TemplateTvPlay(Context context) {
         super(context);
-        mContext = context;
         mControl = new GuideControl(mContext, this);
     }
 

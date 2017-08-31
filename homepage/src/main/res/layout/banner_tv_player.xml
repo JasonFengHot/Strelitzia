@@ -10,6 +10,6 @@
         android:layout_width="match_parent"
         android:layout_marginLeft="@dimen/tv_player_recycleview_margin_left"
         android:focusable="false"
-        android:layout_height="@dimen/guide_column_item_height" />
+        android:layout_height="@dimen/column_item_height" />
 
 </LinearLayout>

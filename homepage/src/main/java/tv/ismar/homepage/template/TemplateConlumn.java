@@ -25,7 +25,6 @@ import tv.ismar.homepage.control.GuideControl;
  */
 
 public class TemplateConlumn extends Template implements BaseControl.ControlCallBack {
-    private TextView mTitle;
     private RecyclerViewTV mRecyclerView;
     private ConlumnAdapter mAdapter;
     private GuideControl mControl;
@@ -37,7 +36,6 @@ public class TemplateConlumn extends Template implements BaseControl.ControlCall
 
     @Override
     public void getView(View view) {
-        mTitle = (TextView) view.findViewById(R.id.conlumn_title);
         mRecyclerView = (RecyclerViewTV) view.findViewById(R.id.conlumn_recyclerview);
         mRecyclerView.addItemDecoration(new BannerSubscribeAdapter.SpacesItemDecoration(20));
         LinearLayoutManagerTV subscribeLayoutManager = new LinearLayoutManagerTV(mContext, LinearLayoutManager.HORIZONTAL, false);
@@ -49,7 +47,6 @@ public class TemplateConlumn extends Template implements BaseControl.ControlCall
 
     @Override
     public void initData(Bundle bundle) {
-        mTitle.setText(bundle.getString("title"));
         mControl.fetchBanners(bundle.getString("banner"), 1);
     }
 

@@ -684,8 +684,8 @@
 
     <!--栏目尺寸-->
     <dimen name="column_item_width">384dp</dimen>
-    <dimen name="guide_column_item_height">144dp</dimen>
-    <dimen name="guide_column_item_padding">40dp</dimen>
-    <dimen name="guide_column_item_margin_left">100dp</dimen>
+    <dimen name="column_item_height">144dp</dimen>
+    <dimen name="column_item_padding">40dp</dimen>
+    <dimen name="column_item_margin_left">100dp</dimen>
     <!--首页 end-->
 </resources>

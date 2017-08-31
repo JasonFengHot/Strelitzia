@@ -670,10 +670,22 @@
 <dimen name="guide_recycle_item_rb_icon_height">19.11dp</dimen>
 <dimen name="guide_recycle_item_rb_margin_bottom">3.56dp</dimen>
 
+<!--电视剧尺�?-->
+<dimen name="tv_player_recycleview_margin_left">44.44dp</dimen>
+<dimen name="tv_play_recycleview_item_padding">17.78dp</dimen>
+<dimen name="tv_play_poster_height">96.00dp</dimen>
+<dimen name="tv_play_poster_width">170.67dp</dimen>
+<dimen name="tv_play_poster_title_size">17.33dp</dimen>
+<dimen name="tv_play_poster_lt_size">48.44dp</dimen>
+<dimen name="tv_play_poster_rb_width">27.56dp</dimen>
+<dimen name="tv_play_poster_rb_height">19.11dp</dimen>
+<dimen name="tv_play_poster_title_height">20.89dp</dimen>
+<dimen name="tv_play_poster_rb_margin_bottom">3.56dp</dimen>
+
 <!--栏目尺寸-->
 <dimen name="column_item_width">170.67dp</dimen>
-<dimen name="guide_column_item_height">64.00dp</dimen>
-<dimen name="guide_column_item_padding">17.78dp</dimen>
-<dimen name="guide_column_item_margin_left">44.44dp</dimen>
+<dimen name="column_item_height">64.00dp</dimen>
+<dimen name="column_item_padding">17.78dp</dimen>
+<dimen name="column_item_margin_left">44.44dp</dimen>
 <!--首页 end-->
 </resources>

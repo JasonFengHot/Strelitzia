@@ -46,14 +46,14 @@ public class TemplateGuide extends Template implements BaseControl.ControlCallBa
     @Override
     public void getView(View view) {
         mGuideContainer = (HomeItemContainer) view.findViewById(R.id.guide_container);
-        mVideView = (DaisyVideoView) view.findViewById(R.id.guide_container);
-        mLoadingIg = (ImageView) view.findViewById(R.id.guide_container);
-        mVideTitleTv = (TextView) view.findViewById(R.id.guide_container);
-        mFirstIcon = (TextView) view.findViewById(R.id.guide_container);
-        mSecondIcon = (TextView) view.findViewById(R.id.guide_container);
-        mThirdIcon = (TextView) view.findViewById(R.id.guide_container);
-        mFourIcon = (TextView) view.findViewById(R.id.guide_container);
-        mFiveIcon = (TextView) view.findViewById(R.id.guide_container);
+        mVideView = (DaisyVideoView) view.findViewById(R.id.guide_daisy_video_view);
+        mLoadingIg = (ImageView) view.findViewById(R.id.guide_video_loading_image);
+        mVideTitleTv = (TextView) view.findViewById(R.id.guide_video_title);
+        mFirstIcon = (TextView) view.findViewById(R.id.first_video_icon);
+        mSecondIcon = (TextView) view.findViewById(R.id.second_video_icon);
+        mThirdIcon = (TextView) view.findViewById(R.id.third_video_icon);
+        mFourIcon = (TextView) view.findViewById(R.id.four_video_icon);
+        mFiveIcon = (TextView) view.findViewById(R.id.five_video_icon);
         mRecycleView = (RecyclerView) view.findViewById(R.id.guide_recyclerview);
     }
 
