@@ -3,16 +3,13 @@ package tv.ismar.homepage;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.FragmentActivity;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.ListView;
 
 import tv.ismar.app.BaseControl;
 import tv.ismar.app.entity.GuideBanner;
 import tv.ismar.homepage.adapter.HomeAdapter;
-import tv.ismar.homepage.control.GuideControl;
-import tv.ismar.homepage.fragment.GuideFragment;
+import tv.ismar.homepage.control.FetchDataControl;
 
 /**
  * @AUTHOR: xi
@@ -22,7 +19,7 @@ import tv.ismar.homepage.fragment.GuideFragment;
 
 public class TestActivity extends Activity implements BaseControl.ControlCallBack{
 
-    private final GuideControl mControl = new GuideControl(this, this);//业务类引用
+    private final FetchDataControl mControl = new FetchDataControl(this, this);//业务类引用
 
     private ListView mListView;
     private HomeAdapter mAdapter;
@@ -53,7 +50,7 @@ public class TestActivity extends Activity implements BaseControl.ControlCallBac
     @Override
     public void callBack(int flag, Object... args) {
         //这里通过flag严格区分不同的业务流程，避免业务之间的耦合
-        if(flag == GuideControl.FETCH_HOME_BANNERS_FLAG){//处理获取首页banner列表
+        if(flag == FetchDataControl.FETCH_HOME_BANNERS_FLAG){//处理获取首页banner列表
             GuideBanner[] banners = (GuideBanner[]) args;
             if(mAdapter == null){
                 mAdapter = new HomeAdapter(this, banners);

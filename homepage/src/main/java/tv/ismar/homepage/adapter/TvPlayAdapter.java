@@ -21,27 +21,28 @@ import static android.view.View.SCALE_Y;
 
 /**
  * @AUTHOR: xi
- * @DATE: 2017/8/30
- * @DESC: 导视recycleview适配器
+ * @DATE: 2017/8/31
+ * @DESC: 电视剧适配器
  */
 
-public class GuideAdapter extends RecyclerView.Adapter<GuideAdapter.GuideViewHolder>{
+public class TvPlayAdapter extends RecyclerView.Adapter<TvPlayAdapter.TvPlayerViewHolder>{
+
     private Context mContext;
     private List<BannerPoster> mData;
 
-    public GuideAdapter(Context context, List<BannerPoster> data){
+    public TvPlayAdapter(Context context, List<BannerPoster> data){
         this.mContext = context;
         this.mData = data;
     }
 
     @Override
-    public GuideViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.banner_guide_item,parent,false);
-        return new GuideViewHolder(view);
+    public TvPlayAdapter.TvPlayerViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(mContext).inflate(R.layout.banner_tv_player_item,parent,false);
+        return new TvPlayerViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(GuideViewHolder holder, int position) {
+    public void onBindViewHolder(TvPlayerViewHolder holder, int position) {
         BannerPoster poster = mData.get(position);
         Picasso.with(mContext).load(poster.poster_url).into(holder.mPosterIg);
         Picasso.with(mContext).load(poster.poster_url).into(holder.mLtIconTv);
@@ -51,21 +52,21 @@ public class GuideAdapter extends RecyclerView.Adapter<GuideAdapter.GuideViewHol
 
     @Override
     public int getItemCount() {
-        return (mData!=null) ? mData.size():0;
+        return (mData!=null)? mData.size():0;
     }
 
-    public static class GuideViewHolder extends RecyclerView.ViewHolder implements View.OnFocusChangeListener{
+    public static class TvPlayerViewHolder extends RecyclerView.ViewHolder implements View.OnFocusChangeListener{
         public ImageView mPosterIg;//海报
         public ImageView mLtIconTv;//左上icon
         public ImageView mRbIconTv;//右下icon
         public TextView mTitleTv;//标题
 
-        public GuideViewHolder(View itemView) {
+        public TvPlayerViewHolder(View itemView) {
             super(itemView);
-            mPosterIg = (ImageView) itemView.findViewById(R.id.guide_recycle_item_poster);
-            mLtIconTv = (ImageView) itemView.findViewById(R.id.guide_recycle_item_lt_icon);
-            mRbIconTv = (ImageView) itemView.findViewById(R.id.guide_recycle_item_rb_icon);
-            mTitleTv = (TextView) itemView.findViewById(R.id.guide_recycle_item_title);
+            mPosterIg = (ImageView) itemView.findViewById(R.id.tv_player_item_poster);
+            mLtIconTv = (ImageView) itemView.findViewById(R.id.tv_player_item_lt_icon);
+            mRbIconTv = (ImageView) itemView.findViewById(R.id.tv_player_item_rb_icon);
+            mTitleTv = (TextView) itemView.findViewById(R.id.tv_player_item_title);
         }
 
         private void scaleToLarge(View view) {
@@ -100,4 +101,5 @@ public class GuideAdapter extends RecyclerView.Adapter<GuideAdapter.GuideViewHol
             }
         }
     }
+
 }

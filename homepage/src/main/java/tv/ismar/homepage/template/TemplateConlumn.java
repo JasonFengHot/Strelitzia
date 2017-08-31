@@ -16,6 +16,8 @@ import tv.ismar.app.entity.banner.HomeEntity;
 import tv.ismar.homepage.R;
 import tv.ismar.homepage.adapter.ConlumnAdapter;
 import tv.ismar.homepage.banner.adapter.BannerSubscribeAdapter;
+import tv.ismar.homepage.control.ConlumnControl;
+import tv.ismar.homepage.control.FetchDataControl;
 import tv.ismar.homepage.control.GuideControl;
 
 /**
@@ -25,19 +27,17 @@ import tv.ismar.homepage.control.GuideControl;
  */
 
 public class TemplateConlumn extends Template implements BaseControl.ControlCallBack {
-    private TextView mTitle;
     private RecyclerViewTV mRecyclerView;
     private ConlumnAdapter mAdapter;
-    private GuideControl mControl;
+    private ConlumnControl mControl;
 
     public TemplateConlumn(Context context) {
         super(context);
-        mControl = new GuideControl(mContext, this);
+        mControl = new ConlumnControl(mContext, this);
     }
 
     @Override
     public void getView(View view) {
-        mTitle = (TextView) view.findViewById(R.id.conlumn_title);
         mRecyclerView = (RecyclerViewTV) view.findViewById(R.id.conlumn_recyclerview);
         mRecyclerView.addItemDecoration(new BannerSubscribeAdapter.SpacesItemDecoration(20));
         LinearLayoutManagerTV subscribeLayoutManager = new LinearLayoutManagerTV(mContext, LinearLayoutManager.HORIZONTAL, false);
@@ -49,13 +49,12 @@ public class TemplateConlumn extends Template implements BaseControl.ControlCall
 
     @Override
     public void initData(Bundle bundle) {
-        mTitle.setText(bundle.getString("title"));
-        mControl.fetchBanners(bundle.getString("banner"), 1);
+        mControl.getBanners(bundle.getString("banner"), 1);
     }
 
     @Override
     public void callBack(int flags, Object... args) {
-        if(flags == GuideControl.FETCH_BANNERS_LIST_FLAG){//获取单个banner业务
+        if(flags == FetchDataControl.FETCH_BANNERS_LIST_FLAG){//获取单个banner业务
             if(mAdapter == null){
                 HomeEntity homeEntity = (HomeEntity) args[0];
                 mAdapter = new ConlumnAdapter(mContext, homeEntity);
@@ -63,7 +62,7 @@ public class TemplateConlumn extends Template implements BaseControl.ControlCall
             }else {
                 mAdapter.notifyDataSetChanged();
             }
-        } else if(flags == GuideControl.FETCH_M_BANNERS_LIST_FLAG){//获取多个banner业务
+        } else if(flags == FetchDataControl.FETCH_M_BANNERS_LIST_FLAG){//获取多个banner业务
 
         }
     }

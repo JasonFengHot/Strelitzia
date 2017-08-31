@@ -29,6 +29,9 @@ public abstract class Template {
      */
     public abstract void getView(View view);
 
-
+    /**
+     * 处理数据
+     * @param bundle
+     */
     public abstract void initData(Bundle bundle);
 }

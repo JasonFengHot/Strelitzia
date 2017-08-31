@@ -6,9 +6,9 @@
     android:layout_height="match_parent">
 
     <com.open.androidtvwidget.leanback.recycle.RecyclerViewTV
-        android:id="@+id/conlumn_recyclerview"
+        android:id="@+id/tv_player_recyclerview"
         android:layout_width="match_parent"
-        android:layout_marginLeft="@dimen/column_item_margin_left"
+        android:layout_marginLeft="@dimen/tv_player_recycleview_margin_left"
         android:focusable="false"
         android:layout_height="@dimen/column_item_height" />
 

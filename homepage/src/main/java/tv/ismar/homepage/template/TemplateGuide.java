@@ -8,11 +8,17 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import tv.ismar.app.BaseControl;
+import tv.ismar.app.entity.banner.BannerCarousels;
+import tv.ismar.app.entity.banner.BannerPoster;
 import tv.ismar.app.entity.banner.HomeEntity;
 import tv.ismar.homepage.R;
 import tv.ismar.homepage.adapter.ConlumnAdapter;
 import tv.ismar.homepage.adapter.GuideAdapter;
+import tv.ismar.homepage.control.FetchDataControl;
 import tv.ismar.homepage.control.GuideControl;
 import tv.ismar.homepage.widget.DaisyVideoView;
 import tv.ismar.homepage.widget.HomeItemContainer;
@@ -46,36 +52,40 @@ public class TemplateGuide extends Template implements BaseControl.ControlCallBa
     @Override
     public void getView(View view) {
         mGuideContainer = (HomeItemContainer) view.findViewById(R.id.guide_container);
-        mVideView = (DaisyVideoView) view.findViewById(R.id.guide_container);
-        mLoadingIg = (ImageView) view.findViewById(R.id.guide_container);
-        mVideTitleTv = (TextView) view.findViewById(R.id.guide_container);
-        mFirstIcon = (TextView) view.findViewById(R.id.guide_container);
-        mSecondIcon = (TextView) view.findViewById(R.id.guide_container);
-        mThirdIcon = (TextView) view.findViewById(R.id.guide_container);
-        mFourIcon = (TextView) view.findViewById(R.id.guide_container);
-        mFiveIcon = (TextView) view.findViewById(R.id.guide_container);
+        mVideView = (DaisyVideoView) view.findViewById(R.id.guide_daisy_video_view);
+        mLoadingIg = (ImageView) view.findViewById(R.id.guide_video_loading_image);
+        mVideTitleTv = (TextView) view.findViewById(R.id.guide_video_title);
+        mFirstIcon = (TextView) view.findViewById(R.id.first_video_icon);
+        mSecondIcon = (TextView) view.findViewById(R.id.second_video_icon);
+        mThirdIcon = (TextView) view.findViewById(R.id.third_video_icon);
+        mFourIcon = (TextView) view.findViewById(R.id.four_video_icon);
+        mFiveIcon = (TextView) view.findViewById(R.id.five_video_icon);
         mRecycleView = (RecyclerView) view.findViewById(R.id.guide_recyclerview);
     }
 
     @Override
     public void initData(Bundle bundle) {
-        mControl.fetchBannerList();
+        mControl.getBanners(bundle.getString("banner"), 1);
     }
 
     @Override
     public void callBack(int flags, Object... args) {
-        if(flags == GuideControl.FETCH_BANNERS_LIST_FLAG){//获取单个banner业务
+        if(flags == FetchDataControl.FETCH_BANNERS_LIST_FLAG){//获取单个banner业务
             if(mAdapter == null){
                 HomeEntity homeEntity = (HomeEntity) args[0];
                 if(homeEntity != null){
-                    mAdapter = new GuideAdapter(mContext, homeEntity.poster);
-                    mRecycleView.setAdapter(mAdapter);
+                    if(mAdapter == null){
+                        mAdapter = new GuideAdapter(mContext, homeEntity.poster);
+                        mRecycleView.setAdapter(mAdapter);
+                    }else {
+                        mAdapter.notifyDataSetChanged();
+                    }
                 }
-            }else {
-                mAdapter.notifyDataSetChanged();
             }
-        } else if(flags == GuideControl.FETCH_M_BANNERS_LIST_FLAG){//获取多个banner业务
+        } else if(flags == FetchDataControl.FETCH_M_BANNERS_LIST_FLAG){//获取多个banner业务
 
         }
     }
+
+
 }
