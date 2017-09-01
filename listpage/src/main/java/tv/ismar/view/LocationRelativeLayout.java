@@ -75,11 +75,19 @@ public class LocationRelativeLayout extends RelativeLayout {
     protected boolean dispatchHoverEvent(MotionEvent event) {
         if(event.getAction()==MotionEvent.ACTION_HOVER_ENTER||event.getAction()==MotionEvent.ACTION_HOVER_MOVE){
             if(event.getX()>xBoundary){
-                if(arrow_down_right!=null&&show_right_down){
-                    arrow_down_right.setVisibility(View.VISIBLE);
+                if(arrow_down_right!=null){
+                    if(show_right_down) {
+                        arrow_down_right.setVisibility(View.VISIBLE);
+                    }else{
+                        arrow_down_right.setVisibility(View.GONE);
+                    }
                 }
-                if(arrow_up_right!=null&&show_right_up){
-                    arrow_up_right.setVisibility(View.VISIBLE);
+                if(arrow_up_right!=null){
+                    if(show_right_up) {
+                        arrow_up_right.setVisibility(View.VISIBLE);
+                    }else{
+                        arrow_up_right.setVisibility(View.GONE);
+                    }
                 }
                 if(arrow_down_left!=null){
                     arrow_down_left.setVisibility(View.GONE);
@@ -94,11 +102,19 @@ public class LocationRelativeLayout extends RelativeLayout {
                 if(arrow_up_right!=null){
                     arrow_up_right.setVisibility(View.GONE);
                 }
-                if(arrow_down_left!=null&&show_left_down){
-                    arrow_down_left.setVisibility(View.VISIBLE);
+                if(arrow_down_left!=null){
+                    if(show_left_down) {
+                        arrow_down_left.setVisibility(View.VISIBLE);
+                    }else{
+                        arrow_down_left.setVisibility(View.GONE);
+                    }
                 }
-                if(arrow_up_left!=null&&show_left_up){
-                    arrow_up_left.setVisibility(View.VISIBLE);
+                if(arrow_up_left!=null){
+                    if(show_left_up) {
+                        arrow_up_left.setVisibility(View.VISIBLE);
+                    }else{
+                        arrow_up_left.setVisibility(View.GONE);
+                    }
                 }
             }
         }
