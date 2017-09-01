@@ -378,8 +378,10 @@
     <dimen name="filter_condition_group_item_space_2">100dp</dimen>
     <dimen name="list_scroll_up_lenth">-918dp</dimen>
     <dimen name="list_scroll_down_lenth">918dp</dimen>
-    <dimen name="list_scroll_up_offset">100dp</dimen>
-    <dimen name="list_scroll_down_offset">530dp</dimen>
+    <dimen name="list_scroll_up_offset_h">100dp</dimen>
+    <dimen name="list_scroll_up_offset_v">110dp</dimen>
+    <dimen name="list_scroll_down_offset_v">550dp</dimen>
+    <dimen name="list_scroll_down_offset_h">530dp</dimen>
     <dimen name="list_section_title_w">1415dp</dimen>
     <dimen name="list_section_vertical_title_h">90dp</dimen>
     <dimen name="list_section_horizontal_title_h">70dp</dimen>
