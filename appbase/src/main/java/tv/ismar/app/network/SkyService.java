@@ -193,8 +193,11 @@ public interface SkyService {
             @Path("channel") String channel
     );
 
-    @GET("api/histories/")
+    @GET("api/v3/histories/")
     Observable<Item[]> getHistoryByNet(
+    );
+    @GET("api/v3/histories/")
+    Observable<ResponseBody> getHistoryByNetV3(
     );
 
     @FormUrlEncoded
@@ -205,6 +208,9 @@ public interface SkyService {
 
     @GET("api/bookmarks/")
     Observable<Item[]> getBookmarks(
+    );
+    @GET("api/v3/bookmarks/")
+    Observable<ResponseBody> getBookmarksV3(
     );
 
     @FormUrlEncoded
@@ -257,6 +263,12 @@ public interface SkyService {
     @POST("api/bookmarks/remove/")
     Observable<ResponseBody> apiBookmarksRemove(
             @Field("item") String item
+    );
+    @FormUrlEncoded
+    @POST("api/histories/remove/")
+    Observable<ResponseBody> apiHistoryRemove(
+            @Field("item") int item,
+            @Field("subitem") int subitem
     );
 
     @GET("api/tv/relate/{pk}/")

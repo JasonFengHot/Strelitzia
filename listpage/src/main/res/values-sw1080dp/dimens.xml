@@ -430,4 +430,53 @@
     <dimen name="layout_filter_noresult_title2_ml">53dp</dimen>
     <dimen name="layout_filter_noresult_title2_mt">97dp</dimen>
     <dimen name="layout_filter_noresult_title2_ts">36dp</dimen>
+
+    <dimen name="history_306">306dp</dimen>
+    <dimen name="history_432">432dp</dimen>
+    <dimen name="history_243">243dp</dimen>
+    <dimen name="history_109">109dp</dimen>
+    <dimen name="history_78">78dp</dimen>
+    <dimen name="history_40">40dp</dimen>
+    <dimen name="history_151">151dp</dimen>
+    <dimen name="history_43">43dp</dimen>
+    <dimen name="history_149">149dp</dimen>
+    <dimen name="history_12">12dp</dimen>
+    <dimen name="history_200">200dp</dimen>
+    <dimen name="history_63">63dp</dimen>
+    <dimen name="history_52">52dp</dimen>
+    <dimen name="history_248">248dp</dimen>
+
+    <dimen name="history_473">473dp</dimen>
+    <dimen name="history_50">50dp</dimen>
+    <dimen name="history_142">142dp</dimen>
+    <dimen name="history_100">100dp</dimen>
+    <dimen name="history_96">96dp</dimen>
+    <dimen name="history_68">68dp</dimen>
+    <dimen name="history_16">16dp</dimen>
+
+    <dimen name="history_492">492dp</dimen>
+    <dimen name="history_407">407dp</dimen>
+    <dimen name="history_2">2dp</dimen>
+    <dimen name="history_10">10dp</dimen>
+    <dimen name="history_32">32dp</dimen>
+    <dimen name="history_19">19dp</dimen>
+    <dimen name="history_28">28dp</dimen>
+    <dimen name="history_76">76dp</dimen>
+    <dimen name="history_5">5dp</dimen>
+
+    <dimen name="history_94">94dp</dimen>
+    <dimen name="history_363">363dp</dimen>
+    <dimen name="history_83">83dp</dimen>
+    <dimen name="history_779">779dp</dimen>
+    <dimen name="history_11">11dp</dimen>
+    <dimen name="history_605">605dp</dimen>
+    <dimen name="history_3">3dp</dimen>
+    <dimen name="history_20">20dp</dimen>
+    <dimen name="history_30">30dp</dimen>
+    <dimen name="history_44">44dp</dimen>
+    <dimen name="history_15">15dp</dimen>
+    <dimen name="history_35">35dp</dimen>
+    <dimen name="history_636">636dp</dimen>
+    <dimen name="history_732">732dp</dimen>
+
 </resources>

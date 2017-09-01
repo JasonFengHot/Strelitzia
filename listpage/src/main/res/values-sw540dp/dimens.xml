@@ -430,4 +430,48 @@
 <dimen name="layout_filter_noresult_title2_ml">26.50dp</dimen>
 <dimen name="layout_filter_noresult_title2_mt">48.50dp</dimen>
 <dimen name="layout_filter_noresult_title2_ts">18.00dp</dimen>
+
+<dimen name="history_306">153.00dp</dimen>
+<dimen name="history_432">216.00dp</dimen>
+<dimen name="history_243">121.50dp</dimen>
+<dimen name="history_109">54.50dp</dimen>
+<dimen name="history_78">39.00dp</dimen>
+<dimen name="history_40">20.00dp</dimen>
+<dimen name="history_151">75.50dp</dimen>
+<dimen name="history_43">21.50dp</dimen>
+<dimen name="history_149">74.50dp</dimen>
+<dimen name="history_12">6.00dp</dimen>
+<dimen name="history_200">100.00dp</dimen>
+<dimen name="history_63">31.50dp</dimen>
+<dimen name="history_52">26.00dp</dimen>
+<dimen name="history_248">124.00dp</dimen>
+
+<dimen name="history_473">236.50dp</dimen>
+<dimen name="history_50">25.00dp</dimen>
+<dimen name="history_142">71.00dp</dimen>
+<dimen name="history_100">50.00dp</dimen>
+<dimen name="history_96">48.00dp</dimen>
+<dimen name="history_68">34.00dp</dimen>
+<dimen name="history_16">8.00dp</dimen>
+
+<dimen name="history_492">246.00dp</dimen>
+<dimen name="history_407">203.50dp</dimen>
+<dimen name="history_2">1.00dp</dimen>
+<dimen name="history_10">5.00dp</dimen>
+<dimen name="history_32">16.00dp</dimen>
+<dimen name="history_19">9.50dp</dimen>
+<dimen name="history_28">14.00dp</dimen>
+<dimen name="history_76">38.00dp</dimen>
+<dimen name="history_5">2.50dp</dimen>
+
+<dimen name="history_94">47.00dp</dimen>
+<dimen name="history_363">181.50dp</dimen>
+<dimen name="history_83">41.50dp</dimen>
+<dimen name="history_779">389.50dp</dimen>
+<dimen name="history_11">5.50dp</dimen>
+<dimen name="history_605">0.00dip</dimen>
+<dimen name="history_3">1.50dp</dimen>
+<dimen name="history_20">10.00dp</dimen>
+<dimen name="history_30">15.00dp</dimen>
+<dimen name="history_44">22.00dp</dimen>
 </resources>
