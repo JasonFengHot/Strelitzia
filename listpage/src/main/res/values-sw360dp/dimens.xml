@@ -386,8 +386,9 @@
 <dimen name="list_scroll_up_offset_h">33.33dp</dimen>
 <dimen name="list_scroll_up_offset_v">36.67dp</dimen>
 <dimen name="list_scroll_down_offset_v">183.33dp</dimen>
-<dimen name="list_scroll_down_offset_h">176.67dp</dimen>
-<dimen name="list_scroll_filter_offset">143.33dp</dimen>
+<dimen name="list_scroll_down_offset_h">155.33dp</dimen>
+<dimen name="list_scroll_filter_offset_v">147.67dp</dimen>
+<dimen name="list_scroll_filter_offset_h">122.00dp</dimen>
 <dimen name="list_section_title_w">471.67dp</dimen>
 <dimen name="list_section_vertical_title_h">30.00dp</dimen>
 <dimen name="list_section_horizontal_title_h">23.33dp</dimen>

@@ -1,6 +1,7 @@
 package tv.ismar.app.ui;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -48,6 +49,14 @@ public class HeadFragment extends Fragment implements View.OnClickListener, View
     private void initListener(){
         mHistoryTv.setOnClickListener(this);
         mPersonCenterTv.setOnClickListener(this);
+        mTimeTv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent();
+                intent.setAction("tv.ismar.daisy.listtest");
+                startActivity(intent);
+            }
+        });
     }
 
     private void initData(){
