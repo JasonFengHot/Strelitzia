@@ -47,9 +47,28 @@
         android:layout_marginLeft="@dimen/history_20"
         android:clipToPadding="false"
         android:clipChildren="false"
-        android:layout_width="1848dp"
+        android:layout_width="@dimen/history_1848"
         android:layout_height="wrap_content">
     </tv.ismar.app.widget.MyRecyclerView>
     </LinearLayout>
+    <Button
+        android:id="@+id/poster_arrow_up"
+        android:layout_width="@dimen/filter_layout_poster_arrow_w"
+        android:layout_height="@dimen/filter_layout_poster_arrow_h"
+        android:layout_marginRight="@dimen/filter_layout_poster_arrow_mr"
+        android:layout_alignParentRight="true"
+        android:focusable="true"
+        android:visibility="gone"
+        android:background="@drawable/poster_arrow_up_selector"/>
 
+    <Button
+        android:id="@+id/poster_arrow_down"
+        android:layout_width="@dimen/filter_layout_poster_arrow_w"
+        android:layout_height="@dimen/filter_layout_poster_arrow_h"
+        android:layout_marginRight="@dimen/filter_layout_poster_arrow_mr"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:focusable="true"
+        android:visibility="gone"
+        android:background="@drawable/poster_arrow_down_selector"/>
 </RelativeLayout>

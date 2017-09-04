@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -62,7 +63,7 @@ import tv.ismar.view.IsmartvLinearLayout;
  * Created by liucan on 2017/8/22.
  */
 
-public class HistoryFavoriteActivity extends BaseActivity implements View.OnClickListener,OnItemFocusedListener,LfListItemClickListener{
+public class HistoryFavoriteActivity extends BaseActivity implements View.OnClickListener,OnItemFocusedListener,LfListItemClickListener,View.OnHoverListener{
     private GetHistoryTask mGetHistoryTask;
     private Subscription historySub,favoriteSub;
     private SkyService skyService;
@@ -232,6 +233,7 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
                 JSONArray element=info.getJSONArray(date.getString(i));
                 for(int j=0;j<element.length();j++){
                     HistoryFavoriteEntity historyFavoriteEntity=new GsonBuilder().create().fromJson(element.get(j).toString(),HistoryFavoriteEntity.class);
+                    historyFavoriteEntity.setDate(date.getString(i));
                     lists.add(historyFavoriteEntity);
                 }
             }
@@ -393,6 +395,11 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
         }
     }
 
+    @Override
+    public boolean onHover(View v, MotionEvent event) {
+        return false;
+    }
+
 
     class GetHistoryTask extends AsyncTask<Void, Void, Void> {
 
@@ -498,4 +505,5 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
         item.setExpense(expense);
         return item;
     }
+
 }

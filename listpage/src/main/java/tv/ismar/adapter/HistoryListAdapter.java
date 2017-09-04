@@ -37,6 +37,7 @@ public class HistoryListAdapter extends RecyclerView.Adapter<HistoryListAdapter.
     private OnItemFocusedListener itemFocusedListener;
     private LfListItemClickListener itemClickListener;
     private String type="history";
+    private String lastTime="";
 
     public HistoryListAdapter(Context context,List<HistoryFavoriteEntity> items1,String itemType){
         mContext=context;
@@ -72,11 +73,27 @@ public class HistoryListAdapter extends RecyclerView.Adapter<HistoryListAdapter.
             holder.item_detail_image.setVisibility(View.VISIBLE);
             holder.more.setVisibility(View.GONE);
             holder.item_time_node.setVisibility(View.VISIBLE);
+            String[] date=item.getDate().split("-");
+            if(position==0){
+                holder.item_time.setText(date[0]+"月"+date[1]+"日");
+                lastTime=item.getDate();
+            }else {
+                if (item.getDate().equals(lastTime) && !item.getDate().equals("")) {
+                    holder.item_time.setVisibility(View.GONE);
+                    holder.item_time_node.setVisibility(View.GONE);
+                } else {
+                    holder.item_time.setText(date[0]+"月"+date[1]+"日");
+                    holder.item_time_node.setVisibility(View.VISIBLE);
+                    holder.item_time.setVisibility(View.VISIBLE);
+                }
+            }
+
         }else{
             holder.item_title_layout.setVisibility(View.GONE);
             holder.item_detail_image.setVisibility(View.GONE);
             holder.more.setVisibility(View.VISIBLE);
             holder.item_time_node.setVisibility(View.GONE);
+            holder.item_time.setVisibility(View.GONE);
 
         }
         holder.item_detail.setOnFocusChangeListener(new View.OnFocusChangeListener() {

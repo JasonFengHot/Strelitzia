@@ -6,6 +6,7 @@ import android.os.Handler;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -59,6 +60,7 @@ public class HistoryFavoritrListActivity extends BaseActivity implements OnItemC
     private HistoryFavoriteListAdapter adapter;
     private FocusGridLayoutManager focusGridLayoutManager;
     private HistorySpaceItemDecoration mSpaceItemDecoration;
+    private Button arrow_up,arrow_down;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,13 +75,15 @@ public class HistoryFavoritrListActivity extends BaseActivity implements OnItemC
 
     @Override
     protected void onPause() {
-        mlists=null;
+        mlists.clear();
         super.onPause();
     }
 
     private void initView(){
         title= (TextView) findViewById(R.id.title);
         clearAll= (TextView) findViewById(R.id.clear_all);
+        arrow_down= (Button) findViewById(R.id.poster_arrow_down);
+        arrow_up= (Button) findViewById(R.id.poster_arrow_up);
         mSpaceItemDecoration=new HistorySpaceItemDecoration(getResources().getDimensionPixelSize(R.dimen.history_30),0,getResources().getDimensionPixelSize(R.dimen.history_16),getResources().getDimensionPixelOffset(R.dimen.history_44));
         recyclerView=findView(R.id.history_favorite_list);
         recyclerView.addItemDecoration(mSpaceItemDecoration);

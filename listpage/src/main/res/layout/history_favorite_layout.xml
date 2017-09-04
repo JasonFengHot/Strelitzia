@@ -8,42 +8,42 @@
     >
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="105dp"
+        android:layout_height="@dimen/history_105"
         android:layout_gravity="center_vertical"
         >
         <TextView
             android:layout_width="wrap_content"
-            android:layout_height="83dp"
-            android:textSize="60sp"
+            android:layout_height="@dimen/history_83"
+            android:textSize="@dimen/text_size_60sp"
             android:textColor="@color/_ffffff"
-            android:layout_marginTop="11dp"
+            android:layout_marginTop="@dimen/history_11"
             android:text="历史＆收藏"
-            android:layout_marginLeft="817dp"
+            android:layout_marginLeft="@dimen/history_817"
             android:gravity="center"
             />
         <LinearLayout
             android:id="@+id/edit_btn"
-            android:layout_width="192dp"
-            android:layout_height="78dp"
-            android:layout_marginRight="11dp"
+            android:layout_width="@dimen/history_192"
+            android:layout_height="@dimen/history_78"
+            android:layout_marginRight="@dimen/history_11"
             android:layout_alignParentRight="true"
             android:orientation="horizontal"
-            android:layout_marginTop="12dp"
+            android:layout_marginTop="@dimen/history_12"
             android:background="@drawable/edit_btn_selector"
             >
                 <TextView
-                    android:layout_width="66dp"
-                    android:layout_height="43dp"
-                    android:layout_marginLeft="34dp"
-                    android:layout_marginTop="18dp"
+                    android:layout_width="@dimen/history_66"
+                    android:layout_height="@dimen/history_43"
+                    android:layout_marginLeft="@dimen/history_34"
+                    android:layout_marginTop="@dimen/history_18"
                     android:visibility="invisible"
                     />
                 <ImageView
-                    android:layout_width="45dp"
-                    android:layout_height="39dp"
+                    android:layout_width="@dimen/history_45"
+                    android:layout_height="@dimen/history_39"
                     android:background="@drawable/edit_image"
-                    android:layout_marginLeft="11dp"
-                    android:layout_marginTop="20dp"
+                    android:layout_marginLeft="@dimen/history_11"
+                    android:layout_marginTop="@dimen/history_20"
                     />
         </LinearLayout>
         
@@ -103,7 +103,10 @@
                 android:layout_marginLeft="@dimen/history_68"
                 android:layout_marginTop="@dimen/history_16"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:clipChildren="false"
+                android:clipToPadding="false"
+                >
             </com.open.androidtvwidget.leanback.recycle.RecyclerViewTV>
         </LinearLayout>
     </RelativeLayout>
@@ -161,6 +164,8 @@
                 android:layout_marginLeft="@dimen/history_68"
                 android:layout_marginTop="@dimen/history_16"
                 android:layout_width="wrap_content"
+                android:clipToPadding="false"
+                android:clipChildren="false"
                 android:layout_height="wrap_content">
             </com.open.androidtvwidget.leanback.recycle.RecyclerViewTV>
         </LinearLayout>

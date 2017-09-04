@@ -86,6 +86,7 @@ public class HistoryFavoriteEntity implements Serializable{
 
     private double bean_score;
     private String url;
+    private String date;
 
     public String getUrl() {
         return url;
@@ -101,6 +102,14 @@ public class HistoryFavoriteEntity implements Serializable{
 
     public void setExpense(Expense expense) {
         this.expense = expense;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
     }
 
     public void setDetail_url_old(String detail_url_old){
