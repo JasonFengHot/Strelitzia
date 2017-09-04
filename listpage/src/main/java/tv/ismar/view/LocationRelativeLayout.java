@@ -17,9 +17,9 @@ public class LocationRelativeLayout extends RelativeLayout {
     private View arrow_up_right;
     private View arrow_down_left;
     private View arrow_down_right;
-    private boolean show_left_up=true;
+    private boolean show_left_up=false;
     private boolean show_left_down=true;
-    private boolean show_right_up=true;
+    private boolean show_right_up=false;
     private boolean show_right_down=true;
     private int xBoundary=0;
 

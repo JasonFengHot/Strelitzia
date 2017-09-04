@@ -6,8 +6,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutCompat;
-import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.TypedValue;
@@ -278,6 +276,18 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                         }
                     }
                 }
+            }
+        });
+
+        tab_scroll.setOnScroll(new FullScrollView.OnScroll() {
+            @Override
+            public void onShowUp(boolean showUp) {
+                filter_root_view.setShow_left_up(showUp);
+            }
+
+            @Override
+            public void onShowDown(boolean showDown) {
+                filter_root_view.setShow_left_down(showDown);
             }
         });
     }
@@ -889,7 +899,13 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                                 }
                                 if(position>specialPos.get(i)&&position<specialPos.get(i+1)){
                                     ((RadioButton)section_group.getChildAt(i+1)).setChecked(true);
-                                    break;
+                                    if(section_group.getChildAt(i+1).getY()+section_group.getChildAt(i+1).getHeight()>tab_scroll.getScrollY()+tab_scroll.getHeight()) {
+                                        tab_scroll.smoothScrollBy(0, getResources().getDimensionPixelOffset(R.dimen.list_scroll_arrow_down_lenth));
+                                    }else if(section_group.getChildAt(i+1).getY()<tab_scroll.getScrollY()) {
+                                        tab_scroll.smoothScrollBy(0,getResources().getDimensionPixelOffset(R.dimen.list_scroll_arrow_up_lenth));
+                                    }
+
+                                        break;
                                 }
                             }
                         isFocused = true;
@@ -1004,9 +1020,9 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                 showFilterPopup();
             }
         }else if(i==R.id.tab_arrow_up){
-            tab_scroll.pageScroll(View.FOCUS_UP);
+            tab_scroll.scrollBy(0, getResources().getDimensionPixelOffset(R.dimen.list_scroll_arrow_up_lenth));
         }else if(i==R.id.tab_arrow_dowm){
-            tab_scroll.pageScroll(View.FOCUS_DOWN);
+            tab_scroll.scrollBy(0, getResources().getDimensionPixelOffset(R.dimen.list_scroll_arrow_down_lenth));
         }else if(i==R.id.poster_arrow_up){
             if(filter_tab.isChecked()){
                 if(isVertical) {
@@ -1053,7 +1069,7 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
             if(filterPosterAdapter!=null)
             filterPosterAdapter.setFocusedPosition(-1);
         }
-        return false;
+        return true;
     }
 
     /**
