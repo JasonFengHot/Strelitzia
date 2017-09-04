@@ -155,18 +155,18 @@ public interface SkyService {
             @Path("section") String Section
     );
 
-    @GET("api/tv/retrieval/{channel}")
+    @GET("http://sky.tvxio.bestv.com.cn/v4_0/SKY2/touc/api/tv/retrieval/{channel}")
     Observable<FilterConditions> getFilters(
             @Path("channel") String channel
     );
 
-    @GET("api/tv/filtrate/${content_model}/{filterCondition}/1/")
+    @GET("http://sky.tvxio.bestv.com.cn/v4_0/SKY2/touc/api/tv/filtrate/${content_model}/{filterCondition}/1/")
     Observable<ItemList> getFilterRequest(
             @Path("content_model") String channel,
             @Path("filterCondition") String filterCondition
     );
 
-    @GET("/api/tv/filtrate/${movie}/{area}/{page}/")
+    @GET("http://sky.tvxio.bestv.com.cn/v4_0/SKY2/touc/api/tv/filtrate/${movie}/{area}/{page}/")
     Observable<ItemList> getFilterRequestNodata(
             @Path("movie") String movie,
             @Path("area") String area,
@@ -188,7 +188,7 @@ public interface SkyService {
             @Path("page") int page
     );
 
-    @GET("api/tv/sections/{channel}/")
+    @GET("http://sky.tvxio.bestv.com.cn/v4_0/SKY2/touc/api/tv/sections/{channel}/")
     Observable<SectionList> getSections(
             @Path("channel") String channel
     );
@@ -529,6 +529,12 @@ public interface SkyService {
 
     @GET("api/tv/banner/{banner}/{page}/")
     Observable<HomeEntity> getBanners(
+            @Path("banner") String banner,
+            @Path("page") int page
+    );
+
+    @GET("/api/tv/mbanner/{banner}/")
+    Observable<HomeEntity[]> getMBanners(
             @Path("banner") String banner,
             @Path("page") int page
     );

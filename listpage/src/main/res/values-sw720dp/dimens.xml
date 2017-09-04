@@ -260,22 +260,33 @@
 <dimen name="filter_layout_left_view_title_mt">18.67dp</dimen>
 <dimen name="filter_layout_left_view_tab_w">213.33dp</dimen>
 <dimen name="filter_layout_left_view_tab_h">68.00dp</dimen>
-<dimen name="filter_layout_left_view_tab_ml">7.33dp</dimen>
 <dimen name="filter_layout_left_view_tab_mt">13.33dp</dimen>
+<dimen name="filter_layout_left_view_tab_ts">24.00dp</dimen>
+<dimen name="filter_layout_left_view_tab_ts_scaled">26.67dp</dimen>
+<dimen name="filter_layout_left_view_tab_drawable_padding">6.67dp</dimen>
+<dimen name="filter_layout_left_view_tab_plr">21.33dp</dimen>
+<dimen name="filter_layout_left_view_filter_tab_plr">64.67dp</dimen>
+<dimen name="filter_layout_left_view_tab_ptb">16.67dp</dimen>
 <dimen name="filter_layout_left_vertical_view_w">1.33dp</dimen>
 <dimen name="filter_layout_current_tab_arrow_w">10.67dp</dimen>
 <dimen name="filter_layout_current_tab_arrow_h">97.33dp</dimen>
 <dimen name="filter_layout_current_tab_arrow_ml">-2.00dp</dimen>
 <dimen name="filter_layout_current_tab_arrow_mt">72.67dp</dimen>
-<dimen name="filter_layout_poster_recyclerview_mt">58.67dp</dimen>
-<dimen name="filter_layout_poster_recyclerview_ml">60.67dp</dimen>
-<dimen name="filter_layout_poster_recyclerview_mr">61.33dp</dimen>
-<dimen name="filter_layout_filter_checked_conditiion_h">50.67dp</dimen>
-<dimen name="filter_layout_filter_checked_conditiion_pt">22.00dp</dimen>
+<dimen name="filter_layout_poster_recyclerview_vmt">13.33dp</dimen>
+<dimen name="filter_layout_poster_recyclerview_hmt">20.00dp</dimen>
+<dimen name="filter_layout_poster_recyclerview_mr">60.67dp</dimen>
+<dimen name="filter_layout_poster_recyclerview_w">981.33dp</dimen>
+<dimen name="filter_layout_poster_recyclerview_h">794.67dp</dimen>
+<dimen name="filter_layout_poster_recyclerview_mt">86.67dp</dimen>
+<dimen name="filter_layout_current_section_title_ts">32.00dp</dimen>
+<dimen name="filter_layout_current_section_title_pl">60.67dp</dimen>
+<dimen name="filter_layout_current_section_title_pt">26.67dp</dimen>
+<dimen name="filter_layout_filter_checked_conditiion_h">66.67dp</dimen>
+<dimen name="filter_layout_filter_checked_conditiion_pt">28.67dp</dimen>
 <dimen name="filter_layout_checked_title_w">90.67dp</dimen>
 <dimen name="filter_layout_checked_title_h">28.67dp</dimen>
 <dimen name="filter_layout_checked_title_ts">20.00dp</dimen>
-<dimen name="filter_layout_checked_title_ml">22.00dp</dimen>
+<dimen name="filter_layout_checked_title_ml">41.33dp</dimen>
 <dimen name="filter_layout_checked_title_mr">20.00dp</dimen>
 <dimen name="filter_layout_filter_arrow_w">26.67dp</dimen>
 <dimen name="filter_layout_filter_arrow_up_mt">350.67dp</dimen>
@@ -332,7 +343,7 @@
 <dimen name="item_vertical_poster_title_ts">24.00dp</dimen>
 
 <!--filter_item_horizontal_poster-->
-<dimen name="filter_item_horizontal_poster_mr">1.33dp</dimen>
+<dimen name="filter_item_horizontal_poster_mr">4.00dp</dimen>
 <dimen name="filter_item_horizontal_poster_mb">10.67dp</dimen>
 <dimen name="item_horizontal_poster_img_w">288.00dp</dimen>
 <dimen name="item_horizontal_poster_img_h">162.00dp</dimen>
@@ -352,8 +363,12 @@
 
 <!--incode-->
 <dimen name="filter_condition_radio_mr">26.00dp</dimen>
-<dimen name="vertical_recycler_padding_bottom">44.00dp</dimen>
-<dimen name="horizontal_recycler_padding_bottom">174.00dp</dimen>
+<dimen name="vertical_recycler_padding_bottom">42.67dp</dimen>
+<dimen name="vertical_recycler_hs">33.33dp</dimen>
+<dimen name="vertical_recycler_vs">26.67dp</dimen>
+<dimen name="horizontal_recycler_vs">40.00dp</dimen>
+<dimen name="horizontal_recycler_hs">40.00dp</dimen>
+<dimen name="horizontal_recycler_padding_bottom">20.00dp</dimen>
 <dimen name="filter_condition_popup_w">1280.00dp</dimen>
 <dimen name="filter_condition_popup_h">352.00dp</dimen>
 <dimen name="filter_condition_popup_position">368.00dp</dimen>
@@ -364,6 +379,65 @@
 <dimen name="filter_checked_condition_ts">20.00dp</dimen>
 <dimen name="filter_poster_vertical_scroll_space_up">21.33dp</dimen>
 <dimen name="filter_poster_vertical_scroll_space">22.00dp</dimen>
-<dimen name="filter_poster_start_scroll_length">533.33dp</dimen>
+<dimen name="filter_poster_start_scroll_length">400.00dp</dimen>
 <dimen name="filter_condition_group_item_space_2">66.67dp</dimen>
+<dimen name="list_scroll_up_lenth">-612.00dp</dimen>
+<dimen name="list_scroll_down_lenth">612.00dp</dimen>
+<dimen name="list_scroll_up_offset_h">66.67dp</dimen>
+<dimen name="list_scroll_up_offset_v">73.33dp</dimen>
+<dimen name="list_scroll_down_offset_v">366.67dp</dimen>
+<dimen name="list_scroll_down_offset_h">310.67dp</dimen>
+<dimen name="list_scroll_filter_offset_v">295.33dp</dimen>
+<dimen name="list_scroll_filter_offset_h">244.00dp</dimen>
+<dimen name="list_section_title_w">943.33dp</dimen>
+<dimen name="list_section_vertical_title_h">60.00dp</dimen>
+<dimen name="list_section_horizontal_title_h">46.67dp</dimen>
+<dimen name="list_section_title_pt">-20.00dp</dimen>
+<dimen name="list_section_title_p">16.67dp</dimen>
+<dimen name="filter_noresult_poster_vertical_mr">33.33dp</dimen>
+<dimen name="filter_noresult_poster_horizontal_mr">26.67dp</dimen>
+<dimen name="filter_noresult_vertical_mt">62.67dp</dimen>
+<dimen name="filter_noresult_vertical_ml">60.67dp</dimen>
+<dimen name="filter_noresult_horizontal_ml">40.00dp</dimen>
+<dimen name="filter_noresult_horizontal_mt1">16.00dp</dimen>
+<dimen name="filter_noresult_horizontal_mt2">-6.67dp</dimen>
+
+
+<!--arrow-->
+<dimen name="filter_layout_tab_arrow_w">198.67dp</dimen>
+<dimen name="filter_layout_tab_arrow_h">42.67dp</dimen>
+<dimen name="filter_layout_tab_arrow_ml">7.33dp</dimen>
+<dimen name="filter_layout_poster_arrow_w">943.33dp</dimen>
+<dimen name="filter_layout_poster_arrow_h">86.67dp</dimen>
+<dimen name="filter_layout_poster_arrow_mr">61.33dp</dimen>
+
+<!--no result-->
+<dimen name="item_filter_noresult_poster_w">224.00dp</dimen>
+<dimen name="item_filter_noresult_poster_h">168.00dp</dimen>
+<dimen name="item_filter_noresult_poster_img_w">224.00dp</dimen>
+<dimen name="item_filter_noresult_poster_img_h">126.00dp</dimen>
+<dimen name="item_filter_noresult_poster_vip_h">79.33dp</dimen>
+<dimen name="item_filter_noresult_poster_mark_w">52.00dp</dimen>
+<dimen name="item_filter_noresult_poster_mark_h">26.67dp</dimen>
+<dimen name="item_filter_noresult_poster_mark_pr">2.67dp</dimen>
+<dimen name="item_filter_noresult_poster_mark_ts">20.00dp</dimen>
+<dimen name="item_filter_noresult_poster_mark_mt">64.67dp</dimen>
+<dimen name="item_filter_noresult_poster_descrip_w">224.00dp</dimen>
+<dimen name="item_filter_noresult_poster_descrip_h">28.67dp</dimen>
+<dimen name="item_filter_noresult_poster_descrip_ts">20.00dp</dimen>
+<dimen name="item_filter_noresult_poster_title_bg_w">224.00dp</dimen>
+<dimen name="item_filter_noresult_poster_title_bg_h">42.00dp</dimen>
+<dimen name="item_filter_noresult_poster_title_w">224.00dp</dimen>
+<dimen name="item_filter_noresult_poster_title_h">34.67dp</dimen>
+<dimen name="item_filter_noresult_poster_title_ts">24.00dp</dimen>
+<dimen name="item_filter_noresult_poster_title_mt">3.33dp</dimen>
+<dimen name="layout_filter_noresult_title1_w">706.00dp</dimen>
+<dimen name="layout_filter_noresult_title1_h">44.67dp</dimen>
+<dimen name="layout_filter_noresult_title1_ts">32.00dp</dimen>
+<dimen name="layout_filter_noresult_title1_ml">179.33dp</dimen>
+<dimen name="layout_filter_noresult_title1_mt">176.67dp</dimen>
+<dimen name="layout_filter_noresult_title2_h">34.67dp</dimen>
+<dimen name="layout_filter_noresult_title2_ml">35.33dp</dimen>
+<dimen name="layout_filter_noresult_title2_mt">64.67dp</dimen>
+<dimen name="layout_filter_noresult_title2_ts">24.00dp</dimen>
 </resources>

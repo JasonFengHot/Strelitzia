@@ -3,11 +3,18 @@ package tv.ismar.homepage.control;
 import android.content.Context;
 import android.util.Log;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import tv.ismar.app.BaseControl;
+import tv.ismar.app.core.cache.CacheManager;
+import tv.ismar.app.core.cache.DownloadClient;
 import tv.ismar.app.entity.GuideBanner;
+import tv.ismar.app.entity.banner.BannerCarousels;
+import tv.ismar.app.entity.banner.BannerPoster;
 import tv.ismar.app.entity.banner.HomeEntity;
 import tv.ismar.app.network.SkyService;
 
@@ -19,67 +26,31 @@ import tv.ismar.app.network.SkyService;
 
 public class GuideControl extends BaseControl{
 
-    public static final int FETCH_HOME_BANNERS_FLAG = 0X01;//获取首页下所有列表标记
-    public static final int FETCH_BANNERS_LIST_FLAG = 0X02;//获取影视内容banner列表
-
-    public GuideControl(Context context) {
-        super(context);
-    }
+    public FetchDataControl mFetchDataControl = null;
 
     public GuideControl(Context context, ControlCallBack callBack){
         super(context, callBack);
-
+        mFetchDataControl = new FetchDataControl(context, callBack);
     }
 
-    public void fetchBanners(String banner, int page){
-        SkyService.ServiceManager.getLocalTestService().getBanners(banner, page)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<HomeEntity>() {
-                    @Override
-                    public void onCompleted() {}
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onNext(HomeEntity homeEntities) {
-                        if(mCallBack!=null && homeEntities!=null){
-                            mCallBack.callBack(FETCH_BANNERS_LIST_FLAG, homeEntities);
-                        }
-                    }
-                });
+    /*获取单个banner内容列表*/
+    public void getBanners(String banner, int page){
+        if(mFetchDataControl != null){
+            mFetchDataControl.fetchBanners(banner, page);
+        }
     }
 
     /**
-     *  获取首页下所有列表
+     * 获取导视视频
+     * @param index 1-5(最少3个，最多5个)
      */
-    public void fetchBannerList(){
-        try {
-            SkyService.ServiceManager.getLocalTestService().getGuideBanners()
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Observer<GuideBanner[]>() {
-                        @Override
-                        public void onCompleted() {}
-
-                        @Override
-                        public void onError(Throwable e) {
-                            Log.i("onError", "onError");
-                        }
-
-                        @Override
-                        public void onNext(GuideBanner[] guideBanners) {
-                            if(mCallBack!=null && guideBanners!=null && guideBanners.length>0){
-                                mCallBack.callBack(FETCH_HOME_BANNERS_FLAG, guideBanners);
-                            }
-                        }
-                    });
-        } catch (Exception e) {
-            e.printStackTrace();
+    public String getGuideVideoPath(int index){
+        if(mFetchDataControl.mCarousels!=null && index<mFetchDataControl.mCarousels.size()){
+            String fileName = "guide_"+index+".mp4";
+            return CacheManager.getInstance() //如果本地有缓存取本地，否则网络获取
+                    .doRequest(mFetchDataControl.mCarousels.get(index).video_url, fileName, DownloadClient.StoreType.External);
         }
+        return null;
     }
 
 }

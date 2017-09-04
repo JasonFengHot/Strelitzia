@@ -26,13 +26,16 @@ public class PosterUtil {
     public static void fillPoster(Activity context,int orientation, Item item, ImageView poster, ImageView vipmark, TextView beanscore, TextView title, TextView description){
         if(item!=null) {
             String posterUrl="";
+            int previewId;
             if(orientation==VERTICAL){
                 posterUrl=item.list_url;
+                previewId=R.drawable.list_item_ppreview_bg;
             }else{
                 posterUrl=item.poster_url;
+                previewId=R.drawable.list_item_preview_bg;
             }
             if (!TextUtils.isEmpty(posterUrl) && posterUrl != null)
-                Picasso.with(context).load(posterUrl).error(R.drawable.list_item_ppreview_bg).placeholder(R.drawable.list_item_ppreview_bg).memoryPolicy(MemoryPolicy.NO_STORE).memoryPolicy(MemoryPolicy.NO_CACHE).config(Bitmap.Config.RGB_565).
+                Picasso.with(context).load(posterUrl).error(previewId).placeholder(previewId).memoryPolicy(MemoryPolicy.NO_STORE).memoryPolicy(MemoryPolicy.NO_CACHE).config(Bitmap.Config.RGB_565).
                         into(poster);
             if (item.expense != null) {
                 Picasso.with(context).load(VipMark.getInstance().getImage(context, item.expense.pay_type, item.expense.cpid)).memoryPolicy(MemoryPolicy.NO_STORE).memoryPolicy(MemoryPolicy.NO_CACHE).into(vipmark);

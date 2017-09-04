@@ -3,6 +3,7 @@ package tv.ismar.adapter;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
+import android.databinding.adapters.ViewGroupBindingAdapter;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.support.v7.widget.RecyclerView;
@@ -43,6 +44,7 @@ public class FilterPosterAdapter extends RecyclerView.Adapter<FilterPosterAdapte
     private OnItemFocusedListener itemFocusedListener;
     private ArrayList<Integer> mSpecialPos;
     private SectionList mSectionList;
+    private int focusedPosition=-1;
 
     public FilterPosterAdapter(Context context, ItemList itemList, boolean isVertical, int totalItemCount, ArrayList<Integer> specialPos, SectionList sectionList) {
         this.mContext = context;
@@ -51,6 +53,14 @@ public class FilterPosterAdapter extends RecyclerView.Adapter<FilterPosterAdapte
         this.mTotalItemCount=totalItemCount;
         this.mSpecialPos=specialPos;
         this.mSectionList=sectionList;
+    }
+
+    public void setmItemList(ItemList mItemList) {
+        this.mItemList = mItemList;
+    }
+
+    public void setFocusedPosition(int focusedPosition) {
+        this.focusedPosition = focusedPosition;
     }
 
     public OnItemClickListener getItemClickListener() {
@@ -88,10 +98,13 @@ public class FilterPosterAdapter extends RecyclerView.Adapter<FilterPosterAdapte
             }
         }else{
             TextView textView=new TextView(mContext);
-            textView.setTextSize(48);
-            textView.setWidth(1415);
-            textView.setHeight(85);
-            textView.setPadding(25,0,0,0);
+            textView.setTextSize(mContext.getResources().getDimensionPixelSize(R.dimen.filter_layout_current_section_title_ts));
+            textView.setWidth(mContext.getResources().getDimensionPixelOffset(R.dimen.list_section_title_w));
+            if(mIsVertical) {
+                textView.setHeight(mContext.getResources().getDimensionPixelOffset(R.dimen.list_section_vertical_title_h));
+            }else {
+                textView.setHeight(mContext.getResources().getDimensionPixelOffset(R.dimen.list_section_horizontal_title_h));
+            }
             textView.setGravity(Gravity.CENTER_VERTICAL);
             filterPosterHolder=new FilterPosterHolder(textView);
         }
@@ -175,7 +188,11 @@ public class FilterPosterAdapter extends RecyclerView.Adapter<FilterPosterAdapte
         }else{
             ((TextView)holder.itemView).setText(mSectionList.get(mSpecialPos.indexOf(position)).title);
         }
+        if(position==focusedPosition){
+            holder.itemView.requestFocus();
+        }
     }
+
 
     @Override
     public int getItemCount() {

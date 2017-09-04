@@ -1,11 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<tv.ismar.homepage.banner.IsmartvLinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    android:background="#00000000"
+    android:clipChildren="false"
+    android:clipToPadding="false"
     android:focusable="true"
     android:focusableInTouchMode="true"
-    android:background="@drawable/poster_focus_selector"
+    android:foreground="@drawable/selector_item_banner_subscribe"
+    android:orientation="vertical"
+  >
+
+<RelativeLayout
+    android:layout_width="432dp"
+    android:layout_height="306dp"
     >
 
     <ImageView
@@ -60,3 +70,4 @@
         android:singleLine="true"
         android:layout_below="@id/item_horizontal_poster_img"/>
 </RelativeLayout>
+    </tv.ismar.homepage.banner.IsmartvLinearLayout>
