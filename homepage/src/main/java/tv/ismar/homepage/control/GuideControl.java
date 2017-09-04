@@ -10,6 +10,8 @@ import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import tv.ismar.app.BaseControl;
+import tv.ismar.app.core.cache.CacheManager;
+import tv.ismar.app.core.cache.DownloadClient;
 import tv.ismar.app.entity.GuideBanner;
 import tv.ismar.app.entity.banner.BannerCarousels;
 import tv.ismar.app.entity.banner.BannerPoster;
@@ -24,7 +26,7 @@ import tv.ismar.app.network.SkyService;
 
 public class GuideControl extends BaseControl{
 
-    private FetchDataControl mFetchDataControl = null;
+    public FetchDataControl mFetchDataControl = null;
 
     public GuideControl(Context context, ControlCallBack callBack){
         super(context, callBack);
@@ -36,6 +38,19 @@ public class GuideControl extends BaseControl{
         if(mFetchDataControl != null){
             mFetchDataControl.fetchBanners(banner, page);
         }
+    }
+
+    /**
+     * 获取导视视频
+     * @param index 1-5(最少3个，最多5个)
+     */
+    public String getGuideVideoPath(int index){
+        if(mFetchDataControl.mCarousels!=null && index<mFetchDataControl.mCarousels.size()){
+            String fileName = "guide_"+index+".mp4";
+            return CacheManager.getInstance() //如果本地有缓存取本地，否则网络获取
+                    .doRequest(mFetchDataControl.mCarousels.get(index).video_url, fileName, DownloadClient.StoreType.External);
+        }
+        return null;
     }
 
 }

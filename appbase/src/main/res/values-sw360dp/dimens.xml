@@ -647,6 +647,13 @@
 <dimen name="guide_title_person_center_margin_time">27.67dp</dimen>
 <dimen name="guide_title_history_margin_person_center">75.00dp</dimen>
 
+<!--频道title尺寸-->
+<dimen name="channel_title_size">21.00dp</dimen>
+<dimen name="channel_title_margin_left">32.00dp</dimen>
+<dimen name="channel_title_margin_right">3.33dp</dimen>
+<dimen name="channel_title_margin_top">5.33dp</dimen>
+<dimen name="channel_title_margin_bottom">5.67dp</dimen>
+
 <!--导视尺寸-->
 <dimen name="guide_switch_container_margin_left">33.33dp</dimen>
 <dimen name="guide_switch_container_width">395.33dp</dimen>
@@ -662,8 +669,8 @@
 <dimen name="guide_swithc_container_icon_margin_bottom">2.67dp</dimen>
 <dimen name="guide_recycle_margin_left">20.00dp</dimen>
 <dimen name="guide_recycle_item_padding">20.00dp</dimen>
-<dimen name="guide_recycle_item_width">166.00dp</dimen>
-<dimen name="guide_recycle_item_height">118.33dp</dimen>
+<dimen name="guide_recycle_item_width">118.33dp</dimen>
+<dimen name="guide_recycle_item_height">166.00dp</dimen>
 <dimen name="guide_recycle_item_title_height">14.33dp</dimen>
 <dimen name="guide_recycle_item_lt_icon_size">36.33dp</dimen>
 <dimen name="guide_recycle_item_rb_icon_width">20.67dp</dimen>

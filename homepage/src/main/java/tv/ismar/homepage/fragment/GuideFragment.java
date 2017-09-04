@@ -38,40 +38,13 @@ public class GuideFragment extends ChannelBaseFragment implements BaseControl.Co
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_guide, null);
-        findViews(view);
-        initListener();
-        initData();
         return view;
     }
 
-    /*获取控件实例*/
-    private void findViews(View view){
-        mListView = (ListView) view.findViewById(R.id.guide_container);
-    }
-
-    /*初始化监听*/
-    private void initListener(){
-
-    }
-
-    private void initData(){
-//        mControl.fetchBannerList();
-    }
 
     /*用于业务类回调控制UI*/
     @Override
     public void callBack(int flag, Object... args) {
-        //这里通过flag严格区分不同的业务流程，避免业务之间的耦合
-//        if(flag == GuideControl.FETCH_HOME_BANNERS_FLAG){//处理获取首页banner列表
-//            GuideBanner[] banners = (GuideBanner[]) args;
-//            if(mAdapter == null){
-//                mAdapter = new HomeAdapter(getContext(), banners);
-//                mListView.setAdapter(mAdapter);
-//            }else{
-//                mAdapter.notifyDataSetChanged();
-//            }
-//            return;
-//        }
     }
 }
 

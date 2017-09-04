@@ -5,7 +5,7 @@
     <tv.ismar.homepage.widget.HomeItemContainer
         android:id="@+id/guide_container"
         android:layout_width="@dimen/guide_switch_container_width"
-        android:layout_height="@dimen/guide_switch_container_height"
+        android:layout_height="match_parent"
         android:clickable="true"
         android:focusable="true"
         android:focusableInTouchMode="true"
@@ -18,6 +18,7 @@
             android:focusableInTouchMode="false" />
         <ImageView
             android:id="@+id/guide_video_loading_image"
+            android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
         <TextView
@@ -39,36 +40,55 @@
                 android:id="@+id/first_video_icon"
                 android:layout_width="@dimen/guide_swithc_container_icon_size"
                 android:layout_height="@dimen/guide_swithc_container_icon_size"
+                android:layout_marginLeft="@dimen/guide_swithc_container_icon_margin_left"
+                android:layout_marginTop="@dimen/guide_swithc_container_icon_margin_top"
+                android:layout_marginBottom="@dimen/guide_swithc_container_icon_margin_bottom"
+                android:visibility="gone"
                 android:background="@drawable/first_video_icon"/>
             <TextView
                 android:id="@+id/second_video_icon"
                 android:layout_width="@dimen/guide_swithc_container_icon_size"
                 android:layout_height="@dimen/guide_swithc_container_icon_size"
-                android:background="@drawable/second_video_icon"/>
+                android:layout_marginLeft="@dimen/guide_swithc_container_icon_padding"
+                android:layout_marginTop="@dimen/guide_swithc_container_icon_margin_top"
+                android:layout_marginBottom="@dimen/guide_swithc_container_icon_margin_bottom"
+                android:visibility="gone"
+                android:background="@drawable/second_video_normal_icon"/>
             <TextView
                 android:id="@+id/third_video_icon"
                 android:layout_width="@dimen/guide_swithc_container_icon_size"
                 android:layout_height="@dimen/guide_swithc_container_icon_size"
-                android:background="@drawable/third_video_icon"/>
+                android:layout_marginLeft="@dimen/guide_swithc_container_icon_padding"
+                android:layout_marginTop="@dimen/guide_swithc_container_icon_margin_top"
+                android:layout_marginBottom="@dimen/guide_swithc_container_icon_margin_bottom"
+                android:visibility="gone"
+                android:background="@drawable/third_video_normal_icon"/>
             <TextView
                 android:id="@+id/four_video_icon"
                 android:layout_width="@dimen/guide_swithc_container_icon_size"
                 android:layout_height="@dimen/guide_swithc_container_icon_size"
-                android:background="@drawable/four_video_icon"/>
+                android:layout_marginLeft="@dimen/guide_swithc_container_icon_padding"
+                android:layout_marginTop="@dimen/guide_swithc_container_icon_margin_top"
+                android:layout_marginBottom="@dimen/guide_swithc_container_icon_margin_bottom"
+                android:visibility="gone"
+                android:background="@drawable/four_video_normal_icon"/>
             <TextView
                 android:id="@+id/five_video_icon"
                 android:layout_width="@dimen/guide_swithc_container_icon_size"
                 android:layout_height="@dimen/guide_swithc_container_icon_size"
-                android:background="@drawable/five_video_icon"/>
+                android:layout_marginLeft="@dimen/guide_swithc_container_icon_padding"
+                android:layout_marginTop="@dimen/guide_swithc_container_icon_margin_top"
+                android:layout_marginBottom="@dimen/guide_swithc_container_icon_margin_bottom"
+                android:visibility="gone"
+                android:background="@drawable/five_video_normal_icon"/>
         </LinearLayout>
     </tv.ismar.homepage.widget.HomeItemContainer>
 
     <com.open.androidtvwidget.leanback.recycle.RecyclerViewTV
         android:id="@+id/guide_recyclerview"
         android:layout_toRightOf="@+id/guide_container"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="@dimen/guide_switch_container_height"
         android:layout_marginLeft="@dimen/guide_recycle_margin_left"
         android:focusable="false" />
-
 </RelativeLayout>

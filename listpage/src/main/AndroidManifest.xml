@@ -68,6 +68,13 @@
 
         </activity>
 
+        <activity android:name="tv.ismar.view.ListTestActivity">
+            <intent-filter>
+                <action android:name="tv.ismar.daisy.listtest"/>
+
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+            </activity>
 
     </application>
 

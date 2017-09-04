@@ -46,6 +46,10 @@ public class TestActivity extends Activity implements BaseControl.ControlCallBac
         mControl.fetchBannerList();
     }
 
+    public void refresh(View view){
+        mAdapter.notifyDataSetChanged();
+    }
+
     /*用于业务类回调控制UI*/
     @Override
     public void callBack(int flag, Object... args) {
