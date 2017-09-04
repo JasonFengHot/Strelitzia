@@ -647,6 +647,13 @@
 <dimen name="guide_title_person_center_margin_time">61.48dp</dimen>
 <dimen name="guide_title_history_margin_person_center">166.67dp</dimen>
 
+<!--频道title尺寸-->
+<dimen name="channel_title_size">46.67dp</dimen>
+<dimen name="channel_title_margin_left">71.11dp</dimen>
+<dimen name="channel_title_margin_right">7.41dp</dimen>
+<dimen name="channel_title_margin_top">11.85dp</dimen>
+<dimen name="channel_title_margin_bottom">12.59dp</dimen>
+
 <!--导视尺寸-->
 <dimen name="guide_switch_container_margin_left">74.07dp</dimen>
 <dimen name="guide_switch_container_width">878.52dp</dimen>
