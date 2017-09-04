@@ -2,6 +2,7 @@ package tv.ismar.homepage.adapter;
 
 import android.animation.ObjectAnimator;
 import android.content.Context;
+import android.graphics.Rect;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +16,8 @@ import java.util.List;
 
 import tv.ismar.app.entity.banner.BannerPoster;
 import tv.ismar.homepage.R;
+import tv.ismar.homepage.banner.IsmartvLinearLayout;
+import tv.ismar.homepage.widget.HomeItemContainer;
 
 import static android.view.View.SCALE_X;
 import static android.view.View.SCALE_Y;
@@ -44,8 +47,8 @@ public class GuideAdapter extends RecyclerView.Adapter<GuideAdapter.GuideViewHol
     public void onBindViewHolder(GuideViewHolder holder, int position) {
         BannerPoster poster = mData.get(position);
         Picasso.with(mContext).load(poster.poster_url).into(holder.mPosterIg);
-        Picasso.with(mContext).load(poster.poster_url).into(holder.mLtIconTv);
-        Picasso.with(mContext).load(poster.poster_url).into(holder.mRbIconTv);
+//        Picasso.with(mContext).load(poster.poster_url).into(holder.mLtIconTv);
+//        Picasso.with(mContext).load(poster.poster_url).into(holder.mRbIconTv);
         holder.mTitleTv.setText(poster.title);
     }
 
@@ -54,11 +57,27 @@ public class GuideAdapter extends RecyclerView.Adapter<GuideAdapter.GuideViewHol
         return (mData!=null) ? mData.size():0;
     }
 
+    public static class SpacesItemDecoration extends RecyclerView.ItemDecoration {
+        private int mRightOffSet = 0;
+
+        public SpacesItemDecoration(int space){
+            this.mRightOffSet = space;
+        }
+
+        @Override
+        public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
+            super.getItemOffsets(outRect, view, parent, state);
+            outRect.right = mRightOffSet;
+        }
+    }
+
+
     public static class GuideViewHolder extends RecyclerView.ViewHolder implements View.OnFocusChangeListener{
         public ImageView mPosterIg;//海报
         public ImageView mLtIconTv;//左上icon
         public ImageView mRbIconTv;//右下icon
         public TextView mTitleTv;//标题
+
 
         public GuideViewHolder(View itemView) {
             super(itemView);

@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.TextView;
 
 import tv.ismar.app.entity.GuideBanner;
 import tv.ismar.homepage.R;
@@ -58,6 +59,7 @@ public class HomeAdapter extends BaseAdapter{
             viewHolder = new ViewHolder();
             convertView = LayoutInflater.from(mContext).inflate(R.layout.guide_fragment_item_layout, null);
 
+            viewHolder.mTitle = (TextView) convertView.findViewById(R.id.home_item_title);
             viewHolder.mTemplateGuide = convertView.findViewById(R.id.banner_guide);
             viewHolder.mTemplateOrder = convertView.findViewById(R.id.banner_order);
             viewHolder.mTemplateMovie = convertView.findViewById(R.id.banner_movie);
@@ -90,12 +92,15 @@ public class HomeAdapter extends BaseAdapter{
         bundle.putString("url", mData[position].banner_url);
         bundle.putString("banner", mData[position].banner);
         String template = mData[position].template;
+
+        viewHolder.mTitle.setText(mData[position].title);
         if(template.equals("template_guide")){//导航
-            viewHolder.mTemplateGuide.setVisibility(View.VISIBLE);
-            new TemplateGuide(mContext).setView(viewHolder.mTemplateGuide, bundle);
-            //TODO 测试栏目代码
-//            viewHolder.mTemplateConlumn.setVisibility(View.VISIBLE);
-//            new TemplateConlumn(mContext).setView(viewHolder.mTemplateConlumn, bundle);
+//            viewHolder.mTitle.setVisibility(View.GONE);
+//            viewHolder.mTemplateGuide.setVisibility(View.VISIBLE);
+//            new TemplateGuide(mContext).setView(viewHolder.mTemplateGuide, bundle);
+            //TODO 测试代码
+            viewHolder.mTemplateTvPlay.setVisibility(View.VISIBLE);
+            new TemplateTvPlay(mContext).setView(viewHolder.mTemplateTvPlay, bundle);
         } else if(template.equals("template_order")){//订阅模版
             viewHolder.mTemplateOrder.setVisibility(View.VISIBLE);
             new TemplateOrder(mContext).setView(viewHolder.mTemplateOrder, bundle);
@@ -109,6 +114,7 @@ public class HomeAdapter extends BaseAdapter{
             viewHolder.mTemplate519.setVisibility(View.VISIBLE);
             new Template519(mContext).setView(viewHolder.mTemplate519, bundle);
         }else if(template.equals("template_conlumn")){//栏目模版
+            viewHolder.mTitle.setVisibility(View.GONE);
             viewHolder.mTemplateConlumn.setVisibility(View.VISIBLE);
             new TemplateConlumn(mContext).setView(viewHolder.mTemplateConlumn, bundle);
         }else if(template.equals("template_big_small_ld")){//大横小竖模版
@@ -126,6 +132,7 @@ public class HomeAdapter extends BaseAdapter{
     }
 
     class ViewHolder {
+        TextView mTitle;//标题
         View mTemplateGuide;//导视模版
         View mTemplateOrder;//订阅模版
         View mTemplateMovie;//电影模版

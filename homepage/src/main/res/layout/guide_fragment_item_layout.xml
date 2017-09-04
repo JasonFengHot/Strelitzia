@@ -1,7 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/home_item_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#cccccc"
+        android:layout_marginTop="@dimen/channel_title_margin_top"
+        android:layout_marginBottom="@dimen/channel_title_margin_bottom"
+        android:layout_marginLeft="@dimen/channel_title_margin_left"
+        android:layout_marginRight="@dimen/channel_title_margin_right"
+        android:textSize="@dimen/channel_title_size"/>
 
     <include
         android:id="@+id/banner_guide"
@@ -17,7 +29,7 @@
 
     <include
         android:id="@+id/banner_tv_play"
-        layout="@layout/banner_tv_play"/>
+        layout="@layout/banner_tv_player"/>
 
     <include
         android:id="@+id/banner_519"
@@ -38,4 +50,4 @@
     <include
         android:id="@+id/banner_double_ld"
         layout="@layout/banner_double_ld"/>
-</FrameLayout>
+</LinearLayout>
