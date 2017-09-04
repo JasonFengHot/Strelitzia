@@ -8,13 +8,12 @@
     android:clipToPadding="false"
     android:focusable="true"
     android:focusableInTouchMode="true"
-    android:layout_marginLeft="40dp"
     android:foreground="@drawable/selector_item_banner_subscribe"
     android:orientation="vertical">
 
 <RelativeLayout
-    android:layout_width="336dp"
-    android:layout_height="252dp">
+    android:layout_width="@dimen/item_filter_noresult_poster_w"
+    android:layout_height="@dimen/item_filter_noresult_poster_h">
 
     <ImageView
         android:id="@+id/item_filter_noresult_img"
