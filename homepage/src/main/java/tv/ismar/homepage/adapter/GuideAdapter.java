@@ -73,8 +73,6 @@ public class GuideAdapter extends RecyclerView.Adapter<GuideAdapter.GuideViewHol
 
 
     public static class GuideViewHolder extends RecyclerView.ViewHolder implements View.OnFocusChangeListener{
-        public HomeItemContainer mHomeItemContainer;
-        public IsmartvLinearLayout mLinearLayout;
         public ImageView mPosterIg;//海报
         public ImageView mLtIconTv;//左上icon
         public ImageView mRbIconTv;//右下icon
@@ -83,8 +81,6 @@ public class GuideAdapter extends RecyclerView.Adapter<GuideAdapter.GuideViewHol
 
         public GuideViewHolder(View itemView) {
             super(itemView);
-            mHomeItemContainer = (HomeItemContainer) itemView.findViewById(R.id.guide_item_container);
-            mLinearLayout = (IsmartvLinearLayout) itemView.findViewById(R.id.guide_ismartv_linear_layout);
             mPosterIg = (ImageView) itemView.findViewById(R.id.guide_recycle_item_poster);
             mLtIconTv = (ImageView) itemView.findViewById(R.id.guide_recycle_item_lt_icon);
             mRbIconTv = (ImageView) itemView.findViewById(R.id.guide_recycle_item_rb_icon);
