@@ -38,6 +38,8 @@ import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.os.Handler;
+import android.os.Message;
 import android.text.Layout;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -101,6 +103,8 @@ public class HorizontalTabView extends HorizontalScrollView implements View.OnCl
     private int mCurrentState;
 
     private int mClickPosition = -1;
+
+    private boolean isScroll = true;
 
     public HorizontalTabView(Context context) {
         this(context, null);
@@ -166,7 +170,7 @@ public class HorizontalTabView extends HorizontalScrollView implements View.OnCl
         LinearLayout.LayoutParams layoutParams;
         layoutParams = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT);
-        TextView item;
+        final TextView item;
         if (label.equals("搜索")) {
             item = (TextView) LayoutInflater.from(getContext()).inflate(R.layout.item_channel_search, null);
             item.setCompoundDrawablePadding(10);
@@ -190,13 +194,32 @@ public class HorizontalTabView extends HorizontalScrollView implements View.OnCl
         item.setOnHoverListener(new OnHoverListener() {
             @Override
             public boolean onHover(View v, MotionEvent event) {
+                TextView itemView = (TextView) v;
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_HOVER_ENTER:
                     case MotionEvent.ACTION_HOVER_MOVE:
-                        mCurrentState = STATE_FOCUS;
-                        v.requestFocusFromTouch();
-                        v.requestFocus();
-                        break;
+                        itemView.setSelected(true);
+                        itemView.setBackground(selectedDrawable);
+                        itemView.setTextColor(textFocusColor);
+                        if (isScroll){
+                            isScroll = false;
+                            mCurrentState = STATE_FOCUS;
+                            v.requestFocusFromTouch();
+                            v.requestFocus();
+                            mScrollHandler.sendEmptyMessageDelayed(0, 500);
+                        }
+                        return true;
+                    case MotionEvent.ACTION_HOVER_EXIT:
+                        itemView.setSelected(false);
+                        TextView lastClickView = (TextView) linearContainer.getChildAt(mClickPosition);
+                        if (itemView == lastClickView) {
+                            lastClickView.setBackgroundResource(android.R.color.transparent);
+                            lastClickView.setTextColor(textSelectColor);
+                        }else {
+                            itemView.setBackgroundResource(android.R.color.transparent);
+                            itemView.setTextColor(textColor);
+                        }
+                        return true;
                 }
                 return false;
             }
@@ -571,4 +594,10 @@ public class HorizontalTabView extends HorizontalScrollView implements View.OnCl
         }
     }
 
+    Handler mScrollHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            isScroll = true;
+        }
+    };
 }
