@@ -56,14 +56,12 @@
         <com.open.androidtvwidget.leanback.recycle.RecyclerViewTV
             android:id="@+id/double_ld_recyclerview1"
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/double_ld_poster_height"
-            android:layout_marginLeft="@dimen/double_ld_poster_padding"
+            android:layout_height="@dimen/double_ld_poster_height1"
             android:focusable="false" />
         <com.open.androidtvwidget.leanback.recycle.RecyclerViewTV
             android:id="@+id/double_ld_recyclerview2"
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/double_ld_poster_height"
-            android:layout_marginLeft="@dimen/double_ld_poster_padding"
+            android:layout_height="@dimen/double_ld_poster_height2"
             android:focusable="false" />
     </LinearLayout>
 </LinearLayout>

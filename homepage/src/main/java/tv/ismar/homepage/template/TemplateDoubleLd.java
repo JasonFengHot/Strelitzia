@@ -90,12 +90,15 @@ public class TemplateDoubleLd extends Template implements BaseControl.ControlCal
     private void initAdapter(){
         if(mAdapter1 == null){
             mAdapter1 = new DoubleLdAdapter(mContext, mAdapter1Data);
+            mAdapter1.setLeftMarginEnable(true);
             mRecyclerView1.setAdapter(mAdapter1);
         }else {
             mAdapter1.notifyDataSetChanged();
         }
         if(mAdapter2 == null){
             mAdapter2 = new DoubleLdAdapter(mContext, mAdapter2Data);
+            mAdapter2.setLeftMarginEnable(true);
+            mAdapter2.setTopMarginEnable(true);
             mRecyclerView2.setAdapter(mAdapter2);
         }else {
             mAdapter2.notifyDataSetChanged();

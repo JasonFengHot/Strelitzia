@@ -1,17 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<tv.ismar.homepage.banner.IsmartvLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/conlumn_ismartv_linear_layout"
-    android:layout_width="@dimen/column_item_width"
-    android:layout_height="@dimen/column_item_height"
-    android:background="#00ff00"
-    android:clipChildren="false"
-    android:clipToPadding="false"
-    android:focusable="true"
-    android:focusableInTouchMode="true"
-    android:foreground="@drawable/selector_item_banner_subscribe"
-    android:orientation="vertical">
-    <TextView
-        android:id="@+id/conlumn_item_tv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-</tv.ismar.homepage.banner.IsmartvLinearLayout>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+    <View
+        android:layout_width="@dimen/column_item_padding"
+        android:layout_height="10dp"
+        android:background="#00000000"/>
+    <tv.ismar.homepage.banner.IsmartvLinearLayout
+        android:id="@+id/conlumn_ismartv_linear_layout"
+        android:layout_width="@dimen/column_item_width"
+        android:layout_height="@dimen/column_item_height"
+        android:background="#00ff00"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:foreground="@drawable/selector_item_banner_subscribe"
+        android:orientation="vertical">
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <ImageView
+                android:id="@+id/conlumn_item_poster"
+                android:layout_width="@dimen/column_item_width"
+                android:layout_height="@dimen/column_item_height"
+                android:clipChildren="false"
+                android:clipToPadding="false"
+                android:scaleType="fitXY"/>
+            <TextView
+                android:id="@+id/conlumn_item_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </FrameLayout>
+    </tv.ismar.homepage.banner.IsmartvLinearLayout>
+</LinearLayout>

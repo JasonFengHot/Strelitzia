@@ -89,6 +89,5 @@
         android:layout_toRightOf="@+id/guide_container"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/guide_switch_container_height"
-        android:layout_marginLeft="@dimen/guide_recycle_margin_left"
         android:focusable="false" />
 </RelativeLayout>

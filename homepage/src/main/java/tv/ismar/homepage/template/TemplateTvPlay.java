@@ -38,7 +38,6 @@ public class TemplateTvPlay extends Template implements BaseControl.ControlCallB
     @Override
     public void getView(View view) {
         mRecycleView = (RecyclerViewTV) view.findViewById(R.id.tv_player_recyclerview);
-        mRecycleView.addItemDecoration(new GuideAdapter.SpacesItemDecoration(10));
         LinearLayoutManagerTV tvPlayerLayoutManager = new LinearLayoutManagerTV(mContext, LinearLayoutManager.HORIZONTAL, false);
         mRecycleView.setLayoutManager(tvPlayerLayoutManager);
         mRecycleView.setSelectedItemOffset(10, 10);
@@ -55,6 +54,7 @@ public class TemplateTvPlay extends Template implements BaseControl.ControlCallB
             HomeEntity homeEntity = (HomeEntity) args[0];
             if(mAdapter == null){
                 mAdapter = new TvPlayAdapter(mContext, homeEntity.poster);
+                mAdapter.setMarginLeftEnable(true);
                 mRecycleView.setAdapter(mAdapter);
             }else {
                 mAdapter.notifyDataSetChanged();

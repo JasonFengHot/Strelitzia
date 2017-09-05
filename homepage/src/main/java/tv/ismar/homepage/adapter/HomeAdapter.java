@@ -85,7 +85,6 @@ public class HomeAdapter extends BaseAdapter{
         viewHolder.mTemplateDoubleMd.setVisibility(View.GONE);
         viewHolder.mTemplateDoubleLd.setVisibility(View.GONE);
 
-
         //TODO 根据数据标记来确定用那个模版，置为可见即可
         Bundle bundle = new Bundle();
         bundle.putString("title", mData[position].title);
@@ -94,13 +93,14 @@ public class HomeAdapter extends BaseAdapter{
         String template = mData[position].template;
 
         viewHolder.mTitle.setText(mData[position].title);
+        viewHolder.mTitle.setVisibility(View.VISIBLE);
         if(template.equals("template_guide")){//导航
-//            viewHolder.mTitle.setVisibility(View.GONE);
-//            viewHolder.mTemplateGuide.setVisibility(View.VISIBLE);
-//            new TemplateGuide(mContext).setView(viewHolder.mTemplateGuide, bundle);
+            viewHolder.mTitle.setVisibility(View.INVISIBLE);
+            viewHolder.mTemplateGuide.setVisibility(View.VISIBLE);
+            new TemplateGuide(mContext).setView(viewHolder.mTemplateGuide, bundle);
             //TODO 测试代码
-            viewHolder.mTemplateDoubleMd.setVisibility(View.VISIBLE);
-            new TemplateDoubleMd(mContext).setView(viewHolder.mTemplateDoubleMd, bundle);
+//            viewHolder.mTemplateDoubleMd.setVisibility(View.VISIBLE);
+//            new TemplateDoubleMd(mContext).setView(viewHolder.mTemplateDoubleMd, bundle);
         } else if(template.equals("template_order")){//订阅模版
             viewHolder.mTemplateOrder.setVisibility(View.VISIBLE);
             new TemplateOrder(mContext).setView(viewHolder.mTemplateOrder, bundle);
@@ -114,7 +114,7 @@ public class HomeAdapter extends BaseAdapter{
             viewHolder.mTemplate519.setVisibility(View.VISIBLE);
             new Template519(mContext).setView(viewHolder.mTemplate519, bundle);
         }else if(template.equals("template_conlumn")){//栏目模版
-            viewHolder.mTitle.setVisibility(View.GONE);
+            viewHolder.mTitle.setVisibility(View.INVISIBLE);
             viewHolder.mTemplateConlumn.setVisibility(View.VISIBLE);
             new TemplateConlumn(mContext).setView(viewHolder.mTemplateConlumn, bundle);
         }else if(template.equals("template_big_small_ld")){//大横小竖模版

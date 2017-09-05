@@ -29,6 +29,7 @@ public class TvPlayAdapter extends RecyclerView.Adapter<TvPlayAdapter.TvPlayerVi
 
     private Context mContext;
     private List<BannerPoster> mData;
+    private boolean mMarginLeftEnable = false;
 
     public TvPlayAdapter(Context context, List<BannerPoster> data){
         this.mContext = context;
@@ -43,6 +44,7 @@ public class TvPlayAdapter extends RecyclerView.Adapter<TvPlayAdapter.TvPlayerVi
 
     @Override
     public void onBindViewHolder(TvPlayerViewHolder holder, int position) {
+        holder.mMarginLeftView.setVisibility(mMarginLeftEnable? View.VISIBLE:View.GONE);
         BannerPoster poster = mData.get(position);
         Picasso.with(mContext).load(poster.poster_url).into(holder.mPosterIg);
 //        Picasso.with(mContext).load(poster.poster_url).into(holder.mLtIconTv);
@@ -55,11 +57,16 @@ public class TvPlayAdapter extends RecyclerView.Adapter<TvPlayAdapter.TvPlayerVi
         return (mData!=null)? mData.size():0;
     }
 
+    public void setMarginLeftEnable(boolean enable){
+        this.mMarginLeftEnable = enable;
+    }
+
     public static class TvPlayerViewHolder extends RecyclerView.ViewHolder implements View.OnFocusChangeListener{
         public ImageView mPosterIg;//海报
         public ImageView mLtIconTv;//左上icon
         public ImageView mRbIconTv;//右下icon
         public TextView mTitleTv;//标题
+        public View mMarginLeftView;//左边距
 
         public TvPlayerViewHolder(View itemView) {
             super(itemView);
@@ -67,6 +74,7 @@ public class TvPlayAdapter extends RecyclerView.Adapter<TvPlayAdapter.TvPlayerVi
             mLtIconTv = (ImageView) itemView.findViewById(R.id.tv_player_item_lt_icon);
             mRbIconTv = (ImageView) itemView.findViewById(R.id.tv_player_item_rb_icon);
             mTitleTv = (TextView) itemView.findViewById(R.id.tv_player_item_title);
+            mMarginLeftView = itemView.findViewById(R.id.tv_player_margin_left);
         }
 
         private void scaleToLarge(View view) {
