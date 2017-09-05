@@ -667,7 +667,6 @@
 <dimen name="guide_swithc_container_icon_padding">14.07dp</dimen>
 <dimen name="guide_swithc_container_icon_margin_top">5.19dp</dimen>
 <dimen name="guide_swithc_container_icon_margin_bottom">5.93dp</dimen>
-<dimen name="guide_recycle_margin_left">44.44dp</dimen>
 <dimen name="guide_recycle_item_padding">44.44dp</dimen>
 <dimen name="guide_recycle_item_width">262.96dp</dimen>
 <dimen name="guide_recycle_item_height">368.89dp</dimen>
@@ -678,7 +677,7 @@
 <dimen name="guide_recycle_item_rb_margin_bottom">5.93dp</dimen>
 
 <!--电视剧尺�?-->
-<dimen name="tv_player_recycleview_margin_left">74.07dp</dimen>
+<dimen name="tv_player_recycleview_margin_left">44.44dp</dimen>
 <dimen name="tv_play_recycleview_item_padding">29.63dp</dimen>
 <dimen name="tv_play_poster_height">160.00dp</dimen>
 <dimen name="tv_play_poster_width">284.44dp</dimen>
@@ -694,6 +693,7 @@
 <dimen name="column_item_padding">29.63dp</dimen>
 <dimen name="column_item_margin_left">74.07dp</dimen>
 <!--竖版双行尺寸-->
+<dimen name="double_ld_margin_left">74.07dp</dimen>
 <dimen name="double_ld_img_height">570.37dp</dimen>
 <dimen name="double_ld_img_width">416.30dp</dimen>
 <dimen name="double_ld_img_lt_size">80.74dp</dimen>
@@ -702,7 +702,8 @@
 <dimen name="double_ld_img_rb_tv_width">45.93dp</dimen>
 <dimen name="double_ld_img_rb_tv_height">31.85dp</dimen>
 <dimen name="double_ld_img_rb_title_height">34.81dp</dimen>
-<dimen name="double_ld_poster_height">269.63dp</dimen>
+<dimen name="double_ld_poster_height1">269.63dp</dimen>
+<dimen name="double_ld_poster_height2">300.74dp</dimen>
 <dimen name="double_ld_poster_width">192.59dp</dimen>
 <dimen name="double_ld_poster_lt_size">80.74dp</dimen>
 <dimen name="double_ld_poster_rb_width">57.78dp</dimen>
@@ -712,23 +713,30 @@
 <dimen name="double_ld_poster_title_size">28.89dp</dimen>
 <dimen name="double_ld_poster_padding">31.11dp</dimen>
 <!--横版双行尺寸-->
-<dimen name="double_md_img_height">570.37dp</dimen>
-<dimen name="double_md_img_width">416.30dp</dimen>
+<dimen name="double_md_margin_left">74.07dp</dimen>
+<dimen name="double_md_img_height">312.59dp</dimen>
+<dimen name="double_md_img_width">533.33dp</dimen>
 <dimen name="double_md_img_lt_size">80.74dp</dimen>
 <dimen name="double_md_img_rb_icon_width">57.78dp</dimen>
 <dimen name="double_md_img_rb_icon_height">29.63dp</dimen>
 <dimen name="double_md_img_rb_tv_width">45.93dp</dimen>
 <dimen name="double_md_img_rb_tv_height">31.85dp</dimen>
 <dimen name="double_md_img_rb_title_height">34.81dp</dimen>
-<dimen name="double_md_poster_height">269.63dp</dimen>
-<dimen name="double_md_poster_width">192.59dp</dimen>
+<dimen name="double_md_poster_height1">142.96dp</dimen>
+<dimen name="double_md_poster_height2">174.07dp</dimen>
+<dimen name="double_md_poster_width">253.33dp</dimen>
 <dimen name="double_md_poster_lt_size">80.74dp</dimen>
 <dimen name="double_md_poster_rb_width">57.78dp</dimen>
 <dimen name="double_md_poster_rb_margin_bottom">7.41dp</dimen>
 <dimen name="double_md_poster_rb_height">29.63dp</dimen>
 <dimen name="double_md_poster_title_height">34.81dp</dimen>
 <dimen name="double_md_poster_title_size">28.89dp</dimen>
-<dimen name="double_md_poster_padding">31.11dp</dimen>
-
+<dimen name="double_md_poster_padding">26.67dp</dimen>
+<!--居中模版-->
+<dimen name="center_poster_width">605.19dp</dimen>
+<dimen name="center_poster_height">340.00dp</dimen>
+<dimen name="center_title_height">34.81dp</dimen>
+<dimen name="center_title_size">28.89dp</dimen>
+<dimen name="center_padding">111.11dp</dimen>
 <!--首页 end-->
 </resources>

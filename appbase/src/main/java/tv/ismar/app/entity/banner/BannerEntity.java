@@ -18,11 +18,20 @@ public class BannerEntity {
      */
 
     private int count;
+    private int count_pages;
     private int num_pages;
     private String template;
     private int pk;
     private List<?> carousels;
     private List<PosterBean> poster;
+
+    public int getCount_pages() {
+        return count_pages;
+    }
+
+    public void setCount_pages(int count_pages) {
+        this.count_pages = count_pages;
+    }
 
     public int getCount() {
         return count;

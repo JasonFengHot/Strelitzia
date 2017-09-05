@@ -21,60 +21,46 @@ import static android.view.View.SCALE_Y;
 
 /**
  * @AUTHOR: xi
- * @DATE: 2017/8/31
- * @DESC: 电视剧适配器
+ * @DATE: 2017/8/29
+ * @DESC: 居中RecyclerView适配器
  */
 
-public class TvPlayAdapter extends RecyclerView.Adapter<TvPlayAdapter.TvPlayerViewHolder>{
+public class CenterAdapter extends RecyclerView.Adapter<CenterAdapter.CenterViewHolder> {
 
     private Context mContext;
     private List<BannerPoster> mData;
-    private boolean mMarginLeftEnable = false;
 
-    public TvPlayAdapter(Context context, List<BannerPoster> data){
+    public CenterAdapter(Context context, List<BannerPoster> data){
         this.mContext = context;
         this.mData = data;
     }
 
     @Override
-    public TvPlayAdapter.TvPlayerViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.banner_tv_player_item,parent,false);
-        return new TvPlayerViewHolder(view);
+    public CenterViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(mContext).inflate(R.layout.banner_center_item,parent,false);
+        return new CenterViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(TvPlayerViewHolder holder, int position) {
-        holder.mMarginLeftView.setVisibility(mMarginLeftEnable? View.VISIBLE:View.GONE);
+    public void onBindViewHolder(CenterViewHolder holder, int position) {
         BannerPoster poster = mData.get(position);
-        Picasso.with(mContext).load(poster.poster_url).into(holder.mPosterIg);
-//        Picasso.with(mContext).load(poster.poster_url).into(holder.mLtIconTv);
-//        Picasso.with(mContext).load(poster.poster_url).into(holder.mRbIconTv);
-        holder.mTitleTv.setText(poster.title);
+        holder.mTitle.setText(poster.title);
+        Picasso.with(mContext).load(poster.poster_url).into(holder.mPoster);
     }
 
     @Override
     public int getItemCount() {
-        return (mData!=null)? mData.size():0;
+        return (mData!=null)? mData.size() : 0;
     }
 
-    public void setMarginLeftEnable(boolean enable){
-        this.mMarginLeftEnable = enable;
-    }
+    public static class CenterViewHolder extends RecyclerView.ViewHolder implements View.OnFocusChangeListener{
+        public TextView mTitle;
+        public ImageView mPoster;
 
-    public static class TvPlayerViewHolder extends RecyclerView.ViewHolder implements View.OnFocusChangeListener{
-        public ImageView mPosterIg;//海报
-        public ImageView mLtIconTv;//左上icon
-        public ImageView mRbIconTv;//右下icon
-        public TextView mTitleTv;//标题
-        public View mMarginLeftView;//左边距
-
-        public TvPlayerViewHolder(View itemView) {
+        public CenterViewHolder(View itemView) {
             super(itemView);
-            mPosterIg = (ImageView) itemView.findViewById(R.id.tv_player_item_poster);
-            mLtIconTv = (ImageView) itemView.findViewById(R.id.tv_player_item_lt_icon);
-            mRbIconTv = (ImageView) itemView.findViewById(R.id.tv_player_item_rb_icon);
-            mTitleTv = (TextView) itemView.findViewById(R.id.tv_player_item_title);
-            mMarginLeftView = itemView.findViewById(R.id.tv_player_margin_left);
+            mTitle = (TextView) itemView.findViewById(R.id.center_item_title);
+            mPoster = (ImageView) itemView.findViewById(R.id.center_item_poster);
         }
 
         private void scaleToLarge(View view) {
@@ -99,15 +85,14 @@ public class TvPlayAdapter extends RecyclerView.Adapter<TvPlayAdapter.TvPlayerVi
         @Override
         public void onFocusChange(View v, boolean hasFocus) {
             if (hasFocus) {
-                scaleToLarge(v.findViewById(R.id.guide_ismartv_linear_layout));
+                scaleToLarge(v.findViewById(R.id.conlumn_ismartv_linear_layout));
                 v.findViewById(R.id.title).setSelected(true);
                 v.findViewById(R.id.introduction).setSelected(true);
             } else {
-                scaleToNormal(v.findViewById(R.id.guide_ismartv_linear_layout));
+                scaleToNormal(v.findViewById(R.id.conlumn_ismartv_linear_layout));
                 v.findViewById(R.id.title).setSelected(false);
                 v.findViewById(R.id.introduction).setSelected(false);
             }
         }
     }
-
 }

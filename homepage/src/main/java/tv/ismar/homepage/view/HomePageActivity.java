@@ -95,6 +95,7 @@ import tv.ismar.app.util.NetworkUtils;
 import tv.ismar.app.util.SPUtils;
 import tv.ismar.app.util.SystemFileUtil;
 import tv.ismar.app.widget.ExpireAccessTokenPop;
+import tv.ismar.app.widget.Login_hint_dialog;
 import tv.ismar.app.widget.ModuleMessagePopWindow;
 import tv.ismar.homepage.R;
 import tv.ismar.homepage.banner.adapter.BannerHorizontal519Adapter;
@@ -117,7 +118,7 @@ import tv.ismar.player.gui.PlaybackService;
 /**
  * Created by huaijie on 5/18/15.
  */
-public class HomePageActivity extends BaseActivity implements LinearLayoutManagerTV.FocusSearchFailedListener{
+public class HomePageActivity extends BaseActivity implements LinearLayoutManagerTV.FocusSearchFailedListener {
     private static final String TAG = "LH/HomePageActivity";
     private static final int SWITCH_PAGE = 0X01;
     private static final int SWITCH_PAGE_FROMLAUNCH = 0X02;
@@ -181,6 +182,12 @@ public class HomePageActivity extends BaseActivity implements LinearLayoutManage
 
     private List<BannerEntity.PosterBean> subscribePosterBeanList;
     private BannerSubscribeAdapter subscribeAdapter;
+//    private int subscribeTotalCount;
+//    private int subscribeTotalPage;
+
+
+    private View subscribeArrowLeft;
+    private View subscribeArrowRight;
 
 
     private void handlerSwitchPage(int position) {
@@ -482,35 +489,18 @@ public class HomePageActivity extends BaseActivity implements LinearLayoutManage
         LinearLayoutManagerTV subscribeLayoutManager = new LinearLayoutManagerTV(this, LinearLayoutManager.HORIZONTAL, false);
         subscribeBanner.addItemDecoration(new BannerSubscribeAdapter.SpacesItemDecoration(20));
         subscribeBanner.setLayoutManager(subscribeLayoutManager);
-//        subscribeBanner.setSelectedItemAtCentered(false);
+        subscribeBanner.setSelectedItemAtCentered(false);
         subscribeBanner.setSelectedItemOffset(100, 100);
-//        subscribeBanner.setOnKeyListener(new View.OnKeyListener() {
-//            @Override
-//            public boolean onKey(View v, int keyCode, KeyEvent event) {
-//                Log.d(TAG, "setOnKeyListener");
-//                return false;
-//            }
-//        });
-
-//        Observable.create(new KeyEventObservable(subscribeBanner))
-//                .throttleLast(1, TimeUnit.SECONDS)
-//                .subscribeOn(AndroidSchedulers.mainThread())
-//                .subscribe(new Observer<KeyEvent>() {
-//                    @Override
-//                    public void onCompleted() {
-//
-//                    }
-//
-//                    @Override
-//                    public void onError(Throwable e) {
-//
-//                    }
-//
-//                    @Override
-//                    public void onNext(KeyEvent keyEvent) {
-//
-//                    }
-//                });
+        subscribeBanner.setPagingableListener(new RecyclerViewTV.PagingableListener() {
+            @Override
+            public void onLoadMoreItems() {
+                Log.d("PagingableListener", "onLoadMoreItems");
+                int currentPageNumber = subscribeAdapter.getCurrentPageNumber();
+                if (currentPageNumber < subscribeAdapter.getTotalPageCount()){
+                    fetchSubscribeBanner(currentPageNumber + 1);
+                }
+            }
+        });
 
         subscribeLayoutManager.setFocusSearchFailedListener(new LinearLayoutManagerTV.FocusSearchFailedListener() {
             @Override
@@ -520,7 +510,7 @@ public class HomePageActivity extends BaseActivity implements LinearLayoutManage
                     if (subscribeBanner.getChildAt(0).findViewById(R.id.item_layout) == view ||
                             subscribeBanner.getChildAt(subscribeBanner.getChildCount() - 1).findViewById(R.id.item_layout) == view) {
                         YoYo.with(Techniques.HorizontalShake).duration(1000).playOn(view);
-                    }else {
+                    } else {
 //                        if (focusDirection == View.FOCUS_RIGHT){
 //                            subscribeBanner.smoothScrollBy(10, 0);
 //                        }else if (focusDirection == View.FOCUS_LEFT){
@@ -533,8 +523,6 @@ public class HomePageActivity extends BaseActivity implements LinearLayoutManage
                 return null;
             }
         });
-
-
 
 
         movieBanner = (RecyclerViewTV) findViewById(R.id.movie_banner);
@@ -593,11 +581,88 @@ public class HomePageActivity extends BaseActivity implements LinearLayoutManage
                     return view;
                 }
 
-                if (focusDirection == View.FOCUS_DOWN){
+                if (focusDirection == View.FOCUS_DOWN) {
                     YoYo.with(Techniques.VerticalShake).duration(1000).playOn(view);
                     return view;
                 }
                 return null;
+            }
+        });
+
+        subscribeBanner.setOnHoverListener(new View.OnHoverListener() {
+            @Override
+            public boolean onHover(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_HOVER_ENTER:
+                    case MotionEvent.ACTION_HOVER_MOVE:
+                        if (subscribeArrowLeft.getVisibility() == View.INVISIBLE){
+                            subscribeArrowLeft.setVisibility(View.VISIBLE);
+                        }
+                        if (subscribeArrowRight.getVisibility() == View.INVISIBLE){
+                            subscribeArrowRight.setVisibility(View.VISIBLE);
+                        }
+                        break;
+                    case MotionEvent.ACTION_HOVER_EXIT:
+                        if (subscribeArrowLeft.getVisibility() == View.VISIBLE){
+                            subscribeArrowLeft.setVisibility(View.INVISIBLE);
+                        }
+                        if (subscribeArrowRight.getVisibility() == View.VISIBLE){
+                            subscribeArrowRight.setVisibility(View.INVISIBLE);
+                        }
+                        break;
+                }
+                return false;
+            }
+        });
+
+        subscribeArrowLeft = findViewById(R.id.subscribe_arrow_left);
+        subscribeArrowLeft.setOnHoverListener(new View.OnHoverListener() {
+            @Override
+            public boolean onHover(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_HOVER_MOVE:
+                    case MotionEvent.ACTION_HOVER_ENTER:
+                        v.findViewById(R.id.banner_arrow_left_normal).setVisibility(View.INVISIBLE);
+                        v.findViewById(R.id.banner_arrow_left_focus).setVisibility(View.VISIBLE);
+                        break;
+                    case MotionEvent.ACTION_HOVER_EXIT:
+                        v.findViewById(R.id.banner_arrow_left_focus).setVisibility(View.INVISIBLE);
+                        v.findViewById(R.id.banner_arrow_left_normal).setVisibility(View.VISIBLE);
+                        break;
+                }
+                return false;
+            }
+        });
+        subscribeArrowLeft.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                subscribeBanner.smoothScrollBy(-400, 0);
+            }
+        });
+
+        subscribeArrowRight = findViewById(R.id.subscribe_arrow_right);
+        subscribeArrowRight.setOnHoverListener(new View.OnHoverListener() {
+            @Override
+            public boolean onHover(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_HOVER_MOVE:
+                    case MotionEvent.ACTION_HOVER_ENTER:
+                        v.findViewById(R.id.banner_arrow_right_normal).setVisibility(View.INVISIBLE);
+                        v.findViewById(R.id.banner_arrow_right_focus).setVisibility(View.VISIBLE);
+                        break;
+                    case MotionEvent.ACTION_HOVER_EXIT:
+                        v.findViewById(R.id.banner_arrow_right_focus).setVisibility(View.INVISIBLE);
+                        v.findViewById(R.id.banner_arrow_right_normal).setVisibility(View.VISIBLE);
+                        break;
+                }
+                return false;
+            }
+        });
+
+        subscribeArrowRight.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                subscribeBanner.smoothScrollBy(400, 0);
             }
         });
     }
@@ -760,10 +825,47 @@ public class HomePageActivity extends BaseActivity implements LinearLayoutManage
     }
 
     private void fetchSubscribeBanner() {
-        bannerSubscribeSub = SkyService.ServiceManager.getLocalTestService().apiTvBanner("overseasbanner", "1")
+        fetchSubscribeBanner(1);
+    }
+
+    Handler mFocusHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            int mSavePos = msg.what;
+            subscribeBanner.setDefaultSelect(mSavePos + 1);
+            Log.d("mFocusHandler", "setDefaultSelect: " + (mSavePos + 1));
+        }
+    };
+
+    private void fetchSubscribeBanner(final int pageNumber) {
+        if (pageNumber != 1){
+            int startIndex = (pageNumber - 1) * 33;
+            int endIndex;
+            if (pageNumber == subscribeAdapter.getTotalPageCount()) {
+                endIndex = subscribeAdapter.getTatalItemCount() - 1;
+            } else {
+                endIndex = pageNumber * 33 - 1;
+            }
+
+            BannerEntity.PosterBean emptyPostBean = new BannerEntity.PosterBean();
+            List<BannerEntity.PosterBean> totalPostList = new ArrayList<>();
+            for (int i = startIndex; i <= endIndex; i++) {
+                totalPostList.add(emptyPostBean);
+            }
+            subscribeAdapter.addEmptyDatas(totalPostList);
+            int mSavePos = subscribeBanner.getSelectPostion();
+            subscribeAdapter.notifyItemRangeInserted(startIndex, endIndex - startIndex);
+            subscribeBanner.setOnLoadMoreComplete();
+            subscribeAdapter.setCurrentPageNumber(pageNumber);
+//            mFocusHandler.sendEmptyMessageDelayed(mSavePos, 10);
+        }
+
+        String count = String.valueOf(pageNumber);
+        bannerSubscribeSub = SkyService.ServiceManager.getLocalTestService().apiTvBanner("overseasbanner", count)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<BannerEntity>() {
+
                     @Override
                     public void onCompleted() {
 
@@ -776,9 +878,13 @@ public class HomePageActivity extends BaseActivity implements LinearLayoutManage
 
                     @Override
                     public void onNext(BannerEntity bannerEntity) {
-//                        subscribePosterBeanList = bannerEntity.getPoster();
-                        fillSubscribeBanner(bannerEntity.getPoster());
-//                        accountsItemSubscribeExists(bannerEntity.getPoster());
+                        if (pageNumber == 1){
+                            fillSubscribeBanner(bannerEntity);
+                        }else {
+                            int mSavePos = subscribeBanner.getSelectPostion();
+                            subscribeAdapter.addDatas(bannerEntity);
+//                            mFocusHandler.sendEmptyMessageDelayed(mSavePos, 10);
+                        }
                     }
                 });
     }
@@ -801,7 +907,7 @@ public class HomePageActivity extends BaseActivity implements LinearLayoutManage
 
                     @Override
                     public void onNext(BannerEntity bannerSubscribeEntities) {
-                        List<BannerEntity.PosterBean> posterBeanList =bannerSubscribeEntities.getPoster();
+                        List<BannerEntity.PosterBean> posterBeanList = bannerSubscribeEntities.getPoster();
                         fillMovieBanner(posterBeanList);
                     }
                 });
@@ -824,11 +930,12 @@ public class HomePageActivity extends BaseActivity implements LinearLayoutManage
 
                     @Override
                     public void onNext(BannerEntity bannerSubscribeEntities) {
-                        List<BannerEntity.PosterBean> posterBeanList =bannerSubscribeEntities.getPoster();
+                        List<BannerEntity.PosterBean> posterBeanList = bannerSubscribeEntities.getPoster();
                         fillHorizontal519Banner(posterBeanList);
                     }
                 });
     }
+
     private void fetchMovieMixBanner() {
         bannerSubscribeSub = SkyService.ServiceManager.getLocalTestService().apiTvBanner("chinesemoviebanner", "1")
                 .subscribeOn(Schedulers.io())
@@ -846,14 +953,17 @@ public class HomePageActivity extends BaseActivity implements LinearLayoutManage
 
                     @Override
                     public void onNext(BannerEntity bannerSubscribeEntities) {
-                        List<BannerEntity.PosterBean> posterBeanList =bannerSubscribeEntities.getPoster();
+                        List<BannerEntity.PosterBean> posterBeanList = bannerSubscribeEntities.getPoster();
                         fillMovieMixBanner(posterBeanList);
                     }
                 });
     }
 
-    private void fillSubscribeBanner(List<BannerEntity.PosterBean> posterBeanList) {
-         subscribeAdapter = new BannerSubscribeAdapter(this, posterBeanList);
+    private void fillSubscribeBanner(BannerEntity bannerEntity) {
+        subscribeAdapter = new BannerSubscribeAdapter(this, bannerEntity.getPoster());
+        subscribeAdapter.setTotalPageCount(bannerEntity.getCount_pages());
+        subscribeAdapter.setCurrentPageNumber(bannerEntity.getNum_pages());
+        subscribeAdapter.setTatalItemCount(bannerEntity.getCount());
         subscribeAdapter.setSubscribeClickListener(new BannerSubscribeAdapter.OnSubscribeClickListener() {
             @Override
             public void onSubscribeClick(int pk, String contentModel) {
@@ -862,6 +972,7 @@ public class HomePageActivity extends BaseActivity implements LinearLayoutManage
 //                accountsItemSubscribe(pk, contentModel);
             }
         });
+
         subscribeBanner.setAdapter(subscribeAdapter);
     }
 
@@ -908,7 +1019,7 @@ public class HomePageActivity extends BaseActivity implements LinearLayoutManage
                 });
     }
 
-   private int getItemId(String url) {
+    private int getItemId(String url) {
         int id = 0;
         try {
             Pattern p = Pattern.compile("/(\\d+)/?$");

@@ -39,10 +39,8 @@ public class TemplateConlumn extends Template implements BaseControl.ControlCall
     @Override
     public void getView(View view) {
         mRecyclerView = (RecyclerViewTV) view.findViewById(R.id.conlumn_recyclerview);
-        mRecyclerView.addItemDecoration(new BannerSubscribeAdapter.SpacesItemDecoration(20));
-        LinearLayoutManagerTV subscribeLayoutManager = new LinearLayoutManagerTV(mContext, LinearLayoutManager.HORIZONTAL, false);
-        mRecyclerView.setLayoutManager(subscribeLayoutManager);
-        mRecyclerView.setSelectedItemOffset(10, 10);
+        LinearLayoutManagerTV conlumnLayoutManager = new LinearLayoutManagerTV(mContext, LinearLayoutManager.HORIZONTAL, false);
+        mRecyclerView.setLayoutManager(conlumnLayoutManager);
         //如果可以确定每个item的高度是固定的，设置这个选项可以提高性能
 //        mRecyclerView.setHasFixedSize(true);
     }
@@ -57,7 +55,7 @@ public class TemplateConlumn extends Template implements BaseControl.ControlCall
         if(flags == FetchDataControl.FETCH_BANNERS_LIST_FLAG){//获取单个banner业务
             if(mAdapter == null){
                 HomeEntity homeEntity = (HomeEntity) args[0];
-                mAdapter = new ConlumnAdapter(mContext, homeEntity);
+                mAdapter = new ConlumnAdapter(mContext, homeEntity.poster);
                 mRecyclerView.setAdapter(mAdapter);
             }else {
                 mAdapter.notifyDataSetChanged();

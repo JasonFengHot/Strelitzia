@@ -1,13 +1,17 @@
 package tv.ismar.homepage;
 
 import android.app.Activity;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ListView;
 
 import tv.ismar.app.BaseControl;
 import tv.ismar.app.entity.GuideBanner;
+import tv.ismar.app.util.BitmapDecoder;
 import tv.ismar.homepage.adapter.HomeAdapter;
 import tv.ismar.homepage.control.FetchDataControl;
 
@@ -32,10 +36,22 @@ public class TestActivity extends Activity implements BaseControl.ControlCallBac
         initData();
     }
 
+    private ViewGroup mViewGroup;
+    private BitmapDecoder mBitmapDecoder;
+
     /*获取控件实例*/
     private void findViews(){
+        mViewGroup = (ViewGroup) findViewById(R.id.home_view_layout);
         mListView = (ListView) findViewById(R.id.guide_container);
         mListView.setItemsCanFocus(true);
+        mBitmapDecoder = new BitmapDecoder();
+        mBitmapDecoder.decode(this, R.drawable.homepage_background, new BitmapDecoder.Callback() {
+            @Override
+            public void onSuccess(BitmapDrawable bitmapDrawable) {
+                mViewGroup.setBackground(bitmapDrawable);
+                mBitmapDecoder = null;
+            }
+        });
     }
 
     private void initData(){

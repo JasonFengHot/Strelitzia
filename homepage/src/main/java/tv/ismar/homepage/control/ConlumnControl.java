@@ -7,7 +7,7 @@ import tv.ismar.app.BaseControl;
 /**
  * @AUTHOR: xi
  * @DATE: 2017/8/31
- * @DESC: 说明
+ * @DESC: 栏目业务逻辑类
  */
 
 public class ConlumnControl extends BaseControl {
@@ -15,6 +15,7 @@ public class ConlumnControl extends BaseControl {
 
     public ConlumnControl(Context context, ControlCallBack callBack) {
         super(context, callBack);
+        mFetchDataControl = new FetchDataControl(context, callBack);
     }
 
     /*获取单个banner内容列表*/

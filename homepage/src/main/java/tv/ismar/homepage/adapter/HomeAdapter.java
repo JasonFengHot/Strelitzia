@@ -13,6 +13,7 @@ import tv.ismar.app.entity.GuideBanner;
 import tv.ismar.homepage.R;
 import tv.ismar.homepage.template.Template519;
 import tv.ismar.homepage.template.TemplateBigSmallLd;
+import tv.ismar.homepage.template.TemplateCenter;
 import tv.ismar.homepage.template.TemplateConlumn;
 import tv.ismar.homepage.template.TemplateDoubleLd;
 import tv.ismar.homepage.template.TemplateDoubleMd;
@@ -69,6 +70,7 @@ public class HomeAdapter extends BaseAdapter{
             viewHolder.mTemplateBigSmallLd = convertView.findViewById(R.id.banner_big_small_ld);
             viewHolder.mTemplateDoubleMd = convertView.findViewById(R.id.banner_double_md);
             viewHolder.mTemplateDoubleLd = convertView.findViewById(R.id.banner_double_ld);
+            viewHolder.mTmeplateCenter = convertView.findViewById(R.id.banner_center);
 
             convertView.setTag(viewHolder);
         } else {
@@ -84,7 +86,7 @@ public class HomeAdapter extends BaseAdapter{
         viewHolder.mTemplateBigSmallLd.setVisibility(View.GONE);
         viewHolder.mTemplateDoubleMd.setVisibility(View.GONE);
         viewHolder.mTemplateDoubleLd.setVisibility(View.GONE);
-
+        viewHolder.mTmeplateCenter.setVisibility(View.GONE);
 
         //TODO 根据数据标记来确定用那个模版，置为可见即可
         Bundle bundle = new Bundle();
@@ -94,13 +96,14 @@ public class HomeAdapter extends BaseAdapter{
         String template = mData[position].template;
 
         viewHolder.mTitle.setText(mData[position].title);
+        viewHolder.mTitle.setVisibility(View.VISIBLE);
         if(template.equals("template_guide")){//导航
-//            viewHolder.mTitle.setVisibility(View.GONE);
-//            viewHolder.mTemplateGuide.setVisibility(View.VISIBLE);
-//            new TemplateGuide(mContext).setView(viewHolder.mTemplateGuide, bundle);
+            viewHolder.mTitle.setVisibility(View.INVISIBLE);
+            viewHolder.mTemplateGuide.setVisibility(View.VISIBLE);
+            new TemplateGuide(mContext).setView(viewHolder.mTemplateGuide, bundle);
             //TODO 测试代码
-            viewHolder.mTemplateTvPlay.setVisibility(View.VISIBLE);
-            new TemplateTvPlay(mContext).setView(viewHolder.mTemplateTvPlay, bundle);
+//            viewHolder.mTemplateDoubleMd.setVisibility(View.VISIBLE);
+//            new TemplateDoubleMd(mContext).setView(viewHolder.mTemplateDoubleMd, bundle);
         } else if(template.equals("template_order")){//订阅模版
             viewHolder.mTemplateOrder.setVisibility(View.VISIBLE);
             new TemplateOrder(mContext).setView(viewHolder.mTemplateOrder, bundle);
@@ -114,7 +117,7 @@ public class HomeAdapter extends BaseAdapter{
             viewHolder.mTemplate519.setVisibility(View.VISIBLE);
             new Template519(mContext).setView(viewHolder.mTemplate519, bundle);
         }else if(template.equals("template_conlumn")){//栏目模版
-            viewHolder.mTitle.setVisibility(View.GONE);
+            viewHolder.mTitle.setVisibility(View.INVISIBLE);
             viewHolder.mTemplateConlumn.setVisibility(View.VISIBLE);
             new TemplateConlumn(mContext).setView(viewHolder.mTemplateConlumn, bundle);
         }else if(template.equals("template_big_small_ld")){//大横小竖模版
@@ -126,6 +129,10 @@ public class HomeAdapter extends BaseAdapter{
         }else if(template.equals("template_double_ld")){//横版双行模版
             viewHolder.mTemplateDoubleLd.setVisibility(View.VISIBLE);
             new TemplateDoubleLd(mContext).setView(viewHolder.mTemplateDoubleLd, bundle);
+        } else if(template.equals("template_center")){//居中模版
+            viewHolder.mTitle.setVisibility(View.GONE);
+            viewHolder.mTmeplateCenter.setVisibility(View.VISIBLE);
+            new TemplateCenter(mContext).setView(viewHolder.mTmeplateCenter, bundle);
         }
 
         return convertView;
@@ -142,5 +149,6 @@ public class HomeAdapter extends BaseAdapter{
         View mTemplateBigSmallLd;//大横小竖模版
         View mTemplateDoubleMd;//竖版双行模版
         View mTemplateDoubleLd;//横版双行模版
+        View mTmeplateCenter;//居中模版
     }
 }

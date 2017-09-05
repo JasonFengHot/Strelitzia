@@ -450,7 +450,7 @@ public class RecyclerViewTV extends RecyclerView implements PrvInterface {
             isDispatch = false;
             mKeyEventHandler.sendEmptyMessageDelayed(0, 100);
             int keyCode = event.getKeyCode();
-            if (action == KeyEvent.ACTION_UP) {
+            if (action == KeyEvent.ACTION_DOWN) {
                 if (!isHorizontalLayoutManger() && keyCode == KeyEvent.KEYCODE_DPAD_DOWN) {
                     // 垂直布局向下按键.
                     exeuteKeyEvent();
@@ -478,8 +478,8 @@ public class RecyclerViewTV extends RecyclerView implements PrvInterface {
         int lastComVisiPos = findLastCompletelyVisibleItemPosition();
         int visibleItemCount = getChildCount();
         int firstVisibleItem = findFirstVisibleItemPosition();
-        // 判断是否显示最底了.
-        if (!isLoading && totalItemCount - visibleItemCount <= firstVisibleItem) {
+        // 判断是否显示最底了.提前5个item预加载
+        if (!isLoading && totalItemCount - visibleItemCount <= firstVisibleItem + 5) {
             isLoading = true;
             if (mPagingableListener != null) {
 //                OPENLOG.D(" totalItemCount: " + totalItemCount +
@@ -585,8 +585,8 @@ public class RecyclerViewTV extends RecyclerView implements PrvInterface {
      * 设置默认选中.
      */
     public void setDefaultSelect(int pos) {
-        GeneralAdapter.ViewHolder vh = (GeneralAdapter.ViewHolder) findViewHolderForAdapterPosition(pos);
-        requestFocusFromTouch();
+        ViewHolder vh =  findViewHolderForAdapterPosition(pos);
+//        requestFocusFromTouch();
         if (vh != null)
             vh.itemView.requestFocus();
     }
