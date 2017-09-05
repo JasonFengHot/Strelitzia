@@ -37,13 +37,17 @@ public class SpaceItemDecoration extends RecyclerView.ItemDecoration {
     @Override
     public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
 
-        if(view instanceof TextView){
-            outRect.bottom=spaceV/2;
-        }else if(isVertical&&(specialPos.contains(parent.getChildLayoutPosition(view)+1)||specialPos.contains(parent.getChildLayoutPosition(view)+2)||specialPos.contains(parent.getChildLayoutPosition(view)+3)||specialPos.contains(parent.getChildLayoutPosition(view)+4)||specialPos.contains(parent.getChildLayoutPosition(view)+5))) {
-            outRect.bottom=spaceV/2;
-        }else if(!isVertical&&(specialPos.contains(parent.getChildLayoutPosition(view)+1)||specialPos.contains(parent.getChildLayoutPosition(view)+2)||specialPos.contains(parent.getChildLayoutPosition(view)+3))){
-            outRect.bottom=spaceV/2;
-        }else {
+        if(specialPos!=null) {
+            if (view instanceof TextView) {
+                outRect.bottom = spaceV / 2;
+            } else if (isVertical && (specialPos.contains(parent.getChildLayoutPosition(view) + 1) || specialPos.contains(parent.getChildLayoutPosition(view) + 2) || specialPos.contains(parent.getChildLayoutPosition(view) + 3) || specialPos.contains(parent.getChildLayoutPosition(view) + 4) || specialPos.contains(parent.getChildLayoutPosition(view) + 5))) {
+                outRect.bottom = spaceV / 2;
+            } else if (!isVertical && (specialPos.contains(parent.getChildLayoutPosition(view) + 1) || specialPos.contains(parent.getChildLayoutPosition(view) + 2) || specialPos.contains(parent.getChildLayoutPosition(view) + 3))) {
+                outRect.bottom = spaceV / 2;
+            } else {
+                outRect.bottom = spaceV;
+            }
+        }else{
             outRect.bottom=spaceV;
         }
         outRect.left = spaceH;

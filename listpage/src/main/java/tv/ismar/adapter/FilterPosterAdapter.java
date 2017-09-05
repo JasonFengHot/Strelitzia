@@ -199,7 +199,7 @@ public class FilterPosterAdapter extends RecyclerView.Adapter<FilterPosterAdapte
         if(mTotalItemCount!=0) {
             return mTotalItemCount;
         }else{
-            return mItemList.count;
+            return mItemList.objects.size();
         }
     }
 

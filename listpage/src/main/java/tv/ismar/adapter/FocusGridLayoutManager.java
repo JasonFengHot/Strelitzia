@@ -21,6 +21,7 @@ public class FocusGridLayoutManager extends GridLayoutManager {
 
     private ArrayList<Integer> specialPos;
     private View leftFocusView;
+    private View upFocusView;
 
     public FocusGridLayoutManager(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
@@ -90,8 +91,15 @@ public class FocusGridLayoutManager extends GridLayoutManager {
 
         // Need to be called in order to layout new row/column
         View nextFocus = super.onFocusSearchFailed(focused, focusDirection, recycler, state);
-        if (nextFocus == null&&focusDirection!=View.FOCUS_RIGHT) {
-            return leftFocusView;
+//        if (nextFocus == null&&focusDirection!=View.FOCUS_RIGHT) {
+//            return leftFocusView;
+//        }
+        if (nextFocus == null){
+            if(focusDirection==View.FOCUS_LEFT){
+                return leftFocusView;
+            }else if(focusDirection==View.FOCUS_UP&&upFocusView!=null){
+                return upFocusView;
+            }
         }
         /**
          * 获取当前焦点的位置
@@ -198,4 +206,9 @@ public class FocusGridLayoutManager extends GridLayoutManager {
     public void setLeftFocusView(View leftFocusView) {
         this.leftFocusView = leftFocusView;
     }
+
+    public void setUpFocusView(View upFocusView) {
+        this.upFocusView = upFocusView;
+    }
+
 }
