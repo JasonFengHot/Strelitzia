@@ -34,14 +34,9 @@ public class ListTestActivity extends BaseActivity {
         mSkyService.apiTvChannels()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<ChannelEntity[]>() {
+                .subscribe(new BaseObserver<ChannelEntity[]>() {
                     @Override
                     public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
 
                     }
 

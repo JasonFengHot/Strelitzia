@@ -3,13 +3,67 @@
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+    <tv.ismar.homepage.banner.IsmartvLinearLayout
+        android:id="@+id/double_ld_vertical_img"
+        android:layout_width="@dimen/double_ld_img_width"
+        android:layout_height="@dimen/double_ld_img_height"
+        android:background="#00ff00"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:layout_marginLeft="@dimen/double_ld_margin_left"
+        android:foreground="@drawable/selector_item_banner_subscribe"
+        android:orientation="vertical">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <ImageView
+                android:id="@+id/double_ld_image_poster"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clipChildren="false"
+                android:clipToPadding="false"
+                android:scaleType="fitXY"/>
+            <ImageView
+                android:id="@+id/double_ld_image_lt_icon"
+                android:layout_gravity="left|top"
+                android:layout_width="@dimen/double_ld_img_lt_size"
+                android:layout_height="@dimen/double_ld_img_lt_size" />
+            <ImageView
+                android:id="@+id/double_ld_image_rb_icon"
+                android:gravity="right|bottom"
+                android:textColor="#ffffff"
+                android:textSize="@dimen/double_ld_poster_title_size"
+                android:layout_above="@+id/double_ld_image_title"
+                android:layout_marginBottom="@dimen/double_ld_poster_rb_margin_bottom"
+                android:layout_width="@dimen/double_ld_img_rb_icon_width"
+                android:layout_height="@dimen/double_ld_img_rb_icon_height" />
+            <TextView
+                android:id="@+id/double_ld_image_title"
+                android:textColor="#ffffff"
+                android:textSize="@dimen/double_ld_poster_title_size"
+                android:layout_alignParentBottom="true"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/double_ld_img_rb_title_height" />
+        </RelativeLayout>
+    </tv.ismar.homepage.banner.IsmartvLinearLayout>
 
-    <ImageView
-        android:id="@+id/double_md_horizontal_img"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
-    <GridView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <com.open.androidtvwidget.leanback.recycle.RecyclerViewTV
+            android:id="@+id/double_ld_recyclerview1"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/double_ld_poster_height"
+            android:layout_marginLeft="@dimen/double_ld_poster_padding"
+            android:focusable="false" />
+        <com.open.androidtvwidget.leanback.recycle.RecyclerViewTV
+            android:id="@+id/double_ld_recyclerview2"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/double_ld_poster_height"
+            android:layout_marginLeft="@dimen/double_ld_poster_padding"
+            android:focusable="false" />
+    </LinearLayout>
 </LinearLayout>

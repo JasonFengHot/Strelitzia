@@ -155,18 +155,18 @@ public interface SkyService {
             @Path("section") String Section
     );
 
-    @GET("http://sky.tvxio.bestv.com.cn/v4_0/SKY2/touc/api/tv/retrieval/{channel}")
+    @GET("api/tv/retrieval/{channel}")
     Observable<FilterConditions> getFilters(
             @Path("channel") String channel
     );
 
-    @GET("http://sky.tvxio.bestv.com.cn/v4_0/SKY2/touc/api/tv/filtrate/${content_model}/{filterCondition}/1/")
+    @GET("api/tv/filtrate/${content_model}/{filterCondition}/1/")
     Observable<ItemList> getFilterRequest(
             @Path("content_model") String channel,
             @Path("filterCondition") String filterCondition
     );
 
-    @GET("http://sky.tvxio.bestv.com.cn/v4_0/SKY2/touc/api/tv/filtrate/${movie}/{area}/{page}/")
+    @GET("api/tv/filtrate/${movie}/{area}/{page}/")
     Observable<ItemList> getFilterRequestNodata(
             @Path("movie") String movie,
             @Path("area") String area,
@@ -188,13 +188,16 @@ public interface SkyService {
             @Path("page") int page
     );
 
-    @GET("http://sky.tvxio.bestv.com.cn/v4_0/SKY2/touc/api/tv/sections/{channel}/")
+    @GET("api/tv/sections/{channel}/")
     Observable<SectionList> getSections(
             @Path("channel") String channel
     );
 
-    @GET("api/histories/")
+    @GET("api/v3/histories/")
     Observable<Item[]> getHistoryByNet(
+    );
+    @GET("api/v3/histories/")
+    Observable<ResponseBody> getHistoryByNetV3(
     );
 
     @FormUrlEncoded
@@ -205,6 +208,9 @@ public interface SkyService {
 
     @GET("api/bookmarks/")
     Observable<Item[]> getBookmarks(
+    );
+    @GET("api/v3/bookmarks/")
+    Observable<ResponseBody> getBookmarksV3(
     );
 
     @FormUrlEncoded
@@ -257,6 +263,12 @@ public interface SkyService {
     @POST("api/bookmarks/remove/")
     Observable<ResponseBody> apiBookmarksRemove(
             @Field("item") String item
+    );
+    @FormUrlEncoded
+    @POST("api/histories/remove/")
+    Observable<ResponseBody> apiHistoryRemove(
+            @Field("item") int item,
+            @Field("subitem") int subitem
     );
 
     @GET("api/tv/relate/{pk}/")

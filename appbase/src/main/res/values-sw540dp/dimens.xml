@@ -647,6 +647,13 @@
 <dimen name="guide_title_person_center_margin_time">41.50dp</dimen>
 <dimen name="guide_title_history_margin_person_center">112.50dp</dimen>
 
+<!--频道title尺寸-->
+<dimen name="channel_title_size">31.50dp</dimen>
+<dimen name="channel_title_margin_left">48.00dp</dimen>
+<dimen name="channel_title_margin_right">5.00dp</dimen>
+<dimen name="channel_title_margin_top">8.00dp</dimen>
+<dimen name="channel_title_margin_bottom">8.50dp</dimen>
+
 <!--导视尺寸-->
 <dimen name="guide_switch_container_margin_left">50.00dp</dimen>
 <dimen name="guide_switch_container_width">593.00dp</dimen>
@@ -687,6 +694,7 @@
 <dimen name="column_item_padding">20.00dp</dimen>
 <dimen name="column_item_margin_left">50.00dp</dimen>
 <!--竖版双行尺寸-->
+<dimen name="double_ld_margin_left">50.00dp</dimen>
 <dimen name="double_ld_img_height">385.00dp</dimen>
 <dimen name="double_ld_img_width">281.00dp</dimen>
 <dimen name="double_ld_img_lt_size">54.50dp</dimen>
@@ -705,6 +713,7 @@
 <dimen name="double_ld_poster_title_size">19.50dp</dimen>
 <dimen name="double_ld_poster_padding">21.00dp</dimen>
 <!--横版双行尺寸-->
+<dimen name="double_md_margin_left">50.00dp</dimen>
 <dimen name="double_md_img_height">385.00dp</dimen>
 <dimen name="double_md_img_width">281.00dp</dimen>
 <dimen name="double_md_img_lt_size">54.50dp</dimen>
@@ -713,7 +722,8 @@
 <dimen name="double_md_img_rb_tv_width">31.00dp</dimen>
 <dimen name="double_md_img_rb_tv_height">21.50dp</dimen>
 <dimen name="double_md_img_rb_title_height">23.50dp</dimen>
-<dimen name="double_md_poster_height">182.00dp</dimen>
+<dimen name="double_md_poster_height1">182.00dp</dimen>
+<dimen name="double_md_poster_height2">203.00dp</dimen>
 <dimen name="double_md_poster_width">130.00dp</dimen>
 <dimen name="double_md_poster_lt_size">54.50dp</dimen>
 <dimen name="double_md_poster_rb_width">39.00dp</dimen>
@@ -722,6 +732,6 @@
 <dimen name="double_md_poster_title_height">23.50dp</dimen>
 <dimen name="double_md_poster_title_size">19.50dp</dimen>
 <dimen name="double_md_poster_padding">21.00dp</dimen>
-
+<dimen name="double_md_poster_padding_top">21.00dp</dimen>
 <!--首页 end-->
 </resources>

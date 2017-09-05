@@ -45,8 +45,8 @@ public class TvPlayAdapter extends RecyclerView.Adapter<TvPlayAdapter.TvPlayerVi
     public void onBindViewHolder(TvPlayerViewHolder holder, int position) {
         BannerPoster poster = mData.get(position);
         Picasso.with(mContext).load(poster.poster_url).into(holder.mPosterIg);
-        Picasso.with(mContext).load(poster.poster_url).into(holder.mLtIconTv);
-        Picasso.with(mContext).load(poster.poster_url).into(holder.mRbIconTv);
+//        Picasso.with(mContext).load(poster.poster_url).into(holder.mLtIconTv);
+//        Picasso.with(mContext).load(poster.poster_url).into(holder.mRbIconTv);
         holder.mTitleTv.setText(poster.title);
     }
 

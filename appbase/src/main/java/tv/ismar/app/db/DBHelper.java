@@ -39,7 +39,7 @@ public class DBHelper extends SQLiteOpenHelper {
             "'last_quality' INTEGER DEFAULT(1), 'is_complex' INTEGER DEFAULT(0), 'is_continue' INTEGER DEFAULT(0), 'sub_url' TEXT,'isnet' TEXT NOT NULL,'price' INTEGER DEFAULT(0),'cpid' INTEGER DEFAULT(1),'cpname' TEXT,'cptitle' TEXT,'paytype' INTEGER DEFAULT(1))";
     private static final String CREATE_FAVORITE_TABLE = "CREATE TABLE IF NOT EXISTS 'favorite_table' " +
             "('_id' INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, 'title' TEXT NOT NULL, 'url' TEXT NOT NULL, 'content_model' TEXT, " +
-            "'adlet_url' TEXT, 'quality' INTEGER DEFAULT(1), 'is_complex' INTEGER DEFAULT(0),'isnet' TEXT NOT NULL,'cpid' INTEGER DEFAULT(1),'cpname' TEXT,'cptitle' TEXT,'paytype' INTEGER DEFAULT(1))";
+            "'adlet_url' TEXT, 'quality' INTEGER DEFAULT(1), 'is_complex' INTEGER DEFAULT(0),'isnet' TEXT NOT NULL,'cpid' INTEGER DEFAULT(1),'cpname' TEXT,'cptitle' TEXT,'paytype' INTEGER DEFAULT(1),'favorite_time' TEXT)";
     private static final String CREATE_QUALITY_TABLE = "CREATE TABLE IF NOT EXISTS 'quality_table' " +
             "('_id' INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, 'url' TEXT NOT NULL,  'quality' INTEGER DEFAULT(1))";
 
@@ -83,6 +83,7 @@ public class DBHelper extends SQLiteOpenHelper {
             public static final String CPNAME = "cpname";
             public static final String CPTITLE = "cptitle";
             public static final String PAYTYPE = "paytype";
+            public static final String FAVORITE_TIME ="favorite_time";
         }
 
         public static interface QualityTable extends BaseColumns {
@@ -231,6 +232,7 @@ public class DBHelper extends SQLiteOpenHelper {
         cv.put(DBFields.FavoriteTable.IS_COMPLEX, favorite.is_complex ? 1 : 0);
         cv.put(DBFields.FavoriteTable.CONTENT_MODEL, favorite.content_model);
         cv.put(DBFields.FavoriteTable.ISNET, favorite.isnet);
+        cv.put(DBFields.FavoriteTable.FAVORITE_TIME, favorite.time);
         cv.put(DBFields.HistroyTable.CPID, favorite.cpid);
         cv.put(DBFields.HistroyTable.CPNAME, favorite.cpname);
         cv.put(DBFields.HistroyTable.CPTITLE, favorite.cptitle);

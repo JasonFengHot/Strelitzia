@@ -22,13 +22,14 @@ public class Favorite implements Serializable {
     public String cpname;
     public String cptitle;
     public int paytype;
+    public String time;
 
     public Favorite() {
         super();
     }
 
     public Favorite(long id, String title, String url, String adlet_url,
-                    int quality, boolean is_complex, String content_model, String isNet, int cpid, String cpname, String cptitle, int paytype) {
+                    int quality, boolean is_complex, String content_model, String isNet, int cpid, String cpname, String cptitle, int paytype,String time) {
         super();
         this.id = id;
         this.title = title;
@@ -42,6 +43,7 @@ public class Favorite implements Serializable {
         this.cpname = cpname;
         this.cptitle = cptitle;
         this.paytype = paytype;
+        this.time=time;
     }
 
 
@@ -58,6 +60,7 @@ public class Favorite implements Serializable {
         cpname = c.getString(c.getColumnIndex(DBFields.FavoriteTable.CPNAME));
         cptitle = c.getString(c.getColumnIndex(DBFields.FavoriteTable.CPTITLE));
         paytype = c.getInt(c.getColumnIndex(DBFields.FavoriteTable.PAYTYPE));
+        time=c.getString(c.getColumnIndex(DBFields.FavoriteTable.FAVORITE_TIME));
     }
 
 }

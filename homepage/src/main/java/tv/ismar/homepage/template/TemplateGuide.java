@@ -69,8 +69,8 @@ public class TemplateGuide extends Template implements BaseControl.ControlCallBa
         mFiveIcon = (TextView) view.findViewById(R.id.five_video_icon);
         mRecycleView = (RecyclerViewTV) view.findViewById(R.id.guide_recyclerview);
         mRecycleView.addItemDecoration(new GuideAdapter.SpacesItemDecoration(10));
-        LinearLayoutManagerTV subscribeLayoutManager = new LinearLayoutManagerTV(mContext, LinearLayoutManager.HORIZONTAL, false);
-        mRecycleView.setLayoutManager(subscribeLayoutManager);
+        LinearLayoutManagerTV guideLayoutManager = new LinearLayoutManagerTV(mContext, LinearLayoutManager.HORIZONTAL, false);
+        mRecycleView.setLayoutManager(guideLayoutManager);
         mRecycleView.setSelectedItemOffset(10, 10);
     }
 
