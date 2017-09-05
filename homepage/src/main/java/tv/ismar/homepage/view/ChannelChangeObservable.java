@@ -16,7 +16,7 @@ import static rx.android.MainThreadSubscription.verifyMainThread;
 public class ChannelChangeObservable implements Observable.OnSubscribe<Integer> {
     final HorizontalTabView view;
 
-    ChannelChangeObservable(HorizontalTabView view) {
+    public ChannelChangeObservable(HorizontalTabView view) {
         this.view = view;
     }
 

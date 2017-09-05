@@ -5,15 +5,28 @@ import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import rx.Observable;
+import rx.Observer;
+import rx.android.schedulers.AndroidSchedulers;
 import tv.ismar.app.BaseControl;
+import tv.ismar.app.entity.ChannelEntity;
 import tv.ismar.app.entity.GuideBanner;
 import tv.ismar.app.util.BitmapDecoder;
 import tv.ismar.homepage.adapter.HomeAdapter;
 import tv.ismar.homepage.control.FetchDataControl;
+import tv.ismar.homepage.view.ChannelChangeObservable;
+import tv.ismar.homepage.widget.HorizontalTabView;
+
+import static tv.ismar.homepage.control.FetchDataControl.FETCH_CHANNEL_TAB_FLAG;
 
 /**
  * @AUTHOR: xi
@@ -27,6 +40,7 @@ public class TestActivity extends Activity implements BaseControl.ControlCallBac
 
     private ListView mListView;
     private HomeAdapter mAdapter;
+    private HorizontalTabView channelTab;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -43,6 +57,27 @@ public class TestActivity extends Activity implements BaseControl.ControlCallBac
     private void findViews(){
         mViewGroup = (ViewGroup) findViewById(R.id.home_view_layout);
         mListView = (ListView) findViewById(R.id.guide_container);
+        channelTab = (HorizontalTabView) findViewById(R.id.channel_tab);
+        Observable.create(new ChannelChangeObservable(channelTab))
+                .throttleLast(1, TimeUnit.SECONDS)
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<Integer>() {
+                    @Override
+                    public void onCompleted() {
+//                        Log.d("channelTab", "channelTab ChannelChangeObservable onCompleted");
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(Integer position) {
+                        Log.d("channelTab", "channelTab ChannelChangeObservable");
+                    }
+                });
+
         mListView.setItemsCanFocus(true);
         mBitmapDecoder = new BitmapDecoder();
         mBitmapDecoder.decode(this, R.drawable.homepage_background, new BitmapDecoder.Callback() {
@@ -56,6 +91,7 @@ public class TestActivity extends Activity implements BaseControl.ControlCallBac
 
     private void initData(){
 //        mControl.fetchBannerList();
+        mControl.fetchChannels();
     }
 
     public void go2Guide(View view){
@@ -79,6 +115,25 @@ public class TestActivity extends Activity implements BaseControl.ControlCallBac
                 mAdapter.notifyDataSetChanged();
             }
             return;
+        }else if (flag == FETCH_CHANNEL_TAB_FLAG){
+            ChannelEntity[] channelEntities = (ChannelEntity[]) args;
+            fillChannelTab(channelEntities);
         }
+    }
+
+
+    private void fillChannelTab(ChannelEntity[] channelEntities) {
+        List<HorizontalTabView.Tab> tabs = new ArrayList<>();
+        HorizontalTabView.Tab searchTab = new HorizontalTabView.Tab("", "搜索");
+        tabs.add(searchTab);
+        for (ChannelEntity entity : channelEntities) {
+            HorizontalTabView.Tab tab = new HorizontalTabView.Tab("", entity.getName());
+            tabs.add(tab);
+        }
+        for (ChannelEntity entity : channelEntities) {
+            HorizontalTabView.Tab tab = new HorizontalTabView.Tab("", entity.getName());
+            tabs.add(tab);
+        }
+        channelTab.addAllViews(tabs, 0);
     }
 }
