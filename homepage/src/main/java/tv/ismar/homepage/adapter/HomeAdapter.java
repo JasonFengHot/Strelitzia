@@ -99,8 +99,8 @@ public class HomeAdapter extends BaseAdapter{
 //            viewHolder.mTemplateGuide.setVisibility(View.VISIBLE);
 //            new TemplateGuide(mContext).setView(viewHolder.mTemplateGuide, bundle);
             //TODO 测试代码
-            viewHolder.mTemplateTvPlay.setVisibility(View.VISIBLE);
-            new TemplateTvPlay(mContext).setView(viewHolder.mTemplateTvPlay, bundle);
+            viewHolder.mTemplateDoubleMd.setVisibility(View.VISIBLE);
+            new TemplateDoubleMd(mContext).setView(viewHolder.mTemplateDoubleMd, bundle);
         } else if(template.equals("template_order")){//订阅模版
             viewHolder.mTemplateOrder.setVisibility(View.VISIBLE);
             new TemplateOrder(mContext).setView(viewHolder.mTemplateOrder, bundle);

@@ -13,6 +13,7 @@ public class HomeEntity {
     public int pk;
     public String banner;
     public int count;
+    public BigImage big_image;
     public List<BannerCarousels> carousels;
     public List<BannerPoster> poster;
 }
