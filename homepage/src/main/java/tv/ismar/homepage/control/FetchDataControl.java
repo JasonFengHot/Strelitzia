@@ -3,7 +3,6 @@ package tv.ismar.homepage.control;
 import android.content.Context;
 import android.util.Log;
 
-import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import java.util.ArrayList;
@@ -13,6 +12,7 @@ import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import tv.ismar.app.BaseControl;
+import tv.ismar.app.entity.ChannelEntity;
 import tv.ismar.app.entity.GuideBanner;
 import tv.ismar.app.entity.banner.BannerCarousels;
 import tv.ismar.app.entity.banner.BannerPoster;
@@ -30,6 +30,7 @@ public class FetchDataControl extends BaseControl{
     public static final int FETCH_HOME_BANNERS_FLAG = 0X01;//获取首页下所有列表标记
     public static final int FETCH_BANNERS_LIST_FLAG = 0X02;//获取影视内容banner列表
     public static final int FETCH_M_BANNERS_LIST_FLAG = 0X03;//获取影视内容多个banner
+    public static final int FETCH_CHANNEL_TAB_FLAG = 0X03;//获取影视内容多个banner
 
     public List<BannerCarousels> mCarousels = new ArrayList<>();//导视数据
     public List<BannerPoster> mPoster = new ArrayList<>();//海报数据
@@ -69,6 +70,36 @@ public class FetchDataControl extends BaseControl{
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public void fetchChannels() {
+        SkyService.ServiceManager.getCacheSkyService().apiTvChannels()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<ChannelEntity[]>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(ChannelEntity[] channelEntities) {
+                        if (mCallBack != null && channelEntities != null) {
+                            mCallBack.callBack(FETCH_CHANNEL_TAB_FLAG, channelEntities);
+                        }
+//                        fillChannelLayout(channelEntities);
+//                        fillChannelTab(channelEntities);
+//                        fetchSubscribeBanner();
+//                        fetchMovieBanner();
+//                        fetchHorizontal519Banner();
+//                        fetchMovieMixBanner();
+                    }
+                });
     }
 
     /**
