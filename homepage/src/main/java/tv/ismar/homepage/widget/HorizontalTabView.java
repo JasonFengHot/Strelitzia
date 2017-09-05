@@ -194,6 +194,8 @@ public class HorizontalTabView extends HorizontalScrollView implements View.OnCl
                     case MotionEvent.ACTION_HOVER_ENTER:
                     case MotionEvent.ACTION_HOVER_MOVE:
                         mCurrentState = STATE_FOCUS;
+                        v.requestFocusFromTouch();
+                        v.requestFocus();
                         break;
                 }
                 return false;

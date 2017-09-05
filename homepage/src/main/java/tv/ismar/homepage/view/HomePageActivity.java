@@ -95,6 +95,7 @@ import tv.ismar.app.util.NetworkUtils;
 import tv.ismar.app.util.SPUtils;
 import tv.ismar.app.util.SystemFileUtil;
 import tv.ismar.app.widget.ExpireAccessTokenPop;
+import tv.ismar.app.widget.Login_hint_dialog;
 import tv.ismar.app.widget.ModuleMessagePopWindow;
 import tv.ismar.homepage.R;
 import tv.ismar.homepage.banner.adapter.BannerHorizontal519Adapter;
@@ -181,6 +182,8 @@ public class HomePageActivity extends BaseActivity implements LinearLayoutManage
 
     private List<BannerEntity.PosterBean> subscribePosterBeanList;
     private BannerSubscribeAdapter subscribeAdapter;
+//    private int subscribeTotalCount;
+//    private int subscribeTotalPage;
 
 
     private View subscribeArrowLeft;
@@ -486,35 +489,18 @@ public class HomePageActivity extends BaseActivity implements LinearLayoutManage
         LinearLayoutManagerTV subscribeLayoutManager = new LinearLayoutManagerTV(this, LinearLayoutManager.HORIZONTAL, false);
         subscribeBanner.addItemDecoration(new BannerSubscribeAdapter.SpacesItemDecoration(20));
         subscribeBanner.setLayoutManager(subscribeLayoutManager);
-//        subscribeBanner.setSelectedItemAtCentered(false);
+        subscribeBanner.setSelectedItemAtCentered(false);
         subscribeBanner.setSelectedItemOffset(100, 100);
-//        subscribeBanner.setOnKeyListener(new View.OnKeyListener() {
-//            @Override
-//            public boolean onKey(View v, int keyCode, KeyEvent event) {
-//                Log.d(TAG, "setOnKeyListener");
-//                return false;
-//            }
-//        });
-
-//        Observable.create(new KeyEventObservable(subscribeBanner))
-//                .throttleLast(1, TimeUnit.SECONDS)
-//                .subscribeOn(AndroidSchedulers.mainThread())
-//                .subscribe(new Observer<KeyEvent>() {
-//                    @Override
-//                    public void onCompleted() {
-//
-//                    }
-//
-//                    @Override
-//                    public void onError(Throwable e) {
-//
-//                    }
-//
-//                    @Override
-//                    public void onNext(KeyEvent keyEvent) {
-//
-//                    }
-//                });
+        subscribeBanner.setPagingableListener(new RecyclerViewTV.PagingableListener() {
+            @Override
+            public void onLoadMoreItems() {
+                Log.d("PagingableListener", "onLoadMoreItems");
+                int currentPageNumber = subscribeAdapter.getCurrentPageNumber();
+                if (currentPageNumber < subscribeAdapter.getTotalPageCount()){
+                    fetchSubscribeBanner(currentPageNumber + 1);
+                }
+            }
+        });
 
         subscribeLayoutManager.setFocusSearchFailedListener(new LinearLayoutManagerTV.FocusSearchFailedListener() {
             @Override
@@ -839,10 +825,47 @@ public class HomePageActivity extends BaseActivity implements LinearLayoutManage
     }
 
     private void fetchSubscribeBanner() {
-        bannerSubscribeSub = SkyService.ServiceManager.getLocalTestService().apiTvBanner("overseasbanner", "1")
+        fetchSubscribeBanner(1);
+    }
+
+    Handler mFocusHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            int mSavePos = msg.what;
+            subscribeBanner.setDefaultSelect(mSavePos + 1);
+            Log.d("mFocusHandler", "setDefaultSelect: " + (mSavePos + 1));
+        }
+    };
+
+    private void fetchSubscribeBanner(final int pageNumber) {
+        if (pageNumber != 1){
+            int startIndex = (pageNumber - 1) * 33;
+            int endIndex;
+            if (pageNumber == subscribeAdapter.getTotalPageCount()) {
+                endIndex = subscribeAdapter.getTatalItemCount() - 1;
+            } else {
+                endIndex = pageNumber * 33 - 1;
+            }
+
+            BannerEntity.PosterBean emptyPostBean = new BannerEntity.PosterBean();
+            List<BannerEntity.PosterBean> totalPostList = new ArrayList<>();
+            for (int i = startIndex; i <= endIndex; i++) {
+                totalPostList.add(emptyPostBean);
+            }
+            subscribeAdapter.addEmptyDatas(totalPostList);
+            int mSavePos = subscribeBanner.getSelectPostion();
+            subscribeAdapter.notifyItemRangeInserted(startIndex, endIndex - startIndex);
+            subscribeBanner.setOnLoadMoreComplete();
+            subscribeAdapter.setCurrentPageNumber(pageNumber);
+//            mFocusHandler.sendEmptyMessageDelayed(mSavePos, 10);
+        }
+
+        String count = String.valueOf(pageNumber);
+        bannerSubscribeSub = SkyService.ServiceManager.getLocalTestService().apiTvBanner("overseasbanner", count)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<BannerEntity>() {
+
                     @Override
                     public void onCompleted() {
 
@@ -855,9 +878,13 @@ public class HomePageActivity extends BaseActivity implements LinearLayoutManage
 
                     @Override
                     public void onNext(BannerEntity bannerEntity) {
-//                        subscribePosterBeanList = bannerEntity.getPoster();
-                        fillSubscribeBanner(bannerEntity.getPoster());
-//                        accountsItemSubscribeExists(bannerEntity.getPoster());
+                        if (pageNumber == 1){
+                            fillSubscribeBanner(bannerEntity);
+                        }else {
+                            int mSavePos = subscribeBanner.getSelectPostion();
+                            subscribeAdapter.addDatas(bannerEntity);
+//                            mFocusHandler.sendEmptyMessageDelayed(mSavePos, 10);
+                        }
                     }
                 });
     }
@@ -932,8 +959,11 @@ public class HomePageActivity extends BaseActivity implements LinearLayoutManage
                 });
     }
 
-    private void fillSubscribeBanner(List<BannerEntity.PosterBean> posterBeanList) {
-        subscribeAdapter = new BannerSubscribeAdapter(this, posterBeanList);
+    private void fillSubscribeBanner(BannerEntity bannerEntity) {
+        subscribeAdapter = new BannerSubscribeAdapter(this, bannerEntity.getPoster());
+        subscribeAdapter.setTotalPageCount(bannerEntity.getCount_pages());
+        subscribeAdapter.setCurrentPageNumber(bannerEntity.getNum_pages());
+        subscribeAdapter.setTatalItemCount(bannerEntity.getCount());
         subscribeAdapter.setSubscribeClickListener(new BannerSubscribeAdapter.OnSubscribeClickListener() {
             @Override
             public void onSubscribeClick(int pk, String contentModel) {
@@ -942,6 +972,7 @@ public class HomePageActivity extends BaseActivity implements LinearLayoutManage
 //                accountsItemSubscribe(pk, contentModel);
             }
         });
+
         subscribeBanner.setAdapter(subscribeAdapter);
     }
 

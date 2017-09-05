@@ -783,7 +783,7 @@ public interface SkyService {
             final OkHttpClient mClient = new OkHttpClient.Builder()
                     .connectTimeout(DEFAULT_CONNECT_TIMEOUT, TimeUnit.SECONDS)
                     .readTimeout(DEFAULT_READ_TIMEOUT, TimeUnit.SECONDS)
-//                    .addInterceptor(VodApplication.getHttpParamsInterceptor())
+                    .addInterceptor(VodApplication.getHttpParamsInterceptor())
                     .addInterceptor(VodApplication.getModuleAppContext().getCacheInterceptor())
                     .addInterceptor(interceptor)
                     .addNetworkInterceptor(VodApplication.getModuleAppContext().getCacheInterceptor())
