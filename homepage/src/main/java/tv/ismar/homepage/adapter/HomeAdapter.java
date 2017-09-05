@@ -97,8 +97,9 @@ public class HomeAdapter extends BaseAdapter{
         bundle.putString("banner", mData[position].banner);
         String template = mData[position].template;
 
-        viewHolder.mTitle.setText(mData[position].title);
+        viewHolder.mTitleView.setVisibility(View.VISIBLE);
         viewHolder.mTitle.setVisibility(View.VISIBLE);
+        viewHolder.mTitle.setText(mData[position].title);
         if(position == 0){
             viewHolder.mTitleView.setVisibility(View.GONE);
         }

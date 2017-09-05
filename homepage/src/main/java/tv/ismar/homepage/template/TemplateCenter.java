@@ -48,8 +48,8 @@ public class TemplateCenter extends Template implements BaseControl.ControlCallB
     @Override
     public void callBack(int flags, Object... args) {
         if(flags == FetchDataControl.FETCH_BANNERS_LIST_FLAG){//获取单个banner业务
+            HomeEntity homeEntity = (HomeEntity) args[0];
             if(mAdapter == null){
-                HomeEntity homeEntity = (HomeEntity) args[0];
                 mAdapter = new CenterAdapter(mContext, homeEntity.poster);
                 mRecycleView.setAdapter(mAdapter);
             }else {
