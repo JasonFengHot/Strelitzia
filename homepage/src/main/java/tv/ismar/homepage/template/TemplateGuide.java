@@ -157,8 +157,8 @@ public class TemplateGuide extends Template implements BaseControl.ControlCallBa
             initRecycleView(homeEntity);
             playGuideVideo((int)mVideoView.getTag());
 //            initCarousel();
-        } else if(flags == FetchDataControl.FETCH_M_BANNERS_LIST_FLAG){//获取多个banner业务
-
+            String str = mContext.getString(R.string.home_item_title_count);
+            mTitleCountTv.setText(String.format(str,1+"", homeEntity.count+""));
         }
     }
 
