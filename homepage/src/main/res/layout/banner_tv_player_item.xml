@@ -48,6 +48,7 @@
                 android:id="@+id/tv_player_item_title"
                 android:textColor="#ffffff"
                 android:textSize="@dimen/tv_play_poster_title_size"
+                android:singleLine="true"
                 android:layout_alignParentBottom="true"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/tv_play_poster_title_height" />

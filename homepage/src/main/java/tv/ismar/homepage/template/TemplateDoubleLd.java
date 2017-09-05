@@ -70,6 +70,11 @@ public class TemplateDoubleLd extends Template implements BaseControl.ControlCal
     }
 
     @Override
+    protected void initListener(View view) {
+        super.initListener(view);
+    }
+
+    @Override
     public void initData(Bundle bundle) {
         mControl.getBanners(bundle.getString("banner"), 1);
     }

@@ -168,9 +168,9 @@ public class FetchDataControl extends BaseControl{
                 "    },\n" +
                 "    {\n" +
                 "        \"banner\": \"chinesemoviebanner\",\n" +
-                "        \"template\": \"template_519\",\n" +
+                "        \"template\": \"template_center\",\n" +
                 "        \"banner_url\": \"api/tv/banner/chinesemoviebanner/1/\",\n" +
-                "        \"title\": \"519横图\"\n" +
+                "        \"title\": \"居中模版\"\n" +
                 "    },\n" +
                 "    {\n" +
                 "        \"banner\": \"chinesemoviebanner\",\n" +

@@ -7,7 +7,7 @@
         android:id="@+id/double_md_top_margin"
         android:layout_width="10dp"
         android:visibility="gone"
-        android:layout_height="@dimen/double_md_poster_padding_top"
+        android:layout_height="@dimen/double_md_poster_padding"
         android:background="#00000000"/>
     <LinearLayout
         android:layout_width="wrap_content"

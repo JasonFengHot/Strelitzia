@@ -731,7 +731,12 @@
 <dimen name="double_md_poster_rb_height">29.63dp</dimen>
 <dimen name="double_md_poster_title_height">34.81dp</dimen>
 <dimen name="double_md_poster_title_size">28.89dp</dimen>
-<dimen name="double_md_poster_padding">31.11dp</dimen>
-<dimen name="double_md_poster_padding_top">31.11dp</dimen>
+<dimen name="double_md_poster_padding">26.67dp</dimen>
+<!--居中模版-->
+<dimen name="center_poster_width">605.19dp</dimen>
+<dimen name="center_poster_height">340.00dp</dimen>
+<dimen name="center_title_height">34.81dp</dimen>
+<dimen name="center_title_size">28.89dp</dimen>
+<dimen name="center_padding">111.11dp</dimen>
 <!--首页 end-->
 </resources>

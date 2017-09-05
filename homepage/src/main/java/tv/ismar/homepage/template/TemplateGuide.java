@@ -87,7 +87,7 @@ public class TemplateGuide extends Template implements BaseControl.ControlCallBa
     }
 
     @Override
-    protected void initListener(){
+    protected void initListener(View view){
         mVideoView.setOnCompletionListener(this);
         mVideoView.setOnErrorListener(this);
         mVideoView.setOnPreparedListener(this);
