@@ -28,6 +28,7 @@ import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import rx.android.schedulers.AndroidSchedulers;
@@ -40,11 +41,13 @@ import tv.ismar.app.AppConstant;
 import tv.ismar.app.BaseActivity;
 import tv.ismar.app.core.PageIntent;
 import tv.ismar.app.core.Source;
+import tv.ismar.app.core.client.NetworkUtils;
 import tv.ismar.app.entity.Item;
 import tv.ismar.app.entity.ItemList;
 import tv.ismar.app.entity.Section;
 import tv.ismar.app.entity.SectionList;
 import tv.ismar.app.models.FilterConditions;
+import tv.ismar.app.network.entity.EventProperty;
 import tv.ismar.app.ui.adapter.OnItemClickListener;
 import tv.ismar.app.ui.adapter.OnItemFocusedListener;
 import tv.ismar.app.widget.MyRecyclerView;
@@ -118,6 +121,7 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
     private String mFilterCondition;
     private int mFilterPage;
     private boolean noResultFetched=false;
+    private HashMap<String, Object> mSectionProperties = new HashMap<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -133,6 +137,7 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
         initView();
         initListener();
         initData();
+
     }
 
 
@@ -142,6 +147,12 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
         //日志相关
         AppConstant.purchase_entrance_page = "filter";
         AppConstant.purchase_page = "filter";
+
+        HashMap<String, Object> properties = new HashMap<String, Object>();
+        properties.put(EventProperty.CATEGORY, channel);
+        properties.put(EventProperty.TITLE, title);
+
+        new NetworkUtils.DataCollectionTask().execute(NetworkUtils.VIDEO_CHANNEL_IN, properties);
         //判断筛选页已选筛选条件的显示与隐藏
         if(filter_checked_conditiion.getChildCount()>1){
             filter_checked_conditiion.setVisibility(View.VISIBLE);
@@ -424,6 +435,16 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                             mFocusGridLayoutManager.setLeftFocusView(radioButton);
                         }
                         filter_root_view.setShow_right_up(true);
+                        //日志
+                        mSectionProperties.put(EventProperty.SECTION, sectionList.get(finalI).slug);
+                        mSectionProperties.put(EventProperty.TITLE, sectionList.get(finalI).title);
+                        mSectionProperties.put(EventProperty.SOURCE,"list");
+                        new NetworkUtils.DataCollectionTask().execute(NetworkUtils.VIDEO_CATEGORY_IN, mSectionProperties);
+                    }else{
+                        mSectionProperties.put(EventProperty.SECTION, sectionList.get(finalI).slug);
+                        mSectionProperties.put(EventProperty.TITLE, sectionList.get(finalI).title);
+                        mSectionProperties.put(EventProperty.SOURCE,"list");
+                        new NetworkUtils.DataCollectionTask().execute(NetworkUtils.VIDEO_CATEGORY_OUT, mSectionProperties);
                     }
                 }
             });
@@ -1143,6 +1164,17 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
 
         }
     }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        //日志
+        HashMap<String, Object> properties = new HashMap<String, Object>();
+        properties.put(EventProperty.CATEGORY, channel);
+        properties.put(EventProperty.TITLE, title);
+        new NetworkUtils.DataCollectionTask().execute(NetworkUtils.VIDEO_CHANNEL_OUT, properties);
+    }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
