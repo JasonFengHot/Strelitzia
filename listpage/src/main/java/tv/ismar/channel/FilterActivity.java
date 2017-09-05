@@ -202,15 +202,15 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if(hasFocus){
+                    filter_tab.setTextSize(getResources().getDimensionPixelSize(R.dimen.filter_layout_left_view_tab_ts_scaled));
                     if(filter_tab.isChecked()){
                         return;
                     }
-                    Message msg=new Message();
-                    msg.what=0;
-                    msg.obj=v;
-                    mHandler.sendMessageDelayed(msg,1000);
+                    filter_tab.setChecked(true);
+                    filter_tab.callOnClick();
+                    lastFocusedView=null;
                 }else{
-                    mHandler.removeMessages(0);
+                    filter_tab.setTextSize(getResources().getDimensionPixelSize(R.dimen.filter_layout_left_view_tab_ts));
                 }
             }
         });
@@ -339,7 +339,6 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                                 sectionList.add(sections.get(i));
                             }
                         }
-//                        sectionList = sections;
                         sectionSize = sectionList.size();
                         sectionHasData = new boolean[sectionSize];
                         for (int i = 0; i <sectionSize; i++) {
@@ -437,6 +436,9 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
             });
             section_group.addView(radioButton);
         }
+        if(sections.size()<9) {
+            filter_root_view.setShow_left_down(false);
+        }
         specialPos = new ArrayList<>();
         specialPos.add(0);
         totalItemCount = 0;
@@ -490,6 +492,7 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                 if(section_group.getChildAt(1)!=null)
                     section_group.getChildAt(1).callOnClick();
                     ((RadioButton)section_group.getChildAt(1)).setChecked(true);
+                    section_group.getChildAt(1).requestFocus();
             }
     }
 
