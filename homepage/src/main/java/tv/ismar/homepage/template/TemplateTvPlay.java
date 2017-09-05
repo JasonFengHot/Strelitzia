@@ -30,6 +30,9 @@ public class TemplateTvPlay extends Template implements BaseControl.ControlCallB
     private TvPlayAdapter mAdapter;
     private TvPlayControl mControl;
 
+    private int mCount = 1;
+    private int mSelected = 1;
+
     public TemplateTvPlay(Context context) {
         super(context);
         mControl = new TvPlayControl(mContext, this);
@@ -46,6 +49,7 @@ public class TemplateTvPlay extends Template implements BaseControl.ControlCallB
     @Override
     public void initData(Bundle bundle) {
         mControl.getBanners(bundle.getString("banner"), 1);
+        mTitleCountTv.setText(String.format(mContext.getString(R.string.home_item_title_count),1+"", mCount+""));
     }
 
     @Override
@@ -59,8 +63,8 @@ public class TemplateTvPlay extends Template implements BaseControl.ControlCallB
             }else {
                 mAdapter.notifyDataSetChanged();
             }
-        } else if(flags == FetchDataControl.FETCH_M_BANNERS_LIST_FLAG){//获取多个banner业务
-
+            mCount = homeEntity.count;
+            mTitleCountTv.setText(String.format(mContext.getString(R.string.home_item_title_count),1+"", mCount+""));
         }
     }
 }
