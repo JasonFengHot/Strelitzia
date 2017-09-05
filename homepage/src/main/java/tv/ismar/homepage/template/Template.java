@@ -3,6 +3,7 @@ package tv.ismar.homepage.template;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.TextView;
 
 /**
  * @AUTHOR: xi
@@ -12,16 +13,24 @@ import android.view.View;
 
 public abstract class Template {
     protected Context mContext;
+    protected TextView mTitleCountTv;//标题数量view
 
     public Template(Context context){
         this.mContext = context;
     }
 
     /*在adapter中调用*/
-    public void setView(View view, Bundle bundle){
+    public Template setView(View view, Bundle bundle){
         getView(view);
         initListener(view);
         initData(bundle);
+        return this;
+    }
+
+    /*设置数量view*/
+    public Template setTitleCountView(TextView view){
+        this.mTitleCountTv = view;
+        return this;
     }
 
     /**

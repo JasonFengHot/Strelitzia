@@ -53,7 +53,8 @@ public class CenterAdapter extends RecyclerView.Adapter<CenterAdapter.CenterView
         return (mData!=null)? mData.size() : 0;
     }
 
-    public static class CenterViewHolder extends RecyclerView.ViewHolder implements View.OnFocusChangeListener{
+    public static class CenterViewHolder extends RecyclerView.ViewHolder implements View.OnFocusChangeListener,
+            View.OnClickListener{
         public TextView mTitle;
         public ImageView mPoster;
 
@@ -61,6 +62,8 @@ public class CenterAdapter extends RecyclerView.Adapter<CenterAdapter.CenterView
             super(itemView);
             mTitle = (TextView) itemView.findViewById(R.id.center_item_title);
             mPoster = (ImageView) itemView.findViewById(R.id.center_item_poster);
+            itemView.setOnFocusChangeListener(this);
+            itemView.setOnClickListener(this);
         }
 
         private void scaleToLarge(View view) {
@@ -86,13 +89,15 @@ public class CenterAdapter extends RecyclerView.Adapter<CenterAdapter.CenterView
         public void onFocusChange(View v, boolean hasFocus) {
             if (hasFocus) {
                 scaleToLarge(v.findViewById(R.id.conlumn_ismartv_linear_layout));
-                v.findViewById(R.id.title).setSelected(true);
-                v.findViewById(R.id.introduction).setSelected(true);
             } else {
                 scaleToNormal(v.findViewById(R.id.conlumn_ismartv_linear_layout));
-                v.findViewById(R.id.title).setSelected(false);
-                v.findViewById(R.id.introduction).setSelected(false);
             }
+        }
+
+        @Override
+        public void onClick(View v) {
+            v.setFocusable(true);
+            v.requestFocus();
         }
     }
 }
