@@ -117,6 +117,7 @@ public class LocationRelativeLayout extends RelativeLayout {
                     }
                 }
             }
+            requestFocus();
         }
         return super.dispatchHoverEvent(event);
     }

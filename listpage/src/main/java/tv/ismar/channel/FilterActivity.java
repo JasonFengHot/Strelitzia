@@ -74,10 +74,8 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
     private FilterConditions mFilterConditions;
     private PopupWindow filterPopup;
     private int spanCount;
-    private boolean isFocused;
     private RadioGroup section_group;
     private FocusGridLayoutManager mFocusGridLayoutManager;
-    private SpaceItemDecoration mSpaceItemDecoration;
     private String checkedTitle;
     private ArrayList<Integer> specialPos;
     private int totalItemCount;
@@ -116,6 +114,10 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
     private FilterPosterAdapter filterPosterAdapter;
     private int nextPos;
     private boolean booleanFlag=true;
+    private ItemList mFilterItemList;
+    private String mFilterCondition;
+    private int mFilterPage;
+    private boolean noResultFetched=false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -209,6 +211,8 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                     filter_tab.setChecked(true);
                     filter_tab.callOnClick();
                     lastFocusedView=null;
+                    mFilterItemList.objects.clear();
+                    mFilterPage=0;
                 }else{
                     filter_tab.setTextSize(getResources().getDimensionPixelSize(R.dimen.filter_layout_left_view_tab_ts));
                 }
@@ -244,10 +248,17 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
             @Override
             public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
                 //海报区上箭头是否显示
-                if(mFilterFocusGridLayoutManager!=null&&mFilterFocusGridLayoutManager.findFirstVisibleItemPosition()==0){
-                    filter_root_view.setShow_right_up(false);
-                }else{
-                    filter_root_view.setShow_right_up(true);
+                if(mFilterFocusGridLayoutManager!=null) {
+                    if (mFilterFocusGridLayoutManager.findFirstVisibleItemPosition() == 0) {
+                        filter_root_view.setShow_right_up(false);
+                    } else {
+                        filter_root_view.setShow_right_up(true);
+                    }
+                    if(mFilterFocusGridLayoutManager.findLastVisibleItemPosition()==mFilterItemList.objects.size()-1&&mFilterFocusGridLayoutManager.findLastVisibleItemPosition()!=-1){
+                        if(mFilterPage+1<=mFilterItemList.num_pages) {
+                            fetchFilterResult(content_model, mFilterCondition, mFilterPage + 1);
+                        }
+                    }
                 }
             }
         });
@@ -301,6 +312,8 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
             list_poster_recyclerview.setVisibility(View.VISIBLE);
         }else{
             fetchFilterCondition(channel);
+            mFilterItemList=new ItemList();
+            mFilterItemList.objects=new ArrayList<>();
         }
         fetchChannelSection(channel);
         //初始化筛选头部view
@@ -410,6 +423,7 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                         if(mFocusGridLayoutManager!=null){
                             mFocusGridLayoutManager.setLeftFocusView(radioButton);
                         }
+                        filter_root_view.setShow_right_up(true);
                     }
                 }
             });
@@ -450,25 +464,28 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
         //根据不同的板式(横、竖版)设置不同的列表样式
         if(isVertical) {
             spanCount = 5;
-            mSpaceItemDecoration = new SpaceItemDecoration(getResources().getDimensionPixelOffset(R.dimen.vertical_recycler_hs),getResources().getDimensionPixelOffset(R.dimen.vertical_recycler_vs),isVertical);
-            poster_recyclerview.addItemDecoration(mSpaceItemDecoration);
-            mSpaceItemDecoration.setSpecialPos(specialPos);
+            SpaceItemDecoration vFilterSpaceItemDecoration = new SpaceItemDecoration(getResources().getDimensionPixelOffset(R.dimen.vertical_recycler_hs),getResources().getDimensionPixelOffset(R.dimen.vertical_recycler_vs),isVertical);
+            poster_recyclerview.addItemDecoration(vFilterSpaceItemDecoration);
+            SpaceItemDecoration vSpaceItemDecoration = new SpaceItemDecoration(getResources().getDimensionPixelOffset(R.dimen.vertical_recycler_hs),getResources().getDimensionPixelOffset(R.dimen.vertical_recycler_vs),isVertical);
+            vSpaceItemDecoration.setSpecialPos(specialPos);
             poster_recyclerview.setPadding(0,0,0,getResources().getDimensionPixelOffset(R.dimen.vertical_recycler_padding_bottom));
-            list_poster_recyclerview.addItemDecoration(mSpaceItemDecoration);
+            list_poster_recyclerview.addItemDecoration(vSpaceItemDecoration);
             list_poster_recyclerview.setPadding(0,0,0,getResources().getDimensionPixelOffset(R.dimen.vertical_recycler_padding_bottom));
         }else{
             spanCount = 3;
-            mSpaceItemDecoration=new SpaceItemDecoration(getResources().getDimensionPixelOffset(R.dimen.horizontal_recycler_hs),getResources().getDimensionPixelOffset(R.dimen.horizontal_recycler_vs),isVertical);
+            SpaceItemDecoration hFilterSpaceItemDecoration=new SpaceItemDecoration(getResources().getDimensionPixelOffset(R.dimen.horizontal_recycler_hs),getResources().getDimensionPixelOffset(R.dimen.horizontal_recycler_vs),isVertical);
             poster_recyclerview.setPadding(0,0,0,getResources().getDimensionPixelOffset(R.dimen.horizontal_recycler_padding_bottom));
-            poster_recyclerview.addItemDecoration(mSpaceItemDecoration);
-            mSpaceItemDecoration.setSpecialPos(specialPos);
+            poster_recyclerview.addItemDecoration(hFilterSpaceItemDecoration);
+            SpaceItemDecoration hSpaceItemDecoration=new SpaceItemDecoration(getResources().getDimensionPixelOffset(R.dimen.horizontal_recycler_hs),getResources().getDimensionPixelOffset(R.dimen.horizontal_recycler_vs),isVertical);
+            hSpaceItemDecoration.setSpecialPos(specialPos);
             list_poster_recyclerview.setPadding(0,0,0,getResources().getDimensionPixelOffset(R.dimen.horizontal_recycler_padding_bottom));
-            list_poster_recyclerview.addItemDecoration(mSpaceItemDecoration);
+            list_poster_recyclerview.addItemDecoration(hSpaceItemDecoration);
         }
         mFocusGridLayoutManager = new FocusGridLayoutManager(this,spanCount);
         mFocusGridLayoutManager.setSpecialPos(specialPos);
         mFilterFocusGridLayoutManager = new FocusGridLayoutManager(this,spanCount);
         mFilterFocusGridLayoutManager.setLeftFocusView(filter_tab);
+        mFocusGridLayoutManager.setUpFocusView(filter_tab);
         poster_recyclerview.setLayoutManager(mFilterFocusGridLayoutManager);
         list_poster_recyclerview.setLayoutManager(mFocusGridLayoutManager);
         totalItemCount+=sections.size();
@@ -597,7 +614,7 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                             fillConditionLayout(filterConditions.getAttributes().getAge().getLabel(),filterConditions.getAttributes().getAge().getValues());
                         if(filterConditions.getAttributes().getFeature()!=null)
                             fillConditionLayout(filterConditions.getAttributes().getFeature().getLabel(),filterConditions.getAttributes().getFeature().getValues());
-                        fetchFilterResult(filterConditions.getContent_model(),filterConditions.getDefaultX());
+                        fetchFilterResult(filterConditions.getContent_model(),filterConditions.getDefaultX(),1);
                         //筛选条件popup焦点控制
                         String conditionsForLog="";
                         for (int i = 0; i <filter_conditions.getChildCount() ; i++) {
@@ -685,6 +702,7 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                         @Override
                         public void onNext(ItemList itemList) {
                             if(itemList!=null){
+                                noResultFetched=true;
                                 filter_noresult.setVisibility(View.VISIBLE);
                                 poster_recyclerview.setVisibility(View.INVISIBLE);
                                 filter_noresult_first_line = (LinearLayout) filter_noresult.findViewById(R.id.filter_noresult_first_line);
@@ -753,6 +771,7 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
 
                         @Override
                         public void onError(Throwable e) {
+                            noResultFetched=false;
                             super.onError(e);
                         }
                     });
@@ -774,9 +793,10 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
      * @param content_model
      * @param filterCondition
      */
-    private void fetchFilterResult(String content_model, String filterCondition) {
-
-        mSkyService.getFilterRequest(content_model,filterCondition)
+    private void fetchFilterResult(String content_model, String filterCondition,int page) {
+        mFilterCondition = filterCondition;
+        mFilterPage = page;
+        mSkyService.getFilterRequestHaveData(content_model,filterCondition,page)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new BaseObserver<ItemList>(){
@@ -791,11 +811,18 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                     public void onNext(final ItemList itemList) {
                         if(itemList==null||itemList.objects.size()==0){
                             filterNoResult = true;
-                            fetchFilterNoResult();
+                            if(noResultFetched){
+                                filter_noresult.setVisibility(View.VISIBLE);
+                                poster_recyclerview.setVisibility(View.INVISIBLE);
+                            }else{
+                                fetchFilterNoResult();
+                            }
                             poster_recyclerview.setVisibility(View.INVISIBLE);
                         }else {
                             filterNoResult = false;
-                            processResultData(itemList, FLAG_FILTER);
+                            mFilterItemList.num_pages=itemList.num_pages;
+                            mFilterItemList.objects.addAll(itemList.objects);
+                            processResultData(mFilterItemList, FLAG_FILTER);
                             filter_noresult.setVisibility(View.GONE);
                             poster_recyclerview.setVisibility(View.VISIBLE);
                         }
@@ -813,6 +840,11 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                 filterPosterAdapter=new FilterPosterAdapter(this,itemList,isVertical);
                 poster_recyclerview.swapAdapter(filterPosterAdapter,false);
             }else{
+                if(lastFocusedView==null){
+                    filterPosterAdapter.setFocusedPosition(-1);
+                }else{
+                    filterPosterAdapter.setFocusedPosition(poster_recyclerview.getChildLayoutPosition(lastFocusedView));
+                }
                 filterPosterAdapter.setmItemList(itemList);
                 filterPosterAdapter.notifyDataSetChanged();
             }
@@ -835,7 +867,7 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                 @Override
                 public void onItemfocused(View view, int position, boolean hasFocus) {
                     if(hasFocus){
-                        isFocused = true;
+                        lastFocusedView = view;
                         focusedPos = poster_recyclerview.indexOfChild(view);
                         if(view.getY()>getResources().getDimensionPixelOffset(R.dimen.filter_poster_start_scroll_length)){
                                 mFilterFocusGridLayoutManager.scrollToPositionWithOffset(position,0);
@@ -911,7 +943,6 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                                         break;
                                 }
                             }
-                        isFocused = true;
                         focusedPos = list_poster_recyclerview.indexOfChild(view);
                         if(view.getY()>getResources().getDimensionPixelOffset(R.dimen.filter_poster_start_scroll_length)){
                                 if(isVertical) {
@@ -951,6 +982,8 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
      * 根据用户对筛选条件的选择实时更新筛选条件及筛选结果
      */
     private void filter() {
+        mFilterItemList.objects.clear();
+        mFilterPage=0;
         View view=filter_checked_conditiion.getChildAt(0);
         filter_checked_conditiion.removeAllViews();
         filter_checked_conditiion.addView(view);
@@ -978,6 +1011,8 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
         }
         filter_checked_conditiion.setVisibility(View.VISIBLE);
         current_section_title.setVisibility(View.INVISIBLE);
+
+        String condition = "";
         if(filter_checked_conditiion.getChildCount()==1){
 
             TextView checked= new TextView(this);
@@ -992,20 +1027,17 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
             checked.setGravity(Gravity.CENTER);
             checked.setTag("");
             filter_checked_conditiion.addView(checked);
+            condition=mFilterConditions.getDefaultX()+"!";
         }
 
-        String condition = "";
 
         for (int i = 1; i <filter_checked_conditiion.getChildCount() ; i++) {
             if(filter_checked_conditiion.getChildAt(i)!=null) {
                 condition += filter_checked_conditiion.getChildAt(i).getTag().toString() + "!";
             }
         }
-        if(filter_checked_conditiion.getChildCount()==2){
-            condition=mFilterConditions.getDefaultX()+"!";
-        }
         AppConstant.purchase_entrance_keyword = conditionForLog.substring(0,conditionForLog.lastIndexOf(";"));
-        fetchFilterResult(content_model,condition.substring(0,condition.lastIndexOf("!")));
+        fetchFilterResult(content_model,condition.substring(0,condition.lastIndexOf("!")),1);
     }
 
     @Override
@@ -1028,22 +1060,32 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
             tab_scroll.scrollBy(0, getResources().getDimensionPixelOffset(R.dimen.list_scroll_arrow_down_lenth));
         }else if(i==R.id.poster_arrow_up){
             if(filter_tab.isChecked()){
-                if(isVertical) {
-                    mFilterFocusGridLayoutManager.scrollToPositionWithOffset(mFilterFocusGridLayoutManager.findFirstVisibleItemPosition() - 1, getResources().getDimensionPixelOffset(R.dimen.list_scroll_filter_offset_v));
-                }else{
-                    mFilterFocusGridLayoutManager.scrollToPositionWithOffset(mFilterFocusGridLayoutManager.findFirstVisibleItemPosition() - 1, getResources().getDimensionPixelOffset(R.dimen.list_scroll_filter_offset_h));
-                }
+                    if (isVertical) {
+                        mFilterFocusGridLayoutManager.scrollToPositionWithOffset(mFilterFocusGridLayoutManager.findFirstVisibleItemPosition() - 1, getResources().getDimensionPixelOffset(R.dimen.list_scroll_filter_offset_v));
+                    } else {
+                        mFilterFocusGridLayoutManager.scrollToPositionWithOffset(mFilterFocusGridLayoutManager.findFirstVisibleItemPosition() - 1, getResources().getDimensionPixelOffset(R.dimen.list_scroll_filter_offset_h));
+                    }
             }else{
-                nextPos=specialPos.contains(mFocusGridLayoutManager.findFirstVisibleItemPosition()-1)?mFocusGridLayoutManager.findFirstVisibleItemPosition()-2:mFocusGridLayoutManager.findFirstVisibleItemPosition()-1;
-                if(isVertical) {
+            if(mFocusGridLayoutManager.findFirstVisibleItemPosition()==0){
+                filter_tab.requestFocus();
+                filter_tab.requestFocusFromTouch();
+            }else {
+                nextPos = specialPos.contains(mFocusGridLayoutManager.findFirstVisibleItemPosition() - 1) ? mFocusGridLayoutManager.findFirstVisibleItemPosition() - 2 : mFocusGridLayoutManager.findFirstVisibleItemPosition() - 1;
+                if (isVertical) {
                     mFocusGridLayoutManager.scrollToPositionWithOffset(nextPos, getResources().getDimensionPixelOffset(R.dimen.list_scroll_up_offset_v));
-                }else{
+                } else {
                     mFocusGridLayoutManager.scrollToPositionWithOffset(nextPos, getResources().getDimensionPixelOffset(R.dimen.list_scroll_up_offset_h));
                 }
             }
+            }
         }else if(i==R.id.poster_arrow_down){
             if(filter_tab.isChecked()){
-                mFilterFocusGridLayoutManager.scrollToPositionWithOffset(mFilterFocusGridLayoutManager.findLastVisibleItemPosition(),0);
+                if(mFilterFocusGridLayoutManager.findLastVisibleItemPosition()==mFilterFocusGridLayoutManager.getChildCount()-1){
+                    section_group.getChildAt(1).requestFocus();
+                    section_group.getChildAt(1).requestFocusFromTouch();
+                }else{
+                    mFilterFocusGridLayoutManager.scrollToPositionWithOffset(mFilterFocusGridLayoutManager.findLastVisibleItemPosition(),0);
+                }
             }else{
                 nextPos =mFocusGridLayoutManager.findLastVisibleItemPosition()+1;
                 if(isVertical) {
@@ -1067,10 +1109,10 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
     public boolean onHover(View v, MotionEvent event) {
         if(event.getAction()==MotionEvent.ACTION_HOVER_ENTER||event.getAction()==MotionEvent.ACTION_HOVER_MOVE){
             v.requestFocus();
-            v.requestFocusFromTouch();
             lastFocusedView=null;
-            if(filterPosterAdapter!=null)
-            filterPosterAdapter.setFocusedPosition(-1);
+            if (filterPosterAdapter != null)
+                filterPosterAdapter.setFocusedPosition(-1);
+
         }
         return true;
     }

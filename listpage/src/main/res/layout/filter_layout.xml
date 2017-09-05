@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:focusable="true"
+    android:focusableInTouchMode="true"
     android:background="@drawable/bg"
     >
 <LinearLayout
@@ -150,6 +151,7 @@
         android:layout_height="@dimen/filter_layout_tab_arrow_h"
         android:layout_marginLeft="@dimen/filter_layout_tab_arrow_ml"
         android:focusable="true"
+        android:focusableInTouchMode="true"
         android:visibility="gone"
         android:background="@drawable/tab_arrow_up_selector"/>
     <Button
@@ -159,6 +161,7 @@
         android:layout_marginLeft="@dimen/filter_layout_tab_arrow_ml"
         android:layout_alignParentBottom="true"
         android:focusable="true"
+        android:focusableInTouchMode="true"
         android:visibility="gone"
         android:background="@drawable/tab_arrow_down_selector"/>
 
@@ -169,6 +172,7 @@
         android:layout_marginRight="@dimen/filter_layout_poster_arrow_mr"
         android:layout_alignParentRight="true"
         android:focusable="true"
+        android:focusableInTouchMode="true"
         android:visibility="gone"
         android:background="@drawable/poster_arrow_up_selector"/>
 
@@ -180,6 +184,7 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"
         android:focusable="true"
+        android:focusableInTouchMode="true"
         android:visibility="gone"
         android:background="@drawable/poster_arrow_down_selector"/>
 </tv.ismar.view.LocationRelativeLayout>
