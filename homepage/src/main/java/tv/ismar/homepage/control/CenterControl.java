@@ -1,21 +1,29 @@
 package tv.ismar.homepage.control;
 
 import android.content.Context;
+import android.support.v7.widget.RecyclerView;
 
 import tv.ismar.app.BaseControl;
 
 /**
  * @AUTHOR: xi
- * @DATE: 2017/8/31
- * @DESC: 栏目业务逻辑类
+ * @DATE: 2017/9/5
+ * @DESC: 居中业务类
  */
 
-public class ConlumnControl extends BaseControl {
-    private FetchDataControl mFetchDataControl = null;
+public class CenterControl extends BaseControl {
+    public FetchDataControl mFetchDataControl = null;
 
-    public ConlumnControl(Context context, ControlCallBack callBack) {
+    public CenterControl(Context context, ControlCallBack callBack) {
         super(context, callBack);
         mFetchDataControl = new FetchDataControl(context, callBack);
+    }
+
+    private int mScreenWidth = 0;
+    private int mScreenHeight = 0;
+
+    public void scrollToCenter(RecyclerView recyclerView){
+
     }
 
     /*获取单个banner内容列表*/

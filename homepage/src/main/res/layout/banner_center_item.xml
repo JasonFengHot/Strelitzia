@@ -4,13 +4,14 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal">
     <View
-        android:layout_width="@dimen/column_item_padding"
+        android:id="@+id/center_margin_left"
+        android:layout_width="@dimen/center_padding"
         android:layout_height="10dp"
         android:background="#00000000"/>
     <tv.ismar.homepage.banner.IsmartvLinearLayout
-        android:id="@+id/conlumn_ismartv_linear_layout"
-        android:layout_width="@dimen/column_item_width"
-        android:layout_height="@dimen/column_item_height"
+        android:id="@+id/center_ismartv_linear_layout"
+        android:layout_width="@dimen/center_poster_width"
+        android:layout_height="@dimen/center_poster_height"
         android:background="#00ff00"
         android:clipChildren="false"
         android:clipToPadding="false"
@@ -18,20 +19,23 @@
         android:focusableInTouchMode="true"
         android:foreground="@drawable/selector_item_banner_subscribe"
         android:orientation="vertical">
-        <FrameLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
             <ImageView
-                android:id="@+id/conlumn_item_poster"
-                android:layout_width="@dimen/column_item_width"
-                android:layout_height="@dimen/column_item_height"
+                android:id="@+id/center_item_poster"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:clipChildren="false"
                 android:clipToPadding="false"
-                android:scaleType="fitXY"/>
+                android:scaleType="fitXY" />
             <TextView
-                android:id="@+id/conlumn_item_tv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-        </FrameLayout>
+                android:id="@+id/center_item_title"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/center_title_height"
+                android:layout_alignParentBottom="true"
+                android:textColor="#ffffff"
+                android:textSize="@dimen/center_title_size" />
+        </RelativeLayout>
     </tv.ismar.homepage.banner.IsmartvLinearLayout>
 </LinearLayout>

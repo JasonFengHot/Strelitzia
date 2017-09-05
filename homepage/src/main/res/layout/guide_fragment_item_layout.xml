@@ -50,4 +50,8 @@
     <include
         android:id="@+id/banner_double_ld"
         layout="@layout/banner_double_ld"/>
+
+    <include
+        android:id="@+id/banner_center"
+        layout="@layout/banner_center"/>
 </LinearLayout>

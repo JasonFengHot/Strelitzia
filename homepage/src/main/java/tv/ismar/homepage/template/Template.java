@@ -20,7 +20,7 @@ public abstract class Template {
     /*在adapter中调用*/
     public void setView(View view, Bundle bundle){
         getView(view);
-        initListener();
+        initListener(view);
         initData(bundle);
     }
 
@@ -36,5 +36,5 @@ public abstract class Template {
      */
     public abstract void initData(Bundle bundle);
 
-    protected void initListener(){};
+    protected void initListener(View view){};
 }

@@ -6,9 +6,14 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
-import tv.ismar.app.entity.banner.HomeEntity;
+import com.squareup.picasso.Picasso;
+
+import java.util.List;
+
+import tv.ismar.app.entity.banner.BannerPoster;
 import tv.ismar.homepage.R;
 
 import static android.view.View.SCALE_X;
@@ -17,15 +22,15 @@ import static android.view.View.SCALE_Y;
 /**
  * @AUTHOR: xi
  * @DATE: 2017/8/29
- * @DESC: 栏目RecyclerView
+ * @DESC: 栏目RecyclerView适配器
  */
 
 public class ConlumnAdapter extends RecyclerView.Adapter<ConlumnAdapter.ConlumnViewHolder> {
 
     private Context mContext;
-    private HomeEntity mData;
+    private List<BannerPoster> mData;
 
-    public ConlumnAdapter(Context context, HomeEntity data){
+    public ConlumnAdapter(Context context, List<BannerPoster> data){
         this.mContext = context;
         this.mData = data;
     }
@@ -38,19 +43,24 @@ public class ConlumnAdapter extends RecyclerView.Adapter<ConlumnAdapter.ConlumnV
 
     @Override
     public void onBindViewHolder(ConlumnViewHolder holder, int position) {
-        holder.mTitle.setText(mData.carousels.get(position).title);
+        BannerPoster poster = mData.get(position);
+        holder.mTitle.setText(poster.title);
+        Picasso.with(mContext).load(poster.poster_url).into(holder.mPoster);
     }
 
     @Override
     public int getItemCount() {
-        return (mData!=null)? mData.carousels.size() : 0;
+        return (mData!=null)? mData.size() : 0;
     }
 
     public static class ConlumnViewHolder extends RecyclerView.ViewHolder implements View.OnFocusChangeListener{
         public TextView mTitle;
+        public ImageView mPoster;
+
         public ConlumnViewHolder(View itemView) {
             super(itemView);
             mTitle = (TextView) itemView.findViewById(R.id.conlumn_item_tv);
+            mPoster = (ImageView) itemView.findViewById(R.id.conlumn_item_poster);
         }
 
         private void scaleToLarge(View view) {

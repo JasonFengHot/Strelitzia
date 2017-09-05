@@ -31,6 +31,7 @@ import static android.view.View.SCALE_Y;
 public class GuideAdapter extends RecyclerView.Adapter<GuideAdapter.GuideViewHolder>{
     private Context mContext;
     private List<BannerPoster> mData;
+    private boolean mMarginLeftEnable = false;
 
     public GuideAdapter(Context context, List<BannerPoster> data){
         this.mContext = context;
@@ -45,6 +46,7 @@ public class GuideAdapter extends RecyclerView.Adapter<GuideAdapter.GuideViewHol
 
     @Override
     public void onBindViewHolder(GuideViewHolder holder, int position) {
+        holder.mMarginLeftView.setVisibility(mMarginLeftEnable?View.VISIBLE:View.GONE);
         BannerPoster poster = mData.get(position);
         Picasso.with(mContext).load(poster.poster_url).into(holder.mPosterIg);
 //        Picasso.with(mContext).load(poster.poster_url).into(holder.mLtIconTv);
@@ -57,27 +59,16 @@ public class GuideAdapter extends RecyclerView.Adapter<GuideAdapter.GuideViewHol
         return (mData!=null) ? mData.size():0;
     }
 
-    public static class SpacesItemDecoration extends RecyclerView.ItemDecoration {
-        private int mRightOffSet = 0;
-
-        public SpacesItemDecoration(int space){
-            this.mRightOffSet = space;
-        }
-
-        @Override
-        public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
-            super.getItemOffsets(outRect, view, parent, state);
-            outRect.right = mRightOffSet;
-        }
+    public void setMarginLeftEnable(boolean enable){
+        this.mMarginLeftEnable = enable;
     }
-
 
     public static class GuideViewHolder extends RecyclerView.ViewHolder implements View.OnFocusChangeListener{
         public ImageView mPosterIg;//海报
         public ImageView mLtIconTv;//左上icon
         public ImageView mRbIconTv;//右下icon
         public TextView mTitleTv;//标题
-
+        public View mMarginLeftView;//左边距
 
         public GuideViewHolder(View itemView) {
             super(itemView);
@@ -85,6 +76,7 @@ public class GuideAdapter extends RecyclerView.Adapter<GuideAdapter.GuideViewHol
             mLtIconTv = (ImageView) itemView.findViewById(R.id.guide_recycle_item_lt_icon);
             mRbIconTv = (ImageView) itemView.findViewById(R.id.guide_recycle_item_rb_icon);
             mTitleTv = (TextView) itemView.findViewById(R.id.guide_recycle_item_title);
+            mMarginLeftView = itemView.findViewById(R.id.guide_margin_left);
         }
 
         private void scaleToLarge(View view) {

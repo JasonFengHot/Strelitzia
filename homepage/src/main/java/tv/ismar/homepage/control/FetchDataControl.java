@@ -58,6 +58,8 @@ public class FetchDataControl extends BaseControl{
 
                         @Override
                         public void onNext(GuideBanner[] guideBanners) {
+                            //TODO 测试json假数据代码
+                            guideBanners = getChannels();
                             if(mCallBack!=null && guideBanners!=null && guideBanners.length>0){
                                 mBanners = guideBanners;
                                 mCallBack.callBack(FETCH_HOME_BANNERS_FLAG, guideBanners);
@@ -124,6 +126,61 @@ public class FetchDataControl extends BaseControl{
                         }
                     }
                 });
+    }
+
+    private GuideBanner[] getChannels(){
+        String json = "[\n" +
+                "    {\n" +
+                "        \"banner\": \"chinesemoviebanner\",\n" +
+                "        \"template\": \"template_guide\",\n" +
+                "        \"banner_url\": \"api/tv/banner/chinesemoviebanner/1/\",\n" +
+                "        \"title\": \"导视\"\n" +
+                "    },\n" +
+                "    {\n" +
+                "        \"banner\": \"overseasbanner\",\n" +
+                "        \"template\": \"template_order\",\n" +
+                "        \"banner_url\": \"api/tv/banner/overseasbanner/1/\",\n" +
+                "        \"title\": \"预约\"\n" +
+                "    },\n" +
+                "    {\n" +
+                "        \"banner\": \"teleplaybanner\",\n" +
+                "        \"template\": \"template_teleplay\",\n" +
+                "        \"banner_url\": \"api/tv/banner/teleplaybanner/1/\",\n" +
+                "        \"title\": \"电视剧\"\n" +
+                "    },\n" +
+                "    {\n" +
+                "        \"banner\": \"documentarybanner\",\n" +
+                "        \"template\": \"template_double_md\",\n" +
+                "        \"banner_url\": \"api/tv/banner/documentarybanner/1/\",\n" +
+                "        \"title\": \"竖版双行\"\n" +
+                "    },\n" +
+                "    {\n" +
+                "        \"banner\": \"chinesemoviebanner\",\n" +
+                "        \"template\": \"template_double_ld\",\n" +
+                "        \"banner_url\": \"api/tv/banner/chinesemoviebanner/1/\",\n" +
+                "        \"title\": \"横版双行\"\n" +
+                "    },\n" +
+                "    {\n" +
+                "        \"banner\": \"chinesemoviebanner\",\n" +
+                "        \"template\": \"template_conlumn\",\n" +
+                "        \"banner_url\": \"api/tv/banner/chinesemoviebanner/1/\",\n" +
+                "        \"title\": \"栏目\"\n" +
+                "    },\n" +
+                "    {\n" +
+                "        \"banner\": \"chinesemoviebanner\",\n" +
+                "        \"template\": \"template_center\",\n" +
+                "        \"banner_url\": \"api/tv/banner/chinesemoviebanner/1/\",\n" +
+                "        \"title\": \"居中模版\"\n" +
+                "    },\n" +
+                "    {\n" +
+                "        \"banner\": \"chinesemoviebanner\",\n" +
+                "        \"template\": \"template_movie\",\n" +
+                "        \"banner_url\": \"api/tv/banner/chinesemoviebanner/1/\",\n" +
+                "        \"title\": \"电影\"\n" +
+                "    }\n" +
+                "]";
+
+        return new GsonBuilder().create().fromJson(json, GuideBanner[].class);
     }
 
     private HomeEntity getEntity(){
@@ -199,7 +256,6 @@ public class FetchDataControl extends BaseControl{
                 "    \"banner\": \"chinesemoviebanner\"\n" +
                 "}";
 
-        Gson gson = new Gson();
         return new GsonBuilder().create().fromJson(json, HomeEntity.class);
     }
 }

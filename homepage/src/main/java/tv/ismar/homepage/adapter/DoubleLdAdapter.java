@@ -30,10 +30,20 @@ public class DoubleLdAdapter extends RecyclerView.Adapter<DoubleLdAdapter.Double
 
     private Context mContext;
     private List<BannerPoster> mData;
+    private boolean mTopMarginEnable = false;
+    private boolean mLeftMarginEnable = false;
 
     public DoubleLdAdapter(Context context, List<BannerPoster> data){
         this.mContext = context;
         this.mData = data;
+    }
+
+    public void setTopMarginEnable(boolean enable){
+        this.mTopMarginEnable = enable;
+    }
+
+    public void setLeftMarginEnable(boolean enable){
+        this.mLeftMarginEnable = enable;
     }
 
     @Override
@@ -44,6 +54,10 @@ public class DoubleLdAdapter extends RecyclerView.Adapter<DoubleLdAdapter.Double
 
     @Override
     public void onBindViewHolder(DoubleLdViewHolder holder, int position) {
+        holder.mTopMarginView.setVisibility(View.GONE);
+        holder.mLeftMarginView.setVisibility(View.GONE);
+        holder.mTopMarginView.setVisibility(mTopMarginEnable ? View.VISIBLE: View.GONE);
+        holder.mLeftMarginView.setVisibility(mLeftMarginEnable ? View.VISIBLE: View.GONE);
         BannerPoster poster = mData.get(position);
         Picasso.with(mContext).load(poster.poster_url).into(holder.mPosterIg);
 //        Picasso.with(mContext).load(poster.poster_url).into(holder.mLtIconTv);
@@ -62,6 +76,8 @@ public class DoubleLdAdapter extends RecyclerView.Adapter<DoubleLdAdapter.Double
         public ImageView mLtIconTv;//左上icon
         public ImageView mRbIconTv;//右下icon
         public TextView mTitleTv;//标题
+        public View mTopMarginView;//上边距
+        public View mLeftMarginView;//左边距
 
         public DoubleLdViewHolder(View itemView) {
             super(itemView);
@@ -69,6 +85,8 @@ public class DoubleLdAdapter extends RecyclerView.Adapter<DoubleLdAdapter.Double
             mLtIconTv = (ImageView) itemView.findViewById(R.id.double_ld_item_lt_icon);
             mRbIconTv = (ImageView) itemView.findViewById(R.id.double_ld_item_rb_icon);
             mTitleTv = (TextView) itemView.findViewById(R.id.double_ld_item_title);
+            mTopMarginView = itemView.findViewById(R.id.double_ld_top_margin);
+            mLeftMarginView = itemView.findViewById(R.id.double_ld_left_margin);
         }
 
         private void scaleToLarge(View view) {

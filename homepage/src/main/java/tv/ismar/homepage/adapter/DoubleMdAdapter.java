@@ -3,6 +3,7 @@ package tv.ismar.homepage.adapter;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -69,7 +70,8 @@ public class DoubleMdAdapter extends RecyclerView.Adapter<DoubleMdAdapter.Double
         return (mData!=null)? mData.size():0;
     }
 
-    public static class DoubleMdViewHolder extends RecyclerView.ViewHolder implements View.OnFocusChangeListener{
+    public static class DoubleMdViewHolder extends RecyclerView.ViewHolder implements View.OnFocusChangeListener,
+            View.OnClickListener{
         public ImageView mPosterIg;//海报
         public ImageView mLtIconTv;//左上icon
         public ImageView mRbIconTv;//右下icon
@@ -85,6 +87,7 @@ public class DoubleMdAdapter extends RecyclerView.Adapter<DoubleMdAdapter.Double
             mTitleTv = (TextView) itemView.findViewById(R.id.double_md_item_title);
             mTopView = itemView.findViewById(R.id.double_md_top_margin);
             mLeftView = itemView.findViewById(R.id.double_md_left_margin);
+            itemView.setOnClickListener(this);
         }
 
         private void scaleToLarge(View view) {
@@ -110,13 +113,14 @@ public class DoubleMdAdapter extends RecyclerView.Adapter<DoubleMdAdapter.Double
         public void onFocusChange(View v, boolean hasFocus) {
             if (hasFocus) {
                 scaleToLarge(v.findViewById(R.id.double_md_ismartv_linear_layout));
-                v.findViewById(R.id.title).setSelected(true);
-                v.findViewById(R.id.introduction).setSelected(true);
             } else {
                 scaleToNormal(v.findViewById(R.id.double_md_ismartv_linear_layout));
-                v.findViewById(R.id.title).setSelected(false);
-                v.findViewById(R.id.introduction).setSelected(false);
             }
+        }
+
+        @Override
+        public void onClick(View v) {
+//            scaleToLarge(v.findViewById(R.id.double_md_ismartv_linear_layout));
         }
     }
 
