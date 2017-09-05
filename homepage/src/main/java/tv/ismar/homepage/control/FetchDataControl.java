@@ -54,6 +54,7 @@ public class FetchDataControl extends BaseControl{
 
                         @Override
                         public void onError(Throwable e) {
+                            e.printStackTrace();
                             Log.i("onError", "onError");
                         }
 
@@ -117,6 +118,7 @@ public class FetchDataControl extends BaseControl{
 
                     @Override
                     public void onError(Throwable e) {
+                        e.printStackTrace();
                         Log.i("onError", "onError");
                     }
 
@@ -139,6 +141,7 @@ public class FetchDataControl extends BaseControl{
 
                     @Override
                     public void onError(Throwable e) {
+                        e.printStackTrace();
                         Log.i("onError", "onError");
                         //TODO 测试
                         mCallBack.callBack(FETCH_BANNERS_LIST_FLAG, getEntity());
@@ -208,6 +211,18 @@ public class FetchDataControl extends BaseControl{
                 "        \"template\": \"template_movie\",\n" +
                 "        \"banner_url\": \"api/tv/banner/chinesemoviebanner/1/\",\n" +
                 "        \"title\": \"电影\"\n" +
+                "    },\n" +
+                "    {\n" +
+                "        \"banner\": \"chinesemoviebanner\",\n" +
+                "        \"template\": \"template_519\",\n" +
+                "        \"banner_url\": \"api/tv/banner/chinesemoviebanner/1/\",\n" +
+                "        \"title\": \"519横图模版\"\n" +
+                "    },\n" +
+                "    {\n" +
+                "        \"banner\": \"chinesemoviebanner\",\n" +
+                "        \"template\": \"template_big_small_ld\",\n" +
+                "        \"banner_url\": \"api/tv/banner/chinesemoviebanner/1/\",\n" +
+                "        \"title\": \"大横小竖模版\"\n" +
                 "    }\n" +
                 "]";
 
