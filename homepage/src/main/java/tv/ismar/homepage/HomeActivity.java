@@ -1,24 +1,35 @@
 package tv.ismar.homepage;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
+import android.view.View;
 import android.view.ViewGroup;
+import android.widget.BaseAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
+import cn.ismartv.truetime.TrueTime;
 import rx.Observable;
 import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
+import tv.ismar.app.BaseActivity;
 import tv.ismar.app.BaseControl;
+import tv.ismar.app.core.PageIntent;
 import tv.ismar.app.entity.ChannelEntity;
 import tv.ismar.app.entity.GuideBanner;
 import tv.ismar.app.util.BitmapDecoder;
+import tv.ismar.app.widget.OpenView;
 import tv.ismar.homepage.adapter.HomeAdapter;
 import tv.ismar.homepage.control.FetchDataControl;
 import tv.ismar.homepage.view.ChannelChangeObservable;
@@ -32,7 +43,7 @@ import static tv.ismar.homepage.control.FetchDataControl.FETCH_CHANNEL_TAB_FLAG;
  * @DESC: home页
  */
 
-public class HomeActivity extends Activity implements BaseControl.ControlCallBack{
+public class HomeActivity extends BaseActivity implements BaseControl.ControlCallBack, View.OnClickListener{
 
     private final FetchDataControl mControl = new FetchDataControl(this, this);//业务类引用
 
@@ -40,11 +51,16 @@ public class HomeActivity extends Activity implements BaseControl.ControlCallBac
     private HomeAdapter mAdapter;
     private HorizontalTabView channelTab;
 
+    private OpenView mHistoryTv;//历史记录
+    private OpenView mPersonCenterTv;//个人中心
+    private TextView mTimeTv;//时间
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.home_activity_layout);
         findViews();
+        initListener();
         initData();
     }
 
@@ -56,6 +72,9 @@ public class HomeActivity extends Activity implements BaseControl.ControlCallBac
         mViewGroup = (ViewGroup) findViewById(R.id.home_view_layout);
         mListView = (ListView) findViewById(R.id.guide_container);
         channelTab = (HorizontalTabView) findViewById(R.id.channel_tab);
+        mHistoryTv = (OpenView) findViewById(tv.ismar.app.R.id.guide_title_history_tv);
+        mTimeTv = (TextView) findViewById(tv.ismar.app.R.id.guide_title_time_tv);
+        mPersonCenterTv = (OpenView) findViewById(tv.ismar.app.R.id.guide_title_person_center_tv);
         Observable.create(new ChannelChangeObservable(channelTab))
                 .throttleLast(1, TimeUnit.SECONDS)
                 .subscribeOn(AndroidSchedulers.mainThread())
@@ -85,9 +104,31 @@ public class HomeActivity extends Activity implements BaseControl.ControlCallBac
         });
     }
 
+    private void initListener(){
+        mHistoryTv.setOnClickListener(this);
+        mPersonCenterTv.setOnClickListener(this);
+        mTimeTv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent();
+                intent.setAction("tv.ismar.daisy.listtest");
+                startActivity(intent);
+            }
+        });
+    }
+
     private void initData(){
+        mTimeTv.setText(getNowTime());
         mControl.fetchBannerList();
         mControl.fetchChannels();
+    }
+
+    /*获取当前时间*/
+    private String getNowTime(){
+        Date now = TrueTime.now();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm");
+        dateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Shanghai"));
+        return dateFormat.format(now);
     }
 
     /*用于业务类回调控制UI*/
@@ -123,5 +164,15 @@ public class HomeActivity extends Activity implements BaseControl.ControlCallBac
             tabs.add(tab);
         }
         channelTab.addAllViews(tabs, 0);
+    }
+
+    @Override
+    public void onClick(View v) {
+        PageIntent pageIntent = new PageIntent();
+        if(v == mHistoryTv){
+            pageIntent.toHistory(this);
+        } else if(v == mPersonCenterTv){
+            pageIntent.toUserCenter(this);
+        }
     }
 }

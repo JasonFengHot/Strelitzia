@@ -4,7 +4,52 @@
                 android:id="@+id/home_view_layout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
+    <RelativeLayout
+        android:id="@+id/home_head_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical">
+        <TextView
+            android:layout_width="@dimen/guide_title_logo_width"
+            android:layout_height="@dimen/guide_title_logo_height"
+            android:layout_marginLeft="@dimen/guide_title_logo_margin_left"
+            android:layout_marginTop="@dimen/guide_title_logo_margin_top"
+            android:background="@drawable/guide_title_logo"/>
+        <tv.ismar.app.widget.OpenView
+            android:id="@+id/guide_title_history_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@+id/guide_title_time_tv"
+            app:lTextSize="@dimen/guide_title_text_size"
+            app:rIconSize="@dimen/guide_title_icon_size"
+            android:layout_marginRight="@dimen/guide_title_history_margin_person_center"
+            android:layout_marginTop="@dimen/guide_title_histroy_margin_top"
+            app:iconPaddingLeft="@dimen/guide_title_icon_padding_text"
+            app:leftText="历史收藏"
+            app:rightIcon="@drawable/history_icon" />
 
+        <tv.ismar.app.widget.OpenView
+            android:id="@+id/guide_title_person_center_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@+id/guide_title_time_tv"
+            android:layout_marginRight="@dimen/guide_title_person_center_margin_time"
+            android:layout_marginTop="@dimen/guide_title_person_center_margin_top"
+            app:lTextSize="@dimen/guide_title_text_size"
+            app:rIconSize="@dimen/guide_title_icon_size"
+            app:iconPaddingLeft="@dimen/guide_title_icon_padding_text"
+            app:leftText="个人中心"
+            app:rightIcon="@drawable/person_center"/>
+        <TextView
+            android:id="@+id/guide_title_time_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#ffffff"
+            android:textSize="@dimen/guide_title_time_size"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="@dimen/guide_title_time_margin_right"
+            android:layout_marginTop="@dimen/guide_title_time_margin_top" />
+    </RelativeLayout>
     <tv.ismar.homepage.widget.HorizontalTabView
         android:id="@+id/channel_tab"
         android:layout_width="@dimen/channel_tab_width"
@@ -23,7 +68,6 @@
         app:tvTabTextColor="#999999"
         app:tvTabTextSize="@dimen/text_size_36sp"
         />
-
     <ListView
         android:layout_below="@id/channel_tab"
         android:id="@+id/guide_container"
