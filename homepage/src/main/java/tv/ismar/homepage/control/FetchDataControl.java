@@ -3,7 +3,6 @@ package tv.ismar.homepage.control;
 import android.content.Context;
 import android.util.Log;
 
-import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import java.util.ArrayList;
@@ -13,6 +12,7 @@ import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import tv.ismar.app.BaseControl;
+import tv.ismar.app.entity.ChannelEntity;
 import tv.ismar.app.entity.GuideBanner;
 import tv.ismar.app.entity.banner.BannerCarousels;
 import tv.ismar.app.entity.banner.BannerPoster;
@@ -30,6 +30,7 @@ public class FetchDataControl extends BaseControl{
     public static final int FETCH_HOME_BANNERS_FLAG = 0X01;//获取首页下所有列表标记
     public static final int FETCH_BANNERS_LIST_FLAG = 0X02;//获取影视内容banner列表
     public static final int FETCH_M_BANNERS_LIST_FLAG = 0X03;//获取影视内容多个banner
+    public static final int FETCH_CHANNEL_TAB_FLAG = 0X03;//获取影视内容多个banner
 
     public List<BannerCarousels> mCarousels = new ArrayList<>();//导视数据
     public List<BannerPoster> mPoster = new ArrayList<>();//海报数据
@@ -53,6 +54,7 @@ public class FetchDataControl extends BaseControl{
 
                         @Override
                         public void onError(Throwable e) {
+                            e.printStackTrace();
                             Log.i("onError", "onError");
                         }
 
@@ -71,6 +73,36 @@ public class FetchDataControl extends BaseControl{
         }
     }
 
+    public void fetchChannels() {
+        SkyService.ServiceManager.getCacheSkyService().apiTvChannels()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<ChannelEntity[]>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(ChannelEntity[] channelEntities) {
+                        if (mCallBack != null && channelEntities != null) {
+                            mCallBack.callBack(FETCH_CHANNEL_TAB_FLAG, channelEntities);
+                        }
+//                        fillChannelLayout(channelEntities);
+//                        fillChannelTab(channelEntities);
+//                        fetchSubscribeBanner();
+//                        fetchMovieBanner();
+//                        fetchHorizontal519Banner();
+//                        fetchMovieMixBanner();
+                    }
+                });
+    }
+
     /**
      *  获取影视内容（多个banner）
      * @param banner 组合方式{banner}|{banner}|{banner}
@@ -86,6 +118,7 @@ public class FetchDataControl extends BaseControl{
 
                     @Override
                     public void onError(Throwable e) {
+                        e.printStackTrace();
                         Log.i("onError", "onError");
                     }
 
@@ -108,6 +141,7 @@ public class FetchDataControl extends BaseControl{
 
                     @Override
                     public void onError(Throwable e) {
+                        e.printStackTrace();
                         Log.i("onError", "onError");
                         //TODO 测试
                         mCallBack.callBack(FETCH_BANNERS_LIST_FLAG, getEntity());
@@ -177,6 +211,18 @@ public class FetchDataControl extends BaseControl{
                 "        \"template\": \"template_movie\",\n" +
                 "        \"banner_url\": \"api/tv/banner/chinesemoviebanner/1/\",\n" +
                 "        \"title\": \"电影\"\n" +
+                "    },\n" +
+                "    {\n" +
+                "        \"banner\": \"chinesemoviebanner\",\n" +
+                "        \"template\": \"template_519\",\n" +
+                "        \"banner_url\": \"api/tv/banner/chinesemoviebanner/1/\",\n" +
+                "        \"title\": \"519横图模版\"\n" +
+                "    },\n" +
+                "    {\n" +
+                "        \"banner\": \"chinesemoviebanner\",\n" +
+                "        \"template\": \"template_big_small_ld\",\n" +
+                "        \"banner_url\": \"api/tv/banner/chinesemoviebanner/1/\",\n" +
+                "        \"title\": \"大横小竖模版\"\n" +
                 "    }\n" +
                 "]";
 
