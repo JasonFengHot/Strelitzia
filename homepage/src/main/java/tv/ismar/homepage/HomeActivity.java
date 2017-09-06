@@ -4,9 +4,7 @@ import android.app.Activity;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.text.TextUtils;
 import android.util.Log;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
@@ -31,10 +29,10 @@ import static tv.ismar.homepage.control.FetchDataControl.FETCH_CHANNEL_TAB_FLAG;
 /**
  * @AUTHOR: xi
  * @DATE: 2017/8/29
- * @DESC: 说明
+ * @DESC: home页
  */
 
-public class TestActivity extends Activity implements BaseControl.ControlCallBack{
+public class HomeActivity extends Activity implements BaseControl.ControlCallBack{
 
     private final FetchDataControl mControl = new FetchDataControl(this, this);//业务类引用
 
@@ -45,7 +43,7 @@ public class TestActivity extends Activity implements BaseControl.ControlCallBac
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_test_layout);
+        setContentView(R.layout.home_activity_layout);
         findViews();
         initData();
     }
@@ -68,9 +66,7 @@ public class TestActivity extends Activity implements BaseControl.ControlCallBac
                     }
 
                     @Override
-                    public void onError(Throwable e) {
-
-                    }
+                    public void onError(Throwable e) {}
 
                     @Override
                     public void onNext(Integer position) {
@@ -90,16 +86,8 @@ public class TestActivity extends Activity implements BaseControl.ControlCallBac
     }
 
     private void initData(){
-//        mControl.fetchBannerList();
-        mControl.fetchChannels();
-    }
-
-    public void go2Guide(View view){
         mControl.fetchBannerList();
-    }
-
-    public void refresh(View view){
-        mAdapter.notifyDataSetChanged();
+        mControl.fetchChannels();
     }
 
     /*用于业务类回调控制UI*/

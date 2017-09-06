@@ -30,6 +30,7 @@ public abstract class Template {
     /*设置数量view*/
     public Template setTitleCountView(TextView view){
         this.mTitleCountTv = view;
+        initTitle();
         return this;
     }
 
@@ -44,6 +45,8 @@ public abstract class Template {
      * @param bundle
      */
     public abstract void initData(Bundle bundle);
+
+    public void initTitle(){}
 
     protected void initListener(View view){};
 }

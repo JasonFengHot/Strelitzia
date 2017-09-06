@@ -18,7 +18,7 @@
         android:focusableInTouchMode="true"
         android:foreground="@drawable/selector_item_banner_subscribe"
         android:orientation="vertical">
-        <FrameLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
             <ImageView
@@ -31,7 +31,9 @@
             <TextView
                 android:id="@+id/conlumn_item_tv"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-        </FrameLayout>
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"/>
+        </RelativeLayout>
     </tv.ismar.homepage.banner.IsmartvLinearLayout>
 </LinearLayout>
