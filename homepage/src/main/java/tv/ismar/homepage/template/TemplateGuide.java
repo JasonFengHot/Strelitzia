@@ -210,6 +210,7 @@ public class TemplateGuide extends Template implements BaseControl.ControlCallBa
 
     @Override
     public void onPrepared(MediaPlayer mp) {//准备播放
+        mVideoView.start();
         mLoadingIg.setVisibility(View.GONE);
         if (mBitmapDecoder != null && mBitmapDecoder.isAlive()) {
             mBitmapDecoder.interrupt();
