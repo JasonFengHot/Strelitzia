@@ -32,7 +32,8 @@ import tv.ismar.homepage.control.GuideControl;
  * @DESC: 横版双行模版
  */
 
-public class TemplateDoubleLd extends Template implements BaseControl.ControlCallBack{
+public class TemplateDoubleLd extends Template implements BaseControl.ControlCallBack,
+        RecyclerViewTV.OnItemClickListener{
     private ImageView mVerticalImg;//大图海报
     private ImageView mLtImage;//左上角图标
     private ImageView mRbImage;//右下角图标
@@ -72,6 +73,8 @@ public class TemplateDoubleLd extends Template implements BaseControl.ControlCal
     @Override
     protected void initListener(View view) {
         super.initListener(view);
+        mRecyclerView1.setOnItemClickListener(this);
+        mRecyclerView2.setOnItemClickListener(this);
     }
 
     @Override
@@ -128,6 +131,15 @@ public class TemplateDoubleLd extends Template implements BaseControl.ControlCal
             initImage(homeEntity.big_image);
         } else if(flags == FetchDataControl.FETCH_M_BANNERS_LIST_FLAG){//获取多个banner业务
 
+        }
+    }
+
+    @Override
+    public void onItemClick(RecyclerViewTV parent, View itemView, int position) {
+        if(position < 2){
+            mVerticalImg.setVisibility(View.VISIBLE);
+        } else if(position >= 2){
+            mVerticalImg.setVisibility(View.GONE);
         }
     }
 }
