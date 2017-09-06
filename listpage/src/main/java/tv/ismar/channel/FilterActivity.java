@@ -211,6 +211,7 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
 
     private void initListener() {
         filter_tab.setOnClickListener(this);
+        filter_tab.setOnHoverListener(this);
         filter_tab.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
@@ -420,6 +421,7 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                     current_section_title.setText(sectionList.get(finalI).title);
                 }
             });
+            radioButton.setOnHoverListener(this);
             radioButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
