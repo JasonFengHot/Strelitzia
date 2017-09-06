@@ -111,7 +111,7 @@ public class HomeAdapter extends BaseAdapter{
 //            viewHolder.mTemplateDoubleMd.setVisibility(View.VISIBLE);
 //            new TemplateDoubleMd(mContext).setView(viewHolder.mTemplateDoubleMd, bundle);
         } else if(template.equals("template_order")){//订阅模版
-            viewHolder.mTitleView.setVisibility(View.INVISIBLE);
+//            viewHolder.mTitleView.setVisibility(View.INVISIBLE);
             viewHolder.mTemplateOrder.setVisibility(View.VISIBLE);
             new TemplateOrder(mContext).setView(viewHolder.mTemplateOrder, bundle)
                     .setTitleCountView(viewHolder.mCount);;
@@ -128,7 +128,7 @@ public class HomeAdapter extends BaseAdapter{
             new Template519(mContext).setView(viewHolder.mTemplate519, bundle)
                     .setTitleCountView(viewHolder.mCount);;
         }else if(template.equals("template_conlumn")){//栏目模版
-            viewHolder.mTitleView.setVisibility(View.INVISIBLE);
+//            viewHolder.mTitleView.setVisibility(View.INVISIBLE);
             viewHolder.mTemplateConlumn.setVisibility(View.VISIBLE);
             new TemplateConlumn(mContext).setView(viewHolder.mTemplateConlumn, bundle)
                     .setTitleCountView(viewHolder.mCount);;
@@ -145,7 +145,7 @@ public class HomeAdapter extends BaseAdapter{
             new TemplateDoubleLd(mContext).setView(viewHolder.mTemplateDoubleLd, bundle)
                     .setTitleCountView(viewHolder.mCount);;
         } else if(template.equals("template_center")){//居中模版
-            viewHolder.mTitleView.setVisibility(View.INVISIBLE);
+//            viewHolder.mTitleView.setVisibility(View.INVISIBLE);
             viewHolder.mTmeplateCenter.setVisibility(View.VISIBLE);
             new TemplateCenter(mContext).setView(viewHolder.mTmeplateCenter, bundle)
                     .setTitleCountView(viewHolder.mCount);;

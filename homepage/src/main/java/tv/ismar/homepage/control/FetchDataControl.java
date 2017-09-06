@@ -30,7 +30,7 @@ public class FetchDataControl extends BaseControl{
     public static final int FETCH_HOME_BANNERS_FLAG = 0X01;//获取首页下所有列表标记
     public static final int FETCH_BANNERS_LIST_FLAG = 0X02;//获取影视内容banner列表
     public static final int FETCH_M_BANNERS_LIST_FLAG = 0X03;//获取影视内容多个banner
-    public static final int FETCH_CHANNEL_TAB_FLAG = 0X04;//获取影视内容多个banner
+    public static final int FETCH_CHANNEL_TAB_FLAG = 0X04;//获取频道list
 
     public List<BannerCarousels> mCarousels = new ArrayList<>();//导视数据
     public List<BannerPoster> mPoster = new ArrayList<>();//海报数据
