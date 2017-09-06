@@ -61,6 +61,7 @@
         android:paddingTop="@dimen/filter_layout_left_view_tab_ptb"
         android:paddingBottom="@dimen/filter_layout_left_view_tab_ptb"
         android:focusable="true"
+        android:focusableInTouchMode="true"
         android:button="@null"
         android:gravity="center"
         android:checked="true"

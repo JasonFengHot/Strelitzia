@@ -10,6 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -185,6 +186,14 @@ public class FilterPosterAdapter extends RecyclerView.Adapter<FilterPosterAdapte
                     });
                 }
             }
+            holder.itemView.setOnHoverListener(new View.OnHoverListener() {
+                @Override
+                public boolean onHover(View v, MotionEvent event) {
+                    if(event.getAction()==MotionEvent.ACTION_HOVER_ENTER||event.getAction()==MotionEvent.ACTION_HOVER_MOVE)
+                    v.requestFocus();
+                    return false;
+                }
+            });
         }else{
             ((TextView)holder.itemView).setText(mSectionList.get(mSpecialPos.indexOf(position)).title);
         }
