@@ -11,6 +11,7 @@ import cn.ismartv.truetime.TrueTime;
 import tv.ismar.app.VodApplication;
 import tv.ismar.app.db.DBHelper.DBFields;
 import tv.ismar.app.entity.DBQuality;
+import tv.ismar.app.entity.Favorite;
 import tv.ismar.app.entity.History;
 import tv.ismar.app.player.CallaPlay;
 
@@ -116,6 +117,7 @@ public class LocalHistoryManager implements HistoryManager {
             h.cpname = history.cpname;
             h.cptitle = history.cptitle;
             h.paytype = history.paytype;
+            h.add_time=history.add_time;
             mDBHelper.updateHistory(h);
         } else {
             ContentValues cv = new ContentValues();
@@ -136,6 +138,7 @@ public class LocalHistoryManager implements HistoryManager {
             cv.put(DBFields.FavoriteTable.CPNAME, history.cpname);
             cv.put(DBFields.FavoriteTable.CPTITLE, history.cptitle);
             cv.put(DBFields.FavoriteTable.PAYTYPE, history.paytype);
+            cv.put(DBFields.HistroyTable.HISTORY_TIME,history.add_time);
             long result = mDBHelper.insert(cv, DBFields.HistroyTable.TABLE_NAME, mTotalEntriesLimit);
             mHistories = mDBHelper.getAllHistories(isnet);
         }

@@ -210,6 +210,7 @@ public class TemplateGuide extends Template implements BaseControl.ControlCallBa
 
     @Override
     public void onPrepared(MediaPlayer mp) {//准备播放
+        mVideoView.start();
         mLoadingIg.setVisibility(View.GONE);
         if (mBitmapDecoder != null && mBitmapDecoder.isAlive()) {
             mBitmapDecoder.interrupt();
@@ -218,7 +219,7 @@ public class TemplateGuide extends Template implements BaseControl.ControlCallBa
 
     @Override
     public void onItemClick(RecyclerViewTV parent, View itemView, int position) {
-        if(position > 1){//第2个item被选中
+        if(position >= 1){//第2个item被选中
             mGuideContainer.setVisibility(View.GONE);
         }else if(position == 0){
             mGuideContainer.setVisibility(View.VISIBLE);

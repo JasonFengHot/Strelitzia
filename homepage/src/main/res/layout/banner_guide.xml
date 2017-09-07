@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:descendantFocusability="blocksDescendants">
+    android:layout_height="match_parent">
     <tv.ismar.homepage.widget.HomeItemContainer
         android:id="@+id/guide_container"
         android:layout_width="@dimen/guide_switch_container_width"
-        android:layout_height="match_parent"
-        android:clickable="true"
-        android:focusable="true"
-        android:focusableInTouchMode="true"
+        android:layout_height="@dimen/guide_switch_container_height"
+        android:clickable="false"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
         android:layout_marginLeft="@dimen/guide_switch_container_margin_left">
         <tv.ismar.homepage.widget.DaisyVideoView
             android:id="@+id/guide_daisy_video_view"

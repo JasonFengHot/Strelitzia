@@ -30,6 +30,7 @@ public class History implements Serializable, Comparable<History> {
     public String cpname;
     public String cptitle;
     public int paytype;
+    public String add_time;
 
     public History() {
         super();
@@ -38,7 +39,7 @@ public class History implements Serializable, Comparable<History> {
 
     public History(long id, String title, String url, String adlet_url,
                    String content_model, int quality, int last_quality,
-                   boolean is_complex, boolean is_continue, long last_played_time, long last_position, String sub_url, String isNet, int price, int cpid, String cpname, String cptitle, int paytype) {
+                   boolean is_complex, boolean is_continue, long last_played_time, long last_position, String sub_url, String isNet, int price, int cpid, String cpname, String cptitle, int paytype,String add_time) {
         super();
         this.id = id;
         this.userid = IsmartvActivator.getInstance().getDeviceToken();
@@ -59,6 +60,7 @@ public class History implements Serializable, Comparable<History> {
         this.cpname = cpname;
         this.cptitle = cptitle;
         this.paytype = paytype;
+        this.add_time=add_time;
     }
 
 
@@ -81,6 +83,7 @@ public class History implements Serializable, Comparable<History> {
         cpname = c.getString(c.getColumnIndex(DBFields.HistroyTable.CPNAME));
         cptitle = c.getString(c.getColumnIndex(DBFields.HistroyTable.CPTITLE));
         paytype = c.getInt(c.getColumnIndex(DBFields.HistroyTable.PAYTYPE));
+        add_time=c.getString(c.getColumnIndex(DBFields.HistroyTable.HISTORY_TIME));
     }
 
 

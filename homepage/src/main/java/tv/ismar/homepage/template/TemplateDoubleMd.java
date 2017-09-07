@@ -29,7 +29,8 @@ import tv.ismar.homepage.control.FetchDataControl;
  * @DESC: 竖版双行模版
  */
 
-public class TemplateDoubleMd extends Template implements BaseControl.ControlCallBack{
+public class TemplateDoubleMd extends Template implements BaseControl.ControlCallBack,
+        RecyclerViewTV.OnItemClickListener{
     private ImageView mVerticalImg;//大图海报
     private ImageView mLtImage;//左上角图标
     private ImageView mRbImage;//右下角图标
@@ -64,6 +65,13 @@ public class TemplateDoubleMd extends Template implements BaseControl.ControlCal
         LinearLayoutManagerTV doubleLayoutManager2 = new LinearLayoutManagerTV(mContext, LinearLayoutManager.HORIZONTAL, false);
         mRecyclerView2.setLayoutManager(doubleLayoutManager2);
 //        mRecyclerView2.setSelectedItemOffset(10, 10);
+    }
+
+    @Override
+    protected void initListener(View view) {
+        super.initListener(view);
+        mRecyclerView1.setOnItemClickListener(this);
+        mRecyclerView2.setOnItemClickListener(this);
     }
 
     @Override
@@ -120,6 +128,15 @@ public class TemplateDoubleMd extends Template implements BaseControl.ControlCal
             initImage(homeEntity.big_image);
         } else if(flags == FetchDataControl.FETCH_M_BANNERS_LIST_FLAG){//获取多个banner业务
 
+        }
+    }
+
+    @Override
+    public void onItemClick(RecyclerViewTV parent, View itemView, int position) {
+        if(position < 3){
+            mVerticalImg.setVisibility(View.VISIBLE);
+        } else if(position >= 3){
+            mVerticalImg.setVisibility(View.GONE);
         }
     }
 }

@@ -116,6 +116,7 @@ public class LocalFavoriteManager implements FavoriteManager {
             f.cpname = favorite.cpname;
             f.cptitle = favorite.cptitle;
             f.paytype = favorite.paytype;
+            f.time=favorite.time;
             mDBHelper.updateFavorite(favorite);
         } else {
             ContentValues cv = new ContentValues();
@@ -127,6 +128,7 @@ public class LocalFavoriteManager implements FavoriteManager {
             cv.put(DBFields.FavoriteTable.IS_COMPLEX, favorite.is_complex ? 1 : 0);
             cv.put(DBFields.FavoriteTable.ISNET, isnet);
             cv.put(DBFields.FavoriteTable.CPID, favorite.cpid);
+            cv.put(DBFields.FavoriteTable.FAVORITE_TIME,favorite.time);
             cv.put(DBFields.FavoriteTable.CPNAME, favorite.cpname);
             cv.put(DBFields.FavoriteTable.CPTITLE, favorite.cptitle);
             cv.put(DBFields.FavoriteTable.PAYTYPE, favorite.paytype);

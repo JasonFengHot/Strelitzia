@@ -5,6 +5,7 @@
         <attr name="rightIcon" format="reference"/>
         <attr name="rIconSize" format="dimension"/>
         <attr name="lTextSize" format="dimension"/>
+        <attr name="rIconWidth" format="dimension"/>
         <attr name="iconPaddingLeft" format="dimension"/>
     </declare-styleable>
 </resources>

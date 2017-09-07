@@ -75,7 +75,6 @@ public class HistoryFavoritrListActivity extends BaseActivity implements OnItemC
 
     @Override
     protected void onPause() {
-        mlists.clear();
         super.onPause();
     }
 
@@ -118,12 +117,14 @@ public class HistoryFavoritrListActivity extends BaseActivity implements OnItemC
         adapter.setItemClickListener(HistoryFavoritrListActivity.this);
         adapter.setItemFocusedListener(HistoryFavoritrListActivity.this);
         recyclerView.setAdapter(adapter);
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-               recyclerView.getChildAt(0).requestFocusFromTouch();
-            }
-        },500);
+        if(mlists.size()>0) {
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    recyclerView.getChildAt(0).requestFocusFromTouch();
+                }
+            }, 500);
+        }
     }
     @Override
     public void onItemClick(View view, int position) {

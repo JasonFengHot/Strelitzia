@@ -17,12 +17,16 @@ import com.google.gson.GsonBuilder;
 import com.qiyi.sdk.player.IMediaPlayer;
 
 import java.io.IOException;
+import java.text.DateFormat;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import cn.ismartv.truetime.TrueTime;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -1014,6 +1018,10 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
         if (historyManager == null) {
             historyManager = VodApplication.getModuleAppContext().getModuleHistoryManager();
         }
+        DateFormat format=new SimpleDateFormat("MM-dd");
+        long time= TrueTime.now().getTime();
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(time);
         History history = new History();
         history.title = mItemEntity.getTitle();
         ItemEntity.Expense expense = mItemEntity.getExpense();
@@ -1029,6 +1037,7 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
         history.content_model = mItemEntity.getContentModel();
         history.is_complex = mItemEntity.getIsComplex();
         history.last_position = last_position;
+        history.add_time=format.format(calendar.getTime());
         ClipEntity.Quality quality = mCurrentQuality;
         if (quality != null) {
             history.last_quality = quality.getValue();
