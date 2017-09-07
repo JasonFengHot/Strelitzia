@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.databinding.adapters.ViewGroupBindingAdapter;
 import android.graphics.Bitmap;
+import android.graphics.Rect;
 import android.os.Build;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -46,6 +47,7 @@ public class FilterPosterAdapter extends RecyclerView.Adapter<FilterPosterAdapte
     private ArrayList<Integer> mSpecialPos;
     private SectionList mSectionList;
     private int focusedPosition=-1;
+    private Rect rect;
 
     public FilterPosterAdapter(Context context, ItemList itemList, boolean isVertical, int totalItemCount, ArrayList<Integer> specialPos, SectionList sectionList) {
         this.mContext = context;
@@ -54,6 +56,7 @@ public class FilterPosterAdapter extends RecyclerView.Adapter<FilterPosterAdapte
         this.mTotalItemCount=totalItemCount;
         this.mSpecialPos=specialPos;
         this.mSectionList=sectionList;
+        rect=new Rect(0,0,1920,540);
     }
 
     public void setmItemList(ItemList mItemList) {
@@ -85,6 +88,7 @@ public class FilterPosterAdapter extends RecyclerView.Adapter<FilterPosterAdapte
         this.mContext = context;
         this.mItemList = itemList;
         this.mIsVertical=isVertical;
+        rect=new Rect(0,0,1920,1080);
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
@@ -186,14 +190,14 @@ public class FilterPosterAdapter extends RecyclerView.Adapter<FilterPosterAdapte
                     });
                 }
             }
-            holder.itemView.setOnHoverListener(new View.OnHoverListener() {
-                @Override
-                public boolean onHover(View v, MotionEvent event) {
-                    if(event.getAction()==MotionEvent.ACTION_HOVER_ENTER||event.getAction()==MotionEvent.ACTION_HOVER_MOVE)
-                    v.requestFocus();
-                    return false;
-                }
-            });
+//            holder.itemView.setOnHoverListener(new View.OnHoverListener() {
+//                @Override
+//                public boolean onHover(View v, MotionEvent event) {
+//                    if((event.getAction()==MotionEvent.ACTION_HOVER_ENTER||event.getAction()==MotionEvent.ACTION_HOVER_MOVE)&&v.getLocalVisibleRect(rect))
+//                    v.requestFocus();
+//                    return false;
+//                }
+//            });
         }else{
             ((TextView)holder.itemView).setText(mSectionList.get(mSpecialPos.indexOf(position)).title);
         }

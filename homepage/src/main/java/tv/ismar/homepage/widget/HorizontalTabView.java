@@ -191,39 +191,39 @@ public class HorizontalTabView extends HorizontalScrollView implements View.OnCl
         item.setOnClickListener(this);
         item.setOnFocusChangeListener(this);
         item.setOnKeyListener(this);
-        item.setOnHoverListener(new OnHoverListener() {
-            @Override
-            public boolean onHover(View v, MotionEvent event) {
-                TextView itemView = (TextView) v;
-                switch (event.getAction()) {
-                    case MotionEvent.ACTION_HOVER_ENTER:
-                    case MotionEvent.ACTION_HOVER_MOVE:
-                        itemView.setSelected(true);
-                        itemView.setBackground(selectedDrawable);
-                        itemView.setTextColor(textFocusColor);
-                        if (isScroll){
-                            isScroll = false;
-                            mCurrentState = STATE_FOCUS;
-                            v.requestFocusFromTouch();
-                            v.requestFocus();
-                            mScrollHandler.sendEmptyMessageDelayed(0, 500);
-                        }
-                        return true;
-                    case MotionEvent.ACTION_HOVER_EXIT:
-                        itemView.setSelected(false);
-                        TextView lastClickView = (TextView) linearContainer.getChildAt(mClickPosition);
-                        if (itemView == lastClickView) {
-                            lastClickView.setBackgroundResource(android.R.color.transparent);
-                            lastClickView.setTextColor(textSelectColor);
-                        }else {
-                            itemView.setBackgroundResource(android.R.color.transparent);
-                            itemView.setTextColor(textColor);
-                        }
-                        return true;
-                }
-                return false;
-            }
-        });
+//        item.setOnHoverListener(new OnHoverListener() {
+//            @Override
+//            public boolean onHover(View v, MotionEvent event) {
+//                TextView itemView = (TextView) v;
+//                switch (event.getAction()) {
+//                    case MotionEvent.ACTION_HOVER_ENTER:
+//                    case MotionEvent.ACTION_HOVER_MOVE:
+//                        itemView.setSelected(true);
+//                        itemView.setBackground(selectedDrawable);
+//                        itemView.setTextColor(textFocusColor);
+//                        if (isScroll){
+//                            isScroll = false;
+//                            mCurrentState = STATE_FOCUS;
+//                            v.requestFocusFromTouch();
+//                            v.requestFocus();
+//                            mScrollHandler.sendEmptyMessageDelayed(0, 500);
+//                        }
+//                        return true;
+//                    case MotionEvent.ACTION_HOVER_EXIT:
+//                        itemView.setSelected(false);
+//                        TextView lastClickView = (TextView) linearContainer.getChildAt(mClickPosition);
+//                        if (itemView == lastClickView) {
+//                            lastClickView.setBackgroundResource(android.R.color.transparent);
+//                            lastClickView.setTextColor(textSelectColor);
+//                        }else {
+//                            itemView.setBackgroundResource(android.R.color.transparent);
+//                            itemView.setTextColor(textColor);
+//                        }
+//                        return true;
+//                }
+//                return false;
+//            }
+//        });
         item.setOnTouchListener(new OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {

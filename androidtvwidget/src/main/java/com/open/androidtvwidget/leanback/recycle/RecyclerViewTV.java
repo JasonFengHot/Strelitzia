@@ -608,4 +608,13 @@ public class RecyclerViewTV extends RecyclerView implements PrvInterface {
         }
     };
 
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        if(ev.getAction()==MotionEvent.ACTION_MOVE) {
+            return true;
+        }else{
+            return super.dispatchTouchEvent(ev);
+        }
+    }
+
 }

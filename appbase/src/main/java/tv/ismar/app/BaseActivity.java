@@ -35,7 +35,6 @@ import tv.ismar.app.widget.Login_hint_dialog;
 import tv.ismar.app.widget.ModuleMessagePopWindow;
 import tv.ismar.app.widget.NetErrorPopWindow;
 import tv.ismar.app.widget.NoNetConnectDialog;
-import tv.ismar.app.widget.NoNetModuleMessagePop;
 import tv.ismar.app.widget.UpdatePopupWindow;
 import tv.ismar.library.exception.ExceptionUtils;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
@@ -52,7 +51,6 @@ public class BaseActivity extends AppCompatActivity {
     private ModuleMessagePopWindow netErrorPopWindow;
     private ModuleMessagePopWindow expireAccessTokenPop;
     private ModuleMessagePopWindow itemOffLinePop;
-    public NoNetModuleMessagePop noNetConnectWindow;
     private NoNetConnectDialog dialog;
     public SkyService mSkyService;
     public SkyService mWeatherSkyService;
@@ -114,6 +112,7 @@ public class BaseActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+
         activityIsAlive = true;
         if (getRequestedOrientation() != ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
@@ -229,7 +228,7 @@ public class BaseActivity extends AppCompatActivity {
             return;
         final String act = getCurrentActivityName(BaseActivity.this);
         netErrorPopWindow = new NetErrorPopWindow(this);
-        netErrorPopWindow.setFirstMessage(getString(R.string.fetch_net_data_error));
+        netErrorPopWindow.setMessage(getString(R.string.fetch_net_data_error));
         netErrorPopWindow.setConfirmBtn(getString(R.string.setting_network));
         netErrorPopWindow.setCancelBtn(getString(R.string.back));
         netErrorPopWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
@@ -374,7 +373,7 @@ public class BaseActivity extends AppCompatActivity {
     }
     public void showExpireAccessTokenPop() {
         expireAccessTokenPop = ExpireAccessTokenPop.getInstance(this);
-        expireAccessTokenPop.setFirstMessage(getString(R.string.access_token_expire));
+        expireAccessTokenPop.setMessage(getString(R.string.access_token_expire));
         expireAccessTokenPop.setConfirmBtn(getString(R.string.confirm));
         expireAccessTokenPop.setOnDismissListener(new PopupWindow.OnDismissListener() {
             @Override
@@ -396,7 +395,7 @@ public class BaseActivity extends AppCompatActivity {
 
     public void showItemOffLinePop() {
         itemOffLinePop = new ItemOffLinePopWindow(this);
-        itemOffLinePop.setFirstMessage(getString(R.string.item_offline));
+        itemOffLinePop.setMessage(getString(R.string.item_offline));
         itemOffLinePop.setConfirmBtn(getString(R.string.confirm));
         itemOffLinePop.setOnDismissListener(new PopupWindow.OnDismissListener() {
             @Override
@@ -417,7 +416,7 @@ public class BaseActivity extends AppCompatActivity {
 
     public void historyShowItemOffLinePop() {
         itemOffLinePop = new ItemOffLinePopWindow(this);
-        itemOffLinePop.setFirstMessage(getString(R.string.item_offline));
+        itemOffLinePop.setMessage(getString(R.string.item_offline));
         itemOffLinePop.setConfirmBtn(getString(R.string.confirm));
         itemOffLinePop.setOnDismissListener(new PopupWindow.OnDismissListener() {
             @Override
@@ -503,6 +502,7 @@ public class BaseActivity extends AppCompatActivity {
                 && !currentActivityName.equals("tv.ismar.daisy.PlayFinishedActivity")) {
             updateBundle = stack.pop();
             updatePopupWindow = new UpdatePopupWindow(this, updateBundle);
+            updatePopupWindow.setBackgroundDrawable(getResources().getDrawable(R.drawable.transparent));
             updatePopupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
             updatePopupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
                 @Override

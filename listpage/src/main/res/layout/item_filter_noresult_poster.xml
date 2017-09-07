@@ -12,8 +12,8 @@
     android:orientation="vertical">
 
 <RelativeLayout
-    android:layout_width="@dimen/item_filter_noresult_poster_w"
-    android:layout_height="@dimen/item_filter_noresult_poster_h">
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
 
     <ImageView
         android:id="@+id/item_filter_noresult_img"

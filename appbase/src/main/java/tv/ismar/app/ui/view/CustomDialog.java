@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -74,8 +75,8 @@ public class CustomDialog extends Dialog {
 			LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			final CustomDialog dialog = new CustomDialog(mContext, R.style.Dialog);
 
-			View layout = inflater.inflate(R.layout.popup_neterror_message, null);
-			dialog.addContentView(layout, new RelativeLayout.LayoutParams(877,305));
+			View layout = inflater.inflate(R.layout.popup_layout_style1, null);
+			dialog.addContentView(layout, new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
 
 			if(mPositiveButtonText!=null){
 				((Button)layout.findViewById(R.id.positive_button)).setText(mPositiveButtonText);

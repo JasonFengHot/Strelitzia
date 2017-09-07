@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.View.OnHoverListener;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -22,8 +23,6 @@ import tv.ismar.library.exception.ExceptionUtils;
 public class MessageDialogFragment extends PopupWindow implements View.OnClickListener {
     private Button confirmBtn;
     private Button cancelBtn;
-    private TextView firstMessage;
-    private TextView secondMessage;
     private ConfirmListener confirmListener;
     private CancelListener cancleListener;
 
@@ -31,6 +30,7 @@ public class MessageDialogFragment extends PopupWindow implements View.OnClickLi
     private String mSecondLineMessage;
 
     private Context mContext;
+    private final LinearLayout popup_content;
 
     public interface CancelListener {
         void cancelClick(View view);
@@ -50,14 +50,12 @@ public class MessageDialogFragment extends PopupWindow implements View.OnClickLi
         int screenHeight = wm.getDefaultDisplay().getHeight();
 
 
-        int width = (int) (context.getResources().getDimension(R.dimen.pop_width));
-        int height = (int) (context.getResources().getDimension(R.dimen.pop_height));
-
         setWidth(screenWidth);
         setHeight(screenHeight);
-        View contentView = LayoutInflater.from(context).inflate(R.layout.popup_message, null);
-        confirmBtn = (Button) contentView.findViewById(R.id.confirm_btn);
-        cancelBtn = (Button) contentView.findViewById(R.id.cancel_btn);
+        View contentView = LayoutInflater.from(context).inflate(R.layout.popup_layout_style1, null);
+        confirmBtn = (Button) contentView.findViewById(R.id.popup_btn_confirm);
+        cancelBtn = (Button) contentView.findViewById(R.id.popup_btn_cancel);
+        popup_content = (LinearLayout) contentView.findViewById(R.id.popup_content);
         confirmBtn.setOnClickListener(this);
         cancelBtn.setOnClickListener(this);
         confirmBtn.setOnHoverListener(new OnHoverListener() {
@@ -81,31 +79,20 @@ public class MessageDialogFragment extends PopupWindow implements View.OnClickLi
 				return false;
 			}
 		});
-        firstMessage = (TextView) contentView.findViewById(R.id.first_text_info);
-        secondMessage = (TextView) contentView.findViewById(R.id.pop_second_text);
-        firstMessage.setText(mFirstLineMessage);
+        View textLayout = LayoutInflater.from(mContext).inflate(R.layout.update_msg_text_item, null);
+        TextView textContent= (TextView) textLayout.findViewById(R.id.msg_text);
+        textContent.setText(mFirstLineMessage);
+        popup_content.addView(textLayout);
 
-        RelativeLayout frameLayout = new RelativeLayout(mContext);
-        RelativeLayout.LayoutParams layoutParams;
-
-        if (TextUtils.isEmpty(mSecondLineMessage)) {
-            layoutParams = new RelativeLayout.LayoutParams(width, height);
-            layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT);
-
-        } else {
-            int doubleLineHeight = (int) (context.getResources().getDimension(R.dimen.pop_double_line_height));
-            layoutParams = new RelativeLayout.LayoutParams(width, doubleLineHeight);
-            layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT);
-            secondMessage.setVisibility(View.VISIBLE);
-            secondMessage.setText(mSecondLineMessage);
+        if (!TextUtils.isEmpty(mSecondLineMessage)) {
+            View textLayout2 = LayoutInflater.from(mContext).inflate(R.layout.update_msg_text_item, null);
+            TextView textContent2= (TextView) textLayout2.findViewById(R.id.msg_text);
+            textContent2.setText(mSecondLineMessage);
+            popup_content.addView(textLayout2);
         }
 
-
-//        frameLayout.addView(contentView, frameLayout);
-        frameLayout.addView(contentView, layoutParams);
-//        frameLayout.setBackgroundResource(R.drawable.popwindow_bg);
-        setContentView(frameLayout);
-        setBackgroundDrawable(context.getResources().getDrawable(R.drawable.pop_bg_drawable));
+        setContentView(contentView);
+        setBackgroundDrawable(context.getResources().getDrawable(R.drawable.transparent));
         setFocusable(true);
         
 
@@ -119,12 +106,12 @@ public class MessageDialogFragment extends PopupWindow implements View.OnClickLi
     @Override
     public void onClick(View v) {
         int i = v.getId();
-        if (i == R.id.confirm_btn) {
+        if (i == R.id.popup_btn_confirm) {
             if (confirmListener != null) {
                 confirmListener.confirmClick(v);
             }
 
-        } else if (i == R.id.cancel_btn) {
+        } else if (i == R.id.popup_btn_cancel) {
             if (cancleListener != null) {
                 cancleListener.cancelClick(v);
             }
