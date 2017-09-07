@@ -449,6 +449,8 @@
 <dimen name="layout_filter_noresult_title2_ml">26.50dp</dimen>
 <dimen name="layout_filter_noresult_title2_mt">48.50dp</dimen>
 <dimen name="layout_filter_noresult_title2_ts">18.00dp</dimen>
+<dimen name="layout_filter_noresult_second_line_ml">30.00dp</dimen>
+<dimen name="layout_filter_noresult_second_line_mt">15.00dp</dimen>
 
 <dimen name="history_306">153.00dp</dimen>
 <dimen name="history_432">216.00dp</dimen>

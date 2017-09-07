@@ -220,12 +220,12 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                     if(filter_tab.isChecked()){
                         return;
                     }
-                    filter_tab.setChecked(true);
-                    filter_tab.callOnClick();
-                    lastFocusedView=null;
-                    mFilterItemList.objects.clear();
-                    mFilterPage=0;
+                    Message msg=new Message();
+                    msg.what=0;
+                    msg.obj=v;
+                    mHandler.sendMessageDelayed(msg,1000);
                 }else{
+                    mHandler.removeMessages(0);
                     filter_tab.setTextSize(TypedValue.COMPLEX_UNIT_PX,getResources().getDimensionPixelSize(R.dimen.filter_layout_left_view_tab_ts));
                 }
             }
@@ -528,12 +528,12 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                 }
             }
         });
-            if("payment".equals(channel)||"shiyunshop".equals(channel)){
+//            if("payment".equals(channel)||"shiyunshop".equals(channel)){
                 if(section_group.getChildAt(1)!=null)
                     section_group.getChildAt(1).callOnClick();
                     ((RadioButton)section_group.getChildAt(1)).setChecked(true);
                     section_group.getChildAt(1).requestFocus();
-            }
+//            }
     }
 
     //请求每个section的数据
@@ -649,7 +649,7 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                             conditionsForLog+=";";
                         }
                         AppConstant.purchase_entrance_keyword = conditionsForLog.substring(0,conditionsForLog.lastIndexOf(";"));
-                        showFilterPopup();
+//                        showFilterPopup();
                     }
 
                 });
