@@ -2,12 +2,11 @@ package tv.ismar.homepage.adapter;
 
 import android.animation.ObjectAnimator;
 import android.content.Context;
+import android.graphics.Rect;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -68,6 +67,26 @@ public class DoubleMdAdapter extends RecyclerView.Adapter<DoubleMdAdapter.Double
     @Override
     public int getItemCount() {
         return (mData!=null)? mData.size():0;
+    }
+
+    public static class DoubleMdSpace extends RecyclerView.ItemDecoration {
+        private int spaceL,spaceR,spaceT,spaceB;
+
+        public DoubleMdSpace(int l,int r,int t,int b){
+            spaceL=l;
+            spaceR=r;
+            spaceT=t;
+            spaceB=b;
+        }
+
+        @Override
+        public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
+            super.getItemOffsets(outRect, view, parent, state);
+            outRect.left = spaceL;
+            outRect.bottom = spaceB;
+            outRect.right=spaceR;
+            outRect.top=spaceT;
+        }
     }
 
     public static class DoubleMdViewHolder extends RecyclerView.ViewHolder implements View.OnFocusChangeListener,
