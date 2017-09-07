@@ -27,22 +27,22 @@ import tv.ismar.app.network.SkyService;
 
 public class FetchDataControl extends BaseControl{
 
-    public static final int FETCH_HOME_BANNERS_FLAG = 0X01;//获取首页下所有列表标记
-    public static final int FETCH_BANNERS_LIST_FLAG = 0X02;//获取影视内容banner列表
-    public static final int FETCH_M_BANNERS_LIST_FLAG = 0X03;//获取影视内容多个banner
-    public static final int FETCH_CHANNEL_TAB_FLAG = 0X04;//获取频道list
+    public static final int FETCH_CHANNEL_TAB_FLAG = 0X01;//获取频道列表
+    public static final int FETCH_HOME_BANNERS_FLAG = 0X02;//获取首页下banners
+    public static final int FETCH_CHANNEL_BANNERS_FLAG = 0X03;//获取指定频道下的banners
+    public static final int FETCH_BANNERS_LIST_FLAG = 0X04;//获取指定banner下的海报列表
+    public static final int FETCH_M_BANNERS_LIST_FLAG = 0X05;//获取影视内容多个banner
 
     public List<BannerCarousels> mCarousels = new ArrayList<>();//导视数据
     public List<BannerPoster> mPoster = new ArrayList<>();//海报数据
     public GuideBanner[] mBanners = null;//首页banner列表
+    public ChannelEntity[] mChannels = null;//频道列表
 
     public FetchDataControl(Context context, ControlCallBack callBack) {
         super(context, callBack);
     }
 
-    /**
-     *  获取首页下所有列表
-     */
+    /*获取首页下banner列表*/
     public void fetchBannerList(){
         try {
             SkyService.ServiceManager.getLocalTestService().getGuideBanners()
@@ -73,6 +73,32 @@ public class FetchDataControl extends BaseControl{
         }
     }
 
+    /*获取指定频道下的banner*/
+    public void fetchChannelBanner(String channel){
+        SkyService.ServiceManager.getCacheSkyService().getChannelBanners(channel)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<GuideBanner[]>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(GuideBanner[] guideBanners) {
+                        if (mCallBack != null && guideBanners != null) {
+                            mCallBack.callBack(FETCH_CHANNEL_BANNERS_FLAG, guideBanners);
+                        }
+                    }
+                });
+    }
+
+    /*获取频道列表*/
     public void fetchChannels() {
         SkyService.ServiceManager.getCacheSkyService().apiTvChannels()
                 .subscribeOn(Schedulers.io())
@@ -91,14 +117,9 @@ public class FetchDataControl extends BaseControl{
                     @Override
                     public void onNext(ChannelEntity[] channelEntities) {
                         if (mCallBack != null && channelEntities != null) {
+                            mChannels = channelEntities;
                             mCallBack.callBack(FETCH_CHANNEL_TAB_FLAG, channelEntities);
                         }
-//                        fillChannelLayout(channelEntities);
-//                        fillChannelTab(channelEntities);
-//                        fetchSubscribeBanner();
-//                        fetchMovieBanner();
-//                        fetchHorizontal519Banner();
-//                        fetchMovieMixBanner();
                     }
                 });
     }
