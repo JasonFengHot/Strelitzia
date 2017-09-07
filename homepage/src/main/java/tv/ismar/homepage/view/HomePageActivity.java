@@ -89,6 +89,7 @@ import tv.ismar.app.network.SkyService;
 import tv.ismar.app.player.CallaPlay;
 import tv.ismar.app.service.TrueTimeService;
 import tv.ismar.app.ui.HeadFragment;
+import tv.ismar.app.ui.MessageDialogFragment;
 import tv.ismar.app.update.UpdateService;
 import tv.ismar.app.util.BitmapDecoder;
 import tv.ismar.app.util.DeviceUtils;
@@ -108,7 +109,6 @@ import tv.ismar.homepage.fragment.ChildFragment;
 import tv.ismar.homepage.fragment.EntertainmentFragment;
 import tv.ismar.homepage.fragment.FilmFragment;
 import tv.ismar.homepage.fragment.GuideFragment;
-import tv.ismar.homepage.fragment.MessageDialogFragment;
 import tv.ismar.homepage.fragment.SportFragment;
 import tv.ismar.homepage.fragment.UpdateSlienceLoading;
 import tv.ismar.homepage.widget.DaisyVideoView;
@@ -1110,7 +1110,7 @@ public class HomePageActivity extends BaseActivity implements LinearLayoutManage
         exitPopup = new ModuleMessagePopWindow(this);
         exitPopup.setConfirmBtn(getString(R.string.vod_ok));
         exitPopup.setCancelBtn(getString(R.string.vod_cancel));
-        exitPopup.setFirstMessage(getString(R.string.str_exit));
+        exitPopup.setMessage(getString(R.string.str_exit));
 
         exitPopup.showAtLocation(view, Gravity.CENTER, 0, 0, new ModuleMessagePopWindow.ConfirmListener() {
                     @Override
@@ -1151,7 +1151,7 @@ public class HomePageActivity extends BaseActivity implements LinearLayoutManage
 
     private void showSanzhouPop() {
         sanZhouPop = ExpireAccessTokenPop.getInstance(this);
-        sanZhouPop.setFirstMessage("服务类程序禁止操作!");
+        sanZhouPop.setMessage("服务类程序禁止操作!");
         sanZhouPop.setBackground();
         sanZhouPop.setConfirmBtn(getString(tv.ismar.app.R.string.confirm));
         sanZhouPop.setOnDismissListener(new PopupWindow.OnDismissListener() {

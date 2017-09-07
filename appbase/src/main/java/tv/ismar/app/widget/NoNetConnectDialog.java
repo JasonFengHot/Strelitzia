@@ -7,6 +7,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -19,13 +20,11 @@ import tv.ismar.app.R;
 public class NoNetConnectDialog extends Dialog implements View.OnClickListener{
     private Button confirmBtn;
     private Button cancelBtn;
-    private TextView firstMessage;
-    private TextView secondMessage;
     private ModuleMessagePopWindow.ConfirmListener confirmListener;
     private ModuleMessagePopWindow.CancelListener cancleListener;
     public boolean isConfirmClick = false;
     private Context mContext;
-    private int height;
+    private LinearLayout popup_content;
 
 
     public NoNetConnectDialog(Context context, int themeResId) {
@@ -33,13 +32,12 @@ public class NoNetConnectDialog extends Dialog implements View.OnClickListener{
         mContext = context;
         WindowManager wm = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
 
-        int width = (int) (context.getResources().getDimension(R.dimen.module_pop_width));
-        height = (int) (context.getResources().getDimension(R.dimen.module_pop_height));
 
-        View contentView = LayoutInflater.from(context).inflate(R.layout.module_popup_message, null);
-        contentView.setBackgroundDrawable(mContext.getResources().getDrawable(R.drawable.pop_bg_drawable));
-        confirmBtn = (Button) contentView.findViewById(R.id.confirm_btn);
-        cancelBtn = (Button) contentView.findViewById(R.id.cancel_btn);
+        View contentView = LayoutInflater.from(context).inflate(R.layout.popup_layout_style1, null);
+        contentView.setBackgroundDrawable(mContext.getResources().getDrawable(R.drawable.transparent));
+        confirmBtn = (Button) contentView.findViewById(R.id.popup_btn_confirm);
+        cancelBtn = (Button) contentView.findViewById(R.id.popup_btn_cancel);
+        popup_content = (LinearLayout) contentView.findViewById(R.id.popup_content);
         confirmBtn.setOnClickListener(this);
         cancelBtn.setOnClickListener(this);
         confirmBtn.setOnHoverListener(new View.OnHoverListener() {
@@ -62,27 +60,20 @@ public class NoNetConnectDialog extends Dialog implements View.OnClickListener{
                 return false;
             }
         });
-        firstMessage = (TextView) contentView.findViewById(R.id.first_text_info);
-        secondMessage = (TextView) contentView.findViewById(R.id.pop_second_text);
-        RelativeLayout relativeLayout = new RelativeLayout(mContext);
-        RelativeLayout.LayoutParams layoutParams;
-        layoutParams = new RelativeLayout.LayoutParams(width, height);
-        layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT);
 
-        relativeLayout.addView(contentView, layoutParams);
-        setContentView(relativeLayout,layoutParams);
+        setContentView(contentView);
     }
 
     @Override
     public void onClick(View v) {
         int i = v.getId();
-        if (i == R.id.confirm_btn) {
+        if (i == R.id.popup_btn_confirm) {
             if (confirmListener != null) {
                 isConfirmClick = true;
                 confirmListener.confirmClick(v);
             }
 
-        } else if (i == R.id.cancel_btn) {
+        } else if (i == R.id.popup_btn_cancel) {
             if (cancleListener != null) {
                 isConfirmClick = false;
                 cancleListener.cancelClick(v);
@@ -107,7 +98,10 @@ public class NoNetConnectDialog extends Dialog implements View.OnClickListener{
         cancelBtn.setText(text);
     }
     public void setFirstMessage(String message) {
-        firstMessage.setText(message);
+        View textLayout = LayoutInflater.from(mContext).inflate(R.layout.update_msg_text_item, null);
+        TextView textContent= (TextView) textLayout.findViewById(R.id.msg_text);
+        textContent.setText(message);
+        popup_content.addView(textLayout);
     }
 
     @Override

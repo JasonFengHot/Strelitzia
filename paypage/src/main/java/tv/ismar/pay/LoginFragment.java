@@ -244,8 +244,8 @@ public class LoginFragment extends BaseFragment implements View.OnHoverListener 
         String msg = activity.getString(R.string.login_success_name);
         String phoneNumber = edit_mobile.getText().toString();
         final ModuleMessagePopWindow dialog = new ModuleMessagePopWindow(activity);
-        dialog.setFirstMessage(String.format(msg, phoneNumber));
-        dialog.setSecondMessage(activity.getString(R.string.login_success));
+        dialog.setMessage(String.format(msg, phoneNumber));
+        dialog.setMessage(activity.getString(R.string.login_success));
         dialog.showAtLocation(contentView, Gravity.CENTER, 0, 0, new ModuleMessagePopWindow.ConfirmListener() {
                     @Override
                     public void confirmClick(View view) {

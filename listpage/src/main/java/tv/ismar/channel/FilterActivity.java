@@ -216,7 +216,7 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if(hasFocus){
-                    filter_tab.setTextSize(getResources().getDimensionPixelSize(R.dimen.filter_layout_left_view_tab_ts_scaled));
+                    filter_tab.setTextSize(TypedValue.COMPLEX_UNIT_PX,getResources().getDimensionPixelSize(R.dimen.filter_layout_left_view_tab_ts_scaled));
                     if(filter_tab.isChecked()){
                         return;
                     }
@@ -226,7 +226,7 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                     mFilterItemList.objects.clear();
                     mFilterPage=0;
                 }else{
-                    filter_tab.setTextSize(getResources().getDimensionPixelSize(R.dimen.filter_layout_left_view_tab_ts));
+                    filter_tab.setTextSize(TypedValue.COMPLEX_UNIT_PX,getResources().getDimensionPixelSize(R.dimen.filter_layout_left_view_tab_ts));
                 }
             }
         });
@@ -389,7 +389,7 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                 @Override
                 public void onFocusChange(View v, boolean hasFocus) {
                     if(hasFocus){
-                        radioButton.setTextSize(getResources().getDimensionPixelSize(R.dimen.filter_layout_left_view_tab_ts_scaled));
+                        radioButton.setTextSize(TypedValue.COMPLEX_UNIT_PX,getResources().getDimensionPixelSize(R.dimen.filter_layout_left_view_tab_ts_scaled));
                         radioButton.setEllipsize(TextUtils.TruncateAt.MARQUEE);
                         Log.e("tabposition",v.getY()+"");
                         if(radioButton.isChecked()){
@@ -401,7 +401,7 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                         mHandler.sendMessageDelayed(msg,1000);
                     }else{
                         mHandler.removeMessages(finalI1+1);
-                        radioButton.setTextSize(getResources().getDimensionPixelSize(R.dimen.filter_layout_left_view_tab_ts));
+                        radioButton.setTextSize(TypedValue.COMPLEX_UNIT_PX,getResources().getDimensionPixelSize(R.dimen.filter_layout_left_view_tab_ts));
                         radioButton.setEllipsize(TextUtils.TruncateAt.END);
                     }
                 }
