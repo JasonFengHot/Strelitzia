@@ -680,7 +680,7 @@
 <dimen name="guide_recycle_item_rb_icon_height">33.44dp</dimen>
 <dimen name="guide_recycle_item_rb_margin_bottom">6.22dp</dimen>
 
-<!--电视剧尺寸-->
+<!--电视剧尺�?-->
 <dimen name="tv_player_recycleview_margin_left">46.67dp</dimen>
 <dimen name="tv_play_recycleview_item_padding">31.11dp</dimen>
 <dimen name="tv_play_poster_height">168.00dp</dimen>
@@ -742,4 +742,21 @@
 <dimen name="center_title_size">30.33dp</dimen>
 <dimen name="center_padding">116.67dp</dimen>
 <!--首页 end-->
+
+<dimen name="popup_layout_style_title_view_h">78.56dp</dimen>
+<dimen name="popup_layout_style_title_view_mt">157.11dp</dimen>
+<dimen name="popup_layout_style_icon_mr">24.89dp</dimen>
+<dimen name="popup_layout_style_title_ts">46.67dp</dimen>
+<dimen name="popup_layout_style_content_w">689.89dp</dimen>
+<dimen name="popup_layout_style_content_mt">125.22dp</dimen>
+<dimen name="popup_layout_style_btns_mb">200.67dp</dimen>
+<dimen name="popup_layout_style_content_mt1">101.11dp</dimen>
+<dimen name="popup_layout_style_btns_mb1">147.78dp</dimen>
+<dimen name="popup_layout_style_popup_btn_w">194.44dp</dimen>
+<dimen name="popup_layout_style_popup_btn_h">46.67dp</dimen>
+<dimen name="popup_layout_style_popup_btn_ts">23.33dp</dimen>
+<dimen name="popup_layout_style_popup_btn_ml">24.89dp</dimen>
+<dimen name="msg_text_item_text_h">40.44dp</dimen>
+<dimen name="msg_text_item_text_ts">28.00dp</dimen>
+<dimen name="msg_text_item_text_mb">15.56dp</dimen>
 </resources>

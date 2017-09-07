@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -22,8 +21,6 @@ import java.util.ArrayList;
 
 import tv.ismar.account.IsmartvActivator;
 import tv.ismar.app.R;
-
-import static android.widget.RelativeLayout.CENTER_IN_PARENT;
 
 /**
  * Created by huibin on 11/17/16.
@@ -68,14 +65,14 @@ public class UpdatePopupWindow extends PopupWindow implements View.OnHoverListen
 
         if(msgs.size()>2){
             RelativeLayout.LayoutParams params1 = (RelativeLayout.LayoutParams) popup_title_view.getLayoutParams();
-            params1.topMargin=130;
+            params1.topMargin=context.getResources().getDimensionPixelOffset(R.dimen.popup_layout_style_content_mt1);
             popup_title_view.setLayoutParams(params1);
             RelativeLayout.LayoutParams params2 = (RelativeLayout.LayoutParams) popup_btns.getLayoutParams();
-            params2.bottomMargin=190;
+            params2.bottomMargin=context.getResources().getDimensionPixelOffset(R.dimen.popup_layout_style_btns_mb1);
             popup_btns.setLayoutParams(params2);
         }
         for (String msg : msgs) {
-            View textLayout = LayoutInflater.from(context).inflate(R.layout.update_msg_text_item, null);
+            View textLayout = LayoutInflater.from(context).inflate(R.layout.msg_text_item, null);
             TextView textView = (TextView) textLayout.findViewById(R.id.msg_text);
             textView.setText(msg);
             popup_content.addView(textLayout);

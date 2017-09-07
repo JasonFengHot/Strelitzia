@@ -236,9 +236,14 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                 if(isChecked) {
                     poster_recyclerview.setVisibility(View.VISIBLE);
                     list_poster_recyclerview.setVisibility(View.GONE);
-                    if(!("payment".equals(channel)||"shiyunshop".equals(channel))) {
+                    if(mFilterItemList==null){
+                        mFilterItemList=new ItemList();
+                        mFilterItemList.objects=new ArrayList<>();
+                        fetchFilterCondition(channel);
+                    }else {
                         filter();
                     }
+
                 }else{
                     poster_recyclerview.setVisibility(View.GONE);
                     filter_noresult.setVisibility(View.GONE);
@@ -317,15 +322,11 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
 
     private void initData() {
         filter_title.setText(title);
-        if("payment".equals(channel)||"shiyunshop".equals(channel)){
+        filter_checked_conditiion.setVisibility(View.INVISIBLE);
+        poster_recyclerview.setVisibility(View.GONE);
+        list_poster_recyclerview.setVisibility(View.VISIBLE);
+        if(("payment".equals(channel)||"shiyunshop".equals(channel))){
             filter_tab.setVisibility(View.GONE);
-            filter_checked_conditiion.setVisibility(View.GONE);
-            poster_recyclerview.setVisibility(View.GONE);
-            list_poster_recyclerview.setVisibility(View.VISIBLE);
-        }else{
-            fetchFilterCondition(channel);
-            mFilterItemList=new ItemList();
-            mFilterItemList.objects=new ArrayList<>();
         }
         fetchChannelSection(channel);
         //初始化筛选头部view
@@ -649,7 +650,7 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                             conditionsForLog+=";";
                         }
                         AppConstant.purchase_entrance_keyword = conditionsForLog.substring(0,conditionsForLog.lastIndexOf(";"));
-//                        showFilterPopup();
+                        showFilterPopup();
                     }
 
                 });
@@ -727,7 +728,7 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                             if(itemList!=null){
                                 noResultFetched=true;
                                 filter_noresult.setVisibility(View.VISIBLE);
-                                poster_recyclerview.setVisibility(View.INVISIBLE);
+                                poster_recyclerview.setVisibility(View.GONE);
                                 filter_noresult_first_line = (LinearLayout) filter_noresult.findViewById(R.id.filter_noresult_first_line);
                                 filter_noresult_second_line = (LinearLayout) filter_noresult.findViewById(R.id.filter_noresult_second_line);
                                 filter_noresult_first_line.removeAllViews();
@@ -836,11 +837,11 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                             filterNoResult = true;
                             if(noResultFetched){
                                 filter_noresult.setVisibility(View.VISIBLE);
-                                poster_recyclerview.setVisibility(View.INVISIBLE);
+                                poster_recyclerview.setVisibility(View.GONE);
                             }else{
                                 fetchFilterNoResult();
                             }
-                            poster_recyclerview.setVisibility(View.INVISIBLE);
+                            poster_recyclerview.setVisibility(View.GONE);
                         }else {
                             filterNoResult = false;
                             mFilterItemList.num_pages=itemList.num_pages;

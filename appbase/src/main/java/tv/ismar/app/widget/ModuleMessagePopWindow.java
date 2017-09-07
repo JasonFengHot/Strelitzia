@@ -4,12 +4,10 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import tv.ismar.app.R;
@@ -90,7 +88,7 @@ public class ModuleMessagePopWindow extends PopupWindow implements View.OnClickL
     }
 
     public void setMessage(String message) {
-        View textLayout = LayoutInflater.from(mContext).inflate(R.layout.update_msg_text_item, null);
+        View textLayout = LayoutInflater.from(mContext).inflate(R.layout.msg_text_item, null);
         TextView textContent= (TextView) textLayout.findViewById(R.id.msg_text);
         textContent.setText(message);
         popup_content.addView(textLayout);
