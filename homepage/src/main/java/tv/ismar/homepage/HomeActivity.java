@@ -1,6 +1,5 @@
 package tv.ismar.homepage;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
@@ -8,7 +7,6 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -29,13 +27,15 @@ import tv.ismar.app.core.PageIntent;
 import tv.ismar.app.entity.ChannelEntity;
 import tv.ismar.app.entity.GuideBanner;
 import tv.ismar.app.util.BitmapDecoder;
-import tv.ismar.app.widget.OpenView;
+import tv.ismar.app.widget.TelescopicWrap;
 import tv.ismar.homepage.adapter.HomeAdapter;
 import tv.ismar.homepage.control.FetchDataControl;
 import tv.ismar.homepage.view.ChannelChangeObservable;
 import tv.ismar.homepage.widget.HorizontalTabView;
 
+import static tv.ismar.homepage.control.FetchDataControl.FETCH_CHANNEL_BANNERS_FLAG;
 import static tv.ismar.homepage.control.FetchDataControl.FETCH_CHANNEL_TAB_FLAG;
+import static tv.ismar.homepage.control.FetchDataControl.FETCH_HOME_BANNERS_FLAG;
 
 /**
  * @AUTHOR: xi
@@ -43,7 +43,8 @@ import static tv.ismar.homepage.control.FetchDataControl.FETCH_CHANNEL_TAB_FLAG;
  * @DESC: home页
  */
 
-public class HomeActivity extends BaseActivity implements BaseControl.ControlCallBack, View.OnClickListener{
+public class HomeActivity extends BaseActivity implements BaseControl.ControlCallBack,
+        View.OnClickListener, HorizontalTabView.OnItemSelectedListener,View.OnFocusChangeListener {
 
     private final FetchDataControl mControl = new FetchDataControl(this, this);//业务类引用
 
@@ -51,9 +52,11 @@ public class HomeActivity extends BaseActivity implements BaseControl.ControlCal
     private HomeAdapter mAdapter;
     private HorizontalTabView channelTab;
 
-    private OpenView mHistoryTv;//历史记录
-    private OpenView mPersonCenterTv;//个人中心
     private TextView mTimeTv;//时间
+    private ViewGroup mCollectionLayout;//历史收藏layout
+    private ViewGroup mPersonCenterLayout;//个人中心
+    private TelescopicWrap mCollectionTel;//历史收藏伸缩包装类
+    private TelescopicWrap mPersonCenterTel;//个人中心包装类
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -72,9 +75,11 @@ public class HomeActivity extends BaseActivity implements BaseControl.ControlCal
         mViewGroup = (ViewGroup) findViewById(R.id.home_view_layout);
         mListView = (ListView) findViewById(R.id.guide_container);
         channelTab = (HorizontalTabView) findViewById(R.id.channel_tab);
-        mHistoryTv = (OpenView) findViewById(tv.ismar.app.R.id.guide_title_history_tv);
-        mTimeTv = (TextView) findViewById(tv.ismar.app.R.id.guide_title_time_tv);
-        mPersonCenterTv = (OpenView) findViewById(tv.ismar.app.R.id.guide_title_person_center_tv);
+        mTimeTv = (TextView) findViewById(R.id.guide_title_time_tv);
+        mCollectionLayout = (ViewGroup) findViewById(R.id.collection_layout);
+        mPersonCenterLayout = (ViewGroup) findViewById(R.id.center_layout);
+        mCollectionTel = new TelescopicWrap(this, mCollectionLayout);
+        mPersonCenterTel = new TelescopicWrap(this, mPersonCenterLayout);
         Observable.create(new ChannelChangeObservable(channelTab))
                 .throttleLast(1, TimeUnit.SECONDS)
                 .subscribeOn(AndroidSchedulers.mainThread())
@@ -105,8 +110,11 @@ public class HomeActivity extends BaseActivity implements BaseControl.ControlCal
     }
 
     private void initListener(){
-        mHistoryTv.setOnClickListener(this);
-        mPersonCenterTv.setOnClickListener(this);
+        channelTab.setOnItemSelectedListener(this);
+        mCollectionLayout.setOnFocusChangeListener(this);
+        mPersonCenterLayout.setOnFocusChangeListener(this);
+        mCollectionLayout.setOnClickListener(this);
+        mPersonCenterLayout.setOnClickListener(this);
         mTimeTv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -135,7 +143,7 @@ public class HomeActivity extends BaseActivity implements BaseControl.ControlCal
     @Override
     public void callBack(int flag, Object... args) {
         //这里通过flag严格区分不同的业务流程，避免业务之间的耦合
-        if(flag == FetchDataControl.FETCH_HOME_BANNERS_FLAG){//处理获取首页banner列表
+        if(flag == FETCH_HOME_BANNERS_FLAG){//处理获取首页banner列表
             GuideBanner[] banners = (GuideBanner[]) args;
             if(mAdapter == null){
                 mAdapter = new HomeAdapter(this, banners);
@@ -143,10 +151,17 @@ public class HomeActivity extends BaseActivity implements BaseControl.ControlCal
             }else{
                 mAdapter.notifyDataSetChanged();
             }
-            return;
         }else if (flag == FETCH_CHANNEL_TAB_FLAG){
             ChannelEntity[] channelEntities = (ChannelEntity[]) args;
             fillChannelTab(channelEntities);
+        } else if(flag == FETCH_CHANNEL_BANNERS_FLAG){
+            GuideBanner[] banners = (GuideBanner[]) args;
+            if(mAdapter == null){
+                mAdapter = new HomeAdapter(this, banners);
+                mListView.setAdapter(mAdapter);
+            }else{
+                mAdapter.notifyDataSetChanged();
+            }
         }
     }
 
@@ -169,10 +184,29 @@ public class HomeActivity extends BaseActivity implements BaseControl.ControlCal
     @Override
     public void onClick(View v) {
         PageIntent pageIntent = new PageIntent();
-        if(v == mHistoryTv){
+        if(v == mCollectionLayout){
             pageIntent.toHistory(this);
-        } else if(v == mPersonCenterTv){
+        } else if(v == mPersonCenterLayout){
             pageIntent.toUserCenter(this);
+        }
+    }
+
+    @Override
+    public void onItemSelected(View v, int position) {
+        if(mControl.mChannels!=null && mControl.mChannels.length>0){//频道切换
+            mControl.fetchChannelBanner(mControl.mChannels[position].getChannel());
+        }
+    }
+
+    @Override
+    public void onFocusChange(View v, boolean hasFocus) {
+        if(v == mCollectionLayout){//历史收藏伸缩处理
+            mCollectionTel.openOrClose(hasFocus);
+            return;
+        }
+        if(v == mPersonCenterLayout){
+            mPersonCenterTel.openOrClose(hasFocus);
+            return;
         }
     }
 }

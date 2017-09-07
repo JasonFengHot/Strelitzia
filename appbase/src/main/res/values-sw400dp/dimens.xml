@@ -632,10 +632,13 @@
 
 <!--首页 begin-->
 <!--标题尺寸-->
+<dimen name="guide_title_height">14.81dp</dimen>
 <dimen name="guide_title_logo_width">155.93dp</dimen>
 <dimen name="guide_title_logo_height">22.96dp</dimen>
 <dimen name="guide_title_text_size">11.11dp</dimen>
 <dimen name="guide_title_icon_size">13.33dp</dimen>
+<dimen name="guide_title_react_height">25.93dp</dimen>
+<dimen name="guide_title_react_width">81.48dp</dimen>
 <dimen name="guide_title_icon_padding_text">1.11dp</dimen>
 <dimen name="guide_title_time_size">17.78dp</dimen>
 <dimen name="guide_title_logo_margin_top">4.07dp</dimen>
@@ -645,7 +648,7 @@
 <dimen name="guide_title_histroy_margin_top">13.33dp</dimen>
 <dimen name="guide_title_person_center_margin_top">13.33dp</dimen>
 <dimen name="guide_title_person_center_margin_time">30.74dp</dimen>
-<dimen name="guide_title_history_margin_person_center">83.33dp</dimen>
+<dimen name="guide_title_history_margin_person_center">3.70dp</dimen>
 
 <!--频道title尺寸-->
 <dimen name="channel_title_size">23.33dp</dimen>
@@ -653,6 +656,7 @@
 <dimen name="channel_title_margin_right">3.70dp</dimen>
 <dimen name="channel_title_margin_top">5.93dp</dimen>
 <dimen name="channel_title_margin_bottom">6.30dp</dimen>
+<dimen name="channel_title_height">24.81dp</dimen>
 
 <!--导视尺寸-->
 <dimen name="guide_switch_container_margin_left">37.04dp</dimen>
