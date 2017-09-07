@@ -277,15 +277,15 @@ public class BannerSubscribeAdapter
 
         @Override
         public boolean onHover(View v, MotionEvent event) {
-            switch (event.getAction()){
-                case MotionEvent.ACTION_HOVER_ENTER:
-                case MotionEvent.ACTION_HOVER_MOVE:
-                    v.requestFocusFromTouch();
-                    v.requestFocus();
-                    break;
-                case MotionEvent.ACTION_HOVER_EXIT:
-                    break;
-            }
+//            switch (event.getAction()){
+//                case MotionEvent.ACTION_HOVER_ENTER:
+//                case MotionEvent.ACTION_HOVER_MOVE:
+//                    v.requestFocusFromTouch();
+//                    v.requestFocus();
+//                    break;
+//                case MotionEvent.ACTION_HOVER_EXIT:
+//                    break;
+//            }
             return false;
         }
 
