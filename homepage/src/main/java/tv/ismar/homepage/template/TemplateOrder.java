@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 
 import com.daimajia.androidanimations.library.Techniques;
@@ -88,6 +87,13 @@ public class TemplateOrder extends Template implements BaseControl.ControlCallBa
                     return view;
                 }
                 return null;
+            }
+        });
+
+        subscribeBanner.setOnItemFocusChangeListener(new RecyclerViewTV.OnItemFocusChangeListener() {
+            @Override
+            public void onItemFocusGain(View itemView, int position) {
+                mTitleCountTv.setText(String.format(mContext.getString(R.string.home_item_title_count), (position + 1) + "", subscribeAdapter.getTatalItemCount() + ""));
             }
         });
 
@@ -249,5 +255,6 @@ public class TemplateOrder extends Template implements BaseControl.ControlCallBa
         });
 
         subscribeBanner.setAdapter(subscribeAdapter);
+        mTitleCountTv.setText(String.format(mContext.getString(R.string.home_item_title_count), (1) + "", subscribeAdapter.getTatalItemCount() + ""));
     }
 }

@@ -73,6 +73,13 @@ public class Template519 extends Template{
                 return null;
             }
         });
+
+        horizontal519Banner.setOnItemFocusChangeListener(new RecyclerViewTV.OnItemFocusChangeListener() {
+            @Override
+            public void onItemFocusGain(View itemView, int position) {
+                mTitleCountTv.setText(String.format(mContext.getString(R.string.home_item_title_count), (1 + position) + "", mHorizontal519Adapter.getTatalItemCount() + ""));
+            }
+        });
     }
 
     @Override
@@ -138,5 +145,6 @@ public class Template519 extends Template{
     private void fillHorizontal519Banner(BannerEntity bannerEntity) {
         mHorizontal519Adapter = new BannerHorizontal519Adapter(mContext, bannerEntity);
         horizontal519Banner.setAdapter(mHorizontal519Adapter);
+        mTitleCountTv.setText(String.format(mContext.getString(R.string.home_item_title_count), (1) + "", mHorizontal519Adapter.getTatalItemCount() + ""));
     }
 }

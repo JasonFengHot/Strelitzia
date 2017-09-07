@@ -79,6 +79,13 @@ public class TemplateBigSmallLd extends Template{
             }
         });
 
+        movieMixBanner.setOnItemFocusChangeListener(new RecyclerViewTV.OnItemFocusChangeListener() {
+            @Override
+            public void onItemFocusGain(View itemView, int position) {
+                mTitleCountTv.setText(String.format(mContext.getString(R.string.home_item_title_count), (1 + position) + "", adapter.getTatalItemCount() + ""));
+            }
+        });
+
     }
 
     @Override
@@ -141,6 +148,7 @@ public class TemplateBigSmallLd extends Template{
     private void fillMovieMixBanner(BannerEntity bannerEntity) {
         adapter = new BannerMovieMixAdapter(mContext, bannerEntity);
         movieMixBanner.setAdapter(adapter);
+        mTitleCountTv.setText(String.format(mContext.getString(R.string.home_item_title_count), (1) + "", adapter.getTatalItemCount() + ""));
     }
 
 }

@@ -265,11 +265,11 @@ public class BannerSubscribeAdapter
         @Override
         public void onFocusChange(View v, boolean hasFocus) {
             if (hasFocus) {
-                scaleToLarge(v.findViewById(R.id.item_layout));
+//                scaleToLarge(v.findViewById(R.id.item_layout));
                 v.findViewById(R.id.title).setSelected(true);
                 v.findViewById(R.id.introduction).setSelected(true);
             } else {
-                scaleToNormal(v.findViewById(R.id.item_layout));
+//                scaleToNormal(v.findViewById(R.id.item_layout));
                 v.findViewById(R.id.title).setSelected(false);
                 v.findViewById(R.id.introduction).setSelected(false);
             }
