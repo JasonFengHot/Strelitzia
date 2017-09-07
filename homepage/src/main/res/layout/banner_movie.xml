@@ -7,11 +7,11 @@
     <com.open.androidtvwidget.leanback.recycle.RecyclerViewTV
         android:id="@+id/movie_banner"
         android:layout_width="wrap_content"
-        android:layout_height="450dp"
-        android:layout_marginLeft="50dp"
-        android:layout_marginRight="50dp"
+        android:layout_height="@dimen/movie_banner_recycler_h"
+        android:layout_marginLeft="@dimen/movie_banner_recycler_ml"
+        android:layout_marginRight="@dimen/movie_banner_recycler_mr"
         android:clipChildren="false"
         android:clipToPadding="false"
-        android:paddingLeft="50dp"
-        android:paddingRight="50dp"/>
+        android:paddingLeft="@dimen/movie_banner_recycler_pl"
+        android:paddingRight="@dimen/movie_banner_recycler_pr"/>
 </LinearLayout>

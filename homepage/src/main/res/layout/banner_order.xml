@@ -2,7 +2,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              android:minHeight="450dp"
               android:orientation="vertical">
 
     <RelativeLayout
@@ -12,67 +11,12 @@
         <com.open.androidtvwidget.leanback.recycle.RecyclerViewTV
             android:id="@+id/subscribe_banner"
             android:layout_width="wrap_content"
-            android:layout_height="450dp"
-            android:layout_marginLeft="50dp"
-            android:layout_marginRight="50dp"
+            android:layout_height="@dimen/subscribe_banner_recycler_h"
+            android:layout_marginLeft="@dimen/subscribe_banner_recycler_ml"
+            android:layout_marginRight="@dimen/subscribe_banner_recycler_mr"
             android:clipChildren="false"
             android:clipToPadding="false"
-            android:paddingLeft="50dp"
-            android:paddingRight="50dp"/>
-
-        <RelativeLayout
-            android:id="@+id/subscribe_arrow_left"
-            android:layout_width="100dp"
-            android:layout_height="450dp"
-            android:layout_alignParentLeft="true"
-            android:background="@drawable/banner_navigation_left"
-            android:clickable="true"
-            android:focusable="true"
-            android:focusableInTouchMode="true">
-
-            <ImageView
-                android:id="@+id/banner_arrow_left_normal"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:src="@drawable/banner_arrow_left_normal"/>
-
-            <ImageView
-                android:id="@+id/banner_arrow_left_focus"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:src="@drawable/banner_arrow_left_focus"
-                android:visibility="gone"/>
+            android:paddingLeft="@dimen/subscribe_banner_recycler_pl"
+            android:paddingRight="@dimen/subscribe_banner_recycler_pr"/>
         </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/subscribe_arrow_right"
-            android:layout_width="100dp"
-            android:layout_height="450dp"
-            android:layout_alignParentRight="true"
-            android:background="@drawable/banner_navigation_right"
-            android:clickable="true"
-            android:focusable="true"
-            android:focusableInTouchMode="true">
-
-            <ImageView
-                android:id="@+id/banner_arrow_right_normal"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:src="@drawable/banner_arrow_right_normal"/>
-
-            <ImageView
-                android:id="@+id/banner_arrow_right_focus"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:src="@drawable/banner_arrow_right_focus"
-                android:visibility="gone"/>
-
-        </RelativeLayout>
-
-
-    </RelativeLayout>
 </LinearLayout>

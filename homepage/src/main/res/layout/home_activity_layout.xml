@@ -95,21 +95,22 @@
             android:layout_marginRight="@dimen/guide_title_time_margin_right"
             android:layout_marginTop="@dimen/guide_title_time_margin_top" />
     </RelativeLayout>
+
     <tv.ismar.homepage.widget.HorizontalTabView
         android:id="@+id/channel_tab"
         android:layout_width="@dimen/channel_tab_width"
-        android:layout_height="100dp"
+        android:layout_height="@dimen/channel_tab_height_"
         android:layout_gravity="top"
         android:layout_marginLeft="@dimen/channel_tab_ml"
         android:layout_marginRight="@dimen/channel_tab_ml"
         android:layout_marginTop="@dimen/channel_tab_mt"
         app:tvTabFocusTextColor="#ff9c3c"
-        app:tvTabHeight="80dp"
+        app:tvTabHeight="@dimen/channel_tab_tvTab_h"
         app:tvTabScaleBaseline="fromCenter"
         app:tvTabScaleMultiple="1.1"
         app:tvTabSelectedDrawable="@drawable/channel_indicator_focus"
         app:tvTabSpace="@dimen/channel_tab_space"
-        app:tvTabStartEndPadding="16dp"
+        app:tvTabStartEndPadding="@dimen/channel_tab_tvTab_space"
         app:tvTabTextColor="#999999"
         app:tvTabTextSize="@dimen/text_size_36sp"
         />
