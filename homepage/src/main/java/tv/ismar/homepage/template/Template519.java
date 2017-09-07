@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 
 import com.daimajia.androidanimations.library.Techniques;
@@ -11,6 +12,7 @@ import com.daimajia.androidanimations.library.YoYo;
 import com.open.androidtvwidget.leanback.recycle.LinearLayoutManagerTV;
 import com.open.androidtvwidget.leanback.recycle.RecyclerViewTV;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import rx.Observer;
@@ -29,10 +31,12 @@ import tv.ismar.homepage.banner.adapter.BannerHorizontal519Adapter;
 
 public class Template519 extends Template{
     private RecyclerViewTV horizontal519Banner;
+    private BannerHorizontal519Adapter mHorizontal519Adapter;
+
 
     public Template519(Context context) {
         super(context);
-        fetchHorizontal519Banner();
+        fetchHorizontal519Banner(1);
     }
 
     @Override
@@ -42,6 +46,16 @@ public class Template519 extends Template{
         horizontal519Banner.addItemDecoration(new BannerHorizontal519Adapter.SpacesItemDecoration(20));
         horizontal519Banner.setLayoutManager(horizontal519LayoutManager);
         horizontal519Banner.setSelectedItemAtCentered(false);
+        horizontal519Banner.setPagingableListener(new RecyclerViewTV.PagingableListener() {
+            @Override
+            public void onLoadMoreItems() {
+                Log.d("PagingableListener", "onLoadMoreItems");
+                int currentPageNumber = mHorizontal519Adapter.getCurrentPageNumber();
+                if (currentPageNumber < mHorizontal519Adapter.getTotalPageCount()){
+                    fetchHorizontal519Banner(currentPageNumber + 1);
+                }
+            }
+        });
         horizontal519LayoutManager.setFocusSearchFailedListener(new LinearLayoutManagerTV.FocusSearchFailedListener() {
             @Override
             public View onFocusSearchFailed(View view, int focusDirection, RecyclerView.Recycler recycler, RecyclerView.State state) {
@@ -62,8 +76,32 @@ public class Template519 extends Template{
 
     }
 
-    private void fetchHorizontal519Banner() {
-         SkyService.ServiceManager.getLocalTestService().apiTvBanner("chinesemoviebanner", "1")
+    private void fetchHorizontal519Banner(final int pageNumber) {
+        if (pageNumber != 1){
+            int startIndex = (pageNumber - 1) * 33;
+            int endIndex;
+            if (pageNumber == mHorizontal519Adapter.getTotalPageCount()) {
+                endIndex = mHorizontal519Adapter.getTatalItemCount() - 1;
+            } else {
+                endIndex = pageNumber * 33 - 1;
+            }
+
+            BannerEntity.PosterBean emptyPostBean = new BannerEntity.PosterBean();
+            List<BannerEntity.PosterBean> totalPostList = new ArrayList<>();
+            for (int i = startIndex; i <= endIndex; i++) {
+                totalPostList.add(emptyPostBean);
+            }
+            mHorizontal519Adapter.addEmptyDatas(totalPostList);
+            int mSavePos = horizontal519Banner.getSelectPostion();
+            mHorizontal519Adapter.notifyItemRangeInserted(startIndex, endIndex - startIndex);
+            horizontal519Banner.setOnLoadMoreComplete();
+//            mMovieAdapter.setCurrentPageNumber(pageNumber);
+//            mFocusHandler.sendEmptyMessageDelayed(mSavePos, 10);
+        }
+
+
+        String pageCount = String.valueOf(pageNumber);
+         SkyService.ServiceManager.getLocalTestService().apiTvBanner("overseasbanner", pageCount)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<BannerEntity>() {
@@ -78,15 +116,23 @@ public class Template519 extends Template{
                     }
 
                     @Override
-                    public void onNext(BannerEntity bannerSubscribeEntities) {
-                        List<BannerEntity.PosterBean> posterBeanList = bannerSubscribeEntities.getPoster();
-                        fillHorizontal519Banner(posterBeanList);
+                    public void onNext(BannerEntity bannerEntity) {
+//                        List<BannerEntity.PosterBean> posterBeanList = bannerSubscribeEntities.getPoster();
+//                        fillHorizontal519Banner(posterBeanList);
+
+                        if (pageNumber == 1){
+                            fillHorizontal519Banner(bannerEntity);
+                        }else {
+                            int mSavePos = horizontal519Banner.getSelectPostion();
+                            mHorizontal519Adapter.addDatas(bannerEntity);
+//                            mFocusHandler.sendEmptyMessageDelayed(mSavePos, 10);
+                        }
                     }
                 });
     }
 
-    private void fillHorizontal519Banner(List<BannerEntity.PosterBean> posterBeanList) {
-        BannerHorizontal519Adapter adapter = new BannerHorizontal519Adapter(mContext, posterBeanList);
-        horizontal519Banner.setAdapter(adapter);
+    private void fillHorizontal519Banner(BannerEntity bannerEntity) {
+        mHorizontal519Adapter = new BannerHorizontal519Adapter(mContext, bannerEntity);
+        horizontal519Banner.setAdapter(mHorizontal519Adapter);
     }
 }

@@ -906,9 +906,9 @@ public class HomePageActivity extends BaseActivity implements LinearLayoutManage
                     }
 
                     @Override
-                    public void onNext(BannerEntity bannerSubscribeEntities) {
-                        List<BannerEntity.PosterBean> posterBeanList = bannerSubscribeEntities.getPoster();
-                        fillMovieBanner(posterBeanList);
+                    public void onNext(BannerEntity bannerEntity) {
+//                        List<BannerEntity.PosterBean> posterBeanList = bannerSubscribeEntities.getPoster();
+                        fillMovieBanner(bannerEntity);
                     }
                 });
     }
@@ -929,9 +929,8 @@ public class HomePageActivity extends BaseActivity implements LinearLayoutManage
                     }
 
                     @Override
-                    public void onNext(BannerEntity bannerSubscribeEntities) {
-                        List<BannerEntity.PosterBean> posterBeanList = bannerSubscribeEntities.getPoster();
-                        fillHorizontal519Banner(posterBeanList);
+                    public void onNext(BannerEntity bannerEntity) {
+                        fillHorizontal519Banner(bannerEntity);
                     }
                 });
     }
@@ -952,9 +951,8 @@ public class HomePageActivity extends BaseActivity implements LinearLayoutManage
                     }
 
                     @Override
-                    public void onNext(BannerEntity bannerSubscribeEntities) {
-                        List<BannerEntity.PosterBean> posterBeanList = bannerSubscribeEntities.getPoster();
-                        fillMovieMixBanner(posterBeanList);
+                    public void onNext(BannerEntity bannerEntity) {
+                        fillMovieMixBanner(bannerEntity);
                     }
                 });
     }
@@ -976,18 +974,18 @@ public class HomePageActivity extends BaseActivity implements LinearLayoutManage
         subscribeBanner.setAdapter(subscribeAdapter);
     }
 
-    private void fillMovieBanner(List<BannerEntity.PosterBean> posterBeanList) {
-        BannerMovieAdapter adapter = new BannerMovieAdapter(this, posterBeanList);
+    private void fillMovieBanner(BannerEntity bannerEntity) {
+        BannerMovieAdapter adapter = new BannerMovieAdapter(this, bannerEntity);
         movieBanner.setAdapter(adapter);
     }
 
-    private void fillHorizontal519Banner(List<BannerEntity.PosterBean> posterBeanList) {
-        BannerHorizontal519Adapter adapter = new BannerHorizontal519Adapter(this, posterBeanList);
+    private void fillHorizontal519Banner(BannerEntity bannerEntity) {
+        BannerHorizontal519Adapter adapter = new BannerHorizontal519Adapter(this, bannerEntity);
         horizontal519Banner.setAdapter(adapter);
     }
 
-    private void fillMovieMixBanner(List<BannerEntity.PosterBean> posterBeanList) {
-        BannerMovieMixAdapter adapter = new BannerMovieMixAdapter(this, posterBeanList);
+    private void fillMovieMixBanner(BannerEntity bannerEntity) {
+        BannerMovieMixAdapter adapter = new BannerMovieMixAdapter(this, bannerEntity);
         movieMixBanner.setAdapter(adapter);
     }
 

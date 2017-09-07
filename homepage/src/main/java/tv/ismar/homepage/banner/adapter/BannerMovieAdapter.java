@@ -28,11 +28,28 @@ public class BannerMovieAdapter extends RecyclerView.Adapter<BannerMovieAdapter.
     private Context mContext;
 
     private List<BannerEntity.PosterBean> mSubscribeEntityList;
+    private int currentPageNumber;
+    private int totalPageCount;
+    private int tatalItemCount;
 
+    public int getCurrentPageNumber() {
+        return currentPageNumber;
+    }
 
-    public BannerMovieAdapter(Context context, List<BannerEntity.PosterBean> subscribeEntityList) {
+    public int getTotalPageCount() {
+        return totalPageCount;
+    }
+
+    public int getTatalItemCount() {
+        return tatalItemCount;
+    }
+
+    public BannerMovieAdapter(Context context, BannerEntity bannerEntity) {
         mContext = context;
-        mSubscribeEntityList = subscribeEntityList;
+        currentPageNumber = 1;
+        totalPageCount = bannerEntity.getCount_pages();
+        tatalItemCount = bannerEntity.getCount();
+        mSubscribeEntityList = bannerEntity.getPoster();
     }
 
     @Override
@@ -46,7 +63,7 @@ public class BannerMovieAdapter extends RecyclerView.Adapter<BannerMovieAdapter.
     public void onBindViewHolder(SubscribeViewHolder holder, int position) {
         BannerEntity.PosterBean entity = mSubscribeEntityList.get(position);
         Picasso.with(mContext).load(entity.getPoster_url()).into(holder.mImageView);
-        holder.mTitle.setText(entity.getTitle() +" 大家发的；看时间发卡量；大家发可莱丝；");
+        holder.mTitle.setText(entity.getTitle() + " " + position);
     }
 
     @Override
@@ -124,5 +141,26 @@ public class BannerMovieAdapter extends RecyclerView.Adapter<BannerMovieAdapter.
             outRect.right = space;
             outRect.left = space;
         }
+    }
+
+    public void addDatas(BannerEntity bannerEntity) {
+        //        mSubscribeEntityList.set()
+        int startIndex = (bannerEntity.getNum_pages() - 1) * 33;
+        int endIndex;
+        if (bannerEntity.getNum_pages() == bannerEntity.getCount_pages()) {
+            endIndex = bannerEntity.getCount() - 1;
+        } else {
+            endIndex = bannerEntity.getNum_pages() * 33 - 1;
+        }
+
+        for (int i = 0; i < bannerEntity.getPoster().size(); i++) {
+            mSubscribeEntityList.set(startIndex + i, bannerEntity.getPoster().get(i));
+        }
+        notifyItemRangeInserted(startIndex, endIndex - startIndex);
+    }
+
+    public void addEmptyDatas(List<BannerEntity.PosterBean> emptyList) {
+        currentPageNumber = currentPageNumber + 1;
+        mSubscribeEntityList.addAll(emptyList);
     }
 }
