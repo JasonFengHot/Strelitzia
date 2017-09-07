@@ -32,6 +32,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
+import android.widget.SeekBar;
 
 import com.blankj.utilcode.util.StringUtils;
 import com.daimajia.androidanimations.library.Techniques;
@@ -143,7 +144,9 @@ public class HomePageActivity extends BaseActivity implements LinearLayoutManage
     private AdvertiseManager advertiseManager;
     private Advertisement advertisement;
     private List<AdvertiseTable> launchAds;
+    private SeekBar ad_seek;
     private int countAdTime = 0;
+    private int totleTime=0;
     private int currentImageAdCountDown = 0;
     private boolean isStartImageCountDown = false;
     private boolean isPlayingVideo = false;
@@ -313,6 +316,7 @@ public class HomePageActivity extends BaseActivity implements LinearLayoutManage
         home_ad_video = (DaisyVideoView) findViewById(R.id.home_ad_video);
         home_ad_pic = (ImageView) findViewById(R.id.home_ad_pic);
         home_ad_timer = (Button) findViewById(R.id.home_ad_timer);
+        ad_seek= (SeekBar) findViewById(R.id.home_ad_seekbar);
 
         advertiseManager = new AdvertiseManager(getApplicationContext());
         launchAds = advertiseManager.getAppLaunchAdvertisement();
@@ -325,7 +329,8 @@ public class HomePageActivity extends BaseActivity implements LinearLayoutManage
             Log.d("LH/", "GetStartAd:" + adTable.location);
             countAdTime += duration;
         }
-
+        totleTime=countAdTime;
+        ad_seek.setMax(countAdTime);
         /**
          * advertisement end
          */
@@ -906,9 +911,9 @@ public class HomePageActivity extends BaseActivity implements LinearLayoutManage
                     }
 
                     @Override
-                    public void onNext(BannerEntity bannerSubscribeEntities) {
-                        List<BannerEntity.PosterBean> posterBeanList = bannerSubscribeEntities.getPoster();
-                        fillMovieBanner(posterBeanList);
+                    public void onNext(BannerEntity bannerEntity) {
+//                        List<BannerEntity.PosterBean> posterBeanList = bannerSubscribeEntities.getPoster();
+                        fillMovieBanner(bannerEntity);
                     }
                 });
     }
@@ -929,9 +934,8 @@ public class HomePageActivity extends BaseActivity implements LinearLayoutManage
                     }
 
                     @Override
-                    public void onNext(BannerEntity bannerSubscribeEntities) {
-                        List<BannerEntity.PosterBean> posterBeanList = bannerSubscribeEntities.getPoster();
-                        fillHorizontal519Banner(posterBeanList);
+                    public void onNext(BannerEntity bannerEntity) {
+                        fillHorizontal519Banner(bannerEntity);
                     }
                 });
     }
@@ -952,9 +956,8 @@ public class HomePageActivity extends BaseActivity implements LinearLayoutManage
                     }
 
                     @Override
-                    public void onNext(BannerEntity bannerSubscribeEntities) {
-                        List<BannerEntity.PosterBean> posterBeanList = bannerSubscribeEntities.getPoster();
-                        fillMovieMixBanner(posterBeanList);
+                    public void onNext(BannerEntity bannerEntity) {
+                        fillMovieMixBanner(bannerEntity);
                     }
                 });
     }
@@ -976,18 +979,18 @@ public class HomePageActivity extends BaseActivity implements LinearLayoutManage
         subscribeBanner.setAdapter(subscribeAdapter);
     }
 
-    private void fillMovieBanner(List<BannerEntity.PosterBean> posterBeanList) {
-        BannerMovieAdapter adapter = new BannerMovieAdapter(this, posterBeanList);
+    private void fillMovieBanner(BannerEntity bannerEntity) {
+        BannerMovieAdapter adapter = new BannerMovieAdapter(this, bannerEntity);
         movieBanner.setAdapter(adapter);
     }
 
-    private void fillHorizontal519Banner(List<BannerEntity.PosterBean> posterBeanList) {
-        BannerHorizontal519Adapter adapter = new BannerHorizontal519Adapter(this, posterBeanList);
+    private void fillHorizontal519Banner(BannerEntity bannerEntity) {
+        BannerHorizontal519Adapter adapter = new BannerHorizontal519Adapter(this, bannerEntity);
         horizontal519Banner.setAdapter(adapter);
     }
 
-    private void fillMovieMixBanner(List<BannerEntity.PosterBean> posterBeanList) {
-        BannerMovieMixAdapter adapter = new BannerMovieMixAdapter(this, posterBeanList);
+    private void fillMovieMixBanner(BannerEntity bannerEntity) {
+        BannerMovieMixAdapter adapter = new BannerMovieMixAdapter(this, bannerEntity);
         movieMixBanner.setAdapter(adapter);
     }
 
@@ -1713,6 +1716,7 @@ public class HomePageActivity extends BaseActivity implements LinearLayoutManage
             if (home_ad_pic.getVisibility() != View.VISIBLE) {
                 home_ad_video.setVisibility(View.GONE);
                 home_ad_pic.setVisibility(View.VISIBLE);
+                ad_seek.setVisibility(View.VISIBLE);
             }
             Picasso.with(this)
                     .load(launchAds.get(index).location)
@@ -1811,6 +1815,7 @@ public class HomePageActivity extends BaseActivity implements LinearLayoutManage
                     if (!isPlayingVideo && countAdTime == 0) {
                         mHandler.removeMessages(MSG_AD_COUNTDOWN);
                         Adend = true;
+                        ad_seek.setProgress(totleTime);
                         goNextPage();
                         return;
                     }
@@ -1819,6 +1824,7 @@ public class HomePageActivity extends BaseActivity implements LinearLayoutManage
                     }
                     home_ad_timer.setTextColor(Color.WHITE);
                     home_ad_timer.setText(countAdTime + "s");
+                    ad_seek.setProgress(totleTime-countAdTime);
                     int refreshTime;
                     if (!isPlayingVideo) {
                         refreshTime = 1000;

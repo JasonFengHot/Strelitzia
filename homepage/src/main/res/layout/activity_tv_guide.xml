@@ -248,5 +248,18 @@
             android:textColor="@color/color_base_white"
             android:textSize="@dimen/text_size_48sp"
             android:visibility="gone"/>
+        <SeekBar
+            android:id="@+id/home_ad_seekbar"
+            android:layout_width="1031dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="549dp"
+            android:maxHeight="3dp"
+            android:layout_marginLeft="445dp"
+            android:paddingLeft="0dp"
+            android:paddingRight="0dp"
+            android:thumb="@drawable/launcher_thumb"
+            android:progressDrawable="@drawable/launcher_ad_seekbar_style"
+            android:splitTrack="false"
+            />
     </RelativeLayout>
 </FrameLayout>

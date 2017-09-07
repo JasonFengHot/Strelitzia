@@ -5,6 +5,7 @@ import android.graphics.Rect;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -21,6 +22,7 @@ import java.util.List;
 import tv.ismar.app.entity.Item;
 import tv.ismar.app.ui.adapter.OnItemClickListener;
 import tv.ismar.app.ui.adapter.OnItemFocusedListener;
+import tv.ismar.app.ui.adapter.OnItemOnhoverlistener;
 import tv.ismar.app.ui.view.LabelImageView;
 import tv.ismar.entity.HistoryFavoriteEntity;
 import tv.ismar.listener.LfListItemClickListener;
@@ -36,6 +38,7 @@ public class HistoryListAdapter extends RecyclerView.Adapter<HistoryListAdapter.
     private boolean isVisibility=false;
     private OnItemFocusedListener itemFocusedListener;
     private LfListItemClickListener itemClickListener;
+    private OnItemOnhoverlistener itemOnhoverlistener;
     private String type="history";
     private String lastTime="";
 
@@ -50,6 +53,9 @@ public class HistoryListAdapter extends RecyclerView.Adapter<HistoryListAdapter.
 
     public OnItemFocusedListener getItemFocusedListener() {
         return itemFocusedListener;
+    }
+    private void setItemOnhoverlistener(OnItemOnhoverlistener itemOnhoverlistener){
+        this.itemOnhoverlistener=itemOnhoverlistener;
     }
 
     public void setItemFocusedListener(OnItemFocusedListener itemFocusedListener) {
@@ -73,18 +79,20 @@ public class HistoryListAdapter extends RecyclerView.Adapter<HistoryListAdapter.
             holder.item_detail_image.setVisibility(View.VISIBLE);
             holder.more.setVisibility(View.GONE);
             holder.item_time_node.setVisibility(View.VISIBLE);
-            String[] date=item.getDate().split("-");
-            if(position==0){
-                holder.item_time.setText(date[0]+"月"+date[1]+"日");
-                lastTime=item.getDate();
-            }else {
-                if (item.getDate().equals(lastTime) && !item.getDate().equals("")) {
-                    holder.item_time.setVisibility(View.GONE);
-                    holder.item_time_node.setVisibility(View.GONE);
-                } else {
+            if(item.getDate()!=null&&item.getDate().contains("-")){
+                String[] date=item.getDate().split("-");
+                if(position==0){
                     holder.item_time.setText(date[0]+"月"+date[1]+"日");
-                    holder.item_time_node.setVisibility(View.VISIBLE);
-                    holder.item_time.setVisibility(View.VISIBLE);
+                    lastTime=item.getDate();
+                }else {
+                    if (item.getDate().equals(lastTime) && !item.getDate().equals("")) {
+                        holder.item_time.setVisibility(View.GONE);
+                        holder.item_time_node.setVisibility(View.GONE);
+                    } else {
+                        holder.item_time.setText(date[0]+"月"+date[1]+"日");
+                        holder.item_time_node.setVisibility(View.VISIBLE);
+                        holder.item_time.setVisibility(View.VISIBLE);
+                    }
                 }
             }
 
@@ -108,6 +116,13 @@ public class HistoryListAdapter extends RecyclerView.Adapter<HistoryListAdapter.
             @Override
             public void onClick(View v) {
                 itemClickListener.onlfItemClick(v,position,type);
+            }
+        });
+        holder.item_detail.setOnHoverListener(new View.OnHoverListener() {
+            @Override
+            public boolean onHover(View v, MotionEvent event) {
+                itemOnhoverlistener.OnItemOnhoverlistener(v,event,position,0);
+                return false;
             }
         });
     }

@@ -31,10 +31,28 @@ public class BannerMovieMixAdapter extends RecyclerView.Adapter<BannerMovieMixAd
 
     private List<BannerEntity.PosterBean> mSubscribeEntityList;
 
+    private int currentPageNumber;
+    private int totalPageCount;
+    private int totalItemCount;
 
-    public BannerMovieMixAdapter(Context context, List<BannerEntity.PosterBean> subscribeEntityList) {
+    public int getCurrentPageNumber() {
+        return currentPageNumber;
+    }
+
+    public int getTotalPageCount() {
+        return totalPageCount;
+    }
+
+    public int getTatalItemCount() {
+        return totalItemCount;
+    }
+
+    public BannerMovieMixAdapter(Context context, BannerEntity bannerEntity) {
         mContext = context;
-        mSubscribeEntityList = subscribeEntityList;
+        mSubscribeEntityList = bannerEntity.getPoster();
+        currentPageNumber = 1;
+        totalPageCount = bannerEntity.getCount_pages();
+        totalItemCount = bannerEntity.getCount();
     }
 
     @Override
@@ -63,11 +81,27 @@ public class BannerMovieMixAdapter extends RecyclerView.Adapter<BannerMovieMixAd
             ViewGroup.LayoutParams titleLayoutParams = holder.mTitle.getLayoutParams();
             titleLayoutParams.width = 720;
             holder.mTitle.setLayoutParams(titleLayoutParams);
+        }else {
+            ViewGroup.LayoutParams itemLayoutParams = holder.itemLayout.getLayoutParams();
+            itemLayoutParams.width = 250;
+            holder.itemLayout.setLayoutParams(itemLayoutParams);
+
+            ViewGroup.LayoutParams wrapperLayoutParams = holder.itemWrapper.getLayoutParams();
+            wrapperLayoutParams.width = 250;
+            holder.itemWrapper.setLayoutParams(wrapperLayoutParams);
+
+            ViewGroup.LayoutParams imageLayoutParams = holder.mImageView.getLayoutParams();
+            imageLayoutParams.width = 250;
+            holder.mImageView.setLayoutParams(imageLayoutParams);
+
+            ViewGroup.LayoutParams titleLayoutParams = holder.mTitle.getLayoutParams();
+            titleLayoutParams.width = 250;
+            holder.mTitle.setLayoutParams(titleLayoutParams);
         }
 
         BannerEntity.PosterBean entity = mSubscribeEntityList.get(position);
         Picasso.with(mContext).load(entity.getPoster_url()).into(holder.mImageView);
-        holder.mTitle.setText(entity.getTitle() + "大沙发发斯蒂芬骄傲的快速；房间爱的开始；就发阿打算开发阶段可莱丝；发简历；卡代课老师； ");
+        holder.mTitle.setText(entity.getTitle() + " " + position);
     }
 
     @Override
@@ -149,5 +183,26 @@ public class BannerMovieMixAdapter extends RecyclerView.Adapter<BannerMovieMixAd
             outRect.right = space;
             outRect.left = space;
         }
+    }
+
+    public void addDatas(BannerEntity bannerEntity) {
+        //        mSubscribeEntityList.set()
+        int startIndex = (bannerEntity.getNum_pages() - 1) * 33;
+        int endIndex;
+        if (bannerEntity.getNum_pages() == bannerEntity.getCount_pages()) {
+            endIndex = bannerEntity.getCount() - 1;
+        } else {
+            endIndex = bannerEntity.getNum_pages() * 33 - 1;
+        }
+
+        for (int i = 0; i < bannerEntity.getPoster().size(); i++) {
+            mSubscribeEntityList.set(startIndex + i, bannerEntity.getPoster().get(i));
+        }
+        notifyItemRangeInserted(startIndex, endIndex - startIndex);
+    }
+
+    public void addEmptyDatas(List<BannerEntity.PosterBean> emptyList) {
+        currentPageNumber = currentPageNumber + 1;
+        mSubscribeEntityList.addAll(emptyList);
     }
 }

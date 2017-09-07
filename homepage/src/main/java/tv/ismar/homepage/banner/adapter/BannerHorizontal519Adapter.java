@@ -29,10 +29,40 @@ public class BannerHorizontal519Adapter extends RecyclerView.Adapter<BannerHoriz
 
     private List<BannerEntity.PosterBean> mSubscribeEntityList;
 
+    private int currentPageNumber;
+    private int totalPageCount;
+    private int totalItemCount;
 
-    public BannerHorizontal519Adapter(Context context, List<BannerEntity.PosterBean> subscribeEntityList) {
+    public int getCurrentPageNumber() {
+        return currentPageNumber;
+    }
+
+    public void setCurrentPageNumber(int currentPageNumber) {
+        this.currentPageNumber = currentPageNumber;
+    }
+
+    public int getTotalPageCount() {
+        return totalPageCount;
+    }
+
+    public void setTotalPageCount(int totalPageCount) {
+        this.totalPageCount = totalPageCount;
+    }
+
+    public int getTatalItemCount() {
+        return totalItemCount;
+    }
+
+    public void setTatalItemCount(int tatalItemCount) {
+        this.totalItemCount = tatalItemCount;
+    }
+
+    public BannerHorizontal519Adapter(Context context, BannerEntity bannerEntity) {
         mContext = context;
-        mSubscribeEntityList = subscribeEntityList;
+        mSubscribeEntityList = bannerEntity.getPoster();
+        currentPageNumber = 1;
+        totalPageCount = bannerEntity.getCount_pages();
+        totalItemCount = bannerEntity.getCount();
     }
 
     @Override
@@ -46,7 +76,7 @@ public class BannerHorizontal519Adapter extends RecyclerView.Adapter<BannerHoriz
     public void onBindViewHolder(SubscribeViewHolder holder, int position) {
         BannerEntity.PosterBean entity = mSubscribeEntityList.get(position);
         Picasso.with(mContext).load(entity.getPoster_url()).into(holder.mImageView);
-        holder.mTitle.setText(entity.getTitle() + "啊；代付款；案件的防控；大技术开发就撒旦");
+        holder.mTitle.setText(entity.getTitle() + " " + position);
     }
 
     @Override
@@ -124,5 +154,26 @@ public class BannerHorizontal519Adapter extends RecyclerView.Adapter<BannerHoriz
             outRect.right = space;
             outRect.left = space;
         }
+    }
+
+    public void addDatas(BannerEntity bannerEntity) {
+        //        mSubscribeEntityList.set()
+        int startIndex = (bannerEntity.getNum_pages() - 1) * 33;
+        int endIndex;
+        if (bannerEntity.getNum_pages() == bannerEntity.getCount_pages()) {
+            endIndex = bannerEntity.getCount() - 1;
+        } else {
+            endIndex = bannerEntity.getNum_pages() * 33 - 1;
+        }
+
+        for (int i = 0; i < bannerEntity.getPoster().size(); i++) {
+            mSubscribeEntityList.set(startIndex + i, bannerEntity.getPoster().get(i));
+        }
+        notifyItemRangeInserted(startIndex, endIndex - startIndex);
+    }
+
+    public void addEmptyDatas(List<BannerEntity.PosterBean> emptyList) {
+        currentPageNumber = currentPageNumber + 1;
+        mSubscribeEntityList.addAll(emptyList);
     }
 }

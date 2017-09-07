@@ -45,4 +45,5 @@
 	<color name ="loginpopup_dlg_focus">#000000</color>
 	<color name ="loginpopup_dlg_error">#000000</color>
 	<color name ="yellow">#FFFF00</color>
+	<drawable name="ad_seek_bg">#0099ff</drawable>
 </resources>
