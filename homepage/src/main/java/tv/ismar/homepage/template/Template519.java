@@ -43,9 +43,13 @@ public class Template519 extends Template{
     public void getView(View view) {
         horizontal519Banner = (RecyclerViewTV)view.findViewById(R.id.horizontal_519_banner);
         LinearLayoutManagerTV horizontal519LayoutManager = new LinearLayoutManagerTV(mContext, LinearLayoutManager.HORIZONTAL, false);
-        horizontal519Banner.addItemDecoration(new BannerHorizontal519Adapter.SpacesItemDecoration(20));
+        int selectedItemSpace = mContext.getResources().getDimensionPixelSize(R.dimen.banner_item_SelectedItemSpace);
+        horizontal519Banner.addItemDecoration(new BannerHorizontal519Adapter.SpacesItemDecoration(selectedItemSpace));
         horizontal519Banner.setLayoutManager(horizontal519LayoutManager);
         horizontal519Banner.setSelectedItemAtCentered(false);
+        int selectedItemOffset = mContext.getResources().getDimensionPixelSize(R.dimen.banner_item_setSelectedItemOffset);
+        horizontal519Banner.setSelectedItemOffset(selectedItemOffset, selectedItemOffset);
+
         horizontal519Banner.setPagingableListener(new RecyclerViewTV.PagingableListener() {
             @Override
             public void onLoadMoreItems() {

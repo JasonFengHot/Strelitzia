@@ -800,6 +800,46 @@
 <dimen name="channel_tab_mt">9.67dp</dimen>
 <dimen name="channel_tab_height">17.33dp</dimen>
 <dimen name="channel_tab_space">29.33dp</dimen>
+<dimen name="channel_tab_height_">33.33dp</dimen>
+<dimen name="channel_tab_tvTab_h">26.67dp</dimen>
+<dimen name="channel_tab_tvTab_space">5.33dp</dimen>
+<dimen name="banner_item_line_h">0.67dp</dimen>
+<dimen name="banner_item_line_ml">-16.67dp</dimen>
+<dimen name="banner_item_line_mr">-16.67dp</dimen>
+<dimen name="banner_subscribe_publish_time_w">51.00dp</dimen>
+<dimen name="banner_subscribe_publish_time_h">17.33dp</dimen>
+<dimen name="banner_subscribe_publish_time_mt">1.67dp</dimen>
+<dimen name="banner_subscribe_item_layout_mt">8.00dp</dimen>
+<dimen name="banner_subscribe_post_w">129.33dp</dimen>
+<dimen name="banner_subscribe_post_h">73.00dp</dimen>
+<dimen name="banner_subscribe_post_introduction_h">15.67dp</dimen>
+<dimen name="banner_subscribe_post_title_h">27.00dp</dimen>
+<dimen name="banner_moive_item_layout_mt">8.00dp</dimen>
+<dimen name="banner_movie_post_w">83.33dp</dimen>
+<dimen name="banner_movie_post_h">116.67dp</dimen>
+<dimen name="banner_movie_post_title_h">14.33dp</dimen>
+<dimen name="banner_horizontal519_layout_mt">8.00dp</dimen>
+<dimen name="banner_horizontal519_post_w">173.00dp</dimen>
+<dimen name="banner_horizontal519_post_h">97.33dp</dimen>
+<dimen name="banner_horizontal519_post_title_h">14.33dp</dimen>
+<dimen name="subscribe_banner_recycler_h">150.00dp</dimen>
+<dimen name="subscribe_banner_recycler_ml">16.67dp</dimen>
+<dimen name="subscribe_banner_recycler_mr">16.67dp</dimen>
+<dimen name="subscribe_banner_recycler_pl">16.67dp</dimen>
+<dimen name="subscribe_banner_recycler_pr">16.67dp</dimen>
+<dimen name="movie_banner_recycler_h">150.00dp</dimen>
+<dimen name="movie_banner_recycler_ml">16.67dp</dimen>
+<dimen name="movie_banner_recycler_mr">16.67dp</dimen>
+<dimen name="movie_banner_recycler_pl">16.67dp</dimen>
+<dimen name="movie_banner_recycler_pr">16.67dp</dimen>
+<dimen name="horizontal519_banner_recycler_h">150.00dp</dimen>
+<dimen name="horizontal519_banner_recycler_ml">16.67dp</dimen>
+<dimen name="horizontal519_banner_recycler_mr">16.67dp</dimen>
+<dimen name="horizontal519_banner_recycler_pl">16.67dp</dimen>
+<dimen name="horizontal519_banner_recycler_pr">16.67dp</dimen>
+<dimen name="banner_item_setSelectedItemOffset">33.33dp</dimen>
+<dimen name="banner_item_SelectedItemSpace">6.67dp</dimen>
+
 
 <!--longhai 首页相关ui End -->
 </resources>

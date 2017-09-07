@@ -39,8 +39,8 @@ public class TemplateOrder extends Template implements BaseControl.ControlCallBa
     private RecyclerViewTV subscribeBanner;
     private BannerSubscribeAdapter subscribeAdapter;
 
-    private View subscribeArrowLeft;
-    private View subscribeArrowRight;
+//    private View subscribeArrowLeft;
+//    private View subscribeArrowRight;
 
     public TemplateOrder(Context context) {
         super(context);
@@ -52,10 +52,12 @@ public class TemplateOrder extends Template implements BaseControl.ControlCallBa
     public void getView(View view) {
         subscribeBanner = (RecyclerViewTV) view.findViewById(R.id.subscribe_banner);
         LinearLayoutManagerTV subscribeLayoutManager = new LinearLayoutManagerTV(mContext, LinearLayoutManagerTV.HORIZONTAL, false);
-        subscribeBanner.addItemDecoration(new BannerSubscribeAdapter.SpacesItemDecoration(20));
+        int selectedItemSpace = mContext.getResources().getDimensionPixelSize(R.dimen.banner_item_SelectedItemSpace);
+        subscribeBanner.addItemDecoration(new BannerSubscribeAdapter.SpacesItemDecoration(selectedItemSpace));
         subscribeBanner.setLayoutManager(subscribeLayoutManager);
         subscribeBanner.setSelectedItemAtCentered(false);
-        subscribeBanner.setSelectedItemOffset(100, 100);
+        int selectedItemOffset = mContext.getResources().getDimensionPixelSize(R.dimen.banner_item_setSelectedItemOffset);
+        subscribeBanner.setSelectedItemOffset(selectedItemOffset, selectedItemOffset);
         subscribeBanner.setPagingableListener(new RecyclerViewTV.PagingableListener() {
             @Override
             public void onLoadMoreItems() {
@@ -89,82 +91,82 @@ public class TemplateOrder extends Template implements BaseControl.ControlCallBa
             }
         });
 
-        subscribeBanner.setOnHoverListener(new View.OnHoverListener() {
-            @Override
-            public boolean onHover(View v, MotionEvent event) {
-                switch (event.getAction()) {
-                    case MotionEvent.ACTION_HOVER_ENTER:
-                    case MotionEvent.ACTION_HOVER_MOVE:
-                        if (subscribeArrowLeft.getVisibility() == View.INVISIBLE){
-                            subscribeArrowLeft.setVisibility(View.VISIBLE);
-                        }
-                        if (subscribeArrowRight.getVisibility() == View.INVISIBLE){
-                            subscribeArrowRight.setVisibility(View.VISIBLE);
-                        }
-                        break;
-                    case MotionEvent.ACTION_HOVER_EXIT:
-                        if (subscribeArrowLeft.getVisibility() == View.VISIBLE){
-                            subscribeArrowLeft.setVisibility(View.INVISIBLE);
-                        }
-                        if (subscribeArrowRight.getVisibility() == View.VISIBLE){
-                            subscribeArrowRight.setVisibility(View.INVISIBLE);
-                        }
-                        break;
-                }
-                return false;
-            }
-        });
-
-        subscribeArrowLeft = view.findViewById(R.id.subscribe_arrow_left);
-        subscribeArrowLeft.setOnHoverListener(new View.OnHoverListener() {
-            @Override
-            public boolean onHover(View v, MotionEvent event) {
-                switch (event.getAction()) {
-                    case MotionEvent.ACTION_HOVER_MOVE:
-                    case MotionEvent.ACTION_HOVER_ENTER:
-                        v.findViewById(R.id.banner_arrow_left_normal).setVisibility(View.INVISIBLE);
-                        v.findViewById(R.id.banner_arrow_left_focus).setVisibility(View.VISIBLE);
-                        break;
-                    case MotionEvent.ACTION_HOVER_EXIT:
-                        v.findViewById(R.id.banner_arrow_left_focus).setVisibility(View.INVISIBLE);
-                        v.findViewById(R.id.banner_arrow_left_normal).setVisibility(View.VISIBLE);
-                        break;
-                }
-                return false;
-            }
-        });
-        subscribeArrowLeft.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                subscribeBanner.smoothScrollBy(-400, 0);
-            }
-        });
-
-        subscribeArrowRight = view.findViewById(R.id.subscribe_arrow_right);
-        subscribeArrowRight.setOnHoverListener(new View.OnHoverListener() {
-            @Override
-            public boolean onHover(View v, MotionEvent event) {
-                switch (event.getAction()) {
-                    case MotionEvent.ACTION_HOVER_MOVE:
-                    case MotionEvent.ACTION_HOVER_ENTER:
-                        v.findViewById(R.id.banner_arrow_right_normal).setVisibility(View.INVISIBLE);
-                        v.findViewById(R.id.banner_arrow_right_focus).setVisibility(View.VISIBLE);
-                        break;
-                    case MotionEvent.ACTION_HOVER_EXIT:
-                        v.findViewById(R.id.banner_arrow_right_focus).setVisibility(View.INVISIBLE);
-                        v.findViewById(R.id.banner_arrow_right_normal).setVisibility(View.VISIBLE);
-                        break;
-                }
-                return false;
-            }
-        });
-
-        subscribeArrowRight.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                subscribeBanner.smoothScrollBy(400, 0);
-            }
-        });
+//        subscribeBanner.setOnHoverListener(new View.OnHoverListener() {
+//            @Override
+//            public boolean onHover(View v, MotionEvent event) {
+//                switch (event.getAction()) {
+//                    case MotionEvent.ACTION_HOVER_ENTER:
+//                    case MotionEvent.ACTION_HOVER_MOVE:
+//                        if (subscribeArrowLeft.getVisibility() == View.INVISIBLE){
+//                            subscribeArrowLeft.setVisibility(View.VISIBLE);
+//                        }
+//                        if (subscribeArrowRight.getVisibility() == View.INVISIBLE){
+//                            subscribeArrowRight.setVisibility(View.VISIBLE);
+//                        }
+//                        break;
+//                    case MotionEvent.ACTION_HOVER_EXIT:
+//                        if (subscribeArrowLeft.getVisibility() == View.VISIBLE){
+//                            subscribeArrowLeft.setVisibility(View.INVISIBLE);
+//                        }
+//                        if (subscribeArrowRight.getVisibility() == View.VISIBLE){
+//                            subscribeArrowRight.setVisibility(View.INVISIBLE);
+//                        }
+//                        break;
+//                }
+//                return false;
+//            }
+//        });
+//
+//        subscribeArrowLeft = view.findViewById(R.id.subscribe_arrow_left);
+//        subscribeArrowLeft.setOnHoverListener(new View.OnHoverListener() {
+//            @Override
+//            public boolean onHover(View v, MotionEvent event) {
+//                switch (event.getAction()) {
+//                    case MotionEvent.ACTION_HOVER_MOVE:
+//                    case MotionEvent.ACTION_HOVER_ENTER:
+//                        v.findViewById(R.id.banner_arrow_left_normal).setVisibility(View.INVISIBLE);
+//                        v.findViewById(R.id.banner_arrow_left_focus).setVisibility(View.VISIBLE);
+//                        break;
+//                    case MotionEvent.ACTION_HOVER_EXIT:
+//                        v.findViewById(R.id.banner_arrow_left_focus).setVisibility(View.INVISIBLE);
+//                        v.findViewById(R.id.banner_arrow_left_normal).setVisibility(View.VISIBLE);
+//                        break;
+//                }
+//                return false;
+//            }
+//        });
+//        subscribeArrowLeft.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                subscribeBanner.smoothScrollBy(-400, 0);
+//            }
+//        });
+//
+//        subscribeArrowRight = view.findViewById(R.id.subscribe_arrow_right);
+//        subscribeArrowRight.setOnHoverListener(new View.OnHoverListener() {
+//            @Override
+//            public boolean onHover(View v, MotionEvent event) {
+//                switch (event.getAction()) {
+//                    case MotionEvent.ACTION_HOVER_MOVE:
+//                    case MotionEvent.ACTION_HOVER_ENTER:
+//                        v.findViewById(R.id.banner_arrow_right_normal).setVisibility(View.INVISIBLE);
+//                        v.findViewById(R.id.banner_arrow_right_focus).setVisibility(View.VISIBLE);
+//                        break;
+//                    case MotionEvent.ACTION_HOVER_EXIT:
+//                        v.findViewById(R.id.banner_arrow_right_focus).setVisibility(View.INVISIBLE);
+//                        v.findViewById(R.id.banner_arrow_right_normal).setVisibility(View.VISIBLE);
+//                        break;
+//                }
+//                return false;
+//            }
+//        });
+//
+//        subscribeArrowRight.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                subscribeBanner.smoothScrollBy(400, 0);
+//            }
+//        });
 
     }
 
