@@ -14,8 +14,8 @@
   >
 
 <RelativeLayout
-    android:layout_width="432dp"
-    android:layout_height="306dp"
+    android:layout_width="@dimen/item_horizontal_poster_w"
+    android:layout_height="@dimen/item_horizontal_poster_h"
     >
 
     <ImageView

@@ -1583,7 +1583,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
         popDialog = new ModuleMessagePopWindow(getActivity());
         popDialog.setConfirmBtn(confirmText);
         popDialog.setCancelBtn(cancelText);
-        popDialog.setFirstMessage(message);
+        popDialog.setMessage(message);
         if (hideCancel) {
             popDialog.hideCancelBtn();
         }

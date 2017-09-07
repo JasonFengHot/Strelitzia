@@ -64,7 +64,6 @@
         android:focusableInTouchMode="true"
         android:button="@null"
         android:gravity="center"
-        android:checked="true"
         />
     </RadioGroup>
         </LinearLayout>
@@ -109,12 +108,15 @@
             layout="@layout/layout_filter_noresult"
             android:visibility="gone"
             />
-
+        <View
+            android:layout_width="@dimen/filter_layout_top_view_w"
+            android:layout_height="@dimen/filter_layout_top_view_h"
+            android:background="@drawable/top_bg"
+            />
         <TextView
             android:id="@+id/current_section_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#000000"
             android:textSize="@dimen/filter_layout_current_section_title_ts"
             android:textColor="#ffffff"
             android:paddingLeft="@dimen/filter_layout_current_section_title_pl"
@@ -127,7 +129,6 @@
             android:layout_height="@dimen/filter_layout_filter_checked_conditiion_h"
             android:orientation="horizontal"
             android:paddingTop="@dimen/filter_layout_filter_checked_conditiion_pt"
-            android:background="#000000"
             >
 
             <TextView

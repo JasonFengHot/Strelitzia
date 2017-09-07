@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -38,22 +39,26 @@ public class UpdatePopupWindow extends PopupWindow implements View.OnHoverListen
         int screenWidth = wm.getDefaultDisplay().getWidth();
         int screenHeight = wm.getDefaultDisplay().getHeight();
 
-        int height = (int) (context.getResources().getDimension(R.dimen.app_update_bg_width));
-        int width = (int) (context.getResources().getDimension(R.dimen.app_update_bg_height));
 
         setWidth(screenWidth);
         setHeight(screenHeight);
 
-        View contentView = LayoutInflater.from(context).inflate(R.layout.popup_update, null);
-        Button updateNow = (Button) contentView.findViewById(R.id.update_now_bt);
-        Button updateLater = (Button) contentView.findViewById(R.id.update_later_bt);
-        updateNow.setOnHoverListener(this);
-        updateLater.setOnHoverListener(this);
-
+        View contentView = LayoutInflater.from(context).inflate(R.layout.popup_layout_style1, null);
+        TextView popup_title=(TextView)contentView.findViewById(R.id.popup_title);
+        Button popup_btn_confirm = (Button) contentView.findViewById(R.id.popup_btn_confirm);
+        Button popup_btn_cancel = (Button) contentView.findViewById(R.id.popup_btn_cancel);
+        LinearLayout popup_title_view=(LinearLayout)contentView.findViewById(R.id.popup_title_view);
+        LinearLayout popup_btns=(LinearLayout)contentView.findViewById(R.id.popup_btns);
+        popup_title.setText("升级提示");
+        popup_btn_confirm.setText("现在升级");
+        popup_btn_cancel.setText("稍后升级");
+        popup_btn_confirm.setOnHoverListener(this);
+        popup_btn_cancel.setOnHoverListener(this);
+        setBackgroundDrawable(context.getResources().getDrawable(R.drawable.transparent));
         tmp = contentView.findViewById(R.id.tmp);
 
 
-        LinearLayout updateMsgLayout = (LinearLayout) contentView.findViewById(R.id.update_msg_layout);
+        LinearLayout popup_content = (LinearLayout) contentView.findViewById(R.id.popup_content);
 
 
         final String path = bundle.getString("path");
@@ -61,45 +66,32 @@ public class UpdatePopupWindow extends PopupWindow implements View.OnHoverListen
         final ArrayList<String> msgs = bundle.getStringArrayList("msgs");
         final Boolean force_upgrade = bundle.getBoolean("force_upgrade");
 
-
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT);
-        layoutParams.leftMargin = (int) (context.getResources().getDimension(R.dimen.app_update_content_margin_left));
-        layoutParams.topMargin = (int) (context.getResources().getDimension(R.dimen.app_update_line_margin_));
-
+        if(msgs.size()>2){
+            RelativeLayout.LayoutParams params1 = (RelativeLayout.LayoutParams) popup_title_view.getLayoutParams();
+            params1.topMargin=130;
+            popup_title_view.setLayoutParams(params1);
+            RelativeLayout.LayoutParams params2 = (RelativeLayout.LayoutParams) popup_btns.getLayoutParams();
+            params2.bottomMargin=190;
+            popup_btns.setLayoutParams(params2);
+        }
         for (String msg : msgs) {
             View textLayout = LayoutInflater.from(context).inflate(R.layout.update_msg_text_item, null);
-            TextView textView = (TextView) textLayout.findViewById(R.id.update_msg_text);
+            TextView textView = (TextView) textLayout.findViewById(R.id.msg_text);
             textView.setText(msg);
-            updateMsgLayout.addView(textLayout);
+            popup_content.addView(textLayout);
         }
 
-        RelativeLayout relativeLayout = new RelativeLayout(context);
-        RelativeLayout.LayoutParams contentLayoutParams = new RelativeLayout.LayoutParams(width, height);
-        contentLayoutParams.addRule(CENTER_IN_PARENT);
+
         if (force_upgrade){
-            relativeLayout.setBackground(contentView.getResources().getDrawable(R.drawable.pop_bg_drawable));
-            updateLater.setVisibility(View.GONE);
-            updateNow.setNextFocusRightId(updateNow.getId());
-            RelativeLayout.LayoutParams l = new RelativeLayout.LayoutParams(
-                    context.getResources().getDimensionPixelSize(R.dimen.update_confirm_button_width),
-                    context.getResources().getDimensionPixelSize(R.dimen.update_confirm_button_height)
-                    );
-            l.addRule(CENTER_IN_PARENT);
-            updateNow.setLayoutParams(l);
-
-        }else {
-
-            setBackgroundDrawable(contentView.getResources().getDrawable(R.drawable.pop_bg_drawable));
+            popup_btn_cancel.setVisibility(View.GONE);
+            popup_btn_confirm.setNextFocusRightId(popup_btn_confirm.getId());
         }
 
-        relativeLayout.addView(contentView, contentLayoutParams);
-        setContentView(relativeLayout);
+        setContentView(contentView);
 
         setFocusable(true);
 
-        updateNow.setOnClickListener(new View.OnClickListener() {
+        popup_btn_confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (!force_upgrade) {
@@ -120,7 +112,7 @@ public class UpdatePopupWindow extends PopupWindow implements View.OnHoverListen
                 }
             }
         });
-        updateLater.setOnClickListener(new View.OnClickListener() {
+        popup_btn_cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 dismiss();

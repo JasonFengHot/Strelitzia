@@ -20,13 +20,12 @@ import tv.ismar.app.R;
 public class ModuleMessagePopWindow extends PopupWindow implements View.OnClickListener {
     private Button confirmBtn;
     private Button cancelBtn;
-    private TextView firstMessage;
-    private TextView secondMessage;
     private ConfirmListener confirmListener;
     private CancelListener cancleListener;
     public boolean isConfirmClick = false;
 
     private Context mContext;
+    private LinearLayout popup_content;
 
     public interface CancelListener {
         void cancelClick(View view);
@@ -36,27 +35,22 @@ public class ModuleMessagePopWindow extends PopupWindow implements View.OnClickL
         void confirmClick(View view);
     }
 
-    int height;
-
-    public ModuleMessagePopWindow(){
-
-    }
-
     public ModuleMessagePopWindow(Context context) {
         mContext = context;
         WindowManager wm = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
         int screenWidth = wm.getDefaultDisplay().getWidth();
         int screenHeight = wm.getDefaultDisplay().getHeight();
 
-        int width = (int) (context.getResources().getDimension(R.dimen.module_pop_width));
-        height = (int) (context.getResources().getDimension(R.dimen.module_pop_height));
 
         setWidth(screenWidth);
         setHeight(screenHeight);
 
-        View contentView = LayoutInflater.from(context).inflate(R.layout.module_popup_message, null);
-        confirmBtn = (Button) contentView.findViewById(R.id.confirm_btn);
-        cancelBtn = (Button) contentView.findViewById(R.id.cancel_btn);
+        View contentView = LayoutInflater.from(context).inflate(R.layout.popup_layout_style1, null);
+        TextView popup_title= (TextView) contentView.findViewById(R.id.popup_title);
+        confirmBtn = (Button) contentView.findViewById(R.id.popup_btn_confirm);
+        cancelBtn = (Button) contentView.findViewById(R.id.popup_btn_cancel);
+        popup_content = (LinearLayout) contentView.findViewById(R.id.popup_content);
+        popup_title.setText("提示");
         confirmBtn.setOnClickListener(this);
         cancelBtn.setOnClickListener(this);
         confirmBtn.setOnHoverListener(new View.OnHoverListener() {
@@ -79,20 +73,12 @@ public class ModuleMessagePopWindow extends PopupWindow implements View.OnClickL
                 return false;
             }
         });
-        firstMessage = (TextView) contentView.findViewById(R.id.first_text_info);
-        secondMessage = (TextView) contentView.findViewById(R.id.pop_second_text);
-        RelativeLayout relativeLayout = new RelativeLayout(mContext);
-//        relativeLayout.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.popwindow_bg));
-        RelativeLayout.LayoutParams layoutParams;
-        layoutParams = new RelativeLayout.LayoutParams(width, height);
-        layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT);
-
-        relativeLayout.addView(contentView, layoutParams);
 
 
-        setContentView(relativeLayout);
 
-        setBackgroundDrawable(mContext.getResources().getDrawable(R.drawable.pop_bg_drawable));
+        setContentView(contentView);
+
+        setBackgroundDrawable(mContext.getResources().getDrawable(R.drawable.transparent));
 
         setFocusable(true);
 
@@ -103,19 +89,13 @@ public class ModuleMessagePopWindow extends PopupWindow implements View.OnClickL
         setBackgroundDrawable(mContext.getResources().getDrawable(resId));
     }
 
-    public void setFirstMessage(int messageId) {
-        firstMessage.setText(messageId);
+    public void setMessage(String message) {
+        View textLayout = LayoutInflater.from(mContext).inflate(R.layout.update_msg_text_item, null);
+        TextView textContent= (TextView) textLayout.findViewById(R.id.msg_text);
+        textContent.setText(message);
+        popup_content.addView(textLayout);
     }
 
-    public void setFirstMessage(String message) {
-        firstMessage.setText(message);
-    }
-
-    public void setSecondMessage(int messageId) {
-        height = ((int) (mContext.getResources().getDimension(R.dimen.module_pop_double_line_height)));
-        secondMessage.setVisibility(View.VISIBLE);
-        secondMessage.setText(messageId);
-    }
 
     public void setConfirmBtn(String text) {
         confirmBtn.setText(text);
@@ -125,22 +105,11 @@ public class ModuleMessagePopWindow extends PopupWindow implements View.OnClickL
         cancelBtn.setText(text);
     }
 
-    public void setSecondMessage(String message) {
-        height = ((int) (mContext.getResources().getDimension(R.dimen.module_pop_double_line_height)));
-        secondMessage.setVisibility(View.VISIBLE);
-        secondMessage.setText(message);
-    }
     public void setBackground(){
         setBackgroundDrawable(mContext.getResources().getDrawable(R.drawable.sanzhou_bg));
     }
 
     public void hideCancelBtn() {
-        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-                mContext.getResources().getDimensionPixelSize(R.dimen.pop_btn_width),
-                ViewGroup.LayoutParams.MATCH_PARENT
-        );
-        lp.rightMargin = 0;
-        confirmBtn.setLayoutParams(lp);
         cancelBtn.setVisibility(View.GONE);
     }
 
@@ -148,14 +117,14 @@ public class ModuleMessagePopWindow extends PopupWindow implements View.OnClickL
     @Override
     public void onClick(View v) {
         int i = v.getId();
-        if (i == R.id.confirm_btn) {
+        if (i == R.id.popup_btn_confirm) {
             if (confirmListener != null) {
                 isConfirmClick = true;
                 confirmListener.confirmClick(v);
 
             }
 
-        } else if (i == R.id.cancel_btn) {
+        } else if (i == R.id.popup_btn_cancel) {
             if (cancleListener != null) {
                 isConfirmClick = false;
                 cancleListener.cancelClick(v);
