@@ -6,9 +6,13 @@ import android.text.TextUtils;
 import com.google.gson.GsonBuilder;
 
 import java.io.IOException;
+import java.text.DateFormat;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 
+import cn.ismartv.truetime.TrueTime;
 import okhttp3.ResponseBody;
 import rx.Observer;
 import rx.Subscription;
@@ -336,6 +340,10 @@ public class DetailPagePresenter implements DetailPageContract.Presenter {
             favoriteManager.deleteFavoriteByUrl(url, isnet);
             mDetailView.notifyBookmark(false, true);
         } else {
+            DateFormat format=new SimpleDateFormat("MM-dd");
+            long time=TrueTime.now().getTime();
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTimeInMillis(time);
             Favorite favorite = new Favorite();
             favorite.title = mItemEntity.getTitle();
             favorite.adlet_url = mItemEntity.getAdletUrl();
@@ -343,6 +351,7 @@ public class DetailPagePresenter implements DetailPageContract.Presenter {
             favorite.url = url;
             favorite.quality = mItemEntity.getQuality();
             favorite.is_complex = mItemEntity.getIsComplex();
+            favorite.time=format.format(calendar.getTime());
             if (mItemEntity.getExpense() != null) {
                 favorite.cpid = mItemEntity.getExpense().getCpid();
                 favorite.cpname = mItemEntity.getExpense().getCpname();

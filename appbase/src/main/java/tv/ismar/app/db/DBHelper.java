@@ -36,7 +36,7 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String CREATE_HISTORY_TABLE = "CREATE TABLE IF NOT EXISTS 'history_table' " +
             "('_id' INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, 'title' TEXT NOT NULL, 'url' TEXT NOT NULL, 'adlet_url' TEXT, " +
             "'last_played_time' INTEGER DEFAULT(0), 'last_position' INTEGER DEFAULT(0), 'content_model' TEXT NOT NULL, 'quality' INTEGER DEFAULT(1), " +
-            "'last_quality' INTEGER DEFAULT(1), 'is_complex' INTEGER DEFAULT(0), 'is_continue' INTEGER DEFAULT(0), 'sub_url' TEXT,'isnet' TEXT NOT NULL,'price' INTEGER DEFAULT(0),'cpid' INTEGER DEFAULT(1),'cpname' TEXT,'cptitle' TEXT,'paytype' INTEGER DEFAULT(1))";
+            "'last_quality' INTEGER DEFAULT(1), 'is_complex' INTEGER DEFAULT(0), 'is_continue' INTEGER DEFAULT(0), 'sub_url' TEXT,'isnet' TEXT NOT NULL,'price' INTEGER DEFAULT(0),'cpid' INTEGER DEFAULT(1),'cpname' TEXT,'cptitle' TEXT,'paytype' INTEGER DEFAULT(1),'history_time' TEXT)";
     private static final String CREATE_FAVORITE_TABLE = "CREATE TABLE IF NOT EXISTS 'favorite_table' " +
             "('_id' INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, 'title' TEXT NOT NULL, 'url' TEXT NOT NULL, 'content_model' TEXT, " +
             "'adlet_url' TEXT, 'quality' INTEGER DEFAULT(1), 'is_complex' INTEGER DEFAULT(0),'isnet' TEXT NOT NULL,'cpid' INTEGER DEFAULT(1),'cpname' TEXT,'cptitle' TEXT,'paytype' INTEGER DEFAULT(1),'favorite_time' TEXT)";
@@ -67,6 +67,7 @@ public class DBHelper extends SQLiteOpenHelper {
             public static final String CPNAME = "cpname";
             public static final String CPTITLE = "cptitle";
             public static final String PAYTYPE = "paytype";
+            public static final String HISTORY_TIME ="history_time";
         }
 
         public static interface FavoriteTable extends BaseColumns {
@@ -219,6 +220,7 @@ public class DBHelper extends SQLiteOpenHelper {
         cv.put(DBFields.HistroyTable.CPNAME, history.cpname);
         cv.put(DBFields.HistroyTable.CPTITLE, history.cptitle);
         cv.put(DBFields.HistroyTable.PAYTYPE, history.paytype);
+        cv.put(DBFields.HistroyTable.HISTORY_TIME,history.add_time);
         db.update(DBFields.HistroyTable.TABLE_NAME, cv, "_id = ?", new String[]{String.valueOf(history.id)});
     }
 
