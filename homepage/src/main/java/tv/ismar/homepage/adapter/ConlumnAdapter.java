@@ -61,6 +61,7 @@ public class ConlumnAdapter extends RecyclerView.Adapter<ConlumnAdapter.ConlumnV
             super(itemView);
             mTitle = (TextView) itemView.findViewById(R.id.conlumn_item_tv);
             mPoster = (ImageView) itemView.findViewById(R.id.conlumn_item_poster);
+            itemView.findViewById(R.id.conlumn_ismartv_linear_layout).setOnFocusChangeListener(this);
         }
 
         private void scaleToLarge(View view) {
@@ -86,12 +87,8 @@ public class ConlumnAdapter extends RecyclerView.Adapter<ConlumnAdapter.ConlumnV
         public void onFocusChange(View v, boolean hasFocus) {
             if (hasFocus) {
                 scaleToLarge(v.findViewById(R.id.conlumn_ismartv_linear_layout));
-                v.findViewById(R.id.title).setSelected(true);
-                v.findViewById(R.id.introduction).setSelected(true);
             } else {
                 scaleToNormal(v.findViewById(R.id.conlumn_ismartv_linear_layout));
-                v.findViewById(R.id.title).setSelected(false);
-                v.findViewById(R.id.introduction).setSelected(false);
             }
         }
     }

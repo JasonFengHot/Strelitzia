@@ -4,11 +4,16 @@ import android.content.Intent;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import com.open.androidtvwidget.leanback.recycle.LinearLayoutManagerTV;
+import com.open.androidtvwidget.leanback.recycle.RecyclerViewTV;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -28,7 +33,7 @@ import tv.ismar.app.entity.ChannelEntity;
 import tv.ismar.app.entity.GuideBanner;
 import tv.ismar.app.util.BitmapDecoder;
 import tv.ismar.app.widget.TelescopicWrap;
-import tv.ismar.homepage.adapter.HomeAdapter;
+import tv.ismar.homepage.adapter.HomeReclAdapter;
 import tv.ismar.homepage.control.FetchDataControl;
 import tv.ismar.homepage.view.ChannelChangeObservable;
 import tv.ismar.homepage.widget.HorizontalTabView;
@@ -48,8 +53,9 @@ public class HomeActivity extends BaseActivity implements BaseControl.ControlCal
 
     private final FetchDataControl mControl = new FetchDataControl(this, this);//业务类引用
 
-    private ListView mListView;
-    private HomeAdapter mAdapter;
+//    private ListView mListView;
+    private RecyclerView mRecycleView;
+    private HomeReclAdapter mAdapter;
     private HorizontalTabView channelTab;
 
     private TextView mTimeTv;//时间
@@ -73,7 +79,8 @@ public class HomeActivity extends BaseActivity implements BaseControl.ControlCal
     /*获取控件实例*/
     private void findViews(){
         mViewGroup = (ViewGroup) findViewById(R.id.home_view_layout);
-        mListView = (ListView) findViewById(R.id.guide_container);
+//        mListView = (ListView) findViewById(R.id.guide_container);
+        mRecycleView = (RecyclerView) findViewById(R.id.home_activity_recycleview);
         channelTab = (HorizontalTabView) findViewById(R.id.channel_tab);
         mTimeTv = (TextView) findViewById(R.id.guide_title_time_tv);
         mCollectionLayout = (ViewGroup) findViewById(R.id.collection_layout);
@@ -98,7 +105,11 @@ public class HomeActivity extends BaseActivity implements BaseControl.ControlCal
                     }
                 });
 
-        mListView.setItemsCanFocus(true);
+//        mListView.setItemsCanFocus(true);
+        LinearLayoutManager linear = new LinearLayoutManager(this);
+        linear.setOrientation(LinearLayoutManager.VERTICAL);
+        mRecycleView.setLayoutManager(linear);
+
         mBitmapDecoder = new BitmapDecoder();
         mBitmapDecoder.decode(this, R.drawable.homepage_background, new BitmapDecoder.Callback() {
             @Override
@@ -146,8 +157,9 @@ public class HomeActivity extends BaseActivity implements BaseControl.ControlCal
         if(flag == FETCH_HOME_BANNERS_FLAG){//处理获取首页banner列表
             GuideBanner[] banners = (GuideBanner[]) args;
             if(mAdapter == null){
-                mAdapter = new HomeAdapter(this, banners);
-                mListView.setAdapter(mAdapter);
+                mAdapter = new HomeReclAdapter(this, banners);
+                mRecycleView.setAdapter(mAdapter);
+//                mListView.setAdapter(mAdapter);
             }else{
                 mAdapter.notifyDataSetChanged();
             }
@@ -157,8 +169,8 @@ public class HomeActivity extends BaseActivity implements BaseControl.ControlCal
         } else if(flag == FETCH_CHANNEL_BANNERS_FLAG){
             GuideBanner[] banners = (GuideBanner[]) args;
             if(mAdapter == null){
-                mAdapter = new HomeAdapter(this, banners);
-                mListView.setAdapter(mAdapter);
+                mAdapter = new HomeReclAdapter(this, banners);
+                mRecycleView.setAdapter(mAdapter);
             }else{
                 mAdapter.notifyDataSetChanged();
             }
