@@ -40,7 +40,7 @@
         android:orientation="horizontal"
         android:clipChildren="false"
         android:clipToPadding="false"
-        android:layout_marginLeft="60dp"
-        android:layout_marginTop="30dp"
+        android:layout_marginLeft="@dimen/layout_filter_noresult_second_line_ml"
+        android:layout_marginTop="@dimen/layout_filter_noresult_second_line_mt"
         />
 </LinearLayout>

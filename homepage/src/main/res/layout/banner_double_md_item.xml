@@ -22,7 +22,7 @@
         <tv.ismar.homepage.banner.IsmartvLinearLayout
             android:id="@+id/double_md_ismartv_linear_layout"
             android:layout_width="@dimen/double_md_poster_width"
-            android:layout_height="@dimen/double_md_poster_height1"
+            android:layout_height="@dimen/double_md_poster_height"
             android:background="#00ff00"
             android:clipChildren="false"
             android:clipToPadding="false"

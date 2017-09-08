@@ -220,12 +220,12 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                     if(filter_tab.isChecked()){
                         return;
                     }
-                    filter_tab.setChecked(true);
-                    filter_tab.callOnClick();
-                    lastFocusedView=null;
-                    mFilterItemList.objects.clear();
-                    mFilterPage=0;
+                    Message msg=new Message();
+                    msg.what=0;
+                    msg.obj=v;
+                    mHandler.sendMessageDelayed(msg,1000);
                 }else{
+                    mHandler.removeMessages(0);
                     filter_tab.setTextSize(TypedValue.COMPLEX_UNIT_PX,getResources().getDimensionPixelSize(R.dimen.filter_layout_left_view_tab_ts));
                 }
             }
@@ -236,9 +236,14 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                 if(isChecked) {
                     poster_recyclerview.setVisibility(View.VISIBLE);
                     list_poster_recyclerview.setVisibility(View.GONE);
-                    if(!("payment".equals(channel)||"shiyunshop".equals(channel))) {
+                    if(mFilterItemList==null){
+                        mFilterItemList=new ItemList();
+                        mFilterItemList.objects=new ArrayList<>();
+                        fetchFilterCondition(channel);
+                    }else {
                         filter();
                     }
+
                 }else{
                     poster_recyclerview.setVisibility(View.GONE);
                     filter_noresult.setVisibility(View.GONE);
@@ -317,15 +322,11 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
 
     private void initData() {
         filter_title.setText(title);
-        if("payment".equals(channel)||"shiyunshop".equals(channel)){
+        filter_checked_conditiion.setVisibility(View.INVISIBLE);
+        poster_recyclerview.setVisibility(View.GONE);
+        list_poster_recyclerview.setVisibility(View.VISIBLE);
+        if(("payment".equals(channel)||"shiyunshop".equals(channel))){
             filter_tab.setVisibility(View.GONE);
-            filter_checked_conditiion.setVisibility(View.GONE);
-            poster_recyclerview.setVisibility(View.GONE);
-            list_poster_recyclerview.setVisibility(View.VISIBLE);
-        }else{
-            fetchFilterCondition(channel);
-            mFilterItemList=new ItemList();
-            mFilterItemList.objects=new ArrayList<>();
         }
         fetchChannelSection(channel);
         //初始化筛选头部view
@@ -528,12 +529,12 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                 }
             }
         });
-            if("payment".equals(channel)||"shiyunshop".equals(channel)){
+//            if("payment".equals(channel)||"shiyunshop".equals(channel)){
                 if(section_group.getChildAt(1)!=null)
                     section_group.getChildAt(1).callOnClick();
                     ((RadioButton)section_group.getChildAt(1)).setChecked(true);
                     section_group.getChildAt(1).requestFocus();
-            }
+//            }
     }
 
     //请求每个section的数据
@@ -727,7 +728,7 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                             if(itemList!=null){
                                 noResultFetched=true;
                                 filter_noresult.setVisibility(View.VISIBLE);
-                                poster_recyclerview.setVisibility(View.INVISIBLE);
+                                poster_recyclerview.setVisibility(View.GONE);
                                 filter_noresult_first_line = (LinearLayout) filter_noresult.findViewById(R.id.filter_noresult_first_line);
                                 filter_noresult_second_line = (LinearLayout) filter_noresult.findViewById(R.id.filter_noresult_second_line);
                                 filter_noresult_first_line.removeAllViews();
@@ -836,11 +837,11 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                             filterNoResult = true;
                             if(noResultFetched){
                                 filter_noresult.setVisibility(View.VISIBLE);
-                                poster_recyclerview.setVisibility(View.INVISIBLE);
+                                poster_recyclerview.setVisibility(View.GONE);
                             }else{
                                 fetchFilterNoResult();
                             }
-                            poster_recyclerview.setVisibility(View.INVISIBLE);
+                            poster_recyclerview.setVisibility(View.GONE);
                         }else {
                             filterNoResult = false;
                             mFilterItemList.num_pages=itemList.num_pages;

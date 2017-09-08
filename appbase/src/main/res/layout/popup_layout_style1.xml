@@ -13,22 +13,22 @@
     <LinearLayout
         android:id="@+id/popup_title_view"
         android:layout_width="wrap_content"
-        android:layout_height="101dp"
+        android:layout_height="@dimen/popup_layout_style_title_view_h"
         android:orientation="horizontal"
         android:gravity="center"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="202dp">
+        android:layout_marginTop="@dimen/popup_layout_style_title_view_mt">
         <ImageView
             android:id="@+id/popup_icon"
-            android:layout_width="101dp"
-            android:layout_height="101dp"
+            android:layout_width="@dimen/popup_layout_style_title_view_h"
+            android:layout_height="@dimen/popup_layout_style_title_view_h"
             android:background="@drawable/popup_icon"
-            android:layout_marginRight="32dp"/>
+            android:layout_marginRight="@dimen/popup_layout_style_icon_mr"/>
         <TextView
             android:id="@+id/popup_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="60dp"
+            android:textSize="@dimen/popup_layout_style_title_ts"
             android:textColor="#ffffff"
             android:gravity="center"
             android:text="提示"
@@ -37,10 +37,10 @@
 
     <LinearLayout
         android:id="@+id/popup_content"
-        android:layout_width="887dp"
+        android:layout_width="@dimen/popup_layout_style_content_w"
         android:layout_height="wrap_content"
         android:layout_below="@id/popup_title_view"
-        android:layout_marginTop="161dp"
+        android:layout_marginTop="@dimen/popup_layout_style_content_mt"
         android:orientation="vertical"
         android:layout_centerHorizontal="true"
         />
@@ -51,16 +51,16 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="258dp"
+        android:layout_marginBottom="@dimen/popup_layout_style_btns_mb"
         android:gravity="center_horizontal">
         
         <Button
             android:id="@+id/popup_btn_confirm"
-            android:layout_width="250dp"
-            android:layout_height="60dp"
+            android:layout_width="@dimen/popup_layout_style_popup_btn_w"
+            android:layout_height="@dimen/popup_layout_style_popup_btn_h"
             android:background="@drawable/popup_btn_selector"
             android:gravity="center"
-            android:textSize="30dp"
+            android:textSize="@dimen/popup_layout_style_popup_btn_ts"
             android:nextFocusLeft="@id/popup_btn_confirm"
             android:nextFocusUp="@id/popup_btn_confirm"
             android:nextFocusDown="@id/popup_btn_confirm"
@@ -69,12 +69,12 @@
 
         <Button
             android:id="@+id/popup_btn_cancel"
-            android:layout_width="250dp"
-            android:layout_height="60dp"
+            android:layout_width="@dimen/popup_layout_style_popup_btn_w"
+            android:layout_height="@dimen/popup_layout_style_popup_btn_h"
             android:background="@drawable/popup_btn_selector"
             android:gravity="center"
-            android:textSize="30dp"
-            android:layout_marginLeft="32dp"
+            android:textSize="@dimen/popup_layout_style_popup_btn_ts"
+            android:layout_marginLeft="@dimen/popup_layout_style_popup_btn_ml"
             android:nextFocusRight="@id/popup_btn_cancel"
             android:nextFocusUp="@id/popup_btn_cancel"
             android:nextFocusDown="@id/popup_btn_cancel"

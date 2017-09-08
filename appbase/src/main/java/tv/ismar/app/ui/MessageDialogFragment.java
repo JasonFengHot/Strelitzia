@@ -10,7 +10,6 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import tv.ismar.app.R;
@@ -79,13 +78,13 @@ public class MessageDialogFragment extends PopupWindow implements View.OnClickLi
 				return false;
 			}
 		});
-        View textLayout = LayoutInflater.from(mContext).inflate(R.layout.update_msg_text_item, null);
+        View textLayout = LayoutInflater.from(mContext).inflate(R.layout.msg_text_item, null);
         TextView textContent= (TextView) textLayout.findViewById(R.id.msg_text);
         textContent.setText(mFirstLineMessage);
         popup_content.addView(textLayout);
 
         if (!TextUtils.isEmpty(mSecondLineMessage)) {
-            View textLayout2 = LayoutInflater.from(mContext).inflate(R.layout.update_msg_text_item, null);
+            View textLayout2 = LayoutInflater.from(mContext).inflate(R.layout.msg_text_item, null);
             TextView textContent2= (TextView) textLayout2.findViewById(R.id.msg_text);
             textContent2.setText(mSecondLineMessage);
             popup_content.addView(textLayout2);
