@@ -22,7 +22,7 @@
             android:layout_marginRight="@dimen/guide_title_history_margin_person_center"
             android:layout_marginTop="@dimen/guide_title_histroy_margin_top"
             android:layout_toLeftOf="@+id/person_center_layout"
-            android:gravity="center_vertical"
+            android:gravity="center"
             android:background="#00000000">
             <RelativeLayout
                 android:id="@+id/collection_layout"

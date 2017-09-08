@@ -45,6 +45,9 @@ public class TemplateConlumn extends Template implements BaseControl.ControlCall
         mRecyclerView = (RecyclerViewTV) view.findViewById(R.id.conlumn_recyclerview);
         LinearLayoutManagerTV conlumnLayoutManager = new LinearLayoutManagerTV(mContext, LinearLayoutManager.HORIZONTAL, false);
         mRecyclerView.setLayoutManager(conlumnLayoutManager);
+        mRecyclerView.setSelectedItemAtCentered(false);
+        int selectedItemOffset = mContext.getResources().getDimensionPixelSize(R.dimen.banner_item_setSelectedItemOffset);
+        mRecyclerView.setSelectedItemOffset(selectedItemOffset, selectedItemOffset);
         //如果可以确定每个item的高度是固定的，设置这个选项可以提高性能
 //        mRecyclerView.setHasFixedSize(true);
     }
