@@ -75,7 +75,7 @@ public class FetchDataControl extends BaseControl{
 
     /*获取指定频道下的banner*/
     public void fetchChannelBanner(String channel){
-        SkyService.ServiceManager.getCacheSkyService().getChannelBanners(channel)
+        SkyService.ServiceManager.getLocalTestService().getChannelBanners(channel)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<GuideBanner[]>() {
@@ -86,7 +86,7 @@ public class FetchDataControl extends BaseControl{
 
                     @Override
                     public void onError(Throwable e) {
-
+                        Log.i("onError", "onError");
                     }
 
                     @Override
