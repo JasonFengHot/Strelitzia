@@ -173,6 +173,13 @@ public interface SkyService {
             @Path("page") int page
     );
 
+    @GET("api/top/{channel}")
+    Observable<List<Item>> getFilterRecommend(
+       @Path("channel") String channel,
+       @Field("sn") String sn,
+       @Field("page_size") int page_size
+    );
+
     @GET("api/tv/filtrate/{movie}/{genre}/{page}/")
     Observable<ResponseBody> fetchFiltrate(
             @Path("movie") String movie,

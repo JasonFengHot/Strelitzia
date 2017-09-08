@@ -8,6 +8,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -79,8 +80,8 @@ public class CustomDialog extends Dialog {
 			dialog.addContentView(layout, new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
 
 			if(mPositiveButtonText!=null){
-				((Button)layout.findViewById(R.id.positive_button)).setText(mPositiveButtonText);
-				((Button)layout.findViewById(R.id.positive_button)).setOnHoverListener(new View.OnHoverListener() {
+				((Button)layout.findViewById(R.id.popup_btn_confirm)).setText(mPositiveButtonText);
+				((Button)layout.findViewById(R.id.popup_btn_confirm)).setOnHoverListener(new View.OnHoverListener() {
 					
 					@Override
 					public boolean onHover(View v, MotionEvent event) {
@@ -92,15 +93,15 @@ public class CustomDialog extends Dialog {
 					}
 				});
 			}
-			((Button)layout.findViewById(R.id.positive_button)).setOnClickListener(new View.OnClickListener() {
+			((Button)layout.findViewById(R.id.popup_btn_confirm)).setOnClickListener(new View.OnClickListener() {
 				
 				public void onClick(View v) {
 					mPositiveListener.onClick(dialog, DialogInterface.BUTTON_POSITIVE);
 				}
 			});
 			if(mNegativeButtonText!=null){
-				((Button)layout.findViewById(R.id.negative_btn)).setText(mNegativeButtonText);
-				((Button) layout.findViewById(R.id.positive_button))
+				((Button)layout.findViewById(R.id.popup_btn_cancel)).setText(mNegativeButtonText);
+				((Button) layout.findViewById(R.id.popup_btn_confirm))
 						.setOnHoverListener(new View.OnHoverListener() {
 
 							@Override
@@ -114,7 +115,7 @@ public class CustomDialog extends Dialog {
 						});
 			}
 			if(mNegativeListener!=null){
-				((Button)layout.findViewById(R.id.negative_btn)).setOnClickListener(new View.OnClickListener() {
+				((Button)layout.findViewById(R.id.popup_btn_cancel)).setOnClickListener(new View.OnClickListener() {
 					
 					public void onClick(View v) {
 						mNegativeListener.onClick(dialog, BUTTON_NEGATIVE);
@@ -122,7 +123,10 @@ public class CustomDialog extends Dialog {
 				});
 			}
 			if(mMessage!=null){
-				((TextView)layout.findViewById(R.id.alert_info_text)).setText(mMessage);
+				View textLayout = LayoutInflater.from(mContext).inflate(R.layout.msg_text_item, null);
+				TextView textView = (TextView) textLayout.findViewById(R.id.msg_text);
+				textView.setText(mMessage);
+				((LinearLayout)layout.findViewById(R.id.popup_content)).addView(textLayout);
 			}
 		//	dialog.setContentView(layout);
 			return dialog;

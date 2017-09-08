@@ -34,6 +34,7 @@ import java.util.List;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import tv.ismar.Utils.PosterUtil;
+import tv.ismar.account.IsmartvActivator;
 import tv.ismar.adapter.FilterPosterAdapter;
 import tv.ismar.adapter.FocusGridLayoutManager;
 import tv.ismar.adapter.SpaceItemDecoration;
@@ -47,6 +48,7 @@ import tv.ismar.app.entity.ItemList;
 import tv.ismar.app.entity.Section;
 import tv.ismar.app.entity.SectionList;
 import tv.ismar.app.models.FilterConditions;
+import tv.ismar.app.network.SkyService;
 import tv.ismar.app.network.entity.EventProperty;
 import tv.ismar.app.ui.adapter.OnItemClickListener;
 import tv.ismar.app.ui.adapter.OnItemFocusedListener;
@@ -122,6 +124,7 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
     private int mFilterPage;
     private boolean noResultFetched=false;
     private HashMap<String, Object> mSectionProperties = new HashMap<>();
+    private int pagesize;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -220,10 +223,12 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                     if(filter_tab.isChecked()){
                         return;
                     }
-                    Message msg=new Message();
-                    msg.what=0;
-                    msg.obj=v;
-                    mHandler.sendMessageDelayed(msg,1000);
+                    if(!filter_root_view.horving) {
+                        Message msg = new Message();
+                        msg.what = 0;
+                        msg.obj = v;
+                        mHandler.sendMessageDelayed(msg, 1000);
+                    }
                 }else{
                     mHandler.removeMessages(0);
                     filter_tab.setTextSize(TypedValue.COMPLEX_UNIT_PX,getResources().getDimensionPixelSize(R.dimen.filter_layout_left_view_tab_ts));
@@ -255,7 +260,7 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 if(keyCode==19&&event.getAction()==KeyEvent.ACTION_DOWN){
-                    YoYo.with(Techniques.VerticalShake).duration(500).playOn(v);
+                    YoYo.with(Techniques.VerticalShake).duration(1000).playOn(v);
                     return true;
                 }
                 return false;
@@ -292,6 +297,9 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                     } else {
                         filter_root_view.setShow_right_down(true);
                     }
+                    if(filter_root_view.horving||poster_arrow_up.isFocused()||poster_arrow_down.isFocused()) {
+                        changeCheckedTab(firstVisiablePos);
+                    }
                     showData(firstVisiablePos);
                     showData(lastVisiablePos);
                     for (int i = 0; i < sectionSize; i++) {
@@ -318,6 +326,24 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                 filter_root_view.setShow_left_down(showDown);
             }
         });
+    }
+
+    private void changeCheckedTab(int position) {
+        for (int i = 0; i < sectionSize; i++) {
+            if (i == sectionSize - 1) {
+                break;
+            }
+            if (specialPos != null && position >= specialPos.get(i) && position < specialPos.get(i + 1)) {
+
+                ((RadioButton) section_group.getChildAt(i + 1)).setChecked(true);
+                if (section_group.getChildAt(i + 1).getY() + section_group.getChildAt(i + 1).getHeight() > tab_scroll.getScrollY() + tab_scroll.getHeight()) {
+                    tab_scroll.smoothScrollBy(0, getResources().getDimensionPixelOffset(R.dimen.list_scroll_arrow_down_lenth));
+                } else if (section_group.getChildAt(i + 1).getY() < tab_scroll.getScrollY()) {
+                    tab_scroll.smoothScrollBy(0, getResources().getDimensionPixelOffset(R.dimen.list_scroll_arrow_up_lenth));
+                }
+                break;
+            }
+        }
     }
 
     private void initData() {
@@ -396,10 +422,12 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                         if(radioButton.isChecked()){
                             return;
                         }
-                        Message msg=new Message();
-                        msg.obj=v;
-                        msg.what= finalI1+1;
-                        mHandler.sendMessageDelayed(msg,1000);
+                        if(!filter_root_view.horving) {
+                            Message msg = new Message();
+                            msg.obj = v;
+                            msg.what = finalI1 + 1;
+                            mHandler.sendMessageDelayed(msg, 1000);
+                        }
                     }else{
                         mHandler.removeMessages(finalI1+1);
                         radioButton.setTextSize(TypedValue.COMPLEX_UNIT_PX,getResources().getDimensionPixelSize(R.dimen.filter_layout_left_view_tab_ts));
@@ -458,7 +486,7 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                 @Override
                 public boolean onKey(View v, int keyCode, KeyEvent event) {
                     if(finalI==sectionSize-1&&keyCode==20&&event.getAction()==KeyEvent.ACTION_DOWN){
-                        YoYo.with(Techniques.VerticalShake).delay(500).playOn(v);
+                        YoYo.with(Techniques.VerticalShake).delay(1000).playOn(v);
                         return true;
                     }else if(keyCode==22&&event.getAction()==KeyEvent.ACTION_DOWN){
                         if(lastFocusedView!=null){
@@ -678,8 +706,8 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
             @Override
             public void onDismiss() {
                 if(filterNoResult){
-                    if(filter_noresult_first_line.getChildAt(0)!=null)
-                    filter_noresult_first_line.getChildAt(0).requestFocus();
+//                    if(filter_noresult_first_line.getChildAt(0)!=null)
+//                    filter_noresult_first_line.getChildAt(0).requestFocus();
                 }else {
                     if (poster_recyclerview.getChildAt(0) != null) {
                         poster_recyclerview.getChildAt(0).requestFocus();
@@ -715,17 +743,27 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
      * 筛选无结果时显示默认推荐数据
      */
         private void fetchFilterNoResult(){
-            mSkyService.getFilterRequestNodata("movie","area*10022$10261$10263$10378$10479$10483$10484$10494",1).subscribeOn(Schedulers.io())
+            pagesize = 8;
+            if(isVertical){
+                pagesize =5;
+            }
+            mSkyService.getFilterRecommend(channel, IsmartvActivator.getInstance().getSnToken() ,pagesize).subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new BaseObserver<ItemList>() {
+                    .subscribe(new BaseObserver<List<Item>>() {
                         @Override
                         public void onCompleted() {
 
                         }
 
                         @Override
-                        public void onNext(ItemList itemList) {
-                            if(itemList!=null){
+                        public void onError(Throwable e) {
+                            noResultFetched=false;
+                            super.onError(e);
+                        }
+
+                        @Override
+                        public void onNext(List<Item> items) {
+                            if(items!=null){
                                 noResultFetched=true;
                                 filter_noresult.setVisibility(View.VISIBLE);
                                 poster_recyclerview.setVisibility(View.GONE);
@@ -736,7 +774,7 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                                 LinearLayout.LayoutParams params=new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                                 if(isVertical){
                                     for (int i = 0; i <5 ; i++) {
-                                        final Item item = itemList.objects.get(i);
+                                        final Item item = items.get(i);
                                         if(item!=null){
                                             final View recommendView= View.inflate(FilterActivity.this,R.layout.filter_item_vertical_poster,null);
                                             PosterUtil.fillPoster(FilterActivity.this,0,item,(ImageView)recommendView.findViewById(R.id.item_vertical_poster_img),(ImageView)recommendView.findViewById(R.id.item_vertical_poster_vip),(TextView)recommendView.findViewById(R.id.item_vertical_poster_mark),(TextView)recommendView.findViewById(R.id.item_vertical_poster_title),null);
@@ -747,9 +785,9 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                                                     new PageIntent().toDetailPage(FilterActivity.this,Source.LIST.getValue(),item.pk);
                                                 }
                                             });
-                                                LinearLayout.LayoutParams p = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                                                p.rightMargin = getResources().getDimensionPixelOffset(R.dimen.filter_noresult_poster_vertical_mr);
-                                                recommendView.setLayoutParams(p);
+                                            LinearLayout.LayoutParams p = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                                            p.rightMargin = getResources().getDimensionPixelOffset(R.dimen.filter_noresult_poster_vertical_mr);
+                                            recommendView.setLayoutParams(p);
                                             if(i==0){
                                                 recommendView.setNextFocusLeftId(R.id.filter_tab);
                                             }
@@ -762,7 +800,7 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                                     filter_noresult_first_line.setLayoutParams(params);
                                 }else{
                                     for (int i = 0; i <8 ; i++) {
-                                        final Item item = itemList.objects.get(i);
+                                        final Item item = items.get(i);
                                         if(item!=null) {
                                             View recommendView= View.inflate(FilterActivity.this,R.layout.item_filter_noresult_poster,null);
                                             PosterUtil.fillPoster(FilterActivity.this,1,item,(ImageView)recommendView.findViewById(R.id.item_filter_noresult_img),(ImageView)recommendView.findViewById(R.id.item_filter_noresult_vip),(TextView)recommendView.findViewById(R.id.item_filter_noresult_mark),(TextView)recommendView.findViewById(R.id.item_filter_noresult_title),(TextView)recommendView.findViewById(R.id.item_filter_noresult_descrip));
@@ -791,12 +829,6 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                                     filter_noresult_first_line.setLayoutParams(params);
                                 }
                             }
-                        }
-
-                        @Override
-                        public void onError(Throwable e) {
-                            noResultFetched=false;
-                            super.onError(e);
                         }
                     });
         }
@@ -839,7 +871,7 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                                 filter_noresult.setVisibility(View.VISIBLE);
                                 poster_recyclerview.setVisibility(View.GONE);
                             }else{
-                                fetchFilterNoResult();
+//                                fetchFilterNoResult();
                             }
                             poster_recyclerview.setVisibility(View.GONE);
                         }else {
@@ -893,13 +925,15 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                     if(hasFocus){
                         lastFocusedView = view;
                         focusedPos = poster_recyclerview.indexOfChild(view);
-                        if(view.getY()>getResources().getDimensionPixelOffset(R.dimen.filter_poster_start_scroll_length)){
-                                mFilterFocusGridLayoutManager.scrollToPositionWithOffset(position,0);
-                        }else if(view.getY()<0){
-                            if(isVertical) {
-                                mFilterFocusGridLayoutManager.scrollToPositionWithOffset(position,getResources().getDimensionPixelOffset(R.dimen.list_scroll_filter_offset_v));
-                            }else{
-                                mFilterFocusGridLayoutManager.scrollToPositionWithOffset(position,getResources().getDimensionPixelOffset(R.dimen.list_scroll_filter_offset_h));
+                        if(!filter_root_view.horving) {
+                            if (view.getY() > getResources().getDimensionPixelOffset(R.dimen.filter_poster_start_scroll_length)) {
+                                mFilterFocusGridLayoutManager.scrollToPositionWithOffset(position, 0);
+                            } else if (view.getY() < 0) {
+                                if (isVertical) {
+                                    mFilterFocusGridLayoutManager.scrollToPositionWithOffset(position, getResources().getDimensionPixelOffset(R.dimen.list_scroll_filter_offset_v));
+                                } else {
+                                    mFilterFocusGridLayoutManager.scrollToPositionWithOffset(position, getResources().getDimensionPixelOffset(R.dimen.list_scroll_filter_offset_h));
+                                }
                             }
                         }
                         JasmineUtil.scaleOut3(view);
@@ -952,34 +986,22 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                     if(hasFocus){
                         lastFocusedView = view;
                         Log.e("postery",view.getY()+"");
-                            for (int i = 0; i <sectionSize ; i++) {
-                                if(i==sectionSize-1){
-                                    break;
-                                }
-                                if(position>specialPos.get(i)&&position<specialPos.get(i+1)){
-                                    ((RadioButton)section_group.getChildAt(i+1)).setChecked(true);
-                                    if(section_group.getChildAt(i+1).getY()+section_group.getChildAt(i+1).getHeight()>tab_scroll.getScrollY()+tab_scroll.getHeight()) {
-                                        tab_scroll.smoothScrollBy(0, getResources().getDimensionPixelOffset(R.dimen.list_scroll_arrow_down_lenth));
-                                    }else if(section_group.getChildAt(i+1).getY()<tab_scroll.getScrollY()) {
-                                        tab_scroll.smoothScrollBy(0,getResources().getDimensionPixelOffset(R.dimen.list_scroll_arrow_up_lenth));
-                                    }
-
-                                        break;
-                                }
-                            }
+                        changeCheckedTab(position);
                         focusedPos = list_poster_recyclerview.indexOfChild(view);
-                        if(view.getY()>getResources().getDimensionPixelOffset(R.dimen.filter_poster_start_scroll_length)){
-                                if(isVertical) {
+                        if(!filter_root_view.horving) {
+                            if (view.getY() > getResources().getDimensionPixelOffset(R.dimen.filter_poster_start_scroll_length)) {
+                                if (isVertical) {
                                     mFocusGridLayoutManager.scrollToPositionWithOffset(position, getResources().getDimensionPixelOffset(R.dimen.list_scroll_up_offset_v));
-                                }else{
+                                } else {
                                     mFocusGridLayoutManager.scrollToPositionWithOffset(position, getResources().getDimensionPixelOffset(R.dimen.list_scroll_up_offset_h));
                                 }
-                        }else if(view.getY()<0) {
-                                if(isVertical) {
+                            } else if (view.getY() < 0) {
+                                if (isVertical) {
                                     mFocusGridLayoutManager.scrollToPositionWithOffset(position, getResources().getDimensionPixelOffset(R.dimen.list_scroll_down_offset_v));
-                                }else{
+                                } else {
                                     mFocusGridLayoutManager.scrollToPositionWithOffset(position, getResources().getDimensionPixelOffset(R.dimen.list_scroll_down_offset_h));
                                 }
+                            }
                         }
                         JasmineUtil.scaleOut3(view);
                         if(isVertical) {

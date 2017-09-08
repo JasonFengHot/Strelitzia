@@ -417,6 +417,8 @@
 <dimen name="filter_layout_tab_arrow_h">47.41dp</dimen>
 <dimen name="filter_layout_tab_arrow_ml">8.15dp</dimen>
 <dimen name="filter_layout_poster_arrow_w">1048.15dp</dimen>
+<dimen name="filter_layout_poster_arrowdown_w">1183.70dp</dimen>
+<dimen name="filter_layout_poster_arrowdown_h">205.93dp</dimen>
 <dimen name="filter_layout_poster_arrow_h">96.30dp</dimen>
 <dimen name="filter_layout_poster_arrow_mr">68.15dp</dimen>
 
