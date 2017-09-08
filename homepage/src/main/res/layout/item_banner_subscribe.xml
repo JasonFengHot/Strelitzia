@@ -87,6 +87,8 @@
             android:layout_height="@dimen/banner_subscribe_post_title_h"
             android:background="@drawable/selector_item_banner_subscribe_text"
             android:gravity="center"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
             android:textColor="@color/_cccccc"
             android:textSize="@dimen/text_size_48sp"
             />
