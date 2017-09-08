@@ -297,6 +297,9 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                     } else {
                         filter_root_view.setShow_right_down(true);
                     }
+                    if(filter_root_view.horving||poster_arrow_up.isFocused()||poster_arrow_down.isFocused()) {
+                        changeCheckedTab(firstVisiablePos);
+                    }
                     showData(firstVisiablePos);
                     showData(lastVisiablePos);
                     for (int i = 0; i < sectionSize; i++) {
@@ -323,6 +326,24 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                 filter_root_view.setShow_left_down(showDown);
             }
         });
+    }
+
+    private void changeCheckedTab(int position) {
+        for (int i = 0; i < sectionSize; i++) {
+            if (i == sectionSize - 1) {
+                break;
+            }
+            if (specialPos != null && position >= specialPos.get(i) && position < specialPos.get(i + 1)) {
+
+                ((RadioButton) section_group.getChildAt(i + 1)).setChecked(true);
+                if (section_group.getChildAt(i + 1).getY() + section_group.getChildAt(i + 1).getHeight() > tab_scroll.getScrollY() + tab_scroll.getHeight()) {
+                    tab_scroll.smoothScrollBy(0, getResources().getDimensionPixelOffset(R.dimen.list_scroll_arrow_down_lenth));
+                } else if (section_group.getChildAt(i + 1).getY() < tab_scroll.getScrollY()) {
+                    tab_scroll.smoothScrollBy(0, getResources().getDimensionPixelOffset(R.dimen.list_scroll_arrow_up_lenth));
+                }
+                break;
+            }
+        }
     }
 
     private void initData() {
@@ -965,21 +986,7 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                     if(hasFocus){
                         lastFocusedView = view;
                         Log.e("postery",view.getY()+"");
-                            for (int i = 0; i <sectionSize ; i++) {
-                                if(i==sectionSize-1){
-                                    break;
-                                }
-                                if(position>specialPos.get(i)&&position<specialPos.get(i+1)){
-                                    ((RadioButton)section_group.getChildAt(i+1)).setChecked(true);
-                                    if(section_group.getChildAt(i+1).getY()+section_group.getChildAt(i+1).getHeight()>tab_scroll.getScrollY()+tab_scroll.getHeight()) {
-                                        tab_scroll.smoothScrollBy(0, getResources().getDimensionPixelOffset(R.dimen.list_scroll_arrow_down_lenth));
-                                    }else if(section_group.getChildAt(i+1).getY()<tab_scroll.getScrollY()) {
-                                        tab_scroll.smoothScrollBy(0,getResources().getDimensionPixelOffset(R.dimen.list_scroll_arrow_up_lenth));
-                                    }
-
-                                        break;
-                                }
-                            }
+                        changeCheckedTab(position);
                         focusedPos = list_poster_recyclerview.indexOfChild(view);
                         if(!filter_root_view.horving) {
                             if (view.getY() > getResources().getDimensionPixelOffset(R.dimen.filter_poster_start_scroll_length)) {
