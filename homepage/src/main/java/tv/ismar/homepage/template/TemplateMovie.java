@@ -30,6 +30,7 @@ import tv.ismar.homepage.banner.adapter.BannerMovieAdapter;
  */
 
 public class TemplateMovie extends Template {
+    private static final String TAG = "TemplateMovie";
 
     private RecyclerViewTV movieBanner;
     private BannerMovieAdapter mMovieAdapter;
@@ -78,7 +79,9 @@ public class TemplateMovie extends Template {
         movieBanner.setOnItemFocusChangeListener(new RecyclerViewTV.OnItemFocusChangeListener() {
             @Override
             public void onItemFocusGain(View itemView, int position) {
-                mTitleCountTv.setText(String.format(mContext.getString(R.string.home_item_title_count), (1 + position) + "", mMovieAdapter.getTatalItemCount() + ""));
+                if (itemView != null && mContext != null && mTitleCountTv != null){
+                    mTitleCountTv.setText(String.format(mContext.getString(R.string.home_item_title_count), (1 + position) + "", mMovieAdapter.getTatalItemCount() + ""));
+                }
             }
         });
     }
@@ -110,6 +113,7 @@ public class TemplateMovie extends Template {
             movieBanner.setOnLoadMoreComplete();
 //            mMovieAdapter.setCurrentPageNumber(pageNumber);
 //            mFocusHandler.sendEmptyMessageDelayed(mSavePos, 10);
+
         }
 
         String pageCount = String.valueOf(pageNumber);
@@ -143,7 +147,15 @@ public class TemplateMovie extends Template {
 
     private void fillMovieBanner(BannerEntity bannerEntity) {
         mMovieAdapter = new BannerMovieAdapter(mContext, bannerEntity);
+        mMovieAdapter.setSubscribeClickListener(new BannerMovieAdapter.OnBannerClickListener() {
+            @Override
+            public void onBannerClick(int pk, String contentModel) {
+                onClick(pk, contentModel);
+                Log.d(TAG, "horizontal519Banner: " + "pk " + pk + " contentModel: " + contentModel);
+            }
+        });
         movieBanner.setAdapter(mMovieAdapter);
         mTitleCountTv.setText(String.format(mContext.getString(R.string.home_item_title_count), (1) + "", mMovieAdapter.getTatalItemCount() + ""));
+
     }
 }

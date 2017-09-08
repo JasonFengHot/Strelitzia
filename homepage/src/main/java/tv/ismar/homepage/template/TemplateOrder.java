@@ -93,9 +93,12 @@ public class TemplateOrder extends Template implements BaseControl.ControlCallBa
         subscribeBanner.setOnItemFocusChangeListener(new RecyclerViewTV.OnItemFocusChangeListener() {
             @Override
             public void onItemFocusGain(View itemView, int position) {
-                mTitleCountTv.setText(String.format(mContext.getString(R.string.home_item_title_count), (position + 1) + "", subscribeAdapter.getTatalItemCount() + ""));
+                if (mTitleCountTv != null) {
+                    mTitleCountTv.setText(String.format(mContext.getString(R.string.home_item_title_count), (position + 1) + "", subscribeAdapter.getTatalItemCount() + ""));
+                }
             }
         });
+
 
 //        subscribeBanner.setOnHoverListener(new View.OnHoverListener() {
 //            @Override
@@ -245,16 +248,14 @@ public class TemplateOrder extends Template implements BaseControl.ControlCallBa
         subscribeAdapter.setTotalPageCount(bannerEntity.getCount_pages());
         subscribeAdapter.setCurrentPageNumber(bannerEntity.getNum_pages());
         subscribeAdapter.setTatalItemCount(bannerEntity.getCount());
-        subscribeAdapter.setSubscribeClickListener(new BannerSubscribeAdapter.OnSubscribeClickListener() {
-            @Override
-            public void onSubscribeClick(int pk, String contentModel) {
-                Log.d("onSubscribeClick", "pk: " + pk);
-                Log.d("onSubscribeClick", "contentModel: " + contentModel);
-//                accountsItemSubscribe(pk, contentModel);
-            }
-        });
-
         subscribeBanner.setAdapter(subscribeAdapter);
         mTitleCountTv.setText(String.format(mContext.getString(R.string.home_item_title_count), (1) + "", subscribeAdapter.getTatalItemCount() + ""));
+        subscribeAdapter.setSubscribeClickListener(new BannerSubscribeAdapter.OnBannerClickListener() {
+            @Override
+            public void onBannerClick(int pk, String contentModel) {
+                Log.d("onSubscribeClick", "pk: " + pk);
+                Log.d("onSubscribeClick", "contentModel: " + contentModel);
+            }
+        });
     }
 }

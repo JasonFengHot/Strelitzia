@@ -13,6 +13,8 @@ import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import tv.ismar.app.entity.banner.BannerEntity;
 import tv.ismar.homepage.R;
@@ -77,6 +79,8 @@ public class BannerHorizontal519Adapter extends RecyclerView.Adapter<BannerHoriz
         BannerEntity.PosterBean entity = mSubscribeEntityList.get(position);
         Picasso.with(mContext).load(entity.getPoster_url()).into(holder.mImageView);
         holder.mTitle.setText(entity.getTitle() + " " + position);
+
+        holder.mItemView.findViewById(R.id.item_layout).setTag(entity);
     }
 
     @Override
@@ -99,11 +103,17 @@ public class BannerHorizontal519Adapter extends RecyclerView.Adapter<BannerHoriz
             mItemView.findViewById(R.id.item_layout).setOnFocusChangeListener(this);
             mImageView = (ImageView) itemView.findViewById(R.id.image_view);
             mTitle = (TextView) itemView.findViewById(R.id.title);
+
         }
 
         @Override
         public void onClick(View v) {
-
+            if (mSubscribeClickListener != null){
+                BannerEntity.PosterBean posterBean = (BannerEntity.PosterBean) v.getTag();
+                int pk = getPostItemId(posterBean.getContent_url());
+                String contentModel = posterBean.getContent_model();
+                mSubscribeClickListener.onBannerClick(pk, contentModel);
+            }
         }
 
         @Override
@@ -175,5 +185,32 @@ public class BannerHorizontal519Adapter extends RecyclerView.Adapter<BannerHoriz
     public void addEmptyDatas(List<BannerEntity.PosterBean> emptyList) {
         currentPageNumber = currentPageNumber + 1;
         mSubscribeEntityList.addAll(emptyList);
+    }
+
+    private BannerHorizontal519Adapter.OnBannerClickListener mSubscribeClickListener;
+
+    public interface OnBannerClickListener {
+        void onBannerClick(int pk, String contentModel);
+    }
+
+    public void setBannerClickListener(BannerHorizontal519Adapter.OnBannerClickListener subscribeClickListener) {
+        mSubscribeClickListener = subscribeClickListener;
+    }
+
+    int getPostItemId(String url) {
+        int id = 0;
+        try {
+            Pattern p = Pattern.compile("/(\\d+)/?$");
+            Matcher m = p.matcher(url);
+            if (m.find()) {
+                String idStr = m.group(1);
+                if (idStr != null) {
+                    id = Integer.parseInt(idStr);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return id;
     }
 }

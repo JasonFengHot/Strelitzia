@@ -21,6 +21,8 @@ import rx.schedulers.Schedulers;
 import tv.ismar.app.entity.banner.BannerEntity;
 import tv.ismar.app.network.SkyService;
 import tv.ismar.homepage.R;
+import tv.ismar.homepage.banner.adapter.BannerHorizontal519Adapter;
+import tv.ismar.homepage.banner.adapter.BannerMovieAdapter;
 import tv.ismar.homepage.banner.adapter.BannerMovieMixAdapter;
 
 /**
@@ -30,6 +32,7 @@ import tv.ismar.homepage.banner.adapter.BannerMovieMixAdapter;
  */
 
 public class TemplateBigSmallLd extends Template{
+    private static final String TAG = TemplateBigSmallLd.class.getSimpleName();
     private RecyclerViewTV movieMixBanner;
 
     private BannerMovieMixAdapter adapter;
@@ -82,10 +85,11 @@ public class TemplateBigSmallLd extends Template{
         movieMixBanner.setOnItemFocusChangeListener(new RecyclerViewTV.OnItemFocusChangeListener() {
             @Override
             public void onItemFocusGain(View itemView, int position) {
-                mTitleCountTv.setText(String.format(mContext.getString(R.string.home_item_title_count), (1 + position) + "", adapter.getTatalItemCount() + ""));
+                if (mTitleCountTv != null) {
+                    mTitleCountTv.setText(String.format(mContext.getString(R.string.home_item_title_count), (1 + position) + "", adapter.getTatalItemCount() + ""));
+                }
             }
         });
-
     }
 
     @Override
@@ -149,6 +153,13 @@ public class TemplateBigSmallLd extends Template{
         adapter = new BannerMovieMixAdapter(mContext, bannerEntity);
         movieMixBanner.setAdapter(adapter);
         mTitleCountTv.setText(String.format(mContext.getString(R.string.home_item_title_count), (1) + "", adapter.getTatalItemCount() + ""));
+
+        adapter.setSubscribeClickListener(new BannerMovieMixAdapter.OnBannerClickListener() {
+            @Override
+            public void onBannerClick(int pk, String contentModel) {
+                Log.d(TAG, "horizontal519Banner: " + "pk " + pk + " contentModel: " + contentModel);
+            }
+        });
     }
 
 }

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Rect;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -34,10 +35,13 @@ import static android.view.View.SCALE_Y;
  */
 public class BannerSubscribeAdapter
         extends RecyclerView.Adapter<BannerSubscribeAdapter.SubscribeViewHolder> {
+
+    private static final String TAG = "BannerSubscribeAdapter";
+
     private Context mContext;
 
     private List<BannerEntity.PosterBean> mSubscribeEntityList;
-    private OnSubscribeClickListener mSubscribeClickListener;
+    private OnBannerClickListener mSubscribeClickListener;
     private int currentPageNumber;
     private int totalPageCount;
     private int tatalItemCount;
@@ -185,7 +189,11 @@ public class BannerSubscribeAdapter
         return mSubscribeEntityList.size();
     }
 
-    public void setSubscribeClickListener(OnSubscribeClickListener subscribeClickListener) {
+    public interface OnBannerClickListener {
+        void onBannerClick(int pk, String contentModel);
+    }
+
+    public void setSubscribeClickListener(OnBannerClickListener subscribeClickListener) {
         mSubscribeClickListener = subscribeClickListener;
     }
 
@@ -209,9 +217,6 @@ public class BannerSubscribeAdapter
         mSubscribeEntityList.addAll(emptyList);
     }
 
-    public interface OnSubscribeClickListener {
-        void onSubscribeClick(int pk, String contentModel);
-    }
 
     public static class SpacesItemDecoration extends RecyclerView.ItemDecoration {
         private int space;
@@ -258,7 +263,7 @@ public class BannerSubscribeAdapter
                 BannerEntity.PosterBean posterBean = (BannerEntity.PosterBean) v.getTag();
                 int itemId = getItemId(posterBean.getContent_url());
                 String contentModel = posterBean.getContent_model();
-                mSubscribeClickListener.onSubscribeClick(itemId, contentModel);
+                mSubscribeClickListener.onBannerClick(itemId, contentModel);
             }
         }
 

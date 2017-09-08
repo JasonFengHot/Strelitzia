@@ -22,6 +22,7 @@ import tv.ismar.app.entity.banner.BannerEntity;
 import tv.ismar.app.network.SkyService;
 import tv.ismar.homepage.R;
 import tv.ismar.homepage.banner.adapter.BannerHorizontal519Adapter;
+import tv.ismar.homepage.banner.adapter.BannerMovieAdapter;
 
 /**
  * @AUTHOR: xi
@@ -30,6 +31,8 @@ import tv.ismar.homepage.banner.adapter.BannerHorizontal519Adapter;
  */
 
 public class Template519 extends Template{
+    private static final String TAG = Template519.class.getSimpleName();
+
     private RecyclerViewTV horizontal519Banner;
     private BannerHorizontal519Adapter mHorizontal519Adapter;
 
@@ -77,7 +80,9 @@ public class Template519 extends Template{
         horizontal519Banner.setOnItemFocusChangeListener(new RecyclerViewTV.OnItemFocusChangeListener() {
             @Override
             public void onItemFocusGain(View itemView, int position) {
-                mTitleCountTv.setText(String.format(mContext.getString(R.string.home_item_title_count), (1 + position) + "", mHorizontal519Adapter.getTatalItemCount() + ""));
+                if (mTitleCountTv != null) {
+                    mTitleCountTv.setText(String.format(mContext.getString(R.string.home_item_title_count), (1 + position) + "", mHorizontal519Adapter.getTatalItemCount() + ""));
+                }
             }
         });
     }
@@ -146,5 +151,11 @@ public class Template519 extends Template{
         mHorizontal519Adapter = new BannerHorizontal519Adapter(mContext, bannerEntity);
         horizontal519Banner.setAdapter(mHorizontal519Adapter);
         mTitleCountTv.setText(String.format(mContext.getString(R.string.home_item_title_count), (1) + "", mHorizontal519Adapter.getTatalItemCount() + ""));
+        mHorizontal519Adapter.setBannerClickListener(new BannerHorizontal519Adapter.OnBannerClickListener() {
+            @Override
+            public void onBannerClick(int pk, String contentModel) {
+                Log.d(TAG, "horizontal519Banner: " + "pk " + pk + " contentModel: " + contentModel);
+            }
+        });
     }
 }
