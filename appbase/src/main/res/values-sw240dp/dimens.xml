@@ -706,8 +706,7 @@
 <dimen name="double_ld_img_rb_tv_width">13.78dp</dimen>
 <dimen name="double_ld_img_rb_tv_height">9.56dp</dimen>
 <dimen name="double_ld_img_rb_title_height">10.44dp</dimen>
-<dimen name="double_ld_poster_height1">42.89dp</dimen>
-<dimen name="double_ld_poster_height2">52.22dp</dimen>
+<dimen name="double_ld_poster_height">42.89dp</dimen>
 <dimen name="double_ld_poster_width">76.00dp</dimen>
 <dimen name="double_ld_poster_lt_size">24.22dp</dimen>
 <dimen name="double_ld_poster_rb_width">17.33dp</dimen>

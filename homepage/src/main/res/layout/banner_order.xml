@@ -3,20 +3,16 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:orientation="vertical">
+    <include layout="@layout/banner_title_layout" />
 
-    <RelativeLayout
+    <com.open.androidtvwidget.leanback.recycle.RecyclerViewTV
+        android:id="@+id/subscribe_banner"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-
-        <com.open.androidtvwidget.leanback.recycle.RecyclerViewTV
-            android:id="@+id/subscribe_banner"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/subscribe_banner_recycler_h"
-            android:layout_marginLeft="@dimen/subscribe_banner_recycler_ml"
-            android:layout_marginRight="@dimen/subscribe_banner_recycler_mr"
-            android:clipChildren="false"
-            android:clipToPadding="false"
-            android:paddingLeft="@dimen/subscribe_banner_recycler_pl"
-            android:paddingRight="@dimen/subscribe_banner_recycler_pr"/>
-        </RelativeLayout>
+        android:layout_height="@dimen/subscribe_banner_recycler_h"
+        android:layout_marginLeft="@dimen/subscribe_banner_recycler_ml"
+        android:layout_marginRight="@dimen/subscribe_banner_recycler_mr"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:paddingLeft="@dimen/subscribe_banner_recycler_pl"
+        android:paddingRight="@dimen/subscribe_banner_recycler_pr"/>
 </LinearLayout>
