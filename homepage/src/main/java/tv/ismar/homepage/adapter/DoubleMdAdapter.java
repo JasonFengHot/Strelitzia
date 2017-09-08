@@ -69,26 +69,6 @@ public class DoubleMdAdapter extends RecyclerView.Adapter<DoubleMdAdapter.Double
         return (mData!=null)? mData.size():0;
     }
 
-    public static class DoubleMdSpace extends RecyclerView.ItemDecoration {
-        private int spaceL,spaceR,spaceT,spaceB;
-
-        public DoubleMdSpace(int l,int r,int t,int b){
-            spaceL=l;
-            spaceR=r;
-            spaceT=t;
-            spaceB=b;
-        }
-
-        @Override
-        public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
-            super.getItemOffsets(outRect, view, parent, state);
-            outRect.left = spaceL;
-            outRect.bottom = spaceB;
-            outRect.right=spaceR;
-            outRect.top=spaceT;
-        }
-    }
-
     public static class DoubleMdViewHolder extends RecyclerView.ViewHolder implements View.OnFocusChangeListener,
             View.OnClickListener{
         public ImageView mPosterIg;//海报

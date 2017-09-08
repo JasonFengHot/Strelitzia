@@ -26,6 +26,8 @@ import tv.ismar.homepage.control.FetchDataControl;
 
 public class TemplateDoubleMd extends Template implements BaseControl.ControlCallBack,
         RecyclerViewTV.OnItemClickListener{
+    private TextView mHeadTitleTv;
+    private TextView mHeadCountTv;
     private ImageView mVerticalImg;//大图海报
     private ImageView mLtImage;//左上角图标
     private ImageView mRbImage;//右下角图标
@@ -41,6 +43,8 @@ public class TemplateDoubleMd extends Template implements BaseControl.ControlCal
 
     @Override
     public void getView(View view) {
+        mHeadTitleTv = (TextView) view.findViewById(R.id.banner_title_tv);
+        mHeadCountTv = (TextView) view.findViewById(R.id.banner_title_count);
         mRecyclerView = (RecyclerViewTV) view.findViewById(R.id.double_md_recyclerview);
         mVerticalImg = (ImageView) view.findViewById(R.id.double_md_image_poster);
         mLtImage = (ImageView) view.findViewById(R.id.double_md_image_lt_icon);
@@ -60,6 +64,8 @@ public class TemplateDoubleMd extends Template implements BaseControl.ControlCal
 
     @Override
     public void initData(Bundle bundle) {
+        mHeadTitleTv.setText(bundle.getString("title"));
+        mHeadCountTv.setText(String.format(mContext.getString(R.string.home_item_title_count), 1+"", 40+""));
         mControl.getBanners(bundle.getString("banner"), 1);
     }
 

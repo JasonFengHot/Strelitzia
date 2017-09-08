@@ -33,7 +33,6 @@ import tv.ismar.app.entity.ChannelEntity;
 import tv.ismar.app.entity.GuideBanner;
 import tv.ismar.app.util.BitmapDecoder;
 import tv.ismar.app.widget.TelescopicWrap;
-import tv.ismar.homepage.adapter.HomeAdapter;
 import tv.ismar.homepage.adapter.HomeReclAdapter;
 import tv.ismar.homepage.control.FetchDataControl;
 import tv.ismar.homepage.view.ChannelChangeObservable;
@@ -110,7 +109,6 @@ public class HomeActivity extends BaseActivity implements BaseControl.ControlCal
         LinearLayoutManager linear = new LinearLayoutManager(this);
         linear.setOrientation(LinearLayoutManager.VERTICAL);
         mRecycleView.setLayoutManager(linear);
-//        mRecycleView.setSelectedItemOffset(10, 10);
 
         mBitmapDecoder = new BitmapDecoder();
         mBitmapDecoder.decode(this, R.drawable.homepage_background, new BitmapDecoder.Callback() {
