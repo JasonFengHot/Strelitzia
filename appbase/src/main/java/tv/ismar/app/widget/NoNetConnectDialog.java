@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import tv.ismar.app.R;
@@ -98,7 +97,7 @@ public class NoNetConnectDialog extends Dialog implements View.OnClickListener{
         cancelBtn.setText(text);
     }
     public void setFirstMessage(String message) {
-        View textLayout = LayoutInflater.from(mContext).inflate(R.layout.update_msg_text_item, null);
+        View textLayout = LayoutInflater.from(mContext).inflate(R.layout.msg_text_item, null);
         TextView textContent= (TextView) textLayout.findViewById(R.id.msg_text);
         textContent.setText(message);
         popup_content.addView(textLayout);

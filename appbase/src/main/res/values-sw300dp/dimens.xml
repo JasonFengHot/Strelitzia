@@ -741,4 +741,21 @@
 <dimen name="center_title_size">10.83dp</dimen>
 <dimen name="center_padding">41.67dp</dimen>
 <!--首页 end-->
+
+<dimen name="popup_layout_style_title_view_h">28.06dp</dimen>
+<dimen name="popup_layout_style_title_view_mt">56.11dp</dimen>
+<dimen name="popup_layout_style_icon_mr">8.89dp</dimen>
+<dimen name="popup_layout_style_title_ts">16.67dp</dimen>
+<dimen name="popup_layout_style_content_w">246.39dp</dimen>
+<dimen name="popup_layout_style_content_mt">44.72dp</dimen>
+<dimen name="popup_layout_style_btns_mb">71.67dp</dimen>
+<dimen name="popup_layout_style_content_mt1">36.11dp</dimen>
+<dimen name="popup_layout_style_btns_mb1">52.78dp</dimen>
+<dimen name="popup_layout_style_popup_btn_w">69.44dp</dimen>
+<dimen name="popup_layout_style_popup_btn_h">16.67dp</dimen>
+<dimen name="popup_layout_style_popup_btn_ts">8.33dp</dimen>
+<dimen name="popup_layout_style_popup_btn_ml">8.89dp</dimen>
+<dimen name="msg_text_item_text_h">14.44dp</dimen>
+<dimen name="msg_text_item_text_ts">10.00dp</dimen>
+<dimen name="msg_text_item_text_mb">5.56dp</dimen>
 </resources>

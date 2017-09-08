@@ -9,6 +9,7 @@ import android.graphics.Rect;
 import android.os.Build;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -103,7 +104,7 @@ public class FilterPosterAdapter extends RecyclerView.Adapter<FilterPosterAdapte
             }
         }else{
             TextView textView=new TextView(mContext);
-            textView.setTextSize(mContext.getResources().getDimensionPixelSize(R.dimen.filter_layout_current_section_title_ts));
+            textView.setTextSize(TypedValue.COMPLEX_UNIT_PX,mContext.getResources().getDimensionPixelSize(R.dimen.filter_layout_current_section_title_ts));
             textView.setWidth(mContext.getResources().getDimensionPixelOffset(R.dimen.list_section_title_w));
             if(mIsVertical) {
                 textView.setHeight(mContext.getResources().getDimensionPixelOffset(R.dimen.list_section_vertical_title_h));

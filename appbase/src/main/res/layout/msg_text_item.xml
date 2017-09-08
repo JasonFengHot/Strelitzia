@@ -7,10 +7,9 @@
     <TextView
         android:id="@+id/msg_text"
         android:layout_width="wrap_content"
-        android:layout_height="52dp"
-        android:textSize="36dp"
+        android:layout_height="@dimen/msg_text_item_text_h"
+        android:textSize="@dimen/msg_text_item_text_ts"
         android:textColor="#999999"
         android:gravity="center_vertical"
-        android:layout_marginBottom="20dp"/>
-
+        android:layout_marginBottom="@dimen/msg_text_item_text_mb"/>
 </RelativeLayout>
