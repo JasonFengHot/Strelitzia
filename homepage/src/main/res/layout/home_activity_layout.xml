@@ -114,8 +114,9 @@
         app:tvTabTextColor="#999999"
         app:tvTabTextSize="@dimen/text_size_36sp"
         />
-    <com.open.androidtvwidget.leanback.recycle.RecyclerViewTV
-        android:id="@+id/guide_container"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/home_activity_recycleview"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:focusable="false"/>
 </LinearLayout>

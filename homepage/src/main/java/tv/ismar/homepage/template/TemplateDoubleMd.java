@@ -47,10 +47,9 @@ public class TemplateDoubleMd extends Template implements BaseControl.ControlCal
         mRbImage = (ImageView) view.findViewById(R.id.double_md_image_rb_icon);
         mTitleTv = (TextView) view.findViewById(R.id.double_md_image_title);
 
-        GridLayoutManager doubleLayoutManager = new GridLayoutManager(mContext, 2);
-        doubleLayoutManager.setOrientation(GridLayoutManager.HORIZONTAL);
+        FocusGridLayoutManager doubleLayoutManager = new FocusGridLayoutManager(mContext, 2);
+        doubleLayoutManager.setOrientation(FocusGridLayoutManager.HORIZONTAL);
         mRecyclerView.setLayoutManager(doubleLayoutManager);
-        mRecyclerView.setSelectedItemOffset(10, 10);
     }
 
     @Override

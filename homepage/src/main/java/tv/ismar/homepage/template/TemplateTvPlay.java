@@ -26,6 +26,8 @@ import tv.ismar.homepage.control.TvPlayControl;
  */
 
 public class TemplateTvPlay extends Template implements BaseControl.ControlCallBack{
+    private TextView mTextTile;//标题
+    private TextView mTextCount;//选中游标
     private RecyclerViewTV mRecycleView;
     private TvPlayAdapter mAdapter;
     private TvPlayControl mControl;
@@ -40,6 +42,8 @@ public class TemplateTvPlay extends Template implements BaseControl.ControlCallB
 
     @Override
     public void getView(View view) {
+        mTextTile = (TextView) view.findViewById(R.id.tv_player_title);
+        mTextCount = (TextView) view.findViewById(R.id.tv_player_count);
         mRecycleView = (RecyclerViewTV) view.findViewById(R.id.tv_player_recyclerview);
         LinearLayoutManagerTV tvPlayerLayoutManager = new LinearLayoutManagerTV(mContext, LinearLayoutManager.HORIZONTAL, false);
         mRecycleView.setLayoutManager(tvPlayerLayoutManager);
@@ -49,11 +53,11 @@ public class TemplateTvPlay extends Template implements BaseControl.ControlCallB
     @Override
     public void initTitle() {
         super.initTitle();
-        mTitleCountTv.setText(String.format(mContext.getString(R.string.home_item_title_count),1+"", mCount+""));
     }
 
     @Override
     public void initData(Bundle bundle) {
+        mTextTile.setText("热门电视剧");
         mControl.getBanners(bundle.getString("banner"), 1);
     }
 

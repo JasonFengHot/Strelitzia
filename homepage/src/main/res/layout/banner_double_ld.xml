@@ -52,6 +52,6 @@
     <com.open.androidtvwidget.leanback.recycle.RecyclerViewTV
         android:id="@+id/double_ld_recyclerview"
         android:layout_width="wrap_content"
-        android:layout_height="@dimen/double_ld_poster_height"
+        android:layout_height="@dimen/double_ld_img_height"
         android:focusable="false" />
 </LinearLayout>

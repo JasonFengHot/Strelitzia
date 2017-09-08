@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -53,7 +55,7 @@ public class HomeActivity extends BaseActivity implements BaseControl.ControlCal
     private final FetchDataControl mControl = new FetchDataControl(this, this);//业务类引用
 
 //    private ListView mListView;
-    private RecyclerViewTV mRecycleView;
+    private RecyclerView mRecycleView;
     private HomeReclAdapter mAdapter;
     private HorizontalTabView channelTab;
 
@@ -79,7 +81,7 @@ public class HomeActivity extends BaseActivity implements BaseControl.ControlCal
     private void findViews(){
         mViewGroup = (ViewGroup) findViewById(R.id.home_view_layout);
 //        mListView = (ListView) findViewById(R.id.guide_container);
-        mRecycleView = (RecyclerViewTV) findViewById(R.id.guide_container);
+        mRecycleView = (RecyclerView) findViewById(R.id.home_activity_recycleview);
         channelTab = (HorizontalTabView) findViewById(R.id.channel_tab);
         mTimeTv = (TextView) findViewById(R.id.guide_title_time_tv);
         mCollectionLayout = (ViewGroup) findViewById(R.id.collection_layout);
@@ -105,10 +107,10 @@ public class HomeActivity extends BaseActivity implements BaseControl.ControlCal
                 });
 
 //        mListView.setItemsCanFocus(true);
-        LinearLayoutManagerTV linear = new LinearLayoutManagerTV(this);
-        linear.setOrientation(LinearLayoutManagerTV.VERTICAL);
+        LinearLayoutManager linear = new LinearLayoutManager(this);
+        linear.setOrientation(LinearLayoutManager.VERTICAL);
         mRecycleView.setLayoutManager(linear);
-        mRecycleView.setSelectedItemOffset(10, 10);
+//        mRecycleView.setSelectedItemOffset(10, 10);
 
         mBitmapDecoder = new BitmapDecoder();
         mBitmapDecoder.decode(this, R.drawable.homepage_background, new BitmapDecoder.Callback() {
