@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 
 import tv.ismar.app.BaseControl;
 import tv.ismar.app.entity.GuideBanner;
+import tv.ismar.homepage.HomeActivity;
 import tv.ismar.homepage.R;
 import tv.ismar.homepage.adapter.HomeReclAdapter;
 import tv.ismar.homepage.control.FetchDataControl;
@@ -60,7 +61,11 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
 
     private void initData(){
         if(!StringUtils.isEmpty(this.mChannel)){
-            mControl.fetchChannelBanner(mChannel);
+            if(this.mChannel.equals(HomeActivity.HOME_PAGE_CHANNEL_TAG)){
+                mControl.fetchHomeBanners();
+            } else {
+                mControl.fetchChannelBanners(mChannel);
+            }
         }
     }
 

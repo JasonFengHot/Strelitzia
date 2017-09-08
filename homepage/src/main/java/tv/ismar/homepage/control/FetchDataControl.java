@@ -43,7 +43,7 @@ public class FetchDataControl extends BaseControl{
     }
 
     /*获取首页下banner列表*/
-    public void fetchBannerList(){
+    public void fetchHomeBanners(){
         try {
             SkyService.ServiceManager.getLocalTestService().getGuideBanners()
                     .subscribeOn(Schedulers.io())
@@ -74,7 +74,7 @@ public class FetchDataControl extends BaseControl{
     }
 
     /*获取指定频道下的banner*/
-    public void fetchChannelBanner(String channel){
+    public void fetchChannelBanners(String channel){
         SkyService.ServiceManager.getLocalTestService().getChannelBanners(channel)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

@@ -51,6 +51,7 @@ import static tv.ismar.homepage.control.FetchDataControl.FETCH_CHANNEL_TAB_FLAG;
 public class HomeActivity extends BaseActivity implements View.OnClickListener, BaseControl.ControlCallBack,
         HorizontalTabView.OnItemSelectedListener,View.OnFocusChangeListener {
 
+    public static final String HOME_PAGE_CHANNEL_TAG = "homepage";
     private final FetchDataControl mControl = new FetchDataControl(this, this);//业务类引用
     private HorizontalTabView channelTab;
 
@@ -130,7 +131,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         mTimeTv.setText(getNowTime());
         mControl.fetchChannels();
         ChannelFragment channelFragment = new ChannelFragment();
-        channelFragment.setChannel("chinesemovie");
+        channelFragment.setChannel(HOME_PAGE_CHANNEL_TAG);
         replaceFragment(channelFragment, "none");
     }
 
