@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -30,17 +32,15 @@ import tv.ismar.app.BaseActivity;
 import tv.ismar.app.BaseControl;
 import tv.ismar.app.core.PageIntent;
 import tv.ismar.app.entity.ChannelEntity;
-import tv.ismar.app.entity.GuideBanner;
 import tv.ismar.app.util.BitmapDecoder;
 import tv.ismar.app.widget.TelescopicWrap;
-import tv.ismar.homepage.adapter.HomeReclAdapter;
 import tv.ismar.homepage.control.FetchDataControl;
+import tv.ismar.homepage.fragment.ChannelFragment;
 import tv.ismar.homepage.view.ChannelChangeObservable;
 import tv.ismar.homepage.widget.HorizontalTabView;
 
-import static tv.ismar.homepage.control.FetchDataControl.FETCH_CHANNEL_BANNERS_FLAG;
 import static tv.ismar.homepage.control.FetchDataControl.FETCH_CHANNEL_TAB_FLAG;
-import static tv.ismar.homepage.control.FetchDataControl.FETCH_HOME_BANNERS_FLAG;
+
 
 /**
  * @AUTHOR: xi
@@ -48,21 +48,22 @@ import static tv.ismar.homepage.control.FetchDataControl.FETCH_HOME_BANNERS_FLAG
  * @DESC: home页
  */
 
-public class HomeActivity extends BaseActivity implements BaseControl.ControlCallBack,
-        View.OnClickListener, HorizontalTabView.OnItemSelectedListener,View.OnFocusChangeListener {
+public class HomeActivity extends BaseActivity implements View.OnClickListener, BaseControl.ControlCallBack,
+        HorizontalTabView.OnItemSelectedListener,View.OnFocusChangeListener {
 
+    public static final String HOME_PAGE_CHANNEL_TAG = "homepage";
     private final FetchDataControl mControl = new FetchDataControl(this, this);//业务类引用
-
-//    private ListView mListView;
-    private RecyclerView mRecycleView;
-    private HomeReclAdapter mAdapter;
     private HorizontalTabView channelTab;
 
+    private ViewGroup mViewGroup;
     private TextView mTimeTv;//时间
     private ViewGroup mCollectionLayout;//历史收藏layout
     private ViewGroup mPersonCenterLayout;//个人中心
     private TelescopicWrap mCollectionTel;//历史收藏伸缩包装类
     private TelescopicWrap mPersonCenterTel;//个人中心包装类
+
+    private BitmapDecoder mBitmapDecoder;
+    private int mLastSelectedIndex = 0;//记录上一次选中的位置
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -73,14 +74,9 @@ public class HomeActivity extends BaseActivity implements BaseControl.ControlCal
         initData();
     }
 
-    private ViewGroup mViewGroup;
-    private BitmapDecoder mBitmapDecoder;
-
     /*获取控件实例*/
     private void findViews(){
         mViewGroup = (ViewGroup) findViewById(R.id.home_view_layout);
-//        mListView = (ListView) findViewById(R.id.guide_container);
-        mRecycleView = (RecyclerView) findViewById(R.id.home_activity_recycleview);
         channelTab = (HorizontalTabView) findViewById(R.id.channel_tab);
         mTimeTv = (TextView) findViewById(R.id.guide_title_time_tv);
         mCollectionLayout = (ViewGroup) findViewById(R.id.collection_layout);
@@ -104,11 +100,6 @@ public class HomeActivity extends BaseActivity implements BaseControl.ControlCal
                         Log.d("channelTab", "channelTab ChannelChangeObservable");
                     }
                 });
-
-//        mListView.setItemsCanFocus(true);
-        LinearLayoutManager linear = new LinearLayoutManager(this);
-        linear.setOrientation(LinearLayoutManager.VERTICAL);
-        mRecycleView.setLayoutManager(linear);
 
         mBitmapDecoder = new BitmapDecoder();
         mBitmapDecoder.decode(this, R.drawable.homepage_background, new BitmapDecoder.Callback() {
@@ -138,8 +129,28 @@ public class HomeActivity extends BaseActivity implements BaseControl.ControlCal
 
     private void initData(){
         mTimeTv.setText(getNowTime());
-        mControl.fetchBannerList();
         mControl.fetchChannels();
+        ChannelFragment channelFragment = new ChannelFragment();
+        channelFragment.setChannel(HOME_PAGE_CHANNEL_TAG);
+        replaceFragment(channelFragment, "none");
+    }
+
+    private void replaceFragment(Fragment fragment, String scrollType) {
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        switch (scrollType) {
+            case "left":
+                transaction.setCustomAnimations(
+                        R.anim.push_right_in,
+                        R.anim.push_right_out);
+                break;
+            case "right":
+                transaction.setCustomAnimations(
+                        R.anim.push_left_in,
+                        R.anim.push_left_out);
+                break;
+        }
+
+        transaction.replace(R.id.fragment_layout, fragment).commitAllowingStateLoss();
     }
 
     /*获取当前时间*/
@@ -149,34 +160,6 @@ public class HomeActivity extends BaseActivity implements BaseControl.ControlCal
         dateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Shanghai"));
         return dateFormat.format(now);
     }
-
-    /*用于业务类回调控制UI*/
-    @Override
-    public void callBack(int flag, Object... args) {
-        //这里通过flag严格区分不同的业务流程，避免业务之间的耦合
-        if(flag == FETCH_HOME_BANNERS_FLAG){//处理获取首页banner列表
-            GuideBanner[] banners = (GuideBanner[]) args;
-            if(mAdapter == null){
-                mAdapter = new HomeReclAdapter(this, banners);
-                mRecycleView.setAdapter(mAdapter);
-//                mListView.setAdapter(mAdapter);
-            }else{
-                mAdapter.notifyDataSetChanged();
-            }
-        }else if (flag == FETCH_CHANNEL_TAB_FLAG){
-            ChannelEntity[] channelEntities = (ChannelEntity[]) args;
-            fillChannelTab(channelEntities);
-        } else if(flag == FETCH_CHANNEL_BANNERS_FLAG){
-            GuideBanner[] banners = (GuideBanner[]) args;
-            if(mAdapter == null){
-                mAdapter = new HomeReclAdapter(this, banners);
-                mRecycleView.setAdapter(mAdapter);
-            }else{
-                mAdapter.notifyDataSetChanged();
-            }
-        }
-    }
-
 
     private void fillChannelTab(ChannelEntity[] channelEntities) {
         List<HorizontalTabView.Tab> tabs = new ArrayList<>();
@@ -205,8 +188,14 @@ public class HomeActivity extends BaseActivity implements BaseControl.ControlCal
 
     @Override
     public void onItemSelected(View v, int position) {
-        if(mControl.mChannels!=null && mControl.mChannels.length>0){//频道切换
-            mControl.fetchChannelBanner(mControl.mChannels[position].getChannel());
+        if(mControl.mChannels!=null && mControl.mChannels.length>position){
+            ChannelFragment channelFragment = new ChannelFragment();
+            channelFragment.setChannel( mControl.mChannels[position].getChannel());
+            if(position > mLastSelectedIndex){//右切
+                replaceFragment(channelFragment, "right");
+            }if(position < mLastSelectedIndex){//左切
+                replaceFragment(channelFragment, "left");
+            }
         }
     }
 
@@ -219,6 +208,14 @@ public class HomeActivity extends BaseActivity implements BaseControl.ControlCal
         if(v == mPersonCenterLayout){
             mPersonCenterTel.openOrClose(hasFocus);
             return;
+        }
+    }
+
+    @Override
+    public void callBack(int flags, Object... args) {
+        if (flags == FETCH_CHANNEL_TAB_FLAG){
+            ChannelEntity[] channelEntities = (ChannelEntity[]) args;
+            fillChannelTab(channelEntities);
         }
     }
 }
