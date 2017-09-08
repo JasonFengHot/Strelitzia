@@ -69,7 +69,6 @@ public class TemplateTvPlay extends Template implements BaseControl.ControlCallB
                 mAdapter.notifyDataSetChanged();
             }
             mCount = homeEntity.count;
-            mTitleCountTv.setText(String.format(mContext.getString(R.string.home_item_title_count),1+"", mCount+""));
         }
     }
 }

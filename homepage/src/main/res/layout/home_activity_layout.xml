@@ -114,8 +114,8 @@
         app:tvTabTextColor="#999999"
         app:tvTabTextSize="@dimen/text_size_36sp"
         />
-    <ListView
+    <com.open.androidtvwidget.leanback.recycle.RecyclerViewTV
         android:id="@+id/guide_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"/>
 </LinearLayout>
