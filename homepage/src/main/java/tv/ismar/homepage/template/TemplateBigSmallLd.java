@@ -21,6 +21,8 @@ import rx.schedulers.Schedulers;
 import tv.ismar.app.entity.banner.BannerEntity;
 import tv.ismar.app.network.SkyService;
 import tv.ismar.homepage.R;
+import tv.ismar.homepage.banner.adapter.BannerHorizontal519Adapter;
+import tv.ismar.homepage.banner.adapter.BannerMovieAdapter;
 import tv.ismar.homepage.banner.adapter.BannerMovieMixAdapter;
 
 /**
@@ -30,6 +32,7 @@ import tv.ismar.homepage.banner.adapter.BannerMovieMixAdapter;
  */
 
 public class TemplateBigSmallLd extends Template{
+    private static final String TAG = TemplateBigSmallLd.class.getSimpleName();
     private RecyclerViewTV movieMixBanner;
 
     private BannerMovieMixAdapter adapter;
@@ -79,6 +82,14 @@ public class TemplateBigSmallLd extends Template{
             }
         });
 
+        movieMixBanner.setOnItemFocusChangeListener(new RecyclerViewTV.OnItemFocusChangeListener() {
+            @Override
+            public void onItemFocusGain(View itemView, int position) {
+                if (mTitleCountTv != null) {
+                    mTitleCountTv.setText(String.format(mContext.getString(R.string.home_item_title_count), (1 + position) + "", adapter.getTatalItemCount() + ""));
+                }
+            }
+        });
     }
 
     @Override
@@ -140,7 +151,15 @@ public class TemplateBigSmallLd extends Template{
 
     private void fillMovieMixBanner(BannerEntity bannerEntity) {
         adapter = new BannerMovieMixAdapter(mContext, bannerEntity);
+        adapter.setSubscribeClickListener(new BannerMovieMixAdapter.OnBannerClickListener() {
+            @Override
+            public void onBannerClick(View view, int position) {
+                goToNextPage(view);
+            }
+        });
         movieMixBanner.setAdapter(adapter);
+        mTitleCountTv.setText(String.format(mContext.getString(R.string.home_item_title_count), (1) + "", adapter.getTatalItemCount() + ""));
+
     }
 
 }
