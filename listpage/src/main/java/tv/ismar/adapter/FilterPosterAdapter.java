@@ -191,14 +191,14 @@ public class FilterPosterAdapter extends RecyclerView.Adapter<FilterPosterAdapte
                     });
                 }
             }
-//            holder.itemView.setOnHoverListener(new View.OnHoverListener() {
-//                @Override
-//                public boolean onHover(View v, MotionEvent event) {
-//                    if((event.getAction()==MotionEvent.ACTION_HOVER_ENTER||event.getAction()==MotionEvent.ACTION_HOVER_MOVE)&&v.getLocalVisibleRect(rect))
-//                    v.requestFocus();
-//                    return false;
-//                }
-//            });
+            holder.itemView.setOnHoverListener(new View.OnHoverListener() {
+                @Override
+                public boolean onHover(View v, MotionEvent event) {
+                    if((event.getAction()==MotionEvent.ACTION_HOVER_ENTER||event.getAction()==MotionEvent.ACTION_HOVER_MOVE)&&v.getLocalVisibleRect(rect))
+                    v.requestFocus();
+                    return false;
+                }
+            });
         }else{
             ((TextView)holder.itemView).setText(mSectionList.get(mSpecialPos.indexOf(position)).title);
         }

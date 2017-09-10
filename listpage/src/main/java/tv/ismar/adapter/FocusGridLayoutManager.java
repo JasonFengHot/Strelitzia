@@ -61,7 +61,11 @@ public class FocusGridLayoutManager extends GridLayoutManager {
 
     @Override
     public int getPosition(View view) {
-        return super.getPosition(view);
+        if(view.getLayoutParams() instanceof RecyclerView.LayoutParams) {
+            return super.getPosition(view);
+        }else{
+            return -1;
+        }
     }
 
     @Override
