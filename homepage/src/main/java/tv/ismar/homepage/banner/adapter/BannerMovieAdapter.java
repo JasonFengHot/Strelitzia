@@ -69,6 +69,7 @@ public class BannerMovieAdapter extends RecyclerView.Adapter<BannerMovieAdapter.
         holder.mTitle.setText(entity.getTitle() + " " + position);
 
         holder.mItemView.findViewById(R.id.item_layout).setTag(entity);
+        holder.mItemView.findViewById(R.id.item_layout).setTag(R.id.banner_item_position, position);
     }
 
     @Override
@@ -112,10 +113,8 @@ public class BannerMovieAdapter extends RecyclerView.Adapter<BannerMovieAdapter.
         public void onClick(View v) {
             Log.d("BannerMovieAdapter", "onClick");
             if (mSubscribeClickListener != null) {
-                BannerEntity.PosterBean posterBean = (BannerEntity.PosterBean) v.getTag();
-                int itemId = getPostItemId(posterBean.getContent_url());
-                String contentModel = posterBean.getContent_model();
-                mSubscribeClickListener.onBannerClick(itemId, contentModel);
+                int position = (int) v.getTag(R.id.banner_item_position);
+                mSubscribeClickListener.onBannerClick(v, position);
             }
         }
 
@@ -193,7 +192,7 @@ public class BannerMovieAdapter extends RecyclerView.Adapter<BannerMovieAdapter.
     private OnBannerClickListener mSubscribeClickListener;
 
     public interface OnBannerClickListener {
-        void onBannerClick(int pk, String contentModel);
+        void onBannerClick(View view, int position);
     }
 
     public void setSubscribeClickListener(OnBannerClickListener subscribeClickListener) {

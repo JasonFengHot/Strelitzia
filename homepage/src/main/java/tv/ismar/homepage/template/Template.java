@@ -6,12 +6,13 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import tv.ismar.app.BaseActivity;
 import tv.ismar.app.core.PageIntent;
-import tv.ismar.app.core.SimpleRestClient;
 import tv.ismar.app.core.Source;
-import tv.ismar.app.player.CallaPlay;
-import tv.ismar.app.util.Utils;
+import tv.ismar.app.entity.banner.BannerEntity;
 
 /**
  * @AUTHOR: xi
@@ -62,52 +63,80 @@ public abstract class Template {
     }
 
 
-    public void onClick(int pk, String contentModel) {
-//        String title = null;
-//        String mode_name = contentModel;
-//        String channel = "homepage";
-//        String type;
-//        String app_id = "";
-//        String backgroundUrl = "";
-//        String nameId = "";
-//        boolean expense = false;
-//        int position = -1;
-//        BaseActivity.baseChannel = channel;
-//        type = mode_name;
-//        Intent intent = new Intent();
+    public void goToNextPage(View view) {
+        String modelName = "item";
+        String contentModel = null;
+        int itemPk = -1;
+        String url = null;
+
+        Object tag = view.getTag();
+        if (tag == null){
+            return;
+        }else {
+            if (tag instanceof BannerEntity.PosterBean){
+                BannerEntity.PosterBean bean = (BannerEntity.PosterBean) tag;
+                contentModel = bean.getContent_model();
+                url = bean.getContent_url();
+                itemPk = getPostItemId(url);
+            }
+        }
+
+
+        Intent intent = new Intent();
 //        intent.putExtra("channel", channel);
-//        if (mode_name.contains("ismartv")) {
-//            toIsmartvShop(mode_name, app_id, backgroundUrl, nameId, title);
-//        } else if (contentModel.contains("gather")) {
-//            int itemPk = Utils.getItemPk(url);
-//            PageIntent intent1 = new PageIntent();
-//            intent1.toSubject(mContext, contentModel, itemPk, title, BaseActivity.baseChannel, "");
-//        } else if ("item".equals(mode_name)) {
-//            pk = SimpleRestClient.getItemId(url, new boolean[1]);
-//            PageIntent pageIntent = new PageIntent();
-//            pageIntent.toDetailPage(mContext, "homepage", pk);
-//        } else if ("topic".equals(mode_name)) {
+        if (modelName.contains("item")) {
+            if (contentModel.contains("gather")) {
+//                PageIntent intent1 = new PageIntent();
+//                intent1.toSubject(mContext, contentMode, itemPk, title, BaseActivity.baseChannel, "");
+            } else {
+                PageIntent pageIntent = new PageIntent();
+                pageIntent.toDetailPage(mContext, "homepage", itemPk);
+            }
+        } else if (modelName.contains("topic")) {
 //            intent.putExtra("url", url);
 //            intent.setAction("tv.ismar.daisy.Topic");
 //            mContext.startActivity(intent);
-//        } else if ("section".equals(mode_name)) {
+        } else if (modelName.contains("section")) {
 //            intent.putExtra("title", title);
 //            intent.putExtra("itemlistUrl", url);
 //            intent.putExtra("lableString", title);
 //            intent.putExtra("pk", pk);
 //            intent.setAction("tv.ismar.daisy.packagelist");
-//            mContext.startActivity(intent);
-//        } else if ("package".equals(mode_name)) {
+            mContext.startActivity(intent);
+        } else if (modelName.contains("package")) {
 //            intent.setAction("tv.ismar.daisy.packageitem");
 //            intent.putExtra("url", url);
-//            mContext.startActivity(intent);
-//        } else if ("clip".equals(mode_name)) {
-//            int itemPk = Utils.getItemPk(url);
+        } else if (modelName.contains("clip")) {
 //            PageIntent pageIntent = new PageIntent();
-//            pageIntent.toPlayPage(mContext, itemPk, -1, Source.HOMEPAGE);
-//        }
-//        CallaPlay play = new CallaPlay();
-//        play.homepage_vod_click(pk, title, channel, position, type);
+//            pageIntent.toPlayPage(mContext, pk, -1, Source.HOMEPAGE);
+        } else if (modelName.contains("ismartv")) {
+//            toIsmartvShop(mode_name, app_id, backgroundUrl, nameId, title);
+        }else {
+            if (contentModel.contains("gather")) {
+//                PageIntent intent1 = new PageIntent();
+//                intent1.toSubject(mContext, contentMode, itemPk, title, BaseActivity.baseChannel, "");
+            } else {
+                PageIntent pageIntent = new PageIntent();
+                pageIntent.toDetailPage(mContext, "homepage", itemPk);
+            }
+        }
+    }
+
+    int getPostItemId(String url) {
+        int id = 0;
+        try {
+            Pattern p = Pattern.compile("/(\\d+)/?$");
+            Matcher m = p.matcher(url);
+            if (m.find()) {
+                String idStr = m.group(1);
+                if (idStr != null) {
+                    id = Integer.parseInt(idStr);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return id;
     }
 
     private void toIsmartvShop(String modename, String app_id, String backgroudUrl, String nameId, String title) {

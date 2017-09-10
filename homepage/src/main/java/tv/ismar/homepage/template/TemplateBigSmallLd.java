@@ -151,15 +151,15 @@ public class TemplateBigSmallLd extends Template{
 
     private void fillMovieMixBanner(BannerEntity bannerEntity) {
         adapter = new BannerMovieMixAdapter(mContext, bannerEntity);
+        adapter.setSubscribeClickListener(new BannerMovieMixAdapter.OnBannerClickListener() {
+            @Override
+            public void onBannerClick(View view, int position) {
+                goToNextPage(view);
+            }
+        });
         movieMixBanner.setAdapter(adapter);
         mTitleCountTv.setText(String.format(mContext.getString(R.string.home_item_title_count), (1) + "", adapter.getTatalItemCount() + ""));
 
-        adapter.setSubscribeClickListener(new BannerMovieMixAdapter.OnBannerClickListener() {
-            @Override
-            public void onBannerClick(int pk, String contentModel) {
-                Log.d(TAG, "horizontal519Banner: " + "pk " + pk + " contentModel: " + contentModel);
-            }
-        });
     }
 
 }

@@ -245,17 +245,16 @@ public class TemplateOrder extends Template implements BaseControl.ControlCallBa
 
     private void fillSubscribeBanner(BannerEntity bannerEntity) {
         subscribeAdapter = new BannerSubscribeAdapter(mContext, bannerEntity.getPoster());
+        subscribeAdapter.setSubscribeClickListener(new BannerSubscribeAdapter.OnBannerClickListener() {
+            @Override
+            public void onBannerClick(View view, int position) {
+                goToNextPage(view);
+            }
+        });
         subscribeAdapter.setTotalPageCount(bannerEntity.getCount_pages());
         subscribeAdapter.setCurrentPageNumber(bannerEntity.getNum_pages());
         subscribeAdapter.setTatalItemCount(bannerEntity.getCount());
         subscribeBanner.setAdapter(subscribeAdapter);
         mTitleCountTv.setText(String.format(mContext.getString(R.string.home_item_title_count), (1) + "", subscribeAdapter.getTatalItemCount() + ""));
-        subscribeAdapter.setSubscribeClickListener(new BannerSubscribeAdapter.OnBannerClickListener() {
-            @Override
-            public void onBannerClick(int pk, String contentModel) {
-                Log.d("onSubscribeClick", "pk: " + pk);
-                Log.d("onSubscribeClick", "contentModel: " + contentModel);
-            }
-        });
     }
 }

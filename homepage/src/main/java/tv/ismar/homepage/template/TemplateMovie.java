@@ -149,9 +149,8 @@ public class TemplateMovie extends Template {
         mMovieAdapter = new BannerMovieAdapter(mContext, bannerEntity);
         mMovieAdapter.setSubscribeClickListener(new BannerMovieAdapter.OnBannerClickListener() {
             @Override
-            public void onBannerClick(int pk, String contentModel) {
-                onClick(pk, contentModel);
-                Log.d(TAG, "horizontal519Banner: " + "pk " + pk + " contentModel: " + contentModel);
+            public void onBannerClick(View view, int position) {
+                goToNextPage(view);
             }
         });
         movieBanner.setAdapter(mMovieAdapter);

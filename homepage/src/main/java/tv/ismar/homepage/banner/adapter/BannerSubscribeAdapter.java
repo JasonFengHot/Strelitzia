@@ -127,6 +127,7 @@ public class BannerSubscribeAdapter
         holder.mPublishTime.setText("6月30日");
         holder.mIntroduction.setText(entity.getIntroduction() + " " + position);
         holder.mItemView.findViewById(R.id.item_layout).setTag(entity);
+        holder.mItemView.findViewById(R.id.item_layout).setTag(R.id.banner_item_position, position);
     }
 
     private int getMovieItemId(String url) {
@@ -190,7 +191,7 @@ public class BannerSubscribeAdapter
     }
 
     public interface OnBannerClickListener {
-        void onBannerClick(int pk, String contentModel);
+        void onBannerClick(View view, int position);
     }
 
     public void setSubscribeClickListener(OnBannerClickListener subscribeClickListener) {
@@ -260,10 +261,8 @@ public class BannerSubscribeAdapter
         @Override
         public void onClick(View v) {
             if (mSubscribeClickListener != null) {
-                BannerEntity.PosterBean posterBean = (BannerEntity.PosterBean) v.getTag();
-                int itemId = getItemId(posterBean.getContent_url());
-                String contentModel = posterBean.getContent_model();
-                mSubscribeClickListener.onBannerClick(itemId, contentModel);
+                int position = (int) v.getTag(R.id.banner_item_position);
+                mSubscribeClickListener.onBannerClick(v, position);
             }
         }
 

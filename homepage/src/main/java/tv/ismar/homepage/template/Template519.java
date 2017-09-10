@@ -149,13 +149,13 @@ public class Template519 extends Template{
 
     private void fillHorizontal519Banner(BannerEntity bannerEntity) {
         mHorizontal519Adapter = new BannerHorizontal519Adapter(mContext, bannerEntity);
-        horizontal519Banner.setAdapter(mHorizontal519Adapter);
-        mTitleCountTv.setText(String.format(mContext.getString(R.string.home_item_title_count), (1) + "", mHorizontal519Adapter.getTatalItemCount() + ""));
         mHorizontal519Adapter.setBannerClickListener(new BannerHorizontal519Adapter.OnBannerClickListener() {
             @Override
-            public void onBannerClick(int pk, String contentModel) {
-                Log.d(TAG, "horizontal519Banner: " + "pk " + pk + " contentModel: " + contentModel);
+            public void onBannerClick(View view, int position) {
+                goToNextPage(view);
             }
         });
+        horizontal519Banner.setAdapter(mHorizontal519Adapter);
+        mTitleCountTv.setText(String.format(mContext.getString(R.string.home_item_title_count), (1) + "", mHorizontal519Adapter.getTatalItemCount() + ""));
     }
 }

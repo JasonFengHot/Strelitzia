@@ -105,6 +105,7 @@ public class BannerMovieMixAdapter extends RecyclerView.Adapter<BannerMovieMixAd
         Picasso.with(mContext).load(entity.getPoster_url()).into(holder.mImageView);
         holder.mTitle.setText(entity.getTitle() + " " + position);
         holder.mItemView.findViewById(R.id.item_layout).setTag(entity);
+        holder.mItemView.findViewById(R.id.item_layout).setTag(R.id.banner_item_position, position);
     }
 
     @Override
@@ -153,10 +154,8 @@ public class BannerMovieMixAdapter extends RecyclerView.Adapter<BannerMovieMixAd
         @Override
         public void onClick(View v) {
             if (mSubscribeClickListener != null) {
-                BannerEntity.PosterBean posterBean = (BannerEntity.PosterBean) v.getTag();
-                int itemId = getItemId(posterBean.getContent_url());
-                String contentModel = posterBean.getContent_model();
-                mSubscribeClickListener.onBannerClick(itemId, contentModel);
+                int position = (int) v.getTag(R.id.banner_item_position);
+                mSubscribeClickListener.onBannerClick(v, position);
             }
         }
 
@@ -234,7 +233,7 @@ public class BannerMovieMixAdapter extends RecyclerView.Adapter<BannerMovieMixAd
     private OnBannerClickListener mSubscribeClickListener;
 
     public interface OnBannerClickListener {
-        void onBannerClick(int pk, String contentModel);
+        void onBannerClick(View view, int position);
     }
 
     public void setSubscribeClickListener(OnBannerClickListener subscribeClickListener) {

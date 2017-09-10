@@ -81,6 +81,7 @@ public class BannerHorizontal519Adapter extends RecyclerView.Adapter<BannerHoriz
         holder.mTitle.setText(entity.getTitle() + " " + position);
 
         holder.mItemView.findViewById(R.id.item_layout).setTag(entity);
+        holder.mItemView.findViewById(R.id.item_layout).setTag(R.id.banner_item_position, position);
     }
 
     @Override
@@ -108,11 +109,9 @@ public class BannerHorizontal519Adapter extends RecyclerView.Adapter<BannerHoriz
 
         @Override
         public void onClick(View v) {
-            if (mSubscribeClickListener != null){
-                BannerEntity.PosterBean posterBean = (BannerEntity.PosterBean) v.getTag();
-                int pk = getPostItemId(posterBean.getContent_url());
-                String contentModel = posterBean.getContent_model();
-                mSubscribeClickListener.onBannerClick(pk, contentModel);
+            if (mSubscribeClickListener != null) {
+                int position = (int) v.getTag(R.id.banner_item_position);
+                mSubscribeClickListener.onBannerClick(v, position);
             }
         }
 
@@ -190,7 +189,7 @@ public class BannerHorizontal519Adapter extends RecyclerView.Adapter<BannerHoriz
     private BannerHorizontal519Adapter.OnBannerClickListener mSubscribeClickListener;
 
     public interface OnBannerClickListener {
-        void onBannerClick(int pk, String contentModel);
+        void onBannerClick(View view, int position);
     }
 
     public void setBannerClickListener(BannerHorizontal519Adapter.OnBannerClickListener subscribeClickListener) {
