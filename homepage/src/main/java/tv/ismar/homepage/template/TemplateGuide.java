@@ -32,7 +32,8 @@ import tv.ismar.homepage.widget.HomeItemContainer;
 
 public class TemplateGuide extends Template implements BaseControl.ControlCallBack,
         MediaPlayer.OnCompletionListener, MediaPlayer.OnErrorListener,
-        MediaPlayer.OnPreparedListener, RecyclerViewTV.OnItemClickListener {
+        MediaPlayer.OnPreparedListener, RecyclerViewTV.OnItemClickListener,
+        RecyclerViewTV.OnItemFocusChangeListener {
     private HomeItemContainer mGuideContainer;//导视视频容器
     private DaisyVideoView mVideoView;//导视view
     private ImageView mLoadingIg;//加载提示logo
@@ -90,6 +91,7 @@ public class TemplateGuide extends Template implements BaseControl.ControlCallBa
         mVideoView.setOnErrorListener(this);
         mVideoView.setOnPreparedListener(this);
         mRecycleView.setOnItemClickListener(this);
+        mRecycleView.setOnItemFocusChangeListener(this);
     }
 
     /*更改图标背景*/
@@ -224,5 +226,10 @@ public class TemplateGuide extends Template implements BaseControl.ControlCallBa
         }else if(position == 0){
             mGuideContainer.setVisibility(View.VISIBLE);
         }
+    }
+
+    @Override
+    public void onItemFocusGain(View itemView, int position) {
+
     }
 }
