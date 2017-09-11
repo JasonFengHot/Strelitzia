@@ -156,12 +156,6 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
         properties.put(EventProperty.TITLE, title);
 
         new NetworkUtils.DataCollectionTask().execute(NetworkUtils.VIDEO_CHANNEL_IN, properties);
-        //判断筛选页已选筛选条件的显示与隐藏
-//        if(filter_checked_conditiion.getChildCount()>1){
-//            filter_checked_conditiion.setVisibility(View.VISIBLE);
-//        }else{
-//            filter_checked_conditiion.setVisibility(View.INVISIBLE);
-//        }
     }
 
 
@@ -557,12 +551,10 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                 }
             }
         });
-//            if("payment".equals(channel)||"shiyunshop".equals(channel)){
                 if(section_group.getChildAt(1)!=null)
                     section_group.getChildAt(1).callOnClick();
                     ((RadioButton)section_group.getChildAt(1)).setChecked(true);
-                    section_group.getChildAt(1).requestFocus();
-//            }
+//                    section_group.getChildAt(1).requestFocus();
     }
 
     //请求每个section的数据
@@ -956,6 +948,7 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
             if(listPosterAdapter==null) {
                 listPosterAdapter = new FilterPosterAdapter(FilterActivity.this, itemList, isVertical, totalItemCount, specialPos, sectionList);
                 list_poster_recyclerview.swapAdapter(listPosterAdapter,false);
+                listPosterAdapter.setFocusedPosition(1);
             }else{
                 if(lastFocusedView==null){
                     listPosterAdapter.setFocusedPosition(-1);
