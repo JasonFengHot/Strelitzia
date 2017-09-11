@@ -33,6 +33,8 @@ public class BannerMovieMixAdapter extends RecyclerView.Adapter<BannerMovieMixAd
     private Context mContext;
 
     private List<BannerEntity.PosterBean> mSubscribeEntityList;
+    private int bigWidth;
+    private int smallWidth;
 
     private int currentPageNumber;
     private int totalPageCount;
@@ -56,6 +58,8 @@ public class BannerMovieMixAdapter extends RecyclerView.Adapter<BannerMovieMixAd
         currentPageNumber = 1;
         totalPageCount = bannerEntity.getCount_pages();
         totalItemCount = bannerEntity.getCount();
+        bigWidth = context.getResources().getDimensionPixelSize(R.dimen.banner_item_movie_big_width);
+        smallWidth = context.getResources().getDimensionPixelSize(R.dimen.banner_item_movie_small_width);
     }
 
     @Override
@@ -69,36 +73,36 @@ public class BannerMovieMixAdapter extends RecyclerView.Adapter<BannerMovieMixAd
     public void onBindViewHolder(SubscribeViewHolder holder, int position) {
         if (position == 0){
             ViewGroup.LayoutParams itemLayoutParams = holder.itemLayout.getLayoutParams();
-            itemLayoutParams.width = 720;
+            itemLayoutParams.width = bigWidth;
             holder.itemLayout.setLayoutParams(itemLayoutParams);
 
 
             ViewGroup.LayoutParams wrapperLayoutParams = holder.itemWrapper.getLayoutParams();
-            wrapperLayoutParams.width = 720;
+            wrapperLayoutParams.width = bigWidth;
             holder.itemWrapper.setLayoutParams(wrapperLayoutParams);
 
             ViewGroup.LayoutParams imageLayoutParams = holder.mImageView.getLayoutParams();
-            imageLayoutParams.width = 720;
+            imageLayoutParams.width = bigWidth;
             holder.mImageView.setLayoutParams(imageLayoutParams);
 
             ViewGroup.LayoutParams titleLayoutParams = holder.mTitle.getLayoutParams();
-            titleLayoutParams.width = 720;
+            titleLayoutParams.width = bigWidth;
             holder.mTitle.setLayoutParams(titleLayoutParams);
         }else {
             ViewGroup.LayoutParams itemLayoutParams = holder.itemLayout.getLayoutParams();
-            itemLayoutParams.width = 250;
+            itemLayoutParams.width = smallWidth;
             holder.itemLayout.setLayoutParams(itemLayoutParams);
 
             ViewGroup.LayoutParams wrapperLayoutParams = holder.itemWrapper.getLayoutParams();
-            wrapperLayoutParams.width = 250;
+            wrapperLayoutParams.width = smallWidth;
             holder.itemWrapper.setLayoutParams(wrapperLayoutParams);
 
             ViewGroup.LayoutParams imageLayoutParams = holder.mImageView.getLayoutParams();
-            imageLayoutParams.width = 250;
+            imageLayoutParams.width = smallWidth;
             holder.mImageView.setLayoutParams(imageLayoutParams);
 
             ViewGroup.LayoutParams titleLayoutParams = holder.mTitle.getLayoutParams();
-            titleLayoutParams.width = 250;
+            titleLayoutParams.width = smallWidth;
             holder.mTitle.setLayoutParams(titleLayoutParams);
         }
 

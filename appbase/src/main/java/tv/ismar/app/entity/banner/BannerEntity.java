@@ -1,5 +1,6 @@
 package tv.ismar.app.entity.banner;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -176,6 +177,15 @@ public class BannerEntity {
         private String model_name;
         private int pk;
         private String custom_image;
+        private Date order_date;
+
+        public Date getOrder_date() {
+            return order_date;
+        }
+
+        public void setOrder_date(Date order_date) {
+            this.order_date = order_date;
+        }
 
         public String getUrl() {
             return url;

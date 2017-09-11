@@ -22,7 +22,6 @@ import tv.ismar.app.entity.banner.BannerEntity;
 import tv.ismar.app.network.SkyService;
 import tv.ismar.homepage.R;
 import tv.ismar.homepage.banner.adapter.BannerHorizontal519Adapter;
-import tv.ismar.homepage.banner.adapter.BannerMovieAdapter;
 
 /**
  * @AUTHOR: xi
@@ -57,9 +56,11 @@ public class Template519 extends Template{
             @Override
             public void onLoadMoreItems() {
                 Log.d("PagingableListener", "onLoadMoreItems");
-                int currentPageNumber = mHorizontal519Adapter.getCurrentPageNumber();
-                if (currentPageNumber < mHorizontal519Adapter.getTotalPageCount()){
-                    fetchHorizontal519Banner(mBannerName, currentPageNumber + 1);
+                if (mHorizontal519Adapter != null) {
+                    int currentPageNumber = mHorizontal519Adapter.getCurrentPageNumber();
+                    if (currentPageNumber < mHorizontal519Adapter.getTotalPageCount()) {
+                        fetchHorizontal519Banner(mBannerName, currentPageNumber + 1);
+                    }
                 }
             }
         });
@@ -118,7 +119,7 @@ public class Template519 extends Template{
 
 
         String pageCount = String.valueOf(pageNumber);
-         SkyService.ServiceManager.getLocalTestService().apiTvBanner(bannerName, pageCount)
+         SkyService.ServiceManager.getService().apiTvBanner(bannerName, pageCount)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<BannerEntity>() {

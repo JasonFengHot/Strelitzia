@@ -54,9 +54,11 @@ public class TemplateBigSmallLd extends Template{
             @Override
             public void onLoadMoreItems() {
                 Log.d("PagingableListener", "onLoadMoreItems");
-                int currentPageNumber = adapter.getCurrentPageNumber();
-                if (currentPageNumber < adapter.getTotalPageCount()){
-                    fetchMovieMixBanner(mBannerName, currentPageNumber + 1);
+                if (adapter != null) {
+                    int currentPageNumber = adapter.getCurrentPageNumber();
+                    if (currentPageNumber < adapter.getTotalPageCount()) {
+                        fetchMovieMixBanner(mBannerName, currentPageNumber + 1);
+                    }
                 }
             }
         });
@@ -121,7 +123,7 @@ public class TemplateBigSmallLd extends Template{
         String pageCount = String.valueOf(pageNumber);
 
 
-        SkyService.ServiceManager.getLocalTestService().apiTvBanner(bannerName, pageCount)
+        SkyService.ServiceManager.getService().apiTvBanner(bannerName, pageCount)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<BannerEntity>() {

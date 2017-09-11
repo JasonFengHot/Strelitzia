@@ -839,7 +839,6 @@
 <dimen name="horizontal519_banner_recycler_pr">33.33dp</dimen>
 <dimen name="banner_item_setSelectedItemOffset">53.33dp</dimen>
 <dimen name="banner_item_SelectedItemSpace">13.33dp</dimen>
-
-
-<!--longhai 首页相关ui End -->
+<dimen name="banner_item_movie_small_width">166.67dp</dimen>
+<dimen name="banner_item_movie_big_width">480.00dp</dimen>
 </resources>

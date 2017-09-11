@@ -120,7 +120,7 @@ public class TemplateMovie extends Template {
 
         String pageCount = String.valueOf(pageNumber);
 
-        SkyService.ServiceManager.getLocalTestService().apiTvBanner(bannerName, pageCount)
+        SkyService.ServiceManager.getService().apiTvBanner(bannerName, pageCount)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<BannerEntity>() {

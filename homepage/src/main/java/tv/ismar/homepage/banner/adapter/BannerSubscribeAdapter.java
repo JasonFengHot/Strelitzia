@@ -115,18 +115,15 @@ public class BannerSubscribeAdapter
         //            holder.mTitle.setText("预约");
         //        }
 
-        if (TextUtils.isEmpty(entity.getTitle())) {
-            holder.mTitle.setText("");
-        } else {
-            holder.mTitle.setText("预约");
-        }
+        holder.mTitle.setText("预约");
 
         //        if (itemId == subscribeStatusChangedItemId) {
         //            loadSubscribeStatus(itemId, holder.mTitle, mSubscribeEntityList, position);
         //        }
 
-        holder.mPublishTime.setText("6月30日");
-        holder.mIntroduction.setText(entity.getIntroduction() + " " + position);
+        String timeString = entity.getOrder_date().getMonth() +"月" + entity.getOrder_date().getDate() + "日";
+        holder.mPublishTime.setText(timeString);
+        holder.mIntroduction.setText(entity.getTitle() + " " + position);
         holder.mItemView.findViewById(R.id.item_layout).setTag(entity);
         holder.mItemView.findViewById(R.id.item_layout).setTag(R.id.banner_item_position, position);
 

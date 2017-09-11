@@ -45,7 +45,7 @@ public class FetchDataControl extends BaseControl{
     /*获取首页下banner列表*/
     public void fetchHomeBanners(){
         try {
-            SkyService.ServiceManager.getLocalTestService().getGuideBanners()
+            SkyService.ServiceManager.getService().getGuideBanners()
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Observer<GuideBanner[]>() {

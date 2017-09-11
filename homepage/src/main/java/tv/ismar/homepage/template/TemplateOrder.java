@@ -60,10 +60,11 @@ public class TemplateOrder extends Template implements BaseControl.ControlCallBa
         subscribeBanner.setPagingableListener(new RecyclerViewTV.PagingableListener() {
             @Override
             public void onLoadMoreItems() {
-                Log.d("PagingableListener", "onLoadMoreItems");
-                int currentPageNumber = subscribeAdapter.getCurrentPageNumber();
-                if (currentPageNumber < subscribeAdapter.getTotalPageCount()){
-                    fetchSubscribeBanner(mBannerName, currentPageNumber + 1);
+                if (subscribeAdapter != null) {
+                    int currentPageNumber = subscribeAdapter.getCurrentPageNumber();
+                    if (currentPageNumber < subscribeAdapter.getTotalPageCount()) {
+                        fetchSubscribeBanner(mBannerName, currentPageNumber + 1);
+                    }
                 }
             }
         });
@@ -217,7 +218,7 @@ public class TemplateOrder extends Template implements BaseControl.ControlCallBa
         }
 
         String count = String.valueOf(pageNumber);
-        SkyService.ServiceManager.getLocalTestService().apiTvBanner(bannerName, count)
+        SkyService.ServiceManager.getService().apiTvBanner(bannerName, count)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<BannerEntity>() {
