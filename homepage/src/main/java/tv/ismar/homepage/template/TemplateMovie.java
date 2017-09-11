@@ -88,7 +88,8 @@ public class TemplateMovie extends Template {
 
     @Override
     public void initData(Bundle bundle) {
-
+        int banner = bundle.getInt("banner");
+        Log.i(TAG, "banner:"+banner);
     }
 
 

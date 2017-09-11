@@ -16,7 +16,7 @@ public class Horizontal519Control extends BaseControl {
         mFetchDataControl = new FetchDataControl(context, callBack);
     }
 
-    public void getBanners(String banner, int page){
+    public void getBanners(int banner, int page){
         if(mFetchDataControl != null){
             mFetchDataControl.fetchBanners(banner, page);
         }

@@ -57,8 +57,7 @@ public class TemplateTvPlay extends Template implements BaseControl.ControlCallB
 
     @Override
     public void initData(Bundle bundle) {
-        mTextTile.setText("热门电视剧");
-        mControl.getBanners(bundle.getString("banner"), 1);
+        mControl.getBanners(bundle.getInt("banner"), 1);
     }
 
     @Override

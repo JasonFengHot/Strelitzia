@@ -71,7 +71,7 @@ public class TemplateDoubleLd extends Template implements BaseControl.ControlCal
     public void initData(Bundle bundle) {
         mHeadTitleTv.setText(bundle.getString("title"));
         mHeadCountTv.setText(String.format(mContext.getString(R.string.home_item_title_count), 1+"", 40+""));
-        mControl.getBanners(bundle.getString("banner"), 1);
+        mControl.getBanners(bundle.getInt("banner"), 1);
     }
 
     private void initAdapter(HomeEntity homeEntity){

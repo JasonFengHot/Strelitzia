@@ -34,7 +34,7 @@ public class GuideControl extends BaseControl{
     }
 
     /*获取单个banner内容列表*/
-    public void getBanners(String banner, int page){
+    public void getBanners(int banner, int page){
         if(mFetchDataControl != null){
             mFetchDataControl.fetchBanners(banner, page);
         }

@@ -100,7 +100,7 @@ public class FetchDataControl extends BaseControl{
 
     /*获取频道列表*/
     public void fetchChannels() {
-        SkyService.ServiceManager.getLocalTestService().apiTvChannels()
+        SkyService.ServiceManager.getCacheSkyService().apiTvChannels()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<ChannelEntity[]>() {
@@ -152,7 +152,7 @@ public class FetchDataControl extends BaseControl{
                 });
     }
 
-    public synchronized void fetchBanners(String banner, int page){
+    public synchronized void fetchBanners(int banner, int page){
         SkyService.ServiceManager.getLocalTestService().getBanners(banner, page)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
