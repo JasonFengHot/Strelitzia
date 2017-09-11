@@ -6,7 +6,7 @@
     android:button="@null"
     android:textSize="@dimen/filter_group_radio_button_ts"
     android:gravity="center"
-    android:textColor="@color/filter_text"
+    android:textColor="@color/filter_condition_text"
     android:focusable="true"
     >
 
