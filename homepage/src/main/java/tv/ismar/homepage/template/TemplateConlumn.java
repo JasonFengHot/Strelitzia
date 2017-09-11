@@ -27,8 +27,6 @@ import tv.ismar.homepage.control.GuideControl;
  */
 
 public class TemplateConlumn extends Template implements BaseControl.ControlCallBack {
-    private TextView mHeadTitleTv;
-    private TextView mHeadCountTv;
     private RecyclerViewTV mRecyclerView;
     private ConlumnAdapter mAdapter;
     private ConlumnControl mControl;
@@ -40,8 +38,6 @@ public class TemplateConlumn extends Template implements BaseControl.ControlCall
 
     @Override
     public void getView(View view) {
-        mHeadTitleTv = (TextView) view.findViewById(R.id.banner_title_tv);
-        mHeadCountTv = (TextView) view.findViewById(R.id.banner_title_count);
         mRecyclerView = (RecyclerViewTV) view.findViewById(R.id.conlumn_recyclerview);
         LinearLayoutManagerTV conlumnLayoutManager = new LinearLayoutManagerTV(mContext, LinearLayoutManager.HORIZONTAL, false);
         mRecyclerView.setLayoutManager(conlumnLayoutManager);
@@ -54,8 +50,6 @@ public class TemplateConlumn extends Template implements BaseControl.ControlCall
 
     @Override
     public void initData(Bundle bundle) {
-        mHeadTitleTv.setText(bundle.getString("title"));
-        mHeadCountTv.setText(String.format(mContext.getString(R.string.home_item_title_count), 1+"", 40+""));
         mControl.getBanners(bundle.getInt("banner"), 1);
     }
 

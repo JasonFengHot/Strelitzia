@@ -127,9 +127,8 @@ public class HomeAdapter extends BaseAdapter{
             viewHolder.mTemplate519.setVisibility(View.VISIBLE);
             new Template519(mContext).setView(viewHolder.mTemplate519, bundle)
                     .setTitleCountView(viewHolder.mCount);;
-        }else if(template.equals("template_conlumn")){//栏目模版
-//            viewHolder.mTitleView.setVisibility(View.INVISIBLE);
-            viewHolder.mTemplateConlumn.setVisibility(View.VISIBLE);
+        }else if(template.equals("template_conlumn") || template.equals("template_recommend")){//栏目模版
+            viewHolder.mTitleView.setVisibility(View.INVISIBLE);
             new TemplateConlumn(mContext).setView(viewHolder.mTemplateConlumn, bundle)
                     .setTitleCountView(viewHolder.mCount);;
         }else if(template.equals("template_big_small_ld")){//大横小竖模版
