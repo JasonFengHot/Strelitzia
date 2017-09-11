@@ -75,7 +75,7 @@ public abstract class Template {
                 BannerEntity.PosterBean bean = (BannerEntity.PosterBean) tag;
                 contentModel = bean.getContent_model();
                 url = bean.getUrl();
-                itemPk = getPostItemId(url);
+                itemPk = bean.getPk();
                 title = bean.getTitle();
             }
         }

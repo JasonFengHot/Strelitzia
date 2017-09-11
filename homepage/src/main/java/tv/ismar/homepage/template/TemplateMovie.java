@@ -6,6 +6,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.widget.Space;
 
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
@@ -55,9 +56,11 @@ public class TemplateMovie extends Template {
             @Override
             public void onLoadMoreItems() {
                 Log.d("PagingableListener", "onLoadMoreItems");
-                int currentPageNumber = mMovieAdapter.getCurrentPageNumber();
-                if (currentPageNumber < mMovieAdapter.getTotalPageCount()){
-                    fetchMovieBanner(mBannerName, currentPageNumber + 1);
+                if (mMovieAdapter != null) {
+                    int currentPageNumber = mMovieAdapter.getCurrentPageNumber();
+                    if (currentPageNumber < mMovieAdapter.getTotalPageCount()) {
+                        fetchMovieBanner(mBannerName, currentPageNumber + 1);
+                    }
                 }
             }
         });

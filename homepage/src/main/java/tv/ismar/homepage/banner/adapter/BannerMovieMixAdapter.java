@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.Space;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
@@ -106,6 +107,12 @@ public class BannerMovieMixAdapter extends RecyclerView.Adapter<BannerMovieMixAd
         holder.mTitle.setText(entity.getTitle() + " " + position);
         holder.mItemView.findViewById(R.id.item_layout).setTag(entity);
         holder.mItemView.findViewById(R.id.item_layout).setTag(R.id.banner_item_position, position);
+
+        if (position == 0){
+            holder.mLeftSpace.setVisibility(View.GONE);
+        }else {
+            holder.mLeftSpace.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
@@ -116,6 +123,7 @@ public class BannerMovieMixAdapter extends RecyclerView.Adapter<BannerMovieMixAd
 
     class SubscribeViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener,View.OnFocusChangeListener {
 
+        private Space mLeftSpace;
         private ImageView mImageView;
         private TextView mTitle;
         private View mItemView;
@@ -132,6 +140,7 @@ public class BannerMovieMixAdapter extends RecyclerView.Adapter<BannerMovieMixAd
             mItemView.findViewById(R.id.item_layout).setOnFocusChangeListener(this);
             mImageView = (ImageView) itemView.findViewById(R.id.image_view);
             mTitle = (TextView) itemView.findViewById(R.id.title);
+            mLeftSpace = (Space)itemView.findViewById(R.id.left_space);
         }
 
         int getItemId(String url) {
