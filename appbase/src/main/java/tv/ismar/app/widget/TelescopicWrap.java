@@ -5,10 +5,8 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Color;
-import android.provider.CalendarContract;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 
 import tv.ismar.app.R;
 
@@ -24,7 +22,6 @@ public class TelescopicWrap {
     private int mIconWidth;
 
     private ViewGroup mLayout;//隐藏的layout
-    private ImageView mIconIg;//图标
 
     private boolean mIsOpen = false;//是否隐缩，true—显示文字
 
@@ -41,10 +38,6 @@ public class TelescopicWrap {
 
     public void setView(ViewGroup view){
         this.mLayout = view;
-    }
-
-    public void setIcon(ImageView icon){
-        this.mIconIg = icon;
     }
 
     public void openOrClose(boolean open){

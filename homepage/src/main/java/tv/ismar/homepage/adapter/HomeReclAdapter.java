@@ -88,6 +88,9 @@ public class HomeReclAdapter extends RecyclerView.Adapter<HomeReclAdapter.HomeRe
             case TEMPLATE_CENTER:
                 view = inflateView(R.layout.banner_center);
                 break;
+            default:
+                view = inflateView(R.layout.banner_conlumn);
+                break;
         }
 
         return new HomeReclViewHolder(view);
@@ -121,6 +124,8 @@ public class HomeReclAdapter extends RecyclerView.Adapter<HomeReclAdapter.HomeRe
             new TemplateDoubleLd(mContext).setView(holder.mItemView, bundle);
         } else if(template.equals("template_center")){//居中模版
             new TemplateCenter(mContext).setView(holder.mItemView, bundle);
+        } else {//其他，默认为栏目模版
+            new TemplateConlumn(mContext).setView(holder.mItemView, bundle);
         }
     }
 
@@ -147,8 +152,9 @@ public class HomeReclAdapter extends RecyclerView.Adapter<HomeReclAdapter.HomeRe
             return TEMPLATE_DOUBLE_LD;
         } else if(template.equals("template_center")){//居中模版
             return TEMPLATE_CENTER;
+        } else {
+            return TEMPLATE_CONLUMN;
         }
-        return super.getItemViewType(position);
     }
 
     public static class HomeReclViewHolder extends RecyclerView.ViewHolder {
