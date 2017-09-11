@@ -833,7 +833,7 @@ public interface SkyService {
             mSkyService = retrofit.create(SkyService.class);
 
             Retrofit localTestRetrofit = new Retrofit.Builder()
-                    .baseUrl(appendProtocol("http://192.168.2.27:10082/"))
+                    .baseUrl(appendProtocol("http://192.168.2.27:10091"))
                     .addConverterFactory(GsonConverterFactory.create(gson))
                     .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                     .client(mClient)

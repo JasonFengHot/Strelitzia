@@ -57,6 +57,8 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
 
     private ViewGroup mViewGroup;
     private TextView mTimeTv;//时间
+    private TextView mCollectionTv;//收藏tv
+    private TextView mPersonCenterTv;//个人中心tv
     private ViewGroup mCollectionLayout;//历史收藏layout
     private ViewGroup mPersonCenterLayout;//个人中心
     private TelescopicWrap mCollectionTel;//历史收藏伸缩包装类
@@ -79,6 +81,8 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         mViewGroup = (ViewGroup) findViewById(R.id.home_view_layout);
         channelTab = (HorizontalTabView) findViewById(R.id.channel_tab);
         mTimeTv = (TextView) findViewById(R.id.guide_title_time_tv);
+        mCollectionTv = (TextView) findViewById(R.id.collection_tv);
+        mPersonCenterTv = (TextView) findViewById(R.id.center_tv);
         mCollectionLayout = (ViewGroup) findViewById(R.id.collection_layout);
         mPersonCenterLayout = (ViewGroup) findViewById(R.id.center_layout);
         mCollectionTel = new TelescopicWrap(this, mCollectionLayout);
@@ -202,10 +206,12 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     @Override
     public void onFocusChange(View v, boolean hasFocus) {
         if(v == mCollectionLayout){//历史收藏伸缩处理
+            mCollectionTv.setVisibility(hasFocus?View.VISIBLE:View.GONE);
             mCollectionTel.openOrClose(hasFocus);
             return;
         }
-        if(v == mPersonCenterLayout){
+        if(v == mPersonCenterLayout){//个人中心伸缩处理
+            mPersonCenterTv.setVisibility(hasFocus?View.VISIBLE:View.GONE);
             mPersonCenterTel.openOrClose(hasFocus);
             return;
         }
