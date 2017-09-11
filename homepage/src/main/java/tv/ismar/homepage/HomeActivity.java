@@ -125,6 +125,14 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         mCollectionLayout.setOnClickListener(this);
         mPersonCenterLayout.setOnClickListener(this);
         TimeTickReceiver.register(this, new TimeTickBroadcast());
+        mTimeTv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent();
+                intent.setAction("tv.ismar.daisy.listtest");
+                startActivity(intent);
+            }
+        });
     }
 
     private void initData(){
