@@ -73,7 +73,7 @@ public class TemplateGuide extends Template implements BaseControl.ControlCallBa
 
     @Override
     public void initData(Bundle bundle) {
-        mControl.getBanners(bundle.getString("banner"), 1);
+        mControl.getBanners(bundle.getInt("banner"), 1);
         mVideoView.setTag(0);
         mBitmapDecoder = new BitmapDecoder();
         mBitmapDecoder.decode(mContext, R.drawable.guide_video_loading, new BitmapDecoder.Callback() {

@@ -101,7 +101,7 @@ public class HomeReclAdapter extends RecyclerView.Adapter<HomeReclAdapter.HomeRe
         Bundle bundle = new Bundle();
         bundle.putString("title", mData[position].title);
         bundle.putString("url", mData[position].banner_url);
-        bundle.putString("banner", mData[position].banner);
+        bundle.putInt("banner", mData[position].page_banner_pk);
         String template = mData[position].template;
 
         if(template.equals("template_guide")){//导航

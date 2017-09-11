@@ -86,7 +86,6 @@ public abstract class Template {
 
 
         Intent intent = new Intent();
-//        intent.putExtra("channel", channel);
         if (modelName.contains("item")) {
             if (contentModel.contains("gather")) {
                 PageIntent subjectIntent = new PageIntent();
@@ -100,12 +99,12 @@ public abstract class Template {
             intent.setAction("tv.ismar.daisy.Topic");
             mContext.startActivity(intent);
         } else if (modelName.contains("section")) {
-//            intent.putExtra("title", title);
-//            intent.putExtra("itemlistUrl", url);
-//            intent.putExtra("lableString", title);
-//            intent.putExtra("pk", pk);
-//            intent.setAction("tv.ismar.daisy.packagelist");
-//            mContext.startActivity(intent);
+            intent.putExtra("title", title);
+            intent.putExtra("itemlistUrl", url);
+            intent.putExtra("lableString", title);
+            intent.putExtra("pk", itemPk);
+            intent.setAction("tv.ismar.daisy.packagelist");
+            mContext.startActivity(intent);
         } else if (modelName.contains("package")) {
             intent.setAction("tv.ismar.daisy.packageitem");
             intent.putExtra("url", url);
