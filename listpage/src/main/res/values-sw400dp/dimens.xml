@@ -388,8 +388,8 @@
 <dimen name="filter_poster_vertical_scroll_space">12.22dp</dimen>
 <dimen name="filter_poster_start_scroll_length">222.22dp</dimen>
 <dimen name="filter_condition_group_item_space_2">37.04dp</dimen>
-<dimen name="list_scroll_up_lenth">-340.00dp</dimen>
-<dimen name="list_scroll_down_lenth">340.00dp</dimen>
+<dimen name="list_scroll_up_lenth">-302.22dp</dimen>
+<dimen name="list_scroll_down_lenth">302.22dp</dimen>
 <dimen name="list_scroll_arrow_up_lenth">-340.00dp</dimen>
 <dimen name="list_scroll_arrow_down_lenth">340.00dp</dimen>
 <dimen name="list_scroll_up_offset_h">37.04dp</dimen>
