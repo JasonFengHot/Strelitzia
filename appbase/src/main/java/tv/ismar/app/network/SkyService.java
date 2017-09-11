@@ -692,7 +692,7 @@ public interface SkyService {
             @Path("item_id") String item_id
     );
 
-    @GET("/api/tv/banners/{banner_name}/{page}/")
+    @GET("/api/tv/banner/{banner_name}/{page}/")
     Observable<BannerEntity> apiTvBanner(
             @Path("banner_name") int banner,
             @Path("page") String page
@@ -807,16 +807,16 @@ public interface SkyService {
                     .addInterceptor(interceptor)
                     .addNetworkInterceptor(VodApplication.getModuleAppContext().getCacheInterceptor())
                     .addInterceptor(new UserAgentInterceptor())
-                    .dns(new Dns() {
-                        @Override
-                        public List<InetAddress> lookup(String hostName) throws UnknownHostException {
-                            String ipAddress = IsmartvActivator.getHostByName(hostName);
-                            if (ipAddress.endsWith("0.0.0.0")) {
-                                throw new UnknownHostException("can't connect to internet");
-                            }
-                            return Dns.SYSTEM.lookup(ipAddress);
-                        }
-                    })
+//                    .dns(new Dns() {
+//                        @Override
+//                        public List<InetAddress> lookup(String hostName) throws UnknownHostException {
+//                            String ipAddress = IsmartvActivator.getHostByName(hostName);
+//                            if (ipAddress.endsWith("0.0.0.0")) {
+//                                throw new UnknownHostException("can't connect to internet");
+//                            }
+//                            return Dns.SYSTEM.lookup(ipAddress);
+//                        }
+//                    })
                     .cache(cache)
                     .sslSocketFactory(sc.getSocketFactory())
                     .build();

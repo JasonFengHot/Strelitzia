@@ -80,7 +80,7 @@ public class TemplateMovie extends Template {
             @Override
             public void onItemFocusGain(View itemView, int position) {
                 if (itemView != null && mContext != null && mTitleCountTv != null){
-                    mTitleCountTv.setText(String.format(mContext.getString(R.string.home_item_title_count), (1 + position) + "", mMovieAdapter.getTatalItemCount() + ""));
+//                    mTitleCountTv.setText(String.format(mContext.getString(R.string.home_item_title_count), (1 + position) + "", mMovieAdapter.getTatalItemCount() + ""));
                 }
             }
         });
@@ -89,7 +89,6 @@ public class TemplateMovie extends Template {
     @Override
     public void initData(Bundle bundle) {
         mBannerName = bundle.getInt("banner");
-        Log.d(TAG, "initData: " + mBannerName);
         fetchMovieBanner(mBannerName, 1);
     }
 
@@ -119,7 +118,6 @@ public class TemplateMovie extends Template {
             movieBanner.setOnLoadMoreComplete();
 //            mMovieAdapter.setCurrentPageNumber(pageNumber);
 //            mFocusHandler.sendEmptyMessageDelayed(mSavePos, 10);
-
         }
 
         String pageCount = String.valueOf(pageNumber);

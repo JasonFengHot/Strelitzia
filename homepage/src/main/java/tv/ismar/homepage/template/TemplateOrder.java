@@ -37,6 +37,7 @@ public class TemplateOrder extends Template implements BaseControl.ControlCallBa
 
     private RecyclerViewTV subscribeBanner;
     private BannerSubscribeAdapter subscribeAdapter;
+    private int mBannerName;
 
 //    private View subscribeArrowLeft;
 //    private View subscribeArrowRight;
@@ -44,7 +45,6 @@ public class TemplateOrder extends Template implements BaseControl.ControlCallBa
     public TemplateOrder(Context context) {
         super(context);
         mControl = new OrderControl(mContext, this);
-        fetchSubscribeBanner(1);
     }
 
     @Override
@@ -63,7 +63,7 @@ public class TemplateOrder extends Template implements BaseControl.ControlCallBa
                 Log.d("PagingableListener", "onLoadMoreItems");
                 int currentPageNumber = subscribeAdapter.getCurrentPageNumber();
                 if (currentPageNumber < subscribeAdapter.getTotalPageCount()){
-                    fetchSubscribeBanner(currentPageNumber + 1);
+                    fetchSubscribeBanner(mBannerName, currentPageNumber + 1);
                 }
             }
         });
@@ -94,7 +94,7 @@ public class TemplateOrder extends Template implements BaseControl.ControlCallBa
             @Override
             public void onItemFocusGain(View itemView, int position) {
                 if (mTitleCountTv != null) {
-                    mTitleCountTv.setText(String.format(mContext.getString(R.string.home_item_title_count), (position + 1) + "", subscribeAdapter.getTatalItemCount() + ""));
+//                    mTitleCountTv.setText(String.format(mContext.getString(R.string.home_item_title_count), (position + 1) + "", subscribeAdapter.getTatalItemCount() + ""));
                 }
             }
         });
@@ -182,6 +182,8 @@ public class TemplateOrder extends Template implements BaseControl.ControlCallBa
     @Override
     public void initData(Bundle bundle) {
 //        mControl.getBanners("overseasbanner", 1);
+        mBannerName = bundle.getInt("banner");
+        fetchSubscribeBanner(mBannerName, 1);
     }
 
 
@@ -191,7 +193,7 @@ public class TemplateOrder extends Template implements BaseControl.ControlCallBa
     }
 
 
-    private void fetchSubscribeBanner(final int pageNumber) {
+    private void fetchSubscribeBanner(int bannerName, final int pageNumber) {
         if (pageNumber != 1){
             int startIndex = (pageNumber - 1) * 33;
             int endIndex;
@@ -215,7 +217,7 @@ public class TemplateOrder extends Template implements BaseControl.ControlCallBa
         }
 
         String count = String.valueOf(pageNumber);
-        SkyService.ServiceManager.getLocalTestService().apiTvBanner(1, count)
+        SkyService.ServiceManager.getLocalTestService().apiTvBanner(bannerName, count)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<BannerEntity>() {

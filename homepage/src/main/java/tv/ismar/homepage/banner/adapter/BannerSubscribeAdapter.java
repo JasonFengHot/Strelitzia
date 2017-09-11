@@ -147,44 +147,6 @@ public class BannerSubscribeAdapter
         return id;
     }
 
-    private void loadSubscribeStatus(
-            int itemId,
-            final TextView textView,
-            final List<BannerEntity.PosterBean> subscribeEntityList,
-            final int position) {
-        SkyService.ServiceManager.getService()
-                .accountsItemSubscribeExists(itemId)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                        new Observer<AccountsItemSubscribeExistsEntity>() {
-                            @Override
-                            public void onCompleted() {
-                            }
-
-                            @Override
-                            public void onError(Throwable e) {
-                                e.printStackTrace();
-                                textView.setText("预约");
-                            }
-
-                            @Override
-                            public void onNext(AccountsItemSubscribeExistsEntity entity) {
-                                if (entity.getInfo().getStatus() == 1) {
-                                    subscribeEntityList
-                                            .get(position)
-                                            .setSubscribeStatus(BannerEntity.SubscribeStatus.Yes);
-                                    textView.setText("已预约");
-                                } else if (entity.getInfo().getStatus() == 0) {
-                                    subscribeEntityList
-                                            .get(position)
-                                            .setSubscribeStatus(BannerEntity.SubscribeStatus.No);
-                                    textView.setText("预约");
-                                }
-                            }
-                        });
-    }
-
     @Override
     public int getItemCount() {
         return mSubscribeEntityList.size();
