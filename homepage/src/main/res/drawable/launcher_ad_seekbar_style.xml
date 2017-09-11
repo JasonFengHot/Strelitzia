@@ -3,7 +3,8 @@
     <item
         android:id="@android:id/background"
         android:width="1031dp"
-        android:drawable="@drawable/launch_ad_bg" />
+        android:drawable="@drawable/launch_ad_bg"
+        />
     <item android:id="@android:id/secondaryProgress">
         <scale
             android:drawable="@drawable/launch_ad_bg"

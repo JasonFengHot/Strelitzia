@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
@@ -20,6 +22,8 @@ import android.widget.TextView;
 import com.google.gson.GsonBuilder;
 
 import java.io.IOException;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -41,12 +45,12 @@ import tv.ismar.app.network.entity.ChoosewayEntity;
 import tv.ismar.app.network.entity.GoodsRenewStatusEntity;
 import tv.ismar.app.network.entity.ItemEntity;
 import tv.ismar.app.network.entity.PayWhStatusEntity;
-import tv.ismar.library.exception.ExceptionUtils;
 import tv.ismar.pay.LoginFragment.LoginCallback;
 import tv.ismar.statistics.PurchaseStatistics;
 
 import static tv.ismar.app.AppConstant.Payment.PAYMENT_SUCCESS_CODE;
 import static tv.ismar.pay.PaymentActivity.OderType.alipay_renewal;
+import static tv.ismar.pay.R.id.pay_type_layout;
 
 /**
  * Created by huibin on 9/13/16.
@@ -56,12 +60,9 @@ public class PaymentActivity extends BaseActivity implements View.OnClickListene
     private LoginFragment loginFragment;
     private Fragment weixinFragment;
     private Fragment alipayFragment;
-    private Fragment cardpayFragment;
     private Fragment balanceFragment;
 
-    private Button weixinPayBtn;
     public Button aliPayBtn;
-    private Button cardPayBtn;
     private Button balancePayBtn;
     private ViewGroup payTypeLayout;
 
@@ -69,7 +70,8 @@ public class PaymentActivity extends BaseActivity implements View.OnClickListene
 
     private String category;
     private int pk;
-
+    public boolean isbuying=false;
+    private Timer timer;
     private ItemEntity mItemEntity;
     private TextView title;
     private TextView loginTip;
@@ -78,12 +80,14 @@ public class PaymentActivity extends BaseActivity implements View.OnClickListene
     private Subscription accountsBalanceSub;
     private Subscription apiOrderCreateSub;
     private Subscription apiOptItemSub;
+    private Subscription alipaySecrectSub;
     private int movieId;
     private boolean login_tag = false;
     private Subscription accountsPayWhStatusSub;
     private Subscription accountsGoodsRenewStatusSub;
-    public ImageView tmp;
+//    private ImageView shadow;
 
+    public ImageView tmp;
     public String uuid;
 
     public String getUuid() {
@@ -97,47 +101,36 @@ public class PaymentActivity extends BaseActivity implements View.OnClickListene
         Intent intent = getIntent();
         category = intent.getStringExtra(PageIntentInterface.EXTRA_PRODUCT_CATEGORY);
         setContentView(R.layout.activity_payment);
-
         tmp = (ImageView) findViewById(R.id.tmp);
-        weixinPayBtn = (Button) findViewById(R.id.weixin);
         aliPayBtn = (Button) findViewById(R.id.alipay);
-        cardPayBtn = (Button) findViewById(R.id.videocard);
         balancePayBtn = (Button) findViewById(R.id.balance_pay);
-        weixinPayBtn.setOnHoverListener(this);
         aliPayBtn.setOnHoverListener(this);
-        cardPayBtn.setOnHoverListener(this);
         balancePayBtn.setOnHoverListener(this);
         title = (TextView) findViewById(R.id.payment_title);
-        payTypeLayout = (ViewGroup) findViewById(R.id.pay_type_layout);
+        payTypeLayout = (ViewGroup) findViewById(pay_type_layout);
         loginTip = (TextView) findViewById(R.id.login_tip);
         username = (TextView) findViewById(R.id.username);
 
-        weixinPayBtn.setOnClickListener(this);
         aliPayBtn.setOnClickListener(this);
-        cardPayBtn.setOnClickListener(this);
         balancePayBtn.setOnClickListener(this);
 
-        weixinPayBtn.setOnFocusChangeListener(this);
         aliPayBtn.setOnFocusChangeListener(this);
-        cardPayBtn.setOnFocusChangeListener(this);
         balancePayBtn.setOnFocusChangeListener(this);
 
-        weixinPayBtn.setOnKeyListener(this);
         aliPayBtn.setOnKeyListener(this);
         balancePayBtn.setOnKeyListener(this);
-        cardPayBtn.setOnKeyListener(this);
 
         loginFragment = new LoginFragment();
         loginFragment.setLoginCallback(this);
         weixinFragment = new WeixinPayFragment();
         alipayFragment = new AlipayFragment();
-        cardpayFragment = new CardPayFragment();
+     //   cardpayFragment = new CardPayFragment();
         balanceFragment = new BalancePayFragment();
         if (category == null) {
             category = "";
         }
         if (category.equals(PageIntentInterface.ProductCategory.charge.name())) {
-            changeChagrgeStatus();
+           // changeChagrgeStatus();
             title.setText("充值");
         } else {
             String itemJson = intent.getStringExtra(PageIntent.EXTRA_ITEM_JSON);
@@ -145,10 +138,10 @@ public class PaymentActivity extends BaseActivity implements View.OnClickListene
                 mItemEntity = new GsonBuilder().create().fromJson(itemJson, ItemEntity.class);
                 pk = mItemEntity.getPk();
                 purchaseCheck(CheckType.PlayCheck);
-                if (mItemEntity.isRenew_buy()) {
-                    aliPayBtn.setBackgroundResource(R.drawable.alipay_channel_selector);
+                if (mItemEntity.getPk()==1111) {
+                    payTypeLayout.setVisibility(View.GONE);
                 } else {
-                    aliPayBtn.setBackgroundResource(R.drawable.paychannel_btn_selector);
+                    payTypeLayout.setVisibility(View.VISIBLE);
                 }
 
             } else {
@@ -156,6 +149,10 @@ public class PaymentActivity extends BaseActivity implements View.OnClickListene
                 movieId = intent.getIntExtra("movie_id", -1);
                 fetchItem(pk, category);
             }
+        }
+        if(timer==null){
+            timer=new Timer(true);
+            timer.schedule(timerTask,2*60*1000,2*60*1000);
         }
 
 
@@ -172,20 +169,16 @@ public class PaymentActivity extends BaseActivity implements View.OnClickListene
         int i = v.getId();
         if(hasFocus&&!ishover){
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            if (i == R.id.weixin) {
+             if (i == R.id.alipay) {
                 if(lastfocusId!=i) {
-                    transaction.replace(R.id.fragment_page, weixinFragment).commit();
-                }
-            } else if (i == R.id.alipay) {
-                if(lastfocusId!=i) {
+                    transaction.remove(balanceFragment).commit();
                     alipayClick();
-                }
-            }else if (i == R.id.videocard) {
-                if(lastfocusId!=i) {
-                    transaction.replace(R.id.fragment_page, cardpayFragment).commit();
                 }
             } else if (i == R.id.balance_pay) {
                 if(lastfocusId!=i) {
+                    if (alipaySecrectSub != null && !alipaySecrectSub.isUnsubscribed()) {
+                        alipaySecrectSub.unsubscribe();
+                    }
                     transaction.replace(R.id.fragment_page, balanceFragment).commit();
                 }
             }
@@ -197,13 +190,13 @@ public class PaymentActivity extends BaseActivity implements View.OnClickListene
     public void onClick(View v) {
         int i = v.getId();
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        if (i == R.id.weixin) {
-            transaction.replace(R.id.fragment_page, weixinFragment).commit();
-        } else if (i == R.id.alipay) {
-                alipayClick();
-        } else if (i == R.id.videocard) {
-            transaction.replace(R.id.fragment_page, cardpayFragment).commit();
-        } else if (i == R.id.balance_pay) {
+         if (i == R.id.alipay) {
+             transaction.remove(balanceFragment).commit();
+             alipayClick();
+        }else if (i == R.id.balance_pay) {
+             if (alipaySecrectSub != null && !alipaySecrectSub.isUnsubscribed()) {
+                 alipaySecrectSub.unsubscribe();
+             }
             transaction.replace(R.id.fragment_page, balanceFragment).commit();
         }
         lastfocusId=i;
@@ -221,17 +214,12 @@ public class PaymentActivity extends BaseActivity implements View.OnClickListene
 
                     @Override
                     public void onNext(AccountBalanceEntity entity) {
-                        if (entity.getBalance().floatValue() == 0) {
-                            payTypeLayout.getChildAt(0).requestFocus();
-                            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                            transaction.replace(R.id.fragment_page, weixinFragment)
-                                    .commit();
+                        if (entity.getBalance().floatValue() <mItemEntity.getExpense().getPrice()) {
+                            payTypeLayout.getChildAt(0).requestFocusFromTouch();
                         } else {
-                            payTypeLayout.getChildAt(3).requestFocus();
-                            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                            transaction.replace(R.id.fragment_page, balanceFragment)
-                                    .commit();
+                            payTypeLayout.getChildAt(1).requestFocusFromTouch();
                         }
+                        ishover=false;
                     }
                 });
     }
@@ -265,9 +253,15 @@ public class PaymentActivity extends BaseActivity implements View.OnClickListene
     @Override
     public void onSuccess() {
         login_tag = true;
-        fetchAccountBalance();
         changeLoginStatus(true);
         purchaseCheck(PaymentActivity.CheckType.PlayCheck, true);
+        if (mItemEntity.getPk()==1111) {
+            payTypeLayout.setVisibility(View.GONE);
+            isSecretfree(mItemEntity.getPk());
+        } else {
+            payTypeLayout.setVisibility(View.VISIBLE);
+            fetchAccountBalance();
+        }
     }
 
     boolean ishover=false;
@@ -297,7 +291,26 @@ public class PaymentActivity extends BaseActivity implements View.OnClickListene
         PlayCheck,
         OrderPurchase
     }
+    private Handler timeHander = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            if (msg.what == 1) {
+                Log.i("TimerFinish","finish");
+                finish();
+            }
+            super.handleMessage(msg);
+        }
 
+    };
+    TimerTask timerTask = new TimerTask() {
+        @Override
+        public void run() {
+            Message msg = new Message();
+            msg.what = 1;
+            timeHander.sendMessage(msg);
+        }
+
+    };
 
     private void orderCheckLoop(final CheckType checkType, final String item, final String pkg, final String subItem) {
         if (mOrderCheckLoopSubscription != null && !mOrderCheckLoopSubscription.isUnsubscribed()) {
@@ -314,7 +327,6 @@ public class PaymentActivity extends BaseActivity implements View.OnClickListene
                                     return mSkyService.playcheck(item, pkg, subItem)
                                             .execute().body().string();
                                 } catch (IOException e) {
-                                    ExceptionUtils.sendProgramError(e);
                                     e.printStackTrace();
                                 }
 
@@ -323,7 +335,6 @@ public class PaymentActivity extends BaseActivity implements View.OnClickListene
                                     return mSkyService.orderpurchase(item, pkg, subItem)
                                             .execute().body().string();
                                 } catch (IOException e) {
-                                    ExceptionUtils.sendProgramError(e);
                                     e.printStackTrace();
                                 }
                         }
@@ -351,6 +362,7 @@ public class PaymentActivity extends BaseActivity implements View.OnClickListene
                     @Override
                     public void onError(Throwable e) {
                         Log.e(TAG, "orderCheckLoop onError: order check");
+
                     }
 
                     @Override
@@ -358,6 +370,7 @@ public class PaymentActivity extends BaseActivity implements View.OnClickListene
                         if (responseBody != null && !"0".equals(responseBody)) {
                             sendLog();
                             setResult(PAYMENT_SUCCESS_CODE);
+                            Log.i("ALipay","Finish");
                             finish();
                         }
                     }
@@ -373,13 +386,13 @@ public class PaymentActivity extends BaseActivity implements View.OnClickListene
     public void createOrder(final OderType type, final QrcodeCallback callback) {
         String waresId = String.valueOf(pk);
         String waresType = category;
-        String source = type.name();
+        String source = "mix";
         String timestamp = null;
         String sign = null;
         String apiType = "create";
 
         if (type == alipay_renewal) {
-            source = "alipay_wh";
+//            source = "alipay_wh";
             apiType = "chooseway";
         }
 
@@ -435,15 +448,15 @@ public class PaymentActivity extends BaseActivity implements View.OnClickListene
     }
 
 
-    public void alipayChooseWay(final OderType type) {
+    public void alipayChooseWay() {
         String waresId = String.valueOf(pk);
         String waresType = category;
         String action = "";
-        String source = type.name();
-        if (type == alipay_renewal) {
-            action = "new";
-            source = "alipay_wh";
-        }
+        String source = "mix";
+//        if (type == alipay_renewal) {
+//            action = "new";
+//            source = "alipay_wh";
+//        }
 
         final String finalSource = source;
         final String finalAction = action;
@@ -464,48 +477,18 @@ public class PaymentActivity extends BaseActivity implements View.OnClickListene
                     @Override
                     public void onNext(ResponseBody responseBody) {
                         ChoosewayEntity choosewayEntity = new GsonBuilder().create().fromJson(responseBody.charStream(), ChoosewayEntity.class);
-                        switch (finalSource) {
-                            case "alipay_renewal":
-                                AlipayFragment alipayFragment1 = new AlipayFragment();
-                                Bundle bundle1 = new Bundle();
-                                bundle1.putString("type", "alipay_renewal");
-                                alipayFragment1.setArguments(bundle1);
-                                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_page, alipayFragment1).commit();
-                                fetchImage(choosewayEntity.getAgreement().getUrl(), type, alipayFragment1);
-                                break;
-                            case "alipay":
-                                AlipayFragment alipayFragment2 = new AlipayFragment();
-                                Bundle bundle2 = new Bundle();
-                                bundle2.putString("type", "alipay_normal");
-                                alipayFragment2.setArguments(bundle2);
-                                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_page, alipayFragment2).commit();
-
-                                fetchImage(choosewayEntity.getQrcode().getUrl(), type, alipayFragment2);
-                                break;
-                            case "alipay_wh":
-                                if (finalAction.equals("new")) {
-                                    if (null != choosewayEntity.getAgreement()) {
-                                        AlipayFragment alipayFragment4 = new AlipayFragment();
-                                        Bundle bundle4 = new Bundle();
-                                        bundle4.putString("type", "alipay_renewal");
-                                        alipayFragment4.setArguments(bundle4);
-                                        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_page, alipayFragment4).commit();
-                                        fetchImage(choosewayEntity.getAgreement().getUrl(), type, alipayFragment4);
-                                    } else {
-                                        AlipayYKTMMRenewalFragment yktRenewalFragment = new AlipayYKTMMRenewalFragment();
-                                        Bundle bundle3 = new Bundle();
-                                        bundle3.putString("url", choosewayEntity.getPay().getUrl());
-                                        yktRenewalFragment.setArguments(bundle3);
-                                        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_page, yktRenewalFragment).commit();
-                                    }
-                                } else {
-                                    AlipayYKTMMRenewalFragment yktRenewalFragment = new AlipayYKTMMRenewalFragment();
-                                    Bundle bundle3 = new Bundle();
-                                    bundle3.putString("url", choosewayEntity.getPay().getUrl());
-                                    yktRenewalFragment.setArguments(bundle3);
-                                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment_page, yktRenewalFragment).commit();
-                                }
-                                break;
+                        if(mItemEntity.getPk()==1111) {
+                            AlipayYKTMMRenewalFragment yktRenewalFragment = new AlipayYKTMMRenewalFragment();
+                            Bundle bundle3 = new Bundle();
+                            bundle3.putString("url", choosewayEntity.getPay().getUrl());
+                            yktRenewalFragment.setArguments(bundle3);
+                            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_page, yktRenewalFragment).commit();
+                        }else {
+                            MmnormalPay mmnormalPay=new MmnormalPay();
+                            Bundle bundle4 = new Bundle();
+                            bundle4.putString("url", choosewayEntity.getPay().getUrl());
+                            mmnormalPay.setArguments(bundle4);
+                            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_page, mmnormalPay).commit();
                         }
                     }
                 });
@@ -579,11 +562,6 @@ public class PaymentActivity extends BaseActivity implements View.OnClickListene
                     @Override
                     public void onNext(ItemEntity itemEntity) {
                         mItemEntity = itemEntity;
-                        if (mItemEntity.isRenew_buy()) {
-                            aliPayBtn.setBackgroundResource(R.drawable.alipay_channel_selector);
-                        } else {
-                            aliPayBtn.setBackgroundResource(R.drawable.paychannel_btn_selector);
-                        }
                         title.setText(itemEntity.getTitle());
                         purchaseCheck(CheckType.PlayCheck);
                         if (TextUtils.isEmpty(IsmartvActivator.getInstance().getAuthToken())) {
@@ -594,8 +572,15 @@ public class PaymentActivity extends BaseActivity implements View.OnClickListene
                                     .commit();
                         } else {
                             changeLoginStatus(true);
-                            fetchAccountBalance();
+                            if (mItemEntity.getPk()==1111) {
+                                payTypeLayout.setVisibility(View.GONE);
+                                isSecretfree(mItemEntity.getPk());
+                            } else {
+                                payTypeLayout.setVisibility(View.VISIBLE);
+                                fetchAccountBalance();
+                            }
                         }
+
                     }
                 });
     }
@@ -646,9 +631,9 @@ public class PaymentActivity extends BaseActivity implements View.OnClickListene
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         Bundle bundle = new Bundle();
         bundle.putString("flag", "usercenter_charge");
-        cardpayFragment.setArguments(bundle);
-        transaction.replace(R.id.fragment_page, cardpayFragment)
-                .commit();
+//        cardpayFragment.setArguments(bundle);
+//        transaction.replace(R.id.fragment_page, cardpayFragment)
+//                .commit();
     }
 
 
@@ -689,25 +674,78 @@ public class PaymentActivity extends BaseActivity implements View.OnClickListene
         if (accountsGoodsRenewStatusSub != null && accountsGoodsRenewStatusSub.isUnsubscribed()) {
             accountsGoodsRenewStatusSub.unsubscribe();
         }
+        if (mOrderCheckLoopSubscription != null && !mOrderCheckLoopSubscription.isUnsubscribed()) {
+            mOrderCheckLoopSubscription.unsubscribe();
+        }
+        if(timer!=null){
+            timer.cancel();
+        }
 
         super.onPause();
     }
 
     private void alipayClick() {
-        if (mItemEntity.isRenew_buy()) {
-            goodsRenewStatus(pk, PayWhStatusEntity.PayType.ALIPAY.getValue());
-        } else {
-            AlipayFragment alipayFragment = new AlipayFragment();
-            createOrder(OderType.alipay, alipayFragment);
-            Bundle bundle = new Bundle();
-            bundle.putString("type", "alipay");
-            alipayFragment.setArguments(bundle);
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_page, alipayFragment).commit();
-        }
+        alipaySecrectSub=mSkyService.accountsPayWhStatus(pk).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new BaseObserver<PayWhStatusEntity>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onNext(PayWhStatusEntity payWhStatusEntity) {
+                        int code = payWhStatusEntity.getInfo().getStatus();
+                        switch (code){
+                            case PayWhStatusEntity.Status.WITHOUT_OPEN:
+                                AlipayFragment alipayFragment = new AlipayFragment();
+                                createOrder(OderType.alipay, alipayFragment);
+                                Bundle bundle = new Bundle();
+                                bundle.putString("type", "alipay");
+                                alipayFragment.setArguments(bundle);
+                                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_page, alipayFragment).commit();
+                                break;
+                            case PayWhStatusEntity.Status.OPEN:
+                                MmnormalPay mmnormalPay=new MmnormalPay();
+                                Bundle bundle2 = new Bundle();
+                                bundle2.putInt("pk", pk);
+                                bundle2.putString("uid",getUuid());
+                                bundle2.putString("category",category);
+                                mmnormalPay.setArguments(bundle2);
+                                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_page, mmnormalPay).commit();
+                                break;
+                        }
+                    }
+                });
+    }
+    private void isSecretfree(int packageid){
+        mSkyService.accountsPayWhStatus(packageid).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new BaseObserver<PayWhStatusEntity>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onNext(PayWhStatusEntity payWhStatusEntity) {
+                        int code = payWhStatusEntity.getInfo().getStatus();
+                        switch (code){
+                            case PayWhStatusEntity.Status.WITHOUT_OPEN:
+                                MmContinuousPayFragment mmContinuousPayFragment=new MmContinuousPayFragment();
+                                createOrder(OderType.alipay, mmContinuousPayFragment);
+                                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_page, mmContinuousPayFragment).commit();
+                                break;
+                            case PayWhStatusEntity.Status.OPEN:
+                                goodsRenewStatus(pk);
+                                break;
+                        }
+                    }
+                });
     }
 
-    private void goodsRenewStatus(int packageId, String payType) {
-        accountsGoodsRenewStatusSub = mSkyService.accountsGoodsRenewStatus(packageId, payType)
+    private void goodsRenewStatus(int packageId) {
+        accountsGoodsRenewStatusSub = mSkyService.accountsGoodsRenewStatus(packageId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new BaseObserver<GoodsRenewStatusEntity>() {
@@ -727,20 +765,20 @@ public class PaymentActivity extends BaseActivity implements View.OnClickListene
                                 break;
                             //未开通续订购
                             case GoodsRenewStatusEntity.Status.WITHOUT_OPEN:
-                                alipayChooseWay(OderType.alipay_renewal);
+                                alipayChooseWay();
                                 break;
                         }
                     }
                 });
     }
 
-    public void changeNormalAlipay() {
-        alipayChooseWay(OderType.alipay);
-    }
-
-    public void changeRenewalAlipay() {
-        alipayChooseWay(OderType.alipay_renewal);
-    }
+//    public void changeNormalAlipay() {
+//        alipayChooseWay(OderType.alipay);
+//    }
+//
+//    public void changeRenewalAlipay() {
+//        alipayChooseWay(OderType.alipay_renewal);
+//    }
 
     public void sendLog() {
         if (!login_tag) {

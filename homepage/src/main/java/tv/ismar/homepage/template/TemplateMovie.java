@@ -92,11 +92,6 @@ public class TemplateMovie extends Template {
         fetchMovieBanner(mBannerName, 1);
     }
 
-    @Override
-    public void initTitle() {
-        super.initTitle();
-    }
-
     private void fetchMovieBanner(int bannerName, final int pageNumber) {
         if (pageNumber != 1){
             int startIndex = (pageNumber - 1) * 33;

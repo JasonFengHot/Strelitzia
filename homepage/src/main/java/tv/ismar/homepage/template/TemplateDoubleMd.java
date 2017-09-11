@@ -25,9 +25,8 @@ import tv.ismar.homepage.control.FetchDataControl;
  */
 
 public class TemplateDoubleMd extends Template implements BaseControl.ControlCallBack,
-        RecyclerViewTV.OnItemClickListener{
-    private TextView mHeadTitleTv;
-    private TextView mHeadCountTv;
+        RecyclerViewTV.OnItemClickListener,
+        RecyclerViewTV.OnItemFocusChangeListener {
     private ImageView mVerticalImg;//大图海报
     private ImageView mLtImage;//左上角图标
     private ImageView mRbImage;//右下角图标
@@ -43,8 +42,6 @@ public class TemplateDoubleMd extends Template implements BaseControl.ControlCal
 
     @Override
     public void getView(View view) {
-        mHeadTitleTv = (TextView) view.findViewById(R.id.banner_title_tv);
-        mHeadCountTv = (TextView) view.findViewById(R.id.banner_title_count);
         mRecyclerView = (RecyclerViewTV) view.findViewById(R.id.double_md_recyclerview);
         mVerticalImg = (ImageView) view.findViewById(R.id.double_md_image_poster);
         mLtImage = (ImageView) view.findViewById(R.id.double_md_image_lt_icon);
@@ -60,12 +57,11 @@ public class TemplateDoubleMd extends Template implements BaseControl.ControlCal
     protected void initListener(View view) {
         super.initListener(view);
         mRecyclerView.setOnItemClickListener(this);
+        mRecyclerView.setOnItemFocusChangeListener(this);
     }
 
     @Override
     public void initData(Bundle bundle) {
-        mHeadTitleTv.setText(bundle.getString("title"));
-        mHeadCountTv.setText(String.format(mContext.getString(R.string.home_item_title_count), 1+"", 40+""));
         mControl.getBanners(bundle.getInt("banner"), 1);
     }
 
@@ -77,6 +73,12 @@ public class TemplateDoubleMd extends Template implements BaseControl.ControlCal
         }else {
             mAdapter.notifyDataSetChanged();
         }
+    }
+
+    private int mItemCount = 0;
+
+    private void initTitle(int position){
+        mTitleCountTv.setText(String.format(mContext.getString(R.string.home_item_title_count), (1 + position) + "", mItemCount + ""));
     }
 
     private void initImage(BigImage data){
@@ -106,5 +108,12 @@ public class TemplateDoubleMd extends Template implements BaseControl.ControlCal
         } else if(position >= 3){
             mVerticalImg.setVisibility(View.GONE);
         }
+    }
+
+    @Override
+    public void onItemFocusGain(View itemView, int position) {
+//        if (itemView != null && mContext != null && mTitleCountTv != null){
+//            mTitleCountTv.setText(String.format(mContext.getString(R.string.home_item_title_count), (1 + position) + "", mAdapter.getTatalItemCount() + ""));
+//        }
     }
 }

@@ -28,7 +28,6 @@ import rx.schedulers.Schedulers;
 import tv.ismar.account.IsmartvActivator;
 import tv.ismar.app.network.entity.AccountBalanceEntity;
 import tv.ismar.app.network.entity.ItemEntity;
-import tv.ismar.library.exception.ExceptionUtils;
 
 import static tv.ismar.app.AppConstant.Payment.PAYMENT_SUCCESS_CODE;
 
@@ -154,7 +153,6 @@ public class BalancePayFragment extends Fragment implements View.OnClickListener
                         try {
                             json = responseBody.string();
                         } catch (IOException e) {
-                            ExceptionUtils.sendProgramError(e);
                             e.printStackTrace();
                         }
                         float result = new JsonParser().parse(json).getAsJsonObject().get("balance").getAsFloat();
@@ -185,7 +183,8 @@ public class BalancePayFragment extends Fragment implements View.OnClickListener
 
                     @Override
                     public void onNext(AccountBalanceEntity entity) {
-                        if (entity.getBalance().compareTo(new BigDecimal(itemEntity.getExpense().getPrice())) >= 0) {
+                        BigDecimal price= BigDecimal.valueOf(itemEntity.getExpense().getPrice());
+                        if ((entity.getBalance().subtract(price.setScale(2,BigDecimal.ROUND_HALF_UP)).doubleValue()) >= 0) {
                             submitBtn.setEnabled(true);
                         } else {
                             submitBtn.setEnabled(false);
@@ -220,7 +219,6 @@ public class BalancePayFragment extends Fragment implements View.OnClickListener
         if (apiOrderCreateSub != null && apiOrderCreateSub.isUnsubscribed()) {
             apiOrderCreateSub.unsubscribe();
         }
-
         super.onPause();
     }
 }
