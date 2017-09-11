@@ -837,7 +837,7 @@
 <dimen name="horizontal519_banner_recycler_mr">38.89dp</dimen>
 <dimen name="horizontal519_banner_recycler_pl">38.89dp</dimen>
 <dimen name="horizontal519_banner_recycler_pr">38.89dp</dimen>
-<dimen name="banner_item_setSelectedItemOffset">77.78dp</dimen>
+<dimen name="banner_item_setSelectedItemOffset">62.22dp</dimen>
 <dimen name="banner_item_SelectedItemSpace">15.56dp</dimen>
 
 

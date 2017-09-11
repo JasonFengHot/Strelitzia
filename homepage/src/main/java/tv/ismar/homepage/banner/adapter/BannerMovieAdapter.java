@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.Space;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
@@ -67,9 +68,14 @@ public class BannerMovieAdapter extends RecyclerView.Adapter<BannerMovieAdapter.
         BannerEntity.PosterBean entity = mSubscribeEntityList.get(position);
         Picasso.with(mContext).load(entity.getPoster_url()).into(holder.mImageView);
         holder.mTitle.setText(entity.getTitle() + " " + position);
-
         holder.mItemView.findViewById(R.id.item_layout).setTag(entity);
         holder.mItemView.findViewById(R.id.item_layout).setTag(R.id.banner_item_position, position);
+
+        if (position == 0){
+            holder.mLeftSpace.setVisibility(View.GONE);
+        }else {
+            holder.mLeftSpace.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
@@ -83,6 +89,7 @@ public class BannerMovieAdapter extends RecyclerView.Adapter<BannerMovieAdapter.
         private ImageView mImageView;
         private TextView mTitle;
         private View mItemView;
+        private Space mLeftSpace;
 
         int getPostItemId(String url) {
             int id = 0;
@@ -107,6 +114,7 @@ public class BannerMovieAdapter extends RecyclerView.Adapter<BannerMovieAdapter.
             mItemView.findViewById(R.id.item_layout).setOnFocusChangeListener(this);
             mImageView = (ImageView) itemView.findViewById(R.id.image_view);
             mTitle = (TextView) itemView.findViewById(R.id.title);
+            mLeftSpace = (Space)itemView.findViewById(R.id.left_space);
         }
 
         @Override

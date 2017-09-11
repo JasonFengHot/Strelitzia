@@ -11,6 +11,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.Space;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
@@ -128,6 +129,12 @@ public class BannerSubscribeAdapter
         holder.mIntroduction.setText(entity.getIntroduction() + " " + position);
         holder.mItemView.findViewById(R.id.item_layout).setTag(entity);
         holder.mItemView.findViewById(R.id.item_layout).setTag(R.id.banner_item_position, position);
+
+        if (position == 0){
+            holder.mLeftSpace.setVisibility(View.GONE);
+        }else {
+            holder.mLeftSpace.setVisibility(View.VISIBLE);
+        }
     }
 
     private int getMovieItemId(String url) {
@@ -145,44 +152,6 @@ public class BannerSubscribeAdapter
             e.printStackTrace();
         }
         return id;
-    }
-
-    private void loadSubscribeStatus(
-            int itemId,
-            final TextView textView,
-            final List<BannerEntity.PosterBean> subscribeEntityList,
-            final int position) {
-        SkyService.ServiceManager.getService()
-                .accountsItemSubscribeExists(itemId)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                        new Observer<AccountsItemSubscribeExistsEntity>() {
-                            @Override
-                            public void onCompleted() {
-                            }
-
-                            @Override
-                            public void onError(Throwable e) {
-                                e.printStackTrace();
-                                textView.setText("预约");
-                            }
-
-                            @Override
-                            public void onNext(AccountsItemSubscribeExistsEntity entity) {
-                                if (entity.getInfo().getStatus() == 1) {
-                                    subscribeEntityList
-                                            .get(position)
-                                            .setSubscribeStatus(BannerEntity.SubscribeStatus.Yes);
-                                    textView.setText("已预约");
-                                } else if (entity.getInfo().getStatus() == 0) {
-                                    subscribeEntityList
-                                            .get(position)
-                                            .setSubscribeStatus(BannerEntity.SubscribeStatus.No);
-                                    textView.setText("预约");
-                                }
-                            }
-                        });
     }
 
     @Override
@@ -240,6 +209,7 @@ public class BannerSubscribeAdapter
     class SubscribeViewHolder extends RecyclerView.ViewHolder
             implements View.OnClickListener, View.OnFocusChangeListener, View.OnHoverListener {
 
+        private  Space mLeftSpace;
         private ImageView mImageView;
         private TextView mTitle;
         private TextView mPublishTime;
@@ -256,6 +226,7 @@ public class BannerSubscribeAdapter
             mTitle = (TextView) itemView.findViewById(R.id.title);
             mPublishTime = (TextView) itemView.findViewById(R.id.publish_time);
             mIntroduction = (TextView) itemView.findViewById(R.id.introduction);
+            mLeftSpace = (Space)itemView.findViewById(R.id.left_space);
         }
 
         @Override

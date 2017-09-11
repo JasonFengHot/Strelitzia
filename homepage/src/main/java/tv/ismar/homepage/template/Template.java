@@ -39,7 +39,6 @@ public abstract class Template {
     /*设置数量view*/
     public Template setTitleCountView(TextView view) {
         mTitleCountTv = view;
-        initTitle();
         return this;
     }
 
@@ -56,9 +55,6 @@ public abstract class Template {
      * @param bundle
      */
     public abstract void initData(Bundle bundle);
-
-    public void initTitle() {
-    }
 
     protected void initListener(View view) {
     }
@@ -78,8 +74,8 @@ public abstract class Template {
             if (tag instanceof BannerEntity.PosterBean){
                 BannerEntity.PosterBean bean = (BannerEntity.PosterBean) tag;
                 contentModel = bean.getContent_model();
-                url = bean.getContent_url();
-                itemPk = getPostItemId(url);
+                url = bean.getUrl();
+                itemPk = bean.getPk();
                 title = bean.getTitle();
             }
         }

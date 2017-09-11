@@ -13,7 +13,7 @@ import android.widget.TextView;
  * Created by huibin on 17-2-16.
  */
 
-public class AlipayYKTRenewalFragment extends Fragment{
+public class AlipayYKTRenewalFragment extends Fragment {
 
     private TextView yktRenewalPriceText;
     private TextView yktRenewalDurationText;

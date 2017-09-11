@@ -81,6 +81,7 @@ import tv.ismar.app.network.entity.BindedCdnEntity;
 import tv.ismar.app.network.entity.ChatMsgEntity;
 import tv.ismar.app.network.entity.DpiEntity;
 import tv.ismar.app.network.entity.Empty;
+import tv.ismar.app.network.entity.ExplainEntity;
 import tv.ismar.app.network.entity.GoodsRenewStatusEntity;
 import tv.ismar.app.network.entity.IpLookUpEntity;
 import tv.ismar.app.network.entity.ItemEntity;
@@ -656,14 +657,14 @@ public interface SkyService {
 
     @GET("accounts/pay_wh_status/")
     Observable<PayWhStatusEntity> accountsPayWhStatus(
-            @Query("pay_type") String payType
+            @Query("package_id") int packageId
     );
 
     @GET("accounts/goods_renew_status/")
     Observable<GoodsRenewStatusEntity> accountsGoodsRenewStatus(
-            @Query("package_id") int packageId,
-            @Query("pay_type") String payType
+            @Query("package_id") int packageId
     );
+
 
     @FormUrlEncoded
     @POST("accounts/open_renew/")
@@ -675,6 +676,9 @@ public interface SkyService {
     @GET("api/agreement/")
     Observable<AgreementEntity> agreement(
             @Query("source") String source
+    );
+    @GET("api/renew/explain")
+    Observable<ExplainEntity> explain(
     );
 
     @GET("api/item/{pk}/")
@@ -692,7 +696,7 @@ public interface SkyService {
             @Path("item_id") String item_id
     );
 
-    @GET("/api/tv/banners/{banner_name}/{page}/")
+    @GET("/api/tv/banner/{banner_name}/{page}/")
     Observable<BannerEntity> apiTvBanner(
             @Path("banner_name") int banner,
             @Path("page") String page
@@ -807,16 +811,16 @@ public interface SkyService {
                     .addInterceptor(interceptor)
                     .addNetworkInterceptor(VodApplication.getModuleAppContext().getCacheInterceptor())
                     .addInterceptor(new UserAgentInterceptor())
-                    .dns(new Dns() {
-                        @Override
-                        public List<InetAddress> lookup(String hostName) throws UnknownHostException {
-                            String ipAddress = IsmartvActivator.getHostByName(hostName);
-                            if (ipAddress.endsWith("0.0.0.0")) {
-                                throw new UnknownHostException("can't connect to internet");
-                            }
-                            return Dns.SYSTEM.lookup(ipAddress);
-                        }
-                    })
+//                    .dns(new Dns() {
+//                        @Override
+//                        public List<InetAddress> lookup(String hostName) throws UnknownHostException {
+//                            String ipAddress = IsmartvActivator.getHostByName(hostName);
+//                            if (ipAddress.endsWith("0.0.0.0")) {
+//                                throw new UnknownHostException("can't connect to internet");
+//                            }
+//                            return Dns.SYSTEM.lookup(ipAddress);
+//                        }
+//                    })
                     .cache(cache)
                     .sslSocketFactory(sc.getSocketFactory())
                     .build();

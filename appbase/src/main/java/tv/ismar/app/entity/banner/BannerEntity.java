@@ -7,31 +7,12 @@ import java.util.List;
  */
 
 public class BannerEntity {
-
-    /**
-     * count : 7
-     * carousels : []
-     * num_pages : 1
-     * poster : [{"title":"奇异博士","introduction":"奇异博士","rating_average":8.9,"content_url":"/api/item/728354/","content_model":"movie","poster_url":"http://res.tvxio.com/media/upload/20160420/qiyiboshi0106y_poster.jpg"},{"title":"奇异博士","introduction":"奇异博士","rating_average":8.9,"content_url":"/api/item/728354/","content_model":"movie","poster_url":"http://res.tvxio.com/media/upload/20160420/qiyiboshi0106y_poster.jpg"},{"title":"奇异博士","introduction":"奇异博士","rating_average":8.9,"content_url":"/api/item/728354/","content_model":"movie","poster_url":"http://res.tvxio.com/media/upload/20160420/qiyiboshi0106y_poster.jpg"},{"title":"奇异博士","introduction":"奇异博士","rating_average":8.9,"content_url":"/api/item/728354/","content_model":"movie","poster_url":"http://res.tvxio.com/media/upload/20160420/qiyiboshi0106y_poster.jpg"},{"title":"奇异博士","introduction":"奇异博士","rating_average":8.9,"content_url":"/api/item/728354/","content_model":"movie","poster_url":"http://res.tvxio.com/media/upload/20160420/qiyiboshi0106y_poster.jpg"},{"title":"奇异博士","introduction":"奇异博士","rating_average":8.9,"content_url":"/api/item/728354/","content_model":"movie","poster_url":"http://res.tvxio.com/media/upload/20160420/qiyiboshi0106y_poster.jpg"},{"title":"奇异博士","introduction":"奇异博士","rating_average":8.9,"content_url":"/api/item/728354/","content_model":"movie","poster_url":"http://res.tvxio.com/media/upload/20160420/qiyiboshi0106y_poster.jpg"},{"title":"奇异博士","introduction":"奇异博士","rating_average":8.9,"content_url":"/api/item/728354/","content_model":"movie","poster_url":"http://res.tvxio.com/media/upload/20160420/qiyiboshi0106y_poster.jpg"}]
-     * template : template2
-     * pk : 2
-     */
-
     private int count;
     private int count_pages;
     private int num_pages;
     private String template;
-    private int pk;
-    private List<?> carousels;
-    private List<PosterBean> poster;
-
-    public int getCount_pages() {
-        return count_pages;
-    }
-
-    public void setCount_pages(int count_pages) {
-        this.count_pages = count_pages;
-    }
+    private List<CarouselsBean> carousels;
+    private List<PosterBean> posters;
 
     public int getCount() {
         return count;
@@ -39,6 +20,14 @@ public class BannerEntity {
 
     public void setCount(int count) {
         this.count = count;
+    }
+
+    public int getCount_pages() {
+        return count_pages;
+    }
+
+    public void setCount_pages(int count_pages) {
+        this.count_pages = count_pages;
     }
 
     public int getNum_pages() {
@@ -57,54 +46,159 @@ public class BannerEntity {
         this.template = template;
     }
 
-    public int getPk() {
-        return pk;
-    }
-
-    public void setPk(int pk) {
-        this.pk = pk;
-    }
-
-    public List<?> getCarousels() {
+    public List<CarouselsBean> getCarousels() {
         return carousels;
     }
 
-    public void setCarousels(List<?> carousels) {
+    public void setCarousels(List<CarouselsBean> carousels) {
         this.carousels = carousels;
     }
 
     public List<PosterBean> getPoster() {
-        return poster;
+        return posters;
     }
 
-    public void setPoster(List<PosterBean> poster) {
-        this.poster = poster;
+    public void setPosters(List<PosterBean> posters) {
+        this.posters = posters;
+    }
+
+    public static class CarouselsBean {
+        private Object video_image;
+        private String video_url;
+        private String content_model;
+        private int pause_time;
+        private String thumb_image;
+        private String title;
+        private String url;
+        private String introduction;
+        private int pk;
+        private boolean expense;
+        private String model_name;
+
+        public Object getVideo_image() {
+            return video_image;
+        }
+
+        public void setVideo_image(Object video_image) {
+            this.video_image = video_image;
+        }
+
+        public String getVideo_url() {
+            return video_url;
+        }
+
+        public void setVideo_url(String video_url) {
+            this.video_url = video_url;
+        }
+
+        public String getContent_model() {
+            return content_model;
+        }
+
+        public void setContent_model(String content_model) {
+            this.content_model = content_model;
+        }
+
+        public int getPause_time() {
+            return pause_time;
+        }
+
+        public void setPause_time(int pause_time) {
+            this.pause_time = pause_time;
+        }
+
+        public String getThumb_image() {
+            return thumb_image;
+        }
+
+        public void setThumb_image(String thumb_image) {
+            this.thumb_image = thumb_image;
+        }
+
+        public String getTitle() {
+            return title;
+        }
+
+        public void setTitle(String title) {
+            this.title = title;
+        }
+
+        public String getUrl() {
+            return url;
+        }
+
+        public void setUrl(String url) {
+            this.url = url;
+        }
+
+        public String getIntroduction() {
+            return introduction;
+        }
+
+        public void setIntroduction(String introduction) {
+            this.introduction = introduction;
+        }
+
+        public int getPk() {
+            return pk;
+        }
+
+        public void setPk(int pk) {
+            this.pk = pk;
+        }
+
+        public boolean isExpense() {
+            return expense;
+        }
+
+        public void setExpense(boolean expense) {
+            this.expense = expense;
+        }
+
+        public String getModel_name() {
+            return model_name;
+        }
+
+        public void setModel_name(String model_name) {
+            this.model_name = model_name;
+        }
     }
 
     public static class PosterBean {
-        /**
-         * title : 奇异博士
-         * introduction : 奇异博士
-         * rating_average : 8.9
-         * content_url : /api/item/728354/
-         * content_model : movie
-         * poster_url : http://res.tvxio.com/media/upload/20160420/qiyiboshi0106y_poster.jpg
-         */
 
+        private String url;
+        private String content_model;
+        private String vertical_url;
         private String title;
         private String introduction;
-        private double rating_average;
-        private String content_url;
-        private String content_model;
+        private int corner;
         private String poster_url;
-        private SubscribeStatus subscribeStatus = SubscribeStatus.None;
+        private String model_name;
+        private int pk;
+        private String custom_image;
 
-        public SubscribeStatus getSubscribeStatus() {
-            return subscribeStatus;
+        public String getUrl() {
+            return url;
         }
 
-        public void setSubscribeStatus(SubscribeStatus subscribeStatus) {
-            this.subscribeStatus = subscribeStatus;
+        public void setUrl(String url) {
+            this.url = url;
+        }
+
+        public String getContent_model() {
+            return content_model;
+        }
+
+        public void setContent_model(String content_model) {
+            this.content_model = content_model;
+        }
+
+        public String getVertical_url() {
+            return vertical_url;
+        }
+
+        public void setVertical_url(String vertical_url) {
+            this.vertical_url = vertical_url;
         }
 
         public String getTitle() {
@@ -123,28 +217,12 @@ public class BannerEntity {
             this.introduction = introduction;
         }
 
-        public double getRating_average() {
-            return rating_average;
+        public int getCorner() {
+            return corner;
         }
 
-        public void setRating_average(double rating_average) {
-            this.rating_average = rating_average;
-        }
-
-        public String getContent_url() {
-            return content_url;
-        }
-
-        public void setContent_url(String content_url) {
-            this.content_url = content_url;
-        }
-
-        public String getContent_model() {
-            return content_model;
-        }
-
-        public void setContent_model(String content_model) {
-            this.content_model = content_model;
+        public void setCorner(int corner) {
+            this.corner = corner;
         }
 
         public String getPoster_url() {
@@ -154,11 +232,29 @@ public class BannerEntity {
         public void setPoster_url(String poster_url) {
             this.poster_url = poster_url;
         }
-    }
 
-    public enum SubscribeStatus {
-        None,
-        Yes,
-        No
+        public String getModel_name() {
+            return model_name;
+        }
+
+        public void setModel_name(String model_name) {
+            this.model_name = model_name;
+        }
+
+        public int getPk() {
+            return pk;
+        }
+
+        public void setPk(int pk) {
+            this.pk = pk;
+        }
+
+        public String getCustom_image() {
+            return custom_image;
+        }
+
+        public void setCustom_image(String custom_image) {
+            this.custom_image = custom_image;
+        }
     }
 }

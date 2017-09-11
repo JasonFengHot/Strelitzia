@@ -35,11 +35,11 @@ public class Template519 extends Template{
 
     private RecyclerViewTV horizontal519Banner;
     private BannerHorizontal519Adapter mHorizontal519Adapter;
+    private int mBannerName;
 
 
     public Template519(Context context) {
         super(context);
-        fetchHorizontal519Banner(1);
     }
 
     @Override
@@ -59,7 +59,7 @@ public class Template519 extends Template{
                 Log.d("PagingableListener", "onLoadMoreItems");
                 int currentPageNumber = mHorizontal519Adapter.getCurrentPageNumber();
                 if (currentPageNumber < mHorizontal519Adapter.getTotalPageCount()){
-                    fetchHorizontal519Banner(currentPageNumber + 1);
+                    fetchHorizontal519Banner(mBannerName, currentPageNumber + 1);
                 }
             }
         });
@@ -81,7 +81,7 @@ public class Template519 extends Template{
             @Override
             public void onItemFocusGain(View itemView, int position) {
                 if (mTitleCountTv != null) {
-                    mTitleCountTv.setText(String.format(mContext.getString(R.string.home_item_title_count), (1 + position) + "", mHorizontal519Adapter.getTatalItemCount() + ""));
+//                    mTitleCountTv.setText(String.format(mContext.getString(R.string.home_item_title_count), (1 + position) + "", mHorizontal519Adapter.getTatalItemCount() + ""));
                 }
             }
         });
@@ -89,10 +89,11 @@ public class Template519 extends Template{
 
     @Override
     public void initData(Bundle bundle) {
-
+        mBannerName = bundle.getInt("banner");
+        fetchHorizontal519Banner(mBannerName, 1);
     }
 
-    private void fetchHorizontal519Banner(final int pageNumber) {
+    private void fetchHorizontal519Banner(int bannerName, final int pageNumber) {
         if (pageNumber != 1){
             int startIndex = (pageNumber - 1) * 33;
             int endIndex;
@@ -117,7 +118,7 @@ public class Template519 extends Template{
 
 
         String pageCount = String.valueOf(pageNumber);
-         SkyService.ServiceManager.getLocalTestService().apiTvBanner(1, pageCount)
+         SkyService.ServiceManager.getLocalTestService().apiTvBanner(bannerName, pageCount)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<BannerEntity>() {

@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.Space;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
@@ -82,6 +83,12 @@ public class BannerHorizontal519Adapter extends RecyclerView.Adapter<BannerHoriz
 
         holder.mItemView.findViewById(R.id.item_layout).setTag(entity);
         holder.mItemView.findViewById(R.id.item_layout).setTag(R.id.banner_item_position, position);
+
+        if (position == 0){
+            holder.mLeftSpace.setVisibility(View.GONE);
+        }else {
+            holder.mLeftSpace.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
@@ -92,6 +99,7 @@ public class BannerHorizontal519Adapter extends RecyclerView.Adapter<BannerHoriz
 
     class SubscribeViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener,View.OnFocusChangeListener {
 
+        private Space mLeftSpace;
         private ImageView mImageView;
         private TextView mTitle;
         private View mItemView;
@@ -104,6 +112,7 @@ public class BannerHorizontal519Adapter extends RecyclerView.Adapter<BannerHoriz
             mItemView.findViewById(R.id.item_layout).setOnFocusChangeListener(this);
             mImageView = (ImageView) itemView.findViewById(R.id.image_view);
             mTitle = (TextView) itemView.findViewById(R.id.title);
+            mLeftSpace = (Space)itemView.findViewById(R.id.left_space);
 
         }
 

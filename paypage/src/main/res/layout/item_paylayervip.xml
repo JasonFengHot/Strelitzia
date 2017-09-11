@@ -15,6 +15,14 @@
         android:layout_width="@dimen/paylayervip_img_width"
         android:layout_height="@dimen/paylayervip_img_height"
         android:scaleType="fitXY"/>
+    <ImageView
+        android:id="@+id/lable_image"
+        android:layout_width="@dimen/pay_109"
+        android:layout_height="@dimen/pay_109"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:background="@drawable/viplist_lable"
+        />
 
     <TextView
         android:id="@+id/title"

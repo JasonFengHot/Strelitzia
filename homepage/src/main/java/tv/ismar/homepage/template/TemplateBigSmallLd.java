@@ -21,8 +21,6 @@ import rx.schedulers.Schedulers;
 import tv.ismar.app.entity.banner.BannerEntity;
 import tv.ismar.app.network.SkyService;
 import tv.ismar.homepage.R;
-import tv.ismar.homepage.banner.adapter.BannerHorizontal519Adapter;
-import tv.ismar.homepage.banner.adapter.BannerMovieAdapter;
 import tv.ismar.homepage.banner.adapter.BannerMovieMixAdapter;
 
 /**
@@ -36,10 +34,10 @@ public class TemplateBigSmallLd extends Template{
     private RecyclerViewTV movieMixBanner;
 
     private BannerMovieMixAdapter adapter;
+    private int mBannerName;
 
     public TemplateBigSmallLd(Context context) {
         super(context);
-        fetchMovieMixBanner(1);
     }
 
     @Override
@@ -58,7 +56,7 @@ public class TemplateBigSmallLd extends Template{
                 Log.d("PagingableListener", "onLoadMoreItems");
                 int currentPageNumber = adapter.getCurrentPageNumber();
                 if (currentPageNumber < adapter.getTotalPageCount()){
-                    fetchMovieMixBanner(currentPageNumber + 1);
+                    fetchMovieMixBanner(mBannerName, currentPageNumber + 1);
                 }
             }
         });
@@ -86,7 +84,7 @@ public class TemplateBigSmallLd extends Template{
             @Override
             public void onItemFocusGain(View itemView, int position) {
                 if (mTitleCountTv != null) {
-                    mTitleCountTv.setText(String.format(mContext.getString(R.string.home_item_title_count), (1 + position) + "", adapter.getTatalItemCount() + ""));
+//                    mTitleCountTv.setText(String.format(mContext.getString(R.string.home_item_title_count), (1 + position) + "", adapter.getTatalItemCount() + ""));
                 }
             }
         });
@@ -94,10 +92,11 @@ public class TemplateBigSmallLd extends Template{
 
     @Override
     public void initData(Bundle bundle) {
-
+        mBannerName = bundle.getInt("banner");
+        fetchMovieMixBanner(mBannerName, 1);
     }
 
-    private void fetchMovieMixBanner(final int pageNumber) {
+    private void fetchMovieMixBanner(int bannerName, final int pageNumber) {
         if (pageNumber != 1){
             int startIndex = (pageNumber - 1) * 33;
             int endIndex;
@@ -122,7 +121,7 @@ public class TemplateBigSmallLd extends Template{
         String pageCount = String.valueOf(pageNumber);
 
 
-        SkyService.ServiceManager.getLocalTestService().apiTvBanner(1, pageCount)
+        SkyService.ServiceManager.getLocalTestService().apiTvBanner(bannerName, pageCount)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<BannerEntity>() {

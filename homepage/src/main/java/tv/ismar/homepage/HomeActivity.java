@@ -1,5 +1,7 @@
 package tv.ismar.homepage;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
@@ -32,6 +34,7 @@ import tv.ismar.app.BaseActivity;
 import tv.ismar.app.BaseControl;
 import tv.ismar.app.core.PageIntent;
 import tv.ismar.app.entity.ChannelEntity;
+import tv.ismar.app.receiver.TimeTickReceiver;
 import tv.ismar.app.util.BitmapDecoder;
 import tv.ismar.app.widget.TelescopicWrap;
 import tv.ismar.homepage.control.FetchDataControl;
@@ -121,14 +124,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         mPersonCenterLayout.setOnFocusChangeListener(this);
         mCollectionLayout.setOnClickListener(this);
         mPersonCenterLayout.setOnClickListener(this);
-        mTimeTv.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent=new Intent();
-                intent.setAction("tv.ismar.daisy.listtest");
-                startActivity(intent);
-            }
-        });
+        TimeTickReceiver.register(this, new TimeTickBroadcast());
     }
 
     private void initData(){
@@ -223,5 +219,20 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
             ChannelEntity[] channelEntities = (ChannelEntity[]) args;
             fillChannelTab(channelEntities);
         }
+    }
+
+    /*时间跳动广播*/
+    private class TimeTickBroadcast extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            mTimeTv.setText(getNowTime());
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        TimeTickReceiver.unregisterAll(this);
     }
 }

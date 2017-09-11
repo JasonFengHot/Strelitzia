@@ -214,4 +214,41 @@
 <dimen name="agreement_layout_width">1117.78dp</dimen>
 
 <dimen name="alipay_pay_layout_mt">100.00dp</dimen>
+<dimen name="pay_channel_saoma_marginTop">143.70dp</dimen>
+<dimen name="pay_channel_yue_marginTop">49.63dp</dimen>
+
+<dimen name="pay_27">20.00dp</dimen>
+<dimen name="pay_250">185.19dp</dimen>
+<dimen name="pay_282">208.89dp</dimen>
+<dimen name="pay_39">28.89dp</dimen>
+<dimen name="pay_196">145.19dp</dimen>
+<dimen name="pay_192">142.22dp</dimen>
+<dimen name="pay_119">88.15dp</dimen>
+<dimen name="pay_77">57.04dp</dimen>
+<dimen name="pay_112">82.96dp</dimen>
+<dimen name="pay_62">45.93dp</dimen>
+<dimen name="pay_70">51.85dp</dimen>
+<dimen name="pay_494">365.93dp</dimen>
+<dimen name="pay_168">124.44dp</dimen>
+<dimen name="pay_23">17.04dp</dimen>
+<dimen name="pay_325">240.74dp</dimen>
+<dimen name="pay_43">31.85dp</dimen>
+<dimen name="pay_216">160.00dp</dimen>
+<dimen name="pay_432">320.00dp</dimen>
+<dimen name="pay_638">472.59dp</dimen>
+<dimen name="pay_294">217.78dp</dimen>
+<dimen name="pay_145">107.41dp</dimen>
+<dimen name="pay_310">229.63dp</dimen>
+<dimen name="pay_33">24.44dp</dimen>
+<dimen name="pay_76">56.30dp</dimen>
+<dimen name="pay_40">29.63dp</dimen>
+<dimen name="pay_788">583.70dp</dimen>
+<dimen name="pay_475">351.85dp</dimen>
+<dimen name="pay_53">39.26dp</dimen>
+<dimen name="pay_201">148.89dp</dimen>
+<dimen name="pay_35">25.93dp</dimen>
+<dimen name="pay_26">19.26dp</dimen>
+<dimen name="pay_109">80.74dp</dimen>
+<dimen name="pay_410">303.70dp</dimen>
+<dimen name="pay_96">71.11dp</dimen>
 </resources>

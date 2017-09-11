@@ -172,10 +172,14 @@ public class FetchDataControl extends BaseControl{
                     public void onNext(HomeEntity homeEntities) {
                         if(mCallBack!=null && homeEntities!=null){
                             if(homeEntities != null){
-                                mCarousels.clear();
-                                mCarousels.addAll(homeEntities.carousels);
-                                mPoster.clear();
-                                mPoster.addAll(homeEntities.poster);
+                                if(homeEntities.carousels != null){
+                                    mCarousels.clear();
+                                    mCarousels.addAll(homeEntities.carousels);
+                                }
+                                if(homeEntities.poster != null){
+                                    mPoster.clear();
+                                    mPoster.addAll(homeEntities.poster);
+                                }
                             }
                             mCallBack.callBack(FETCH_BANNERS_LIST_FLAG, homeEntities);
                         }

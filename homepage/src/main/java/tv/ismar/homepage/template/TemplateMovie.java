@@ -6,6 +6,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.widget.Space;
 
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
@@ -55,9 +56,11 @@ public class TemplateMovie extends Template {
             @Override
             public void onLoadMoreItems() {
                 Log.d("PagingableListener", "onLoadMoreItems");
-                int currentPageNumber = mMovieAdapter.getCurrentPageNumber();
-                if (currentPageNumber < mMovieAdapter.getTotalPageCount()){
-                    fetchMovieBanner(mBannerName, currentPageNumber + 1);
+                if (mMovieAdapter != null) {
+                    int currentPageNumber = mMovieAdapter.getCurrentPageNumber();
+                    if (currentPageNumber < mMovieAdapter.getTotalPageCount()) {
+                        fetchMovieBanner(mBannerName, currentPageNumber + 1);
+                    }
                 }
             }
         });
@@ -80,7 +83,7 @@ public class TemplateMovie extends Template {
             @Override
             public void onItemFocusGain(View itemView, int position) {
                 if (itemView != null && mContext != null && mTitleCountTv != null){
-                    mTitleCountTv.setText(String.format(mContext.getString(R.string.home_item_title_count), (1 + position) + "", mMovieAdapter.getTatalItemCount() + ""));
+//                    mTitleCountTv.setText(String.format(mContext.getString(R.string.home_item_title_count), (1 + position) + "", mMovieAdapter.getTatalItemCount() + ""));
                 }
             }
         });
@@ -89,13 +92,7 @@ public class TemplateMovie extends Template {
     @Override
     public void initData(Bundle bundle) {
         mBannerName = bundle.getInt("banner");
-        Log.d(TAG, "initData: " + mBannerName);
         fetchMovieBanner(mBannerName, 1);
-    }
-
-    @Override
-    public void initTitle() {
-        super.initTitle();
     }
 
     private void fetchMovieBanner(int bannerName, final int pageNumber) {
@@ -119,7 +116,6 @@ public class TemplateMovie extends Template {
             movieBanner.setOnLoadMoreComplete();
 //            mMovieAdapter.setCurrentPageNumber(pageNumber);
 //            mFocusHandler.sendEmptyMessageDelayed(mSavePos, 10);
-
         }
 
         String pageCount = String.valueOf(pageNumber);

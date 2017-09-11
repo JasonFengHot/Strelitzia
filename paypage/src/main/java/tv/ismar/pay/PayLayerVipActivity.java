@@ -178,10 +178,16 @@ public class PayLayerVipActivity extends BaseActivity implements OnHoverListener
         for (final PayLayerVipEntity.Vip_list vipList : payLayerVipEntity.getVip_list()) {
             RelativeLayout itemView = (RelativeLayout) LayoutInflater.from(this).inflate(R.layout.item_paylayervip, null);
             ImageView imageView = (ImageView) itemView.findViewById(R.id.image);
+            ImageView lable= (ImageView) itemView.findViewById(R.id.lable_image);
             if (TextUtils.isEmpty(vipList.getVertical_url())) {
                 Picasso.with(this).load(R.drawable.error_ver).memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE).into(imageView);
             } else {
                 Picasso.with(this).load(vipList.getVertical_url()).memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE).error(R.drawable.error_ver).into(imageView);
+            }
+            if(vipList.getPk()==1111){
+                lable.setVisibility(View.VISIBLE);
+            }else{
+                lable.setVisibility(View.GONE);
             }
 
             TextView title = (TextView) itemView.findViewById(R.id.title);

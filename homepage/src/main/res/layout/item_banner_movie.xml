@@ -10,6 +10,7 @@
     >
 
     <Space
+        android:id="@+id/left_space"
         android:layout_width="20dp"
         android:layout_height="wrap_content"/>
 
