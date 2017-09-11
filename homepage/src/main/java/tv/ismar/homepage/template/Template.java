@@ -69,6 +69,7 @@ public abstract class Template {
         String contentModel = null;
         int itemPk = -1;
         String url = null;
+        String title = null;
 
         Object tag = view.getTag();
         if (tag == null){
@@ -79,6 +80,7 @@ public abstract class Template {
                 contentModel = bean.getContent_model();
                 url = bean.getContent_url();
                 itemPk = getPostItemId(url);
+                title = bean.getTitle();
             }
         }
 
@@ -87,35 +89,35 @@ public abstract class Template {
 //        intent.putExtra("channel", channel);
         if (modelName.contains("item")) {
             if (contentModel.contains("gather")) {
-//                PageIntent intent1 = new PageIntent();
-//                intent1.toSubject(mContext, contentMode, itemPk, title, BaseActivity.baseChannel, "");
+                PageIntent subjectIntent = new PageIntent();
+                subjectIntent.toSubject(mContext, contentModel, itemPk, title, BaseActivity.baseChannel, "");
             } else {
                 PageIntent pageIntent = new PageIntent();
                 pageIntent.toDetailPage(mContext, "homepage", itemPk);
             }
         } else if (modelName.contains("topic")) {
-//            intent.putExtra("url", url);
-//            intent.setAction("tv.ismar.daisy.Topic");
-//            mContext.startActivity(intent);
+            intent.putExtra("url", url);
+            intent.setAction("tv.ismar.daisy.Topic");
+            mContext.startActivity(intent);
         } else if (modelName.contains("section")) {
 //            intent.putExtra("title", title);
 //            intent.putExtra("itemlistUrl", url);
 //            intent.putExtra("lableString", title);
 //            intent.putExtra("pk", pk);
 //            intent.setAction("tv.ismar.daisy.packagelist");
-            mContext.startActivity(intent);
+//            mContext.startActivity(intent);
         } else if (modelName.contains("package")) {
-//            intent.setAction("tv.ismar.daisy.packageitem");
-//            intent.putExtra("url", url);
+            intent.setAction("tv.ismar.daisy.packageitem");
+            intent.putExtra("url", url);
         } else if (modelName.contains("clip")) {
-//            PageIntent pageIntent = new PageIntent();
-//            pageIntent.toPlayPage(mContext, pk, -1, Source.HOMEPAGE);
+            PageIntent pageIntent = new PageIntent();
+            pageIntent.toPlayPage(mContext, itemPk, -1, Source.HOMEPAGE);
         } else if (modelName.contains("ismartv")) {
 //            toIsmartvShop(mode_name, app_id, backgroundUrl, nameId, title);
         }else {
             if (contentModel.contains("gather")) {
-//                PageIntent intent1 = new PageIntent();
-//                intent1.toSubject(mContext, contentMode, itemPk, title, BaseActivity.baseChannel, "");
+                PageIntent intent1 = new PageIntent();
+                intent1.toSubject(mContext, contentModel, itemPk, title, BaseActivity.baseChannel, "");
             } else {
                 PageIntent pageIntent = new PageIntent();
                 pageIntent.toDetailPage(mContext, "homepage", itemPk);
