@@ -22,6 +22,7 @@ import tv.ismar.app.entity.banner.BannerEntity;
 import tv.ismar.app.network.SkyService;
 import tv.ismar.homepage.R;
 import tv.ismar.homepage.banner.adapter.BannerHorizontal519Adapter;
+import tv.ismar.homepage.banner.adapter.BannerMovieAdapter;
 
 /**
  * @AUTHOR: xi
@@ -30,6 +31,8 @@ import tv.ismar.homepage.banner.adapter.BannerHorizontal519Adapter;
  */
 
 public class Template519 extends Template{
+    private static final String TAG = Template519.class.getSimpleName();
+
     private RecyclerViewTV horizontal519Banner;
     private BannerHorizontal519Adapter mHorizontal519Adapter;
 
@@ -44,7 +47,7 @@ public class Template519 extends Template{
         horizontal519Banner = (RecyclerViewTV)view.findViewById(R.id.horizontal_519_banner);
         LinearLayoutManagerTV horizontal519LayoutManager = new LinearLayoutManagerTV(mContext, LinearLayoutManager.HORIZONTAL, false);
         int selectedItemSpace = mContext.getResources().getDimensionPixelSize(R.dimen.banner_item_SelectedItemSpace);
-        horizontal519Banner.addItemDecoration(new BannerHorizontal519Adapter.SpacesItemDecoration(selectedItemSpace));
+//        horizontal519Banner.addItemDecoration(new BannerHorizontal519Adapter.SpacesItemDecoration(selectedItemSpace));
         horizontal519Banner.setLayoutManager(horizontal519LayoutManager);
         horizontal519Banner.setSelectedItemAtCentered(false);
         int selectedItemOffset = mContext.getResources().getDimensionPixelSize(R.dimen.banner_item_setSelectedItemOffset);
@@ -71,6 +74,15 @@ public class Template519 extends Template{
                     return view;
                 }
                 return null;
+            }
+        });
+
+        horizontal519Banner.setOnItemFocusChangeListener(new RecyclerViewTV.OnItemFocusChangeListener() {
+            @Override
+            public void onItemFocusGain(View itemView, int position) {
+                if (mTitleCountTv != null) {
+                    mTitleCountTv.setText(String.format(mContext.getString(R.string.home_item_title_count), (1 + position) + "", mHorizontal519Adapter.getTatalItemCount() + ""));
+                }
             }
         });
     }
@@ -137,6 +149,13 @@ public class Template519 extends Template{
 
     private void fillHorizontal519Banner(BannerEntity bannerEntity) {
         mHorizontal519Adapter = new BannerHorizontal519Adapter(mContext, bannerEntity);
+        mHorizontal519Adapter.setBannerClickListener(new BannerHorizontal519Adapter.OnBannerClickListener() {
+            @Override
+            public void onBannerClick(View view, int position) {
+                goToNextPage(view);
+            }
+        });
         horizontal519Banner.setAdapter(mHorizontal519Adapter);
+        mTitleCountTv.setText(String.format(mContext.getString(R.string.home_item_title_count), (1) + "", mHorizontal519Adapter.getTatalItemCount() + ""));
     }
 }

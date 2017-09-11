@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Rect;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -34,10 +35,13 @@ import static android.view.View.SCALE_Y;
  */
 public class BannerSubscribeAdapter
         extends RecyclerView.Adapter<BannerSubscribeAdapter.SubscribeViewHolder> {
+
+    private static final String TAG = "BannerSubscribeAdapter";
+
     private Context mContext;
 
     private List<BannerEntity.PosterBean> mSubscribeEntityList;
-    private OnSubscribeClickListener mSubscribeClickListener;
+    private OnBannerClickListener mSubscribeClickListener;
     private int currentPageNumber;
     private int totalPageCount;
     private int tatalItemCount;
@@ -123,6 +127,7 @@ public class BannerSubscribeAdapter
         holder.mPublishTime.setText("6月30日");
         holder.mIntroduction.setText(entity.getIntroduction() + " " + position);
         holder.mItemView.findViewById(R.id.item_layout).setTag(entity);
+        holder.mItemView.findViewById(R.id.item_layout).setTag(R.id.banner_item_position, position);
     }
 
     private int getMovieItemId(String url) {
@@ -185,7 +190,11 @@ public class BannerSubscribeAdapter
         return mSubscribeEntityList.size();
     }
 
-    public void setSubscribeClickListener(OnSubscribeClickListener subscribeClickListener) {
+    public interface OnBannerClickListener {
+        void onBannerClick(View view, int position);
+    }
+
+    public void setSubscribeClickListener(OnBannerClickListener subscribeClickListener) {
         mSubscribeClickListener = subscribeClickListener;
     }
 
@@ -209,9 +218,6 @@ public class BannerSubscribeAdapter
         mSubscribeEntityList.addAll(emptyList);
     }
 
-    public interface OnSubscribeClickListener {
-        void onSubscribeClick(int pk, String contentModel);
-    }
 
     public static class SpacesItemDecoration extends RecyclerView.ItemDecoration {
         private int space;
@@ -255,22 +261,23 @@ public class BannerSubscribeAdapter
         @Override
         public void onClick(View v) {
             if (mSubscribeClickListener != null) {
-                BannerEntity.PosterBean posterBean = (BannerEntity.PosterBean) v.getTag();
-                int itemId = getItemId(posterBean.getContent_url());
-                String contentModel = posterBean.getContent_model();
-                mSubscribeClickListener.onSubscribeClick(itemId, contentModel);
+                int position = (int) v.getTag(R.id.banner_item_position);
+                mSubscribeClickListener.onBannerClick(v, position);
             }
         }
 
         @Override
         public void onFocusChange(View v, boolean hasFocus) {
             if (hasFocus) {
-                scaleToLarge(v.findViewById(R.id.item_layout));
-                v.findViewById(R.id.title).setSelected(true);
+                v.requestFocusFromTouch();
+//                scaleToLarge(v.findViewById(R.id.item_layout));
+//                v.findViewById(R.id.title).setSelected(true);
+                v.findViewById(R.id.title).setBackgroundResource(R.color._ff9c3c);
                 v.findViewById(R.id.introduction).setSelected(true);
             } else {
-                scaleToNormal(v.findViewById(R.id.item_layout));
-                v.findViewById(R.id.title).setSelected(false);
+//                scaleToNormal(v.findViewById(R.id.item_layout));
+                v.findViewById(R.id.title).setBackgroundResource(R.color._333333);
+//                v.findViewById(R.id.title).setSelected(false);
                 v.findViewById(R.id.introduction).setSelected(false);
             }
         }

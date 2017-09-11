@@ -97,7 +97,6 @@ import tv.ismar.app.util.NetworkUtils;
 import tv.ismar.app.util.SPUtils;
 import tv.ismar.app.util.SystemFileUtil;
 import tv.ismar.app.widget.ExpireAccessTokenPop;
-import tv.ismar.app.widget.Login_hint_dialog;
 import tv.ismar.app.widget.ModuleMessagePopWindow;
 import tv.ismar.homepage.R;
 import tv.ismar.homepage.banner.adapter.BannerHorizontal519Adapter;
@@ -967,14 +966,6 @@ public class HomePageActivity extends BaseActivity implements LinearLayoutManage
         subscribeAdapter.setTotalPageCount(bannerEntity.getCount_pages());
         subscribeAdapter.setCurrentPageNumber(bannerEntity.getNum_pages());
         subscribeAdapter.setTatalItemCount(bannerEntity.getCount());
-        subscribeAdapter.setSubscribeClickListener(new BannerSubscribeAdapter.OnSubscribeClickListener() {
-            @Override
-            public void onSubscribeClick(int pk, String contentModel) {
-                Log.d("onSubscribeClick", "pk: " + pk);
-                Log.d("onSubscribeClick", "contentModel: " + contentModel);
-//                accountsItemSubscribe(pk, contentModel);
-            }
-        });
 
         subscribeBanner.setAdapter(subscribeAdapter);
     }

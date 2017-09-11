@@ -61,7 +61,7 @@ public class FetchDataControl extends BaseControl{
                         @Override
                         public void onNext(GuideBanner[] guideBanners) {
                             //TODO 测试json假数据代码
-                            guideBanners = getChannels();
+//                            guideBanners = getChannels();
                             if(mCallBack!=null && guideBanners!=null && guideBanners.length>0){
                                 mBanners = guideBanners;
                                 mCallBack.callBack(FETCH_HOME_BANNERS_FLAG, guideBanners);

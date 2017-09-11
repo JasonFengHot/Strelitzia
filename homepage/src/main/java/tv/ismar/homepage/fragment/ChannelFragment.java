@@ -8,11 +8,15 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
+
+import com.open.androidtvwidget.leanback.recycle.RecyclerViewTV;
 
 import tv.ismar.app.BaseControl;
 import tv.ismar.app.entity.GuideBanner;
 import tv.ismar.homepage.HomeActivity;
 import tv.ismar.homepage.R;
+import tv.ismar.homepage.adapter.HomeAdapter;
 import tv.ismar.homepage.adapter.HomeReclAdapter;
 import tv.ismar.homepage.control.FetchDataControl;
 import tv.ismar.library.util.StringUtils;
@@ -28,8 +32,9 @@ import static tv.ismar.homepage.control.FetchDataControl.FETCH_HOME_BANNERS_FLAG
 
 public class ChannelFragment extends BaseFragment implements BaseControl.ControlCallBack{
     private FetchDataControl mControl = null;//业务类引用
-    private RecyclerView mRecycleView;
-    private HomeReclAdapter mAdapter;
+//    private RecyclerView mRecycleView;
+    private ListView mListView;
+    private HomeAdapter mAdapter;
 
     private String mChannel;//频道
 
@@ -49,10 +54,12 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
     }
 
     private void findView(View view){
-        mRecycleView = (RecyclerView) view.findViewById(R.id.home_activity_recycleview);
-        LinearLayoutManager linear = new LinearLayoutManager(getContext());
-        linear.setOrientation(LinearLayoutManager.VERTICAL);
-        mRecycleView.setLayoutManager(linear);
+//        mRecycleView = (RecyclerView) view.findViewById(R.id.home_fragment_recycleview);
+        mListView = (ListView) view.findViewById(R.id.home_fragment_listview);
+        mListView.setItemsCanFocus(true);
+//        LinearLayoutManager linear = new LinearLayoutManager(getContext());
+//        linear.setOrientation(LinearLayoutManager.VERTICAL);
+//        mRecycleView.setLayoutManager(linear);
     }
 
     public void setChannel(String channel){
@@ -69,26 +76,24 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
         }
     }
 
+    private void initAdapter(GuideBanner[] banners){
+        if(mAdapter == null){
+//            mAdapter = new HomeReclAdapter(getContext(), banners);
+//            mRecycleView.setAdapter(mAdapter);
+            mAdapter = new HomeAdapter(getContext(), banners);
+            mListView.setAdapter(mAdapter);
+        }else{
+            mAdapter.notifyDataSetChanged();
+        }
+    }
+
     @Override
     public void callBack(int flags, Object... args) {
         //这里通过flag严格区分不同的业务流程，避免业务之间的耦合
-        if(flags == FETCH_HOME_BANNERS_FLAG){//处理获取首页banner列表
-            GuideBanner[] banners = (GuideBanner[]) args;
-            if(mAdapter == null){
-                mAdapter = new HomeReclAdapter(getContext(), banners);
-                mRecycleView.setAdapter(mAdapter);
-//                mListView.setAdapter(mAdapter);
-            }else{
-                mAdapter.notifyDataSetChanged();
-            }
-        }else if(flags == FETCH_CHANNEL_BANNERS_FLAG){
-            GuideBanner[] banners = (GuideBanner[]) args;
-            if(mAdapter == null){
-                mAdapter = new HomeReclAdapter(getContext(), banners);
-                mRecycleView.setAdapter(mAdapter);
-            }else{
-                mAdapter.notifyDataSetChanged();
-            }
+        if(flags == FETCH_HOME_BANNERS_FLAG){//获取到首页下的banners
+        }else if(flags == FETCH_CHANNEL_BANNERS_FLAG){//获取到频道下的banners
         }
+        GuideBanner[] banners = (GuideBanner[]) args;
+        initAdapter(banners);
     }
 }

@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 
 import com.daimajia.androidanimations.library.Techniques;
@@ -53,7 +52,7 @@ public class TemplateOrder extends Template implements BaseControl.ControlCallBa
         subscribeBanner = (RecyclerViewTV) view.findViewById(R.id.subscribe_banner);
         LinearLayoutManagerTV subscribeLayoutManager = new LinearLayoutManagerTV(mContext, LinearLayoutManagerTV.HORIZONTAL, false);
         int selectedItemSpace = mContext.getResources().getDimensionPixelSize(R.dimen.banner_item_SelectedItemSpace);
-        subscribeBanner.addItemDecoration(new BannerSubscribeAdapter.SpacesItemDecoration(selectedItemSpace));
+//        subscribeBanner.addItemDecoration(new BannerSubscribeAdapter.SpacesItemDecoration(selectedItemSpace));
         subscribeBanner.setLayoutManager(subscribeLayoutManager);
         subscribeBanner.setSelectedItemAtCentered(false);
         int selectedItemOffset = mContext.getResources().getDimensionPixelSize(R.dimen.banner_item_setSelectedItemOffset);
@@ -90,6 +89,16 @@ public class TemplateOrder extends Template implements BaseControl.ControlCallBa
                 return null;
             }
         });
+
+        subscribeBanner.setOnItemFocusChangeListener(new RecyclerViewTV.OnItemFocusChangeListener() {
+            @Override
+            public void onItemFocusGain(View itemView, int position) {
+                if (mTitleCountTv != null) {
+                    mTitleCountTv.setText(String.format(mContext.getString(R.string.home_item_title_count), (position + 1) + "", subscribeAdapter.getTatalItemCount() + ""));
+                }
+            }
+        });
+
 
 //        subscribeBanner.setOnHoverListener(new View.OnHoverListener() {
 //            @Override
@@ -236,18 +245,16 @@ public class TemplateOrder extends Template implements BaseControl.ControlCallBa
 
     private void fillSubscribeBanner(BannerEntity bannerEntity) {
         subscribeAdapter = new BannerSubscribeAdapter(mContext, bannerEntity.getPoster());
+        subscribeAdapter.setSubscribeClickListener(new BannerSubscribeAdapter.OnBannerClickListener() {
+            @Override
+            public void onBannerClick(View view, int position) {
+                goToNextPage(view);
+            }
+        });
         subscribeAdapter.setTotalPageCount(bannerEntity.getCount_pages());
         subscribeAdapter.setCurrentPageNumber(bannerEntity.getNum_pages());
         subscribeAdapter.setTatalItemCount(bannerEntity.getCount());
-        subscribeAdapter.setSubscribeClickListener(new BannerSubscribeAdapter.OnSubscribeClickListener() {
-            @Override
-            public void onSubscribeClick(int pk, String contentModel) {
-                Log.d("onSubscribeClick", "pk: " + pk);
-                Log.d("onSubscribeClick", "contentModel: " + contentModel);
-//                accountsItemSubscribe(pk, contentModel);
-            }
-        });
-
         subscribeBanner.setAdapter(subscribeAdapter);
+        mTitleCountTv.setText(String.format(mContext.getString(R.string.home_item_title_count), (1) + "", subscribeAdapter.getTatalItemCount() + ""));
     }
 }

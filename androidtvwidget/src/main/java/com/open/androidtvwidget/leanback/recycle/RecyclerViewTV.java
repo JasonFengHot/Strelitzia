@@ -163,6 +163,9 @@ public class RecyclerViewTV extends RecyclerView implements PrvInterface {
 
     @Override
     public boolean requestChildRectangleOnScreen(View child, Rect rect, boolean immediate) {
+        if (mOnItemFocusChangeListener != null){
+            mOnItemFocusChangeListener.onItemFocusGain(child, getPositionByView(child));
+        }
         final int parentLeft = getPaddingLeft();
         final int parentTop = getPaddingTop();
         final int parentRight = getWidth() - getPaddingRight();
@@ -228,6 +231,16 @@ public class RecyclerViewTV extends RecyclerView implements PrvInterface {
         postInvalidate();
 
         return false;
+    }
+
+    public interface OnItemFocusChangeListener{
+        void onItemFocusGain(View itemView, int position);
+    }
+
+    private  OnItemFocusChangeListener mOnItemFocusChangeListener;
+
+    public void setOnItemFocusChangeListener(OnItemFocusChangeListener onItemFocusChangeListener) {
+        mOnItemFocusChangeListener = onItemFocusChangeListener;
     }
 
     private boolean cannotScrollForwardOrBackward(int value) {

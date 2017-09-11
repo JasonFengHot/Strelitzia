@@ -4,6 +4,7 @@ import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.graphics.Rect;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,8 @@ import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import tv.ismar.app.entity.banner.BannerEntity;
 import tv.ismar.homepage.R;
@@ -64,6 +67,9 @@ public class BannerMovieAdapter extends RecyclerView.Adapter<BannerMovieAdapter.
         BannerEntity.PosterBean entity = mSubscribeEntityList.get(position);
         Picasso.with(mContext).load(entity.getPoster_url()).into(holder.mImageView);
         holder.mTitle.setText(entity.getTitle() + " " + position);
+
+        holder.mItemView.findViewById(R.id.item_layout).setTag(entity);
+        holder.mItemView.findViewById(R.id.item_layout).setTag(R.id.banner_item_position, position);
     }
 
     @Override
@@ -78,7 +84,22 @@ public class BannerMovieAdapter extends RecyclerView.Adapter<BannerMovieAdapter.
         private TextView mTitle;
         private View mItemView;
 
-
+        int getPostItemId(String url) {
+            int id = 0;
+            try {
+                Pattern p = Pattern.compile("/(\\d+)/?$");
+                Matcher m = p.matcher(url);
+                if (m.find()) {
+                    String idStr = m.group(1);
+                    if (idStr != null) {
+                        id = Integer.parseInt(idStr);
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return id;
+        }
         public SubscribeViewHolder(View itemView) {
             super(itemView);
             mItemView = itemView;
@@ -90,17 +111,21 @@ public class BannerMovieAdapter extends RecyclerView.Adapter<BannerMovieAdapter.
 
         @Override
         public void onClick(View v) {
-
+            Log.d("BannerMovieAdapter", "onClick");
+            if (mSubscribeClickListener != null) {
+                int position = (int) v.getTag(R.id.banner_item_position);
+                mSubscribeClickListener.onBannerClick(v, position);
+            }
         }
 
         @Override
         public void onFocusChange(View v, boolean hasFocus) {
 
             if (hasFocus){
-                scaleToLarge(v.findViewById(R.id.item_layout));
+//                scaleToLarge(v.findViewById(R.id.item_layout));
                 v.findViewById(R.id.title).setSelected(true);
             }else {
-                scaleToNormal(v.findViewById(R.id.item_layout));
+//                scaleToNormal(v.findViewById(R.id.item_layout));
                 v.findViewById(R.id.title).setSelected(false);
             }
         }
@@ -162,5 +187,15 @@ public class BannerMovieAdapter extends RecyclerView.Adapter<BannerMovieAdapter.
     public void addEmptyDatas(List<BannerEntity.PosterBean> emptyList) {
         currentPageNumber = currentPageNumber + 1;
         mSubscribeEntityList.addAll(emptyList);
+    }
+
+    private OnBannerClickListener mSubscribeClickListener;
+
+    public interface OnBannerClickListener {
+        void onBannerClick(View view, int position);
+    }
+
+    public void setSubscribeClickListener(OnBannerClickListener subscribeClickListener) {
+        mSubscribeClickListener = subscribeClickListener;
     }
 }
