@@ -100,7 +100,7 @@ public class FetchDataControl extends BaseControl{
 
     /*获取频道列表*/
     public void fetchChannels() {
-        SkyService.ServiceManager.getCacheSkyService().apiTvChannels()
+        SkyService.ServiceManager.getLocalTestService().apiTvChannels()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<ChannelEntity[]>() {
