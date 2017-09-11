@@ -532,12 +532,11 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
         mFocusGridLayoutManager.setSpecialPos(specialPos);
         mFilterFocusGridLayoutManager = new FocusGridLayoutManager(this,spanCount);
         mFilterFocusGridLayoutManager.setLeftFocusView(filter_tab);
-        mFocusGridLayoutManager.setUpFocusView(filter_tab);
         poster_recyclerview.setLayoutManager(mFilterFocusGridLayoutManager);
         list_poster_recyclerview.setLayoutManager(mFocusGridLayoutManager);
         totalItemCount+=sections.size();
         mAllSectionItemList = new ItemList();
-        mAllSectionItemList.objects=new ArrayList<Item>();
+        mAllSectionItemList.objects=new ArrayList<>();
         for (int i = 0; i <totalItemCount ; i++) {
             Item item=new Item();
             mAllSectionItemList.objects.add(item);

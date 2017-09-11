@@ -66,7 +66,6 @@
         android:gravity="center"
         android:ellipsize="marquee"
         android:marqueeRepeatLimit="marquee_forever"
-        android:focusable="true"
         android:singleLine="true"
         android:layout_below="@id/item_horizontal_poster_img"/>
 </RelativeLayout>
