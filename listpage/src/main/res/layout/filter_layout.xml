@@ -31,7 +31,7 @@
     <tv.ismar.view.FullScrollView
         android:id="@+id/tab_scroll"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/list_scroll_arrow_down_lenth"
         android:scrollbars="none"
         android:layout_marginTop="@dimen/filter_layout_left_view_tab_mt"
         >

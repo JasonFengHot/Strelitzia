@@ -45,7 +45,7 @@ public class TemplateMovie extends Template {
         movieBanner = (RecyclerViewTV) view.findViewById(R.id.movie_banner);
         LinearLayoutManagerTV movieLayoutManager = new LinearLayoutManagerTV(mContext, LinearLayoutManager.HORIZONTAL, false);
         int selectedItemSpace = mContext.getResources().getDimensionPixelSize(R.dimen.banner_item_SelectedItemSpace);
-        movieBanner.addItemDecoration(new BannerMovieAdapter.SpacesItemDecoration(selectedItemSpace));
+//        movieBanner.addItemDecoration(new BannerMovieAdapter.SpacesItemDecoration(selectedItemSpace));
         movieBanner.setLayoutManager(movieLayoutManager);
         movieBanner.setSelectedItemAtCentered(false);
         int selectedItemOffset = mContext.getResources().getDimensionPixelSize(R.dimen.banner_item_setSelectedItemOffset);

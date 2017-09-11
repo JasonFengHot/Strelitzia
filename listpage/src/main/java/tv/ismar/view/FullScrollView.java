@@ -14,7 +14,7 @@ import tv.ismar.listpage.R;
 
 public class FullScrollView extends ScrollView {
 
-    boolean flag=false;
+    public boolean flag=false;
 
     private OnScroll onScroll;
     public interface OnScroll{
@@ -63,6 +63,12 @@ public class FullScrollView extends ScrollView {
         }else{
             onScroll.onShowDown(true);
         }
+    }
+
+    @Override
+    protected boolean dispatchHoverEvent(MotionEvent event) {
+        flag=false;
+        return super.dispatchHoverEvent(event);
     }
 
     @Override

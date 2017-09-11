@@ -157,11 +157,11 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
 
         new NetworkUtils.DataCollectionTask().execute(NetworkUtils.VIDEO_CHANNEL_IN, properties);
         //判断筛选页已选筛选条件的显示与隐藏
-        if(filter_checked_conditiion.getChildCount()>1){
-            filter_checked_conditiion.setVisibility(View.VISIBLE);
-        }else{
-            filter_checked_conditiion.setVisibility(View.INVISIBLE);
-        }
+//        if(filter_checked_conditiion.getChildCount()>1){
+//            filter_checked_conditiion.setVisibility(View.VISIBLE);
+//        }else{
+//            filter_checked_conditiion.setVisibility(View.INVISIBLE);
+//        }
     }
 
 
