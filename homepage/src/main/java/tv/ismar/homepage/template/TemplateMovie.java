@@ -34,7 +34,7 @@ public class TemplateMovie extends Template {
 
     private RecyclerViewTV movieBanner;
     private BannerMovieAdapter mMovieAdapter;
-    private String mBannerName;
+    private int mBannerName;
 
     public TemplateMovie(Context context) {
         super(context);
@@ -88,7 +88,8 @@ public class TemplateMovie extends Template {
 
     @Override
     public void initData(Bundle bundle) {
-        mBannerName = bundle.getString("banner");
+        mBannerName = bundle.getInt("banner");
+        Log.d(TAG, "initData: " + mBannerName);
         fetchMovieBanner(mBannerName, 1);
     }
 
@@ -97,7 +98,7 @@ public class TemplateMovie extends Template {
         super.initTitle();
     }
 
-    private void fetchMovieBanner(String bannerName, final int pageNumber) {
+    private void fetchMovieBanner(int bannerName, final int pageNumber) {
         if (pageNumber != 1){
             int startIndex = (pageNumber - 1) * 33;
             int endIndex;

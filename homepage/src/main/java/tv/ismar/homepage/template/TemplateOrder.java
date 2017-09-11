@@ -215,7 +215,7 @@ public class TemplateOrder extends Template implements BaseControl.ControlCallBa
         }
 
         String count = String.valueOf(pageNumber);
-        SkyService.ServiceManager.getLocalTestService().apiTvBanner("overseasbanner", count)
+        SkyService.ServiceManager.getLocalTestService().apiTvBanner(1, count)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<BannerEntity>() {
