@@ -3,6 +3,8 @@ package tv.ismar.pay;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.Html;
@@ -24,10 +26,9 @@ import tv.ismar.app.network.SkyService;
  */
 
 public class AlipayYKTMMRenewalFragment extends Fragment implements View.OnClickListener ,OnHoverListener{
-    private TextView agreementTextView;
+    private TextView agreementTextView,waiting;
 
     private Button confirmBtn;
-    private Button cancelBtn;
 
     private SkyService mSkyService;
     private PaymentActivity mActivity;
@@ -46,6 +47,7 @@ public class AlipayYKTMMRenewalFragment extends Fragment implements View.OnClick
     public void onResume() {
         super.onResume();
         mActivity.purchaseCheck(PaymentActivity.CheckType.OrderPurchase);
+        confirmBtn.requestFocusFromTouch();
     }
 
     @Override
@@ -65,32 +67,34 @@ public class AlipayYKTMMRenewalFragment extends Fragment implements View.OnClick
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         confirmBtn = (Button) view.findViewById(R.id.confirm);
-        cancelBtn = (Button) view.findViewById(R.id.cancel);
+        waiting= (TextView) view.findViewById(R.id.waiting);
         priceLineTextView = (TextView)view.findViewById(R.id.description_line_2);
         confirmBtn.setOnClickListener(this);
-        cancelBtn.setOnClickListener(this);
         confirmBtn.setOnHoverListener(this);
-        cancelBtn.setOnHoverListener(this);
 
         priceLineTextView.setText(String.format(getString(R.string.yktmm_price) ,
                 mActivity.getmItemEntity().getExpense().getRenew_price(),
                 mActivity.getmItemEntity().getExpense().getNominal_price() ));
 
-        agreementTextView = (TextView) view.findViewById(R.id.agreement);
+        agreementTextView = (TextView) view.findViewById(R.id.agreement_ytkmmrenewal);
         agreementTextView.setText(Html.fromHtml("<u>《视云连续扣费协议》</u>"));
         agreementTextView.setOnClickListener(this);
+        confirmBtn.requestFocus();
     }
 
     @Override
     public void onClick(View view) {
         int i = view.getId();
         if (i == R.id.confirm) {
-            openRenewal(url);
+            if(!mActivity.isbuying) {
+                openRenewal(url);
+                mActivity.isbuying=true;
+                waiting.setVisibility(View.VISIBLE);
+            }else{
+                waiting.setVisibility(View.VISIBLE);
+            }
 
-        } else if (i == R.id.cancel) {
-            mActivity.aliPayBtn.requestFocus();
-            mActivity.changeNormalAlipay();
-        } else if (i == R.id.agreement) {
+        }  else if (i == R.id.agreement_ytkmmrenewal) {
             mActivity.aliPayBtn.requestFocus();
             Intent intent = new Intent();
             intent.setClass(getContext(), RenewalAgreementActivity.class);
@@ -98,7 +102,13 @@ public class AlipayYKTMMRenewalFragment extends Fragment implements View.OnClick
         }
 
     }
-
+    private Handler handler = new Handler(new Handler.Callback() {
+        @Override
+        public boolean handleMessage(Message msg) {
+            mActivity.sendLog();
+            return false;
+        }
+    });
     private void openRenewal(String url) {
         mSkyService.openRenew(url)
                 .subscribeOn(Schedulers.io())
@@ -131,4 +141,5 @@ public class AlipayYKTMMRenewalFragment extends Fragment implements View.OnClick
         }
         return false;
     }
+
 }

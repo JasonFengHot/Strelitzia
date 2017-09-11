@@ -1807,7 +1807,7 @@ public class HomePageActivity extends BaseActivity implements LinearLayoutManage
                         mHandler.removeMessages(MSG_AD_COUNTDOWN);
                         Adend = true;
                         ad_seek.setProgress(totleTime);
-                        goNextPage();
+//                        goNextPage();
                         return;
                     }
                     if (home_ad_timer.getVisibility() != View.VISIBLE) {

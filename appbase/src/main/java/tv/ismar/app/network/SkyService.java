@@ -81,6 +81,7 @@ import tv.ismar.app.network.entity.BindedCdnEntity;
 import tv.ismar.app.network.entity.ChatMsgEntity;
 import tv.ismar.app.network.entity.DpiEntity;
 import tv.ismar.app.network.entity.Empty;
+import tv.ismar.app.network.entity.ExplainEntity;
 import tv.ismar.app.network.entity.GoodsRenewStatusEntity;
 import tv.ismar.app.network.entity.IpLookUpEntity;
 import tv.ismar.app.network.entity.ItemEntity;
@@ -656,14 +657,14 @@ public interface SkyService {
 
     @GET("accounts/pay_wh_status/")
     Observable<PayWhStatusEntity> accountsPayWhStatus(
-            @Query("pay_type") String payType
+            @Query("package_id") int packageId
     );
 
     @GET("accounts/goods_renew_status/")
     Observable<GoodsRenewStatusEntity> accountsGoodsRenewStatus(
-            @Query("package_id") int packageId,
-            @Query("pay_type") String payType
+            @Query("package_id") int packageId
     );
+
 
     @FormUrlEncoded
     @POST("accounts/open_renew/")
@@ -675,6 +676,9 @@ public interface SkyService {
     @GET("api/agreement/")
     Observable<AgreementEntity> agreement(
             @Query("source") String source
+    );
+    @GET("api/renew/explain")
+    Observable<ExplainEntity> explain(
     );
 
     @GET("api/item/{pk}/")

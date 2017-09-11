@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_marginLeft="@dimen/pay_294"
+        >
+        <TextView
+            android:id="@+id/line1"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/pay_43"
+            android:textSize="@dimen/text_size_30sp"
+            android:layout_marginTop="@dimen/pay_145"
+            />
+        <TextView
+            android:id="@+id/line2"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/pay_43"
+            android:textSize="@dimen/text_size_30sp"
+            android:layout_marginTop="@dimen/pay_27"
+            />
+        <TextView
+            android:id="@+id/line3"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/pay_43"
+            android:textSize="@dimen/text_size_30sp"
+            android:layout_marginTop="@dimen/pay_27"
+            />
+        <Button
+            android:id="@+id/confirm_normal"
+            android:layout_width="@dimen/pay_310"
+            android:layout_height="@dimen/pay_76"
+            android:layout_marginLeft="@dimen/pay_33"
+            android:layout_marginTop="@dimen/pay_40"
+            android:textSize="@dimen/textsize_36sp"
+            android:nextFocusDown="@+id/confirm_normal"
+            android:text="确认购买"
+            android:background="@drawable/pay_type_change_selector"
+            />
+        <TextView
+            android:id="@+id/waiting"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/pay_43"
+            android:layout_marginTop="@dimen/_pay_count_tip_mt"
+            android:gravity="center_horizontal"
+            android:visibility="invisible"
+            android:text="正在等待支付结果，请稍后！"
+            android:textColor="#ff9c3c"
+            android:textSize="@dimen/textsize_30sp" />
+    </LinearLayout>
+</LinearLayout>

@@ -4,50 +4,14 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
-
-        <TextView
-            android:id="@+id/description_line_1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/alipayyktmmrenewal_desc_line_1ml"
-            android:layout_marginTop="@dimen/alipayyktmmrenewal_desc_line_1mt"
-            android:text="·到期前1天为您自动续费，自动延长1个月"
-            android:textColor="#ffffff"
-            android:textSize="@dimen/text_size_28sp"/>
-
-        <TextView
-            android:id="@+id/description_line_2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/alipayyktmmrenewal_desc_line_2ml"
-            android:layout_marginTop="@dimen/alipayyktmmrenewal_desc_line_2mt"
-            android:text="@string/yktmm_price"
-            android:textColor="#ffffff"
-            android:textSize="@dimen/text_size_28sp"/>
-
-        <TextView
-            android:id="@+id/description_line_3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/alipayyktmmrenewal_desc_line_3ml"
-            android:layout_marginTop="@dimen/alipayyktmmrenewal_desc_line_3mt"
-            android:textColor="#ffffff"
-            android:textSize="@dimen/text_size_28sp"/>
-
-        <TextView
-            android:id="@+id/description_line_4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/alipayyktmmrenewal_desc_line_4ml"
-            android:layout_marginTop="@dimen/alipayyktmmrenewal_desc_line_4mt"
-            android:textColor="#ffffff"
-            android:textSize="@dimen/text_size_28sp"/>
-
+        android:orientation="horizontal">
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="@dimen/pay_410"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/alipayyktmmrenewal_btnlayout_ml">
+            android:layout_marginLeft="@dimen/pay_282"
+            android:layout_marginTop="@dimen/pay_250"
+            android:orientation="vertical"
+            >
 
             <Button
                 android:id="@+id/confirm"
@@ -55,31 +19,83 @@
                 android:layout_height="@dimen/alipayyktmmrenewal_btnconfirm_h"
                 android:background="@drawable/pay_type_change_selector"
                 android:text="确认开通连续包月"
-                android:textSize="@dimen/text_size_36sp"/>
+                android:textSize="@dimen/text_size_36sp"
+                />
 
-            <Button
-                android:id="@+id/cancel"
-                android:layout_width="@dimen/alipayyktmmrenewal_btncancel_w"
-                android:layout_height="@dimen/alipayyktmmrenewal_btncancel_h"
-                android:layout_marginLeft="@dimen/alipayyktmmrenewal_btncancel_ml"
-                android:background="@drawable/pay_type_change_selector"
-                android:text="切换为普通扫码"
-                android:textSize="@dimen/text_size_36sp"/>
+            <!--<Button-->
+            <!--android:id="@+id/cancel"-->
+            <!--android:layout_width="@dimen/alipayyktmmrenewal_btncancel_w"-->
+            <!--android:layout_height="@dimen/alipayyktmmrenewal_btncancel_h"-->
+            <!--android:layout_marginLeft="@dimen/alipayyktmmrenewal_btncancel_ml"-->
+            <!--android:background="@drawable/pay_type_change_selector"-->
+            <!--android:text="切换为普通扫码"-->
+            <!--android:textSize="@dimen/text_size_36sp"/>-->
 
+            <TextView
+                android:id="@+id/agreement_ytkmmrenewal"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/pay_35"
+                android:layout_marginLeft="@dimen/pay_43"
+                android:layout_marginTop="@dimen/pay_39"
+                android:clickable="true"
+                android:focusable="true"
+                android:nextFocusDown="@id/agreement_ytkmmrenewal"
+                android:textColor="@drawable/alipay_renewal_agreement_selector"
+                android:textSize="@dimen/text_size_24sp"
+                />
+            <TextView
+                android:id="@+id/waiting"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/pay_43"
+                android:layout_marginTop="@dimen/_pay_count_tip_mt"
+                android:gravity="center_horizontal"
+                android:visibility="invisible"
+                android:text="正在等待支付结果，请稍后！"
+                android:textColor="#ff9c3c"
+                android:textSize="@dimen/textsize_30sp" />
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/agreement"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/alipayyktmmrenewal_agreement_ml"
-            android:layout_marginTop="@dimen/alipayyktmmrenewal_agreement_mt"
-            android:clickable="true"
-            android:focusable="true"
-            android:nextFocusDown="@id/agreement"
-            android:textColor="@drawable/alipay_renewal_agreement_selector"
-            android:textSize="@dimen/text_size_24sp"
-            />
+            android:orientation="vertical"
+            android:layout_marginLeft="@dimen/pay_96"
+            >
+        <TextView
+            android:id="@+id/description_line_1"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/pay_43"
+            android:layout_marginTop="@dimen/pay_192"
+            android:text="·到期前1天为您自动续费，自动延长1个月"
+            android:textColor="#ffffff"
+            android:textSize="@dimen/text_size_30sp"/>
+
+        <TextView
+            android:id="@+id/description_line_2"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/pay_43"
+            android:layout_marginTop="@dimen/pay_27"
+            android:text="@string/yktmm_price"
+            android:textColor="#ffffff"
+            android:textSize="@dimen/text_size_30sp"/>
+
+        <TextView
+            android:id="@+id/description_line_3"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/pay_43"
+            android:layout_marginTop="@dimen/pay_27"
+            android:textColor="#ffffff"
+            android:textSize="@dimen/text_size_30sp"/>
+
+        <TextView
+            android:id="@+id/description_line_4"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/pay_43"
+            android:layout_marginTop="@dimen/pay_27"
+            android:textColor="#ffffff"
+            android:textSize="@dimen/text_size_30sp"/>
+        </LinearLayout>
+
 
     </LinearLayout>
 </layout>

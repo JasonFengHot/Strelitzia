@@ -46,7 +46,6 @@
         android:layout_marginRight="@dimen/payment_divider_margin"
         android:background="@drawable/divider_person"
         android:focusable="true" />
-
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -54,57 +53,58 @@
 
         <LinearLayout
             android:id="@+id/pay_type_layout"
-            android:layout_width="@dimen/paytype_width"
+            android:layout_width="@dimen/pay_432"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:orientation="vertical"
             android:visibility="invisible">
 
-            <Button
-                android:id="@+id/weixin"
-                android:layout_width="@dimen/payment_type_btn_width"
-                android:layout_height="@dimen/pay_channel_weixin_height"
-                android:layout_marginTop="@dimen/pay_channel_weixin_margintop"
-                android:background="@drawable/paychannel_btn_selector"
-                android:focusable="true"
-                android:focusableInTouchMode="false"
-                android:nextFocusLeft="@id/weixin"
-                android:nextFocusUp="@id/weixin"
-                android:text="@string/weixinpay_button_title"
-                android:textColor="#FFFFFF"
-                android:textSize="@dimen/pay_channel_weixin_textsize" />
+            <!--<Button-->
+                <!--android:id="@+id/weixin"-->
+                <!--android:layout_width="@dimen/payment_type_btn_width"-->
+                <!--android:layout_height="@dimen/pay_channel_weixin_height"-->
+                <!--android:layout_marginTop="@dimen/pay_channel_weixin_margintop"-->
+                <!--android:background="@drawable/paychannel_btn_selector"-->
+                <!--android:focusable="true"-->
+                <!--android:focusableInTouchMode="false"-->
+                <!--android:nextFocusLeft="@id/weixin"-->
+                <!--android:nextFocusUp="@id/weixin"-->
+                <!--android:text="@string/weixinpay_button_title"-->
+                <!--android:textColor="#FFFFFF"-->
+                <!--android:textSize="@dimen/pay_channel_weixin_textsize" />-->
 
             <Button
                 android:id="@+id/alipay"
                 android:layout_width="@dimen/payment_type_btn_width"
                 android:layout_height="@dimen/pay_channel_weixin_height"
-                android:layout_marginTop="@dimen/pay_channel_weixin_margintop"
+                android:layout_marginTop="@dimen/pay_channel_saoma_marginTop"
                 android:background="@drawable/paychannel_btn_selector"
                 android:focusable="true"
                 android:focusableInTouchMode="false"
                 android:nextFocusLeft="@id/alipay"
-                android:text="@string/zhifubao_pay_button_title"
+                android:nextFocusUp="@id/alipay"
+                android:text="@string/saoma_pay_button"
                 android:textColor="#FFFFFF"
                 android:textSize="@dimen/pay_channel_weixin_textsize" />
 
-            <Button
-                android:id="@+id/videocard"
-                android:layout_width="@dimen/payment_type_btn_width"
-                android:layout_height="@dimen/pay_channel_weixin_height"
-                android:layout_marginTop="@dimen/pay_channel_weixin_margintop"
-                android:background="@drawable/paychannel_btn_selector"
-                android:focusable="true"
-                android:focusableInTouchMode="false"
-                android:nextFocusLeft="@id/videocard"
-                android:text="@string/guanyingcard_pay_button_title"
-                android:textColor="#FFFFFF"
-                android:textSize="@dimen/pay_channel_weixin_textsize" />
+            <!--<Button-->
+                <!--android:id="@+id/videocard"-->
+                <!--android:layout_width="@dimen/payment_type_btn_width"-->
+                <!--android:layout_height="@dimen/pay_channel_weixin_height"-->
+                <!--android:layout_marginTop="@dimen/pay_channel_weixin_margintop"-->
+                <!--android:background="@drawable/paychannel_btn_selector"-->
+                <!--android:focusable="true"-->
+                <!--android:focusableInTouchMode="false"-->
+                <!--android:nextFocusLeft="@id/videocard"-->
+                <!--android:text="@string/guanyingcard_pay_button_title"-->
+                <!--android:textColor="#FFFFFF"-->
+                <!--android:textSize="@dimen/pay_channel_weixin_textsize" />-->
 
             <Button
                 android:id="@+id/balance_pay"
                 android:layout_width="@dimen/payment_type_btn_width"
                 android:layout_height="@dimen/pay_channel_weixin_height"
-                android:layout_marginTop="@dimen/pay_channel_weixin_margintop"
+                android:layout_marginTop="@dimen/pay_channel_yue_marginTop"
                 android:background="@drawable/paychannel_btn_selector"
                 android:focusable="true"
                 android:focusableInTouchMode="false"
@@ -117,17 +117,18 @@
 
         </LinearLayout>
 
-        <ImageView
-            android:layout_width="@dimen/payment_h_divider"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/payment_divider_margin"
-            android:layout_marginTop="@dimen/payment_divider_margin"
-            android:background="@drawable/portrait_divider_person" />
+        <!--<ImageView-->
+            <!--android:id="@+id/shadow"-->
+            <!--android:layout_width="@dimen/payment_h_divider"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_marginBottom="@dimen/payment_divider_margin"-->
+            <!--android:layout_marginTop="@dimen/payment_divider_margin"-->
+            <!--android:background="@drawable/portrait_divider_person" />-->
 
         <FrameLayout
             android:id="@+id/fragment_page"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="@dimen/pay_638">
 
         </FrameLayout>
 

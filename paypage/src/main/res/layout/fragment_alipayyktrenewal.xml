@@ -1,47 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        >
 
         <TextView
             android:text="您已开通连续包月服务"
             android:id="@+id/title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/alipayyktrenewal_title_ml"
-            android:layout_marginTop="@dimen/alipayyktrenewal_title_mt"
+            android:layout_marginLeft="@dimen/pay_494"
+            android:layout_marginTop="@dimen/pay_168"
             android:textColor="#ff9c3c"
-            android:textSize="@dimen/text_size_36sp"/>
+            android:textSize="@dimen/text_size_48sp"/>
 
         <TextView
             android:text="@string/ykt_renewal_price"
             android:id="@+id/description_line_1"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/alipayyktrenewal_desc_line1_ml"
-            android:layout_marginTop="@dimen/alipayyktrenewal_desc_line1_mt"
-            android:textSize="@dimen/text_size_28sp"/>
+            android:layout_height="@dimen/pay_43"
+            android:layout_marginTop="@dimen/pay_23"
+            android:layout_marginLeft="@dimen/pay_494"
+            android:textSize="@dimen/text_size_30sp"/>
 
         <TextView
             android:text="@string/ykt_renewal_duration"
             android:id="@+id/description_line_2"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/alipayyktrenewal_desc_line2_ml"
-            android:layout_marginTop="@dimen/alipayyktrenewal_desc_line2_mt"
-            android:textSize="@dimen/text_size_28sp"/>
+            android:layout_height="@dimen/pay_43"
+            android:layout_marginLeft="@dimen/pay_494"
+            android:layout_marginTop="@dimen/pay_27"
+            android:textSize="@dimen/text_size_30sp"/>
 
         <TextView
             android:text="·到期前1天为您自动续费，自动延长1个月"
             android:id="@+id/description_line_3"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/alipayyktrenewal_desc_line3_ml"
-            android:layout_marginTop="@dimen/alipayyktrenewal_desc_line3_mt"
-            android:textSize="@dimen/text_size_28sp"/>
+            android:layout_height="@dimen/pay_43"
+            android:layout_marginLeft="@dimen/pay_494"
+            android:layout_marginTop="@dimen/pay_27"
+            android:textSize="@dimen/text_size_30sp"/>
 
     </LinearLayout>
-</layout>
+</LinearLayout>
