@@ -122,7 +122,7 @@ public class TemplateBigSmallLd extends Template{
         String pageCount = String.valueOf(pageNumber);
 
 
-        SkyService.ServiceManager.getLocalTestService().apiTvBanner("overseasbanner", pageCount)
+        SkyService.ServiceManager.getLocalTestService().apiTvBanner(1, pageCount)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<BannerEntity>() {

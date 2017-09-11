@@ -865,7 +865,7 @@ public class HomePageActivity extends BaseActivity implements LinearLayoutManage
         }
 
         String count = String.valueOf(pageNumber);
-        bannerSubscribeSub = SkyService.ServiceManager.getLocalTestService().apiTvBanner("overseasbanner", count)
+        bannerSubscribeSub = SkyService.ServiceManager.getLocalTestService().apiTvBanner(1, count)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<BannerEntity>() {
@@ -895,7 +895,7 @@ public class HomePageActivity extends BaseActivity implements LinearLayoutManage
 
 
     private void fetchMovieBanner() {
-        bannerSubscribeSub = SkyService.ServiceManager.getLocalTestService().apiTvBanner("chinesemoviebanner", "1")
+        bannerSubscribeSub = SkyService.ServiceManager.getLocalTestService().apiTvBanner(1, "1")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<BannerEntity>() {
@@ -918,7 +918,7 @@ public class HomePageActivity extends BaseActivity implements LinearLayoutManage
     }
 
     private void fetchHorizontal519Banner() {
-        bannerSubscribeSub = SkyService.ServiceManager.getLocalTestService().apiTvBanner("chinesemoviebanner", "1")
+        bannerSubscribeSub = SkyService.ServiceManager.getLocalTestService().apiTvBanner(1, "1")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<BannerEntity>() {
@@ -940,7 +940,7 @@ public class HomePageActivity extends BaseActivity implements LinearLayoutManage
     }
 
     private void fetchMovieMixBanner() {
-        bannerSubscribeSub = SkyService.ServiceManager.getLocalTestService().apiTvBanner("chinesemoviebanner", "1")
+        bannerSubscribeSub = SkyService.ServiceManager.getLocalTestService().apiTvBanner(1, "1")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<BannerEntity>() {

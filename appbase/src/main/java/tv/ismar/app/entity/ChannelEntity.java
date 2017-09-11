@@ -14,9 +14,17 @@ public class ChannelEntity {
     private String homepage_template;
     private String homepage_url;
     private int style;
-    
+    private String banners_url;
 
-	public int getStyle() {
+    public String getBanners_url() {
+        return banners_url;
+    }
+
+    public void setBanners_url(String banners_url) {
+        this.banners_url = banners_url;
+    }
+
+    public int getStyle() {
 		return style;
 	}
 

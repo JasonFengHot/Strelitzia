@@ -34,10 +34,10 @@ public class TemplateMovie extends Template {
 
     private RecyclerViewTV movieBanner;
     private BannerMovieAdapter mMovieAdapter;
+    private int mBannerName;
 
     public TemplateMovie(Context context) {
         super(context);
-        fetchMovieBanner(1);
     }
 
     @Override
@@ -57,7 +57,7 @@ public class TemplateMovie extends Template {
                 Log.d("PagingableListener", "onLoadMoreItems");
                 int currentPageNumber = mMovieAdapter.getCurrentPageNumber();
                 if (currentPageNumber < mMovieAdapter.getTotalPageCount()){
-                    fetchMovieBanner(currentPageNumber + 1);
+                    fetchMovieBanner(mBannerName, currentPageNumber + 1);
                 }
             }
         });
@@ -88,12 +88,17 @@ public class TemplateMovie extends Template {
 
     @Override
     public void initData(Bundle bundle) {
-        int banner = bundle.getInt("banner");
-        Log.i(TAG, "banner:"+banner);
+        mBannerName = bundle.getInt("banner");
+        Log.d(TAG, "initData: " + mBannerName);
+        fetchMovieBanner(mBannerName, 1);
     }
 
+    @Override
+    public void initTitle() {
+        super.initTitle();
+    }
 
-    private void fetchMovieBanner(final int pageNumber) {
+    private void fetchMovieBanner(int bannerName, final int pageNumber) {
         if (pageNumber != 1){
             int startIndex = (pageNumber - 1) * 33;
             int endIndex;
@@ -119,7 +124,7 @@ public class TemplateMovie extends Template {
 
         String pageCount = String.valueOf(pageNumber);
 
-        SkyService.ServiceManager.getLocalTestService().apiTvBanner("overseasbanner", pageCount)
+        SkyService.ServiceManager.getLocalTestService().apiTvBanner(bannerName, pageCount)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<BannerEntity>() {
