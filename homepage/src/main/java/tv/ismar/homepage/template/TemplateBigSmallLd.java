@@ -47,11 +47,11 @@ public class TemplateBigSmallLd extends Template{
         movieMixBanner = (RecyclerViewTV) view.findViewById(R.id.movie_mix_banner);
         LinearLayoutManagerTV movieMixLayoutManager = new LinearLayoutManagerTV(mContext, LinearLayoutManager.HORIZONTAL, false);
         int selectedItemSpace = mContext.getResources().getDimensionPixelSize(R.dimen.banner_item_SelectedItemSpace);
-        movieMixBanner.addItemDecoration(new BannerMovieMixAdapter.SpacesItemDecoration(selectedItemSpace));
+//        movieMixBanner.addItemDecoration(new BannerMovieMixAdapter.SpacesItemDecoration(selectedItemSpace));
         movieMixBanner.setLayoutManager(movieMixLayoutManager);
         movieMixBanner.setSelectedItemAtCentered(false);
         int selectedItemOffset = mContext.getResources().getDimensionPixelSize(R.dimen.banner_item_setSelectedItemOffset);
-        movieMixBanner.setSelectedItemOffset(selectedItemOffset, selectedItemOffset);
+//        movieMixBanner.setSelectedItemOffset(selectedItemOffset, selectedItemOffset);
         movieMixBanner.setPagingableListener(new RecyclerViewTV.PagingableListener() {
             @Override
             public void onLoadMoreItems() {
