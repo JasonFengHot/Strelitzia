@@ -582,6 +582,7 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                     @Override
                     public void onNext(ItemList itemList) {
                         for (int i = 0; i <itemList.objects.size() ; i++) {
+                            if(mAllSectionItemList.objects.size()>specialPos.get(checkedPos)+i+1+100*(page-1))
                             mAllSectionItemList.objects.set(specialPos.get(checkedPos)+i+1+100*(page-1),itemList.objects.get(i));
                         }
                         sectionHasData[checkedPos]=true;
