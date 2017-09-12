@@ -334,6 +334,9 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
     private void changeCheckedTab(int position) {
         for (int i = 0; i < sectionSize; i++) {
             if (i == sectionSize - 1) {
+                if(specialPos!=null&&position>=specialPos.get(i)){
+                    ((RadioButton) section_group.getChildAt(i + 1)).setChecked(true);
+                }
                 break;
             }
             if (specialPos != null && position >= specialPos.get(i) && position < specialPos.get(i + 1)) {
