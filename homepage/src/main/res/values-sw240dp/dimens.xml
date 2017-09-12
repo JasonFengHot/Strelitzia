@@ -841,4 +841,7 @@
 <dimen name="banner_item_SelectedItemSpace">4.44dp</dimen>
 <dimen name="banner_item_movie_small_width">55.56dp</dimen>
 <dimen name="banner_item_movie_big_width">160.00dp</dimen>
+<dimen name="launcher_ad_1031">229.11dp</dimen>
+<dimen name="launcher_ad_549">122.00dp</dimen>
+<dimen name="launcher_ad_445">98.89dp</dimen>
 </resources>

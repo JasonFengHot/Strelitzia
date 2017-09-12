@@ -250,11 +250,11 @@
             android:visibility="gone"/>
         <SeekBar
             android:id="@+id/home_ad_seekbar"
-            android:layout_width="1031dp"
+            android:layout_width="@dimen/launcher_ad_1031"
             android:layout_height="wrap_content"
-            android:layout_marginTop="549dp"
+            android:layout_marginTop="@dimen/launcher_ad_549"
             android:maxHeight="1dp"
-            android:layout_marginLeft="445dp"
+            android:layout_marginLeft="@dimen/launcher_ad_445"
             android:paddingLeft="0dp"
             android:paddingRight="0dp"
             android:thumb="@drawable/launcher_thumb"
