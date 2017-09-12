@@ -3,6 +3,7 @@ package tv.ismar.homepage;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.PixelFormat;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
@@ -66,6 +67,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
 
     private BitmapDecoder mBitmapDecoder;
     private int mLastSelectedIndex = 0;//记录上一次选中的位置
+    private TimeTickBroadcast mTimeTickBroadcast = null;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -132,7 +134,10 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         mPersonCenterLayout.setOnFocusChangeListener(this);
         mCollectionLayout.setOnClickListener(this);
         mPersonCenterLayout.setOnClickListener(this);
-        TimeTickReceiver.register(this, new TimeTickBroadcast());
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(Intent.ACTION_TIME_TICK);
+        mTimeTickBroadcast = new TimeTickBroadcast();
+        registerReceiver(mTimeTickBroadcast, filter);
         mTimeTv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -249,7 +254,8 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        TimeTickReceiver.unregisterAll(this);
+        unregisterReceiver(mTimeTickBroadcast);
+        mTimeTickBroadcast = null;
     }
 
     private void startTrueTimeService() {
