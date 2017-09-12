@@ -55,6 +55,8 @@ import tv.ismar.listpage.R;
 import tv.ismar.searchpage.utils.JasmineUtil;
 import tv.ismar.view.IsmartvLinearLayout;
 
+import static tv.ismar.listpage.R.id.arrow_line_2;
+
 
 /**
  * Created by liucan on 2017/8/22.
@@ -68,6 +70,7 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
     private HistoryListAdapter historyAdapter;
     private HistoryListAdapter favoritAdapter;
     private LinearLayout edit_history;
+    private ImageView arrow_line1,arrow_line2;
     private IsmartvLinearLayout delet_history,delete_favorite;
     private LinearLayout favorite_layout,list_layout;
     private RelativeLayout history_relativelayout,favorite_relativeLayout;
@@ -100,6 +103,8 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
         history_relativelayout= (RelativeLayout) findViewById(R.id.history_layout);
         favorite_relativeLayout= (RelativeLayout) findViewById(R.id.favorite_relateLayout);
         delete_favorite= (IsmartvLinearLayout) findViewById(R.id.favorite_edit);
+        arrow_line1= (ImageView) findViewById(R.id.arrow_line_1);
+        arrow_line2= (ImageView) findViewById(arrow_line_2);
         delet_history.setOnClickListener(this);
         delete_favorite.setOnClickListener(this);
         editBtnFocusListener();
@@ -277,6 +282,7 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
                 history_relativelayout.setVisibility(View.VISIBLE);
                 favorite_relativeLayout.setVisibility(View.GONE);
                 history_title.setText("历史");
+                history_title.setVisibility(View.VISIBLE);
                 first_line_image.setBackgroundResource(R.drawable.history_delete_image);
                 historyAdapter=new HistoryListAdapter(HistoryFavoriteActivity.this,historyLists,"history");
                 historyAdapter.setItemFocusedListener(HistoryFavoriteActivity.this);
@@ -324,9 +330,13 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
             lp.setMargins(getResources().getDimensionPixelSize(R.dimen.history_492),0,0,0);
             list_layout.setLayoutParams(lp);
             favorite_layout.setLayoutParams(lp);
+            RelativeLayout.LayoutParams lp2 = new RelativeLayout.LayoutParams(getResources().getDimensionPixelSize(R.dimen.history_1328), getResources().getDimensionPixelSize(R.dimen.history_2));
+            lp2.setMargins(getResources().getDimensionPixelSize(R.dimen.history_592),getResources().getDimensionPixelSize(R.dimen.history_75),0,0);
+            arrow_line2.setLayoutParams(lp2);
+            arrow_line1.setLayoutParams(lp2);
 
             historyLayoutManager.setScrollEnabled(false);
-
+            favoriteManager.setScrollEnabled(false);
         }else if(id==R.id.favorite_edit){
             intent.putExtra("type",2);
             intent.putExtra("List",(Serializable) favoriteLists);
@@ -353,7 +363,14 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
             lp.setMargins(0,0,0,0);
             list_layout.setLayoutParams(lp);
             favorite_layout.setLayoutParams(lp);
+
+            RelativeLayout.LayoutParams lp2 = new RelativeLayout.LayoutParams(getResources().getDimensionPixelSize(R.dimen.history_1820), getResources().getDimensionPixelSize(R.dimen.history_2));
+            lp2.setMargins(getResources().getDimensionPixelSize(R.dimen.history_100),getResources().getDimensionPixelSize(R.dimen.history_75),0,0);
+            arrow_line2.setLayoutParams(lp2);
+            arrow_line1.setLayoutParams(lp2);
+
             historyLayoutManager.setScrollEnabled(true);
+            favoriteManager.setScrollEnabled(true);
         }else {
             super.onBackPressed();
         }
@@ -479,7 +496,7 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
         item.setQuality(history.quality);
         item.setTitle(history.title);
         item.setUrl(history.url);
-        item.setDate(history.last_played_time+"");
+        item.setDate(history.add_time);
 //		if(history.price==0){
 //			item.expense = null;
 //		}

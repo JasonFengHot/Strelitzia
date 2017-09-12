@@ -11,6 +11,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.TimeZone;
 
 import cn.ismartv.truetime.TrueTime;
 import okhttp3.ResponseBody;
@@ -341,6 +342,7 @@ public class DetailPagePresenter implements DetailPageContract.Presenter {
             mDetailView.notifyBookmark(false, true);
         } else {
             DateFormat format=new SimpleDateFormat("MM-dd");
+            format.setTimeZone(TimeZone.getTimeZone("Asia/Shanghai"));
             long time=TrueTime.now().getTime();
             Calendar calendar = Calendar.getInstance();
             calendar.setTimeInMillis(time);
