@@ -1115,17 +1115,12 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                         mFilterFocusGridLayoutManager.scrollToPositionWithOffset(mFilterFocusGridLayoutManager.findFirstVisibleItemPosition() - 1, getResources().getDimensionPixelOffset(R.dimen.list_scroll_filter_offset_h));
                     }
             }else{
-            if(mFocusGridLayoutManager.findFirstVisibleItemPosition()==0){
-                filter_tab.requestFocus();
-                filter_tab.requestFocusFromTouch();
-            }else {
                 nextPos = specialPos.contains(mFocusGridLayoutManager.findFirstVisibleItemPosition() - 1) ? mFocusGridLayoutManager.findFirstVisibleItemPosition() - 2 : mFocusGridLayoutManager.findFirstVisibleItemPosition() - 1;
                 if (isVertical) {
                     mFocusGridLayoutManager.scrollToPositionWithOffset(nextPos, getResources().getDimensionPixelOffset(R.dimen.list_scroll_up_offset_v));
                 } else {
                     mFocusGridLayoutManager.scrollToPositionWithOffset(nextPos, getResources().getDimensionPixelOffset(R.dimen.list_scroll_up_offset_h));
                 }
-            }
             }
         }else if(i==R.id.poster_arrow_down){
             if(filter_tab.isChecked()){

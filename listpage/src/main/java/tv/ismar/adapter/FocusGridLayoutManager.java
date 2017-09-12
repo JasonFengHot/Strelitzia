@@ -85,6 +85,13 @@ public class FocusGridLayoutManager extends GridLayoutManager {
                 YoYo.with(Techniques.HorizontalShake).duration(1000).playOn(focused);
                 return focused;
             }
+        }else if(direction==View.FOCUS_DOWN){
+            int nextPos = getNextViewPos(getPosition(focused), direction);
+            View nextView=findViewByPosition(nextPos);
+            if(nextView==null){
+                YoYo.with(Techniques.VerticalShake).duration(1000).playOn(focused);
+                return focused;
+            }
         }
         return super.onInterceptFocusSearch(focused, direction);
     }
@@ -106,6 +113,9 @@ public class FocusGridLayoutManager extends GridLayoutManager {
          */
         int nextPos = getNextViewPos(fromPos, focusDirection);
         View nextView=findViewByPosition(nextPos);
+        if(nextView instanceof TextView){
+            nextView=findViewByPosition(nextPos+1);
+        }
         if(nextView==null&&focusDirection==View.FOCUS_RIGHT){
             nextView=focused;
         }
