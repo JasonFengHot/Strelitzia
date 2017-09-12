@@ -220,7 +220,7 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                         Message msg = new Message();
                         msg.what = 0;
                         msg.obj = v;
-                        mHandler.sendMessageDelayed(msg, 1000);
+                        mHandler.sendMessageDelayed(msg, 500);
                     }
                 }else{
                     mHandler.removeMessages(0);
@@ -424,7 +424,6 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                     if(hasFocus){
                         radioButton.setTextSize(TypedValue.COMPLEX_UNIT_PX,getResources().getDimensionPixelSize(R.dimen.filter_layout_left_view_tab_ts_scaled));
                         radioButton.setEllipsize(TextUtils.TruncateAt.MARQUEE);
-                        Log.e("tabposition",v.getY()+"");
                         if(radioButton.isChecked()){
                             return;
                         }
@@ -432,7 +431,7 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                             Message msg = new Message();
                             msg.obj = v;
                             msg.what = finalI1 + 1;
-                            mHandler.sendMessageDelayed(msg, 1000);
+                            mHandler.sendMessageDelayed(msg, 500);
                         }
                     }else{
                         mHandler.removeMessages(finalI1+1);
@@ -990,9 +989,18 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                                 }
                             } else if (view.getY() < 0) {
                                 if (isVertical) {
-                                    mFocusGridLayoutManager.scrollToPositionWithOffset(position, getResources().getDimensionPixelOffset(R.dimen.list_scroll_down_offset_v));
+                                    if(specialPos!=null&&(specialPos.contains(position-1)||specialPos.contains(position-2)||specialPos.contains(position-3)||specialPos.contains(position-4)||specialPos.contains(position-5))){
+                                        mFocusGridLayoutManager.scrollToPositionWithOffset(position, getResources().getDimensionPixelOffset(R.dimen.list_scroll_up_offset_v));
+                                    }else{
+                                        mFocusGridLayoutManager.scrollToPositionWithOffset(position, getResources().getDimensionPixelOffset(R.dimen.list_scroll_down_offset_v));
+                                    }
                                 } else {
-                                    mFocusGridLayoutManager.scrollToPositionWithOffset(position, getResources().getDimensionPixelOffset(R.dimen.list_scroll_down_offset_h));
+                                    if(specialPos!=null&&(specialPos.contains(position-1)||specialPos.contains(position-2)||specialPos.contains(position-3))){
+                                        mFocusGridLayoutManager.scrollToPositionWithOffset(position, getResources().getDimensionPixelOffset(R.dimen.list_scroll_up_offset_h));
+                                    }else{
+                                        mFocusGridLayoutManager.scrollToPositionWithOffset(position, getResources().getDimensionPixelOffset(R.dimen.list_scroll_down_offset_h));
+                                    }
+
                                 }
                             }
                         }

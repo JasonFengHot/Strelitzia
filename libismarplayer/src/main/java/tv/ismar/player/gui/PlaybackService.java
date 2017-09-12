@@ -25,6 +25,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 
 import cn.ismartv.truetime.TrueTime;
 import okhttp3.ResponseBody;
@@ -1019,6 +1020,7 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
             historyManager = VodApplication.getModuleAppContext().getModuleHistoryManager();
         }
         DateFormat format=new SimpleDateFormat("MM-dd");
+        format.setTimeZone(TimeZone.getTimeZone("Asia/Shanghai"));
         long time= TrueTime.now().getTime();
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(time);

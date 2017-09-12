@@ -82,6 +82,14 @@
                 />
 
         </tv.ismar.view.IsmartvLinearLayout>
+        <ImageView
+            android:id="@+id/arrow_line_1"
+            android:layout_width="@dimen/history_1820"
+            android:layout_height="@dimen/history_2"
+            android:background="@color/_333333"
+            android:layout_marginLeft="@dimen/history_100"
+            android:layout_marginTop="@dimen/history_75"
+            />
         <LinearLayout
             android:id="@+id/list_layout"
             android:layout_width="match_parent"
@@ -144,6 +152,14 @@
                 />
 
         </tv.ismar.view.IsmartvLinearLayout>
+        <ImageView
+            android:id="@+id/arrow_line_2"
+            android:layout_width="@dimen/history_1820"
+            android:layout_height="@dimen/history_2"
+            android:background="@color/_333333"
+            android:layout_marginLeft="@dimen/history_100"
+            android:layout_marginTop="@dimen/history_75"
+            />
         <LinearLayout
             android:id="@+id/favorite_layout"
             android:layout_width="match_parent"
@@ -175,5 +191,6 @@
                 android:layout_height="wrap_content">
             </com.open.androidtvwidget.leanback.recycle.RecyclerViewTV>
         </LinearLayout>
+        
     </RelativeLayout>
 </LinearLayout>
