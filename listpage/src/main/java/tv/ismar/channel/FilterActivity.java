@@ -679,6 +679,7 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
      * 显示筛选条件popup
      */
     private void showFilterPopup() {
+        filter_tab.setFocusable(false);
         filterPopup = new PopupWindow(filter_condition_layout, getResources().getDimensionPixelOffset(R.dimen.filter_condition_popup_w), getResources().getDimensionPixelOffset(R.dimen.filter_condition_popup_h), true);
         filterPopup.setTouchable(true);
         filterPopup.setTouchInterceptor(new View.OnTouchListener() {
@@ -696,6 +697,7 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
 
             @Override
             public void onDismiss() {
+                filter_tab.setFocusable(true);
                 if(filterNoResult){
 //                    if(filter_noresult_first_line.getChildAt(0)!=null)
 //                    filter_noresult_first_line.getChildAt(0).requestFocus();
@@ -903,8 +905,10 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                     baseSection="";
                     PageIntent intent = new PageIntent();
                     Item item=itemList.objects.get(position);
-                    if(item.content_model.contains("gather")){
+                    if(item.content_model!=null&&item.content_model.contains("gather")){
                         intent.toSubject(FilterActivity.this,item.content_model,item.pk,item.title,Source.RETRIEVAL.getValue(),baseChannel);
+                    }else if(item.model_name!=null&&item.model_name.equals("package")){
+                       intent.toPackageDetail(FilterActivity.this,Source.RETRIEVAL.getValue(),item.pk);
                     }else if(item.is_complex) {
                         intent.toDetailPage(FilterActivity.this,Source.RETRIEVAL.getValue(),item.pk);
                     }else{
@@ -964,8 +968,10 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                     baseSection="";
                     PageIntent intent = new PageIntent();
                     Item item=itemList.objects.get(position);
-                    if(item.content_model.contains("gather")){
+                    if(item.content_model!=null&&item.content_model.contains("gather")){
                         intent.toSubject(FilterActivity.this,item.content_model,item.pk,item.title,Source.RETRIEVAL.getValue(),baseChannel);
+                    }else if(item.model_name!=null&&item.model_name.equals("package")){
+                        intent.toPackageDetail(FilterActivity.this,Source.RETRIEVAL.getValue(),item.pk);
                     }else if(item.is_complex) {
                         intent.toDetailPage(FilterActivity.this,Source.RETRIEVAL.getValue(),item.pk);
                     }else{
@@ -980,7 +986,7 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                         lastFocusedView = view;
                         Log.e("postery",view.getY()+"");
                         changeCheckedTab(position);
-                        if(!filter_root_view.horving) {
+//                        if(!filter_root_view.horving) {
                             if (view.getY() > getResources().getDimensionPixelOffset(R.dimen.filter_poster_start_scroll_length)) {
                                 if (isVertical) {
                                     mFocusGridLayoutManager.scrollToPositionWithOffset(position, getResources().getDimensionPixelOffset(R.dimen.list_scroll_up_offset_v));
@@ -1002,8 +1008,14 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                                     }
 
                                 }
-                            }
+                            }else if(isVertical&&view.getY()>0&&view.getY()<current_section_title.getHeight()){
+                                if(specialPos!=null&&(specialPos.contains(position-1)||specialPos.contains(position-2)||specialPos.contains(position-3)||specialPos.contains(position-4)||specialPos.contains(position-5))){
+                                    mFocusGridLayoutManager.scrollToPositionWithOffset(position, getResources().getDimensionPixelOffset(R.dimen.list_scroll_up_offset_v));
+                                }else{
+                                    mFocusGridLayoutManager.scrollToPositionWithOffset(position, getResources().getDimensionPixelOffset(R.dimen.list_scroll_down_offset_v));
+                                }
                         }
+//                        }
                         JasmineUtil.scaleOut3(view);
                         if(isVertical) {
                             view.findViewById(R.id.item_vertical_poster_title).setSelected(true);
