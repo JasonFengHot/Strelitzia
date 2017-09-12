@@ -115,9 +115,11 @@
         app:tvTabStartEndPadding="@dimen/channel_tab_tvTab_space"
         app:tvTabTextColor="#999999"
         app:tvTabTextSize="@dimen/text_size_36sp"
+        android:focusable="false"
         />
     <FrameLayout
         android:id="@+id/fragment_layout"
+        android:focusable="false"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 </LinearLayout>

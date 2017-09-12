@@ -106,6 +106,9 @@ public class FocusGridLayoutManager extends GridLayoutManager {
          */
         int nextPos = getNextViewPos(fromPos, focusDirection);
         View nextView=findViewByPosition(nextPos);
+        if(nextView instanceof TextView){
+            nextView=findViewByPosition(nextPos+1);
+        }
         if(nextView==null&&focusDirection==View.FOCUS_RIGHT){
             nextView=focused;
         }
