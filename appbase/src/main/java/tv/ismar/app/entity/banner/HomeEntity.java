@@ -9,11 +9,10 @@ import java.util.List;
  */
 
 public class HomeEntity {
-    public String template;
-    public int pk;
-    public String banner;
-    public int count;
-    public BigImage big_image;
+    private int count;
+    private int page;
+    private int num_pages;
+    private String template;
     public List<BannerCarousels> carousels;
-    public List<BannerPoster> poster;
+    public List<BannerPoster> posters;
 }

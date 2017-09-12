@@ -49,8 +49,8 @@ public class GuideAdapter extends RecyclerView.Adapter<GuideAdapter.GuideViewHol
         holder.mMarginLeftView.setVisibility(mMarginLeftEnable?View.VISIBLE:View.GONE);
         BannerPoster poster = mData.get(position);
         Picasso.with(mContext).load(poster.poster_url).into(holder.mPosterIg);
-//        Picasso.with(mContext).load(poster.poster_url).into(holder.mLtIconTv);
-//        Picasso.with(mContext).load(poster.poster_url).into(holder.mRbIconTv);
+//        Picasso.with(mContext).load(posters.poster_url).into(holder.mLtIconTv);
+//        Picasso.with(mContext).load(posters.poster_url).into(holder.mRbIconTv);
         holder.mTitleTv.setText(poster.title);
     }
 

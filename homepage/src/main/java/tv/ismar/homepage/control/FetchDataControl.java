@@ -100,7 +100,7 @@ public class FetchDataControl extends BaseControl{
 
     /*获取频道列表*/
     public void fetchChannels() {
-        SkyService.ServiceManager.getCacheSkyService().apiTvChannels()
+        SkyService.ServiceManager.getService().apiTvChannels()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<ChannelEntity[]>() {
@@ -176,9 +176,9 @@ public class FetchDataControl extends BaseControl{
                                     mCarousels.clear();
                                     mCarousels.addAll(homeEntities.carousels);
                                 }
-                                if(homeEntities.poster != null){
+                                if(homeEntities.posters != null){
                                     mPoster.clear();
-                                    mPoster.addAll(homeEntities.poster);
+                                    mPoster.addAll(homeEntities.posters);
                                 }
                             }
                             mCallBack.callBack(FETCH_BANNERS_LIST_FLAG, homeEntities);
@@ -280,7 +280,7 @@ public class FetchDataControl extends BaseControl{
                 "        }\n" +
                 "    ],\n" +
                 "    \"num_pages\": 1,\n" +
-                "    \"poster\": [\n" +
+                "    \"posters\": [\n" +
                 "        {\n" +
                 "            \"title\": \"奇异博士\",\n" +
                 "            \"introduction\": \"奇异博士\",\n" +

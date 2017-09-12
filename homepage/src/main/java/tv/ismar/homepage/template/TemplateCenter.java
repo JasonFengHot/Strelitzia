@@ -13,7 +13,6 @@ import tv.ismar.app.BaseControl;
 import tv.ismar.app.entity.banner.HomeEntity;
 import tv.ismar.homepage.R;
 import tv.ismar.homepage.adapter.CenterAdapter;
-import tv.ismar.homepage.adapter.ConlumnAdapter;
 import tv.ismar.homepage.control.CenterControl;
 import tv.ismar.homepage.control.FetchDataControl;
 
@@ -57,7 +56,7 @@ public class TemplateCenter extends Template implements BaseControl.ControlCallB
         if(flags == FetchDataControl.FETCH_BANNERS_LIST_FLAG){//获取单个banner业务
             HomeEntity homeEntity = (HomeEntity) args[0];
             if(mAdapter == null){
-                mAdapter = new CenterAdapter(mContext, homeEntity.poster);
+                mAdapter = new CenterAdapter(mContext, homeEntity.posters);
                 mRecycleView.setAdapter(mAdapter);
             }else {
                 mAdapter.notifyDataSetChanged();

@@ -1,4 +1,4 @@
-package tv.ismar.homepage.fragment;
+package tv.ismar.homepage.view;
 
 import android.content.Intent;
 import android.media.MediaPlayer;
@@ -31,7 +31,7 @@ import tv.ismar.homepage.widget.DaisyVideoView;
 /**
  * @AUTHOR: xi
  * @DATE: 2017/9/11
- * @DESC: 广告fragment(暂且拿以前的代码堆在这里吧,有时间了再整理)
+ * @DESC: 广告页(暂且拿以前的代码堆在这里吧,有时间了再整理)
  */
 
 public class AdvertiseActivity extends BaseActivity implements MediaPlayer.OnPreparedListener,
@@ -178,7 +178,7 @@ public class AdvertiseActivity extends BaseActivity implements MediaPlayer.OnPre
                         @Override
                         public void onError(Exception e) {//图片加载失败启动倒计时
                             Picasso.with(AdvertiseActivity.this)
-                                    .load("file:///android_asset/poster.png")
+                                    .load("file:///android_asset/posters.png")
                                     .memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE)
                                     .networkPolicy(NetworkPolicy.NO_CACHE, NetworkPolicy.NO_CACHE)
                                     .into(mPicImg);

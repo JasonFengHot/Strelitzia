@@ -3,10 +3,7 @@ package tv.ismar.homepage.template;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.OrientationHelper;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.TextView;
 
 import com.open.androidtvwidget.leanback.recycle.LinearLayoutManagerTV;
 import com.open.androidtvwidget.leanback.recycle.RecyclerViewTV;
@@ -15,10 +12,8 @@ import tv.ismar.app.BaseControl;
 import tv.ismar.app.entity.banner.HomeEntity;
 import tv.ismar.homepage.R;
 import tv.ismar.homepage.adapter.ConlumnAdapter;
-import tv.ismar.homepage.banner.adapter.BannerSubscribeAdapter;
 import tv.ismar.homepage.control.ConlumnControl;
 import tv.ismar.homepage.control.FetchDataControl;
-import tv.ismar.homepage.control.GuideControl;
 
 /**
  * @AUTHOR: xi
@@ -58,7 +53,7 @@ public class TemplateConlumn extends Template implements BaseControl.ControlCall
         if(flags == FetchDataControl.FETCH_BANNERS_LIST_FLAG){//获取单个banner业务
             if(mAdapter == null){
                 HomeEntity homeEntity = (HomeEntity) args[0];
-                mAdapter = new ConlumnAdapter(mContext, homeEntity.poster);
+                mAdapter = new ConlumnAdapter(mContext, homeEntity.posters);
                 mRecyclerView.setAdapter(mAdapter);
             }else {
                 mAdapter.notifyDataSetChanged();

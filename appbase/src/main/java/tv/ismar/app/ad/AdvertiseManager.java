@@ -34,7 +34,7 @@ import tv.ismar.library.network.UserAgentInterceptor;
 public class AdvertiseManager {
     private static final String TAG = "LH/AdvertisementManager";
 
-    public static final String DEFAULT_ADV_PICTURE = "file:///android_asset/poster.png";
+    public static final String DEFAULT_ADV_PICTURE = "file:///android_asset/posters.png";
     private static final String LAUNCH_APP_ADVERTISEMENT = "launch_app";
     public static final String TYPE_IMAGE = "image";
     public static final String TYPE_VIDEO = "video";

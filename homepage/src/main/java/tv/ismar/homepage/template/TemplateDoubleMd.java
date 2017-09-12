@@ -3,13 +3,12 @@ package tv.ismar.homepage.template;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.open.androidtvwidget.leanback.recycle.RecyclerViewTV;
 import com.squareup.picasso.Picasso;
-import tv.ismar.adapter.FocusGridLayoutManager;
+
 import tv.ismar.app.BaseControl;
 import tv.ismar.app.entity.banner.BigImage;
 import tv.ismar.app.entity.banner.HomeEntity;
@@ -67,7 +66,7 @@ public class TemplateDoubleMd extends Template implements BaseControl.ControlCal
 
     private void initAdapter(HomeEntity homeEntity){
         if(mAdapter == null){
-            mAdapter = new DoubleMdAdapter(mContext, homeEntity.poster);
+            mAdapter = new DoubleMdAdapter(mContext, homeEntity.posters);
             mAdapter.setLeftMarginEnable(true);
             mRecyclerView.setAdapter(mAdapter);
         }else {
@@ -95,7 +94,7 @@ public class TemplateDoubleMd extends Template implements BaseControl.ControlCal
         if(flags == FetchDataControl.FETCH_BANNERS_LIST_FLAG){//获取单个banner业务
             HomeEntity homeEntity = (HomeEntity) args[0];
             initAdapter(homeEntity);
-            initImage(homeEntity.big_image);
+//            initImage(homeEntity.big_image);
         } else if(flags == FetchDataControl.FETCH_M_BANNERS_LIST_FLAG){//获取多个banner业务
 
         }
