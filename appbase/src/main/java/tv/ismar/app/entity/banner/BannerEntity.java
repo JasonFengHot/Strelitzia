@@ -11,7 +11,7 @@ import java.util.List;
 
 public class BannerEntity {
     private int count;
-    private int count_pages;
+    private int page;
     private int num_pages;
     private String template;
     private List<CarouselsBean> carousels;
@@ -26,19 +26,19 @@ public class BannerEntity {
     }
 
     public int getCount_pages() {
-        return count_pages;
-    }
-
-    public void setCount_pages(int count_pages) {
-        this.count_pages = count_pages;
-    }
-
-    public int getNum_pages() {
         return num_pages;
     }
 
+    public void setCount_pages(int count_pages) {
+        this.num_pages = count_pages;
+    }
+
+    public int getNum_pages() {
+        return page;
+    }
+
     public void setNum_pages(int num_pages) {
-        this.num_pages = num_pages;
+        this.page = num_pages;
     }
 
     public String getTemplate() {
