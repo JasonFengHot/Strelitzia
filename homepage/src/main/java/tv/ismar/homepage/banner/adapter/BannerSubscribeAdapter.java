@@ -240,14 +240,14 @@ public class BannerSubscribeAdapter
         public void onFocusChange(View v, boolean hasFocus) {
             if (hasFocus) {
                 v.requestFocusFromTouch();
-//                scaleToLarge(v.findViewById(R.id.item_layout));
-//                v.findViewById(R.id.title).setSelected(true);
+                scaleToLarge(v.findViewById(R.id.item_layout));
+                v.findViewById(R.id.title).setSelected(true);
                 v.findViewById(R.id.title).setBackgroundResource(R.color._ff9c3c);
                 v.findViewById(R.id.introduction).setSelected(true);
             } else {
-//                scaleToNormal(v.findViewById(R.id.item_layout));
+                scaleToNormal(v.findViewById(R.id.item_layout));
+                v.findViewById(R.id.title).setSelected(false);
                 v.findViewById(R.id.title).setBackgroundResource(R.color._333333);
-//                v.findViewById(R.id.title).setSelected(false);
                 v.findViewById(R.id.introduction).setSelected(false);
             }
         }

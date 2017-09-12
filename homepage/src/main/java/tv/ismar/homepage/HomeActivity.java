@@ -3,21 +3,17 @@ package tv.ismar.homepage;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.graphics.PixelFormat;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
 import android.widget.TextView;
-
-import com.open.androidtvwidget.leanback.recycle.LinearLayoutManagerTV;
-import com.open.androidtvwidget.leanback.recycle.RecyclerViewTV;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -35,12 +31,14 @@ import tv.ismar.app.BaseControl;
 import tv.ismar.app.core.PageIntent;
 import tv.ismar.app.entity.ChannelEntity;
 import tv.ismar.app.receiver.TimeTickReceiver;
+import tv.ismar.app.service.TrueTimeService;
 import tv.ismar.app.util.BitmapDecoder;
 import tv.ismar.app.widget.TelescopicWrap;
 import tv.ismar.homepage.control.FetchDataControl;
 import tv.ismar.homepage.fragment.ChannelFragment;
 import tv.ismar.homepage.view.ChannelChangeObservable;
 import tv.ismar.homepage.widget.HorizontalTabView;
+import tv.ismar.library.exception.ExceptionUtils;
 
 import static tv.ismar.homepage.control.FetchDataControl.FETCH_CHANNEL_TAB_FLAG;
 
@@ -69,14 +67,28 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
 
     private BitmapDecoder mBitmapDecoder;
     private int mLastSelectedIndex = 0;//记录上一次选中的位置
+    private TimeTickBroadcast mTimeTickBroadcast = null;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+        super.onCreate((savedInstanceState!=null)?null:savedInstanceState);
+        getWindow().setFormat(PixelFormat.TRANSLUCENT);
         setContentView(R.layout.home_activity_layout);
+        systemInit();
         findViews();
         initListener();
         initData();
+    }
+
+    /*初始化一些系统参数*/
+    private void systemInit(){
+        try {
+            System.setProperty("http.keepAlive", "false");
+        } catch (Exception e) {
+            ExceptionUtils.sendProgramError(e);
+            e.printStackTrace();
+        }
+        startTrueTimeService();
     }
 
     /*获取控件实例*/
@@ -95,9 +107,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<Integer>() {
                     @Override
-                    public void onCompleted() {
-//                        Log.d("channelTab", "channelTab ChannelChangeObservable onCompleted");
-                    }
+                    public void onCompleted() {}
 
                     @Override
                     public void onError(Throwable e) {}
@@ -124,7 +134,10 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         mPersonCenterLayout.setOnFocusChangeListener(this);
         mCollectionLayout.setOnClickListener(this);
         mPersonCenterLayout.setOnClickListener(this);
-        TimeTickReceiver.register(this, new TimeTickBroadcast());
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(Intent.ACTION_TIME_TICK);
+        mTimeTickBroadcast = new TimeTickBroadcast();
+        registerReceiver(mTimeTickBroadcast, filter);
         mTimeTv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -241,6 +254,13 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        TimeTickReceiver.unregisterAll(this);
+        unregisterReceiver(mTimeTickBroadcast);
+        mTimeTickBroadcast = null;
+    }
+
+    private void startTrueTimeService() {
+        Intent intent = new Intent();
+        intent.setClass(this, TrueTimeService.class);
+        startService(intent);
     }
 }

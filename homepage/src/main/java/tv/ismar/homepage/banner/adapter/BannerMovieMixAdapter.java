@@ -4,6 +4,7 @@ import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.graphics.Rect;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -107,7 +108,16 @@ public class BannerMovieMixAdapter extends RecyclerView.Adapter<BannerMovieMixAd
         }
 
         BannerEntity.PosterBean entity = mSubscribeEntityList.get(position);
-        Picasso.with(mContext).load(entity.getPoster_url()).into(holder.mImageView);
+        String url = entity.getPoster_url();
+        if (!TextUtils.isEmpty(url)){
+            Picasso.with(mContext).load(entity.getPoster_url()).into(holder.mImageView);
+        }else {
+            if (position == 0){
+                Picasso.with(mContext).load(R.drawable.list_item_preview_bg).into(holder.mImageView);
+            }else {
+                Picasso.with(mContext).load(R.drawable.list_item_ppreview_bg).into(holder.mImageView);
+            }
+        }
         holder.mTitle.setText(entity.getTitle() + " " + position);
         holder.mItemView.findViewById(R.id.item_layout).setTag(entity);
         holder.mItemView.findViewById(R.id.item_layout).setTag(R.id.banner_item_position, position);
@@ -176,10 +186,10 @@ public class BannerMovieMixAdapter extends RecyclerView.Adapter<BannerMovieMixAd
         public void onFocusChange(View v, boolean hasFocus) {
 
             if (hasFocus){
-//                scaleToLarge(v.findViewById(R.id.item_layout));
+                scaleToLarge(v.findViewById(R.id.item_layout));
                 v.findViewById(R.id.title).setSelected(true);
             }else {
-//                scaleToNormal(v.findViewById(R.id.item_layout));
+                scaleToNormal(v.findViewById(R.id.item_layout));
                 v.findViewById(R.id.title).setSelected(false);
             }
         }

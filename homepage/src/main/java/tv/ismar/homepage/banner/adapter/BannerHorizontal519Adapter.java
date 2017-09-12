@@ -128,10 +128,10 @@ public class BannerHorizontal519Adapter extends RecyclerView.Adapter<BannerHoriz
         public void onFocusChange(View v, boolean hasFocus) {
 
             if (hasFocus){
-//                scaleToLarge(v.findViewById(R.id.item_layout));
+                scaleToLarge(v.findViewById(R.id.item_layout));
                 v.findViewById(R.id.title).setSelected(true);
             }else {
-//                scaleToNormal(v.findViewById(R.id.item_layout));
+                scaleToNormal(v.findViewById(R.id.item_layout));
                 v.findViewById(R.id.title).setSelected(false);
             }
         }
