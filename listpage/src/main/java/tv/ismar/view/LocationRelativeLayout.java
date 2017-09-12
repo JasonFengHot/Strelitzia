@@ -119,11 +119,20 @@ public class LocationRelativeLayout extends RelativeLayout {
                     }
                 }
             }
-            requestFocus();
+//            requestFocus();
         }else{
             horving=false;
         }
         return super.dispatchHoverEvent(event);
+    }
+
+
+    @Override
+    public boolean onHoverEvent(MotionEvent event) {
+        if(event.getAction()==MotionEvent.ACTION_HOVER_ENTER||event.getAction()==MotionEvent.ACTION_HOVER_MOVE) {
+            requestFocus();
+        }
+            return super.onHoverEvent(event);
     }
 
     @Override
