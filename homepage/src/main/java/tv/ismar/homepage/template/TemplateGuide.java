@@ -58,6 +58,8 @@ public class TemplateGuide extends Template implements BaseControl.ControlCallBa
     @Override
     public void getView(View view) {
         mGuideContainer = (HomeItemContainer) view.findViewById(R.id.guide_container);
+        mGuideContainer.setFocusable(true);
+        mGuideContainer.requestFocus();
         mVideoView = (DaisyVideoView) view.findViewById(R.id.guide_daisy_video_view);
         mLoadingIg = (ImageView) view.findViewById(R.id.guide_video_loading_image);
         mVideTitleTv = (TextView) view.findViewById(R.id.guide_video_title);

@@ -75,7 +75,7 @@ public class FetchDataControl extends BaseControl{
 
     /*获取指定频道下的banner*/
     public void fetchChannelBanners(String channel){
-        SkyService.ServiceManager.getLocalTestService().getChannelBanners(channel)
+        SkyService.ServiceManager.getService().getChannelBanners(channel)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<GuideBanner[]>() {
@@ -130,7 +130,7 @@ public class FetchDataControl extends BaseControl{
      * @param page
      */
     public synchronized void fetchMBanners(String banner, int page){
-        SkyService.ServiceManager.getLocalTestService().getMBanners(banner, page)
+        SkyService.ServiceManager.getService().getMBanners(banner, page)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<HomeEntity[]>() {
@@ -153,7 +153,7 @@ public class FetchDataControl extends BaseControl{
     }
 
     public synchronized void fetchBanners(int banner, int page){
-        SkyService.ServiceManager.getLocalTestService().getBanners(banner, page)
+        SkyService.ServiceManager.getService().getBanners(banner, page)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<HomeEntity>() {

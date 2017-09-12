@@ -1,20 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="@dimen/guide_switch_container_width"
+    android:clipChildren="false"
+    android:clipToPadding="false"
+    android:focusable="false">
     <tv.ismar.homepage.widget.HomeItemContainer
         android:id="@+id/guide_container"
         android:layout_width="@dimen/guide_switch_container_width"
         android:layout_height="@dimen/guide_switch_container_height"
-        android:clickable="true"
-        android:focusable="true"
-        android:focusableInTouchMode="true"
         android:layout_marginLeft="@dimen/guide_switch_container_margin_left">
         <tv.ismar.homepage.widget.DaisyVideoView
             android:id="@+id/guide_daisy_video_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:focusable="false"
             android:focusableInTouchMode="false" />
         <ImageView
             android:id="@+id/guide_video_loading_image"
@@ -34,6 +33,7 @@
             android:layout_height="@dimen/guide_video_title_height"
             android:layout_marginLeft="@dimen/guide_swithc_container_icon_margin_left"
             android:layout_marginRight="@dimen/guide_swithc_container_icon_margin_right"
+            android:focusable="false"
             android:layout_gravity="bottom|right"
             android:orientation="horizontal">
             <TextView
