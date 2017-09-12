@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -61,6 +62,7 @@ public class BannerSubscribeAdapter
             Context context, List<BannerEntity.PosterBean> subscribeEntityList) {
         mContext = context;
         mSubscribeEntityList = subscribeEntityList;
+        Collections.sort(mSubscribeEntityList);
     }
 
     public int getCurrentPageNumber() {

@@ -94,8 +94,8 @@ public class TemplateOrder extends Template implements BaseControl.ControlCallBa
         subscribeBanner.setOnItemFocusChangeListener(new RecyclerViewTV.OnItemFocusChangeListener() {
             @Override
             public void onItemFocusGain(View itemView, int position) {
-                if (mTitleCountTv != null) {
-//                    mTitleCountTv.setText(String.format(mContext.getString(R.string.home_item_title_count), (position + 1) + "", subscribeAdapter.getTatalItemCount() + ""));
+                if (itemView != null && mContext != null && mTitleCountTv != null && subscribeAdapter != null) {
+                    mTitleCountTv.setText(String.format(mContext.getString(R.string.home_item_title_count), (position + 1) + "", subscribeAdapter.getTatalItemCount() + ""));
                 }
             }
         });

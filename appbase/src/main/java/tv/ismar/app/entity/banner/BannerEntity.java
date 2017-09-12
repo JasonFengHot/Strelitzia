@@ -1,5 +1,7 @@
 package tv.ismar.app.entity.banner;
 
+import android.support.annotation.NonNull;
+
 import java.util.Date;
 import java.util.List;
 
@@ -165,7 +167,7 @@ public class BannerEntity {
         }
     }
 
-    public static class PosterBean {
+    public static class PosterBean implements Comparable<PosterBean>{
 
         private String url;
         private String content_model;
@@ -265,6 +267,17 @@ public class BannerEntity {
 
         public void setCustom_image(String custom_image) {
             this.custom_image = custom_image;
+        }
+
+        @Override
+        public int compareTo(@NonNull PosterBean another) {
+            if (this.getOrder_date().before(another.order_date)){
+                return -1;
+            }else if (this.getOrder_date().after(another.order_date)){
+                return  1;
+            }else {
+                return 0;
+            }
         }
     }
 }
