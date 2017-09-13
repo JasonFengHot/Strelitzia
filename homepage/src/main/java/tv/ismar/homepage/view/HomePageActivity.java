@@ -860,12 +860,11 @@ public class HomePageActivity extends BaseActivity implements LinearLayoutManage
             int mSavePos = subscribeBanner.getSelectPostion();
             subscribeAdapter.notifyItemRangeInserted(startIndex, endIndex - startIndex);
             subscribeBanner.setOnLoadMoreComplete();
-            subscribeAdapter.setCurrentPageNumber(pageNumber);
+//            subscribeAdapter.setCurrentPageNumber(pageNumber);
 //            mFocusHandler.sendEmptyMessageDelayed(mSavePos, 10);
         }
 
-        String count = String.valueOf(pageNumber);
-        bannerSubscribeSub = SkyService.ServiceManager.getLocalTestService().apiTvBanner(1, count)
+        bannerSubscribeSub = SkyService.ServiceManager.getLocalTestService().apiTvBanner(1, pageNumber)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<BannerEntity>() {
@@ -895,7 +894,7 @@ public class HomePageActivity extends BaseActivity implements LinearLayoutManage
 
 
     private void fetchMovieBanner() {
-        bannerSubscribeSub = SkyService.ServiceManager.getLocalTestService().apiTvBanner(1, "1")
+        bannerSubscribeSub = SkyService.ServiceManager.getLocalTestService().apiTvBanner(1, 1)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<BannerEntity>() {
@@ -918,7 +917,7 @@ public class HomePageActivity extends BaseActivity implements LinearLayoutManage
     }
 
     private void fetchHorizontal519Banner() {
-        bannerSubscribeSub = SkyService.ServiceManager.getLocalTestService().apiTvBanner(1, "1")
+        bannerSubscribeSub = SkyService.ServiceManager.getLocalTestService().apiTvBanner(1, 1)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<BannerEntity>() {
@@ -940,7 +939,7 @@ public class HomePageActivity extends BaseActivity implements LinearLayoutManage
     }
 
     private void fetchMovieMixBanner() {
-        bannerSubscribeSub = SkyService.ServiceManager.getLocalTestService().apiTvBanner(1, "1")
+        bannerSubscribeSub = SkyService.ServiceManager.getLocalTestService().apiTvBanner(1, 1)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<BannerEntity>() {
@@ -962,10 +961,10 @@ public class HomePageActivity extends BaseActivity implements LinearLayoutManage
     }
 
     private void fillSubscribeBanner(BannerEntity bannerEntity) {
-        subscribeAdapter = new BannerSubscribeAdapter(this, bannerEntity.getPoster());
-        subscribeAdapter.setTotalPageCount(bannerEntity.getCount_pages());
-        subscribeAdapter.setCurrentPageNumber(bannerEntity.getNum_pages());
-        subscribeAdapter.setTatalItemCount(bannerEntity.getCount());
+        subscribeAdapter = new BannerSubscribeAdapter(this, bannerEntity);
+//        subscribeAdapter.setTotalPageCount(bannerEntity.getCount_pages());
+//        subscribeAdapter.setCurrentPageNumber(bannerEntity.getNum_pages());
+//        subscribeAdapter.setTatalItemCount(bannerEntity.getCount());
 
         subscribeBanner.setAdapter(subscribeAdapter);
     }

@@ -25,6 +25,9 @@ import tv.ismar.homepage.R;
 import tv.ismar.homepage.banner.adapter.BannerSubscribeAdapter;
 import tv.ismar.homepage.control.OrderControl;
 
+import static tv.ismar.homepage.control.FetchDataControl.FETCH_BANNERS_LIST_FLAG;
+import static tv.ismar.homepage.control.FetchDataControl.FETCH_M_BANNERS_LIST_NEXTPAGE_FLAG;
+
 /**
  * @AUTHOR: xi
  * @DATE: 2017/8/29
@@ -48,13 +51,11 @@ public class TemplateOrder extends Template implements BaseControl.ControlCallBa
 
     public TemplateOrder(Context context) {
         super(context);
-        Log.d(TAG, "TemplateOrder");
         mControl = new OrderControl(mContext, this);
     }
 
     @Override
     public void getView(View view) {
-        Log.d(TAG, "getView");
         if (!isViewInit) {
             isViewInit = true;
             subscribeBanner = (RecyclerViewTV) view.findViewById(R.id.subscribe_banner);
@@ -193,7 +194,6 @@ public class TemplateOrder extends Template implements BaseControl.ControlCallBa
 
     @Override
     public void initData(Bundle bundle) {
-//        mControl.getBanners("overseasbanner", 1);
         if (!isInit) {
             isInit = true;
             mBannerName = bundle.getInt("banner");
@@ -201,10 +201,18 @@ public class TemplateOrder extends Template implements BaseControl.ControlCallBa
         }
     }
 
+    private void nextPage(){
+
+    }
 
     @Override
     public void callBack(int flags, Object... args) {
-
+        BannerEntity bannerEntity = (BannerEntity) args[0];
+        if (flags == FETCH_BANNERS_LIST_FLAG){
+            fillSubscribeBanner(bannerEntity);
+        }else if (flags == FETCH_M_BANNERS_LIST_NEXTPAGE_FLAG){
+            subscribeAdapter.addDatas(bannerEntity);
+        }
     }
 
 
@@ -228,12 +236,11 @@ public class TemplateOrder extends Template implements BaseControl.ControlCallBa
             int mSavePos = subscribeBanner.getSelectPostion();
             subscribeAdapter.notifyItemRangeInserted(startIndex, endIndex - startIndex);
             subscribeBanner.setOnLoadMoreComplete();
-            subscribeAdapter.setCurrentPageNumber(pageNumber);
+//            subscribeAdapter.setCurrentPageNumber(pageNumber);
 //            mFocusHandler.sendEmptyMessageDelayed(mSavePos, 10);
         }
 
-        String count = String.valueOf(pageNumber);
-        SkyService.ServiceManager.getService().apiTvBanner(bannerName, count)
+        SkyService.ServiceManager.getService().apiTvBanner(bannerName, pageNumber)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<BannerEntity>() {
@@ -264,16 +271,13 @@ public class TemplateOrder extends Template implements BaseControl.ControlCallBa
     private void fillSubscribeBanner(BannerEntity bannerEntity) {
 //        Logger.d("fillSubscribeBanner");
         Log.d(TAG, "fillSubscribeBanner");
-        subscribeAdapter = new BannerSubscribeAdapter(mContext, bannerEntity.getPoster());
+        subscribeAdapter = new BannerSubscribeAdapter(mContext, bannerEntity);
         subscribeAdapter.setSubscribeClickListener(new BannerSubscribeAdapter.OnBannerClickListener() {
             @Override
             public void onBannerClick(View view, int position) {
                 goToNextPage(view);
             }
         });
-        subscribeAdapter.setTotalPageCount(bannerEntity.getCount_pages());
-        subscribeAdapter.setCurrentPageNumber(bannerEntity.getNum_pages());
-        subscribeAdapter.setTatalItemCount(bannerEntity.getCount());
         subscribeBanner.setAdapter(subscribeAdapter);
         mTitleCountTv.setText(String.format(mContext.getString(R.string.home_item_title_count), (1) + "", subscribeAdapter.getTatalItemCount() + ""));
     }

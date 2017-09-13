@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.Space;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
 
 import java.util.Collections;
@@ -52,34 +53,28 @@ public class BannerSubscribeAdapter
         return tatalItemCount;
     }
 
-    public void setTatalItemCount(int tatalItemCount) {
-        this.tatalItemCount = tatalItemCount;
-    }
 
     private int subscribeStatusChangedItemId;
 
     public BannerSubscribeAdapter(
-            Context context, List<BannerEntity.PosterBean> subscribeEntityList) {
+            Context context, BannerEntity bannerEntity) {
         mContext = context;
-        mSubscribeEntityList = subscribeEntityList;
-        Collections.sort(mSubscribeEntityList);
+        currentPageNumber = 1;
+        totalPageCount = bannerEntity.getCount_pages();
+        tatalItemCount = bannerEntity.getCount();
+        mSubscribeEntityList = bannerEntity.getPoster();
+//        Collections.sort(mSubscribeEntityList);
     }
 
     public int getCurrentPageNumber() {
         return currentPageNumber;
     }
 
-    public void setCurrentPageNumber(int currentPageNumber) {
-        this.currentPageNumber = currentPageNumber;
-    }
 
     public int getTotalPageCount() {
         return totalPageCount;
     }
 
-    public void setTotalPageCount(int totalPageCount) {
-        this.totalPageCount = totalPageCount;
-    }
 
     public void setSubscribeStatusChangedItemId(int subscribeStatusChangedItemId) {
         this.subscribeStatusChangedItemId = subscribeStatusChangedItemId;
@@ -123,8 +118,15 @@ public class BannerSubscribeAdapter
         //            loadSubscribeStatus(itemId, holder.mTitle, mSubscribeEntityList, position);
         //        }
 
-        String timeString = entity.getOrder_date().getMonth() +"月" + entity.getOrder_date().getDate() + "日";
-        holder.mPublishTime.setText(timeString);
+        try {
+            String timeString = entity.getOrder_date().getMonth() +"月" + entity.getOrder_date().getDate() + "日";
+            holder.mPublishTime.setText(timeString);
+        }catch (Exception e){
+            e.printStackTrace();
+            Log.e(TAG, "json: " + new Gson().toJson(entity));
+            Log.e(TAG, "error position: " + position);
+        }
+
         holder.mIntroduction.setText(entity.getTitle() + " " + position);
         holder.mItemView.findViewById(R.id.item_layout).setTag(entity);
         holder.mItemView.findViewById(R.id.item_layout).setTag(R.id.banner_item_position, position);

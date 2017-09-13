@@ -15,6 +15,7 @@ import tv.ismar.app.BaseControl;
 import tv.ismar.app.entity.ChannelEntity;
 import tv.ismar.app.entity.GuideBanner;
 import tv.ismar.app.entity.banner.BannerCarousels;
+import tv.ismar.app.entity.banner.BannerEntity;
 import tv.ismar.app.entity.banner.BannerPoster;
 import tv.ismar.app.entity.banner.HomeEntity;
 import tv.ismar.app.network.SkyService;
@@ -32,6 +33,7 @@ public class FetchDataControl extends BaseControl{
     public static final int FETCH_CHANNEL_BANNERS_FLAG = 0X03;//获取指定频道下的banners
     public static final int FETCH_BANNERS_LIST_FLAG = 0X04;//获取指定banner下的海报列表
     public static final int FETCH_M_BANNERS_LIST_FLAG = 0X05;//获取影视内容多个banner
+    public static final int FETCH_M_BANNERS_LIST_NEXTPAGE_FLAG = 0X06;//获取影视内容多个banner
 
     public List<BannerCarousels> mCarousels = new ArrayList<>();//导视数据
     public List<BannerPoster> mPoster = new ArrayList<>();//海报数据
@@ -182,6 +184,30 @@ public class FetchDataControl extends BaseControl{
                                 }
                             }
                             mCallBack.callBack(FETCH_BANNERS_LIST_FLAG, homeEntities);
+                        }
+                    }
+                });
+    }
+
+    public void fetchBanner(int bannerName, int pageNumber) {
+        SkyService.ServiceManager.getService().apiTvBanner(bannerName, pageNumber)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<BannerEntity>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onNext(BannerEntity bannerEntity) {
+                        if (bannerEntity != null){
+                            mCallBack.callBack(FETCH_BANNERS_LIST_FLAG, bannerEntity);
                         }
                     }
                 });
