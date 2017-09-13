@@ -91,8 +91,8 @@ public class DoubleMdAdapter extends RecyclerView.Adapter<DoubleMdAdapter.Double
             mTitleTv = (TextView) itemView.findViewById(R.id.double_md_item_title);
             mTopView = itemView.findViewById(R.id.double_md_top_margin);
             mLeftView = itemView.findViewById(R.id.double_md_left_margin);
-            itemView.findViewById(R.id.double_ld_ismartv_linear_layout).setOnFocusChangeListener(this);
-            itemView.findViewById(R.id.double_ld_ismartv_linear_layout).setOnClickListener(this);
+            itemView.findViewById(R.id.double_md_ismartv_linear_layout).setOnFocusChangeListener(this);
+            itemView.findViewById(R.id.double_md_ismartv_linear_layout).setOnClickListener(this);
         }
 
         private void scaleToLarge(View view) {
