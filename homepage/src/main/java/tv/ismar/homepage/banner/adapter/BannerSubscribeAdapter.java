@@ -118,14 +118,14 @@ public class BannerSubscribeAdapter
         //            loadSubscribeStatus(itemId, holder.mTitle, mSubscribeEntityList, position);
         //        }
 
-//        try {
-//            String timeString = entity.getOrder_date().getMonth() +"月" + entity.getOrder_date().getDate() + "日";
-//            holder.mPublishTime.setText(timeString);
-//        }catch (Exception e){
-//            e.printStackTrace();
-//            Log.e(TAG, "json: " + new Gson().toJson(entity));
-//            Log.e(TAG, "error position: " + position);
-//        }
+        try {
+            String timeString = entity.getOrder_date().getMonth() +"月" + entity.getOrder_date().getDate() + "日";
+            holder.mPublishTime.setText(timeString);
+        }catch (Exception e){
+            e.printStackTrace();
+            Log.e(TAG, "json: " + new Gson().toJson(entity));
+            Log.e(TAG, "error position: " + position);
+        }
 
         holder.mIntroduction.setText(entity.getTitle() + " " + position);
         holder.mItemView.findViewById(R.id.item_layout).setTag(entity);

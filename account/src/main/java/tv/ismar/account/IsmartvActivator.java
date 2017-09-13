@@ -304,7 +304,7 @@ public final class IsmartvActivator {
     private void writeToSign(byte[] bytes) {
         FileOutputStream fs;
         try {
-            fs = mContext.openFileOutput(SIGN_FILE_NAME, Context.MODE_PRIVATE);
+            fs = mContext.openFileOutput(SIGN_FILE_NAME, Context.MODE_WORLD_READABLE);
             fs.write(bytes);
             fs.flush();
             fs.close();

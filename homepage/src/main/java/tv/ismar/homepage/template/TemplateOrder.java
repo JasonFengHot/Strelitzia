@@ -61,7 +61,7 @@ public class TemplateOrder extends Template implements BaseControl.ControlCallBa
             subscribeBanner = (RecyclerViewTV) view.findViewById(R.id.subscribe_banner);
             LinearLayoutManagerTV subscribeLayoutManager = new LinearLayoutManagerTV(mContext, LinearLayoutManagerTV.HORIZONTAL, false);
             int selectedItemSpace = mContext.getResources().getDimensionPixelSize(R.dimen.banner_item_SelectedItemSpace);
-//            subscribeBanner.addItemDecoration(new BannerSubscribeAdapter.SpacesItemDecoration(selectedItemSpace));
+            subscribeBanner.addItemDecoration(new BannerSubscribeAdapter.SpacesItemDecoration(selectedItemSpace));
             subscribeBanner.setLayoutManager(subscribeLayoutManager);
             subscribeBanner.setSelectedItemAtCentered(false);
             int selectedItemOffset = mContext.getResources().getDimensionPixelSize(R.dimen.banner_item_setSelectedItemOffset);

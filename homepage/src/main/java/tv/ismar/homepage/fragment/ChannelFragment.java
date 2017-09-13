@@ -50,7 +50,7 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
     }
 
     private void findView(View view){
-        mLinearContainer = view.findViewById(R.id.scroll_linear_container);
+        mLinearContainer = (ViewGroup) view.findViewById(R.id.scroll_linear_container);
     }
 
     public void setChannel(String channel){

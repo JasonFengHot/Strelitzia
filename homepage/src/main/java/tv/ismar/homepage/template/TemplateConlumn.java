@@ -38,9 +38,9 @@ public class TemplateConlumn extends Template implements BaseControl.ControlCall
 
     @Override
     public void getView(View view) {
-        mTitleTv = view.findViewById(R.id.banner_title_tv);
-        mTitleCountTv = view.findViewById(R.id.banner_title_count);
-        mRecyclerView = view.findViewById(R.id.conlumn_recyclerview);
+        mTitleTv = (TextView) view.findViewById(R.id.banner_title_tv);
+        mTitleCountTv = (TextView) view.findViewById(R.id.banner_title_count);
+        mRecyclerView = (RecyclerViewTV) view.findViewById(R.id.conlumn_recyclerview);
         LinearLayoutManager conlumnLayoutManager = new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false);
         mRecyclerView.setLayoutManager(conlumnLayoutManager);
         //如果可以确定每个item的高度是固定的，设置这个选项可以提高性能

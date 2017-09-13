@@ -28,9 +28,10 @@
         android:focusable="false"
         />
     <FrameLayout
+        android:clipChildren="false"
+        android:clipToPadding="false"
         android:id="@+id/fragment_layout"
         android:focusable="false"
-        android:background="#ff0000"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 </LinearLayout>
