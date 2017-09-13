@@ -121,7 +121,7 @@ public class LocationRelativeLayout extends RelativeLayout {
             }
 //            requestFocus();
         }else{
-            horving=false;
+//            horving=false;
         }
         return super.dispatchHoverEvent(event);
     }
@@ -137,6 +137,7 @@ public class LocationRelativeLayout extends RelativeLayout {
 
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
+        horving=false;
         if(arrow_down_right!=null){
             arrow_down_right.setVisibility(View.GONE);
         }
