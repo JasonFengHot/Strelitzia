@@ -3,6 +3,7 @@ package tv.ismar.homepage.template;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -84,7 +85,11 @@ public class TemplateDoubleMd extends Template implements BaseControl.ControlCal
 
     private void initImage(BigImage data){
         if(data != null){
-            Picasso.with(mContext).load(data.poster_url).into(mVerticalImg);
+            if (!TextUtils.isEmpty(data.vertical_url)) {
+                Picasso.with(mContext).load(data.vertical_url).into(mVerticalImg);
+            } else {
+                Picasso.with(mContext).load(R.drawable.list_item_preview_bg).into(mVerticalImg);
+            }
 //        Picasso.with(mContext).load(data.poster_url).into(mLtImage);
 //        Picasso.with(mContext).load(data.poster_url).into(mRbImage);
             mImgeTitleTv.setText(data.title);
@@ -96,7 +101,7 @@ public class TemplateDoubleMd extends Template implements BaseControl.ControlCal
         if(flags == FetchDataControl.FETCH_BANNERS_LIST_FLAG){//获取单个banner业务
             HomeEntity homeEntity = (HomeEntity) args[0];
             initAdapter(homeEntity);
-//            initImage(homeEntity.big_image);
+            initImage(homeEntity.bg_image);
         } else if(flags == FetchDataControl.FETCH_M_BANNERS_LIST_FLAG){//获取多个banner业务
 
         }

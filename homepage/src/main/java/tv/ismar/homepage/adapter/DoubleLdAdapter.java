@@ -76,7 +76,8 @@ public class DoubleLdAdapter extends RecyclerView.Adapter<DoubleLdAdapter.Double
     }
 
 
-    public static class DoubleLdViewHolder extends RecyclerView.ViewHolder implements View.OnFocusChangeListener{
+    public static class DoubleLdViewHolder extends RecyclerView.ViewHolder implements
+            View.OnFocusChangeListener, View.OnClickListener{
         public ImageView mPosterIg;//海报
         public ImageView mLtIconTv;//左上icon
         public ImageView mRbIconTv;//右下icon
@@ -92,6 +93,8 @@ public class DoubleLdAdapter extends RecyclerView.Adapter<DoubleLdAdapter.Double
             mTitleTv = (TextView) itemView.findViewById(R.id.double_ld_item_title);
             mTopMarginView = itemView.findViewById(R.id.double_ld_top_margin);
             mLeftMarginView = itemView.findViewById(R.id.double_ld_left_margin);
+            itemView.findViewById(R.id.double_ld_ismartv_linear_layout).setOnFocusChangeListener(this);
+            itemView.findViewById(R.id.double_ld_ismartv_linear_layout).setOnClickListener(this);
         }
 
         private void scaleToLarge(View view) {
@@ -117,13 +120,14 @@ public class DoubleLdAdapter extends RecyclerView.Adapter<DoubleLdAdapter.Double
         public void onFocusChange(View v, boolean hasFocus) {
             if (hasFocus) {
                 scaleToLarge(v.findViewById(R.id.double_ld_ismartv_linear_layout));
-                v.findViewById(R.id.title).setSelected(true);
-                v.findViewById(R.id.introduction).setSelected(true);
             } else {
                 scaleToNormal(v.findViewById(R.id.double_ld_ismartv_linear_layout));
-                v.findViewById(R.id.title).setSelected(false);
-                v.findViewById(R.id.introduction).setSelected(false);
             }
+        }
+
+        @Override
+        public void onClick(View v) {
+
         }
     }
 }

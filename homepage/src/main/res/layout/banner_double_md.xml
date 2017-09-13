@@ -16,7 +16,6 @@
             android:layout_width="@dimen/double_md_img_width"
             android:layout_height="@dimen/double_md_img_height"
             android:layout_marginLeft="@dimen/double_md_margin_left"
-            android:background="#00ff00"
             android:clipChildren="false"
             android:clipToPadding="false"
             android:focusable="true"

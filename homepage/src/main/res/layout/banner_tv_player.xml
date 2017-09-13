@@ -12,5 +12,5 @@
         android:layout_width="wrap_content"
         android:layout_marginLeft="@dimen/tv_player_recycleview_margin_left"
         android:focusable="false"
-        android:layout_height="@dimen/tv_play_poster_height" />
+        android:layout_height="@dimen/tv_play_recycleview_height" />
 </LinearLayout>

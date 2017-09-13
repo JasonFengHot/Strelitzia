@@ -68,7 +68,9 @@ public class GuideAdapter extends RecyclerView.Adapter<GuideAdapter.GuideViewHol
         this.mMarginLeftEnable = enable;
     }
 
-    public static class GuideViewHolder extends RecyclerView.ViewHolder implements View.OnFocusChangeListener{
+    public static class GuideViewHolder extends RecyclerView.ViewHolder implements
+            View.OnFocusChangeListener,View.OnClickListener
+    {
         public ImageView mPosterIg;//海报
         public ImageView mLtIconTv;//左上icon
         public ImageView mRbIconTv;//右下icon
@@ -82,6 +84,8 @@ public class GuideAdapter extends RecyclerView.Adapter<GuideAdapter.GuideViewHol
             mRbIconTv = (ImageView) itemView.findViewById(R.id.guide_recycle_item_rb_icon);
             mTitleTv = (TextView) itemView.findViewById(R.id.guide_recycle_item_title);
             mMarginLeftView = itemView.findViewById(R.id.guide_margin_left);
+            itemView.findViewById(R.id.guide_ismartv_linear_layout).setOnFocusChangeListener(this);
+            itemView.findViewById(R.id.guide_ismartv_linear_layout).setOnClickListener(this);
         }
 
         private void scaleToLarge(View view) {
@@ -107,13 +111,14 @@ public class GuideAdapter extends RecyclerView.Adapter<GuideAdapter.GuideViewHol
         public void onFocusChange(View v, boolean hasFocus) {
             if (hasFocus) {
                 scaleToLarge(v.findViewById(R.id.guide_ismartv_linear_layout));
-                v.findViewById(R.id.title).setSelected(true);
-                v.findViewById(R.id.introduction).setSelected(true);
             } else {
                 scaleToNormal(v.findViewById(R.id.guide_ismartv_linear_layout));
-                v.findViewById(R.id.title).setSelected(false);
-                v.findViewById(R.id.introduction).setSelected(false);
             }
+        }
+
+        @Override
+        public void onClick(View v) {
+
         }
     }
 }

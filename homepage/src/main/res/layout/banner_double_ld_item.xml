@@ -21,7 +21,6 @@
             android:id="@+id/double_ld_ismartv_linear_layout"
             android:layout_width="@dimen/double_ld_poster_width"
             android:layout_height="@dimen/double_ld_poster_height"
-            android:background="#00ff00"
             android:clipChildren="false"
             android:clipToPadding="false"
             android:focusable="true"
