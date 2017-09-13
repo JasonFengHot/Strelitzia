@@ -49,8 +49,7 @@ import static tv.ismar.homepage.control.FetchDataControl.FETCH_CHANNEL_TAB_FLAG;
  * @DESC: home页
  */
 
-public class HomeActivity extends BaseActivity implements View.OnClickListener, BaseControl.ControlCallBack,
-        HorizontalTabView.OnItemSelectedListener,View.OnFocusChangeListener {
+public class HomeActivity extends BaseActivity implements View.OnClickListener, BaseControl.ControlCallBack, View.OnFocusChangeListener {
 
     public static final String HOME_PAGE_CHANNEL_TAG = "homepage";
     private final FetchDataControl mControl = new FetchDataControl(this, this);//业务类引用
@@ -115,6 +114,15 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                     @Override
                     public void onNext(Integer position) {
                         Log.d("channelTab", "channelTab ChannelChangeObservable");
+                        if(mControl.mChannels!=null && mControl.mChannels.length>position){
+                            ChannelFragment channelFragment = new ChannelFragment();
+                            channelFragment.setChannel( mControl.mChannels[position].getChannel());
+                            if(position > mLastSelectedIndex){//右切
+                                replaceFragment(channelFragment, "right");
+                            }if(position < mLastSelectedIndex){//左切
+                                replaceFragment(channelFragment, "left");
+                            }
+                        }
                     }
                 });
 
@@ -129,7 +137,6 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     }
 
     private void initListener(){
-        channelTab.setOnItemSelectedListener(this);
         mCollectionLayout.setOnFocusChangeListener(this);
         mPersonCenterLayout.setOnFocusChangeListener(this);
         mCollectionLayout.setOnClickListener(this);
@@ -204,19 +211,6 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
             pageIntent.toHistory(this);
         } else if(v == mPersonCenterLayout){
             pageIntent.toUserCenter(this);
-        }
-    }
-
-    @Override
-    public void onItemSelected(View v, int position) {
-        if(mControl.mChannels!=null && mControl.mChannels.length>position){
-            ChannelFragment channelFragment = new ChannelFragment();
-            channelFragment.setChannel( mControl.mChannels[position].getChannel());
-            if(position > mLastSelectedIndex){//右切
-                replaceFragment(channelFragment, "right");
-            }if(position < mLastSelectedIndex){//左切
-                replaceFragment(channelFragment, "left");
-            }
         }
     }
 

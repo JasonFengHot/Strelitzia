@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.TextView;
 
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
@@ -25,6 +26,8 @@ import tv.ismar.homepage.control.TvPlayControl;
  */
 
 public class TemplateTvPlay extends Template implements BaseControl.ControlCallBack{
+    private TextView mTitleTv;//banner标题
+    private TextView mIndexTv;//选中位置
     private RecyclerViewTV mRecycleView;
     private TvPlayAdapter mAdapter;
     private TvPlayControl mControl;
@@ -34,12 +37,14 @@ public class TemplateTvPlay extends Template implements BaseControl.ControlCallB
         mControl = new TvPlayControl(mContext, this);
     }
 
-    private LinearLayoutManagerTV mTvPlayerLayoutManager = null;
+    private LinearLayoutManager mTvPlayerLayoutManager = null;
 
     @Override
     public void getView(View view) {
+        mTitleTv = view.findViewById(R.id.banner_title_tv);
+        mTitleCountTv = view.findViewById(R.id.banner_title_count);
         mRecycleView = (RecyclerViewTV) view.findViewById(R.id.tv_player_recyclerview);
-        mTvPlayerLayoutManager = new LinearLayoutManagerTV(mContext, LinearLayoutManager.HORIZONTAL, false);
+        mTvPlayerLayoutManager = new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false);
         mRecycleView.setLayoutManager(mTvPlayerLayoutManager);
         mRecycleView.setSelectedItemAtCentered(false);
         int selectedItemOffset = mContext.getResources().getDimensionPixelSize(R.dimen.banner_item_setSelectedItemOffset);
@@ -49,23 +54,12 @@ public class TemplateTvPlay extends Template implements BaseControl.ControlCallB
     @Override
     protected void initListener(View view) {
         super.initListener(view);
-        mTvPlayerLayoutManager.setFocusSearchFailedListener(new LinearLayoutManagerTV.FocusSearchFailedListener() {
-            @Override
-            public View onFocusSearchFailed(View view, int focusDirection, RecyclerView.Recycler recycler, RecyclerView.State state) {
-                if (focusDirection == View.FOCUS_RIGHT || focusDirection == View.FOCUS_LEFT) {
-                    if (mRecycleView.getChildAt(0).findViewById(R.id.item_layout) == view ||
-                            mRecycleView.getChildAt(mRecycleView.getChildCount() - 1).findViewById(R.id.item_layout) == view) {
-                        YoYo.with(Techniques.HorizontalShake).duration(1000).playOn(view);
-                    }
-                    return view;
-                }
-                return null;
-            }
-        });
     }
 
     @Override
     public void initData(Bundle bundle) {
+        mTitleTv.setText(bundle.getString("title"));
+        mTitleCountTv.setText(String.format(mContext.getString(R.string.home_item_title_count), 1+"", 40+""));
         mControl.getBanners(bundle.getInt("banner"), 1);
     }
 

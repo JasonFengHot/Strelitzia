@@ -9,16 +9,13 @@ import java.util.Date;
  */
 
 public class BannerPoster {
-    public String url;
+    public String poster_url;//海报横图
+    public String vertical_url;//海报竖图
+    public String title;//标题
+    public String introduction;//介绍
+    public String content_url;//详情页地址
     public String content_model;
-    public String vertical_url;
-    public String title;
-    public String introduction;
-    public String image_url;
-    public int corner;
-    public String poster_url;
-    public String model_name;
-    public int pk;
-    public String custom_image;
-    public Date order_date;
+    public int pk;//媒体id
+    public int rating_average;//评分
+    public String model_name;//表格名称
 }

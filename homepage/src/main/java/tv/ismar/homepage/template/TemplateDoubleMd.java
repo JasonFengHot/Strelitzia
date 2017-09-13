@@ -26,10 +26,12 @@ import tv.ismar.homepage.control.FetchDataControl;
 public class TemplateDoubleMd extends Template implements BaseControl.ControlCallBack,
         RecyclerViewTV.OnItemClickListener,
         RecyclerViewTV.OnItemFocusChangeListener {
+    private TextView mTitleTv;//banner标题
+    private TextView mIndexTv;//选中位置
     private ImageView mVerticalImg;//大图海报
     private ImageView mLtImage;//左上角图标
     private ImageView mRbImage;//右下角图标
-    private TextView mTitleTv;//大图标题
+    private TextView mImgeTitleTv;//大图标题
     private RecyclerViewTV mRecyclerView;
     private DoubleMdAdapter mAdapter;
     private DoubleMdControl mControl;
@@ -45,7 +47,7 @@ public class TemplateDoubleMd extends Template implements BaseControl.ControlCal
         mVerticalImg = (ImageView) view.findViewById(R.id.double_md_image_poster);
         mLtImage = (ImageView) view.findViewById(R.id.double_md_image_lt_icon);
         mRbImage = (ImageView) view.findViewById(R.id.double_md_image_rb_icon);
-        mTitleTv = (TextView) view.findViewById(R.id.double_md_image_title);
+        mImgeTitleTv = (TextView) view.findViewById(R.id.double_md_image_title);
 
         GridLayoutManager doubleLayoutManager = new GridLayoutManager(mContext, 2);
         doubleLayoutManager.setOrientation(GridLayoutManager.HORIZONTAL);
@@ -85,7 +87,7 @@ public class TemplateDoubleMd extends Template implements BaseControl.ControlCal
             Picasso.with(mContext).load(data.poster_url).into(mVerticalImg);
 //        Picasso.with(mContext).load(data.poster_url).into(mLtImage);
 //        Picasso.with(mContext).load(data.poster_url).into(mRbImage);
-            mTitleTv.setText(data.title);
+            mImgeTitleTv.setText(data.title);
         }
     }
 
