@@ -41,8 +41,8 @@ public class TemplateTvPlay extends Template implements BaseControl.ControlCallB
 
     @Override
     public void getView(View view) {
-        mTitleTv = view.findViewById(R.id.banner_title_tv);
-        mTitleCountTv = view.findViewById(R.id.banner_title_count);
+        mTitleTv = (TextView) view.findViewById(R.id.banner_title_tv);
+        mTitleCountTv =(TextView) view.findViewById(R.id.banner_title_count);
         mRecycleView = (RecyclerViewTV) view.findViewById(R.id.tv_player_recyclerview);
         mTvPlayerLayoutManager = new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false);
         mRecycleView.setLayoutManager(mTvPlayerLayoutManager);
