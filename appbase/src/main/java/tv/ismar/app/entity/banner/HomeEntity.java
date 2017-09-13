@@ -9,10 +9,12 @@ import java.util.List;
  */
 
 public class HomeEntity {
-    private int count;
-    private int page;
-    private int num_pages;
-    private String template;
-    public List<BannerCarousels> carousels;
-    public List<BannerPoster> posters;
+    public int count;//总记录数
+    public int num_pages;//总页数
+    public int page;//当前页数
+    public boolean is_more;//是否有更多按钮
+    public String template;//banner模版
+    public BigImage bg_image;
+    public List<BannerCarousels> carousels;//轮播列表
+    public List<BannerPoster> posters;//海报列表
 }

@@ -7,10 +7,13 @@ package tv.ismar.app.entity.banner;
  */
 
 public class BigImage {
-    public String title;
-    public String introduction;
-    public int rating_average;
-    public String content_url;
-    public String content_model;
-    public String poster_url;
+    public String poster_url;//横图
+    public String vertical_url;//竖图
+    public String content_model;//类型
+    public String title;//标题
+    public String introduction;//简介
+    public String rating_average;//评分
+    public String content_url;//媒体地址
+    public int pk;//媒体id
+    public String model_name;//表格名称（如item）
 }
