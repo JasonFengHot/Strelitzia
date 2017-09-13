@@ -12,12 +12,12 @@
         android:id="@+id/center_ismartv_linear_layout"
         android:layout_width="@dimen/center_poster_width"
         android:layout_height="@dimen/center_poster_height"
-        android:background="#00ff00"
         android:clipChildren="false"
         android:clipToPadding="false"
         android:focusable="true"
         android:focusableInTouchMode="true"
         android:foreground="@drawable/selector_item_banner_subscribe"
+        android:layout_marginTop="@dimen/center_poster_margin_top"
         android:orientation="vertical">
         <RelativeLayout
             android:layout_width="match_parent"

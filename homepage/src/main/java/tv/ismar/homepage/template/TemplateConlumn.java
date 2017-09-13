@@ -24,7 +24,8 @@ import tv.ismar.homepage.control.FetchDataControl;
  * @DESC: 栏目模版
  */
 
-public class TemplateConlumn extends Template implements BaseControl.ControlCallBack {
+public class TemplateConlumn extends Template implements BaseControl.ControlCallBack,
+        RecyclerViewTV.OnItemFocusChangeListener {
     private TextView mTitleTv;//banner标题
     private TextView mIndexTv;//选中位置
     private RecyclerViewTV mRecyclerView;
@@ -43,14 +44,20 @@ public class TemplateConlumn extends Template implements BaseControl.ControlCall
         mRecyclerView = (RecyclerViewTV) view.findViewById(R.id.conlumn_recyclerview);
         LinearLayoutManager conlumnLayoutManager = new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false);
         mRecyclerView.setLayoutManager(conlumnLayoutManager);
-        //如果可以确定每个item的高度是固定的，设置这个选项可以提高性能
-        mRecyclerView.setHasFixedSize(true);
+        mRecyclerView.setSelectedItemAtCentered(false);
+        int selectedItemOffset = mContext.getResources().getDimensionPixelSize(R.dimen.banner_item_setSelectedItemOffset);
+        mRecyclerView.setSelectedItemOffset(selectedItemOffset, selectedItemOffset);
     }
 
     @Override
     public void initData(Bundle bundle) {
         mTitleTv.setText(bundle.getString("title"));
         mControl.getBanners(bundle.getInt("banner"), 1);
+    }
+
+    @Override
+    protected void initListener(View view) {
+        mRecyclerView.setOnItemFocusChangeListener(this);
     }
 
     @Override
@@ -68,5 +75,10 @@ public class TemplateConlumn extends Template implements BaseControl.ControlCall
                 mAdapter.notifyDataSetChanged();
             }
         }
+    }
+
+    @Override
+    public void onItemFocusGain(View itemView, int position) {
+
     }
 }

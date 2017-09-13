@@ -661,7 +661,7 @@
 <!--导视尺寸-->
 <dimen name="guide_switch_container_margin_left">55.56dp</dimen>
 <dimen name="guide_switch_container_width">658.89dp</dimen>
-<dimen name="guide_switch_container_height">276.67dp</dimen>
+<dimen name="guide_switch_container_height">304.44dp</dimen>
 <dimen name="guide_video_title_width">506.11dp</dimen>
 <dimen name="guide_video_title_height">23.89dp</dimen>
 <dimen name="guide_video_title_size">21.67dp</dimen>
@@ -674,15 +674,18 @@
 <dimen name="guide_recycle_item_padding">33.33dp</dimen>
 <dimen name="guide_recycle_item_width">197.22dp</dimen>
 <dimen name="guide_recycle_item_height">276.67dp</dimen>
+<dimen name="guide_recycle_item_margin_top">13.89dp</dimen>
 <dimen name="guide_recycle_item_title_height">23.89dp</dimen>
 <dimen name="guide_recycle_item_lt_icon_size">60.56dp</dimen>
 <dimen name="guide_recycle_item_rb_icon_width">34.44dp</dimen>
 <dimen name="guide_recycle_item_rb_icon_height">23.89dp</dimen>
 <dimen name="guide_recycle_item_rb_margin_bottom">4.44dp</dimen>
 
-<!--电视剧尺寸-->
+<!--电视剧尺�?-->
 <dimen name="tv_player_recycleview_margin_left">33.33dp</dimen>
 <dimen name="tv_play_recycleview_item_padding">22.22dp</dimen>
+<dimen name="tv_play_recycleview_height">132.22dp</dimen>
+<dimen name="tv_play_item_margin_top">6.11dp</dimen>
 <dimen name="tv_play_poster_height">120.00dp</dimen>
 <dimen name="tv_play_poster_width">213.33dp</dimen>
 <dimen name="tv_play_poster_title_size">21.67dp</dimen>
@@ -692,10 +695,12 @@
 <dimen name="tv_play_poster_title_height">26.11dp</dimen>
 <dimen name="tv_play_poster_rb_margin_bottom">4.44dp</dimen>
 <!--栏目尺寸-->
+<dimen name="column_recyleview_height">88.89dp</dimen>
 <dimen name="column_item_width">213.33dp</dimen>
 <dimen name="column_item_height">80.00dp</dimen>
 <dimen name="column_item_padding">22.22dp</dimen>
 <dimen name="column_item_margin_left">55.56dp</dimen>
+<dimen name="column_item_margin_top">4.44dp</dimen>
 <!--横版双行尺寸-->
 <dimen name="double_ld_margin_left">55.56dp</dimen>
 <dimen name="double_ld_img_height">234.44dp</dimen>
@@ -735,6 +740,8 @@
 <dimen name="double_md_poster_title_size">21.67dp</dimen>
 <dimen name="double_md_poster_padding">23.33dp</dimen>
 <!--居中模版-->
+<dimen name="center_recycleview_height">282.78dp</dimen>
+<dimen name="center_poster_margin_top">13.89dp</dimen>
 <dimen name="center_poster_width">453.89dp</dimen>
 <dimen name="center_poster_height">255.00dp</dimen>
 <dimen name="center_title_height">26.11dp</dimen>

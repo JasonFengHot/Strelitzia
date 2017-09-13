@@ -123,8 +123,6 @@
                                 android:visibility="gone"/>
 
                         </RelativeLayout>
-
-
                     </RelativeLayout>
 
                     <com.open.androidtvwidget.leanback.recycle.RecyclerViewTV

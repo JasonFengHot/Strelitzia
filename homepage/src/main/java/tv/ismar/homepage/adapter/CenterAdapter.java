@@ -93,9 +93,9 @@ public class CenterAdapter extends RecyclerView.Adapter<CenterAdapter.CenterView
         @Override
         public void onFocusChange(View v, boolean hasFocus) {
             if (hasFocus) {
-                scaleToLarge(v.findViewById(R.id.conlumn_ismartv_linear_layout));
+                scaleToLarge(v.findViewById(R.id.center_ismartv_linear_layout));
             } else {
-                scaleToNormal(v.findViewById(R.id.conlumn_ismartv_linear_layout));
+                scaleToNormal(v.findViewById(R.id.center_ismartv_linear_layout));
             }
         }
 

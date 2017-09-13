@@ -66,7 +66,8 @@ public class TvPlayAdapter extends RecyclerView.Adapter<TvPlayAdapter.TvPlayerVi
         this.mMarginLeftEnable = enable;
     }
 
-    public static class TvPlayerViewHolder extends RecyclerView.ViewHolder implements View.OnFocusChangeListener{
+    public static class TvPlayerViewHolder extends RecyclerView.ViewHolder implements
+            View.OnFocusChangeListener, View.OnClickListener{
         public ImageView mPosterIg;//海报
         public ImageView mLtIconTv;//左上icon
         public ImageView mRbIconTv;//右下icon
@@ -81,6 +82,7 @@ public class TvPlayAdapter extends RecyclerView.Adapter<TvPlayAdapter.TvPlayerVi
             mTitleTv = (TextView) itemView.findViewById(R.id.tv_player_item_title);
             mMarginLeftView = itemView.findViewById(R.id.tv_player_margin_left);
             itemView.findViewById(R.id.tv_player_ismartv_linear_layout).setOnFocusChangeListener(this);
+            itemView.findViewById(R.id.tv_player_ismartv_linear_layout).setOnClickListener(this);
         }
 
         private void scaleToLarge(View view) {
@@ -105,10 +107,15 @@ public class TvPlayAdapter extends RecyclerView.Adapter<TvPlayAdapter.TvPlayerVi
         @Override
         public void onFocusChange(View v, boolean hasFocus) {
             if (hasFocus) {
-                scaleToLarge(v.findViewById(R.id.guide_ismartv_linear_layout));
+                scaleToLarge(v.findViewById(R.id.tv_player_ismartv_linear_layout));
             } else {
-                scaleToNormal(v.findViewById(R.id.guide_ismartv_linear_layout));
+                scaleToNormal(v.findViewById(R.id.tv_player_ismartv_linear_layout));
             }
+        }
+
+        @Override
+        public void onClick(View v) {
+
         }
     }
 
