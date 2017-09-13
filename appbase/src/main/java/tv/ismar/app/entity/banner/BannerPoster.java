@@ -14,6 +14,7 @@ public class BannerPoster {
     public String vertical_url;
     public String title;
     public String introduction;
+    public String image_url;
     public int corner;
     public String poster_url;
     public String model_name;

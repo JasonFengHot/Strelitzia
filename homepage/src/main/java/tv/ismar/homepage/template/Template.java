@@ -21,6 +21,7 @@ import tv.ismar.app.entity.banner.BannerEntity;
  */
 
 public abstract class Template {
+    protected final String TAG = this.getClass().getSimpleName();
     protected Context mContext;
     protected TextView mTitleCountTv;//标题数量view
 

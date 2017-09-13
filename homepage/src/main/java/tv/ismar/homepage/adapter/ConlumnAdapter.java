@@ -4,6 +4,7 @@ import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,12 +46,13 @@ public class ConlumnAdapter extends RecyclerView.Adapter<ConlumnAdapter.ConlumnV
     @Override
     public void onBindViewHolder(ConlumnViewHolder holder, int position) {
         BannerPoster poster = mData.get(position);
+        Log.d("ConlumnAdapter", "position:"+position);
         holder.mTitle.setText(poster.title);
-//        if (!TextUtils.isEmpty(poster.image_url)) {
-//            Picasso.with(mContext).load(poster.image_url).into(holder.mPoster);
-//        } else {
-//            Picasso.with(mContext).load(R.drawable.list_item_preview_bg).into(holder.mPoster);
-//        }
+        if (!TextUtils.isEmpty(poster.image_url)) {
+            Picasso.with(mContext).load(poster.image_url).into(holder.mPoster);
+        } else {
+            Picasso.with(mContext).load(R.drawable.list_item_preview_bg).into(holder.mPoster);
+        }
     }
 
     @Override
