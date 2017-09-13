@@ -5,98 +5,8 @@
                 android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
-    <RelativeLayout
-        android:id="@+id/home_head_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical">
-        <TextView
-            android:layout_width="@dimen/guide_title_logo_width"
-            android:layout_height="@dimen/guide_title_logo_height"
-            android:layout_marginLeft="@dimen/guide_title_logo_margin_left"
-            android:layout_marginTop="@dimen/guide_title_logo_margin_top"
-            android:background="@drawable/guide_title_logo"/>
-        <RelativeLayout
-            android:layout_width="@dimen/guide_title_react_width"
-            android:layout_height="@dimen/guide_title_react_height"
-            android:layout_marginRight="@dimen/guide_title_history_margin_person_center"
-            android:layout_marginTop="@dimen/guide_title_histroy_margin_top"
-            android:layout_toLeftOf="@+id/person_center_layout"
-            android:gravity="center"
-            android:background="#00000000">
-            <RelativeLayout
-                android:id="@+id/collection_layout"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:focusable="true"
-                android:layout_alignParentRight="true"
-                android:orientation="horizontal">
-                <TextView
-                    android:id="@+id/collection_tv"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_toLeftOf="@+id/person_collection_img"
-                    android:singleLine="true"
-                    android:layout_marginRight="@dimen/guide_title_icon_padding_text"
-                    android:visibility="gone"
-                    android:textSize="@dimen/guide_title_text_size"
-                    android:text="历史收藏"/>
-                <ImageView
-                    android:id="@+id/person_collection_img"
-                    android:layout_width="@dimen/guide_title_icon_size"
-                    android:layout_height="@dimen/guide_title_icon_size"
-                    android:layout_alignParentRight="true"
-                    android:src="@drawable/history_icon"/>
-            </RelativeLayout>
-        </RelativeLayout>
 
-        <RelativeLayout
-            android:id="@+id/person_center_layout"
-            android:layout_width="@dimen/guide_title_react_width"
-            android:layout_height="@dimen/guide_title_react_height"
-            android:layout_marginRight="@dimen/guide_title_person_center_margin_time"
-            android:layout_marginTop="@dimen/guide_title_person_center_margin_top"
-            android:layout_toLeftOf="@+id/guide_title_time_tv"
-            android:gravity="center"
-            android:background="#00000000">
-            <RelativeLayout
-                android:id="@+id/center_layout"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:focusable="true"
-                android:layout_alignParentRight="true"
-                android:orientation="horizontal">
-                <TextView
-                    android:id="@+id/center_tv"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_toLeftOf="@+id/person_center_img"
-                    android:textSize="@dimen/guide_title_text_size"
-                    android:layout_marginRight="@dimen/guide_title_icon_padding_text"
-                    android:visibility="gone"
-                    android:singleLine="true"
-                    android:text="个人中心"/>
-                <ImageView
-                    android:id="@+id/person_center_img"
-                    android:layout_width="@dimen/guide_title_icon_size"
-                    android:layout_height="@dimen/guide_title_icon_size"
-                    android:layout_alignParentRight="true"
-                    android:src="@drawable/person_center"/>
-            </RelativeLayout>
-        </RelativeLayout>
-
-        <TextView
-            android:id="@+id/guide_title_time_tv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="#ffffff"
-            android:textSize="@dimen/guide_title_time_size"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="@dimen/guide_title_time_margin_right"
-            android:layout_marginTop="@dimen/guide_title_time_margin_top" />
-    </RelativeLayout>
+    <include layout="@layout/home_head_layout"/>
 
     <tv.ismar.homepage.widget.HorizontalTabView
         android:id="@+id/channel_tab"
@@ -120,6 +30,7 @@
     <FrameLayout
         android:id="@+id/fragment_layout"
         android:focusable="false"
+        android:background="#ff0000"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="match_parent"/>
 </LinearLayout>
