@@ -23,6 +23,7 @@
             android:layout_width="@dimen/popup_layout_style_title_view_h"
             android:layout_height="@dimen/popup_layout_style_title_view_h"
             android:background="@drawable/popup_icon"
+            android:visibility="gone"
             android:layout_marginRight="@dimen/popup_layout_style_icon_mr"/>
         <TextView
             android:id="@+id/popup_title"

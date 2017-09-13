@@ -10,6 +10,6 @@
         android:layout_height="@dimen/msg_text_item_text_h"
         android:textSize="@dimen/msg_text_item_text_ts"
         android:textColor="#999999"
-        android:gravity="center_vertical"
+        android:gravity="center"
         android:layout_marginBottom="@dimen/msg_text_item_text_mb"/>
 </RelativeLayout>

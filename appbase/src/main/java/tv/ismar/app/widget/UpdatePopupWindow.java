@@ -3,6 +3,7 @@ package tv.ismar.app.widget;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -46,6 +47,8 @@ public class UpdatePopupWindow extends PopupWindow implements View.OnHoverListen
         Button popup_btn_cancel = (Button) contentView.findViewById(R.id.popup_btn_cancel);
         LinearLayout popup_title_view=(LinearLayout)contentView.findViewById(R.id.popup_title_view);
         LinearLayout popup_btns=(LinearLayout)contentView.findViewById(R.id.popup_btns);
+        View popup_icon = contentView.findViewById(R.id.popup_icon);
+        popup_icon.setVisibility(View.VISIBLE);
         popup_title.setText("升级提示");
         popup_btn_confirm.setText("现在升级");
         popup_btn_cancel.setText("稍后升级");
@@ -74,6 +77,7 @@ public class UpdatePopupWindow extends PopupWindow implements View.OnHoverListen
         for (String msg : msgs) {
             View textLayout = LayoutInflater.from(context).inflate(R.layout.msg_text_item, null);
             TextView textView = (TextView) textLayout.findViewById(R.id.msg_text);
+            textView.setGravity(Gravity.LEFT);
             textView.setText(msg);
             popup_content.addView(textLayout);
         }
