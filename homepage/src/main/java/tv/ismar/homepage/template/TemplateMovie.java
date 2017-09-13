@@ -116,9 +116,7 @@ public class TemplateMovie extends Template {
 //            mFocusHandler.sendEmptyMessageDelayed(mSavePos, 10);
         }
 
-        String pageCount = String.valueOf(pageNumber);
-
-        SkyService.ServiceManager.getService().apiTvBanner(bannerName, pageCount)
+        SkyService.ServiceManager.getService().apiTvBanner(bannerName, pageNumber)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<BannerEntity>() {

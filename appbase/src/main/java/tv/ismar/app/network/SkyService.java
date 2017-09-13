@@ -699,7 +699,7 @@ public interface SkyService {
     @GET("/api/tv/banner/{banner_name}/{page}/")
     Observable<BannerEntity> apiTvBanner(
             @Path("banner_name") int banner,
-            @Path("page") String page
+            @Path("page") int page
     );
 
 
