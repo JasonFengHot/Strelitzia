@@ -6,7 +6,7 @@
 
     <com.open.androidtvwidget.leanback.recycle.RecyclerViewTV
         android:id="@+id/movie_banner"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="@dimen/movie_banner_recycler_h"
         android:layout_marginLeft="@dimen/movie_banner_recycler_ml"
         android:layout_marginRight="@dimen/movie_banner_recycler_mr"
