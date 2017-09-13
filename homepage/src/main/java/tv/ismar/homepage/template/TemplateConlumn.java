@@ -51,8 +51,8 @@ public class TemplateConlumn extends Template implements BaseControl.ControlCall
     @Override
     public void callBack(int flags, Object... args) {
         if(flags == FetchDataControl.FETCH_BANNERS_LIST_FLAG){//获取单个banner业务
+            HomeEntity homeEntity = (HomeEntity) args[0];
             if(mAdapter == null){
-                HomeEntity homeEntity = (HomeEntity) args[0];
                 mAdapter = new ConlumnAdapter(mContext, homeEntity.posters);
                 mRecyclerView.setAdapter(mAdapter);
             }else {

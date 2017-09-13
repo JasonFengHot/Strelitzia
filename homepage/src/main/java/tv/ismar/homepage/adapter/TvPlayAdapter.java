@@ -80,6 +80,7 @@ public class TvPlayAdapter extends RecyclerView.Adapter<TvPlayAdapter.TvPlayerVi
             mRbIconTv = (ImageView) itemView.findViewById(R.id.tv_player_item_rb_icon);
             mTitleTv = (TextView) itemView.findViewById(R.id.tv_player_item_title);
             mMarginLeftView = itemView.findViewById(R.id.tv_player_margin_left);
+            itemView.findViewById(R.id.tv_player_ismartv_linear_layout).setOnFocusChangeListener(this);
         }
 
         private void scaleToLarge(View view) {
@@ -105,12 +106,8 @@ public class TvPlayAdapter extends RecyclerView.Adapter<TvPlayAdapter.TvPlayerVi
         public void onFocusChange(View v, boolean hasFocus) {
             if (hasFocus) {
                 scaleToLarge(v.findViewById(R.id.guide_ismartv_linear_layout));
-                v.findViewById(R.id.title).setSelected(true);
-                v.findViewById(R.id.introduction).setSelected(true);
             } else {
                 scaleToNormal(v.findViewById(R.id.guide_ismartv_linear_layout));
-                v.findViewById(R.id.title).setSelected(false);
-                v.findViewById(R.id.introduction).setSelected(false);
             }
         }
     }

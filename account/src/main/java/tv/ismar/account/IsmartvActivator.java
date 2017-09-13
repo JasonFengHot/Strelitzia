@@ -155,7 +155,7 @@ public final class IsmartvActivator {
 
         SKY_Retrofit = new Retrofit.Builder()
                 .client(client)
-                .baseUrl(SKY_HOST)
+                .baseUrl(SKY_HOST_TEST)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
     }
