@@ -3,26 +3,29 @@ package tv.ismar.homepage.fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
 
-import com.open.androidtvwidget.leanback.recycle.RecyclerViewTV;
+import java.util.zip.Inflater;
 
 import tv.ismar.app.BaseControl;
 import tv.ismar.app.entity.GuideBanner;
+import tv.ismar.app.util.BitmapDecoder;
 import tv.ismar.homepage.HomeActivity;
 import tv.ismar.homepage.R;
-import tv.ismar.homepage.adapter.HomeAdapter;
-import tv.ismar.homepage.adapter.HomeReclAdapter;
 import tv.ismar.homepage.control.FetchDataControl;
+import tv.ismar.homepage.template.Template519;
+import tv.ismar.homepage.template.TemplateBigSmallLd;
+import tv.ismar.homepage.template.TemplateCenter;
+import tv.ismar.homepage.template.TemplateConlumn;
+import tv.ismar.homepage.template.TemplateDoubleLd;
+import tv.ismar.homepage.template.TemplateDoubleMd;
+import tv.ismar.homepage.template.TemplateGuide;
+import tv.ismar.homepage.template.TemplateMovie;
+import tv.ismar.homepage.template.TemplateOrder;
+import tv.ismar.homepage.template.TemplateTvPlay;
 import tv.ismar.library.util.StringUtils;
-
-import static tv.ismar.homepage.control.FetchDataControl.FETCH_CHANNEL_BANNERS_FLAG;
-import static tv.ismar.homepage.control.FetchDataControl.FETCH_HOME_BANNERS_FLAG;
 
 /**
  * @AUTHOR: xi
@@ -32,11 +35,9 @@ import static tv.ismar.homepage.control.FetchDataControl.FETCH_HOME_BANNERS_FLAG
 
 public class ChannelFragment extends BaseFragment implements BaseControl.ControlCallBack{
     private FetchDataControl mControl = null;//业务类引用
-//    private RecyclerView mRecycleView;
-    private ListView mListView;
-    private HomeAdapter mAdapter;
-
     private String mChannel;//频道
+
+    private ViewGroup mLinearContainer;//banner容器
 
     @Override
     public void onAttach(Context context) {
@@ -44,9 +45,8 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
         mControl = new FetchDataControl(getContext(), this);
     }
 
-    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = LayoutInflater.from(getActivity()).inflate(R.layout.channel_fragment_layout, null);
         findView(view);
         initData();
@@ -54,21 +54,16 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
     }
 
     private void findView(View view){
-//        mRecycleView = (RecyclerView) view.findViewById(R.id.home_fragment_recycleview);
-        mListView = (ListView) view.findViewById(R.id.home_fragment_listview);
-        mListView.setItemsCanFocus(true);
-//        LinearLayoutManager linear = new LinearLayoutManager(getContext());
-//        linear.setOrientation(LinearLayoutManager.VERTICAL);
-//        mRecycleView.setLayoutManager(linear);
+        mLinearContainer = view.findViewById(R.id.scroll_linear_container);
     }
 
     public void setChannel(String channel){
-        this.mChannel = channel;
+        mChannel = channel;
     }
 
     private void initData(){
-        if(!StringUtils.isEmpty(this.mChannel)){
-            if(this.mChannel.equals(HomeActivity.HOME_PAGE_CHANNEL_TAG)){
+        if(!StringUtils.isEmpty(mChannel)){
+            if(mChannel.equals(HomeActivity.HOME_PAGE_CHANNEL_TAG)){
                 mControl.fetchHomeBanners();
             } else {
                 mControl.fetchChannelBanners(mChannel);
@@ -76,24 +71,63 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
         }
     }
 
-    private void initAdapter(GuideBanner[] banners){
-        if(mAdapter == null){
-//            mAdapter = new HomeReclAdapter(getContext(), banners);
-//            mRecycleView.setAdapter(mAdapter);
-            mAdapter = new HomeAdapter(getContext(), banners);
-            mListView.setAdapter(mAdapter);
-        }else{
-            mAdapter.notifyDataSetChanged();
+    @Override
+    public void callBack(int flags, Object... args) {
+        GuideBanner[] banners = (GuideBanner[]) args;
+        initBanner(banners);
+    }
+
+    /*初始化banner视图*/
+    private void initBanner(GuideBanner[] data){
+        if(data==null || data.length<=0){
+            return;
+        }
+        mLinearContainer.removeAllViews();
+        for(int position=0; position<data.length; position++){
+            View bannerView = null;
+            Bundle bundle = new Bundle();
+            bundle.putString("title", data[position].title);
+            bundle.putString("url", data[position].banner_url);
+            bundle.putInt("banner", data[position].page_banner_pk);
+            String template = data[position].template;
+            if(template.equals("template_guide")){//导航
+                bannerView = createView(R.layout.banner_guide);
+                new TemplateGuide(getContext()).setView(bannerView, bundle);
+            } else if(template.equals("template_order")){//订阅模版
+                bannerView = createView(R.layout.banner_order);
+                new TemplateOrder(getContext()).setView(bannerView, bundle);
+            } else if(template.equals("template_movie")){//电影模版
+                bannerView = createView(R.layout.banner_movie);
+                new TemplateMovie(getContext()).setView(bannerView, bundle);
+            } else if(template.equals("template_teleplay")){//电视剧模版
+                bannerView = createView(R.layout.banner_tv_player);
+                new TemplateTvPlay(getContext()).setView(bannerView, bundle);
+            } else if(template.equals("template_519")){//519横图模版
+                bannerView = createView(R.layout.banner_519);
+                new Template519(getContext()).setView(bannerView, bundle);
+            }else if(template.equals("template_conlumn") || template.equals("template_recommend")){//栏目模版
+                bannerView = createView(R.layout.banner_conlumn);
+                new TemplateConlumn(getContext()).setView(bannerView, bundle);
+            }else if(template.equals("template_big_small_ld")){//大横小竖模版
+                bannerView = createView(R.layout.banner_big_small_ld);
+                new TemplateBigSmallLd(getContext()).setView(bannerView, bundle);
+            }else if(template.equals("template_double_md")){//竖版双行模版
+                bannerView = createView(R.layout.banner_double_md);
+                new TemplateDoubleMd(getContext()).setView(bannerView, bundle);
+            }else if(template.equals("template_double_ld")){//横版双行模版
+                bannerView = createView(R.layout.banner_double_ld);
+                new TemplateDoubleLd(getContext()).setView(bannerView, bundle);
+            } else if(template.equals("template_center")){//居中模版
+                bannerView = createView(R.layout.banner_center);
+                new TemplateCenter(getContext()).setView(bannerView, bundle);
+            }
+            if(bannerView != null){
+                mLinearContainer.addView(bannerView);
+            }
         }
     }
 
-    @Override
-    public void callBack(int flags, Object... args) {
-        //这里通过flag严格区分不同的业务流程，避免业务之间的耦合
-        if(flags == FETCH_HOME_BANNERS_FLAG){//获取到首页下的banners
-        }else if(flags == FETCH_CHANNEL_BANNERS_FLAG){//获取到频道下的banners
-        }
-        GuideBanner[] banners = (GuideBanner[]) args;
-        initAdapter(banners);
+    private View createView(int layoutId){
+        return LayoutInflater.from(getContext()).inflate(layoutId, null);
     }
 }
