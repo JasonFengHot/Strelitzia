@@ -7,7 +7,7 @@
 
     <com.open.androidtvwidget.leanback.recycle.RecyclerViewTV
         android:id="@+id/subscribe_banner"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="@dimen/subscribe_banner_recycler_h"
         android:layout_marginLeft="@dimen/subscribe_banner_recycler_ml"
         android:layout_marginRight="@dimen/subscribe_banner_recycler_mr"

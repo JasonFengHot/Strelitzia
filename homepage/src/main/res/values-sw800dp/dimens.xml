@@ -844,4 +844,9 @@
 <dimen name="launcher_ad_1031">763.70dp</dimen>
 <dimen name="launcher_ad_549">406.67dp</dimen>
 <dimen name="launcher_ad_445">329.63dp</dimen>
+<dimen name="movie_mix_banner_recycler_h">333.33dp</dimen>
+<dimen name="movie_mix_banner_recycler_ml">37.04dp</dimen>
+<dimen name="movie_mix_banner_recycler_mr">37.04dp</dimen>
+<dimen name="movie_mix_banner_recycler_pl">37.04dp</dimen>
+<dimen name="movie_mix_banner_recycler_pr">37.04dp</dimen>
 </resources>
