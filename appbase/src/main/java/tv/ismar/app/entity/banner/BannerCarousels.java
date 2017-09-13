@@ -7,12 +7,15 @@ package tv.ismar.app.entity.banner;
  */
 
 public class BannerCarousels {
-    public String video_image;
-    public String introduction;
-    public String content_model;
+    public Object video_image;
     public String video_url;
-    public String title;
+    public String content_model;
     public int pause_time;
-    public float rating_average;
-    public String content_url;
+    public String thumb_image;
+    public String title;
+    public String url;
+    public String introduction;
+    public int pk;
+    public boolean expense;
+    public String model_name;
 }

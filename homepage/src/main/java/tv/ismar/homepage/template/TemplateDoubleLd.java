@@ -10,12 +10,7 @@ import android.widget.TextView;
 import com.open.androidtvwidget.leanback.recycle.RecyclerViewTV;
 import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import tv.ismar.adapter.FocusGridLayoutManager;
 import tv.ismar.app.BaseControl;
-import tv.ismar.app.entity.banner.BannerPoster;
 import tv.ismar.app.entity.banner.BigImage;
 import tv.ismar.app.entity.banner.HomeEntity;
 import tv.ismar.homepage.R;
@@ -76,7 +71,7 @@ public class TemplateDoubleLd extends Template implements BaseControl.ControlCal
 
     private void initAdapter(HomeEntity homeEntity){
         if(mAdapter == null){
-            mAdapter = new DoubleLdAdapter(mContext, homeEntity.poster);
+            mAdapter = new DoubleLdAdapter(mContext, homeEntity.posters);
             mAdapter.setLeftMarginEnable(true);
             mRecyclerView.setAdapter(mAdapter);
         }else {
@@ -98,7 +93,7 @@ public class TemplateDoubleLd extends Template implements BaseControl.ControlCal
         if(flags == FetchDataControl.FETCH_BANNERS_LIST_FLAG){//获取单个banner业务
             HomeEntity homeEntity = (HomeEntity) args[0];
             initAdapter(homeEntity);
-            initImage(homeEntity.big_image);
+//            initImage(homeEntity.big_image);
         } else if(flags == FetchDataControl.FETCH_M_BANNERS_LIST_FLAG){//获取多个banner业务
 
         }

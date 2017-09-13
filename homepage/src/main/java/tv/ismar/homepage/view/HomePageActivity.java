@@ -1727,7 +1727,7 @@ public class HomePageActivity extends BaseActivity implements LinearLayoutManage
                         @Override
                         public void onError(Exception e) {
                             Picasso.with(HomePageActivity.this)
-                                    .load("file:///android_asset/poster.png")
+                                    .load("file:///android_asset/posters.png")
                                     .memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE)
                                     .networkPolicy(NetworkPolicy.NO_CACHE, NetworkPolicy.NO_CACHE)
                                     .into(home_ad_pic);

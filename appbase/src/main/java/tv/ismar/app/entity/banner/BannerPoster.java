@@ -1,5 +1,7 @@
 package tv.ismar.app.entity.banner;
 
+import java.util.Date;
+
 /**
  * @AUTHOR: xi
  * @DATE: 2017/8/29
@@ -7,10 +9,15 @@ package tv.ismar.app.entity.banner;
  */
 
 public class BannerPoster {
+    public String url;
+    public String content_model;
+    public String vertical_url;
     public String title;
     public String introduction;
-    public float rating_average;
-    public String content_url;
-    public String content_model;
+    public int corner;
     public String poster_url;
+    public String model_name;
+    public int pk;
+    public String custom_image;
+    public Date order_date;
 }

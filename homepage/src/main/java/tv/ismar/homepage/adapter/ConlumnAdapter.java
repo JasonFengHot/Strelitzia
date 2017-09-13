@@ -3,6 +3,7 @@ package tv.ismar.homepage.adapter;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,7 +46,11 @@ public class ConlumnAdapter extends RecyclerView.Adapter<ConlumnAdapter.ConlumnV
     public void onBindViewHolder(ConlumnViewHolder holder, int position) {
         BannerPoster poster = mData.get(position);
         holder.mTitle.setText(poster.title);
-        Picasso.with(mContext).load(poster.poster_url).into(holder.mPoster);
+        if (!TextUtils.isEmpty(poster.poster_url)) {
+            Picasso.with(mContext).load(poster.poster_url).into(holder.mPoster);
+        } else {
+            Picasso.with(mContext).load(R.drawable.list_item_preview_bg).into(holder.mPoster);
+        }
     }
 
     @Override

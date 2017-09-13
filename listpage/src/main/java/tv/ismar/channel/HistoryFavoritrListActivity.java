@@ -33,6 +33,7 @@ import tv.ismar.adapter.SpaceItemDecoration;
 import tv.ismar.app.BaseActivity;
 import tv.ismar.app.core.DaisyUtils;
 import tv.ismar.app.core.PageIntent;
+import tv.ismar.app.core.SimpleRestClient;
 import tv.ismar.app.core.Source;
 import tv.ismar.app.entity.AdElement;
 import tv.ismar.app.entity.Item;
@@ -130,14 +131,15 @@ public class HistoryFavoritrListActivity extends BaseActivity implements OnItemC
     public void onItemClick(View view, int position) {
         PageIntent intent=new PageIntent();
         HistoryFavoriteEntity entity=mlists.get(position);
+        boolean[] isSubItem = new boolean[1];
+        int pk = SimpleRestClient.getItemId(entity.getUrl(), isSubItem);
         if(source.equals("edit")){
             if(type==1){
-                deleteHistory(entity.getPk(),entity.getItem_pk(),position);
+                deleteHistory(pk,entity.getItem_pk(),position);
             }else{
-                deleteBookmark(entity.getPk(),position);
+                deleteBookmark(pk,position);
             }
         }else{
-            int pk=mlists.get(position).getPk();
             if(type==1){
                 intent.toPlayPage(this,pk,0, Source.HISTORY);
             }else{

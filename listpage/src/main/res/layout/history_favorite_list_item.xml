@@ -16,7 +16,7 @@
         <ImageView
             android:layout_width="@dimen/history_492"
             android:layout_height="@dimen/history_2"
-            android:layout_marginTop="@dimen/history_10"
+            android:layout_marginTop="@dimen/history_7"
             android:background="@color/_333333"
             android:layout_marginLeft="@dimen/history_32"
             />

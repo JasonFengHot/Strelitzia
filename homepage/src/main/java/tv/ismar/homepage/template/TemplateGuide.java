@@ -147,7 +147,7 @@ public class TemplateGuide extends Template implements BaseControl.ControlCallBa
     private void initRecycleView(HomeEntity homeEntity){
         if(homeEntity != null){
             if(mAdapter == null){
-                mAdapter = new GuideAdapter(mContext, homeEntity.poster);
+                mAdapter = new GuideAdapter(mContext, homeEntity.posters);
                 mAdapter.setMarginLeftEnable(true);
                 mRecycleView.setAdapter(mAdapter);
             }else {

@@ -200,7 +200,8 @@ public class FilterPosterAdapter extends RecyclerView.Adapter<FilterPosterAdapte
                 }
             });
         }else{
-            ((TextView)holder.itemView).setText(mSectionList.get(mSpecialPos.indexOf(position)).title);
+            if(mSpecialPos.indexOf(position)<mSectionList.size())
+                ((TextView)holder.itemView).setText(mSectionList.get(mSpecialPos.indexOf(position)).title);
         }
         if(position==focusedPosition){
             holder.itemView.requestFocus();

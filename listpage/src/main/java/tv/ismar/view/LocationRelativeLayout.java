@@ -119,15 +119,25 @@ public class LocationRelativeLayout extends RelativeLayout {
                     }
                 }
             }
-            requestFocus();
+//            requestFocus();
         }else{
-            horving=false;
+//            horving=false;
         }
         return super.dispatchHoverEvent(event);
     }
 
+
+    @Override
+    public boolean onHoverEvent(MotionEvent event) {
+        if(event.getAction()==MotionEvent.ACTION_HOVER_ENTER||event.getAction()==MotionEvent.ACTION_HOVER_MOVE) {
+            requestFocus();
+        }
+            return super.onHoverEvent(event);
+    }
+
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
+        horving=false;
         if(arrow_down_right!=null){
             arrow_down_right.setVisibility(View.GONE);
         }

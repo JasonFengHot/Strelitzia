@@ -4,6 +4,7 @@ import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.graphics.Rect;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,9 +49,13 @@ public class GuideAdapter extends RecyclerView.Adapter<GuideAdapter.GuideViewHol
     public void onBindViewHolder(GuideViewHolder holder, int position) {
         holder.mMarginLeftView.setVisibility(mMarginLeftEnable?View.VISIBLE:View.GONE);
         BannerPoster poster = mData.get(position);
-        Picasso.with(mContext).load(poster.poster_url).into(holder.mPosterIg);
-//        Picasso.with(mContext).load(poster.poster_url).into(holder.mLtIconTv);
-//        Picasso.with(mContext).load(poster.poster_url).into(holder.mRbIconTv);
+        if (!TextUtils.isEmpty(poster.poster_url)) {
+            Picasso.with(mContext).load(poster.poster_url).into(holder.mPosterIg);
+        } else {
+            Picasso.with(mContext).load(R.drawable.list_item_preview_bg).into(holder.mPosterIg);
+        }
+//        Picasso.with(mContext).load(posters.poster_url).into(holder.mLtIconTv);
+//        Picasso.with(mContext).load(posters.poster_url).into(holder.mRbIconTv);
         holder.mTitleTv.setText(poster.title);
     }
 
