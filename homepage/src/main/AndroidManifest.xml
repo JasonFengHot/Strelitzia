@@ -4,9 +4,7 @@
 
     <application>
 
-        <activity android:name=".view.AdvertiseActivity"
-            android:screenOrientation="sensorLandscape"
-            android:theme="@style/IsmartvAppTheme.Fullscreen">
+        <activity android:name=".TestActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER"/>
@@ -15,6 +13,19 @@
                 <action android:name="tv.ismar.daisy.tvguide"/>
                 <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
+        </activity>
+
+        <activity android:name=".view.AdvertiseActivity"
+            android:screenOrientation="sensorLandscape"
+            android:theme="@style/IsmartvAppTheme.Fullscreen">
+            <!--<intent-filter>-->
+                <!--<action android:name="android.intent.action.MAIN" />-->
+                <!--<category android:name="android.intent.category.LAUNCHER"/>-->
+            <!--</intent-filter>-->
+            <!--<intent-filter>-->
+                <!--<action android:name="tv.ismar.daisy.tvguide"/>-->
+                <!--<category android:name="android.intent.category.DEFAULT"/>-->
+            <!--</intent-filter>-->
         </activity>
 
         <activity android:name=".HomeActivity"

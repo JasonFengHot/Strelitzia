@@ -3,8 +3,11 @@ package tv.ismar.homepage.template;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
+import com.daimajia.androidanimations.library.Techniques;
+import com.daimajia.androidanimations.library.YoYo;
 import com.open.androidtvwidget.leanback.recycle.LinearLayoutManagerTV;
 import com.open.androidtvwidget.leanback.recycle.RecyclerViewTV;
 
@@ -31,12 +34,34 @@ public class TemplateTvPlay extends Template implements BaseControl.ControlCallB
         mControl = new TvPlayControl(mContext, this);
     }
 
+    private LinearLayoutManagerTV mTvPlayerLayoutManager = null;
+
     @Override
     public void getView(View view) {
         mRecycleView = (RecyclerViewTV) view.findViewById(R.id.tv_player_recyclerview);
-        LinearLayoutManagerTV tvPlayerLayoutManager = new LinearLayoutManagerTV(mContext, LinearLayoutManager.HORIZONTAL, false);
-        mRecycleView.setLayoutManager(tvPlayerLayoutManager);
-        mRecycleView.setSelectedItemOffset(10, 10);
+        mTvPlayerLayoutManager = new LinearLayoutManagerTV(mContext, LinearLayoutManager.HORIZONTAL, false);
+        mRecycleView.setLayoutManager(mTvPlayerLayoutManager);
+        mRecycleView.setSelectedItemAtCentered(false);
+        int selectedItemOffset = mContext.getResources().getDimensionPixelSize(R.dimen.banner_item_setSelectedItemOffset);
+        mRecycleView.setSelectedItemOffset(selectedItemOffset, selectedItemOffset);
+    }
+
+    @Override
+    protected void initListener(View view) {
+        super.initListener(view);
+        mTvPlayerLayoutManager.setFocusSearchFailedListener(new LinearLayoutManagerTV.FocusSearchFailedListener() {
+            @Override
+            public View onFocusSearchFailed(View view, int focusDirection, RecyclerView.Recycler recycler, RecyclerView.State state) {
+                if (focusDirection == View.FOCUS_RIGHT || focusDirection == View.FOCUS_LEFT) {
+                    if (mRecycleView.getChildAt(0).findViewById(R.id.item_layout) == view ||
+                            mRecycleView.getChildAt(mRecycleView.getChildCount() - 1).findViewById(R.id.item_layout) == view) {
+                        YoYo.with(Techniques.HorizontalShake).duration(1000).playOn(view);
+                    }
+                    return view;
+                }
+                return null;
+            }
+        });
     }
 
     @Override

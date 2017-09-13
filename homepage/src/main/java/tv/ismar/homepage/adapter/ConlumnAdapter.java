@@ -46,11 +46,11 @@ public class ConlumnAdapter extends RecyclerView.Adapter<ConlumnAdapter.ConlumnV
     public void onBindViewHolder(ConlumnViewHolder holder, int position) {
         BannerPoster poster = mData.get(position);
         holder.mTitle.setText(poster.title);
-        if (!TextUtils.isEmpty(poster.poster_url)) {
-            Picasso.with(mContext).load(poster.poster_url).into(holder.mPoster);
-        } else {
-            Picasso.with(mContext).load(R.drawable.list_item_preview_bg).into(holder.mPoster);
-        }
+//        if (!TextUtils.isEmpty(poster.image_url)) {
+//            Picasso.with(mContext).load(poster.image_url).into(holder.mPoster);
+//        } else {
+//            Picasso.with(mContext).load(R.drawable.list_item_preview_bg).into(holder.mPoster);
+//        }
     }
 
     @Override
