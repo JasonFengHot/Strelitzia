@@ -7,6 +7,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.zip.Inflater;
+
 import tv.ismar.app.BaseControl;
 import tv.ismar.app.entity.GuideBanner;
 import tv.ismar.app.util.BitmapDecoder;
@@ -35,16 +37,7 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
     private FetchDataControl mControl = null;//业务类引用
     private String mChannel;//频道
 
-    private View mTemplateGuide;//导视模版
-    private View mTemplateOrder;//订阅模版
-    private View mTemplateMovie;//电影模版
-    private View mTemplateTvPlay;//电视剧模版
-    private View mTemplate519;//519模版
-    private View mTemplateConlumn;//栏目模版
-    private View mTemplateBigSmallLd;//大横小竖模版
-    private View mTemplateDoubleMd;//竖版双行模版
-    private View mTemplateDoubleLd;//横版双行模版
-    private View mTmeplateCenter;//居中模版
+    private ViewGroup mLinearContainer;//banner容器
 
     @Override
     public void onAttach(Context context) {
@@ -52,26 +45,16 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
         mControl = new FetchDataControl(getContext(), this);
     }
 
-    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = LayoutInflater.from(getActivity()).inflate(R.layout.test_activity_layout, null);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = LayoutInflater.from(getActivity()).inflate(R.layout.channel_fragment_layout, null);
         findView(view);
         initData();
         return view;
     }
 
     private void findView(View view){
-        mTemplateGuide = view.findViewById(R.id.banner_guide);
-        mTemplateOrder = view.findViewById(R.id.banner_order);
-        mTemplateMovie = view.findViewById(R.id.banner_movie);
-        mTemplateTvPlay = view.findViewById(R.id.banner_tv_play);
-        mTemplate519 = view.findViewById(R.id.banner_519);
-        mTemplateConlumn = view.findViewById(R.id.banner_conlumn);
-        mTemplateBigSmallLd = view.findViewById(R.id.banner_big_small_ld);
-        mTemplateDoubleMd = view.findViewById(R.id.banner_double_md);
-        mTemplateDoubleLd = view.findViewById(R.id.banner_double_ld);
-        mTmeplateCenter = view.findViewById(R.id.banner_center);
+        mLinearContainer = view.findViewById(R.id.scroll_linear_container);
     }
 
     public void setChannel(String channel){
@@ -94,54 +77,57 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
         initBanner(banners);
     }
 
+    /*初始化banner视图*/
     private void initBanner(GuideBanner[] data){
-        mTemplateGuide.setVisibility(View.GONE);
-        mTemplateOrder.setVisibility(View.GONE);
-        mTemplateMovie.setVisibility(View.GONE);
-        mTemplateTvPlay.setVisibility(View.GONE);
-        mTemplate519.setVisibility(View.GONE);
-        mTemplateConlumn.setVisibility(View.GONE);
-        mTemplateBigSmallLd.setVisibility(View.GONE);
-        mTemplateDoubleMd.setVisibility(View.GONE);
-        mTemplateDoubleLd.setVisibility(View.GONE);
-        mTmeplateCenter.setVisibility(View.GONE);
+        if(data==null || data.length<=0){
+            return;
+        }
+        mLinearContainer.removeAllViews();
         for(int position=0; position<data.length; position++){
+            View bannerView = null;
             Bundle bundle = new Bundle();
             bundle.putString("title", data[position].title);
             bundle.putString("url", data[position].banner_url);
             bundle.putInt("banner", data[position].page_banner_pk);
             String template = data[position].template;
             if(template.equals("template_guide")){//导航
-                mTemplateGuide.setVisibility(View.VISIBLE);
-                new TemplateGuide(getContext()).setView(mTemplateGuide, bundle);
+                bannerView = createView(R.layout.banner_guide);
+                new TemplateGuide(getContext()).setView(bannerView, bundle);
             } else if(template.equals("template_order")){//订阅模版
-                mTemplateOrder.setVisibility(View.VISIBLE);
-                new TemplateOrder(getContext()).setView(mTemplateOrder, bundle);
+                bannerView = createView(R.layout.banner_order);
+                new TemplateOrder(getContext()).setView(bannerView, bundle);
             } else if(template.equals("template_movie")){//电影模版
-                mTemplateMovie.setVisibility(View.VISIBLE);
-                new TemplateMovie(getContext()).setView(mTemplateMovie, bundle);
+                bannerView = createView(R.layout.banner_movie);
+                new TemplateMovie(getContext()).setView(bannerView, bundle);
             } else if(template.equals("template_teleplay")){//电视剧模版
-                mTemplateTvPlay.setVisibility(View.VISIBLE);
-                new TemplateTvPlay(getContext()).setView(mTemplateTvPlay, bundle);
+                bannerView = createView(R.layout.banner_tv_player);
+                new TemplateTvPlay(getContext()).setView(bannerView, bundle);
             } else if(template.equals("template_519")){//519横图模版
-                mTemplate519.setVisibility(View.VISIBLE);
-                new Template519(getContext()).setView(mTemplate519, bundle);
+                bannerView = createView(R.layout.banner_519);
+                new Template519(getContext()).setView(bannerView, bundle);
             }else if(template.equals("template_conlumn") || template.equals("template_recommend")){//栏目模版
-                mTemplateConlumn.setVisibility(View.VISIBLE);
-                new TemplateConlumn(getContext()).setView(mTemplateConlumn, bundle);
+                bannerView = createView(R.layout.banner_conlumn);
+                new TemplateConlumn(getContext()).setView(bannerView, bundle);
             }else if(template.equals("template_big_small_ld")){//大横小竖模版
-                mTemplateBigSmallLd.setVisibility(View.VISIBLE);
-                new TemplateBigSmallLd(getContext()).setView(mTemplateBigSmallLd, bundle);
+                bannerView = createView(R.layout.banner_big_small_ld);
+                new TemplateBigSmallLd(getContext()).setView(bannerView, bundle);
             }else if(template.equals("template_double_md")){//竖版双行模版
-                mTemplateDoubleMd.setVisibility(View.VISIBLE);
-                new TemplateDoubleMd(getContext()).setView(mTemplateDoubleMd, bundle);
+                bannerView = createView(R.layout.banner_double_md);
+                new TemplateDoubleMd(getContext()).setView(bannerView, bundle);
             }else if(template.equals("template_double_ld")){//横版双行模版
-                mTemplateDoubleLd.setVisibility(View.VISIBLE);
-                new TemplateDoubleLd(getContext()).setView(mTemplateDoubleLd, bundle);
+                bannerView = createView(R.layout.banner_double_ld);
+                new TemplateDoubleLd(getContext()).setView(bannerView, bundle);
             } else if(template.equals("template_center")){//居中模版
-                mTmeplateCenter.setVisibility(View.VISIBLE);
-                new TemplateCenter(getContext()).setView(mTmeplateCenter, bundle);
+                bannerView = createView(R.layout.banner_center);
+                new TemplateCenter(getContext()).setView(bannerView, bundle);
+            }
+            if(bannerView != null){
+                mLinearContainer.addView(bannerView);
             }
         }
+    }
+
+    private View createView(int layoutId){
+        return LayoutInflater.from(getContext()).inflate(layoutId, null);
     }
 }
