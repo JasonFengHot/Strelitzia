@@ -12,11 +12,9 @@ import tv.ismar.app.BaseControl;
  */
 
 public class CenterControl extends BaseControl {
-    public FetchDataControl mFetchDataControl = null;
 
     public CenterControl(Context context, ControlCallBack callBack) {
         super(context, callBack);
-        mFetchDataControl = new FetchDataControl(context, callBack);
     }
 
     private int mScreenWidth = 0;
@@ -24,12 +22,5 @@ public class CenterControl extends BaseControl {
 
     public void scrollToCenter(RecyclerView recyclerView){
 
-    }
-
-    /*获取单个banner内容列表*/
-    public void getBanners(int banner, int page){
-        if(mFetchDataControl != null){
-            mFetchDataControl.fetchBanners(banner, page);
-        }
     }
 }

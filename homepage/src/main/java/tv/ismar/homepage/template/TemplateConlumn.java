@@ -7,15 +7,12 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
-import com.open.androidtvwidget.leanback.recycle.LinearLayoutManagerTV;
 import com.open.androidtvwidget.leanback.recycle.RecyclerViewTV;
-import com.open.androidtvwidget.leanback.recycle.impl.PrvInterface;
 
 import tv.ismar.app.BaseControl;
 import tv.ismar.app.entity.banner.HomeEntity;
 import tv.ismar.homepage.R;
 import tv.ismar.homepage.adapter.ConlumnAdapter;
-import tv.ismar.homepage.control.ConlumnControl;
 import tv.ismar.homepage.control.FetchDataControl;
 
 /**
@@ -30,11 +27,11 @@ public class TemplateConlumn extends Template implements BaseControl.ControlCall
     private TextView mIndexTv;//选中位置
     private RecyclerViewTV mRecyclerView;
     private ConlumnAdapter mAdapter;
-    private ConlumnControl mControl;
+    private FetchDataControl mFetchDataControl = null;
 
     public TemplateConlumn(Context context) {
         super(context);
-        mControl = new ConlumnControl(mContext, this);
+        mFetchDataControl = new FetchDataControl(context, this);
     }
 
     @Override
@@ -52,7 +49,7 @@ public class TemplateConlumn extends Template implements BaseControl.ControlCall
     @Override
     public void initData(Bundle bundle) {
         mTitleTv.setText(bundle.getString("title"));
-        mControl.getBanners(bundle.getInt("banner"), 1);
+        mFetchDataControl.fetchBanners(bundle.getInt("banner"), 1, false);
     }
 
     @Override

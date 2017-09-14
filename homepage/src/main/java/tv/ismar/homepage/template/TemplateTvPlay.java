@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -25,7 +26,8 @@ import tv.ismar.homepage.control.TvPlayControl;
  * @DESC: 电视剧模版
  */
 
-public class TemplateTvPlay extends Template implements BaseControl.ControlCallBack{
+public class TemplateTvPlay extends Template implements BaseControl.ControlCallBack, RecyclerViewTV.PagingableListener {
+    private FetchDataControl mFetchDataControl = null;
     private TextView mTitleTv;//banner标题
     private TextView mIndexTv;//选中位置
     private RecyclerViewTV mRecycleView;
@@ -34,7 +36,7 @@ public class TemplateTvPlay extends Template implements BaseControl.ControlCallB
 
     public TemplateTvPlay(Context context) {
         super(context);
-        mControl = new TvPlayControl(mContext, this);
+        mFetchDataControl = new FetchDataControl(context, this);
     }
 
     private LinearLayoutManager mTvPlayerLayoutManager = null;
@@ -53,26 +55,38 @@ public class TemplateTvPlay extends Template implements BaseControl.ControlCallB
 
     @Override
     protected void initListener(View view) {
-        super.initListener(view);
+        mRecycleView.setPagingableListener(this);
     }
 
+    private int mBannerPk;
     @Override
     public void initData(Bundle bundle) {
         mTitleTv.setText(bundle.getString("title"));
         mTitleCountTv.setText(String.format(mContext.getString(R.string.home_item_title_count), 1+"", 40+""));
-        mControl.getBanners(bundle.getInt("banner"), 1);
+        mBannerPk = bundle.getInt("banner");
+        mFetchDataControl.fetchBanners(mBannerPk, 1, false);
     }
 
     @Override
     public void callBack(int flags, Object... args) {
         if(flags == FetchDataControl.FETCH_BANNERS_LIST_FLAG){//获取单个banner业务
-            HomeEntity homeEntity = (HomeEntity) args[0];
             if(mAdapter == null){
-                mAdapter = new TvPlayAdapter(mContext, homeEntity.posters);
+                mAdapter = new TvPlayAdapter(mContext, mFetchDataControl.mPoster);
                 mAdapter.setMarginLeftEnable(true);
                 mRecycleView.setAdapter(mAdapter);
             }else {
                 mAdapter.notifyDataSetChanged();
+            }
+        }
+    }
+
+    @Override
+    public void onLoadMoreItems() {//加载更多数据
+        Log.i(TAG, "onLoadMoreItems");
+        HomeEntity homeEntity = mFetchDataControl.mHomeEntity;
+        if(homeEntity != null){
+            if(homeEntity.page < homeEntity.num_pages){
+                mFetchDataControl.fetchBanners(mBannerPk, ++homeEntity.page, true);
             }
         }
     }

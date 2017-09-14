@@ -9,7 +9,6 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.open.androidtvwidget.leanback.recycle.LinearLayoutManagerTV;
 import com.open.androidtvwidget.leanback.recycle.RecyclerViewTV;
 
 import tv.ismar.app.BaseControl;
@@ -17,6 +16,7 @@ import tv.ismar.app.core.SimpleRestClient;
 import tv.ismar.app.entity.banner.HomeEntity;
 import tv.ismar.app.player.CallaPlay;
 import tv.ismar.app.util.BitmapDecoder;
+import tv.ismar.homepage.OnItemSelectedListener;
 import tv.ismar.homepage.R;
 import tv.ismar.homepage.adapter.GuideAdapter;
 import tv.ismar.homepage.control.FetchDataControl;
@@ -32,7 +32,7 @@ import tv.ismar.homepage.widget.HomeItemContainer;
 
 public class TemplateGuide extends Template implements BaseControl.ControlCallBack,
         MediaPlayer.OnCompletionListener, MediaPlayer.OnErrorListener,
-        MediaPlayer.OnPreparedListener, RecyclerViewTV.OnItemClickListener,
+        MediaPlayer.OnPreparedListener, OnItemSelectedListener,
         RecyclerViewTV.PagingableListener {
     private HomeItemContainer mGuideContainer;//导视视频容器
     private DaisyVideoView mVideoView;//导视view
@@ -45,14 +45,15 @@ public class TemplateGuide extends Template implements BaseControl.ControlCallBa
     private TextView mFiveIcon;
     private RecyclerViewTV mRecycleView;//海报recycleview
 
-    private GuideControl mControl;
+    public FetchDataControl mFetchDataControl = null;
+    public GuideControl mControl;
     private GuideAdapter mAdapter;
 
     private BitmapDecoder mBitmapDecoder;
 
     public TemplateGuide(Context context) {
         super(context);
-        mControl = new GuideControl(mContext, this);
+        mFetchDataControl = new FetchDataControl(context, this);
     }
 
     @Override
@@ -76,7 +77,7 @@ public class TemplateGuide extends Template implements BaseControl.ControlCallBa
 
     @Override
     public void initData(Bundle bundle) {
-        mControl.getBanners(bundle.getInt("banner"), 1);
+        mFetchDataControl.fetchBanners(bundle.getInt("banner"), 1, false);
         mVideoView.setTag(0);
         mBitmapDecoder = new BitmapDecoder();
         mBitmapDecoder.decode(mContext, R.drawable.guide_video_loading, new BitmapDecoder.Callback() {
@@ -92,7 +93,6 @@ public class TemplateGuide extends Template implements BaseControl.ControlCallBa
         mVideoView.setOnCompletionListener(this);
         mVideoView.setOnErrorListener(this);
         mVideoView.setOnPreparedListener(this);
-        mRecycleView.setOnItemClickListener(this);
         mRecycleView.setPagingableListener(this);
     }
 
@@ -129,7 +129,7 @@ public class TemplateGuide extends Template implements BaseControl.ControlCallBa
         mThirdIcon.setVisibility(View.GONE);
         mFourIcon.setVisibility(View.GONE);
         mFiveIcon.setVisibility(View.GONE);
-        int size = mControl.mFetchDataControl.mCarousels.size();
+        int size = mFetchDataControl.mCarousels.size();
         if(size >= 3){
             mFirstIcon.setVisibility(View.VISIBLE);
             mSecondIcon.setVisibility(View.VISIBLE);
@@ -149,6 +149,7 @@ public class TemplateGuide extends Template implements BaseControl.ControlCallBa
             if(mAdapter == null){
                 mAdapter = new GuideAdapter(mContext, homeEntity.posters);
                 mAdapter.setMarginLeftEnable(true);
+                mAdapter.setOnItemSelectedListener(this);
                 mRecycleView.setAdapter(mAdapter);
             }else {
                 mAdapter.notifyDataSetChanged();
@@ -169,10 +170,10 @@ public class TemplateGuide extends Template implements BaseControl.ControlCallBa
     /*播放导视*/
     private void playGuideVideo(int index){
         try {
-            mVideTitleTv.setText(mControl.mFetchDataControl.mCarousels.get(index).title);
+            mVideTitleTv.setText(mFetchDataControl.mCarousels.get(index).title);
             mVideoView.setFocusable(false);
             mVideoView.setFocusableInTouchMode(false);
-            String videoPath = mControl.getGuideVideoPath(index);
+            String videoPath = mControl.getGuideVideoPath(index, mFetchDataControl.mCarousels);
             if(videoPath == null){
                 return;
             }
@@ -200,7 +201,7 @@ public class TemplateGuide extends Template implements BaseControl.ControlCallBa
     public void onCompletion(MediaPlayer mp) {//播放结束
         int index = (int) mVideoView.getTag();
         index++;
-        if(index >= mControl.mFetchDataControl.mCarousels.size()){
+        if(index >= mFetchDataControl.mCarousels.size()){
             index = 0;
         }
         mVideoView.setTag(index);
@@ -222,16 +223,16 @@ public class TemplateGuide extends Template implements BaseControl.ControlCallBa
     }
 
     @Override
-    public void onItemClick(RecyclerViewTV parent, View itemView, int position) {
+    public void onLoadMoreItems() {
+
+    }
+
+    @Override
+    public void itemSelected(View view, int position) {
         if(position >= 1){//第2个item被选中
             mGuideContainer.setVisibility(View.GONE);
         }else if(position == 0){
             mGuideContainer.setVisibility(View.VISIBLE);
         }
-    }
-
-    @Override
-    public void onLoadMoreItems() {
-
     }
 }

@@ -14,6 +14,7 @@ import com.squareup.picasso.Picasso;
 import tv.ismar.app.BaseControl;
 import tv.ismar.app.entity.banner.BigImage;
 import tv.ismar.app.entity.banner.HomeEntity;
+import tv.ismar.homepage.OnItemSelectedListener;
 import tv.ismar.homepage.R;
 import tv.ismar.homepage.adapter.DoubleLdAdapter;
 import tv.ismar.homepage.control.DoubleLdControl;
@@ -26,7 +27,7 @@ import tv.ismar.homepage.control.FetchDataControl;
  */
 
 public class TemplateDoubleLd extends Template implements BaseControl.ControlCallBack,
-        RecyclerViewTV.OnItemClickListener{
+        OnItemSelectedListener{
     private TextView mHeadTitleTv;
     private TextView mHeadCountTv;
     private ImageView mVerticalImg;//大图海报
@@ -35,11 +36,11 @@ public class TemplateDoubleLd extends Template implements BaseControl.ControlCal
     private TextView mTitleTv;//大图标题
     private RecyclerViewTV mRecyclerView;
     private DoubleLdAdapter mAdapter;
-    private DoubleLdControl mControl;
+    private FetchDataControl mFetchDataControl = null;
 
     public TemplateDoubleLd(Context context) {
         super(context);
-        mControl = new DoubleLdControl(mContext, this);
+        mFetchDataControl = new FetchDataControl(context, this);
     }
 
     @Override
@@ -60,20 +61,20 @@ public class TemplateDoubleLd extends Template implements BaseControl.ControlCal
     @Override
     protected void initListener(View view) {
         super.initListener(view);
-        mRecyclerView.setOnItemClickListener(this);
     }
 
     @Override
     public void initData(Bundle bundle) {
         mHeadTitleTv.setText(bundle.getString("title"));
         mHeadCountTv.setText(String.format(mContext.getString(R.string.home_item_title_count), 1+"", 40+""));
-        mControl.getBanners(bundle.getInt("banner"), 1);
+        mFetchDataControl.fetchBanners(bundle.getInt("banner"), 1, false);
     }
 
-    private void initAdapter(HomeEntity homeEntity){
+    private void initRecycleView(HomeEntity homeEntity){
         if(mAdapter == null){
             mAdapter = new DoubleLdAdapter(mContext, homeEntity.posters);
             mAdapter.setLeftMarginEnable(true);
+            mAdapter.setOnItemSelectedListener(this);
             mRecyclerView.setAdapter(mAdapter);
         }else {
             mAdapter.notifyDataSetChanged();
@@ -97,19 +98,17 @@ public class TemplateDoubleLd extends Template implements BaseControl.ControlCal
     public void callBack(int flags, Object... args) {
         if(flags == FetchDataControl.FETCH_BANNERS_LIST_FLAG){//获取单个banner业务
             HomeEntity homeEntity = (HomeEntity) args[0];
-            initAdapter(homeEntity);
+            initRecycleView(homeEntity);
             initImage(homeEntity.bg_image);
-        } else if(flags == FetchDataControl.FETCH_M_BANNERS_LIST_FLAG){//获取多个banner业务
-
         }
     }
 
     @Override
-    public void onItemClick(RecyclerViewTV parent, View itemView, int position) {
-        if(position < 2){
-            mVerticalImg.setVisibility(View.VISIBLE);
-        } else if(position >= 2){
-            mVerticalImg.setVisibility(View.GONE);
-        }
+    public void itemSelected(View view, int position) {
+//        if(position < 2){
+//            mVerticalImg.setVisibility(View.VISIBLE);
+//        } else if(position >= 2){
+//            mVerticalImg.setVisibility(View.GONE);
+//        }
     }
 }

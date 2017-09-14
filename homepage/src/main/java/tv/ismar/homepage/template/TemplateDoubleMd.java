@@ -13,6 +13,7 @@ import com.squareup.picasso.Picasso;
 import tv.ismar.app.BaseControl;
 import tv.ismar.app.entity.banner.BigImage;
 import tv.ismar.app.entity.banner.HomeEntity;
+import tv.ismar.homepage.OnItemSelectedListener;
 import tv.ismar.homepage.R;
 import tv.ismar.homepage.adapter.DoubleMdAdapter;
 import tv.ismar.homepage.control.DoubleMdControl;
@@ -25,7 +26,7 @@ import tv.ismar.homepage.control.FetchDataControl;
  */
 
 public class TemplateDoubleMd extends Template implements BaseControl.ControlCallBack,
-        RecyclerViewTV.OnItemClickListener,
+        OnItemSelectedListener,
         RecyclerViewTV.OnItemFocusChangeListener {
     private TextView mTitleTv;//banner标题
     private TextView mIndexTv;//选中位置
@@ -35,11 +36,11 @@ public class TemplateDoubleMd extends Template implements BaseControl.ControlCal
     private TextView mImgeTitleTv;//大图标题
     private RecyclerViewTV mRecyclerView;
     private DoubleMdAdapter mAdapter;
-    private DoubleMdControl mControl;
+    private FetchDataControl mFetchDataControl = null;
 
     public TemplateDoubleMd(Context context) {
         super(context);
-        mControl = new DoubleMdControl(mContext, this);
+        mFetchDataControl = new FetchDataControl(context, this);
     }
 
     @Override
@@ -58,18 +59,18 @@ public class TemplateDoubleMd extends Template implements BaseControl.ControlCal
     @Override
     protected void initListener(View view) {
         super.initListener(view);
-        mRecyclerView.setOnItemClickListener(this);
         mRecyclerView.setOnItemFocusChangeListener(this);
     }
 
     @Override
     public void initData(Bundle bundle) {
-        mControl.getBanners(bundle.getInt("banner"), 1);
+        mFetchDataControl.fetchBanners(bundle.getInt("banner"), 1, false);
     }
 
     private void initAdapter(HomeEntity homeEntity){
         if(mAdapter == null){
             mAdapter = new DoubleMdAdapter(mContext, homeEntity.posters);
+            mAdapter.setOnItemSelectedListener(this);
             mAdapter.setLeftMarginEnable(true);
             mRecyclerView.setAdapter(mAdapter);
         }else {
@@ -108,18 +109,18 @@ public class TemplateDoubleMd extends Template implements BaseControl.ControlCal
     }
 
     @Override
-    public void onItemClick(RecyclerViewTV parent, View itemView, int position) {
-        if(position < 3){
-            mVerticalImg.setVisibility(View.VISIBLE);
-        } else if(position >= 3){
-            mVerticalImg.setVisibility(View.GONE);
-        }
-    }
-
-    @Override
     public void onItemFocusGain(View itemView, int position) {
 //        if (itemView != null && mContext != null && mTitleCountTv != null){
 //            mTitleCountTv.setText(String.format(mContext.getString(R.string.home_item_title_count), (1 + position) + "", mAdapter.getTatalItemCount() + ""));
+//        }
+    }
+
+    @Override
+    public void itemSelected(View view, int position) {
+//        if(position < 3){
+//            mVerticalImg.setVisibility(View.VISIBLE);
+//        } else if(position >= 3){
+//            mVerticalImg.setVisibility(View.GONE);
 //        }
     }
 }

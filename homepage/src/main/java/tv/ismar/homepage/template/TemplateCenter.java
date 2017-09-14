@@ -23,7 +23,7 @@ import tv.ismar.homepage.control.FetchDataControl;
  */
 
 public class TemplateCenter extends Template implements BaseControl.ControlCallBack{
-    private CenterControl mControl;
+    public FetchDataControl mFetchDataControl = null;
     private TextView mHeadTitleTv;
     private TextView mHeadCountTv;
     private RecyclerViewTV mRecycleView;//海报recycleview
@@ -31,7 +31,7 @@ public class TemplateCenter extends Template implements BaseControl.ControlCallB
 
     public TemplateCenter(Context context) {
         super(context);
-        mControl = new CenterControl(context, this);
+        mFetchDataControl = new FetchDataControl(context, this);
     }
 
     @Override
@@ -48,7 +48,7 @@ public class TemplateCenter extends Template implements BaseControl.ControlCallB
     public void initData(Bundle bundle) {
         mHeadTitleTv.setText(bundle.getString("title"));
         mHeadCountTv.setText(String.format(mContext.getString(R.string.home_item_title_count), 1+"", 40+""));
-        mControl.getBanners(bundle.getInt("banner"), 1);
+        mFetchDataControl.fetchBanners(bundle.getInt("banner"), 1, false);
     }
 
     @Override

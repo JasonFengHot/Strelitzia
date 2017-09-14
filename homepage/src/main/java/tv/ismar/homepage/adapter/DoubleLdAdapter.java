@@ -16,6 +16,7 @@ import com.squareup.picasso.Picasso;
 import java.util.List;
 
 import tv.ismar.app.entity.banner.BannerPoster;
+import tv.ismar.homepage.OnItemSelectedListener;
 import tv.ismar.homepage.R;
 
 import static android.view.View.SCALE_X;
@@ -33,10 +34,15 @@ public class DoubleLdAdapter extends RecyclerView.Adapter<DoubleLdAdapter.Double
     private List<BannerPoster> mData;
     private boolean mTopMarginEnable = false;
     private boolean mLeftMarginEnable = false;
+    private OnItemSelectedListener mClickListener = null;
 
     public DoubleLdAdapter(Context context, List<BannerPoster> data){
         this.mContext = context;
         this.mData = data;
+    }
+
+    public void setOnItemSelectedListener(OnItemSelectedListener listener){
+        this.mClickListener = listener;
     }
 
     public void setTopMarginEnable(boolean enable){
@@ -55,6 +61,7 @@ public class DoubleLdAdapter extends RecyclerView.Adapter<DoubleLdAdapter.Double
 
     @Override
     public void onBindViewHolder(DoubleLdViewHolder holder, int position) {
+        holder.mPosition = position;
         holder.mTopMarginView.setVisibility(View.GONE);
         holder.mLeftMarginView.setVisibility(View.GONE);
         holder.mTopMarginView.setVisibility(mTopMarginEnable ? View.VISIBLE: View.GONE);
@@ -76,7 +83,7 @@ public class DoubleLdAdapter extends RecyclerView.Adapter<DoubleLdAdapter.Double
     }
 
 
-    public static class DoubleLdViewHolder extends RecyclerView.ViewHolder implements
+    public class DoubleLdViewHolder extends RecyclerView.ViewHolder implements
             View.OnFocusChangeListener, View.OnClickListener{
         public ImageView mPosterIg;//海报
         public ImageView mLtIconTv;//左上icon
@@ -84,6 +91,7 @@ public class DoubleLdAdapter extends RecyclerView.Adapter<DoubleLdAdapter.Double
         public TextView mTitleTv;//标题
         public View mTopMarginView;//上边距
         public View mLeftMarginView;//左边距
+        public int mPosition;//item位置
 
         public DoubleLdViewHolder(View itemView) {
             super(itemView);
@@ -120,6 +128,7 @@ public class DoubleLdAdapter extends RecyclerView.Adapter<DoubleLdAdapter.Double
         public void onFocusChange(View v, boolean hasFocus) {
             if (hasFocus) {
                 scaleToLarge(v.findViewById(R.id.double_ld_ismartv_linear_layout));
+                mClickListener.itemSelected(v, mPosition);
             } else {
                 scaleToNormal(v.findViewById(R.id.double_ld_ismartv_linear_layout));
             }
@@ -127,7 +136,7 @@ public class DoubleLdAdapter extends RecyclerView.Adapter<DoubleLdAdapter.Double
 
         @Override
         public void onClick(View v) {
-
+            mClickListener.itemSelected(v, mPosition);
         }
     }
 }

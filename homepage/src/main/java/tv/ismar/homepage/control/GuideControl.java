@@ -26,29 +26,21 @@ import tv.ismar.app.network.SkyService;
 
 public class GuideControl extends BaseControl{
 
-    public FetchDataControl mFetchDataControl = null;
+
 
     public GuideControl(Context context, ControlCallBack callBack){
         super(context, callBack);
-        mFetchDataControl = new FetchDataControl(context, callBack);
-    }
-
-    /*获取单个banner内容列表*/
-    public void getBanners(int banner, int page){
-        if(mFetchDataControl != null){
-            mFetchDataControl.fetchBanners(banner, page);
-        }
     }
 
     /**
      * 获取导视视频
      * @param index 1-5(最少3个，最多5个)
      */
-    public String getGuideVideoPath(int index){
-        if(mFetchDataControl.mCarousels!=null && index<mFetchDataControl.mCarousels.size()){
+    public String getGuideVideoPath(int index, List<BannerCarousels> carousels){
+        if(carousels!=null && index<carousels.size()){
             String fileName = "guide_"+index+".mp4";
             return CacheManager.getInstance() //如果本地有缓存取本地，否则网络获取
-                    .doRequest(mFetchDataControl.mCarousels.get(index).video_url, fileName, DownloadClient.StoreType.External);
+                    .doRequest(carousels.get(index).video_url, fileName, DownloadClient.StoreType.External);
         }
         return null;
     }

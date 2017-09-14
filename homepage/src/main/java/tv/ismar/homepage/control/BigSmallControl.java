@@ -9,16 +9,8 @@ import tv.ismar.app.BaseControl;
  */
 
 public class BigSmallControl extends BaseControl {
-    public FetchDataControl mFetchDataControl = null;
 
     public BigSmallControl(Context context, ControlCallBack callBack) {
         super(context, callBack);
-        mFetchDataControl = new FetchDataControl(context, callBack);
-    }
-
-    public void getBanners(int banner, int page){
-        if(mFetchDataControl != null){
-            mFetchDataControl.fetchBanners(banner, page);
-        }
     }
 }

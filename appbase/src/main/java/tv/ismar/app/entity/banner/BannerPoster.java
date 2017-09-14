@@ -14,7 +14,7 @@ public class BannerPoster {
     public String title;//标题
     public String introduction;//介绍
     public String content_url;//详情页地址
-    public String content_model;
+    public String c;
     public int pk;//媒体id
     public int rating_average;//评分
     public String model_name;//表格名称

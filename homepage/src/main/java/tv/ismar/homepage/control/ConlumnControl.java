@@ -11,17 +11,8 @@ import tv.ismar.app.BaseControl;
  */
 
 public class ConlumnControl extends BaseControl {
-    private FetchDataControl mFetchDataControl = null;
 
     public ConlumnControl(Context context, ControlCallBack callBack) {
         super(context, callBack);
-        mFetchDataControl = new FetchDataControl(context, callBack);
-    }
-
-    /*获取单个banner内容列表*/
-    public void getBanners(int banner, int page){
-        if(mFetchDataControl != null){
-            mFetchDataControl.fetchBanners(banner, page);
-        }
     }
 }

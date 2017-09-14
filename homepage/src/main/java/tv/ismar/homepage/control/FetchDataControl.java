@@ -37,8 +37,9 @@ public class FetchDataControl extends BaseControl{
 
     public List<BannerCarousels> mCarousels = new ArrayList<>();//导视数据
     public List<BannerPoster> mPoster = new ArrayList<>();//海报数据
-    public GuideBanner[] mBanners = null;//首页banner列表
+    public GuideBanner[] mGuideBanners = null;//首页banner列表
     public ChannelEntity[] mChannels = null;//频道列表
+    public HomeEntity mHomeEntity = null;//单个banner实体类
 
     public FetchDataControl(Context context, ControlCallBack callBack) {
         super(context, callBack);
@@ -65,7 +66,7 @@ public class FetchDataControl extends BaseControl{
                             //TODO 测试json假数据代码
 //                            guideBanners = getChannels();
                             if(mCallBack!=null && guideBanners!=null && guideBanners.length>0){
-                                mBanners = guideBanners;
+                                mGuideBanners = guideBanners;
                                 mCallBack.callBack(FETCH_HOME_BANNERS_FLAG, guideBanners);
                             }
                         }
@@ -154,7 +155,13 @@ public class FetchDataControl extends BaseControl{
                 });
     }
 
-    public synchronized void fetchBanners(int banner, int page){
+    /**
+     * 获取banner
+     * @param banner
+     * @param page
+     * @param loadMore 是否增量加载
+     */
+    public synchronized void fetchBanners(int banner, int page, final boolean loadMore){
         SkyService.ServiceManager.getService().getBanners(banner, page)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -174,12 +181,17 @@ public class FetchDataControl extends BaseControl{
                     public void onNext(HomeEntity homeEntities) {
                         if(mCallBack!=null && homeEntities!=null){
                             if(homeEntities != null){
+                                mHomeEntity = homeEntities;
                                 if(homeEntities.carousels != null){
-                                    mCarousels.clear();
+                                    if(!loadMore){
+                                        mCarousels.clear();
+                                    }
                                     mCarousels.addAll(homeEntities.carousels);
                                 }
                                 if(homeEntities.posters != null){
-                                    mPoster.clear();
+                                    if(!loadMore){
+                                        mPoster.clear();
+                                    }
                                     mPoster.addAll(homeEntities.posters);
                                 }
                             }

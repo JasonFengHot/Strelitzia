@@ -2,7 +2,6 @@ package tv.ismar.homepage.adapter;
 
 import android.animation.ObjectAnimator;
 import android.content.Context;
-import android.graphics.Rect;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -16,9 +15,8 @@ import com.squareup.picasso.Picasso;
 import java.util.List;
 
 import tv.ismar.app.entity.banner.BannerPoster;
+import tv.ismar.homepage.OnItemSelectedListener;
 import tv.ismar.homepage.R;
-import tv.ismar.homepage.banner.IsmartvLinearLayout;
-import tv.ismar.homepage.widget.HomeItemContainer;
 
 import static android.view.View.SCALE_X;
 import static android.view.View.SCALE_Y;
@@ -33,10 +31,15 @@ public class GuideAdapter extends RecyclerView.Adapter<GuideAdapter.GuideViewHol
     private Context mContext;
     private List<BannerPoster> mData;
     private boolean mMarginLeftEnable = false;
+    private OnItemSelectedListener mClickListener = null;
 
     public GuideAdapter(Context context, List<BannerPoster> data){
         this.mContext = context;
         this.mData = data;
+    }
+
+    public void setOnItemSelectedListener(OnItemSelectedListener listener){
+        this.mClickListener = listener;
     }
 
     @Override
@@ -56,7 +59,9 @@ public class GuideAdapter extends RecyclerView.Adapter<GuideAdapter.GuideViewHol
         }
 //        Picasso.with(mContext).load(posters.poster_url).into(holder.mLtIconTv);
 //        Picasso.with(mContext).load(posters.poster_url).into(holder.mRbIconTv);
+
         holder.mTitleTv.setText(poster.title);
+        holder.mPosition = position;
     }
 
     @Override
@@ -68,7 +73,7 @@ public class GuideAdapter extends RecyclerView.Adapter<GuideAdapter.GuideViewHol
         this.mMarginLeftEnable = enable;
     }
 
-    public static class GuideViewHolder extends RecyclerView.ViewHolder implements
+    public class GuideViewHolder extends RecyclerView.ViewHolder implements
             View.OnFocusChangeListener,View.OnClickListener
     {
         public ImageView mPosterIg;//海报
@@ -76,6 +81,8 @@ public class GuideAdapter extends RecyclerView.Adapter<GuideAdapter.GuideViewHol
         public ImageView mRbIconTv;//右下icon
         public TextView mTitleTv;//标题
         public View mMarginLeftView;//左边距
+
+        public int mPosition;//item位置
 
         public GuideViewHolder(View itemView) {
             super(itemView);
@@ -111,14 +118,15 @@ public class GuideAdapter extends RecyclerView.Adapter<GuideAdapter.GuideViewHol
         public void onFocusChange(View v, boolean hasFocus) {
             if (hasFocus) {
                 scaleToLarge(v.findViewById(R.id.guide_ismartv_linear_layout));
+                mClickListener.itemSelected(v, mPosition);
             } else {
                 scaleToNormal(v.findViewById(R.id.guide_ismartv_linear_layout));
             }
         }
 
         @Override
-        public void onClick(View v) {
-
+        public void onClick(View v) {//item点击事件
+            mClickListener.itemSelected(v, mPosition);
         }
     }
 }

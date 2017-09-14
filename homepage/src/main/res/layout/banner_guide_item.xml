@@ -17,6 +17,7 @@
         android:focusable="true"
         android:layout_marginTop="@dimen/guide_recycle_item_margin_top"
         android:focusableInTouchMode="true"
+        android:background="#00000000"
         android:foreground="@drawable/selector_item_banner_subscribe"
         android:orientation="vertical">
 
