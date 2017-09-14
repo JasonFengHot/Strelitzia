@@ -723,7 +723,10 @@ public interface SkyService {
             @Query("tvmode") String tvmode,
             @Query("macaddress") String macaddress
     );
-
+    @GET
+    Observable<ResponseBody>payChannel(
+            @Url String url
+    );
 
     @GET("wheat/api/recommend/exits_play/")
     Observable<PlayRecommend> apiPlayExitRecommend(

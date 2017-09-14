@@ -35,6 +35,7 @@
             android:focusable="true"
             >
                 <TextView
+                    android:id="@+id/edit_btn_text"
                     android:layout_width="@dimen/history_66"
                     android:layout_height="@dimen/history_43"
                     android:layout_marginLeft="@dimen/history_34"

@@ -21,13 +21,20 @@ import android.widget.TextView;
 
 import com.google.gson.GsonBuilder;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import cn.ismartv.truetime.TrueTime;
+import entity.Payments;
 import okhttp3.ResponseBody;
 import rx.Observable;
 import rx.Observer;
@@ -51,6 +58,7 @@ import tv.ismar.statistics.PurchaseStatistics;
 import static tv.ismar.app.AppConstant.Payment.PAYMENT_SUCCESS_CODE;
 import static tv.ismar.pay.PaymentActivity.OderType.alipay_renewal;
 import static tv.ismar.pay.R.id.pay_type_layout;
+import static tv.ismar.pay.R.id.videocard;
 
 /**
  * Created by huibin on 9/13/16.
@@ -64,6 +72,7 @@ public class PaymentActivity extends BaseActivity implements View.OnClickListene
 
     public Button aliPayBtn;
     private Button balancePayBtn;
+    private Button firstChannelBtn,lastChannelBtn;
     private ViewGroup payTypeLayout;
 
     private Subscription mOrderCheckLoopSubscription;
@@ -89,6 +98,8 @@ public class PaymentActivity extends BaseActivity implements View.OnClickListene
 
     public ImageView tmp;
     public String uuid;
+    private ArrayList<String> firstdescriptions=new ArrayList<>();
+    private ArrayList<String> lastdescriptions=new ArrayList<>();
 
     public String getUuid() {
         uuid = UUID.randomUUID().toString().replace("-", "");
@@ -104,6 +115,11 @@ public class PaymentActivity extends BaseActivity implements View.OnClickListene
         tmp = (ImageView) findViewById(R.id.tmp);
         aliPayBtn = (Button) findViewById(R.id.alipay);
         balancePayBtn = (Button) findViewById(R.id.balance_pay);
+        firstChannelBtn= (Button) findViewById(R.id.weixin);
+        lastChannelBtn= (Button) findViewById(R.id.videocard);
+
+        firstChannelBtn.setOnHoverListener(this);
+        lastChannelBtn.setOnHoverListener(this);
         aliPayBtn.setOnHoverListener(this);
         balancePayBtn.setOnHoverListener(this);
         title = (TextView) findViewById(R.id.payment_title);
@@ -113,12 +129,18 @@ public class PaymentActivity extends BaseActivity implements View.OnClickListene
 
         aliPayBtn.setOnClickListener(this);
         balancePayBtn.setOnClickListener(this);
+        firstChannelBtn.setOnClickListener(this);
+        lastChannelBtn.setOnClickListener(this);
 
         aliPayBtn.setOnFocusChangeListener(this);
         balancePayBtn.setOnFocusChangeListener(this);
+        firstChannelBtn.setOnFocusChangeListener(this);
+        lastChannelBtn.setOnFocusChangeListener(this);
 
         aliPayBtn.setOnKeyListener(this);
         balancePayBtn.setOnKeyListener(this);
+        firstChannelBtn.setOnKeyListener(this);
+        lastChannelBtn.setOnKeyListener(this);
 
         loginFragment = new LoginFragment();
         loginFragment.setLoginCallback(this);
@@ -147,6 +169,7 @@ public class PaymentActivity extends BaseActivity implements View.OnClickListene
             } else {
                 pk = intent.getIntExtra("pk", 0);
                 movieId = intent.getIntExtra("movie_id", -1);
+//                fetchChannel();
                 fetchItem(pk, category);
             }
         }
@@ -154,8 +177,51 @@ public class PaymentActivity extends BaseActivity implements View.OnClickListene
             timer=new Timer(true);
             timer.schedule(timerTask,2*60*1000,2*60*1000);
         }
+    }
+    private void fetchChannel(){
+        String url="http://sky.test.tvxio.com:9933/api/paymentway/package/1101/";
+        mSkyService.payChannel(url).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new BaseObserver<ResponseBody>() {
+                    @Override
+                    public void onCompleted() {
 
+                    }
 
+                    @Override
+                    public void onNext(ResponseBody responseBody) {
+                        String result=null;
+                        try {
+                            result=responseBody.string();
+                            JSONObject object=new JSONObject(result);
+                            JSONArray payments=object.getJSONArray("payments");
+                            if(payments.get(0)!=null) {
+                                Payments payment = new GsonBuilder().create().fromJson(payments.get(0).toString(), Payments.class);
+                                firstChannelBtn.setText(payment.getSource());
+                                firstdescriptions=payment.getString();
+                                firstChannelBtn.setVisibility(View.VISIBLE);
+                            }
+                            if(payments.get(1)!=null){
+                                Payments payment = new GsonBuilder().create().fromJson(payments.get(1).toString(), Payments.class);
+                                lastChannelBtn.setText(payment.getSource());
+                                lastdescriptions=payment.getString();
+                                lastChannelBtn.setVisibility(View.VISIBLE);
+                            }
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+    }
+    private void channelClick(String type,ArrayList<String> list){
+        AlipayFragment alipayFragment = new AlipayFragment();
+        createOrder(OderType.alipay, alipayFragment);
+        Bundle bundle = new Bundle();
+        bundle.putString("type", type);
+        bundle.putStringArrayList("descriptions",list);
+        alipayFragment.setArguments(bundle);
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_page, alipayFragment).commit();
     }
 
     @Override
@@ -181,7 +247,15 @@ public class PaymentActivity extends BaseActivity implements View.OnClickListene
                     }
                     transaction.replace(R.id.fragment_page, balanceFragment).commit();
                 }
-            }
+            }else if(i==R.id.weixin){
+                 if(lastfocusId!=i){
+                    channelClick("",firstdescriptions);
+                 }
+             }else if(i==R.id.videocard){
+                 if(lastfocusId!=i){
+                     channelClick("",lastdescriptions);
+                 }
+             }
             lastfocusId=i;
         }
     }
@@ -198,7 +272,11 @@ public class PaymentActivity extends BaseActivity implements View.OnClickListene
                  alipaySecrectSub.unsubscribe();
              }
             transaction.replace(R.id.fragment_page, balanceFragment).commit();
-        }
+        }else if(i==R.id.weixin){
+             channelClick("",firstdescriptions);
+         }else if(i==R.id.videocard){
+             channelClick("",lastdescriptions);
+         }
         lastfocusId=i;
     }
 

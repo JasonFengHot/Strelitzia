@@ -71,6 +71,7 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
     private HistoryListAdapter favoritAdapter;
     private LinearLayout edit_history;
     private ImageView arrow_line1,arrow_line2;
+    private TextView edit_text;
     private IsmartvLinearLayout delet_history,delete_favorite;
     private LinearLayout favorite_layout,list_layout;
     private RelativeLayout history_relativelayout,favorite_relativeLayout;
@@ -98,6 +99,7 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
         delet_history= (IsmartvLinearLayout) findViewById(R.id.history_edit);
         favorite_title= (TextView) findViewById(R.id.favorite_lyout_title);
         first_line_image= (ImageView) findViewById(R.id.first_line_delete_image);
+        edit_text= (TextView) findViewById(R.id.edit_btn_text);
         second_line_image= (ImageView) findViewById(R.id.second_line_delete_image);
         history_title= (TextView) findViewById(R.id.history_layout_title);
         history_relativelayout= (RelativeLayout) findViewById(R.id.history_layout);
@@ -107,7 +109,6 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
         arrow_line2= (ImageView) findViewById(arrow_line_2);
         delet_history.setOnClickListener(this);
         delete_favorite.setOnClickListener(this);
-        editBtnFocusListener();
         historyLayoutManager=new HistoryLinerlayoutMananger(this);
         historyLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
         favoriteManager=new HistoryLinerlayoutMananger(this);
@@ -118,6 +119,7 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
         edit_history= (LinearLayout) findViewById(R.id.edit_btn);
         edit_history.setOnClickListener(this);
         edit_history.setOnHoverListener(this);
+        editBtnFocusListener();
 
         HashMap<String, Object> properties = new HashMap<String, Object>();
         properties.put(EventProperty.TITLE, "history");
@@ -141,6 +143,16 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
                     JasmineUtil.scaleOut3(v);
                 }else{
                     JasmineUtil.scaleIn3(v);
+                }
+            }
+        });
+        edit_history.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(hasFocus){
+                    edit_text.setVisibility(View.VISIBLE);
+                }else{
+                    edit_text.setVisibility(View.INVISIBLE);
                 }
             }
         });

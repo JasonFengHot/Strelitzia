@@ -410,7 +410,7 @@ public final class IsmartvActivator {
     protected String getInternalAdDomain() {
         // 广告测试地址
         String adDomain = SPUtils.getInstance().getString("ad_domain", "1.1.1.2");
-        if (TextUtils.isEmpty(adDomain) || adDomain.equals("1.1.1.3")) {
+        if (TextUtils.isEmpty(adDomain) || adDomain.equals("1.1.1.2")) {
             ResultEntity resultEntity = execute();
             saveAccountInfo(resultEntity);
             return resultEntity.getAd_domain();
