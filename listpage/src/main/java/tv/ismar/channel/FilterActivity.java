@@ -505,8 +505,11 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                         if(lastFocusedView!=null){
                             lastFocusedView.requestFocus();
                         }else{
-                            if(list_poster_recyclerview.getChildAt(1)!=null)
-                                list_poster_recyclerview.getChildAt(1).requestFocus();
+                            View firstView=mFocusGridLayoutManager.findViewByPosition(specialPos.get(finalI)+1);
+                            if(specialPos!=null&&firstView!=null) {
+                                firstView.requestFocus();
+                            }
+//
                         }
                         return true;
                     }
@@ -780,6 +783,7 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                                     final FilterNoresultPoster item = items.get(i);
                                     if(item!=null){
                                         final View recommendView= View.inflate(FilterActivity.this,R.layout.filter_item_vertical_poster,null);
+                                        recommendView.setId(R.layout.filter_item_vertical_poster+i);
                                         PosterUtil.fillPoster(FilterActivity.this,0,item,(ImageView)recommendView.findViewById(R.id.item_vertical_poster_img),(ImageView)recommendView.findViewById(R.id.item_vertical_poster_vip),(TextView)recommendView.findViewById(R.id.item_vertical_poster_mark),(TextView)recommendView.findViewById(R.id.item_vertical_poster_title),null);
                                         recommendView.setOnFocusChangeListener(mOnFocusChangeListener);
                                         recommendView.setOnHoverListener(FilterActivity.this);
@@ -792,6 +796,8 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                                         LinearLayout.LayoutParams p = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                                         p.rightMargin = getResources().getDimensionPixelOffset(R.dimen.filter_noresult_poster_vertical_mr);
                                         recommendView.setLayoutParams(p);
+                                        recommendView.setNextFocusUpId(R.layout.filter_item_vertical_poster+i);
+                                        recommendView.setNextFocusDownId(R.layout.filter_item_vertical_poster+i);
                                         if(i==0){
                                             recommendView.setNextFocusLeftId(R.id.filter_tab);
                                         }
@@ -807,6 +813,7 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                                     final FilterNoresultPoster item = items.get(i);
                                     if(item!=null) {
                                         View recommendView= View.inflate(FilterActivity.this,R.layout.item_filter_noresult_poster,null);
+                                        recommendView.setId(R.layout.item_filter_noresult_poster+i);
                                         PosterUtil.fillPoster(FilterActivity.this,1,item,(ImageView)recommendView.findViewById(R.id.item_filter_noresult_img),(ImageView)recommendView.findViewById(R.id.item_filter_noresult_vip),(TextView)recommendView.findViewById(R.id.item_filter_noresult_mark),(TextView)recommendView.findViewById(R.id.item_filter_noresult_title),(TextView)recommendView.findViewById(R.id.item_filter_noresult_descrip));
                                         recommendView.setOnFocusChangeListener(mOnFocusChangeListener);
                                         recommendView.setOnHoverListener(FilterActivity.this);
@@ -823,8 +830,10 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                                             recommendView.setNextFocusLeftId(R.id.filter_tab);
                                         }
                                         if(i<4) {
+                                            recommendView.setNextFocusUpId(R.layout.item_filter_noresult_poster+i);
                                             filter_noresult_first_line.addView(recommendView);
                                         }else {
+                                            recommendView.setNextFocusDownId(R.layout.item_filter_noresult_poster+i);
                                             filter_noresult_second_line.addView(recommendView);
                                         }
                                     }
