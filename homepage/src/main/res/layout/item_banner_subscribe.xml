@@ -30,6 +30,7 @@
             android:gravity="center">
 
             <ImageView
+                android:id="@+id/banner_item_timeline"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/banner_item_line_h"
                 android:layout_centerVertical="true"
