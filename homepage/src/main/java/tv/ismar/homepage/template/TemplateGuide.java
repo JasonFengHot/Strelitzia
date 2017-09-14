@@ -5,11 +5,15 @@ import android.graphics.drawable.BitmapDrawable;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.daimajia.androidanimations.library.Techniques;
+import com.daimajia.androidanimations.library.YoYo;
+import com.open.androidtvwidget.leanback.recycle.LinearLayoutManagerTV;
 import com.open.androidtvwidget.leanback.recycle.RecyclerViewTV;
 
 import tv.ismar.app.BaseControl;
@@ -34,7 +38,8 @@ import tv.ismar.homepage.widget.HomeItemContainer;
 public class TemplateGuide extends Template implements BaseControl.ControlCallBack,
         MediaPlayer.OnCompletionListener, MediaPlayer.OnErrorListener,
         MediaPlayer.OnPreparedListener, OnItemSelectedListener,
-        RecyclerViewTV.PagingableListener {
+        RecyclerViewTV.PagingableListener,
+        LinearLayoutManagerTV.FocusSearchFailedListener {
     private HomeItemContainer mGuideContainer;//导视视频容器
     private DaisyVideoView mVideoView;//导视view
     private ImageView mLoadingIg;//加载提示logo
@@ -45,6 +50,7 @@ public class TemplateGuide extends Template implements BaseControl.ControlCallBa
     private TextView mFourIcon;
     private TextView mFiveIcon;
     private RecyclerViewTV mRecycleView;//海报recycleview
+    private LinearLayoutManagerTV mGuideLayoutManager;
 
     public FetchDataControl mFetchDataControl = null;
     public GuideControl mControl;
@@ -71,8 +77,8 @@ public class TemplateGuide extends Template implements BaseControl.ControlCallBa
         mFourIcon = (TextView) view.findViewById(R.id.four_video_icon);
         mFiveIcon = (TextView) view.findViewById(R.id.five_video_icon);
         mRecycleView = (RecyclerViewTV) view.findViewById(R.id.guide_recyclerview);
-        LinearLayoutManager guideLayoutManager = new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false);
-        mRecycleView.setLayoutManager(guideLayoutManager);
+        mGuideLayoutManager = new LinearLayoutManagerTV(mContext, LinearLayoutManager.HORIZONTAL, false);
+        mRecycleView.setLayoutManager(mGuideLayoutManager);
         mRecycleView.setSelectedItemOffset(10, 10);
     }
 
@@ -97,6 +103,7 @@ public class TemplateGuide extends Template implements BaseControl.ControlCallBa
         mVideoView.setOnErrorListener(this);
         mVideoView.setOnPreparedListener(this);
         mRecycleView.setPagingableListener(this);
+        mGuideLayoutManager.setFocusSearchFailedListener(this);
     }
 
     /*更改图标背景*/
@@ -243,5 +250,17 @@ public class TemplateGuide extends Template implements BaseControl.ControlCallBa
         }else if(position == 0){
             mGuideContainer.setVisibility(View.VISIBLE);
         }
+    }
+
+    @Override
+    public View onFocusSearchFailed(View focused, int focusDirection, RecyclerView.Recycler recycler, RecyclerView.State state) {
+        if (focusDirection == View.FOCUS_RIGHT || focusDirection == View.FOCUS_LEFT){
+            if (mRecycleView.getChildAt(0).findViewById(R.id.guide_ismartv_linear_layout) == focused ||
+                    mRecycleView.getChildAt(mRecycleView.getChildCount() - 1).findViewById(R.id.guide_ismartv_linear_layout) == focused){
+                YoYo.with(Techniques.HorizontalShake).duration(1000).playOn(focused);
+            }
+            return focused;
+        }
+        return null;
     }
 }

@@ -86,7 +86,7 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
             bundle.putString("url", data[position].banner_url);
             bundle.putInt("banner", data[position].page_banner_pk);
             String template = data[position].template;
-            if(template.equals("template_guide")){//导航
+            if(template.equals("template_guide")){//导视
                 bannerView = createView(R.layout.banner_guide);
                 new TemplateGuide(getContext()).setView(bannerView, bundle);
             } else if(template.equals("template_order")){//订阅模版

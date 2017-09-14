@@ -26,7 +26,8 @@ import tv.ismar.homepage.control.TvPlayControl;
  * @DESC: 电视剧模版
  */
 
-public class TemplateTvPlay extends Template implements BaseControl.ControlCallBack, RecyclerViewTV.PagingableListener {
+public class TemplateTvPlay extends Template implements BaseControl.ControlCallBack,
+        RecyclerViewTV.PagingableListener, LinearLayoutManagerTV.FocusSearchFailedListener {
     private FetchDataControl mFetchDataControl = null;
     private TextView mTitleTv;//banner标题
     private TextView mIndexTv;//选中位置
@@ -56,6 +57,7 @@ public class TemplateTvPlay extends Template implements BaseControl.ControlCallB
     @Override
     protected void initListener(View view) {
         mRecycleView.setPagingableListener(this);
+        mTvPlayerLayoutManager.setFocusSearchFailedListener(this);
     }
 
     private int mBannerPk;
@@ -89,5 +91,17 @@ public class TemplateTvPlay extends Template implements BaseControl.ControlCallB
                 mFetchDataControl.fetchBanners(mBannerPk, ++homeEntity.page, true);
             }
         }
+    }
+
+    @Override
+    public View onFocusSearchFailed(View focused, int focusDirection, RecyclerView.Recycler recycler, RecyclerView.State state) {
+        if (focusDirection == View.FOCUS_RIGHT || focusDirection == View.FOCUS_LEFT){
+            if (mRecycleView.getChildAt(0).findViewById(R.id.tv_player_ismartv_linear_layout) == focused ||
+                    mRecycleView.getChildAt(mRecycleView.getChildCount() - 1).findViewById(R.id.tv_player_ismartv_linear_layout) == focused){
+                YoYo.with(Techniques.HorizontalShake).duration(1000).playOn(focused);
+            }
+            return focused;
+        }
+        return null;
     }
 }
