@@ -22,7 +22,7 @@ import tv.ismar.homepage.control.FetchDataControl;
  */
 
 public class TemplateConlumn extends Template implements BaseControl.ControlCallBack,
-        RecyclerViewTV.OnItemFocusChangeListener {
+        RecyclerViewTV.OnItemFocusChangeListener, RecyclerViewTV.PagingableListener {
     private TextView mTitleTv;//banner标题
     private TextView mIndexTv;//选中位置
     private RecyclerViewTV mRecyclerView;
@@ -46,15 +46,18 @@ public class TemplateConlumn extends Template implements BaseControl.ControlCall
         mRecyclerView.setSelectedItemOffset(selectedItemOffset, selectedItemOffset);
     }
 
+    private int mBannerPk;
     @Override
     public void initData(Bundle bundle) {
+        mBannerPk = bundle.getInt("banner");
         mTitleTv.setText(bundle.getString("title"));
-        mFetchDataControl.fetchBanners(bundle.getInt("banner"), 1, false);
+        mFetchDataControl.fetchBanners(mBannerPk, 1, false);
     }
 
     @Override
     protected void initListener(View view) {
         mRecyclerView.setOnItemFocusChangeListener(this);
+        mRecyclerView.setPagingableListener(this);
     }
 
     @Override
@@ -77,5 +80,16 @@ public class TemplateConlumn extends Template implements BaseControl.ControlCall
     @Override
     public void onItemFocusGain(View itemView, int position) {
 
+    }
+
+    @Override
+    public void onLoadMoreItems() {
+        Log.i(TAG, "onLoadMoreItems");
+        HomeEntity homeEntity = mFetchDataControl.mHomeEntity;
+        if(homeEntity != null){
+            if(homeEntity.page < homeEntity.num_pages){
+                mFetchDataControl.fetchBanners(mBannerPk, ++homeEntity.page, true);
+            }
+        }
     }
 }

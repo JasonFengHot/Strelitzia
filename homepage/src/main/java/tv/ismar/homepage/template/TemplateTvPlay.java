@@ -39,14 +39,14 @@ public class TemplateTvPlay extends Template implements BaseControl.ControlCallB
         mFetchDataControl = new FetchDataControl(context, this);
     }
 
-    private LinearLayoutManager mTvPlayerLayoutManager = null;
+    private LinearLayoutManagerTV mTvPlayerLayoutManager = null;
 
     @Override
     public void getView(View view) {
         mTitleTv = (TextView) view.findViewById(R.id.banner_title_tv);
         mTitleCountTv =(TextView) view.findViewById(R.id.banner_title_count);
         mRecycleView = (RecyclerViewTV) view.findViewById(R.id.tv_player_recyclerview);
-        mTvPlayerLayoutManager = new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false);
+        mTvPlayerLayoutManager = new LinearLayoutManagerTV(mContext, LinearLayoutManager.HORIZONTAL, false);
         mRecycleView.setLayoutManager(mTvPlayerLayoutManager);
         mRecycleView.setSelectedItemAtCentered(false);
         int selectedItemOffset = mContext.getResources().getDimensionPixelSize(R.dimen.banner_item_setSelectedItemOffset);
@@ -62,7 +62,6 @@ public class TemplateTvPlay extends Template implements BaseControl.ControlCallB
     @Override
     public void initData(Bundle bundle) {
         mTitleTv.setText(bundle.getString("title"));
-
         mTitleCountTv.setText(String.format(mContext.getString(R.string.home_item_title_count), 1+"", 40+""));
         mBannerPk = bundle.getInt("banner");
         mFetchDataControl.fetchBanners(mBannerPk, 1, false);

@@ -3,6 +3,7 @@ package tv.ismar.homepage.template;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -22,7 +23,7 @@ import tv.ismar.homepage.control.FetchDataControl;
  * @DESC: 居中模版
  */
 
-public class TemplateCenter extends Template implements BaseControl.ControlCallBack{
+public class TemplateCenter extends Template implements BaseControl.ControlCallBack, RecyclerViewTV.PagingableListener{
     public FetchDataControl mFetchDataControl = null;
     private TextView mHeadTitleTv;
     private TextView mHeadCountTv;
@@ -44,11 +45,19 @@ public class TemplateCenter extends Template implements BaseControl.ControlCallB
         mRecycleView.setSelectedItemAtCentered(true);
     }
 
+    private int mBannerPk;
     @Override
     public void initData(Bundle bundle) {
+        mBannerPk = bundle.getInt("banner");
         mHeadTitleTv.setText(bundle.getString("title"));
         mHeadCountTv.setText(String.format(mContext.getString(R.string.home_item_title_count), 1+"", 40+""));
-        mFetchDataControl.fetchBanners(bundle.getInt("banner"), 1, false);
+        mFetchDataControl.fetchBanners(mBannerPk, 1, false);
+    }
+
+    @Override
+    protected void initListener(View view) {
+        super.initListener(view);
+        mRecycleView.setPagingableListener(this);
     }
 
     @Override
@@ -60,6 +69,17 @@ public class TemplateCenter extends Template implements BaseControl.ControlCallB
                 mRecycleView.setAdapter(mAdapter);
             }else {
                 mAdapter.notifyDataSetChanged();
+            }
+        }
+    }
+
+    @Override
+    public void onLoadMoreItems() {
+        Log.i(TAG, "onLoadMoreItems");
+        HomeEntity homeEntity = mFetchDataControl.mHomeEntity;
+        if(homeEntity != null){
+            if(homeEntity.page < homeEntity.num_pages){
+                mFetchDataControl.fetchBanners(mBannerPk, ++homeEntity.page, true);
             }
         }
     }

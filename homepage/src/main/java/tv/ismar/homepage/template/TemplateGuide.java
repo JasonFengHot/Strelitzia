@@ -5,6 +5,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -75,9 +76,11 @@ public class TemplateGuide extends Template implements BaseControl.ControlCallBa
         mRecycleView.setSelectedItemOffset(10, 10);
     }
 
+    private int mBannerPk;//banner标记
     @Override
     public void initData(Bundle bundle) {
-        mFetchDataControl.fetchBanners(bundle.getInt("banner"), 1, false);
+        mBannerPk = bundle.getInt("banner");
+        mFetchDataControl.fetchBanners(mBannerPk, 1, false);
         mVideoView.setTag(0);
         mBitmapDecoder = new BitmapDecoder();
         mBitmapDecoder.decode(mContext, R.drawable.guide_video_loading, new BitmapDecoder.Callback() {
@@ -224,7 +227,13 @@ public class TemplateGuide extends Template implements BaseControl.ControlCallBa
 
     @Override
     public void onLoadMoreItems() {
-
+        Log.i(TAG, "onLoadMoreItems");
+        HomeEntity homeEntity = mFetchDataControl.mHomeEntity;
+        if(homeEntity != null){
+            if(homeEntity.page < homeEntity.num_pages){
+                mFetchDataControl.fetchBanners(mBannerPk, ++homeEntity.page, true);
+            }
+        }
     }
 
     @Override
