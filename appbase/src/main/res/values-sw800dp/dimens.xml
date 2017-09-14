@@ -681,7 +681,7 @@
 <dimen name="guide_recycle_item_rb_icon_height">31.85dp</dimen>
 <dimen name="guide_recycle_item_rb_margin_bottom">5.93dp</dimen>
 
-<!--电视剧尺�?-->
+<!--电视剧尺寸-->
 <dimen name="tv_player_recycleview_margin_left">44.44dp</dimen>
 <dimen name="tv_play_recycleview_item_padding">29.63dp</dimen>
 <dimen name="tv_play_recycleview_height">176.30dp</dimen>

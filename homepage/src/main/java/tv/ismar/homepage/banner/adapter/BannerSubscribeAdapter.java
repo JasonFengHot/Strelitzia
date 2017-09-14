@@ -17,17 +17,11 @@ import android.widget.TextView;
 import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import rx.Observer;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
-import tv.ismar.app.entity.banner.AccountsItemSubscribeExistsEntity;
 import tv.ismar.app.entity.banner.BannerEntity;
-import tv.ismar.app.network.SkyService;
 import tv.ismar.homepage.R;
 
 import static android.view.View.SCALE_X;
@@ -95,11 +89,12 @@ public class BannerSubscribeAdapter
     @Override
     public void onBindViewHolder(SubscribeViewHolder holder, int position) {
         BannerEntity.PosterBean entity = mSubscribeEntityList.get(position);
-        if (!TextUtils.isEmpty(entity.getPoster_url())) {
-            Picasso.with(mContext).load(entity.getPoster_url()).into(holder.mImageView);
-        } else {
-            Picasso.with(mContext).load(R.drawable.list_item_preview_bg).into(holder.mImageView);
-        }
+
+        String imageUrl = entity.getPoster_url();
+        String targetImageUrl = TextUtils.isEmpty(imageUrl) ? null : imageUrl;
+
+        Picasso.with(mContext).load(targetImageUrl).placeholder(R.drawable.list_item_preview_bg)
+                .error(R.drawable.list_item_preview_bg).into(holder.mImageView);
 
         //        int itemId = getMovieItemId(entity.getContent_url());
         //
@@ -123,8 +118,6 @@ public class BannerSubscribeAdapter
             holder.mPublishTime.setText(timeString);
         }catch (Exception e){
             e.printStackTrace();
-            Log.e(TAG, "json: " + new Gson().toJson(entity));
-            Log.e(TAG, "error position: " + position);
         }
 
         holder.mIntroduction.setText(entity.getTitle() + " " + position);
