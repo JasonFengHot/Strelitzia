@@ -49,6 +49,7 @@ import tv.ismar.app.VodApplication;
 import tv.ismar.app.core.OfflineCheckManager;
 import tv.ismar.app.entity.ChannelEntity;
 import tv.ismar.app.entity.ClipEntity;
+import tv.ismar.app.entity.FilterNoresultPoster;
 import tv.ismar.app.entity.GuideBanner;
 import tv.ismar.app.entity.HomePagerEntity;
 import tv.ismar.app.entity.Item;
@@ -174,11 +175,11 @@ public interface SkyService {
             @Path("page") int page
     );
 
-    @GET("api/top/{channel}")
-    Observable<List<Item>> getFilterRecommend(
+    @GET("http://sky.test.tvxio.com/wheat/v3_0/UF30/toq0/api/top/{channel}/")
+    Observable<List<FilterNoresultPoster>> getFilterRecommend(
        @Path("channel") String channel,
-       @Field("sn") String sn,
-       @Field("page_size") int page_size
+       @Query("sn") String sn,
+       @Query("count") int count
     );
 
     @GET("api/tv/filtrate/{movie}/{genre}/{page}/")

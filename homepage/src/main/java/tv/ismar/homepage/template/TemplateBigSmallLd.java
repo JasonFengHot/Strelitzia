@@ -6,6 +6,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
@@ -36,12 +37,17 @@ public class TemplateBigSmallLd extends Template{
     private BannerMovieMixAdapter adapter;
     private int mBannerName;
 
+    private TextView mTitleTv;
+    private String mBannerTitle;
+
     public TemplateBigSmallLd(Context context) {
         super(context);
     }
 
     @Override
     public void getView(View view) {
+        mTitleCountTv = (TextView) view.findViewById(R.id.banner_title_count);
+        mTitleTv = (TextView) view.findViewById(R.id.banner_title_tv);
         movieMixBanner = (RecyclerViewTV) view.findViewById(R.id.movie_mix_banner);
         LinearLayoutManagerTV movieMixLayoutManager = new LinearLayoutManagerTV(mContext, LinearLayoutManager.HORIZONTAL, false);
         int selectedItemSpace = mContext.getResources().getDimensionPixelSize(R.dimen.banner_item_SelectedItemSpace);
@@ -95,6 +101,8 @@ public class TemplateBigSmallLd extends Template{
     @Override
     public void initData(Bundle bundle) {
         mBannerName = bundle.getInt("banner");
+        mBannerTitle = bundle.getString("title");
+        mTitleTv.setText(mBannerTitle);
         fetchMovieMixBanner(mBannerName, 1);
     }
 

@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
@@ -45,6 +46,8 @@ public class TemplateOrder extends Template implements BaseControl.ControlCallBa
 
     private boolean isInit = false;
     private boolean isViewInit = false;
+    private TextView mTitleTv;
+    private String mBannerTitle;
 
 //    private View subscribeArrowLeft;
 //    private View subscribeArrowRight;
@@ -58,10 +61,12 @@ public class TemplateOrder extends Template implements BaseControl.ControlCallBa
     public void getView(View view) {
         if (!isViewInit) {
             isViewInit = true;
+            mTitleCountTv = (TextView) view.findViewById(R.id.banner_title_count);
+            mTitleTv = (TextView) view.findViewById(R.id.banner_title_tv);
             subscribeBanner = (RecyclerViewTV) view.findViewById(R.id.subscribe_banner);
             LinearLayoutManagerTV subscribeLayoutManager = new LinearLayoutManagerTV(mContext, LinearLayoutManagerTV.HORIZONTAL, false);
             int selectedItemSpace = mContext.getResources().getDimensionPixelSize(R.dimen.banner_item_SelectedItemSpace);
-            subscribeBanner.addItemDecoration(new BannerSubscribeAdapter.SpacesItemDecoration(selectedItemSpace));
+//            subscribeBanner.addItemDecoration(new BannerSubscribeAdapter.SpacesItemDecoration(selectedItemSpace));
             subscribeBanner.setLayoutManager(subscribeLayoutManager);
             subscribeBanner.setSelectedItemAtCentered(false);
             int selectedItemOffset = mContext.getResources().getDimensionPixelSize(R.dimen.banner_item_setSelectedItemOffset);
@@ -69,9 +74,6 @@ public class TemplateOrder extends Template implements BaseControl.ControlCallBa
             subscribeBanner.setPagingableListener(new RecyclerViewTV.PagingableListener() {
                 @Override
                 public void onLoadMoreItems() {
-                    Log.d(TAG, "onLoadMoreItems" + subscribeAdapter);
-                    Log.d(TAG, "onLoadMoreItems" + subscribeAdapter.getCurrentPageNumber());
-                    Log.d(TAG, "onLoadMoreItems" + subscribeAdapter.getTotalPageCount());
                     if (subscribeAdapter != null) {
                         int currentPageNumber = subscribeAdapter.getCurrentPageNumber();
                         if (currentPageNumber < subscribeAdapter.getTotalPageCount()) {
@@ -197,6 +199,8 @@ public class TemplateOrder extends Template implements BaseControl.ControlCallBa
         if (!isInit) {
             isInit = true;
             mBannerName = bundle.getInt("banner");
+            mBannerTitle = bundle.getString("title");
+            mTitleTv.setText(mBannerTitle);
             fetchSubscribeBanner(mBannerName, 1);
         }
     }

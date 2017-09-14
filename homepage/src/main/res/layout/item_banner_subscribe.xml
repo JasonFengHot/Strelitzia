@@ -11,7 +11,7 @@
 
     <Space
         android:id="@+id/left_space"
-        android:layout_width="20dp"
+        android:layout_width="@dimen/space_banner_item_width"
         android:layout_height="wrap_content"/>
 
     <LinearLayout
@@ -30,6 +30,7 @@
             android:gravity="center">
 
             <ImageView
+                android:id="@+id/banner_item_timeline"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/banner_item_line_h"
                 android:layout_centerVertical="true"
@@ -111,6 +112,6 @@
     </LinearLayout>
 
     <Space
-        android:layout_width="20dp"
+        android:layout_width="@dimen/space_banner_item_width"
         android:layout_height="wrap_content"/>
 </LinearLayout>

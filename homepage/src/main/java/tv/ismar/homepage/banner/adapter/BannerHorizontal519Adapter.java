@@ -4,6 +4,7 @@ import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.graphics.Rect;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -78,9 +79,14 @@ public class BannerHorizontal519Adapter extends RecyclerView.Adapter<BannerHoriz
     @Override
     public void onBindViewHolder(SubscribeViewHolder holder, int position) {
         BannerEntity.PosterBean entity = mSubscribeEntityList.get(position);
-        Picasso.with(mContext).load(entity.getPoster_url()).into(holder.mImageView);
-        holder.mTitle.setText(entity.getTitle() + " " + position);
 
+        String imageUrl = entity.getPoster_url();
+        String targetImageUrl = TextUtils.isEmpty(imageUrl) ? null : imageUrl;
+
+        Picasso.with(mContext).load(targetImageUrl).placeholder(R.drawable.list_item_preview_bg)
+                .error(R.drawable.list_item_preview_bg).into(holder.mImageView);
+
+        holder.mTitle.setText(entity.getTitle() + " " + position);
         holder.mItemView.findViewById(R.id.item_layout).setTag(entity);
         holder.mItemView.findViewById(R.id.item_layout).setTag(R.id.banner_item_position, position);
 

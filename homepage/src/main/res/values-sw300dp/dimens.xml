@@ -849,4 +849,5 @@
 <dimen name="movie_mix_banner_recycler_mr">13.89dp</dimen>
 <dimen name="movie_mix_banner_recycler_pl">13.89dp</dimen>
 <dimen name="movie_mix_banner_recycler_pr">13.89dp</dimen>
+<dimen name="space_banner_item_width">5.56dp</dimen>
 </resources>

@@ -62,6 +62,7 @@ public class TemplateTvPlay extends Template implements BaseControl.ControlCallB
     @Override
     public void initData(Bundle bundle) {
         mTitleTv.setText(bundle.getString("title"));
+
         mTitleCountTv.setText(String.format(mContext.getString(R.string.home_item_title_count), 1+"", 40+""));
         mBannerPk = bundle.getInt("banner");
         mFetchDataControl.fetchBanners(mBannerPk, 1, false);

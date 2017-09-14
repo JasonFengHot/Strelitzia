@@ -108,15 +108,15 @@ public class BannerMovieMixAdapter extends RecyclerView.Adapter<BannerMovieMixAd
         }
 
         BannerEntity.PosterBean entity = mSubscribeEntityList.get(position);
-        String url = entity.getPoster_url();
-        if (!TextUtils.isEmpty(url)){
-            Picasso.with(mContext).load(entity.getPoster_url()).into(holder.mImageView);
-        }else {
-            if (position == 0){
-                Picasso.with(mContext).load(R.drawable.list_item_preview_bg).into(holder.mImageView);
-            }else {
-                Picasso.with(mContext).load(R.drawable.list_item_ppreview_bg).into(holder.mImageView);
-            }
+        String imageUrl = entity.getPoster_url();
+        String targetImageUrl = TextUtils.isEmpty(imageUrl) ? null : imageUrl;
+
+        if (position == 0) {
+            Picasso.with(mContext).load(targetImageUrl).placeholder(R.drawable.list_item_preview_bg)
+                    .error(R.drawable.list_item_preview_bg).into(holder.mImageView);
+        } else {
+            Picasso.with(mContext).load(targetImageUrl).placeholder(R.drawable.list_item_ppreview_bg)
+                    .error(R.drawable.list_item_ppreview_bg).into(holder.mImageView);
         }
         holder.mTitle.setText(entity.getTitle() + " " + position);
         holder.mItemView.findViewById(R.id.item_layout).setTag(entity);

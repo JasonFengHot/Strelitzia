@@ -5,29 +5,22 @@ import android.content.Context;
 import android.graphics.Rect;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.Space;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import rx.Observer;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
-import tv.ismar.app.entity.banner.AccountsItemSubscribeExistsEntity;
 import tv.ismar.app.entity.banner.BannerEntity;
-import tv.ismar.app.network.SkyService;
 import tv.ismar.homepage.R;
 
 import static android.view.View.SCALE_X;
@@ -95,10 +88,15 @@ public class BannerSubscribeAdapter
     @Override
     public void onBindViewHolder(SubscribeViewHolder holder, int position) {
         BannerEntity.PosterBean entity = mSubscribeEntityList.get(position);
-        if (!TextUtils.isEmpty(entity.getPoster_url())) {
-            Picasso.with(mContext).load(entity.getPoster_url()).into(holder.mImageView);
-        } else {
-            Picasso.with(mContext).load(R.drawable.list_item_preview_bg).into(holder.mImageView);
+
+        String imageUrl = entity.getPoster_url();
+        String targetImageUrl = TextUtils.isEmpty(imageUrl) ? null : imageUrl;
+
+        Picasso.with(mContext).load(targetImageUrl).placeholder(R.drawable.list_item_preview_bg)
+                .error(R.drawable.list_item_preview_bg).into(holder.mImageView);
+        if (position == 0) {
+            RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) holder.mTimeLine.getLayoutParams();
+            layoutParams.setMarginEnd(0);
         }
 
         //        int itemId = getMovieItemId(entity.getContent_url());
@@ -123,8 +121,6 @@ public class BannerSubscribeAdapter
             holder.mPublishTime.setText(timeString);
         }catch (Exception e){
             e.printStackTrace();
-            Log.e(TAG, "json: " + new Gson().toJson(entity));
-            Log.e(TAG, "error position: " + position);
         }
 
         holder.mIntroduction.setText(entity.getTitle() + " " + position);
@@ -217,6 +213,7 @@ public class BannerSubscribeAdapter
         private TextView mPublishTime;
         private View mItemView;
         private TextView mIntroduction;
+        private ImageView mTimeLine;
 
         public SubscribeViewHolder(View itemView) {
             super(itemView);
@@ -229,6 +226,7 @@ public class BannerSubscribeAdapter
             mPublishTime = (TextView) itemView.findViewById(R.id.publish_time);
             mIntroduction = (TextView) itemView.findViewById(R.id.introduction);
             mLeftSpace = (Space)itemView.findViewById(R.id.left_space);
+            mTimeLine = (ImageView)itemView.findViewById(R.id.banner_item_timeline);
         }
 
         @Override

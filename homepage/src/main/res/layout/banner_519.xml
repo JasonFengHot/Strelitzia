@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:clipChildren="false"
+              android:clipToPadding="false"
+              android:orientation="vertical">
+
+    <include layout="@layout/banner_title_layout"/>
 
     <com.open.androidtvwidget.leanback.recycle.RecyclerViewTV
         android:id="@+id/horizontal_519_banner"

@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.TypedValue;
@@ -43,12 +44,12 @@ import tv.ismar.app.BaseActivity;
 import tv.ismar.app.core.PageIntent;
 import tv.ismar.app.core.Source;
 import tv.ismar.app.core.client.NetworkUtils;
+import tv.ismar.app.entity.FilterNoresultPoster;
 import tv.ismar.app.entity.Item;
 import tv.ismar.app.entity.ItemList;
 import tv.ismar.app.entity.Section;
 import tv.ismar.app.entity.SectionList;
 import tv.ismar.app.models.FilterConditions;
-import tv.ismar.app.network.SkyService;
 import tv.ismar.app.network.entity.EventProperty;
 import tv.ismar.app.ui.adapter.OnItemClickListener;
 import tv.ismar.app.ui.adapter.OnItemFocusedListener;
@@ -61,7 +62,6 @@ import tv.ismar.view.LocationRelativeLayout;
 
 import static android.widget.RelativeLayout.ALIGN_PARENT_BOTTOM;
 import static android.widget.RelativeLayout.ALIGN_PARENT_RIGHT;
-import static android.widget.RelativeLayout.ALIGN_RIGHT;
 
 /**
  * Created by zhangjiqiang on 15-6-18.
@@ -327,7 +327,6 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                 }
             }
         });
-
         tab_scroll.setOnScroll(new FullScrollView.OnScroll() {
             @Override
             public void onShowUp(boolean showUp) {
@@ -506,8 +505,11 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                         if(lastFocusedView!=null){
                             lastFocusedView.requestFocus();
                         }else{
-                            if(list_poster_recyclerview.getChildAt(1)!=null)
-                                list_poster_recyclerview.getChildAt(1).requestFocus();
+                            View firstView=mFocusGridLayoutManager.findViewByPosition(specialPos.get(finalI)+1);
+                            if(specialPos!=null&&firstView!=null) {
+                                firstView.requestFocus();
+                            }
+//
                         }
                         return true;
                     }
@@ -710,8 +712,8 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
             public void onDismiss() {
                 filter_tab.setFocusable(true);
                 if(filterNoResult){
-//                    if(filter_noresult_first_line.getChildAt(0)!=null)
-//                    filter_noresult_first_line.getChildAt(0).requestFocus();
+                    if(filter_noresult_first_line.getChildAt(0)!=null)
+                    filter_noresult_first_line.getChildAt(0).requestFocus();
                 }else {
                     if (poster_recyclerview.getChildAt(0) != null) {
                         poster_recyclerview.getChildAt(0).requestFocus();
@@ -753,7 +755,7 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
         }
         mSkyService.getFilterRecommend(channel, IsmartvActivator.getInstance().getSnToken() ,pagesize).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new BaseObserver<List<Item>>() {
+                .subscribe(new BaseObserver<List<FilterNoresultPoster>>() {
                     @Override
                     public void onCompleted() {
 
@@ -766,7 +768,7 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                     }
 
                     @Override
-                    public void onNext(List<Item> items) {
+                    public void onNext(List<FilterNoresultPoster> items) {
                         if(items!=null){
                             noResultFetched=true;
                             filter_noresult.setVisibility(View.VISIBLE);
@@ -778,20 +780,24 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                             LinearLayout.LayoutParams params=new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                             if(isVertical){
                                 for (int i = 0; i <5 ; i++) {
-                                    final Item item = items.get(i);
+                                    final FilterNoresultPoster item = items.get(i);
                                     if(item!=null){
                                         final View recommendView= View.inflate(FilterActivity.this,R.layout.filter_item_vertical_poster,null);
+                                        recommendView.setId(R.layout.filter_item_vertical_poster+i);
                                         PosterUtil.fillPoster(FilterActivity.this,0,item,(ImageView)recommendView.findViewById(R.id.item_vertical_poster_img),(ImageView)recommendView.findViewById(R.id.item_vertical_poster_vip),(TextView)recommendView.findViewById(R.id.item_vertical_poster_mark),(TextView)recommendView.findViewById(R.id.item_vertical_poster_title),null);
                                         recommendView.setOnFocusChangeListener(mOnFocusChangeListener);
+                                        recommendView.setOnHoverListener(FilterActivity.this);
                                         recommendView.setOnClickListener(new View.OnClickListener() {
                                             @Override
                                             public void onClick(View v) {
-                                                new PageIntent().toDetailPage(FilterActivity.this,Source.LIST.getValue(),item.pk);
+                                                new PageIntent().toDetailPage(FilterActivity.this,Source.LIST.getValue(),item.getPk());
                                             }
                                         });
                                         LinearLayout.LayoutParams p = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                                         p.rightMargin = getResources().getDimensionPixelOffset(R.dimen.filter_noresult_poster_vertical_mr);
                                         recommendView.setLayoutParams(p);
+                                        recommendView.setNextFocusUpId(R.layout.filter_item_vertical_poster+i);
+                                        recommendView.setNextFocusDownId(R.layout.filter_item_vertical_poster+i);
                                         if(i==0){
                                             recommendView.setNextFocusLeftId(R.id.filter_tab);
                                         }
@@ -804,15 +810,17 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                                 filter_noresult_first_line.setLayoutParams(params);
                             }else{
                                 for (int i = 0; i <8 ; i++) {
-                                    final Item item = items.get(i);
+                                    final FilterNoresultPoster item = items.get(i);
                                     if(item!=null) {
                                         View recommendView= View.inflate(FilterActivity.this,R.layout.item_filter_noresult_poster,null);
+                                        recommendView.setId(R.layout.item_filter_noresult_poster+i);
                                         PosterUtil.fillPoster(FilterActivity.this,1,item,(ImageView)recommendView.findViewById(R.id.item_filter_noresult_img),(ImageView)recommendView.findViewById(R.id.item_filter_noresult_vip),(TextView)recommendView.findViewById(R.id.item_filter_noresult_mark),(TextView)recommendView.findViewById(R.id.item_filter_noresult_title),(TextView)recommendView.findViewById(R.id.item_filter_noresult_descrip));
                                         recommendView.setOnFocusChangeListener(mOnFocusChangeListener);
+                                        recommendView.setOnHoverListener(FilterActivity.this);
                                         recommendView.setOnClickListener(new View.OnClickListener() {
                                             @Override
                                             public void onClick(View v) {
-                                                new PageIntent().toDetailPage(FilterActivity.this,Source.LIST.getValue(),item.pk);
+                                                new PageIntent().toDetailPage(FilterActivity.this,Source.LIST.getValue(),item.getPk());
                                             }
                                         });
                                         LinearLayout.LayoutParams p = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -822,8 +830,10 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                                             recommendView.setNextFocusLeftId(R.id.filter_tab);
                                         }
                                         if(i<4) {
+                                            recommendView.setNextFocusUpId(R.layout.item_filter_noresult_poster+i);
                                             filter_noresult_first_line.addView(recommendView);
                                         }else {
+                                            recommendView.setNextFocusDownId(R.layout.item_filter_noresult_poster+i);
                                             filter_noresult_second_line.addView(recommendView);
                                         }
                                     }
@@ -877,7 +887,7 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                                 filter_noresult.setVisibility(View.VISIBLE);
                                 poster_recyclerview.setVisibility(View.GONE);
                             }else{
-//                                fetchFilterNoResult();
+                                fetchFilterNoResult();
                             }
                             poster_recyclerview.setVisibility(View.GONE);
                         }else {

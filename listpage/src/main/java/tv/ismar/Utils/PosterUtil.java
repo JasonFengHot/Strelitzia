@@ -11,6 +11,7 @@ import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
 
 import tv.ismar.app.core.VipMark;
+import tv.ismar.app.entity.FilterNoresultPoster;
 import tv.ismar.app.entity.Item;
 import tv.ismar.channel.FilterActivity;
 import tv.ismar.listpage.R;
@@ -23,34 +24,34 @@ public class PosterUtil {
 
     public static final int VERTICAL=0;
     public static final int HORIZONTAL=1;
-    public static void fillPoster(Activity context,int orientation, Item item, ImageView poster, ImageView vipmark, TextView beanscore, TextView title, TextView description){
+    public static void fillPoster(Activity context, int orientation, FilterNoresultPoster item, ImageView poster, ImageView vipmark, TextView beanscore, TextView title, TextView description){
         if(item!=null) {
             String posterUrl="";
             int previewId;
             if(orientation==VERTICAL){
-                posterUrl=item.list_url;
+                posterUrl=item.getVertical_url();
                 previewId=R.drawable.list_item_ppreview_bg;
             }else{
-                posterUrl=item.poster_url;
+                posterUrl=item.getPoster_url();
                 previewId=R.drawable.list_item_preview_bg;
             }
             if (!TextUtils.isEmpty(posterUrl) && posterUrl != null)
                 Picasso.with(context).load(posterUrl).error(previewId).placeholder(previewId).memoryPolicy(MemoryPolicy.NO_STORE).memoryPolicy(MemoryPolicy.NO_CACHE).config(Bitmap.Config.RGB_565).
                         into(poster);
-            if (item.expense != null) {
-                Picasso.with(context).load(VipMark.getInstance().getImage(context, item.expense.pay_type, item.expense.cpid)).memoryPolicy(MemoryPolicy.NO_STORE).memoryPolicy(MemoryPolicy.NO_CACHE).into(vipmark);
+            if (item.isExpense()) {
+                Picasso.with(context).load(VipMark.getInstance().getImage(context, item.getExpense_info().getPay_type(), item.getExpense_info().getCpid())).memoryPolicy(MemoryPolicy.NO_STORE).memoryPolicy(MemoryPolicy.NO_CACHE).into(vipmark);
             }
-            if (item.bean_score > 0) {
-                beanscore.setText(item.bean_score + "");
+            if (item.getBean_score() > 0) {
+                beanscore.setText(item.getBean_score() + "");
                 beanscore.setVisibility(View.VISIBLE);
             } else {
                 beanscore.setVisibility(View.INVISIBLE);
             }
-            if (!TextUtils.isEmpty(item.title)) {
-                title.setText(item.title);
+            if (!TextUtils.isEmpty(item.getTitle())) {
+                title.setText(item.getTitle());
             }
-            if(item.focus!=null&&description!=null){
-                description.setText(item.focus);
+            if(item.getIntroduction()!=null&&description!=null){
+                description.setText(item.getIntroduction());
             }
         }
     }
