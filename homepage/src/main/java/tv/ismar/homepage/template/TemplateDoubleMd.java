@@ -3,7 +3,6 @@ package tv.ismar.homepage.template;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -19,8 +18,9 @@ import tv.ismar.app.entity.banner.HomeEntity;
 import tv.ismar.homepage.OnItemSelectedListener;
 import tv.ismar.homepage.R;
 import tv.ismar.homepage.adapter.DoubleMdAdapter;
-import tv.ismar.homepage.control.DoubleMdControl;
 import tv.ismar.homepage.control.FetchDataControl;
+
+import static tv.ismar.homepage.fragment.ChannelFragment.TITLE_KEY;
 
 /**
  * @AUTHOR: xi
@@ -40,6 +40,7 @@ public class TemplateDoubleMd extends Template implements BaseControl.ControlCal
     private RecyclerViewTV mRecyclerView;
     private DoubleMdAdapter mAdapter;
     private FetchDataControl mFetchDataControl = null;
+    private int mSelectItemPosition = 1;//标题--选中海报位置
 
     public TemplateDoubleMd(Context context) {
         super(context);
@@ -50,7 +51,10 @@ public class TemplateDoubleMd extends Template implements BaseControl.ControlCal
 
     @Override
     public void getView(View view) {
+        mTitleTv = (TextView) view.findViewById(R.id.banner_title_tv);
+        mTitleCountTv = (TextView) view.findViewById(R.id.banner_title_count);
         mRecyclerView = (RecyclerViewTV) view.findViewById(R.id.double_md_recyclerview);
+
         mHeadView = LayoutInflater.from(mContext).inflate(R.layout.banner_double_md_head, null);
         mVerticalImg = (ImageView) mHeadView.findViewById(R.id.double_md_image_poster);
         mLtImage = (ImageView) mHeadView.findViewById(R.id.double_md_image_lt_icon);
@@ -69,12 +73,19 @@ public class TemplateDoubleMd extends Template implements BaseControl.ControlCal
 
     @Override
     public void initData(Bundle bundle) {
+        mTitleTv.setText(bundle.getString(TITLE_KEY));
         mFetchDataControl.fetchBanners(bundle.getInt("banner"), 1, false);
     }
 
-    private void initAdapter(HomeEntity homeEntity){
+    private void initTitle(){
+        mTitleCountTv.setText(String.format(mContext.getString(R.string.home_item_title_count),
+                mSelectItemPosition+"",
+                mFetchDataControl.mHomeEntity.count+""));
+    }
+
+    private void initRecycleView(){
         if(mAdapter == null){
-            mAdapter = new DoubleMdAdapter(mContext, homeEntity.posters);
+            mAdapter = new DoubleMdAdapter(mContext, mFetchDataControl.mHomeEntity.posters);
             mAdapter.setOnItemSelectedListener(this);
             mAdapter.setLeftMarginEnable(true);
             mAdapter.setHeaderView(mHeadView);
@@ -84,13 +95,8 @@ public class TemplateDoubleMd extends Template implements BaseControl.ControlCal
         }
     }
 
-    private int mItemCount = 0;
-
-    private void initTitle(int position){
-        mTitleCountTv.setText(String.format(mContext.getString(R.string.home_item_title_count), (1 + position) + "", mItemCount + ""));
-    }
-
-    private void initImage(BigImage data){
+    private void initImage(){
+        BigImage data = mFetchDataControl.mHomeEntity.bg_image;
         if(data != null){
             if (!TextUtils.isEmpty(data.vertical_url)) {
                 Picasso.with(mContext).load(data.vertical_url).into(mVerticalImg);
@@ -106,19 +112,16 @@ public class TemplateDoubleMd extends Template implements BaseControl.ControlCal
     @Override
     public void callBack(int flags, Object... args) {
         if(flags == FetchDataControl.FETCH_BANNERS_LIST_FLAG){//获取单个banner业务
-            HomeEntity homeEntity = (HomeEntity) args[0];
-            initAdapter(homeEntity);
-            initImage(homeEntity.bg_image);
-        } else if(flags == FetchDataControl.FETCH_M_BANNERS_LIST_FLAG){//获取多个banner业务
-
+            initTitle();
+            initRecycleView();
+            initImage();
         }
     }
 
     @Override
     public void onItemFocusGain(View itemView, int position) {
-//        if (itemView != null && mContext != null && mTitleCountTv != null){
-//            mTitleCountTv.setText(String.format(mContext.getString(R.string.home_item_title_count), (1 + position) + "", mAdapter.getTatalItemCount() + ""));
-//        }
+        mSelectItemPosition = position+1;
+        initTitle();
     }
 
     @Override
