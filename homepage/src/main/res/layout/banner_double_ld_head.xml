@@ -3,7 +3,6 @@
     android:id="@+id/double_ld_ismartv_linear_layout"
     android:layout_width="@dimen/double_ld_img_width"
     android:layout_height="@dimen/double_ld_img_height"
-    android:layout_marginLeft="@dimen/double_ld_margin_left"
     android:clipChildren="false"
     android:clipToPadding="false"
     android:focusable="true"

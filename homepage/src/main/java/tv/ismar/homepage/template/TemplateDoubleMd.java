@@ -123,10 +123,5 @@ public class TemplateDoubleMd extends Template implements BaseControl.ControlCal
 
     @Override
     public void itemSelected(View view, int position) {
-//        if(position < 3){
-//            mVerticalImg.setVisibility(View.VISIBLE);
-//        } else if(position >= 3){
-//            mVerticalImg.setVisibility(View.GONE);
-//        }
     }
 }
