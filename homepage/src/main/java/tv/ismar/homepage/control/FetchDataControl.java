@@ -17,6 +17,7 @@ import tv.ismar.app.entity.GuideBanner;
 import tv.ismar.app.entity.banner.BannerCarousels;
 import tv.ismar.app.entity.banner.BannerEntity;
 import tv.ismar.app.entity.banner.BannerPoster;
+import tv.ismar.app.entity.banner.BannerRecommend;
 import tv.ismar.app.entity.banner.HomeEntity;
 import tv.ismar.app.network.SkyService;
 
@@ -34,9 +35,11 @@ public class FetchDataControl extends BaseControl{
     public static final int FETCH_BANNERS_LIST_FLAG = 0X04;//获取指定banner下的海报列表
     public static final int FETCH_M_BANNERS_LIST_FLAG = 0X05;//获取影视内容多个banner
     public static final int FETCH_M_BANNERS_LIST_NEXTPAGE_FLAG = 0X06;//获取影视内容多个banner
+    public static final int FETCH_HOME_RECOMMEND_LIST_FLAG = 0X07;//推荐列表
 
     public List<BannerCarousels> mCarousels = new ArrayList<>();//导视数据
     public List<BannerPoster> mPoster = new ArrayList<>();//海报数据
+    public List<BannerRecommend> mRecommends = new ArrayList<>();//首页推荐列表
     public GuideBanner[] mGuideBanners = null;//首页banner列表
     public ChannelEntity[] mChannels = null;//频道列表
     public HomeEntity mHomeEntity = null;//单个banner实体类
@@ -150,6 +153,34 @@ public class FetchDataControl extends BaseControl{
                     public void onNext(HomeEntity[] homeEntities) {
                         if(mCallBack!=null && homeEntities!=null){
                             mCallBack.callBack(FETCH_M_BANNERS_LIST_FLAG, homeEntities);
+                        }
+                    }
+                });
+    }
+
+    /**
+     * 获取首页下的推荐列表
+     * @param isMore 是否加载更多
+     */
+    public void fetchHomeRecommend(final boolean isMore){
+        SkyService.ServiceManager.getService().getHomeRecommend()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<List<BannerRecommend>>() {
+                    @Override
+                    public void onCompleted() {}
+
+                    @Override
+                    public void onError(Throwable e) {}
+
+                    @Override
+                    public void onNext(List<BannerRecommend> bannerRecommends) {
+                        if(mCallBack != null){
+                            if(!isMore){
+                                mRecommends.clear();
+                            }
+                            mRecommends.addAll(bannerRecommends);
+                            mCallBack.callBack(FETCH_HOME_RECOMMEND_LIST_FLAG, bannerRecommends);
                         }
                     }
                 });

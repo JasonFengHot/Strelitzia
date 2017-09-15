@@ -13,11 +13,18 @@ import com.daimajia.androidanimations.library.YoYo;
 import com.open.androidtvwidget.leanback.recycle.LinearLayoutManagerTV;
 import com.open.androidtvwidget.leanback.recycle.RecyclerViewTV;
 
+import java.util.List;
+
 import tv.ismar.app.BaseControl;
+import tv.ismar.app.entity.banner.BannerPoster;
+import tv.ismar.app.entity.banner.BannerRecommend;
 import tv.ismar.app.entity.banner.HomeEntity;
 import tv.ismar.homepage.R;
 import tv.ismar.homepage.adapter.ConlumnAdapter;
 import tv.ismar.homepage.control.FetchDataControl;
+import tv.ismar.homepage.fragment.ChannelFragment;
+
+import static tv.ismar.homepage.control.FetchDataControl.FETCH_HOME_RECOMMEND_LIST_FLAG;
 
 /**
  * @AUTHOR: xi
@@ -52,11 +59,17 @@ public class TemplateConlumn extends Template implements BaseControl.ControlCall
     }
 
     private int mBannerPk;
+    private String mTemplate;
     @Override
     public void initData(Bundle bundle) {
-        mBannerPk = bundle.getInt("banner");
-        mTitleTv.setText(bundle.getString("title"));
-        mFetchDataControl.fetchBanners(mBannerPk, 1, false);
+        mBannerPk = bundle.getInt(ChannelFragment.BANNER_KEY);
+        mTemplate = bundle.getString(ChannelFragment.TEMPLATE_KEY);
+        mTitleTv.setText(bundle.getString(ChannelFragment.TITLE_KEY));
+        if(mTemplate.equals("template_recommend")){
+            mFetchDataControl.fetchHomeRecommend(false);
+        } else {
+            mFetchDataControl.fetchBanners(mBannerPk, 1, false);
+        }
     }
 
     @Override
@@ -68,17 +81,22 @@ public class TemplateConlumn extends Template implements BaseControl.ControlCall
     @Override
     public void callBack(int flags, Object... args) {
         if(flags == FetchDataControl.FETCH_BANNERS_LIST_FLAG){//获取单个banner业务
-            HomeEntity homeEntity = (HomeEntity) args[0];
-            if(homeEntity.posters==null || homeEntity.posters.size()<=0){
-                return;
-            }
-            Log.i(TAG, "posters size:" + homeEntity.posters.size());
-            if(mAdapter == null){
-                mAdapter = new ConlumnAdapter(mContext, homeEntity.posters);
-                mRecyclerView.setAdapter(mAdapter);
-            }else {
-                mAdapter.notifyDataSetChanged();
-            }
+            initConlumnRecycleView(mFetchDataControl.mPoster);
+        } else if(flags == FETCH_HOME_RECOMMEND_LIST_FLAG){//获取推荐列表
+
+        }
+    }
+
+    private void initRecommendRecycleView(List<BannerRecommend> recommends){
+
+    }
+
+    private void initConlumnRecycleView(List<BannerPoster> posters){
+        if(mAdapter == null){
+            mAdapter = new ConlumnAdapter(mContext, posters);
+            mRecyclerView.setAdapter(mAdapter);
+        }else {
+            mAdapter.notifyDataSetChanged();
         }
     }
 

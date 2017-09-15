@@ -9,6 +9,7 @@ import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -295,8 +296,14 @@ public class RecyclerViewTV extends RecyclerView implements PrvInterface {
      * 判断是垂直，还是横向.
      */
     private boolean isVertical() {
-        LinearLayoutManager layout = (LinearLayoutManager) getLayoutManager();
-        return layout.getOrientation() == LinearLayoutManager.VERTICAL;
+        if(getLayoutManager() instanceof  LinearLayoutManager){
+            LinearLayoutManager layoutManager = (LinearLayoutManager)getLayoutManager();
+            return layoutManager.getOrientation() == LinearLayoutManager.VERTICAL;
+        } else if(getLayoutManager() instanceof StaggeredGridLayoutManager){
+            StaggeredGridLayoutManager layoutManager = (StaggeredGridLayoutManager)getLayoutManager();
+            return layoutManager.getOrientation() == StaggeredGridLayoutManager.VERTICAL;
+        }
+        return true;
     }
 
     /**

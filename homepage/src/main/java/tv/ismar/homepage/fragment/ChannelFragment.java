@@ -73,6 +73,11 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
         initBanner(banners);
     }
 
+    public static final String TITLE_KEY = "title";
+    public static final String URL_KEY = "url";
+    public static final String BANNER_KEY = "banner";
+    public static final String TEMPLATE_KEY = "template";
+
     /*初始化banner视图*/
     private void initBanner(GuideBanner[] data){
         if(data==null || data.length<=0){
@@ -81,11 +86,12 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
         mLinearContainer.removeAllViews();
         for(int position=0; position<data.length; position++){
             View bannerView = null;
-            Bundle bundle = new Bundle();
-            bundle.putString("title", data[position].title);
-            bundle.putString("url", data[position].banner_url);
-            bundle.putInt("banner", data[position].page_banner_pk);
             String template = data[position].template;
+            Bundle bundle = new Bundle();
+            bundle.putString(TITLE_KEY, data[position].title);
+            bundle.putString(URL_KEY, data[position].banner_url);
+            bundle.putInt(BANNER_KEY, data[position].page_banner_pk);
+            bundle.putString(TEMPLATE_KEY, template);
             if(template.equals("template_guide")){//导视
                 bannerView = createView(R.layout.banner_guide);
                 new TemplateGuide(getContext()).setView(bannerView, bundle);

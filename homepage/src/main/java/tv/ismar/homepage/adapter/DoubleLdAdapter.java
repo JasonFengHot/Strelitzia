@@ -3,6 +3,7 @@ package tv.ismar.homepage.adapter;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,6 +36,7 @@ public class DoubleLdAdapter extends RecyclerView.Adapter<DoubleLdAdapter.Double
     private boolean mTopMarginEnable = false;
     private boolean mLeftMarginEnable = false;
     private OnItemSelectedListener mClickListener = null;
+    private View mHeaderView;
 
     public DoubleLdAdapter(Context context, List<BannerPoster> data){
         this.mContext = context;
@@ -53,35 +55,65 @@ public class DoubleLdAdapter extends RecyclerView.Adapter<DoubleLdAdapter.Double
         this.mLeftMarginEnable = enable;
     }
 
+    public void setHeaderView(View headerView) {
+        mHeaderView = headerView;
+        notifyItemInserted(0);
+    }
+
     @Override
     public DoubleLdViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        if (mHeaderView != null && viewType == TYPE_HEADER)
+            return new DoubleLdAdapter.DoubleLdViewHolder(mHeaderView);
         View view = LayoutInflater.from(mContext).inflate(R.layout.banner_double_ld_item,parent,false);
         return new DoubleLdAdapter.DoubleLdViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(DoubleLdViewHolder holder, int position) {
-        holder.mPosition = position;
-        holder.mTopMarginView.setVisibility(View.GONE);
-        holder.mLeftMarginView.setVisibility(View.GONE);
-        holder.mTopMarginView.setVisibility(mTopMarginEnable ? View.VISIBLE: View.GONE);
-        holder.mLeftMarginView.setVisibility(mLeftMarginEnable ? View.VISIBLE: View.GONE);
-        BannerPoster poster = mData.get(position);
-        if (!TextUtils.isEmpty(poster.poster_url)) {
-            Picasso.with(mContext).load(poster.poster_url).into(holder.mPosterIg);
-        } else {
-            Picasso.with(mContext).load(R.drawable.list_item_preview_bg).into(holder.mPosterIg);
+    public void onViewAttachedToWindow(DoubleLdViewHolder holder) {
+        super.onViewAttachedToWindow(holder);
+        ViewGroup.LayoutParams lp = holder.itemView.getLayoutParams();
+        if (lp != null
+                && lp instanceof StaggeredGridLayoutManager.LayoutParams
+                && holder.getLayoutPosition() == 0) {
+            StaggeredGridLayoutManager.LayoutParams p = (StaggeredGridLayoutManager.LayoutParams) lp;
+            p.setFullSpan(true);
         }
+    }
+
+    @Override
+    public void onBindViewHolder(DoubleLdViewHolder holder, int position) {
+        if(position != 0){
+            holder.mPosition = position;
+            holder.mTopMarginView.setVisibility(View.GONE);
+            holder.mLeftMarginView.setVisibility(View.GONE);
+            holder.mTopMarginView.setVisibility(mTopMarginEnable ? View.VISIBLE: View.GONE);
+            holder.mLeftMarginView.setVisibility(mLeftMarginEnable ? View.VISIBLE: View.GONE);
+            BannerPoster poster = mData.get(position);
+            if (!TextUtils.isEmpty(poster.poster_url)) {
+                Picasso.with(mContext).load(poster.poster_url).into(holder.mPosterIg);
+            } else {
+                Picasso.with(mContext).load(R.drawable.list_item_preview_bg).into(holder.mPosterIg);
+            }
 //        Picasso.with(mContext).load(posters.poster_url).into(holder.mLtIconTv);
 //        Picasso.with(mContext).load(posters.poster_url).into(holder.mRbIconTv);
-        holder.mTitleTv.setText(poster.title);
+            holder.mTitleTv.setText(poster.title);
+        }
     }
 
     @Override
     public int getItemCount() {
-        return (mData!=null)? mData.size():0;
+        return (mHeaderView==null) ? mData.size() : mData.size() + 1;
     }
 
+    public static final int TYPE_HEADER = 0;//头部
+    public static final int TYPE_NORMAL = 1;//一般item
+
+    @Override
+    public int getItemViewType(int position) {
+        if (mHeaderView == null) return TYPE_NORMAL;
+        if (position == 0) return TYPE_HEADER;
+        return TYPE_NORMAL;
+    }
 
     public class DoubleLdViewHolder extends RecyclerView.ViewHolder implements
             View.OnFocusChangeListener, View.OnClickListener{

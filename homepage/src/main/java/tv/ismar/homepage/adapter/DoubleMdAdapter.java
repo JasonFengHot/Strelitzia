@@ -4,6 +4,7 @@ import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.graphics.Rect;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,16 +31,25 @@ import static android.view.View.SCALE_Y;
 
 public class DoubleMdAdapter extends RecyclerView.Adapter<DoubleMdAdapter.DoubleMdViewHolder>{
 
+    public static final int TYPE_HEADER = 0;//头部
+    public static final int TYPE_NORMAL = 1;//一般item
+
     private Context mContext;
     private List<BannerPoster> mData;
 
     private boolean mTopMarginEnable = false;
     private boolean mLeftMarginEnable = false;
     private OnItemSelectedListener mClickListener = null;
+    private View mHeaderView;
 
     public DoubleMdAdapter(Context context, List<BannerPoster> data){
         this.mContext = context;
         this.mData = data;
+    }
+
+    public void setHeaderView(View headerView) {
+        mHeaderView = headerView;
+        notifyItemInserted(0);
     }
 
     public void setOnItemSelectedListener(OnItemSelectedListener listener){
@@ -55,30 +65,53 @@ public class DoubleMdAdapter extends RecyclerView.Adapter<DoubleMdAdapter.Double
     }
 
     @Override
+    public void onViewAttachedToWindow(DoubleMdViewHolder holder) {
+        super.onViewAttachedToWindow(holder);
+        ViewGroup.LayoutParams lp = holder.itemView.getLayoutParams();
+        if (lp != null
+                && lp instanceof StaggeredGridLayoutManager.LayoutParams
+                && holder.getLayoutPosition() == 0) {
+            StaggeredGridLayoutManager.LayoutParams p = (StaggeredGridLayoutManager.LayoutParams) lp;
+            p.setFullSpan(true);
+        }
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        if (mHeaderView == null) return TYPE_NORMAL;
+        if (position == 0) return TYPE_HEADER;
+        return TYPE_NORMAL;
+    }
+
+    @Override
     public DoubleMdViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        if (mHeaderView != null && viewType == TYPE_HEADER)
+            return new DoubleMdViewHolder(mHeaderView);
         View view = LayoutInflater.from(mContext).inflate(R.layout.banner_double_md_item,parent,false);
         return new DoubleMdViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(DoubleMdViewHolder holder, int position) {
-        holder.mPosition = position;
-        holder.mTopView.setVisibility(View.GONE);
-        holder.mLeftView.setVisibility(View.GONE);
-        holder.mTopView.setVisibility(mTopMarginEnable ? View.VISIBLE: View.GONE);
-        holder.mLeftView.setVisibility(mLeftMarginEnable ? View.VISIBLE: View.GONE);
-        BannerPoster poster = mData.get(position);
-        holder.mTitleTv.setText(poster.title);
-        if (!TextUtils.isEmpty(poster.poster_url)) {
-            Picasso.with(mContext).load(poster.poster_url).into(holder.mPosterIg);
-        } else {
-            Picasso.with(mContext).load(R.drawable.list_item_preview_bg).into(holder.mPosterIg);
+        if(position != 0){
+            holder.mPosition = position;
+            holder.mTopView.setVisibility(View.GONE);
+            holder.mLeftView.setVisibility(View.GONE);
+            holder.mTopView.setVisibility(mTopMarginEnable ? View.VISIBLE: View.GONE);
+            holder.mLeftView.setVisibility(mLeftMarginEnable ? View.VISIBLE: View.GONE);
+            BannerPoster poster = mData.get(position);
+            holder.mTitleTv.setText(poster.title);
+            if (!TextUtils.isEmpty(poster.poster_url)) {
+                Picasso.with(mContext).load(poster.poster_url).into(holder.mPosterIg);
+            } else {
+                Picasso.with(mContext).load(R.drawable.list_item_preview_bg).into(holder.mPosterIg);
+            }
         }
     }
 
     @Override
     public int getItemCount() {
-        return (mData!=null)? mData.size():0;
+        return (mHeaderView==null) ? mData.size() : mData.size() + 1;
     }
 
     public class DoubleMdViewHolder extends RecyclerView.ViewHolder implements View.OnFocusChangeListener,

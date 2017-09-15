@@ -59,6 +59,7 @@ import tv.ismar.app.entity.Subject;
 import tv.ismar.app.entity.VideoEntity;
 import tv.ismar.app.entity.banner.AccountsItemSubscribeExistsEntity;
 import tv.ismar.app.entity.banner.BannerEntity;
+import tv.ismar.app.entity.banner.BannerRecommend;
 import tv.ismar.app.entity.banner.HomeEntity;
 import tv.ismar.app.models.ActorRelateRequestParams;
 import tv.ismar.app.models.FilterConditions;
@@ -181,6 +182,9 @@ public interface SkyService {
        @Query("sn") String sn,
        @Query("count") int count
     );
+
+    @GET("http://sky.tvxio.bestv.com.cn/wheat/v3_0/UF30/toq0/api/recommend/chinesemovie/?sn=cd41011951")
+    Observable<List<BannerRecommend>> getHomeRecommend();
 
     @GET("api/tv/filtrate/{movie}/{genre}/{page}/")
     Observable<ResponseBody> fetchFiltrate(

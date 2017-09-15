@@ -2,8 +2,11 @@ package tv.ismar.homepage.template;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -43,16 +46,18 @@ public class TemplateDoubleMd extends Template implements BaseControl.ControlCal
         mFetchDataControl = new FetchDataControl(context, this);
     }
 
+    private View mHeadView;//recylview头view
+
     @Override
     public void getView(View view) {
         mRecyclerView = (RecyclerViewTV) view.findViewById(R.id.double_md_recyclerview);
-        mVerticalImg = (ImageView) view.findViewById(R.id.double_md_image_poster);
-        mLtImage = (ImageView) view.findViewById(R.id.double_md_image_lt_icon);
-        mRbImage = (ImageView) view.findViewById(R.id.double_md_image_rb_icon);
-        mImgeTitleTv = (TextView) view.findViewById(R.id.double_md_image_title);
-
-        GridLayoutManager doubleLayoutManager = new GridLayoutManager(mContext, 2);
-        doubleLayoutManager.setOrientation(GridLayoutManager.HORIZONTAL);
+        mHeadView = LayoutInflater.from(mContext).inflate(R.layout.banner_double_md_head, null);
+        mVerticalImg = (ImageView) mHeadView.findViewById(R.id.double_md_image_poster);
+        mLtImage = (ImageView) mHeadView.findViewById(R.id.double_md_image_lt_icon);
+        mRbImage = (ImageView) mHeadView.findViewById(R.id.double_md_image_rb_icon);
+        mImgeTitleTv = (TextView) mHeadView.findViewById(R.id.double_md_image_title);
+        StaggeredGridLayoutManager doubleLayoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.HORIZONTAL);
+        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         mRecyclerView.setLayoutManager(doubleLayoutManager);
     }
 
@@ -72,6 +77,7 @@ public class TemplateDoubleMd extends Template implements BaseControl.ControlCal
             mAdapter = new DoubleMdAdapter(mContext, homeEntity.posters);
             mAdapter.setOnItemSelectedListener(this);
             mAdapter.setLeftMarginEnable(true);
+            mAdapter.setHeaderView(mHeadView);
             mRecyclerView.setAdapter(mAdapter);
         }else {
             mAdapter.notifyDataSetChanged();
