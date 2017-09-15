@@ -159,12 +159,20 @@ public class FilterPosterAdapter extends RecyclerView.Adapter<FilterPosterAdapte
                     }
                     if (!TextUtils.isEmpty(item.title)) {
                         holder.item_horizontal_poster_title.setText(item.title);
+                    } else {
+                        holder.item_horizontal_poster_title.setText("");
+                        holder.item_horizontal_title_bg.setVisibility(View.INVISIBLE);
                     }
                     if (!TextUtils.isEmpty(item.focus)) {
                         holder.item_horizontal_poster_des.setText(item.focus);
+                    }else {
+                        holder.item_horizontal_poster_des.setVisibility(View.INVISIBLE);
                     }
                     if (!TextUtils.isEmpty(item.poster_url)) {
                         Picasso.with(mContext).load(item.poster_url).error(R.drawable.list_item_preview_bg).placeholder(R.drawable.list_item_preview_bg).memoryPolicy(MemoryPolicy.NO_STORE).memoryPolicy(MemoryPolicy.NO_CACHE).config(Bitmap.Config.RGB_565)
+                                .into(holder.item_horizontal_poster_img);
+                    }else{
+                        Picasso.with(mContext).load(R.drawable.list_item_preview_bg).error(R.drawable.list_item_preview_bg).placeholder(R.drawable.list_item_preview_bg).memoryPolicy(MemoryPolicy.NO_STORE).memoryPolicy(MemoryPolicy.NO_CACHE).config(Bitmap.Config.RGB_565)
                                 .into(holder.item_horizontal_poster_img);
                     }
                     if (item.expense != null) {
@@ -240,6 +248,7 @@ public class FilterPosterAdapter extends RecyclerView.Adapter<FilterPosterAdapte
         TextView item_horizontal_poster_mark;
         TextView item_horizontal_poster_des;
         TextView item_horizontal_poster_title;
+        View item_horizontal_title_bg;
 
         public FilterPosterHolder(View itemView) {
             super(itemView);
@@ -255,6 +264,7 @@ public class FilterPosterAdapter extends RecyclerView.Adapter<FilterPosterAdapte
                 item_horizontal_poster_mark = (TextView) itemView.findViewById(R.id.item_horizontal_poster_mark);
                 item_horizontal_poster_des = (TextView) itemView.findViewById(R.id.item_horizontal_poster_des);
                 item_horizontal_poster_title = (TextView) itemView.findViewById(R.id.item_horizontal_poster_title);
+                item_horizontal_title_bg = itemView.findViewById(R.id.item_horizontal_title_bg);
             }
         }
     }
