@@ -58,8 +58,7 @@ public class CenterAdapter extends RecyclerView.Adapter<CenterAdapter.CenterView
         return (mData!=null)? mData.size() : 0;
     }
 
-    public static class CenterViewHolder extends RecyclerView.ViewHolder implements View.OnFocusChangeListener,
-            View.OnClickListener{
+    public static class CenterViewHolder extends BaseViewHolder{
         public TextView mTitle;
         public ImageView mPoster;
 
@@ -67,42 +66,11 @@ public class CenterAdapter extends RecyclerView.Adapter<CenterAdapter.CenterView
             super(itemView);
             mTitle = (TextView) itemView.findViewById(R.id.center_item_title);
             mPoster = (ImageView) itemView.findViewById(R.id.center_item_poster);
-            itemView.setOnFocusChangeListener(this);
-            itemView.setOnClickListener(this);
-        }
-
-        private void scaleToLarge(View view) {
-            ObjectAnimator objectAnimatorX = ObjectAnimator.ofFloat(view, SCALE_X, 1.0F, 1.1F);
-            objectAnimatorX.setDuration(100L);
-            objectAnimatorX.start();
-            ObjectAnimator objectAnimatorY = ObjectAnimator.ofFloat(view, SCALE_Y, 1.0F, 1.1F);
-            objectAnimatorY.setDuration(100L);
-            objectAnimatorY.start();
-        }
-
-
-        private void scaleToNormal(View view) {
-            ObjectAnimator objectAnimatorX = ObjectAnimator.ofFloat(view, SCALE_X, 1.1F, 1.0F);
-            objectAnimatorX.setDuration(100L);
-            objectAnimatorX.start();
-            ObjectAnimator objectAnimatorY = ObjectAnimator.ofFloat(view, SCALE_Y, 1.1F, 1.0F);
-            objectAnimatorY.setDuration(100L);
-            objectAnimatorY.start();
         }
 
         @Override
-        public void onFocusChange(View v, boolean hasFocus) {
-            if (hasFocus) {
-                scaleToLarge(v.findViewById(R.id.center_ismartv_linear_layout));
-            } else {
-                scaleToNormal(v.findViewById(R.id.center_ismartv_linear_layout));
-            }
-        }
-
-        @Override
-        public void onClick(View v) {
-            v.setFocusable(true);
-            v.requestFocus();
+        protected int getScaleLayoutId() {
+            return R.id.center_ismartv_linear_layout;
         }
     }
 }

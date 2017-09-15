@@ -1,6 +1,5 @@
 package tv.ismar.homepage.adapter;
 
-import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
@@ -8,7 +7,6 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -19,9 +17,6 @@ import java.util.List;
 import tv.ismar.app.entity.banner.BannerPoster;
 import tv.ismar.homepage.OnItemSelectedListener;
 import tv.ismar.homepage.R;
-
-import static android.view.View.SCALE_X;
-import static android.view.View.SCALE_Y;
 
 /**
  * @AUTHOR: xi
@@ -115,8 +110,7 @@ public class DoubleLdAdapter extends RecyclerView.Adapter<DoubleLdAdapter.Double
         return TYPE_NORMAL;
     }
 
-    public class DoubleLdViewHolder extends RecyclerView.ViewHolder implements
-            View.OnFocusChangeListener, View.OnClickListener{
+    public class DoubleLdViewHolder extends BaseViewHolder{
         public ImageView mPosterIg;//海报
         public ImageView mLtIconTv;//左上icon
         public ImageView mRbIconTv;//右下icon
@@ -133,42 +127,12 @@ public class DoubleLdAdapter extends RecyclerView.Adapter<DoubleLdAdapter.Double
             mTitleTv = (TextView) itemView.findViewById(R.id.double_ld_item_title);
             mTopMarginView = itemView.findViewById(R.id.double_ld_top_margin);
             mLeftMarginView = itemView.findViewById(R.id.double_ld_left_margin);
-            itemView.findViewById(R.id.double_ld_ismartv_linear_layout).setOnFocusChangeListener(this);
             itemView.findViewById(R.id.double_ld_ismartv_linear_layout).setOnClickListener(this);
         }
 
-        private void scaleToLarge(View view) {
-            ObjectAnimator objectAnimatorX = ObjectAnimator.ofFloat(view, SCALE_X, 1.0F, 1.1F);
-            objectAnimatorX.setDuration(100L);
-            objectAnimatorX.start();
-            ObjectAnimator objectAnimatorY = ObjectAnimator.ofFloat(view, SCALE_Y, 1.0F, 1.1F);
-            objectAnimatorY.setDuration(100L);
-            objectAnimatorY.start();
-        }
-
-
-        private void scaleToNormal(View view) {
-            ObjectAnimator objectAnimatorX = ObjectAnimator.ofFloat(view, SCALE_X, 1.1F, 1.0F);
-            objectAnimatorX.setDuration(100L);
-            objectAnimatorX.start();
-            ObjectAnimator objectAnimatorY = ObjectAnimator.ofFloat(view, SCALE_Y, 1.1F, 1.0F);
-            objectAnimatorY.setDuration(100L);
-            objectAnimatorY.start();
-        }
-
         @Override
-        public void onFocusChange(View v, boolean hasFocus) {
-            if (hasFocus) {
-                scaleToLarge(v.findViewById(R.id.double_ld_ismartv_linear_layout));
-                mClickListener.itemSelected(v, mPosition);
-            } else {
-                scaleToNormal(v.findViewById(R.id.double_ld_ismartv_linear_layout));
-            }
-        }
-
-        @Override
-        public void onClick(View v) {
-            mClickListener.itemSelected(v, mPosition);
+        protected int getScaleLayoutId() {
+            return R.id.double_ld_ismartv_linear_layout;
         }
     }
 }
