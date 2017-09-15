@@ -68,6 +68,8 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     private int mLastSelectedIndex = 0;//记录上一次选中的位置
     private TimeTickBroadcast mTimeTickBroadcast = null;
 
+    public static View mHoverView;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate((savedInstanceState!=null)?null:savedInstanceState);
@@ -92,6 +94,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
 
     /*获取控件实例*/
     private void findViews(){
+        mHoverView = findViewById(R.id.hover_view);
         mViewGroup = (ViewGroup) findViewById(R.id.home_view_layout);
         channelTab = (HorizontalTabView) findViewById(R.id.channel_tab);
         mTimeTv = (TextView) findViewById(R.id.guide_title_time_tv);

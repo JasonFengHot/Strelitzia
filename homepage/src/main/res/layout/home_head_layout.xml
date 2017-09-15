@@ -5,6 +5,12 @@
     android:layout_height="wrap_content"
     android:gravity="center_vertical">
 
+    <View
+        android:id="@+id/hover_view"
+        android:layout_width="1px"
+        android:layout_height="1px"
+        android:background="#00000000"/>
+
     <TextView
         android:layout_width="@dimen/guide_title_logo_width"
         android:layout_height="@dimen/guide_title_logo_height"
