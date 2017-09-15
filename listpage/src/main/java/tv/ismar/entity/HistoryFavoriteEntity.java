@@ -51,7 +51,7 @@ public class HistoryFavoriteEntity implements Serializable{
 
     private String logo;
 
-    private String subitems;
+    private HistoryFavoriteEntity[] subitems;
 
     private int offset;
 
@@ -232,12 +232,6 @@ public class HistoryFavoriteEntity implements Serializable{
     public String getLogo(){
         return this.logo;
     }
-    public void setSubitems(String subitems){
-        this.subitems = subitems;
-    }
-    public String getSubitems(){
-        return this.subitems;
-    }
     public void setOffset(int offset){
         this.offset = offset;
     }
@@ -286,6 +280,15 @@ public class HistoryFavoriteEntity implements Serializable{
 //    public Tags getTags(){
 //        return this.tags;
 //    }
+
+    public HistoryFavoriteEntity[] getSubitems() {
+        return subitems;
+    }
+
+    public void setSubitems(HistoryFavoriteEntity[] subitems) {
+        this.subitems = subitems;
+    }
+
     public void setStart_time(String start_time){
         this.start_time = start_time;
     }

@@ -40,6 +40,7 @@
                     android:layout_height="@dimen/history_43"
                     android:layout_marginLeft="@dimen/history_34"
                     android:layout_marginTop="@dimen/history_18"
+                    android:textSize="@dimen/text_size_30sp"
                     android:text="编辑"
                     android:visibility="invisible"
                     />

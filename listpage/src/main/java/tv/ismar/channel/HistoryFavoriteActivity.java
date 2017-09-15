@@ -407,8 +407,7 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
         PageIntent intent=new PageIntent();
         if(type.equals("history")){
             HistoryFavoriteEntity history=historyLists.get(postion);
-            boolean[] isSubItem = new boolean[1];
-            int pk = SimpleRestClient.getItemId(history.getUrl(), isSubItem);
+            int pk = history.getPk();
             if(postion!=historyLists.size()-1) {
                 intent.toPlayPage(this, pk, 0, Source.HISTORY);
             }else{
@@ -421,8 +420,7 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
             }
         }else {
             HistoryFavoriteEntity favoriteEntity=favoriteLists.get(postion);
-            boolean[] isSubItem = new boolean[1];
-            int pk = SimpleRestClient.getItemId(favoriteEntity.getUrl(), isSubItem);
+            int pk =favoriteEntity.getPk();
             if(postion!=favoriteLists.size()-1) {
                 intent.toDetailPage(this, "favorite", pk);
             }else{
