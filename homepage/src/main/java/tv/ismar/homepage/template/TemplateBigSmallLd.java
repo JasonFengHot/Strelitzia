@@ -21,7 +21,9 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import tv.ismar.app.entity.banner.BannerEntity;
 import tv.ismar.app.network.SkyService;
+import tv.ismar.homepage.HomeActivity;
 import tv.ismar.homepage.R;
+import tv.ismar.homepage.banner.adapter.BannerHorizontal519Adapter;
 import tv.ismar.homepage.banner.adapter.BannerMovieMixAdapter;
 
 /**
@@ -162,6 +164,18 @@ public class TemplateBigSmallLd extends Template{
             @Override
             public void onBannerClick(View view, int position) {
                 goToNextPage(view);
+            }
+        });
+        adapter.setHoverListener(new BannerMovieMixAdapter.OnBannerHoverListener() {
+            @Override
+            public void onBannerHover(View view, int position, boolean hovered) {
+                Log.d(TAG, view + " : " + hovered);
+                if (hovered){
+                    movieMixBanner.setHovered(true);
+                }else {
+                    movieMixBanner.setHovered(false);
+                    HomeActivity.mHoverView.requestFocus();
+                }
             }
         });
         movieMixBanner.setAdapter(adapter);

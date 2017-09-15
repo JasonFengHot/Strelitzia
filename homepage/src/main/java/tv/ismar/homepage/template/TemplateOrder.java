@@ -22,6 +22,7 @@ import rx.schedulers.Schedulers;
 import tv.ismar.app.BaseControl;
 import tv.ismar.app.entity.banner.BannerEntity;
 import tv.ismar.app.network.SkyService;
+import tv.ismar.homepage.HomeActivity;
 import tv.ismar.homepage.R;
 import tv.ismar.homepage.banner.adapter.BannerSubscribeAdapter;
 import tv.ismar.homepage.control.OrderControl;
@@ -113,6 +114,8 @@ public class TemplateOrder extends Template implements BaseControl.ControlCallBa
                     }
                 }
             });
+
+
 
 
 //        subscribeBanner.setOnHoverListener(new View.OnHoverListener() {
@@ -280,6 +283,18 @@ public class TemplateOrder extends Template implements BaseControl.ControlCallBa
             @Override
             public void onBannerClick(View view, int position) {
                 goToNextPage(view);
+            }
+        });
+        subscribeAdapter.setSubscribeHoverListener(new BannerSubscribeAdapter.OnBannerHoverListener() {
+            @Override
+            public void onBannerHover(View view, int position, boolean hovered) {
+                Log.d(TAG, view + " : " + hovered);
+                if (hovered){
+                    subscribeBanner.setHovered(true);
+                }else {
+                    subscribeBanner.setHovered(false);
+                    HomeActivity.mHoverView.requestFocus();
+                }
             }
         });
         subscribeBanner.setAdapter(subscribeAdapter);

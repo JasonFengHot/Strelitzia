@@ -6,6 +6,7 @@ import android.graphics.Rect;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -36,6 +37,17 @@ public class BannerHorizontal519Adapter extends RecyclerView.Adapter<BannerHoriz
     private int currentPageNumber;
     private int totalPageCount;
     private int totalItemCount;
+
+    private BannerHorizontal519Adapter.OnBannerHoverListener mHoverListener;
+
+    public void setHoverListener(OnBannerHoverListener hoverListener) {
+        mHoverListener = hoverListener;
+    }
+
+    public interface OnBannerHoverListener {
+        void onBannerHover(View view, int position, boolean hovered);
+    }
+
 
     public int getCurrentPageNumber() {
         return currentPageNumber;
@@ -103,7 +115,7 @@ public class BannerHorizontal519Adapter extends RecyclerView.Adapter<BannerHoriz
     }
 
 
-    class SubscribeViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener,View.OnFocusChangeListener {
+    class SubscribeViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener,View.OnFocusChangeListener, View.OnHoverListener{
 
         private Space mLeftSpace;
         private ImageView mImageView;
@@ -114,8 +126,10 @@ public class BannerHorizontal519Adapter extends RecyclerView.Adapter<BannerHoriz
         public SubscribeViewHolder(View itemView) {
             super(itemView);
             mItemView = itemView;
+            View itemLayoutView = mItemView.findViewById(R.id.item_layout);
             mItemView.findViewById(R.id.item_layout).setOnClickListener(this);
             mItemView.findViewById(R.id.item_layout).setOnFocusChangeListener(this);
+            mItemView.findViewById(R.id.item_layout).setOnHoverListener(this);
             mImageView = (ImageView) itemView.findViewById(R.id.image_view);
             mTitle = (TextView) itemView.findViewById(R.id.title);
             mLeftSpace = (Space)itemView.findViewById(R.id.left_space);
@@ -159,6 +173,28 @@ public class BannerHorizontal519Adapter extends RecyclerView.Adapter<BannerHoriz
             ObjectAnimator objectAnimatorY = ObjectAnimator.ofFloat(view, SCALE_Y, 1.1F, 1.0F);
             objectAnimatorY.setDuration(100L);
             objectAnimatorY.start();
+        }
+
+        @Override
+        public boolean onHover(View v, MotionEvent event) {
+            switch (event.getAction()){
+                case MotionEvent.ACTION_HOVER_ENTER:
+                case MotionEvent.ACTION_HOVER_MOVE:
+                    if (mHoverListener!= null){
+                        int position = (int) v.getTag(R.id.banner_item_position);
+                        mHoverListener.onBannerHover(v, position, true);
+                    }
+                    v.requestFocusFromTouch();
+                    v.requestFocus();
+                    break;
+                case MotionEvent.ACTION_HOVER_EXIT:
+                    if (mHoverListener!= null){
+                        int position = (int) v.getTag(R.id.banner_item_position);
+                        mHoverListener.onBannerHover(v, position, false);
+                    }
+                    break;
+            }
+            return false;
         }
     }
 

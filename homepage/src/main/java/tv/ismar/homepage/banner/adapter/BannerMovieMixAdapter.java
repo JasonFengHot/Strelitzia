@@ -6,6 +6,7 @@ import android.graphics.Rect;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -40,6 +41,17 @@ public class BannerMovieMixAdapter extends RecyclerView.Adapter<BannerMovieMixAd
     private int currentPageNumber;
     private int totalPageCount;
     private int totalItemCount;
+
+    private BannerMovieMixAdapter.OnBannerHoverListener mHoverListener;
+
+    public void setHoverListener(BannerMovieMixAdapter.OnBannerHoverListener hoverListener) {
+        mHoverListener = hoverListener;
+    }
+
+    public interface OnBannerHoverListener {
+        void onBannerHover(View view, int position, boolean hovered);
+    }
+
 
     public int getCurrentPageNumber() {
         return currentPageNumber;
@@ -135,7 +147,7 @@ public class BannerMovieMixAdapter extends RecyclerView.Adapter<BannerMovieMixAd
     }
 
 
-    class SubscribeViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener,View.OnFocusChangeListener {
+    class SubscribeViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener,View.OnFocusChangeListener, View.OnHoverListener {
 
         private Space mLeftSpace;
         private ImageView mImageView;
@@ -152,6 +164,7 @@ public class BannerMovieMixAdapter extends RecyclerView.Adapter<BannerMovieMixAd
             itemWrapper = (RelativeLayout) mItemView.findViewById(R.id.item_wrapper);
             mItemView.findViewById(R.id.item_layout).setOnClickListener(this);
             mItemView.findViewById(R.id.item_layout).setOnFocusChangeListener(this);
+            mItemView.findViewById(R.id.item_layout).setOnHoverListener(this);
             mImageView = (ImageView) itemView.findViewById(R.id.image_view);
             mTitle = (TextView) itemView.findViewById(R.id.title);
             mLeftSpace = (Space)itemView.findViewById(R.id.left_space);
@@ -192,6 +205,28 @@ public class BannerMovieMixAdapter extends RecyclerView.Adapter<BannerMovieMixAd
                 scaleToNormal(v.findViewById(R.id.item_layout));
                 v.findViewById(R.id.title).setSelected(false);
             }
+        }
+
+        @Override
+        public boolean onHover(View v, MotionEvent event) {
+            switch (event.getAction()){
+                case MotionEvent.ACTION_HOVER_ENTER:
+                case MotionEvent.ACTION_HOVER_MOVE:
+                    if (mHoverListener!= null){
+                        int position = (int) v.getTag(R.id.banner_item_position);
+                        mHoverListener.onBannerHover(v, position, true);
+                    }
+                    v.requestFocusFromTouch();
+                    v.requestFocus();
+                    break;
+                case MotionEvent.ACTION_HOVER_EXIT:
+                    if (mHoverListener!= null){
+                        int position = (int) v.getTag(R.id.banner_item_position);
+                        mHoverListener.onBannerHover(v, position, false);
+                    }
+                    break;
+            }
+            return false;
         }
 
         private void scaleToLarge(View view) {

@@ -11,6 +11,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -164,6 +165,9 @@ public class RecyclerViewTV extends RecyclerView implements PrvInterface {
 
     @Override
     public boolean requestChildRectangleOnScreen(View child, Rect rect, boolean immediate) {
+        if (isHovered()){
+            return true;
+        }
         if (mOnItemFocusChangeListener != null){
             mOnItemFocusChangeListener.onItemFocusGain(child, getPositionByView(child));
         }
@@ -461,6 +465,7 @@ public class RecyclerViewTV extends RecyclerView implements PrvInterface {
 
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
+        setHovered(false);
         int action = event.getAction();
         if (action == KeyEvent.ACTION_UP) {
             isDispatch = true;

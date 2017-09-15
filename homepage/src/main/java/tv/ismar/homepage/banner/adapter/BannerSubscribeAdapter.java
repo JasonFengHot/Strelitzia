@@ -38,6 +38,7 @@ public class BannerSubscribeAdapter
 
     private List<BannerEntity.PosterBean> mSubscribeEntityList;
     private OnBannerClickListener mSubscribeClickListener;
+    private OnBannerHoverListener mSubscribeHoverListener;
     private int currentPageNumber;
     private int totalPageCount;
     private int tatalItemCount;
@@ -160,8 +161,17 @@ public class BannerSubscribeAdapter
         void onBannerClick(View view, int position);
     }
 
+    public interface OnBannerHoverListener {
+        void onBannerHover(View view, int position, boolean hovered);
+    }
+
+
     public void setSubscribeClickListener(OnBannerClickListener subscribeClickListener) {
         mSubscribeClickListener = subscribeClickListener;
+    }
+
+    public void setSubscribeHoverListener(OnBannerHoverListener subscribeHoverListener) {
+        mSubscribeHoverListener = subscribeHoverListener;
     }
 
     public void addDatas(BannerEntity bannerEntity) {
@@ -255,15 +265,23 @@ public class BannerSubscribeAdapter
 
         @Override
         public boolean onHover(View v, MotionEvent event) {
-//            switch (event.getAction()){
-//                case MotionEvent.ACTION_HOVER_ENTER:
-//                case MotionEvent.ACTION_HOVER_MOVE:
-//                    v.requestFocusFromTouch();
-//                    v.requestFocus();
-//                    break;
-//                case MotionEvent.ACTION_HOVER_EXIT:
-//                    break;
-//            }
+            switch (event.getAction()){
+                case MotionEvent.ACTION_HOVER_ENTER:
+                case MotionEvent.ACTION_HOVER_MOVE:
+                    if (mSubscribeHoverListener!= null){
+                        int position = (int) v.getTag(R.id.banner_item_position);
+                        mSubscribeHoverListener.onBannerHover(v, position, true);
+                    }
+                    v.requestFocusFromTouch();
+                    v.requestFocus();
+                    break;
+                case MotionEvent.ACTION_HOVER_EXIT:
+                    if (mSubscribeHoverListener!= null){
+                        int position = (int) v.getTag(R.id.banner_item_position);
+                        mSubscribeHoverListener.onBannerHover(v, position, false);
+                    }
+                    break;
+            }
             return false;
         }
 

@@ -5,7 +5,9 @@
     android:layout_height="wrap_content"
     android:gravity="center_vertical">
 
-    <View
+    <ImageView
+        android:focusable="false"
+        android:focusableInTouchMode="false"
         android:id="@+id/hover_view"
         android:layout_width="1px"
         android:layout_height="1px"

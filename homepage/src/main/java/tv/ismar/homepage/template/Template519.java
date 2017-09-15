@@ -21,8 +21,10 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import tv.ismar.app.entity.banner.BannerEntity;
 import tv.ismar.app.network.SkyService;
+import tv.ismar.homepage.HomeActivity;
 import tv.ismar.homepage.R;
 import tv.ismar.homepage.banner.adapter.BannerHorizontal519Adapter;
+import tv.ismar.homepage.banner.adapter.BannerSubscribeAdapter;
 
 /**
  * @AUTHOR: xi
@@ -157,6 +159,24 @@ public class Template519 extends Template{
 
     private void fillHorizontal519Banner(BannerEntity bannerEntity) {
         mHorizontal519Adapter = new BannerHorizontal519Adapter(mContext, bannerEntity);
+        mHorizontal519Adapter.setHoverListener(new BannerHorizontal519Adapter.OnBannerHoverListener() {
+            @Override
+            public void onBannerHover(View view, int position, boolean hovered) {
+//                Log.d(TAG, view + " : " + hovered);
+                if (hovered){
+                    horizontal519Banner.setHovered(true);
+                }else {
+                    horizontal519Banner.setHovered(false);
+                    HomeActivity.mHoverView.requestFocus();
+//                    Log.d(TAG, view + " : " + hovered);
+//                    Log.d(TAG, "view id: " + view.getId());
+//                    HomeActivity.mHoverView.setNextFocusUpId(view.getId());
+//                    HomeActivity.mHoverView.setNextFocusDownId(view.getId());
+//                    HomeActivity.mHoverView.setNextFocusRightId(view.getId());
+//                    HomeActivity.mHoverView.setNextFocusLeftId(view.getId());
+                }
+            }
+        });
         mHorizontal519Adapter.setBannerClickListener(new BannerHorizontal519Adapter.OnBannerClickListener() {
             @Override
             public void onBannerClick(View view, int position) {

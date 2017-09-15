@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -36,6 +37,18 @@ public class BannerMovieAdapter extends RecyclerView.Adapter<BannerMovieAdapter.
     private int currentPageNumber;
     private int totalPageCount;
     private int tatalItemCount;
+
+    private BannerMovieAdapter.OnBannerHoverListener mHoverListener;
+
+    public void setHoverListener(BannerMovieAdapter.OnBannerHoverListener hoverListener) {
+        mHoverListener = hoverListener;
+    }
+
+    public interface OnBannerHoverListener {
+        void onBannerHover(View view, int position, boolean hovered);
+    }
+
+
 
     public int getCurrentPageNumber() {
         return currentPageNumber;
@@ -92,7 +105,7 @@ public class BannerMovieAdapter extends RecyclerView.Adapter<BannerMovieAdapter.
     }
 
 
-    class SubscribeViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener,View.OnFocusChangeListener {
+    class SubscribeViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener,View.OnFocusChangeListener,View.OnHoverListener {
 
         private ImageView mImageView;
         private TextView mTitle;
@@ -120,6 +133,7 @@ public class BannerMovieAdapter extends RecyclerView.Adapter<BannerMovieAdapter.
             mItemView = itemView;
             mItemView.findViewById(R.id.item_layout).setOnClickListener(this);
             mItemView.findViewById(R.id.item_layout).setOnFocusChangeListener(this);
+            mItemView.findViewById(R.id.item_layout).setOnHoverListener(this);
             mImageView = (ImageView) itemView.findViewById(R.id.image_view);
             mTitle = (TextView) itemView.findViewById(R.id.title);
             mLeftSpace = (Space)itemView.findViewById(R.id.left_space);
@@ -146,6 +160,27 @@ public class BannerMovieAdapter extends RecyclerView.Adapter<BannerMovieAdapter.
             }
         }
 
+        @Override
+        public boolean onHover(View v, MotionEvent event) {
+            switch (event.getAction()){
+                case MotionEvent.ACTION_HOVER_ENTER:
+                case MotionEvent.ACTION_HOVER_MOVE:
+                    if (mHoverListener!= null){
+                        int position = (int) v.getTag(R.id.banner_item_position);
+                        mHoverListener.onBannerHover(v, position, true);
+                    }
+                    v.requestFocusFromTouch();
+                    v.requestFocus();
+                    break;
+                case MotionEvent.ACTION_HOVER_EXIT:
+                    if (mHoverListener!= null){
+                        int position = (int) v.getTag(R.id.banner_item_position);
+                        mHoverListener.onBannerHover(v, position, false);
+                    }
+                    break;
+            }
+            return false;
+        }
         private void scaleToLarge(View view) {
             ObjectAnimator objectAnimatorX = ObjectAnimator.ofFloat(view, SCALE_X, 1.0F, 1.1F);
             objectAnimatorX.setDuration(100L);
