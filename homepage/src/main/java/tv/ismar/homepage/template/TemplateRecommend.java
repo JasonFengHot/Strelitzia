@@ -4,9 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
-import android.widget.TextView;
 
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
@@ -16,86 +14,63 @@ import com.open.androidtvwidget.leanback.recycle.RecyclerViewTV;
 import java.util.List;
 
 import tv.ismar.app.BaseControl;
-import tv.ismar.app.entity.banner.BannerPoster;
 import tv.ismar.app.entity.banner.BannerRecommend;
-import tv.ismar.app.entity.banner.HomeEntity;
 import tv.ismar.homepage.R;
-import tv.ismar.homepage.adapter.ConlumnAdapter;
+import tv.ismar.homepage.adapter.RecommendAdapter;
 import tv.ismar.homepage.control.FetchDataControl;
-import tv.ismar.homepage.fragment.ChannelFragment;
-
-import static tv.ismar.homepage.control.FetchDataControl.FETCH_HOME_RECOMMEND_LIST_FLAG;
 
 /**
  * @AUTHOR: xi
- * @DATE: 2017/8/29
- * @DESC: 栏目模版
+ * @DATE: 2017/9/15
+ * @DESC: 推荐模版
  */
 
-public class TemplateConlumn extends Template implements BaseControl.ControlCallBack,
-        RecyclerViewTV.PagingableListener, LinearLayoutManagerTV.FocusSearchFailedListener {
-    private TextView mTitleTv;//banner标题
-    private TextView mIndexTv;//选中位置
+public class TemplateRecommend extends Template implements BaseControl.ControlCallBack,
+        RecyclerViewTV.PagingableListener, LinearLayoutManagerTV.FocusSearchFailedListener{
     private RecyclerViewTV mRecyclerView;
-    private LinearLayoutManagerTV mConlumnLayoutManager;
-    private ConlumnAdapter mAdapter;
+    private LinearLayoutManagerTV mRecommendLayoutManager;
+    private RecommendAdapter mAdapter;
     private FetchDataControl mFetchDataControl = null;
 
-    public TemplateConlumn(Context context) {
+    public TemplateRecommend(Context context) {
         super(context);
         mFetchDataControl = new FetchDataControl(context, this);
     }
 
     @Override
     public void getView(View view) {
-        mTitleTv = (TextView) view.findViewById(R.id.banner_title_tv);
-        mTitleCountTv = (TextView) view.findViewById(R.id.banner_title_count);
         mRecyclerView = (RecyclerViewTV) view.findViewById(R.id.conlumn_recyclerview);
-        mConlumnLayoutManager = new LinearLayoutManagerTV(mContext, LinearLayoutManager.HORIZONTAL, false);
-        mRecyclerView.setLayoutManager(mConlumnLayoutManager);
+        mRecommendLayoutManager = new LinearLayoutManagerTV(mContext, LinearLayoutManager.HORIZONTAL, false);
+        mRecyclerView.setLayoutManager(mRecommendLayoutManager);
         mRecyclerView.setSelectedItemAtCentered(false);
         int selectedItemOffset = mContext.getResources().getDimensionPixelSize(R.dimen.banner_item_setSelectedItemOffset);
         mRecyclerView.setSelectedItemOffset(selectedItemOffset, selectedItemOffset);
     }
 
-    private int mBannerPk;
     @Override
     public void initData(Bundle bundle) {
-        mBannerPk = bundle.getInt(ChannelFragment.BANNER_KEY);
-        mTitleTv.setText(bundle.getString(ChannelFragment.TITLE_KEY));
-        mFetchDataControl.fetchBanners(mBannerPk, 1, false);
+        mFetchDataControl.fetchHomeRecommend(false);
     }
 
     @Override
     protected void initListener(View view) {
         mRecyclerView.setPagingableListener(this);
-        mConlumnLayoutManager.setFocusSearchFailedListener(this);
+        mRecommendLayoutManager.setFocusSearchFailedListener(this);
     }
 
     @Override
     public void callBack(int flags, Object... args) {
-        if(flags == FetchDataControl.FETCH_BANNERS_LIST_FLAG){//获取单个banner业务
-            initRecycleView(mFetchDataControl.mPoster);
+        if(flags == FetchDataControl.FETCH_HOME_RECOMMEND_LIST_FLAG){//获取推荐列表
+            initRecycleView(mFetchDataControl.mRecommends);
         }
     }
 
-    private void initRecycleView(List<BannerPoster> posters){
+    private void initRecycleView(List<BannerRecommend> recommends){
         if(mAdapter == null){
-            mAdapter = new ConlumnAdapter(mContext, posters);
+            mAdapter = new RecommendAdapter(mContext, recommends);
             mRecyclerView.setAdapter(mAdapter);
         }else {
             mAdapter.notifyDataSetChanged();
-        }
-    }
-
-    @Override
-    public void onLoadMoreItems() {
-        Log.i(TAG, "onLoadMoreItems");
-        HomeEntity homeEntity = mFetchDataControl.mHomeEntity;
-        if(homeEntity != null){
-            if(homeEntity.page < homeEntity.num_pages){
-                mFetchDataControl.fetchBanners(mBannerPk, ++homeEntity.page, true);
-            }
         }
     }
 
@@ -109,5 +84,10 @@ public class TemplateConlumn extends Template implements BaseControl.ControlCall
             return focused;
         }
         return null;
+    }
+
+    @Override
+    public void onLoadMoreItems() {
+
     }
 }

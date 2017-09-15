@@ -20,6 +20,7 @@ import tv.ismar.homepage.template.TemplateDoubleMd;
 import tv.ismar.homepage.template.TemplateGuide;
 import tv.ismar.homepage.template.TemplateMovie;
 import tv.ismar.homepage.template.TemplateOrder;
+import tv.ismar.homepage.template.TemplateRecommend;
 import tv.ismar.homepage.template.TemplateTvPlay;
 import tv.ismar.library.util.StringUtils;
 
@@ -107,10 +108,13 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
             } else if(template.equals("template_519")){//519横图模版
                 bannerView = createView(R.layout.banner_519);
                 new Template519(getContext()).setView(bannerView, bundle);
-            }else if(template.equals("template_conlumn") || template.equals("template_recommend")){//栏目模版
+            }else if(template.equals("template_conlumn")){//栏目模版
                 bannerView = createView(R.layout.banner_conlumn);
                 new TemplateConlumn(getContext()).setView(bannerView, bundle);
-            }else if(template.equals("template_big_small_ld")){//大横小竖模版
+            }else if(template.equals("template_recommend")){//推荐模版
+                bannerView = createView(R.layout.banner_conlumn);
+                new TemplateRecommend(getContext()).setView(bannerView, bundle);
+            } else if(template.equals("template_big_small_ld")){//大横小竖模版
                 bannerView = createView(R.layout.banner_big_small_ld);
                 new TemplateBigSmallLd(getContext()).setView(bannerView, bundle);
             }else if(template.equals("template_double_md")){//竖版双行模版
