@@ -66,8 +66,7 @@ public class TvPlayAdapter extends RecyclerView.Adapter<TvPlayAdapter.TvPlayerVi
         this.mMarginLeftEnable = enable;
     }
 
-    public static class TvPlayerViewHolder extends RecyclerView.ViewHolder implements
-            View.OnFocusChangeListener, View.OnClickListener{
+    public static class TvPlayerViewHolder extends BaseViewHolder{
         public ImageView mPosterIg;//海报
         public ImageView mLtIconTv;//左上icon
         public ImageView mRbIconTv;//右下icon
@@ -81,42 +80,11 @@ public class TvPlayAdapter extends RecyclerView.Adapter<TvPlayAdapter.TvPlayerVi
             mRbIconTv = (ImageView) itemView.findViewById(R.id.tv_player_item_rb_icon);
             mTitleTv = (TextView) itemView.findViewById(R.id.tv_player_item_title);
             mMarginLeftView = itemView.findViewById(R.id.tv_player_margin_left);
-            itemView.findViewById(R.id.tv_player_ismartv_linear_layout).setOnFocusChangeListener(this);
-            itemView.findViewById(R.id.tv_player_ismartv_linear_layout).setOnClickListener(this);
-        }
-
-        private void scaleToLarge(View view) {
-            ObjectAnimator objectAnimatorX = ObjectAnimator.ofFloat(view, SCALE_X, 1.0F, 1.1F);
-            objectAnimatorX.setDuration(100L);
-            objectAnimatorX.start();
-            ObjectAnimator objectAnimatorY = ObjectAnimator.ofFloat(view, SCALE_Y, 1.0F, 1.1F);
-            objectAnimatorY.setDuration(100L);
-            objectAnimatorY.start();
-        }
-
-
-        private void scaleToNormal(View view) {
-            ObjectAnimator objectAnimatorX = ObjectAnimator.ofFloat(view, SCALE_X, 1.1F, 1.0F);
-            objectAnimatorX.setDuration(100L);
-            objectAnimatorX.start();
-            ObjectAnimator objectAnimatorY = ObjectAnimator.ofFloat(view, SCALE_Y, 1.1F, 1.0F);
-            objectAnimatorY.setDuration(100L);
-            objectAnimatorY.start();
         }
 
         @Override
-        public void onFocusChange(View v, boolean hasFocus) {
-            if (hasFocus) {
-                scaleToLarge(v.findViewById(R.id.tv_player_ismartv_linear_layout));
-            } else {
-                scaleToNormal(v.findViewById(R.id.tv_player_ismartv_linear_layout));
-            }
-        }
-
-        @Override
-        public void onClick(View v) {
-
+        protected int getScaleLayoutId() {
+            return R.id.tv_player_ismartv_linear_layout;
         }
     }
-
 }

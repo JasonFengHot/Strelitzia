@@ -18,7 +18,6 @@ import tv.ismar.app.entity.banner.HomeEntity;
 import tv.ismar.homepage.R;
 import tv.ismar.homepage.adapter.TvPlayAdapter;
 import tv.ismar.homepage.control.FetchDataControl;
-import tv.ismar.homepage.control.TvPlayControl;
 
 /**
  * @AUTHOR: xi
@@ -33,7 +32,6 @@ public class TemplateTvPlay extends Template implements BaseControl.ControlCallB
     private TextView mIndexTv;//选中位置
     private RecyclerViewTV mRecycleView;
     private TvPlayAdapter mAdapter;
-    private TvPlayControl mControl;
 
     public TemplateTvPlay(Context context) {
         super(context);
