@@ -24,11 +24,13 @@
             android:orientation="horizontal"
             >
             <ImageView
+                android:id="@+id/weixin_icon"
                 android:layout_width="@dimen/pay_119"
                 android:layout_height="@dimen/pay_119"
                 android:background="@drawable/weixin_icon"
                 />
             <ImageView
+                android:id="@+id/alipay_icon"
                 android:layout_width="@dimen/pay_119"
                 android:layout_height="@dimen/pay_119"
                 android:background="@drawable/alipay_icon"

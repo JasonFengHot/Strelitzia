@@ -495,23 +495,53 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
             if(i==sections.size()-1){
                 radioButton.setNextFocusDownId(R.id.section_radiobtn+i);
             }
+            int up1=-1;
+            int up2=-1;
+            int down1=-1;
+            int down2=-1;
+            if(sectionSize<9){
+
+            }else if((sectionSize+1)/9==1){
+                up1=sectionSize-9;
+                down1=7;
+            }else if((sectionSize+1)/9==2){
+                up1=sectionSize-18;
+                up2=sectionSize-9;
+                down1=7;
+                down2=16;
+            }
+            final int finalDown = down1;
+            final int finalDown1 = down2;
+            final int finalUp = up1;
+            final int finalUp1 = up2;
             radioButton.setOnKeyListener(new View.OnKeyListener() {
                 @Override
                 public boolean onKey(View v, int keyCode, KeyEvent event) {
-                    if(finalI==sectionSize-1&&keyCode==20&&event.getAction()==KeyEvent.ACTION_DOWN){
-                        YoYo.with(Techniques.VerticalShake).duration(1000).playOn(v);
-                        return true;
-                    }else if(keyCode==22&&event.getAction()==KeyEvent.ACTION_DOWN){
-                        if(lastFocusedView!=null){
-                            lastFocusedView.requestFocus();
-                        }else{
-                            View firstView=mFocusGridLayoutManager.findViewByPosition(specialPos.get(finalI)+1);
-                            if(specialPos!=null&&firstView!=null) {
-                                firstView.requestFocus();
+                    if(event.getAction()==KeyEvent.ACTION_DOWN) {
+                        if (keyCode == 20) {
+                            if(finalI== finalDown||finalI== finalDown1){
+                                tab_scroll.scrollBy(0, getResources().getDimensionPixelOffset(R.dimen.list_scroll_arrow_down_lenth));
+                            }else if(finalI == sectionSize - 1 ){
+                                YoYo.with(Techniques.VerticalShake).duration(1000).playOn(v);
+                                return true;
                             }
-//
+
+                        } else if (keyCode == 19) {
+                            if(finalI== finalUp ||finalI== finalUp1){
+                                tab_scroll.scrollBy(0, getResources().getDimensionPixelOffset(R.dimen.list_scroll_arrow_up_lenth));
+                            }
+
+                        }else if (keyCode == 22 ) {
+                            if (lastFocusedView != null) {
+                                lastFocusedView.requestFocus();
+                            } else {
+                                View firstView = mFocusGridLayoutManager.findViewByPosition(specialPos.get(finalI) + 1);
+                                if (specialPos != null && firstView != null) {
+                                    firstView.requestFocus();
+                                }
+                            }
+                            return true;
                         }
-                        return true;
                     }
                     return false;
                 }

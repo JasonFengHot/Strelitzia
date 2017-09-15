@@ -13,6 +13,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
 /**
  * Created by huibin on 2016/9/14.
  */
@@ -25,6 +27,8 @@ public class AlipayFragment extends Fragment implements PaymentActivity.QrcodeCa
     private TextView textViewLine2;
     private TextView textViewLine3;
     private TextView textViewLine4;
+    private ImageView weixin,alipay;
+    private ArrayList<String> list=new ArrayList<>();
 
     @Override
     public void onAttach(Activity activity) {
@@ -37,6 +41,7 @@ public class AlipayFragment extends Fragment implements PaymentActivity.QrcodeCa
         super.onCreate(savedInstanceState);
         Bundle bundle = getArguments();
         type = bundle.getString("type");
+        list=bundle.getStringArrayList("descriptions");
     }
 
     @Nullable
@@ -44,6 +49,8 @@ public class AlipayFragment extends Fragment implements PaymentActivity.QrcodeCa
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         contentView = inflater.inflate(R.layout.fragmet_alipay, null);
         qrcodeview = (ImageView) contentView.findViewById(R.id.qrcodeview);
+        weixin= (ImageView) contentView.findViewById(R.id.weixin_icon);
+        alipay= (ImageView) contentView.findViewById(R.id.alipay_icon);
         textViewLine1 = (TextView) contentView.findViewById(R.id.text_line_1);
         textViewLine2 = (TextView) contentView.findViewById(R.id.text_line_2);
         textViewLine3 = (TextView) contentView.findViewById(R.id.text_line_3);
@@ -73,6 +80,14 @@ public class AlipayFragment extends Fragment implements PaymentActivity.QrcodeCa
                 textViewLine3.setText(getString(R.string.pay_payinfo_introduce_label));
                 textViewLine4.setVisibility(View.INVISIBLE);
 //                agreementTextView.setVisibility(View.INVISIBLE);
+                break;
+            case "channel":
+                weixin.setVisibility(View.INVISIBLE);
+                alipay.setVisibility(View.INVISIBLE);
+                textViewLine1.setText(String.format(getString(R.string.pay_payinfo_price_label), paymentActivity.getmItemEntity().getExpense().getPrice()));
+                textViewLine2.setText(String.format(getString(R.string.pay_payinfo_exprice_label), paymentActivity.getmItemEntity().getExpense().getDuration()));
+                textViewLine3.setText(getString(R.string.pay_payinfo_introduce_label));
+                textViewLine4.setVisibility(View.INVISIBLE);
                 break;
             default:
                 textViewLine1.setText(String.format(getString(R.string.pay_payinfo_price_label), paymentActivity.getmItemEntity().getExpense().getPrice()));

@@ -13,6 +13,8 @@ import com.daimajia.androidanimations.library.YoYo;
 
 import java.util.ArrayList;
 
+import tv.ismar.listpage.R;
+
 /**
  * Created by admin on 2017/6/20.
  */
@@ -21,6 +23,7 @@ public class FocusGridLayoutManager extends GridLayoutManager {
 
     private ArrayList<Integer> specialPos;
     private View leftFocusView;
+    private Context context;
 
     public FocusGridLayoutManager(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
@@ -28,6 +31,7 @@ public class FocusGridLayoutManager extends GridLayoutManager {
 
     public FocusGridLayoutManager(Context context, int spanCount) {
         super(context, spanCount);
+        this.context=context;
     }
 
 
@@ -78,6 +82,7 @@ public class FocusGridLayoutManager extends GridLayoutManager {
             int index=getPosition(focused);
             if(specialPos!=null&&specialPos.contains(index+1)){
                 int nextPos = getNextViewPos(getPosition(focused), direction);
+                scrollToPositionWithOffset(nextPos,0);
                 View nextView=findViewByPosition(nextPos+1);
                 return nextView;
             }

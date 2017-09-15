@@ -101,6 +101,7 @@ public class HorizontalTabView extends HorizontalScrollView implements View.OnCl
     private int mTabMargin;
     private OnItemSelectedListener onItemSelectedListener;
     private int mCurrentState;
+    private int mCurrentPosition=-1;
 
     private int mClickPosition = -1;
 
@@ -507,15 +508,18 @@ public class HorizontalTabView extends HorizontalScrollView implements View.OnCl
 
     @Override
     public void onClick(View v) {
-
+        int tag = (int) v.getTag();
+        if(mSelectedIndex==mCurrentPosition){
+            return;
+        }
         TextView lastClickView = (TextView) linearContainer.getChildAt(mClickPosition);
         if (lastClickView != null) {
-            lastClickView.setBackgroundResource(android.R.color.transparent);
-            lastClickView.setTextColor(textColor);
-        }
+                lastClickView.setBackgroundResource(android.R.color.transparent);
+                lastClickView.setTextColor(textColor);
 
+        }
         mCurrentState = STATE_FOCUS;
-        int tag = (int) v.getTag();
+        mCurrentPosition= (int) v.getTag();
         mClickPosition = (int) v.getTag();
         changeSelection(v, tag != mSelectedIndex);
     }
