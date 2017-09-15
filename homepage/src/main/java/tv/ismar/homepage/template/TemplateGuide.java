@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -40,7 +41,6 @@ public class TemplateGuide extends Template implements BaseControl.ControlCallBa
         MediaPlayer.OnPreparedListener, OnItemSelectedListener,
         RecyclerViewTV.PagingableListener,
         LinearLayoutManagerTV.FocusSearchFailedListener {
-    private HomeItemContainer mGuideContainer;//导视视频容器
     private DaisyVideoView mVideoView;//导视view
     private ImageView mLoadingIg;//加载提示logo
     private TextView mVideTitleTv;//导视标题
@@ -63,19 +63,20 @@ public class TemplateGuide extends Template implements BaseControl.ControlCallBa
         mFetchDataControl = new FetchDataControl(context, this);
     }
 
+    private View mHeadView;//recylview头view
+
     @Override
     public void getView(View view) {
-        mGuideContainer = (HomeItemContainer) view.findViewById(R.id.guide_container);
-        mGuideContainer.setFocusable(true);
-        mGuideContainer.requestFocus();
-        mVideoView = (DaisyVideoView) view.findViewById(R.id.guide_daisy_video_view);
-        mLoadingIg = (ImageView) view.findViewById(R.id.guide_video_loading_image);
-        mVideTitleTv = (TextView) view.findViewById(R.id.guide_video_title);
-        mFirstIcon = (TextView) view.findViewById(R.id.first_video_icon);
-        mSecondIcon = (TextView) view.findViewById(R.id.second_video_icon);
-        mThirdIcon = (TextView) view.findViewById(R.id.third_video_icon);
-        mFourIcon = (TextView) view.findViewById(R.id.four_video_icon);
-        mFiveIcon = (TextView) view.findViewById(R.id.five_video_icon);
+        mHeadView = LayoutInflater.from(mContext).inflate(R.layout.banner_guide_head, null);
+        mVideoView = (DaisyVideoView) mHeadView.findViewById(R.id.guide_daisy_video_view);
+        mLoadingIg = (ImageView) mHeadView.findViewById(R.id.guide_video_loading_image);
+        mVideTitleTv = (TextView) mHeadView.findViewById(R.id.guide_video_title);
+        mFirstIcon = (TextView) mHeadView.findViewById(R.id.first_video_icon);
+        mSecondIcon = (TextView) mHeadView.findViewById(R.id.second_video_icon);
+        mThirdIcon = (TextView) mHeadView.findViewById(R.id.third_video_icon);
+        mFourIcon = (TextView) mHeadView.findViewById(R.id.four_video_icon);
+        mFiveIcon = (TextView) mHeadView.findViewById(R.id.five_video_icon);
+
         mRecycleView = (RecyclerViewTV) view.findViewById(R.id.guide_recyclerview);
         mGuideLayoutManager = new LinearLayoutManagerTV(mContext, LinearLayoutManager.HORIZONTAL, false);
         mRecycleView.setLayoutManager(mGuideLayoutManager);
@@ -159,6 +160,7 @@ public class TemplateGuide extends Template implements BaseControl.ControlCallBa
             if(mAdapter == null){
                 mAdapter = new GuideAdapter(mContext, homeEntity.posters);
                 mAdapter.setMarginLeftEnable(true);
+                mAdapter.setHeaderView(mHeadView);
                 mAdapter.setOnItemSelectedListener(this);
                 mRecycleView.setAdapter(mAdapter);
             }else {
@@ -245,11 +247,6 @@ public class TemplateGuide extends Template implements BaseControl.ControlCallBa
 
     @Override
     public void itemSelected(View view, int position) {
-        if(position >= 1){//第2个item被选中
-            mGuideContainer.setVisibility(View.GONE);
-        }else if(position == 0){
-            mGuideContainer.setVisibility(View.VISIBLE);
-        }
     }
 
     @Override

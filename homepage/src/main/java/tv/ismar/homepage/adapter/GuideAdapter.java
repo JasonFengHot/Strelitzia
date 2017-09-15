@@ -28,14 +28,24 @@ import static android.view.View.SCALE_Y;
  */
 
 public class GuideAdapter extends RecyclerView.Adapter<GuideAdapter.GuideViewHolder>{
+    public static final int TYPE_HEADER = 0;//头部
+    public static final int TYPE_NORMAL = 1;//一般item
+
     private Context mContext;
     private List<BannerPoster> mData;
     private boolean mMarginLeftEnable = false;
     private OnItemSelectedListener mClickListener = null;
 
+    private View mHeaderView;
+
     public GuideAdapter(Context context, List<BannerPoster> data){
         this.mContext = context;
         this.mData = data;
+    }
+
+    public void setHeaderView(View headerView) {
+        mHeaderView = headerView;
+        notifyItemInserted(0);
     }
 
     public void setOnItemSelectedListener(OnItemSelectedListener listener){
@@ -44,29 +54,40 @@ public class GuideAdapter extends RecyclerView.Adapter<GuideAdapter.GuideViewHol
 
     @Override
     public GuideViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        if (mHeaderView != null && viewType == TYPE_HEADER)
+            return new GuideViewHolder(mHeaderView);
         View view = LayoutInflater.from(mContext).inflate(R.layout.banner_guide_item,parent,false);
         return new GuideViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(GuideViewHolder holder, int position) {
-        holder.mMarginLeftView.setVisibility(mMarginLeftEnable?View.VISIBLE:View.GONE);
-        BannerPoster poster = mData.get(position);
-        if (!TextUtils.isEmpty(poster.poster_url)) {
-            Picasso.with(mContext).load(poster.poster_url).into(holder.mPosterIg);
-        } else {
-            Picasso.with(mContext).load(R.drawable.list_item_preview_bg).into(holder.mPosterIg);
-        }
+        if(position != 0){
+            holder.mMarginLeftView.setVisibility(mMarginLeftEnable?View.VISIBLE:View.GONE);
+            BannerPoster poster = mData.get(position);
+            if (!TextUtils.isEmpty(poster.poster_url)) {
+                Picasso.with(mContext).load(poster.poster_url).into(holder.mPosterIg);
+            } else {
+                Picasso.with(mContext).load(R.drawable.list_item_preview_bg).into(holder.mPosterIg);
+            }
 //        Picasso.with(mContext).load(posters.poster_url).into(holder.mLtIconTv);
 //        Picasso.with(mContext).load(posters.poster_url).into(holder.mRbIconTv);
 
-        holder.mTitleTv.setText(poster.title);
-        holder.mPosition = position;
+            holder.mTitleTv.setText(poster.title);
+            holder.mPosition = position;
+        }
     }
 
     @Override
     public int getItemCount() {
-        return (mData!=null) ? mData.size():0;
+        return (mHeaderView==null) ? mData.size() : mData.size() + 1;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        if (mHeaderView == null) return TYPE_NORMAL;
+        if (position == 0) return TYPE_HEADER;
+        return TYPE_NORMAL;
     }
 
     public void setMarginLeftEnable(boolean enable){

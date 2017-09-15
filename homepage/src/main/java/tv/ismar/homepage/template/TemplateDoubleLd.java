@@ -2,8 +2,11 @@ package tv.ismar.homepage.template;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -43,18 +46,20 @@ public class TemplateDoubleLd extends Template implements BaseControl.ControlCal
         mFetchDataControl = new FetchDataControl(context, this);
     }
 
+    private View mHeadView;//recylview头view
+
     @Override
     public void getView(View view) {
         mHeadTitleTv = (TextView) view.findViewById(R.id.banner_title_tv);
         mHeadCountTv = (TextView) view.findViewById(R.id.banner_title_count);
         mRecyclerView = (RecyclerViewTV) view.findViewById(R.id.double_ld_recyclerview);
-        mVerticalImg = (ImageView) view.findViewById(R.id.double_ld_image_poster);
-        mLtImage = (ImageView) view.findViewById(R.id.double_ld_image_lt_icon);
-        mRbImage = (ImageView) view.findViewById(R.id.double_ld_image_rb_icon);
-        mTitleTv = (TextView) view.findViewById(R.id.double_ld_image_title);
-
-        GridLayoutManager doubleLayoutManager = new GridLayoutManager(mContext, 2);
-        doubleLayoutManager.setOrientation(GridLayoutManager.HORIZONTAL);
+        mHeadView = LayoutInflater.from(mContext).inflate(R.layout.banner_double_ld_head, null);
+        mVerticalImg = (ImageView) mHeadView.findViewById(R.id.double_ld_image_poster);
+        mLtImage = (ImageView) mHeadView.findViewById(R.id.double_ld_image_lt_icon);
+        mRbImage = (ImageView) mHeadView.findViewById(R.id.double_ld_image_rb_icon);
+        mTitleTv = (TextView) mHeadView.findViewById(R.id.double_ld_image_title);
+        StaggeredGridLayoutManager doubleLayoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.HORIZONTAL);
+        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         mRecyclerView.setLayoutManager(doubleLayoutManager);
     }
 
@@ -75,6 +80,7 @@ public class TemplateDoubleLd extends Template implements BaseControl.ControlCal
             mAdapter = new DoubleLdAdapter(mContext, homeEntity.posters);
             mAdapter.setLeftMarginEnable(true);
             mAdapter.setOnItemSelectedListener(this);
+            mAdapter.setHeaderView(mHeadView);
             mRecyclerView.setAdapter(mAdapter);
         }else {
             mAdapter.notifyDataSetChanged();
@@ -105,10 +111,6 @@ public class TemplateDoubleLd extends Template implements BaseControl.ControlCal
 
     @Override
     public void itemSelected(View view, int position) {
-//        if(position < 2){
-//            mVerticalImg.setVisibility(View.VISIBLE);
-//        } else if(position >= 2){
-//            mVerticalImg.setVisibility(View.GONE);
-//        }
+
     }
 }
