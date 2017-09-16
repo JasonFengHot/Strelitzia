@@ -4,7 +4,6 @@
             android:layout_height="match_parent"
             android:clipChildren="false"
             android:clipToPadding="false">
-
     <LinearLayout
         android:id="@+id/scroll_linear_container"
         android:layout_width="match_parent"

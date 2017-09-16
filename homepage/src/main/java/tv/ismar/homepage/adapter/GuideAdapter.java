@@ -60,7 +60,7 @@ public class GuideAdapter extends RecyclerView.Adapter<GuideAdapter.GuideViewHol
     public void onBindViewHolder(GuideViewHolder holder, int position) {
         if(position != 0){
             holder.mMarginLeftView.setVisibility(mMarginLeftEnable?View.VISIBLE:View.GONE);
-            BannerPoster poster = mData.get(position);
+            BannerPoster poster = mData.get(position-1);
             if (!TextUtils.isEmpty(poster.poster_url)) {
                 Picasso.with(mContext).load(poster.poster_url).into(holder.mPosterIg);
             } else {

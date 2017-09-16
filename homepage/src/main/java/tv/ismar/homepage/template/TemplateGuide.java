@@ -56,11 +56,12 @@ public class TemplateGuide extends Template implements BaseControl.ControlCallBa
     public GuideControl mControl;
     private GuideAdapter mAdapter;
 
-    private BitmapDecoder mBitmapDecoder;
+    private BitmapDecoder mBitmapDecoder;//视频加载图片decoder
 
     public TemplateGuide(Context context) {
         super(context);
         mFetchDataControl = new FetchDataControl(context, this);
+        mControl = new GuideControl(mContext);
     }
 
     private View mHeadView;//recylview头view
@@ -118,16 +119,16 @@ public class TemplateGuide extends Template implements BaseControl.ControlCallBa
             case 0:
                 mFirstIcon.setBackground(mContext.getResources().getDrawable(R.drawable.first_video_icon));
                 break;
-            case 2:
+            case 1:
                 mSecondIcon.setBackground(mContext.getResources().getDrawable(R.drawable.second_video_icon));
                 break;
-            case 3:
+            case 2:
                 mThirdIcon.setBackground(mContext.getResources().getDrawable(R.drawable.third_video_icon));
                 break;
-            case 4:
+            case 3:
                 mFourIcon.setBackground(mContext.getResources().getDrawable(R.drawable.four_video_icon));
                 break;
-            case 5:
+            case 4:
                 mFiveIcon.setBackground(mContext.getResources().getDrawable(R.drawable.five_video_icon));
                 break;
         }
@@ -194,7 +195,6 @@ public class TemplateGuide extends Template implements BaseControl.ControlCallBa
             if (mVideoView.isPlaying() && mVideoView.getDataSource().equals(videoPath)) {
                 return;
             }
-            mLoadingIg.setVisibility(View.VISIBLE);
             mVideoView.stopPlayback();
             mVideoView.setVideoPath(videoPath);
             mVideoView.setTag(index);
@@ -223,6 +223,7 @@ public class TemplateGuide extends Template implements BaseControl.ControlCallBa
 
     @Override
     public boolean onError(MediaPlayer mp, int what, int extra) {//播放出错
+        mLoadingIg.setVisibility(View.VISIBLE);
         return false;
     }
 

@@ -94,7 +94,7 @@ public class DoubleMdAdapter extends RecyclerView.Adapter<DoubleMdAdapter.Double
             holder.mLeftView.setVisibility(View.GONE);
             holder.mTopView.setVisibility(mTopMarginEnable ? View.VISIBLE: View.GONE);
             holder.mLeftView.setVisibility(mLeftMarginEnable ? View.VISIBLE: View.GONE);
-            BannerPoster poster = mData.get(position);
+            BannerPoster poster = mData.get(position-1);
             holder.mTitleTv.setText(poster.title);
             if (!TextUtils.isEmpty(poster.poster_url)) {
                 Picasso.with(mContext).load(poster.poster_url).into(holder.mPosterIg);

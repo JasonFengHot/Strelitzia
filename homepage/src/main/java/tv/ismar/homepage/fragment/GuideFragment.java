@@ -32,7 +32,6 @@ public class GuideFragment extends ChannelBaseFragment implements BaseControl.Co
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        mControl = new GuideControl(getContext(), this);
     }
 
     @Override
