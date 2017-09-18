@@ -24,6 +24,7 @@ public class FocusGridLayoutManager extends GridLayoutManager {
     private ArrayList<Integer> specialPos;
     private View leftFocusView;
     private Context context;
+    private boolean scroll=false;
 
     public FocusGridLayoutManager(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
@@ -83,6 +84,7 @@ public class FocusGridLayoutManager extends GridLayoutManager {
             if(specialPos!=null&&specialPos.contains(index+1)){
                 int nextPos = getNextViewPos(getPosition(focused), direction);
                 scrollToPositionWithOffset(nextPos,0);
+                scroll=true;
                 View nextView=findViewByPosition(nextPos+1);
                 return nextView;
             }
@@ -95,12 +97,21 @@ public class FocusGridLayoutManager extends GridLayoutManager {
     }
 
     @Override
+    public void onLayoutChildren(RecyclerView.Recycler recycler, RecyclerView.State state) {
+        super.onLayoutChildren(recycler, state);
+        if(scroll){
+            scroll=false;
+            getChildAt(1).requestFocus();
+        }
+    }
+
+    @Override
     public View onFocusSearchFailed(View focused, int focusDirection, RecyclerView.Recycler recycler, RecyclerView.State state) {
 
         // Need to be called in order to layout new row/column
         View nextFocus = super.onFocusSearchFailed(focused, focusDirection, recycler, state);
         if (nextFocus == null&&focusDirection==View.FOCUS_LEFT){
-                return leftFocusView;
+            return leftFocusView;
         }
         /**
          * 获取当前焦点的位置
@@ -116,6 +127,10 @@ public class FocusGridLayoutManager extends GridLayoutManager {
         }
         if(nextView==null&&focusDirection==View.FOCUS_RIGHT){
             nextView=focused;
+        }
+        if(nextView==null&&focusDirection==View.FOCUS_DOWN){
+            nextView=focused;
+            YoYo.with(Techniques.VerticalShake).duration(1000).playOn(nextView);
         }
         return nextView;
 
