@@ -31,6 +31,7 @@ import com.daimajia.androidanimations.library.YoYo;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.regex.Matcher;
 
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -495,31 +496,14 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
             if(i==sections.size()-1){
                 radioButton.setNextFocusDownId(R.id.section_radiobtn+i);
             }
-            int up1=-1;
-            int up2=-1;
-            int down1=-1;
-            int down2=-1;
-            if(sectionSize<9){
-
-            }else if((sectionSize+1)/9==1){
-                up1=sectionSize-9;
-                down1=7;
-            }else if((sectionSize+1)/9==2){
-                up1=sectionSize-18;
-                up2=sectionSize-9;
-                down1=7;
-                down2=16;
-            }
-            final int finalDown = down1;
-            final int finalDown1 = down2;
-            final int finalUp = up1;
-            final int finalUp1 = up2;
+            final int[] location=new int[2];
             radioButton.setOnKeyListener(new View.OnKeyListener() {
                 @Override
                 public boolean onKey(View v, int keyCode, KeyEvent event) {
+                    v.getLocationOnScreen(location);
                     if(event.getAction()==KeyEvent.ACTION_DOWN) {
                         if (keyCode == 20) {
-                            if(finalI== finalDown||finalI== finalDown1){
+                            if(location[1]==tab_scroll.getBottom()-v.getHeight()){
                                 tab_scroll.scrollBy(0, getResources().getDimensionPixelOffset(R.dimen.list_scroll_arrow_down_lenth));
                             }else if(finalI == sectionSize - 1 ){
                                 YoYo.with(Techniques.VerticalShake).duration(1000).playOn(v);
@@ -527,7 +511,7 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                             }
 
                         } else if (keyCode == 19) {
-                            if(finalI== finalUp ||finalI== finalUp1){
+                            if(location[1]==tab_scroll.getTop()){
                                 tab_scroll.scrollBy(0, getResources().getDimensionPixelOffset(R.dimen.list_scroll_arrow_up_lenth));
                             }
 
