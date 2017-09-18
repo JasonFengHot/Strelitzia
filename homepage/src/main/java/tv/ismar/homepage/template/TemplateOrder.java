@@ -27,6 +27,8 @@ import tv.ismar.homepage.R;
 import tv.ismar.homepage.banner.adapter.BannerSubscribeAdapter;
 import tv.ismar.homepage.control.OrderControl;
 
+import static tv.ismar.homepage.HomeActivity.mHoverView;
+import static tv.ismar.homepage.HomeActivity.mLastFocusView;
 import static tv.ismar.homepage.control.FetchDataControl.FETCH_BANNERS_LIST_FLAG;
 import static tv.ismar.homepage.control.FetchDataControl.FETCH_M_BANNERS_LIST_NEXTPAGE_FLAG;
 
@@ -224,7 +226,6 @@ public class TemplateOrder extends Template implements BaseControl.ControlCallBa
 
 
     private void fetchSubscribeBanner(int bannerName, final int pageNumber) {
-        Logger.d("fetchSubscribeBanner");
         if (pageNumber != 1) {
             int startIndex = (pageNumber - 1) * 33;
             int endIndex;
@@ -276,8 +277,6 @@ public class TemplateOrder extends Template implements BaseControl.ControlCallBa
     }
 
     private void fillSubscribeBanner(BannerEntity bannerEntity) {
-//        Logger.d("fillSubscribeBanner");
-        Log.d(TAG, "fillSubscribeBanner");
         subscribeAdapter = new BannerSubscribeAdapter(mContext, bannerEntity);
         subscribeAdapter.setSubscribeClickListener(new BannerSubscribeAdapter.OnBannerClickListener() {
             @Override
@@ -290,10 +289,13 @@ public class TemplateOrder extends Template implements BaseControl.ControlCallBa
             public void onBannerHover(View view, int position, boolean hovered) {
                 Log.d(TAG, view + " : " + hovered);
                 if (hovered){
+                    mLastFocusView = view;
+                    mHoverView.setFocusable(true);
+                    mHoverView.setFocusableInTouchMode(true);
                     subscribeBanner.setHovered(true);
                 }else {
                     subscribeBanner.setHovered(false);
-                    HomeActivity.mHoverView.requestFocus();
+                    mHoverView.requestFocus();
                 }
             }
         });
