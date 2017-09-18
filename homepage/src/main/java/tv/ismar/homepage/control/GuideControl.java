@@ -26,10 +26,8 @@ import tv.ismar.app.network.SkyService;
 
 public class GuideControl extends BaseControl{
 
-
-
-    public GuideControl(Context context, ControlCallBack callBack){
-        super(context, callBack);
+    public GuideControl(Context context){
+        super(context);
     }
 
     /**

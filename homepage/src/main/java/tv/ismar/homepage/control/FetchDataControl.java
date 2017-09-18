@@ -37,12 +37,12 @@ public class FetchDataControl extends BaseControl{
     public static final int FETCH_M_BANNERS_LIST_NEXTPAGE_FLAG = 0X06;//获取影视内容多个banner
     public static final int FETCH_HOME_RECOMMEND_LIST_FLAG = 0X07;//推荐列表
 
+    public HomeEntity mHomeEntity = null;//单个banner实体类，包含mCarousels和mPoster数据
     public List<BannerCarousels> mCarousels = new ArrayList<>();//导视数据
     public List<BannerPoster> mPoster = new ArrayList<>();//海报数据
     public List<BannerRecommend> mRecommends = new ArrayList<>();//首页推荐列表
     public GuideBanner[] mGuideBanners = null;//首页banner列表
     public ChannelEntity[] mChannels = null;//频道列表
-    public HomeEntity mHomeEntity = null;//单个banner实体类
 
     public FetchDataControl(Context context, ControlCallBack callBack) {
         super(context, callBack);

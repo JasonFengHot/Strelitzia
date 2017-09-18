@@ -26,19 +26,19 @@ import tv.ismar.homepage.control.FetchDataControl;
  */
 
 public class TemplateTvPlay extends Template implements BaseControl.ControlCallBack,
-        RecyclerViewTV.PagingableListener, LinearLayoutManagerTV.FocusSearchFailedListener {
-    private FetchDataControl mFetchDataControl = null;
+        RecyclerViewTV.PagingableListener, LinearLayoutManagerTV.FocusSearchFailedListener,
+        RecyclerViewTV.OnItemFocusChangeListener {
+    private int mSelectItemPosition = 1;//标题--选中海报位置
+    private FetchDataControl mFetchDataControl = null;//抓网络数据类
     private TextView mTitleTv;//banner标题
-    private TextView mIndexTv;//选中位置
     private RecyclerViewTV mRecycleView;
     private TvPlayAdapter mAdapter;
+    private LinearLayoutManagerTV mTvPlayerLayoutManager = null;
 
     public TemplateTvPlay(Context context) {
         super(context);
         mFetchDataControl = new FetchDataControl(context, this);
     }
-
-    private LinearLayoutManagerTV mTvPlayerLayoutManager = null;
 
     @Override
     public void getView(View view) {
@@ -55,6 +55,7 @@ public class TemplateTvPlay extends Template implements BaseControl.ControlCallB
     @Override
     protected void initListener(View view) {
         mRecycleView.setPagingableListener(this);
+        mRecycleView.setOnItemFocusChangeListener(this);
         mTvPlayerLayoutManager.setFocusSearchFailedListener(this);
     }
 
@@ -62,21 +63,30 @@ public class TemplateTvPlay extends Template implements BaseControl.ControlCallB
     @Override
     public void initData(Bundle bundle) {
         mTitleTv.setText(bundle.getString("title"));
-        mTitleCountTv.setText(String.format(mContext.getString(R.string.home_item_title_count), 1+"", 40+""));
         mBannerPk = bundle.getInt("banner");
         mFetchDataControl.fetchBanners(mBannerPk, 1, false);
+    }
+
+    private void initTitle(){
+        mTitleCountTv.setText(String.format(mContext.getString(R.string.home_item_title_count), mSelectItemPosition+"",
+                mFetchDataControl.mHomeEntity.count+""));
+    }
+
+    private void initRecycle(){
+        if(mAdapter == null){
+            mAdapter = new TvPlayAdapter(mContext, mFetchDataControl.mPoster);
+            mAdapter.setMarginLeftEnable(true);
+            mRecycleView.setAdapter(mAdapter);
+        }else {
+            mAdapter.notifyDataSetChanged();
+        }
     }
 
     @Override
     public void callBack(int flags, Object... args) {
         if(flags == FetchDataControl.FETCH_BANNERS_LIST_FLAG){//获取单个banner业务
-            if(mAdapter == null){
-                mAdapter = new TvPlayAdapter(mContext, mFetchDataControl.mPoster);
-                mAdapter.setMarginLeftEnable(true);
-                mRecycleView.setAdapter(mAdapter);
-            }else {
-                mAdapter.notifyDataSetChanged();
-            }
+            initTitle();
+            initRecycle();
         }
     }
 
@@ -91,6 +101,7 @@ public class TemplateTvPlay extends Template implements BaseControl.ControlCallB
         }
     }
 
+    /*第1个和最后一个海报抖动功能*/
     @Override
     public View onFocusSearchFailed(View focused, int focusDirection, RecyclerView.Recycler recycler, RecyclerView.State state) {
         if (focusDirection == View.FOCUS_RIGHT || focusDirection == View.FOCUS_LEFT){
@@ -101,5 +112,11 @@ public class TemplateTvPlay extends Template implements BaseControl.ControlCallB
             return focused;
         }
         return null;
+    }
+
+    @Override
+    public void onItemFocusGain(View itemView, int position) {
+        mSelectItemPosition = position + 1;
+        initTitle();
     }
 }

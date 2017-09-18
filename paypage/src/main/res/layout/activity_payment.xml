@@ -4,6 +4,7 @@
     android:layout_height="@dimen/payment_min_height"
     android:minHeight="@dimen/payment_min_height"
     android:minWidth="@dimen/payment_min_width"
+    android:background="#012239"
     android:orientation="vertical">
 
     <LinearLayout

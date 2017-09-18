@@ -3,7 +3,6 @@ package tv.ismar.homepage.template;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -20,7 +19,6 @@ import tv.ismar.app.entity.banner.HomeEntity;
 import tv.ismar.homepage.OnItemSelectedListener;
 import tv.ismar.homepage.R;
 import tv.ismar.homepage.adapter.DoubleLdAdapter;
-import tv.ismar.homepage.control.DoubleLdControl;
 import tv.ismar.homepage.control.FetchDataControl;
 
 /**
@@ -30,13 +28,13 @@ import tv.ismar.homepage.control.FetchDataControl;
  */
 
 public class TemplateDoubleLd extends Template implements BaseControl.ControlCallBack,
-        OnItemSelectedListener{
-    private TextView mHeadTitleTv;
-    private TextView mHeadCountTv;
+        OnItemSelectedListener, RecyclerViewTV.OnItemFocusChangeListener{
+    private int mSelectItemPosition = 1;//标题--选中海报位置
+    private TextView mTitleTv;//banner标题;
     private ImageView mVerticalImg;//大图海报
     private ImageView mLtImage;//左上角图标
     private ImageView mRbImage;//右下角图标
-    private TextView mTitleTv;//大图标题
+    private TextView mIgTitleTv;//大图标题
     private RecyclerViewTV mRecyclerView;
     private DoubleLdAdapter mAdapter;
     private FetchDataControl mFetchDataControl = null;
@@ -50,44 +48,54 @@ public class TemplateDoubleLd extends Template implements BaseControl.ControlCal
 
     @Override
     public void getView(View view) {
-        mHeadTitleTv = (TextView) view.findViewById(R.id.banner_title_tv);
-        mHeadCountTv = (TextView) view.findViewById(R.id.banner_title_count);
+        mTitleTv = (TextView) view.findViewById(R.id.banner_title_tv);
+        mTitleCountTv = (TextView) view.findViewById(R.id.banner_title_count);
         mRecyclerView = (RecyclerViewTV) view.findViewById(R.id.double_ld_recyclerview);
         mHeadView = LayoutInflater.from(mContext).inflate(R.layout.banner_double_ld_head, null);
         mVerticalImg = (ImageView) mHeadView.findViewById(R.id.double_ld_image_poster);
         mLtImage = (ImageView) mHeadView.findViewById(R.id.double_ld_image_lt_icon);
         mRbImage = (ImageView) mHeadView.findViewById(R.id.double_ld_image_rb_icon);
-        mTitleTv = (TextView) mHeadView.findViewById(R.id.double_ld_image_title);
+        mIgTitleTv = (TextView) mHeadView.findViewById(R.id.double_ld_image_title);
         StaggeredGridLayoutManager doubleLayoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.HORIZONTAL);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         mRecyclerView.setLayoutManager(doubleLayoutManager);
     }
 
+    private void initTitle(){
+        mTitleCountTv.setText(String.format(mContext.getString(R.string.home_item_title_count), mSelectItemPosition+"",
+                mFetchDataControl.mHomeEntity.count+""));
+    }
+
     @Override
     protected void initListener(View view) {
         super.initListener(view);
+        mRecyclerView.setOnItemFocusChangeListener(this);
     }
 
     @Override
     public void initData(Bundle bundle) {
-        mHeadTitleTv.setText(bundle.getString("title"));
-        mHeadCountTv.setText(String.format(mContext.getString(R.string.home_item_title_count), 1+"", 40+""));
+        mTitleTv.setText(bundle.getString("title"));
+        mTitleCountTv.setText(String.format(mContext.getString(R.string.home_item_title_count), 1+"", 40+""));
         mFetchDataControl.fetchBanners(bundle.getInt("banner"), 1, false);
     }
 
-    private void initRecycleView(HomeEntity homeEntity){
-        if(mAdapter == null){
-            mAdapter = new DoubleLdAdapter(mContext, homeEntity.posters);
-            mAdapter.setLeftMarginEnable(true);
-            mAdapter.setOnItemSelectedListener(this);
-            mAdapter.setHeaderView(mHeadView);
-            mRecyclerView.setAdapter(mAdapter);
-        }else {
-            mAdapter.notifyDataSetChanged();
+    private void initRecycleView(){
+        HomeEntity homeEntity = mFetchDataControl.mHomeEntity;
+        if(homeEntity != null){
+            if(mAdapter == null){
+                mAdapter = new DoubleLdAdapter(mContext, homeEntity.posters);
+                mAdapter.setLeftMarginEnable(true);
+                mAdapter.setOnItemSelectedListener(this);
+                mAdapter.setHeaderView(mHeadView);
+                mRecyclerView.setAdapter(mAdapter);
+            }else {
+                mAdapter.notifyDataSetChanged();
+            }
         }
     }
 
-    private void initImage(BigImage data){
+    private void initImage(){
+        BigImage data = mFetchDataControl.mHomeEntity.bg_image;
         if(data != null){
             if (!TextUtils.isEmpty(data.poster_url)) {
                 Picasso.with(mContext).load(data.poster_url).into(mVerticalImg);
@@ -96,21 +104,27 @@ public class TemplateDoubleLd extends Template implements BaseControl.ControlCal
             }
 //        Picasso.with(mContext).load(data.poster_url).into(mLtImage);
 //        Picasso.with(mContext).load(data.poster_url).into(mRbImage);
-            mTitleTv.setText(data.title);
+            mIgTitleTv.setText(data.title);
         }
     }
 
     @Override
     public void callBack(int flags, Object... args) {
         if(flags == FetchDataControl.FETCH_BANNERS_LIST_FLAG){//获取单个banner业务
-            HomeEntity homeEntity = (HomeEntity) args[0];
-            initRecycleView(homeEntity);
-            initImage(homeEntity.bg_image);
+            initTitle();
+            initRecycleView();
+            initImage();
         }
     }
 
     @Override
     public void itemSelected(View view, int position) {
 
+    }
+
+    @Override
+    public void onItemFocusGain(View itemView, int position) {
+        mSelectItemPosition = position+1;
+        initTitle();
     }
 }
