@@ -3,6 +3,7 @@ package tv.ismar.channel;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -42,6 +43,7 @@ import tv.ismar.app.core.DaisyUtils;
 import tv.ismar.app.core.PageIntent;
 import tv.ismar.app.core.SimpleRestClient;
 import tv.ismar.app.core.Source;
+import tv.ismar.app.core.cache.DownloadClient;
 import tv.ismar.app.core.client.NetworkUtils;
 import tv.ismar.app.entity.Expense;
 import tv.ismar.app.entity.Favorite;
@@ -84,6 +86,7 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
     private TextView favorite_title,history_title;
     private ImageView first_line_image,second_line_image;
     private HashMap<String, Object> mDataCollectionProperties;
+    private Boolean isEdit=false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -174,6 +177,9 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
             //没有登录，取本地设备信息
             mGetHistoryTask = new GetHistoryTask();
             mGetHistoryTask.execute();
+        }
+        if(edit_history.getVisibility()==View.VISIBLE){
+            edit_history.requestFocusFromTouch();
         }
         super.onResume();
     }
@@ -287,6 +293,7 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
                 historyAdapter.setItemClickListener(HistoryFavoriteActivity.this);
                 historyRecycler.setAdapter(historyAdapter);
 
+
             }else{
                 LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,getResources().getDimensionPixelSize(R.dimen.history_473));
                 lp.setMargins(0,getResources().getDimensionPixelSize(R.dimen.history_50),0,0);
@@ -302,6 +309,13 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
                 historyRecycler.setAdapter(historyAdapter);
 
             }
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    if(!isEdit)
+                    historyRecycler.getChildAt(0).requestFocusFromTouch();
+                }
+            },500);
         }else{
             if(favoriteLists.size()>0){
                 edit_history.setVisibility(View.VISIBLE);
@@ -316,12 +330,21 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
                 historyAdapter.setItemFocusedListener(HistoryFavoriteActivity.this);
                 historyAdapter.setItemClickListener(HistoryFavoriteActivity.this);
                 historyRecycler.setAdapter(historyAdapter);
+
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        if(!isEdit)
+                        historyRecycler.getChildAt(0).requestFocusFromTouch();
+                    }
+                },500);
             }else{
                 history_relativelayout.setVisibility(View.GONE);
                 favorite_relativeLayout.setVisibility(View.GONE);
                 history_title.setVisibility(View.GONE);
                 favorite_title.setVisibility(View.GONE);
                 edit_history.setVisibility(View.INVISIBLE);
+                isEdit=false;
             }
         }
     }
@@ -332,6 +355,7 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
         intent.setAction("tv.ismar.daisy.historyfavoriteList");
         intent.putExtra("source","edit");
         if(id==R.id.edit_btn){
+            isEdit=true;
             historyRecycler.scrollToPosition(0);
             favoriteRecycler.scrollToPosition(0);
             delet_history.setVisibility(View.VISIBLE);
@@ -367,25 +391,29 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
 
     @Override
     public void onBackPressed() {
-        if(edit_history.getVisibility()==View.GONE){
-            edit_history.setVisibility(View.VISIBLE);
-            delet_history.setVisibility(View.GONE);
-            delete_favorite.setVisibility(View.GONE);
-            RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-            lp.setMargins(0,0,0,0);
-            list_layout.setLayoutParams(lp);
-            favorite_layout.setLayoutParams(lp);
-
-            RelativeLayout.LayoutParams lp2 = new RelativeLayout.LayoutParams(getResources().getDimensionPixelSize(R.dimen.history_1820), getResources().getDimensionPixelSize(R.dimen.history_2));
-            lp2.setMargins(getResources().getDimensionPixelSize(R.dimen.history_100),getResources().getDimensionPixelSize(R.dimen.history_75),0,0);
-            arrow_line2.setLayoutParams(lp2);
-            arrow_line1.setLayoutParams(lp2);
-
-            historyLayoutManager.setScrollEnabled(true);
-            favoriteManager.setScrollEnabled(true);
+        if(isEdit){
+            isEdit=false;
+            editRestore();
         }else {
             super.onBackPressed();
         }
+    }
+    private void editRestore(){
+        edit_history.setVisibility(View.VISIBLE);
+        delet_history.setVisibility(View.GONE);
+        delete_favorite.setVisibility(View.GONE);
+        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        lp.setMargins(0,0,0,0);
+        list_layout.setLayoutParams(lp);
+        favorite_layout.setLayoutParams(lp);
+
+        RelativeLayout.LayoutParams lp2 = new RelativeLayout.LayoutParams(getResources().getDimensionPixelSize(R.dimen.history_1820), getResources().getDimensionPixelSize(R.dimen.history_2));
+        lp2.setMargins(getResources().getDimensionPixelSize(R.dimen.history_100),getResources().getDimensionPixelSize(R.dimen.history_75),0,0);
+        arrow_line2.setLayoutParams(lp2);
+        arrow_line1.setLayoutParams(lp2);
+
+        historyLayoutManager.setScrollEnabled(true);
+        favoriteManager.setScrollEnabled(true);
     }
 
     @Override
@@ -407,7 +435,8 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
         PageIntent intent=new PageIntent();
         if(type.equals("history")){
             HistoryFavoriteEntity history=historyLists.get(postion);
-            int pk = history.getPk();
+            boolean[] isSubItem = new boolean[1];
+            int pk = SimpleRestClient.getItemId(history.getUrl(), isSubItem);
             if(postion!=historyLists.size()-1) {
                 intent.toPlayPage(this, pk, 0, Source.HISTORY);
             }else{
@@ -420,7 +449,8 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
             }
         }else {
             HistoryFavoriteEntity favoriteEntity=favoriteLists.get(postion);
-            int pk =favoriteEntity.getPk();
+            boolean[] isSubItem = new boolean[1];
+            int pk = SimpleRestClient.getItemId(favoriteEntity.getUrl(), isSubItem);
             if(postion!=favoriteLists.size()-1) {
                 intent.toDetailPage(this, "favorite", pk);
             }else{

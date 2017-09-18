@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -40,6 +41,7 @@ import tv.ismar.app.entity.Item;
 import tv.ismar.app.network.SkyService;
 import tv.ismar.app.ui.adapter.OnItemClickListener;
 import tv.ismar.app.ui.adapter.OnItemFocusedListener;
+import tv.ismar.app.widget.ModuleMessagePopWindow;
 import tv.ismar.app.widget.MyRecyclerView;
 import tv.ismar.entity.HistoryFavoriteEntity;
 import tv.ismar.listpage.R;
@@ -62,6 +64,7 @@ public class HistoryFavoritrListActivity extends BaseActivity implements OnItemC
     private FocusGridLayoutManager focusGridLayoutManager;
     private HistorySpaceItemDecoration mSpaceItemDecoration;
     private Button arrow_up,arrow_down;
+    private ModuleMessagePopWindow pop;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -107,11 +110,34 @@ public class HistoryFavoritrListActivity extends BaseActivity implements OnItemC
         clearAll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                showPop();
             }
         });
         loadData();
     }
+
+    private void showPop() {
+        pop=new ModuleMessagePopWindow(this);
+        pop.setMessage("确认删除全部记录!");
+        pop.setConfirmBtn("确认");
+        pop.setCancelBtn("取消");
+        pop.showAtLocation(getRootView(), Gravity.CENTER, 0, 0, new ModuleMessagePopWindow.ConfirmListener() {
+            @Override
+            public void confirmClick(View view) {
+                if(type==1){
+                    emptyHistories();
+                }else{
+                    emptyFavorite();
+                }
+            }
+        }, new ModuleMessagePopWindow.CancelListener() {
+            @Override
+            public void cancelClick(View view) {
+                pop.dismiss();
+            }
+        });
+    }
+
     private void loadData(){
         mlists.remove(mlists.size()-1);
         adapter=new HistoryFavoriteListAdapter(HistoryFavoritrListActivity.this,mlists,type,source);
@@ -196,6 +222,8 @@ public class HistoryFavoritrListActivity extends BaseActivity implements OnItemC
             DaisyUtils.getHistoryManager(this).deleteAll("no");
             mlists.clear();
             adapter.notifyDataSetChanged();
+            if(pop!=null)
+                pop.dismiss();
         }else {
             DaisyUtils.getHistoryManager(this).deleteAll("no");
             removeSub = skyService.emptyHistory(IsmartvActivator.getInstance().getDeviceToken()).subscribeOn(Schedulers.io())
@@ -210,6 +238,8 @@ public class HistoryFavoritrListActivity extends BaseActivity implements OnItemC
                         public void onNext(ResponseBody responseBody) {
                             mlists.clear();
                             adapter.notifyDataSetChanged();
+                            if(pop!=null)
+                                pop.dismiss();
                         }
                     });
         }
@@ -219,6 +249,8 @@ public class HistoryFavoritrListActivity extends BaseActivity implements OnItemC
             DaisyUtils.getFavoriteManager(this).deleteAll("no");
             mlists.clear();
             adapter.notifyDataSetChanged();
+            if(pop!=null)
+                pop.dismiss();
         }else {
             DaisyUtils.getFavoriteManager(this).deleteAll("no");
             removeSub=skyService.emptyBookmarks(IsmartvActivator.getInstance().getDeviceToken())
@@ -234,6 +266,8 @@ public class HistoryFavoritrListActivity extends BaseActivity implements OnItemC
                         public void onNext(ResponseBody responseBody) {
                             mlists.clear();
                             adapter.notifyDataSetChanged();
+                            if(pop!=null)
+                                pop.dismiss();
                         }
                     });
         }
