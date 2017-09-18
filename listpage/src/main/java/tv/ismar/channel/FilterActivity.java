@@ -29,6 +29,7 @@ import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -129,6 +130,10 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
     private HashMap<String, Object> mSectionProperties = new HashMap<>();
     private int pagesize;
     private int firstPos;
+    private View full_view;
+    private int loadPosition;
+    private int currentPage;
+    private int numPage=1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -191,6 +196,7 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
         filter_root_view.setArrow_down_left(tab_arrow_dowm);
         filter_root_view.setArrow_up_right(poster_arrow_up);
         filter_root_view.setArrow_down_right(poster_arrow_down);
+        full_view = findView(R.id.full_view);
         filter_root_view.setxBoundary(getResources().getDimensionPixelOffset(R.dimen.filter_layout_left_view_tab_w));
         tab_arrow_up.setOnHoverListener(this);
         tab_arrow_dowm.setOnHoverListener(this);
@@ -200,6 +206,7 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
         tab_arrow_dowm.setOnClickListener(this);
         poster_arrow_up.setOnClickListener(this);
         poster_arrow_down.setOnClickListener(this);
+        full_view.setOnHoverListener(this);
 
         RelativeLayout.LayoutParams recyclerParam= (RelativeLayout.LayoutParams) list_poster_recyclerview.getLayoutParams();
         if(isVertical){
@@ -316,6 +323,9 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                     }
                     showData(firstVisiablePos);
                     showData(lastVisiablePos);
+                    if(loadPosition>=firstVisiablePos&&loadPosition<=lastVisiablePos){
+                        fetchSectionData(sectionList.get(checkedPos).url,currentPage+1);
+                    }
                     for (int i = 0; i < sectionSize; i++) {
                         if (i == sectionSize - 1) {
                             break;
@@ -455,13 +465,10 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                 @Override
                 public void onClick(View v) {
                     mFocusGridLayoutManager.scrollToPositionWithOffset(specialPos.get(checkedPos),0);
-                    if(isFirst) {
-                        int pages=sectionList.get(finalI).count%100==0?sectionList.get(finalI).count/100:sectionList.get(finalI).count/100+1;
-                        for (int j = 1; j <=pages ; j++) {
-                            fetchSectionData(section.url,j);
-                        }
-                        isFirst=false;
-                    }
+//                    if(isFirst) {
+                        fetchSectionData(section.url,1);
+//                        isFirst=false;
+//                    }
                     current_section_title.setText(sectionList.get(finalI).title);
                 }
             });
@@ -593,6 +600,10 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
 
     //请求每个section的数据
     private void fetchSectionData(String url, final int page) {
+        if(numPage<page){
+            return;
+        }
+        currentPage = page;
         if(page!=1){
             url+=page;
         }
@@ -607,6 +618,13 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
 
                     @Override
                     public void onNext(ItemList itemList) {
+                        numPage = itemList.num_pages;
+                        if(numPage >1&&currentPage!= numPage) {
+                            loadPosition = specialPos.get(checkedPos) + itemList.objects.size() + 100 * (page - 1);
+                        }else{
+                            loadPosition=-1;
+                            numPage=1;
+                        }
                         for (int i = 0; i <itemList.objects.size() ; i++) {
                             if(mAllSectionItemList.objects.size()>specialPos.get(checkedPos)+i+1+100*(page-1))
                                 mAllSectionItemList.objects.set(specialPos.get(checkedPos)+i+1+100*(page-1),itemList.objects.get(i));
@@ -706,7 +724,8 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
      * 显示筛选条件popup
      */
     private void showFilterPopup() {
-        filter_tab.setFocusable(false);
+        full_view.setVisibility(View.VISIBLE);
+        full_view.requestFocus();
         filterPopup = new PopupWindow(filter_condition_layout, getResources().getDimensionPixelOffset(R.dimen.filter_condition_popup_w), getResources().getDimensionPixelOffset(R.dimen.filter_condition_popup_h), true);
         filterPopup.setTouchable(true);
         filterPopup.setTouchInterceptor(new View.OnTouchListener() {
@@ -724,7 +743,6 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
 
             @Override
             public void onDismiss() {
-                filter_tab.setFocusable(true);
                 if(filterNoResult){
                     if(filter_noresult_first_line.getChildAt(0)!=null)
                     filter_noresult_first_line.getChildAt(0).requestFocus();
@@ -733,6 +751,7 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                         poster_recyclerview.getChildAt(0).requestFocus();
                     }
                 }
+                full_view.setVisibility(View.GONE);
             }
         });
     }
@@ -1138,8 +1157,6 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
     public void onClick(View v) {
         int i = v.getId();
         if(i==R.id.filter_tab){
-            filter_root_view.requestFocus();
-            filter_root_view.requestFocusFromTouch();
             current_section_title.setVisibility(View.INVISIBLE);
             if(filter_checked_conditiion.getChildCount()>1){
                 filter_checked_conditiion.setVisibility(View.VISIBLE);
@@ -1227,10 +1244,7 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                     booleanFlag=true;
                 }
                 if(position>=specialPos.get(i)&&booleanFlag){
-                    int pages=sectionList.get(i).count%100==0?sectionList.get(i).count/100:sectionList.get(i).count/100+1;
-                    for (int j = 1; j <=pages ; j++) {
-                        fetchSectionData(sectionList.get(i).url,j);
-                    }
+                    fetchSectionData(sectionList.get(i).url,1);
                     checkedPos=i;
                 }
             }
