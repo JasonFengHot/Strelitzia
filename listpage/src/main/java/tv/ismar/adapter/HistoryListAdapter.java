@@ -109,6 +109,12 @@ public class HistoryListAdapter extends RecyclerView.Adapter<HistoryListAdapter.
             public void onFocusChange(View v, boolean hasFocus) {
                 int pos = holder.getLayoutPosition();
                 itemFocusedListener.onItemfocused(v, pos, hasFocus);
+                if(hasFocus){
+                    holder.item_title.setSelected(true);
+                }else{
+                    holder.item_title.setSelected(false);
+                }
+
             }
         });
 

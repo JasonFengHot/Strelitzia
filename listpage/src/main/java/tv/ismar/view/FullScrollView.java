@@ -2,6 +2,7 @@ package tv.ismar.view;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.widget.ScrollView;
 
@@ -57,4 +58,10 @@ public class FullScrollView extends ScrollView {
             return super.dispatchTouchEvent(ev);
         }
     }
+
+    @Override
+    public void computeScroll() {
+        super.computeScroll();
+    }
+
 }

@@ -84,6 +84,10 @@
                 android:textSize="@dimen/text_size_36sp"
                 android:textColor="@color/_ffffff"
                 android:gravity="center"
+                android:singleLine="true"
+                android:marqueeRepeatLimit="marquee_forever"
+                android:ellipsize="marquee"
+                android:focusable="true"
                 />
             </RelativeLayout>
         </tv.ismar.view.IsmartvLinearLayout>
