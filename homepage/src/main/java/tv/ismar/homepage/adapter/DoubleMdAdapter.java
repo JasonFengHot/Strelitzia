@@ -32,8 +32,6 @@ public class DoubleMdAdapter extends RecyclerView.Adapter<DoubleMdAdapter.Double
     private Context mContext;
     private List<BannerPoster> mData;
 
-    private boolean mTopMarginEnable = false;
-    private boolean mLeftMarginEnable = false;
     private OnItemSelectedListener mClickListener = null;
     private View mHeaderView;
 
@@ -49,14 +47,6 @@ public class DoubleMdAdapter extends RecyclerView.Adapter<DoubleMdAdapter.Double
 
     public void setOnItemSelectedListener(OnItemSelectedListener listener){
         this.mClickListener = listener;
-    }
-
-    public void setTopMarginEnable(boolean enable){
-        this.mTopMarginEnable = enable;
-    }
-
-    public void setLeftMarginEnable(boolean enable){
-        this.mLeftMarginEnable = enable;
     }
 
     @Override
@@ -90,10 +80,6 @@ public class DoubleMdAdapter extends RecyclerView.Adapter<DoubleMdAdapter.Double
     public void onBindViewHolder(DoubleMdViewHolder holder, int position) {
         if(position != 0){
             holder.mPosition = position;
-            holder.mTopView.setVisibility(View.GONE);
-            holder.mLeftView.setVisibility(View.GONE);
-            holder.mTopView.setVisibility(mTopMarginEnable ? View.VISIBLE: View.GONE);
-            holder.mLeftView.setVisibility(mLeftMarginEnable ? View.VISIBLE: View.GONE);
             BannerPoster poster = mData.get(position-1);
             holder.mTitleTv.setText(poster.title);
             if (!TextUtils.isEmpty(poster.poster_url)) {
@@ -114,8 +100,6 @@ public class DoubleMdAdapter extends RecyclerView.Adapter<DoubleMdAdapter.Double
         public ImageView mLtIconTv;//左上icon
         public ImageView mRbIconTv;//右下icon
         public TextView mTitleTv;//标题
-        public View mTopView;//上边距
-        public View mLeftView;//左边距
         public int mPosition;
 
         public DoubleMdViewHolder(View itemView) {
@@ -124,8 +108,6 @@ public class DoubleMdAdapter extends RecyclerView.Adapter<DoubleMdAdapter.Double
             mLtIconTv = (ImageView) itemView.findViewById(R.id.double_md_item_lt_icon);
             mRbIconTv = (ImageView) itemView.findViewById(R.id.double_md_item_rb_icon);
             mTitleTv = (TextView) itemView.findViewById(R.id.double_md_item_title);
-            mTopView = itemView.findViewById(R.id.double_md_top_margin);
-            mLeftView = itemView.findViewById(R.id.double_md_left_margin);
             itemView.findViewById(R.id.double_md_ismartv_linear_layout).setOnClickListener(this);
         }
 

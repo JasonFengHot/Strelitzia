@@ -84,7 +84,6 @@ public class TemplateDoubleLd extends Template implements BaseControl.ControlCal
         if(homeEntity != null){
             if(mAdapter == null){
                 mAdapter = new DoubleLdAdapter(mContext, homeEntity.posters);
-                mAdapter.setLeftMarginEnable(true);
                 mAdapter.setOnItemSelectedListener(this);
                 mAdapter.setHeaderView(mHeadView);
                 mRecyclerView.setAdapter(mAdapter);

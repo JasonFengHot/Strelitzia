@@ -28,8 +28,6 @@ public class DoubleLdAdapter extends RecyclerView.Adapter<DoubleLdAdapter.Double
 
     private Context mContext;
     private List<BannerPoster> mData;
-    private boolean mTopMarginEnable = false;
-    private boolean mLeftMarginEnable = false;
     private OnItemSelectedListener mClickListener = null;
     private View mHeaderView;
 
@@ -40,14 +38,6 @@ public class DoubleLdAdapter extends RecyclerView.Adapter<DoubleLdAdapter.Double
 
     public void setOnItemSelectedListener(OnItemSelectedListener listener){
         this.mClickListener = listener;
-    }
-
-    public void setTopMarginEnable(boolean enable){
-        this.mTopMarginEnable = enable;
-    }
-
-    public void setLeftMarginEnable(boolean enable){
-        this.mLeftMarginEnable = enable;
     }
 
     public void setHeaderView(View headerView) {
@@ -79,10 +69,6 @@ public class DoubleLdAdapter extends RecyclerView.Adapter<DoubleLdAdapter.Double
     public void onBindViewHolder(DoubleLdViewHolder holder, int position) {
         if(position != 0){
             holder.mPosition = position;
-            holder.mTopMarginView.setVisibility(View.GONE);
-            holder.mLeftMarginView.setVisibility(View.GONE);
-            holder.mTopMarginView.setVisibility(mTopMarginEnable ? View.VISIBLE: View.GONE);
-            holder.mLeftMarginView.setVisibility(mLeftMarginEnable ? View.VISIBLE: View.GONE);
             BannerPoster poster = mData.get(position-1);
             if (!TextUtils.isEmpty(poster.poster_url)) {
                 Picasso.with(mContext).load(poster.poster_url).into(holder.mPosterIg);
@@ -115,8 +101,6 @@ public class DoubleLdAdapter extends RecyclerView.Adapter<DoubleLdAdapter.Double
         public ImageView mLtIconTv;//左上icon
         public ImageView mRbIconTv;//右下icon
         public TextView mTitleTv;//标题
-        public View mTopMarginView;//上边距
-        public View mLeftMarginView;//左边距
         public int mPosition;//item位置
 
         public DoubleLdViewHolder(View itemView) {
@@ -125,8 +109,6 @@ public class DoubleLdAdapter extends RecyclerView.Adapter<DoubleLdAdapter.Double
             mLtIconTv = (ImageView) itemView.findViewById(R.id.double_ld_item_lt_icon);
             mRbIconTv = (ImageView) itemView.findViewById(R.id.double_ld_item_rb_icon);
             mTitleTv = (TextView) itemView.findViewById(R.id.double_ld_item_title);
-            mTopMarginView = itemView.findViewById(R.id.double_ld_top_margin);
-            mLeftMarginView = itemView.findViewById(R.id.double_ld_left_margin);
             itemView.findViewById(R.id.double_ld_ismartv_linear_layout).setOnClickListener(this);
         }
 

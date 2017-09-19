@@ -681,7 +681,7 @@
 <dimen name="guide_recycle_item_rb_icon_height">9.56dp</dimen>
 <dimen name="guide_recycle_item_rb_margin_bottom">1.78dp</dimen>
 
-<!--电视剧尺寸-->
+<!--电视剧尺�?-->
 <dimen name="tv_player_recycleview_margin_left">13.33dp</dimen>
 <dimen name="tv_play_recycleview_item_padding">8.89dp</dimen>
 <dimen name="tv_play_recycleview_height">52.89dp</dimen>
@@ -702,6 +702,8 @@
 <dimen name="column_item_margin_left">22.22dp</dimen>
 <dimen name="column_item_margin_top">1.78dp</dimen>
 <!--横版双行尺寸-->
+<dimen name="double_ld_img_container_height">103.16dp</dimen>
+<dimen name="double_ld_poster_margin_top">4.69dp</dimen>
 <dimen name="double_ld_margin_left">22.22dp</dimen>
 <dimen name="double_ld_img_height">93.78dp</dimen>
 <dimen name="double_ld_img_width">160.00dp</dimen>
@@ -722,6 +724,8 @@
 <dimen name="double_ld_poster_padding">8.00dp</dimen>
 <!--竖版双行尺寸-->
 <dimen name="double_md_margin_left">22.22dp</dimen>
+<dimen name="double_md_img_container_width">137.56dp</dimen>
+<dimen name="double_md_img_container_height">188.22dp</dimen>
 <dimen name="double_md_img_height">171.11dp</dimen>
 <dimen name="double_md_img_width">124.89dp</dimen>
 <dimen name="double_md_img_lt_size">24.22dp</dimen>
@@ -730,6 +734,7 @@
 <dimen name="double_md_img_rb_tv_width">13.78dp</dimen>
 <dimen name="double_md_img_rb_tv_height">9.56dp</dimen>
 <dimen name="double_md_img_rb_title_height">10.44dp</dimen>
+<dimen name="double_md_poster_margin_top">9.33dp</dimen>
 <dimen name="double_md_poster_height">80.89dp</dimen>
 <dimen name="double_md_poster_width">57.78dp</dimen>
 <dimen name="double_md_poster_lt_size">24.22dp</dimen>
@@ -738,7 +743,7 @@
 <dimen name="double_md_poster_rb_height">8.89dp</dimen>
 <dimen name="double_md_poster_title_height">10.44dp</dimen>
 <dimen name="double_md_poster_title_size">8.67dp</dimen>
-<dimen name="double_md_poster_padding">9.33dp</dimen>
+<dimen name="double_md_poster_padding_left">9.33dp</dimen>
 <!--居中模版-->
 <dimen name="center_recycleview_height">113.11dp</dimen>
 <dimen name="center_poster_margin_top">5.56dp</dimen>
