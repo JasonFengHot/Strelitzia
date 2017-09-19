@@ -15,6 +15,7 @@ import com.squareup.picasso.Picasso;
 import java.util.List;
 
 import tv.ismar.app.entity.banner.BannerPoster;
+import tv.ismar.homepage.OnItemSelectedListener;
 import tv.ismar.homepage.R;
 
 import static android.view.View.SCALE_X;
@@ -31,16 +32,21 @@ public class TvPlayAdapter extends RecyclerView.Adapter<TvPlayAdapter.TvPlayerVi
     private Context mContext;
     private List<BannerPoster> mData;
     private boolean mMarginLeftEnable = false;
+    private OnItemSelectedListener mClickListener = null;
 
     public TvPlayAdapter(Context context, List<BannerPoster> data){
         this.mContext = context;
         this.mData = data;
     }
 
+    public void setOnItemSelectedListener(OnItemSelectedListener listener){
+        this.mClickListener = listener;
+    }
+
     @Override
     public TvPlayAdapter.TvPlayerViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(mContext).inflate(R.layout.banner_tv_player_item,parent,false);
-        return new TvPlayerViewHolder(view);
+        return new TvPlayerViewHolder(view, mClickListener);
     }
 
     @Override
@@ -73,8 +79,8 @@ public class TvPlayAdapter extends RecyclerView.Adapter<TvPlayAdapter.TvPlayerVi
         public TextView mTitleTv;//标题
         public View mMarginLeftView;//左边距
 
-        public TvPlayerViewHolder(View itemView) {
-            super(itemView);
+        public TvPlayerViewHolder(View itemView, OnItemSelectedListener listener) {
+            super(itemView, listener);
             mPosterIg = (ImageView) itemView.findViewById(R.id.tv_player_item_poster);
             mLtIconTv = (ImageView) itemView.findViewById(R.id.tv_player_item_lt_icon);
             mRbIconTv = (ImageView) itemView.findViewById(R.id.tv_player_item_rb_icon);

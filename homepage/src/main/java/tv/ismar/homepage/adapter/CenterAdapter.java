@@ -15,6 +15,7 @@ import com.squareup.picasso.Picasso;
 import java.util.List;
 
 import tv.ismar.app.entity.banner.BannerPoster;
+import tv.ismar.homepage.OnItemSelectedListener;
 import tv.ismar.homepage.R;
 
 import static android.view.View.SCALE_X;
@@ -30,16 +31,21 @@ public class CenterAdapter extends RecyclerView.Adapter<CenterAdapter.CenterView
 
     private Context mContext;
     private List<BannerPoster> mData;
+    private OnItemSelectedListener mClickListener = null;
 
     public CenterAdapter(Context context, List<BannerPoster> data){
         this.mContext = context;
         this.mData = data;
     }
 
+    public void setOnItemSelectedListener(OnItemSelectedListener listener){
+        this.mClickListener = listener;
+    }
+
     @Override
     public CenterViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(mContext).inflate(R.layout.banner_center_item,parent,false);
-        return new CenterViewHolder(view);
+        return new CenterViewHolder(view, mClickListener);
     }
 
     @Override
@@ -62,8 +68,8 @@ public class CenterAdapter extends RecyclerView.Adapter<CenterAdapter.CenterView
         public TextView mTitle;
         public ImageView mPoster;
 
-        public CenterViewHolder(View itemView) {
-            super(itemView);
+        public CenterViewHolder(View itemView, OnItemSelectedListener listener) {
+            super(itemView, listener);
             mTitle = (TextView) itemView.findViewById(R.id.center_item_title);
             mPoster = (ImageView) itemView.findViewById(R.id.center_item_poster);
         }

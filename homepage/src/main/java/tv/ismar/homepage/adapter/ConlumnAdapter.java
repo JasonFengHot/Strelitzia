@@ -15,6 +15,7 @@ import com.squareup.picasso.Picasso;
 import java.util.List;
 
 import tv.ismar.app.entity.banner.BannerPoster;
+import tv.ismar.homepage.OnItemSelectedListener;
 import tv.ismar.homepage.R;
 
 /**
@@ -27,16 +28,21 @@ public class ConlumnAdapter extends RecyclerView.Adapter<ConlumnAdapter.ConlumnV
 
     private Context mContext;
     private List<BannerPoster> mData;
+    private OnItemSelectedListener mClickListener = null;
 
     public ConlumnAdapter(Context context, List<BannerPoster> data){
         this.mContext = context;
         this.mData = data;
     }
 
+    public void setOnItemSelectedListener(OnItemSelectedListener listener){
+        this.mClickListener = listener;
+    }
+
     @Override
     public ConlumnViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(mContext).inflate(R.layout.banner_conlumn_item,parent,false);
-        return new ConlumnViewHolder(view);
+        return new ConlumnViewHolder(view, mClickListener);
     }
 
     @Override
@@ -60,8 +66,8 @@ public class ConlumnAdapter extends RecyclerView.Adapter<ConlumnAdapter.ConlumnV
         public TextView mTitle;
         public ImageView mPoster;
 
-        public ConlumnViewHolder(View itemView) {
-            super(itemView);
+        public ConlumnViewHolder(View itemView, OnItemSelectedListener listener) {
+            super(itemView, listener);
             mTitle = (TextView) itemView.findViewById(R.id.conlumn_item_tv);
             mPoster = (ImageView) itemView.findViewById(R.id.conlumn_item_poster);
             itemView.findViewById(R.id.conlumn_ismartv_linear_layout).setOnFocusChangeListener(this);

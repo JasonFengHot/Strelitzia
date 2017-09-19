@@ -71,9 +71,9 @@ public class DoubleMdAdapter extends RecyclerView.Adapter<DoubleMdAdapter.Double
     @Override
     public DoubleMdViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (mHeaderView != null && viewType == TYPE_HEADER)
-            return new DoubleMdViewHolder(mHeaderView);
+            return new DoubleMdViewHolder(mHeaderView, mClickListener);
         View view = LayoutInflater.from(mContext).inflate(R.layout.banner_double_md_item,parent,false);
-        return new DoubleMdViewHolder(view);
+        return new DoubleMdViewHolder(view, mClickListener);
     }
 
     @Override
@@ -102,8 +102,8 @@ public class DoubleMdAdapter extends RecyclerView.Adapter<DoubleMdAdapter.Double
         public TextView mTitleTv;//标题
         public int mPosition;
 
-        public DoubleMdViewHolder(View itemView) {
-            super(itemView);
+        public DoubleMdViewHolder(View itemView, OnItemSelectedListener listener) {
+            super(itemView, listener);
             mPosterIg = (ImageView) itemView.findViewById(R.id.double_md_item_poster);
             mLtIconTv = (ImageView) itemView.findViewById(R.id.double_md_item_lt_icon);
             mRbIconTv = (ImageView) itemView.findViewById(R.id.double_md_item_rb_icon);
@@ -114,11 +114,6 @@ public class DoubleMdAdapter extends RecyclerView.Adapter<DoubleMdAdapter.Double
         @Override
         protected int getScaleLayoutId() {
             return R.id.double_md_ismartv_linear_layout;
-        }
-
-        @Override
-        public void onClick(View v) {
-            mClickListener.itemSelected(v, mPosition);
         }
     }
 

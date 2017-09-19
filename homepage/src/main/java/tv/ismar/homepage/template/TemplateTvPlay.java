@@ -15,6 +15,7 @@ import com.open.androidtvwidget.leanback.recycle.RecyclerViewTV;
 
 import tv.ismar.app.BaseControl;
 import tv.ismar.app.entity.banner.HomeEntity;
+import tv.ismar.homepage.OnItemSelectedListener;
 import tv.ismar.homepage.R;
 import tv.ismar.homepage.adapter.TvPlayAdapter;
 import tv.ismar.homepage.control.FetchDataControl;
@@ -27,7 +28,7 @@ import tv.ismar.homepage.control.FetchDataControl;
 
 public class TemplateTvPlay extends Template implements BaseControl.ControlCallBack,
         RecyclerViewTV.PagingableListener, LinearLayoutManagerTV.FocusSearchFailedListener,
-        RecyclerViewTV.OnItemFocusChangeListener {
+        RecyclerViewTV.OnItemFocusChangeListener, OnItemSelectedListener {
     private int mSelectItemPosition = 1;//标题--选中海报位置
     private FetchDataControl mFetchDataControl = null;//抓网络数据类
     private TextView mTitleTv;//banner标题
@@ -77,6 +78,7 @@ public class TemplateTvPlay extends Template implements BaseControl.ControlCallB
             mAdapter = new TvPlayAdapter(mContext, mFetchDataControl.mPoster);
             mAdapter.setMarginLeftEnable(true);
             mRecycleView.setAdapter(mAdapter);
+            mAdapter.setOnItemSelectedListener(this);
         }else {
             mAdapter.notifyDataSetChanged();
         }
@@ -118,5 +120,10 @@ public class TemplateTvPlay extends Template implements BaseControl.ControlCallB
     public void onItemFocusGain(View itemView, int position) {
         mSelectItemPosition = position + 1;
         initTitle();
+    }
+
+    @Override
+    public void itemSelected(View view, int position) {
+
     }
 }

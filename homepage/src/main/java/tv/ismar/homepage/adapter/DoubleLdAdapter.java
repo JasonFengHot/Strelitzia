@@ -48,9 +48,9 @@ public class DoubleLdAdapter extends RecyclerView.Adapter<DoubleLdAdapter.Double
     @Override
     public DoubleLdViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (mHeaderView != null && viewType == TYPE_HEADER)
-            return new DoubleLdAdapter.DoubleLdViewHolder(mHeaderView);
+            return new DoubleLdAdapter.DoubleLdViewHolder(mHeaderView, mClickListener);
         View view = LayoutInflater.from(mContext).inflate(R.layout.banner_double_ld_item,parent,false);
-        return new DoubleLdAdapter.DoubleLdViewHolder(view);
+        return new DoubleLdAdapter.DoubleLdViewHolder(view, mClickListener);
     }
 
     @Override
@@ -103,8 +103,8 @@ public class DoubleLdAdapter extends RecyclerView.Adapter<DoubleLdAdapter.Double
         public TextView mTitleTv;//标题
         public int mPosition;//item位置
 
-        public DoubleLdViewHolder(View itemView) {
-            super(itemView);
+        public DoubleLdViewHolder(View itemView, OnItemSelectedListener listener) {
+            super(itemView, listener);
             mPosterIg = (ImageView) itemView.findViewById(R.id.double_ld_item_poster);
             mLtIconTv = (ImageView) itemView.findViewById(R.id.double_ld_item_lt_icon);
             mRbIconTv = (ImageView) itemView.findViewById(R.id.double_ld_item_rb_icon);
