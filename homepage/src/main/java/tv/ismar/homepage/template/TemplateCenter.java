@@ -15,6 +15,7 @@ import com.open.androidtvwidget.leanback.recycle.RecyclerViewTV;
 
 import tv.ismar.app.BaseControl;
 import tv.ismar.app.entity.banner.HomeEntity;
+import tv.ismar.homepage.OnItemSelectedListener;
 import tv.ismar.homepage.R;
 import tv.ismar.homepage.adapter.CenterAdapter;
 import tv.ismar.homepage.control.FetchDataControl;
@@ -26,7 +27,8 @@ import tv.ismar.homepage.control.FetchDataControl;
  */
 
 public class TemplateCenter extends Template implements BaseControl.ControlCallBack,
-        RecyclerViewTV.PagingableListener, LinearLayoutManagerTV.FocusSearchFailedListener {
+        RecyclerViewTV.PagingableListener, LinearLayoutManagerTV.FocusSearchFailedListener,
+        OnItemSelectedListener{
     public FetchDataControl mFetchDataControl = null;
     private TextView mHeadTitleTv;
     private TextView mHeadCountTv;
@@ -67,16 +69,20 @@ public class TemplateCenter extends Template implements BaseControl.ControlCallB
         mCenterLayoutManager.setFocusSearchFailedListener(this);
     }
 
+    private void initRecycle(){
+        if(mAdapter == null){
+            mAdapter = new CenterAdapter(mContext, mFetchDataControl.mHomeEntity.posters);
+            mRecycleView.setAdapter(mAdapter);
+            mAdapter.setOnItemSelectedListener(this);
+        }else {
+            mAdapter.notifyDataSetChanged();
+        }
+    }
+
     @Override
     public void callBack(int flags, Object... args) {
         if(flags == FetchDataControl.FETCH_BANNERS_LIST_FLAG){//获取单个banner业务
-            HomeEntity homeEntity = (HomeEntity) args[0];
-            if(mAdapter == null){
-                mAdapter = new CenterAdapter(mContext, homeEntity.posters);
-                mRecycleView.setAdapter(mAdapter);
-            }else {
-                mAdapter.notifyDataSetChanged();
-            }
+            initRecycle();
         }
     }
 
@@ -101,5 +107,10 @@ public class TemplateCenter extends Template implements BaseControl.ControlCallB
             return focused;
         }
         return null;
+    }
+
+    @Override
+    public void itemSelected(View view, int position) {
+        mFetchDataControl.go2Detail(mFetchDataControl.mHomeEntity.posters.get(position));
     }
 }

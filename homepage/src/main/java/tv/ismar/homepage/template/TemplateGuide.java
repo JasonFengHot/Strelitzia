@@ -250,25 +250,11 @@ public class TemplateGuide extends Template implements BaseControl.ControlCallBa
 
     @Override
     public void itemSelected(View view, int position) {//item点击事件
-        int pk=0;
-        String modelName="";
-        String contentModel="";
-        String url="";
-        String title="";
         if(position == 0){//第一张大图
-            pk = mFetchDataControl.mHomeEntity.bg_image.pk;
-            modelName = mFetchDataControl.mHomeEntity.bg_image.model_name;
-            contentModel = mFetchDataControl.mHomeEntity.bg_image.content_model;
-            url = mFetchDataControl.mHomeEntity.bg_image.content_url;
-            title = mFetchDataControl.mHomeEntity.bg_image.title;
+            mControl.go2Detail(mFetchDataControl.mHomeEntity.bg_image);
         } else {
-            pk = mFetchDataControl.mHomeEntity.posters.get(position).pk;
-            modelName = mFetchDataControl.mHomeEntity.posters.get(position).model_name;
-            contentModel = mFetchDataControl.mHomeEntity.posters.get(position).content_model;
-            url = mFetchDataControl.mHomeEntity.posters.get(position).content_url;
-            title = mFetchDataControl.mHomeEntity.posters.get(position).title;
+            mControl.go2Detail(mFetchDataControl.mHomeEntity.posters.get(position));
         }
-        mControl.go2Detail(pk, modelName, contentModel, url, title);
     }
 
     @Override

@@ -116,6 +116,6 @@ public class TemplateConlumn extends Template implements BaseControl.ControlCall
 
     @Override
     public void itemSelected(View view, int position) {
-
+        mFetchDataControl.go2Detail(mFetchDataControl.mHomeEntity.posters.get(position));
     }
 }

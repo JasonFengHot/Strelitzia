@@ -7,7 +7,11 @@ import android.content.Intent;
 import rx.Observer;
 import tv.ismar.app.core.PageIntent;
 import tv.ismar.app.core.Source;
+import tv.ismar.app.entity.banner.BannerPoster;
+import tv.ismar.app.entity.banner.BigImage;
+import tv.ismar.app.entity.banner.HomeEntity;
 import tv.ismar.app.network.SkyService;
+import tv.ismar.library.util.StringUtils;
 
 /**
  * @AUTHOR: xi
@@ -50,6 +54,20 @@ public class BaseControl {
     }
 
     /**
+     * 跳转到详情页
+     * @param entity
+     */
+    public void go2Detail(BigImage entity){
+        if(entity == null) return;
+        go2Detail(entity.pk, entity.model_name, entity.content_model, entity.content_url, entity.title);
+    }
+
+    public void go2Detail(BannerPoster entity){
+        if(entity == null) return;
+        go2Detail(entity.pk, entity.model_name, entity.content_model, entity.content_url, entity.title);
+    }
+
+    /**
      * 在原有代码中扒出来的代码，标记不清楚啥意思，暂不注释
      * @param pk
      * @param modelName
@@ -58,6 +76,8 @@ public class BaseControl {
      * @param title
      */
     public void go2Detail(int pk, String modelName, String contentModel, String url, String title) {
+        if(StringUtils.isEmpty(modelName) || StringUtils.isEmpty(contentModel)
+                || StringUtils.isEmpty(url)) return;
         Intent intent = new Intent();
         if (modelName.contains("item")) {
             if (contentModel.contains("gather")) {

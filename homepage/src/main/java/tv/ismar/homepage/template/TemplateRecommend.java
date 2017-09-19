@@ -96,6 +96,6 @@ public class TemplateRecommend extends Template implements BaseControl.ControlCa
 
     @Override
     public void itemSelected(View view, int position) {
-
+        mFetchDataControl.go2Detail(mFetchDataControl.mHomeEntity.posters.get(position));
     }
 }

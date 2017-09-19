@@ -124,6 +124,6 @@ public class TemplateTvPlay extends Template implements BaseControl.ControlCallB
 
     @Override
     public void itemSelected(View view, int position) {
-
+        mFetchDataControl.go2Detail(mFetchDataControl.mHomeEntity.posters.get(position));
     }
 }

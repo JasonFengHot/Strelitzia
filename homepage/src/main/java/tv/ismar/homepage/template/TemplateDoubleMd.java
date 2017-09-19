@@ -125,5 +125,10 @@ public class TemplateDoubleMd extends Template implements BaseControl.ControlCal
 
     @Override
     public void itemSelected(View view, int position) {
+        if(position == 0){//第一张大图
+            mFetchDataControl.go2Detail(mFetchDataControl.mHomeEntity.bg_image);
+        } else {
+            mFetchDataControl.go2Detail(mFetchDataControl.mHomeEntity.posters.get(position));
+        }
     }
 }

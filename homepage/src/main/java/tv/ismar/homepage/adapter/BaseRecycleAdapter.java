@@ -13,10 +13,15 @@ import tv.ismar.homepage.OnItemSelectedListener;
  * @DESC: 适配器基类
  */
 
-public abstract class BaseRecycleAdapter{
+public abstract class BaseRecycleAdapter<VH extends RecyclerView.ViewHolder> extends RecyclerView.Adapter{
     public OnItemSelectedListener mItemSelectedListener = null;
 
     protected void setOnItemSelectedListener(OnItemSelectedListener listener){
         this.mItemSelectedListener = listener;
+    }
+
+    @Override
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+
     }
 }
