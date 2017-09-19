@@ -51,9 +51,9 @@ public class GuideAdapter extends RecyclerView.Adapter<GuideAdapter.GuideViewHol
     @Override
     public GuideViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (mHeaderView != null && viewType == TYPE_HEADER)
-            return new GuideViewHolder(mHeaderView);
+            return new GuideViewHolder(mHeaderView, mClickListener);
         View view = LayoutInflater.from(mContext).inflate(R.layout.banner_guide_item,parent,false);
-        return new GuideViewHolder(view);
+        return new GuideViewHolder(view, mClickListener);
     }
 
     @Override
@@ -97,26 +97,18 @@ public class GuideAdapter extends RecyclerView.Adapter<GuideAdapter.GuideViewHol
         public TextView mTitleTv;//标题
         public View mMarginLeftView;//左边距
 
-        public int mPosition;//item位置
-
-        public GuideViewHolder(View itemView) {
-            super(itemView);
+        public GuideViewHolder(View itemView, OnItemSelectedListener listener) {
+            super(itemView, listener);
             mPosterIg = (ImageView) itemView.findViewById(R.id.guide_recycle_item_poster);
             mLtIconTv = (ImageView) itemView.findViewById(R.id.guide_recycle_item_lt_icon);
             mRbIconTv = (ImageView) itemView.findViewById(R.id.guide_recycle_item_rb_icon);
             mTitleTv = (TextView) itemView.findViewById(R.id.guide_recycle_item_title);
             mMarginLeftView = itemView.findViewById(R.id.guide_margin_left);
-            itemView.findViewById(R.id.guide_ismartv_linear_layout).setOnClickListener(this);
         }
 
         @Override
         protected int getScaleLayoutId() {
             return R.id.guide_ismartv_linear_layout;
-        }
-
-        @Override
-        public void onClick(View v) {//item选中
-            mClickListener.itemSelected(v, mPosition);
         }
     }
 }
