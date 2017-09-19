@@ -20,11 +20,11 @@ public abstract class BaseViewHolder extends RecyclerView.ViewHolder implements
     public int mPosition;//item位置
     private OnItemSelectedListener mClickListener = null;
 
-    public BaseViewHolder(View itemView){
+    public BaseViewHolder(View itemView, BaseRecycleAdapter baseAdapter) {
         super(itemView);
+        this.mClickListener = baseAdapter.mClickListener;
         constructure();
     }
-
 
     public BaseViewHolder(View itemView, OnItemSelectedListener listener) {
         super(itemView);

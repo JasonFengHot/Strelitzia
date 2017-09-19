@@ -23,25 +23,20 @@ import tv.ismar.homepage.R;
  * @DESC: 说明
  */
 
-public class RecommendAdapter extends RecyclerView.Adapter<RecommendAdapter.RecommendViewHolder>{
+public class RecommendAdapter extends BaseRecycleAdapter<RecommendAdapter.RecommendViewHolder>{
 
     private Context mContext;
     private List<BannerRecommend> mData;
-    private OnItemSelectedListener mClickListener = null;
 
     public RecommendAdapter(Context context, List<BannerRecommend> data){
         this.mContext = context;
         this.mData = data;
     }
 
-    public void setOnItemSelectedListener(OnItemSelectedListener listener){
-        this.mClickListener = listener;
-    }
-
     @Override
     public RecommendViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(mContext).inflate(R.layout.banner_conlumn_item,parent,false);
-        return new RecommendViewHolder(view, mClickListener);
+        return new RecommendViewHolder(view);
     }
 
     @Override
@@ -65,11 +60,10 @@ public class RecommendAdapter extends RecyclerView.Adapter<RecommendAdapter.Reco
         public TextView mTitle;
         public ImageView mPoster;
 
-        public RecommendViewHolder(View itemView, OnItemSelectedListener listener) {
-            super(itemView, listener);
+        public RecommendViewHolder(View itemView) {
+            super(itemView, RecommendAdapter.this);
             mTitle = (TextView) itemView.findViewById(R.id.conlumn_item_tv);
             mPoster = (ImageView) itemView.findViewById(R.id.conlumn_item_poster);
-            itemView.findViewById(R.id.conlumn_ismartv_linear_layout).setOnClickListener(this);
         }
 
         @Override

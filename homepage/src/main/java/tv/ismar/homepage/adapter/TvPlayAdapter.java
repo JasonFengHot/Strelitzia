@@ -27,26 +27,21 @@ import static android.view.View.SCALE_Y;
  * @DESC: 电视剧适配器
  */
 
-public class TvPlayAdapter extends RecyclerView.Adapter<TvPlayAdapter.TvPlayerViewHolder>{
+public class TvPlayAdapter extends BaseRecycleAdapter<TvPlayAdapter.TvPlayerViewHolder>{
 
     private Context mContext;
     private List<BannerPoster> mData;
     private boolean mMarginLeftEnable = false;
-    private OnItemSelectedListener mClickListener = null;
 
     public TvPlayAdapter(Context context, List<BannerPoster> data){
         this.mContext = context;
         this.mData = data;
     }
 
-    public void setOnItemSelectedListener(OnItemSelectedListener listener){
-        this.mClickListener = listener;
-    }
-
     @Override
     public TvPlayAdapter.TvPlayerViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(mContext).inflate(R.layout.banner_tv_player_item,parent,false);
-        return new TvPlayerViewHolder(view, mClickListener);
+        return new TvPlayerViewHolder(view);
     }
 
     @Override
@@ -72,15 +67,15 @@ public class TvPlayAdapter extends RecyclerView.Adapter<TvPlayAdapter.TvPlayerVi
         this.mMarginLeftEnable = enable;
     }
 
-    public static class TvPlayerViewHolder extends BaseViewHolder{
+    public class TvPlayerViewHolder extends BaseViewHolder{
         public ImageView mPosterIg;//海报
         public ImageView mLtIconTv;//左上icon
         public ImageView mRbIconTv;//右下icon
         public TextView mTitleTv;//标题
         public View mMarginLeftView;//左边距
 
-        public TvPlayerViewHolder(View itemView, OnItemSelectedListener listener) {
-            super(itemView, listener);
+        public TvPlayerViewHolder(View itemView) {
+            super(itemView, TvPlayAdapter.this);
             mPosterIg = (ImageView) itemView.findViewById(R.id.tv_player_item_poster);
             mLtIconTv = (ImageView) itemView.findViewById(R.id.tv_player_item_lt_icon);
             mRbIconTv = (ImageView) itemView.findViewById(R.id.tv_player_item_rb_icon);

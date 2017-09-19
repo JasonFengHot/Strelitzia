@@ -1,7 +1,6 @@
 package tv.ismar.homepage.adapter;
 
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,7 +13,6 @@ import com.squareup.picasso.Picasso;
 import java.util.List;
 
 import tv.ismar.app.entity.banner.BannerPoster;
-import tv.ismar.homepage.OnItemSelectedListener;
 import tv.ismar.homepage.R;
 
 /**
@@ -23,14 +21,13 @@ import tv.ismar.homepage.R;
  * @DESC: 导视recycleview适配器
  */
 
-public class GuideAdapter extends RecyclerView.Adapter<GuideAdapter.GuideViewHolder>{
+public class GuideAdapter extends BaseRecycleAdapter<GuideAdapter.GuideViewHolder>{
     public static final int TYPE_HEADER = 0;//头部
     public static final int TYPE_NORMAL = 1;//一般item
 
     private Context mContext;
     private List<BannerPoster> mData;
     private boolean mMarginLeftEnable = false;
-    private OnItemSelectedListener mClickListener = null;
 
     private View mHeaderView;
 
@@ -44,16 +41,12 @@ public class GuideAdapter extends RecyclerView.Adapter<GuideAdapter.GuideViewHol
         notifyItemInserted(0);
     }
 
-    public void setOnItemSelectedListener(OnItemSelectedListener listener){
-        this.mClickListener = listener;
-    }
-
     @Override
     public GuideViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (mHeaderView != null && viewType == TYPE_HEADER)
-            return new GuideViewHolder(mHeaderView, mClickListener);
+            return new GuideViewHolder(mHeaderView);
         View view = LayoutInflater.from(mContext).inflate(R.layout.banner_guide_item,parent,false);
-        return new GuideViewHolder(view, mClickListener);
+        return new GuideViewHolder(view);
     }
 
     @Override
@@ -97,8 +90,8 @@ public class GuideAdapter extends RecyclerView.Adapter<GuideAdapter.GuideViewHol
         public TextView mTitleTv;//标题
         public View mMarginLeftView;//左边距
 
-        public GuideViewHolder(View itemView, OnItemSelectedListener listener) {
-            super(itemView, listener);
+        public GuideViewHolder(View itemView) {
+            super(itemView, GuideAdapter.this);
             mPosterIg = (ImageView) itemView.findViewById(R.id.guide_recycle_item_poster);
             mLtIconTv = (ImageView) itemView.findViewById(R.id.guide_recycle_item_lt_icon);
             mRbIconTv = (ImageView) itemView.findViewById(R.id.guide_recycle_item_rb_icon);

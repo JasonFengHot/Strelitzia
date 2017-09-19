@@ -24,25 +24,20 @@ import tv.ismar.homepage.R;
  * @DESC: 栏目RecyclerView适配器
  */
 
-public class ConlumnAdapter extends RecyclerView.Adapter<ConlumnAdapter.ConlumnViewHolder> {
+public class ConlumnAdapter extends BaseRecycleAdapter<ConlumnAdapter.ConlumnViewHolder> {
 
     private Context mContext;
     private List<BannerPoster> mData;
-    private OnItemSelectedListener mClickListener = null;
 
     public ConlumnAdapter(Context context, List<BannerPoster> data){
         this.mContext = context;
         this.mData = data;
     }
 
-    public void setOnItemSelectedListener(OnItemSelectedListener listener){
-        this.mClickListener = listener;
-    }
-
     @Override
     public ConlumnViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(mContext).inflate(R.layout.banner_conlumn_item,parent,false);
-        return new ConlumnViewHolder(view, mClickListener);
+        return new ConlumnViewHolder(view);
     }
 
     @Override
@@ -62,16 +57,14 @@ public class ConlumnAdapter extends RecyclerView.Adapter<ConlumnAdapter.ConlumnV
         return (mData!=null)? mData.size() : 0;
     }
 
-    public static class ConlumnViewHolder extends BaseViewHolder{
+    public class ConlumnViewHolder extends BaseViewHolder{
         public TextView mTitle;
         public ImageView mPoster;
 
-        public ConlumnViewHolder(View itemView, OnItemSelectedListener listener) {
-            super(itemView, listener);
+        public ConlumnViewHolder(View itemView) {
+            super(itemView, ConlumnAdapter.this);
             mTitle = (TextView) itemView.findViewById(R.id.conlumn_item_tv);
             mPoster = (ImageView) itemView.findViewById(R.id.conlumn_item_poster);
-            itemView.findViewById(R.id.conlumn_ismartv_linear_layout).setOnFocusChangeListener(this);
-            itemView.findViewById(R.id.conlumn_ismartv_linear_layout).setOnClickListener(this);
         }
 
         @Override

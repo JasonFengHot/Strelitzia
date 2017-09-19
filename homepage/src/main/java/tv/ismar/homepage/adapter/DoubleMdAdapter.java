@@ -1,8 +1,6 @@
 package tv.ismar.homepage.adapter;
 
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,7 +13,6 @@ import com.squareup.picasso.Picasso;
 import java.util.List;
 
 import tv.ismar.app.entity.banner.BannerPoster;
-import tv.ismar.homepage.OnItemSelectedListener;
 import tv.ismar.homepage.R;
 
 /**
@@ -24,7 +21,7 @@ import tv.ismar.homepage.R;
  * @DESC: 竖版双行适配器
  */
 
-public class DoubleMdAdapter extends RecyclerView.Adapter<DoubleMdAdapter.DoubleMdViewHolder>{
+public class DoubleMdAdapter extends BaseRecycleAdapter<DoubleMdAdapter.DoubleMdViewHolder>{
 
     public static final int TYPE_HEADER = 0;//头部
     public static final int TYPE_NORMAL = 1;//一般item
@@ -32,7 +29,6 @@ public class DoubleMdAdapter extends RecyclerView.Adapter<DoubleMdAdapter.Double
     private Context mContext;
     private List<BannerPoster> mData;
 
-    private OnItemSelectedListener mClickListener = null;
     private View mHeaderView;
 
     public DoubleMdAdapter(Context context, List<BannerPoster> data){
@@ -45,22 +41,6 @@ public class DoubleMdAdapter extends RecyclerView.Adapter<DoubleMdAdapter.Double
         notifyItemInserted(0);
     }
 
-    public void setOnItemSelectedListener(OnItemSelectedListener listener){
-        this.mClickListener = listener;
-    }
-
-    @Override
-    public void onViewAttachedToWindow(DoubleMdViewHolder holder) {
-        super.onViewAttachedToWindow(holder);
-        ViewGroup.LayoutParams lp = holder.itemView.getLayoutParams();
-        if (lp != null
-                && lp instanceof StaggeredGridLayoutManager.LayoutParams
-                && holder.getLayoutPosition() == 0) {
-            StaggeredGridLayoutManager.LayoutParams p = (StaggeredGridLayoutManager.LayoutParams) lp;
-            p.setFullSpan(true);
-        }
-    }
-
     @Override
     public int getItemViewType(int position) {
         if (mHeaderView == null) return TYPE_NORMAL;
@@ -71,9 +51,9 @@ public class DoubleMdAdapter extends RecyclerView.Adapter<DoubleMdAdapter.Double
     @Override
     public DoubleMdViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (mHeaderView != null && viewType == TYPE_HEADER)
-            return new DoubleMdViewHolder(mHeaderView, mClickListener);
+            return new DoubleMdViewHolder(mHeaderView);
         View view = LayoutInflater.from(mContext).inflate(R.layout.banner_double_md_item,parent,false);
-        return new DoubleMdViewHolder(view, mClickListener);
+        return new DoubleMdViewHolder(view);
     }
 
     @Override
@@ -102,13 +82,12 @@ public class DoubleMdAdapter extends RecyclerView.Adapter<DoubleMdAdapter.Double
         public TextView mTitleTv;//标题
         public int mPosition;
 
-        public DoubleMdViewHolder(View itemView, OnItemSelectedListener listener) {
-            super(itemView, listener);
+        public DoubleMdViewHolder(View itemView) {
+            super(itemView, DoubleMdAdapter.this);
             mPosterIg = (ImageView) itemView.findViewById(R.id.double_md_item_poster);
             mLtIconTv = (ImageView) itemView.findViewById(R.id.double_md_item_lt_icon);
             mRbIconTv = (ImageView) itemView.findViewById(R.id.double_md_item_rb_icon);
             mTitleTv = (TextView) itemView.findViewById(R.id.double_md_item_title);
-            itemView.findViewById(R.id.double_md_ismartv_linear_layout).setOnClickListener(this);
         }
 
         @Override
