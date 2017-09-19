@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/history_bg"
@@ -7,6 +7,7 @@
     android:clipChildren="false"
     >
     <RelativeLayout
+        android:id="@+id/title_layout"
         android:layout_width="match_parent"
         android:layout_height="@dimen/history_105"
         android:layout_gravity="center_vertical"
@@ -61,30 +62,8 @@
         android:layout_marginTop="@dimen/history_50"
         android:clipChildren="false"
         android:clipToPadding="false"
+        android:layout_below="@+id/title_layout"
         >
-        <tv.ismar.view.IsmartvLinearLayout
-            android:id="@+id/history_edit"
-            android:layout_width="@dimen/history_432"
-            android:layout_height="@dimen/history_306"
-            android:layout_marginTop="@dimen/history_142"
-            android:layout_marginLeft="@dimen/history_100"
-            android:background="#00000000"
-            android:foreground="@drawable/poster_focus_selector"
-            android:focusableInTouchMode="true"
-            android:focusable="true"
-            android:clipChildren="false"
-            android:clipToPadding="false"
-            android:visibility="gone"
-            android:nextFocusRight="@+id/history_edit"
-            >
-            <ImageView
-                android:id="@+id/first_line_delete_image"
-                android:layout_width="@dimen/history_432"
-                android:layout_height="@dimen/history_306"
-                android:background="@drawable/history_delete_image"
-                />
-
-        </tv.ismar.view.IsmartvLinearLayout>
         <ImageView
             android:id="@+id/arrow_line_1"
             android:layout_width="@dimen/history_1820"
@@ -100,7 +79,6 @@
             android:orientation="vertical"
             android:clipChildren="false"
             android:clipToPadding="false"
-            android:layout_toRightOf="@+id/history_edit"
             >
             <TextView
                 android:id="@+id/history_layout_title"
@@ -132,30 +110,8 @@
         android:layout_height="@dimen/history_473"
         android:clipChildren="false"
         android:clipToPadding="false"
+        android:layout_below="@+id/history_layout"
         >
-        <tv.ismar.view.IsmartvLinearLayout
-            android:id="@+id/favorite_edit"
-            android:layout_width="@dimen/history_432"
-            android:layout_height="@dimen/history_306"
-            android:layout_marginTop="@dimen/history_142"
-            android:layout_marginLeft="@dimen/history_100"
-            android:background="#00000000"
-            android:foreground="@drawable/poster_focus_selector"
-            android:focusableInTouchMode="true"
-            android:focusable="true"
-            android:clipChildren="false"
-            android:clipToPadding="false"
-            android:visibility="gone"
-            android:nextFocusRight="@id/favorite_edit"
-            >
-            <ImageView
-                android:id="@+id/second_line_delete_image"
-                android:layout_width="@dimen/history_432"
-                android:layout_height="@dimen/history_306"
-                android:background="@drawable/favorite_delete_image"
-                />
-
-        </tv.ismar.view.IsmartvLinearLayout>
         <ImageView
             android:id="@+id/arrow_line_2"
             android:layout_width="@dimen/history_1820"
@@ -171,7 +127,6 @@
             android:orientation="vertical"
             android:clipChildren="false"
             android:clipToPadding="false"
-            android:layout_toRightOf="@+id/favorite_edit"
             >
             <TextView
                 android:id="@+id/favorite_lyout_title"
@@ -197,4 +152,60 @@
         </LinearLayout>
         
     </RelativeLayout>
-</LinearLayout>
+    <ImageView
+        android:id="@+id/edit_shadow"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#000000"
+        android:alpha="0.75"
+        android:visibility="gone"
+        />
+    <tv.ismar.view.IsmartvLinearLayout
+        android:id="@+id/history_edit"
+        android:layout_width="@dimen/history_432"
+        android:layout_height="@dimen/history_306"
+        android:layout_marginTop="@dimen/history_259"
+        android:layout_marginLeft="@dimen/history_100"
+        android:background="#00000000"
+        android:foreground="@drawable/poster_focus_selector"
+        android:focusableInTouchMode="true"
+        android:focusable="true"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:visibility="gone"
+        android:nextFocusRight="@+id/history_edit"
+        >
+        <ImageView
+            android:id="@+id/first_line_delete_image"
+            android:layout_width="@dimen/history_432"
+            android:layout_height="@dimen/history_306"
+            android:background="@drawable/history_delete_image"
+            />
+
+    </tv.ismar.view.IsmartvLinearLayout>
+    <tv.ismar.view.IsmartvLinearLayout
+        android:id="@+id/favorite_edit"
+        android:layout_width="@dimen/history_432"
+        android:layout_height="@dimen/history_306"
+        android:layout_marginTop="@dimen/history_169"
+        android:layout_marginLeft="@dimen/history_100"
+        android:layout_below="@+id/history_edit"
+        android:background="#00000000"
+        android:foreground="@drawable/poster_focus_selector"
+        android:focusableInTouchMode="true"
+        android:focusable="true"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:visibility="gone"
+        android:nextFocusRight="@id/favorite_edit"
+        android:nextFocusDown="@id/favorite_edit"
+        >
+        <ImageView
+            android:id="@+id/second_line_delete_image"
+            android:layout_width="@dimen/history_432"
+            android:layout_height="@dimen/history_306"
+            android:background="@drawable/favorite_delete_image"
+            />
+
+    </tv.ismar.view.IsmartvLinearLayout>
+</RelativeLayout>

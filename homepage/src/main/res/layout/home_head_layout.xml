@@ -16,7 +16,7 @@
         android:layout_height="@dimen/guide_title_logo_height"
         android:layout_marginLeft="@dimen/guide_title_logo_margin_left"
         android:layout_marginTop="@dimen/guide_title_logo_margin_top"
-        android:background="@drawable/guide_title_logo" />
+        android:background="@drawable/baishi_logo" />
 
     <RelativeLayout
         android:layout_width="@dimen/guide_title_react_width"
