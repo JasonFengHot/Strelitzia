@@ -42,7 +42,6 @@ public class FilterPosterAdapter extends RecyclerView.Adapter<FilterPosterAdapte
     private Context mContext;
     private ItemList mItemList;
     private static boolean mIsVertical;
-    private int mTotalItemCount;
     private OnItemClickListener itemClickListener;
     private OnItemFocusedListener itemFocusedListener;
     private ArrayList<Integer> mSpecialPos;
@@ -50,14 +49,17 @@ public class FilterPosterAdapter extends RecyclerView.Adapter<FilterPosterAdapte
     private int focusedPosition=-1;
     private Rect rect;
 
-    public FilterPosterAdapter(Context context, ItemList itemList, boolean isVertical, int totalItemCount, ArrayList<Integer> specialPos, SectionList sectionList) {
+    public FilterPosterAdapter(Context context, ItemList itemList, boolean isVertical, ArrayList<Integer> specialPos, SectionList sectionList) {
         this.mContext = context;
         this.mItemList = itemList;
         this.mIsVertical=isVertical;
-        this.mTotalItemCount=totalItemCount;
         this.mSpecialPos=specialPos;
         this.mSectionList=sectionList;
         rect=new Rect(0,0,1920,540);
+    }
+
+    public void setmSpecialPos(ArrayList<Integer> mSpecialPos) {
+        this.mSpecialPos = mSpecialPos;
     }
 
     public void setmItemList(ItemList mItemList) {
@@ -219,12 +221,9 @@ public class FilterPosterAdapter extends RecyclerView.Adapter<FilterPosterAdapte
 
     @Override
     public int getItemCount() {
-        if(mTotalItemCount!=0) {
-            return mTotalItemCount;
-        }else{
             return mItemList.objects.size();
-        }
     }
+
 
     @Override
     public int getItemViewType(int position) {
