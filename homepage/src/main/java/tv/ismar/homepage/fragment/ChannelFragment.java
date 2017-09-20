@@ -22,6 +22,7 @@ import tv.ismar.homepage.template.TemplateMovie;
 import tv.ismar.homepage.template.TemplateOrder;
 import tv.ismar.homepage.template.TemplateRecommend;
 import tv.ismar.homepage.template.TemplateTvPlay;
+import tv.ismar.homepage.widget.scroll.RecycleLinearLayout;
 import tv.ismar.library.util.StringUtils;
 
 /**
@@ -34,7 +35,7 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
     private FetchDataControl mControl = null;//业务类引用
     private String mChannel;//频道
 
-    private ViewGroup mLinearContainer;//banner容器
+    private RecycleLinearLayout mLinearContainer;//banner容器
 
     @Override
     public void onAttach(Context context) {
@@ -51,7 +52,7 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
     }
 
     private void findView(View view){
-        mLinearContainer = (ViewGroup) view.findViewById(R.id.scroll_linear_container);
+        mLinearContainer = (RecycleLinearLayout) view.findViewById(R.id.scroll_linear_container);
     }
 
     public void setChannel(String channel){
@@ -128,9 +129,10 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
                 new TemplateCenter(getContext()).setView(bannerView, bundle);
             }
             if(bannerView != null){
-                mLinearContainer.addView(bannerView);
+                mLinearContainer.setView(bannerView);
             }
         }
+        mLinearContainer.initView();
     }
 
     private View createView(int layoutId){

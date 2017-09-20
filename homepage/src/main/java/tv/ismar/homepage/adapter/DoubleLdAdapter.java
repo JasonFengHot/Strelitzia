@@ -63,6 +63,7 @@ public class DoubleLdAdapter extends BaseRecycleAdapter<DoubleLdAdapter.DoubleLd
 
     @Override
     public int getItemCount() {
+        if(mData == null) return 0;
         return (mHeaderView==null) ? mData.size() : mData.size() + 1;
     }
 

@@ -1,8 +1,6 @@
 package tv.ismar.homepage.adapter;
 
-import android.animation.ObjectAnimator;
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,11 +13,7 @@ import com.squareup.picasso.Picasso;
 import java.util.List;
 
 import tv.ismar.app.entity.banner.BannerPoster;
-import tv.ismar.homepage.OnItemSelectedListener;
 import tv.ismar.homepage.R;
-
-import static android.view.View.SCALE_X;
-import static android.view.View.SCALE_Y;
 
 /**
  * @AUTHOR: xi
@@ -27,25 +21,20 @@ import static android.view.View.SCALE_Y;
  * @DESC: 居中RecyclerView适配器
  */
 
-public class CenterAdapter extends RecyclerView.Adapter<CenterAdapter.CenterViewHolder> {
+public class CenterAdapter extends BaseRecycleAdapter<CenterAdapter.CenterViewHolder> {
 
     private Context mContext;
     private List<BannerPoster> mData;
-    private OnItemSelectedListener mClickListener = null;
 
     public CenterAdapter(Context context, List<BannerPoster> data){
         this.mContext = context;
         this.mData = data;
     }
 
-    public void setOnItemSelectedListener(OnItemSelectedListener listener){
-        this.mClickListener = listener;
-    }
-
     @Override
     public CenterViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(mContext).inflate(R.layout.banner_center_item,parent,false);
-        return new CenterViewHolder(view, mClickListener);
+        return new CenterViewHolder(view);
     }
 
     @Override
@@ -64,12 +53,12 @@ public class CenterAdapter extends RecyclerView.Adapter<CenterAdapter.CenterView
         return (mData!=null)? mData.size() : 0;
     }
 
-    public static class CenterViewHolder extends BaseViewHolder{
+    public class CenterViewHolder extends BaseViewHolder{
         public TextView mTitle;
         public ImageView mPoster;
 
-        public CenterViewHolder(View itemView, OnItemSelectedListener listener) {
-            super(itemView, listener);
+        public CenterViewHolder(View itemView) {
+            super(itemView, CenterAdapter.this);
             mTitle = (TextView) itemView.findViewById(R.id.center_item_title);
             mPoster = (ImageView) itemView.findViewById(R.id.center_item_poster);
         }

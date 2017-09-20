@@ -23,16 +23,10 @@ public abstract class BaseViewHolder extends RecyclerView.ViewHolder implements
     public BaseViewHolder(View itemView, BaseRecycleAdapter baseAdapter) {
         super(itemView);
         this.mClickListener = baseAdapter.mClickListener;
-        constructure();
+        initListener();
     }
 
-    public BaseViewHolder(View itemView, OnItemSelectedListener listener) {
-        super(itemView);
-        this.mClickListener = listener;
-        constructure();
-    }
-
-    private void constructure(){
+    private void initListener(){
         itemView.findViewById(getScaleLayoutId()).setOnFocusChangeListener(this);
         itemView.findViewById(getScaleLayoutId()).setOnClickListener(this);
     }

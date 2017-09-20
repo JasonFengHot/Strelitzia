@@ -72,6 +72,7 @@ public class DoubleMdAdapter extends BaseRecycleAdapter<DoubleMdAdapter.DoubleMd
 
     @Override
     public int getItemCount() {
+        if(mData == null) return 0;
         return (mHeaderView==null) ? mData.size() : mData.size() + 1;
     }
 

@@ -77,7 +77,7 @@ public class BaseControl {
      */
     public void go2Detail(int pk, String modelName, String contentModel, String url, String title) {
         if(StringUtils.isEmpty(modelName) || StringUtils.isEmpty(contentModel)
-                || StringUtils.isEmpty(url)) return;
+                /*|| StringUtils.isEmpty(url)*/) return;
         Intent intent = new Intent();
         if (modelName.contains("item")) {
             if (contentModel.contains("gather")) {

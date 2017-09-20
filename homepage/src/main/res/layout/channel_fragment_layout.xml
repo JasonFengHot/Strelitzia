@@ -1,16 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:clipChildren="false"
-            android:clipToPadding="false">
-    <LinearLayout
-        android:id="@+id/scroll_linear_container"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:clipChildren="false"
-        android:clipToPadding="false"
-        android:focusable="false"
-        android:orientation="vertical">
-    </LinearLayout>
-</ScrollView>
+<tv.ismar.homepage.widget.scroll.RecycleLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:clipChildren="false"
+    android:clipToPadding="false"
+    android:focusable="false"
+    android:id="@+id/scroll_linear_container"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    android:orientation="vertical"></tv.ismar.homepage.widget.scroll.RecycleLinearLayout>

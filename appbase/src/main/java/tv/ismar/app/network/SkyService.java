@@ -60,6 +60,7 @@ import tv.ismar.app.entity.VideoEntity;
 import tv.ismar.app.entity.banner.AccountsItemSubscribeExistsEntity;
 import tv.ismar.app.entity.banner.BannerEntity;
 import tv.ismar.app.entity.banner.BannerRecommend;
+import tv.ismar.app.entity.banner.ConnerEntity;
 import tv.ismar.app.entity.banner.HomeEntity;
 import tv.ismar.app.models.ActorRelateRequestParams;
 import tv.ismar.app.models.FilterConditions;
@@ -546,6 +547,9 @@ public interface SkyService {
     @GET("api/tv/homepage/banner/")
     Observable<GuideBanner[]> getGuideBanners(
     );
+
+    @GET("/api/new_dpi/")
+    Observable<List<ConnerEntity>> getConner();
 
     @GET("api/tv/banners/{channel}/")
     Observable<GuideBanner[]> getChannelBanners(
