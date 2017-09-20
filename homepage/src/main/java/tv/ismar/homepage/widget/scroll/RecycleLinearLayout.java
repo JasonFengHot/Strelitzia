@@ -57,7 +57,7 @@ public class RecycleLinearLayout extends LinearLayout {
                 removeViewAt(0);
             }
             if(mSelectedChildIndex+2<mAllViews.size() &&
-                    !mAllViews.get(mSelectedChildIndex+2).isAttachedToWindow()){
+                    (mAllViews.get(mSelectedChildIndex).getWindowVisibility()==View.GONE)){
                 addView(mAllViews.get(mSelectedChildIndex+2));
             }
             requestFirstFocuse();
@@ -65,7 +65,6 @@ public class RecycleLinearLayout extends LinearLayout {
     }
 
     /*向上按键*/
-    @TargetApi(Build.VERSION_CODES.KITKAT)
     public void upEvent(){
         if(mSelectedChildIndex > 0){
             mSelectedChildIndex--;
@@ -74,7 +73,7 @@ public class RecycleLinearLayout extends LinearLayout {
                 removeViewAt(getChildCount()-1);
             }
             if(mSelectedChildIndex >= 0 &&
-                    !mAllViews.get(mSelectedChildIndex).isAttachedToWindow()){
+                    (mAllViews.get(mSelectedChildIndex).getWindowVisibility()==View.GONE)){
                 addView(mAllViews.get(mSelectedChildIndex), 0);
             }
             requestFirstFocuse();
