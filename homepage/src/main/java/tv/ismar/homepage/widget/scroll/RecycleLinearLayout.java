@@ -53,13 +53,15 @@ public class RecycleLinearLayout extends LinearLayout {
         if(mSelectedChildIndex < mAllViews.size()-1){
             mSelectedChildIndex++;
             mIsFirst = false;
+            Log.i("RecycleLinearLayout", "down listsize:"+mAllViews.size());
             Log.i("RecycleLinearLayout", "down mSelectedChildIndex:"+mSelectedChildIndex);
             if(getChildCount() > 1){
-                getChildAt(1).requestFocus();
                 removeViewAt(0);
+                getChildAt(0).requestFocus();
             }
             if(mSelectedChildIndex+2<mAllViews.size() &&
-                    (mAllViews.get(mSelectedChildIndex).getWindowVisibility()==View.GONE)){
+                    (mAllViews.get(mSelectedChildIndex+2).getWindowVisibility()==View.GONE)){
+                Log.i("RecycleLinearLayout", "down visibility:"+(mAllViews.get(mSelectedChildIndex+2).getWindowVisibility()==View.GONE));
                 addView(mAllViews.get(mSelectedChildIndex+2));
             }
         }
@@ -71,13 +73,13 @@ public class RecycleLinearLayout extends LinearLayout {
             mSelectedChildIndex--;
             Log.i("RecycleLinearLayout", "up mSelectedChildIndex:"+mSelectedChildIndex);
             if(getChildCount() > 1){
-                getChildAt(0).requestFocus();
                 removeViewAt(getChildCount()-1);
             }
             if(mSelectedChildIndex >= 0 &&
                     (mAllViews.get(mSelectedChildIndex).getWindowVisibility()==View.GONE)){
                 addView(mAllViews.get(mSelectedChildIndex), 0);
             }
+            getChildAt(0).requestFocus();
         }
 
     }
@@ -100,6 +102,7 @@ public class RecycleLinearLayout extends LinearLayout {
             }
         }
         if(keyCode==KeyEvent.KEYCODE_DPAD_DOWN || keyCode==KeyEvent.KEYCODE_DPAD_UP){
+            Log.i("RecycleLinearLayout", "mIsFirst:"+mIsFirst);
             if(!mIsFirst){
                 mIsFirst = (mSelectedChildIndex<=0);
                 return true;
