@@ -138,4 +138,10 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
     private View createView(int layoutId){
         return LayoutInflater.from(getContext()).inflate(layoutId, null);
     }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mLinearContainer.clearView();
+    }
 }

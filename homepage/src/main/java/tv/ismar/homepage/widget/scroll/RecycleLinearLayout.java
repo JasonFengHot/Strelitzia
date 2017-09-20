@@ -1,6 +1,8 @@
 package tv.ismar.homepage.widget.scroll;
 
+import android.annotation.TargetApi;
 import android.content.Context;
+import android.os.Build;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -46,7 +48,8 @@ public class RecycleLinearLayout extends LinearLayout {
         addView(mAllViews.get(2));
     }
 
-    public void downEvent(){//向下按键
+    /*向下按键*/
+    public void downEvent(){
         if(mSelectedChildIndex < mAllViews.size()-1){
             mSelectedChildIndex++;
             Log.i("RecycleLinearLayout", "down mSelectedChildIndex:"+mSelectedChildIndex);
@@ -61,7 +64,9 @@ public class RecycleLinearLayout extends LinearLayout {
         }
     }
 
-    public void upEvent(){//向上
+    /*向上按键*/
+    @TargetApi(Build.VERSION_CODES.KITKAT)
+    public void upEvent(){
         if(mSelectedChildIndex > 0){
             mSelectedChildIndex--;
             Log.i("RecycleLinearLayout", "up mSelectedChildIndex:"+mSelectedChildIndex);
@@ -78,7 +83,6 @@ public class RecycleLinearLayout extends LinearLayout {
     }
 
     private void requestFirstFocuse(){
-//        getChildAt(0).setFocusable(true);
         getChildAt(0).requestFocus();
     }
 
