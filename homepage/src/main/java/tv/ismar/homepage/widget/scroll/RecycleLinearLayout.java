@@ -52,15 +52,16 @@ public class RecycleLinearLayout extends LinearLayout {
     public void downEvent(){
         if(mSelectedChildIndex < mAllViews.size()-1){
             mSelectedChildIndex++;
+            mIsFirst = false;
             Log.i("RecycleLinearLayout", "down mSelectedChildIndex:"+mSelectedChildIndex);
             if(getChildCount() > 1){
+                getChildAt(1).requestFocus();
                 removeViewAt(0);
             }
             if(mSelectedChildIndex+2<mAllViews.size() &&
                     (mAllViews.get(mSelectedChildIndex).getWindowVisibility()==View.GONE)){
                 addView(mAllViews.get(mSelectedChildIndex+2));
             }
-            requestFirstFocuse();
         }
     }
 
@@ -70,25 +71,23 @@ public class RecycleLinearLayout extends LinearLayout {
             mSelectedChildIndex--;
             Log.i("RecycleLinearLayout", "up mSelectedChildIndex:"+mSelectedChildIndex);
             if(getChildCount() > 1){
+                getChildAt(0).requestFocus();
                 removeViewAt(getChildCount()-1);
             }
             if(mSelectedChildIndex >= 0 &&
                     (mAllViews.get(mSelectedChildIndex).getWindowVisibility()==View.GONE)){
                 addView(mAllViews.get(mSelectedChildIndex), 0);
             }
-            requestFirstFocuse();
         }
 
-    }
-
-    private void requestFirstFocuse(){
-        getChildAt(0).requestFocus();
     }
 
     public void clearView(){
         mAllViews.clear();
         removeAllViews();
     }
+
+    private boolean mIsFirst = true;//判断是否已经到达第一个位置
 
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
@@ -101,7 +100,8 @@ public class RecycleLinearLayout extends LinearLayout {
             }
         }
         if(keyCode==KeyEvent.KEYCODE_DPAD_DOWN || keyCode==KeyEvent.KEYCODE_DPAD_UP){
-            if(mSelectedChildIndex!=0){
+            if(!mIsFirst){
+                mIsFirst = (mSelectedChildIndex<=0);
                 return true;
             }
         }

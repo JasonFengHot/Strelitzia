@@ -77,8 +77,6 @@ public class TemplateGuide extends Template implements BaseControl.ControlCallBa
         mThirdIcon = (TextView) mHeadView.findViewById(R.id.third_video_icon);
         mFourIcon = (TextView) mHeadView.findViewById(R.id.four_video_icon);
         mFiveIcon = (TextView) mHeadView.findViewById(R.id.five_video_icon);
-        mHeadView.findViewById(R.id.guide_ismartv_linear_layout).setFocusable(true);
-        mHeadView.findViewById(R.id.guide_ismartv_linear_layout).requestFocus();
 
         mRecycleView = (RecyclerViewTV) view.findViewById(R.id.guide_recyclerview);
         mGuideLayoutManager = new LinearLayoutManagerTV(mContext, LinearLayoutManager.HORIZONTAL, false);
