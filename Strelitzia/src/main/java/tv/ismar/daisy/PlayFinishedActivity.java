@@ -22,6 +22,7 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import tv.ismar.Utils.LogUtils;
+import tv.ismar.account.IsmartvActivator;
 import tv.ismar.app.BaseActivity;
 import tv.ismar.app.core.PageIntent;
 import tv.ismar.app.core.SimpleRestClient;
@@ -194,7 +195,7 @@ public class PlayFinishedActivity extends BaseActivity implements View.OnClickLi
                 type="exit_like";
                 source= Source.EXIT_LIKE;
             }
-            playExitSub = SkyService.ServiceManager.getCacheSkyService2().apiPlayExitRecommend(SimpleRestClient.sn_token, itemId,channel,playScale)
+            playExitSub = SkyService.ServiceManager.getCacheSkyService2().apiPlayExitRecommend(IsmartvActivator.getInstance().getSnToken(), itemId,channel,playScale)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Observer<PlayRecommend>() {
