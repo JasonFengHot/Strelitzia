@@ -82,7 +82,7 @@ public class DetailPageActivity extends BaseActivity implements PlaybackService.
             return false;
         }
     });
-    public String to;
+    public String to="";
     private DetailPageStatistics mPageStatistics;
     public boolean sendLog=false;
 

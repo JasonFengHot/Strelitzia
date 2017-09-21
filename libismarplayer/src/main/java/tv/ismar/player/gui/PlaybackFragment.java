@@ -158,7 +158,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
     private boolean isqiyi;
     private String contentMode="";
     private boolean isPlayExitLayerShow;
-    private String to;
+    private String to="";
 
     public PlaybackFragment() {
         // Required empty public constructor
@@ -206,7 +206,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
         mClient = new PlaybackService.Client(getActivity(), this);
         to = getActivity().getIntent().getStringExtra("to");
         String frompage = getActivity().getIntent().getStringExtra(PageIntentInterface.EXTRA_SOURCE);
-        if(TextUtils.isEmpty(to)) {
+        if(TextUtils.isEmpty(to)&&frompage!=null) {
             if (!(frompage.equals(Source.RELATED.getValue()) || frompage.equals(Source.FINISHED.getValue()) || frompage.equals(Source.EXIT_LIKE.getValue()) || frompage.equals(Source.EXIT_NOT_LIKE.getValue()))) {
                 to = frompage;
             }

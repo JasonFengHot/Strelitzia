@@ -195,7 +195,9 @@ public class PlayFinishedActivity extends BaseActivity implements View.OnClickLi
                 type="exit_like";
                 source= Source.EXIT_LIKE;
             }
-            playExitSub = SkyService.ServiceManager.getCacheSkyService2().apiPlayExitRecommend(IsmartvActivator.getInstance().getSnToken(), itemId,channel,playScale)
+            SharedPreferences sharedPreferences= PreferenceManager.getDefaultSharedPreferences(this);
+            String sn=sharedPreferences.getString("sn_token","");
+            playExitSub = SkyService.ServiceManager.getCacheSkyService2().apiPlayExitRecommend(sn, itemId,channel,playScale)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Observer<PlayRecommend>() {
