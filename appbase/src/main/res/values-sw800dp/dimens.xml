@@ -703,7 +703,7 @@
 <dimen name="column_item_margin_left">74.07dp</dimen>
 <dimen name="column_item_margin_top">5.93dp</dimen>
 <!--横版双行尺寸-->
-<dimen name="double_ld_img_container_height">343.85dp</dimen>
+<dimen name="double_ld_img_container_height">344.44dp</dimen>
 <dimen name="double_ld_poster_margin_top">15.63dp</dimen>
 <dimen name="double_ld_margin_left">74.07dp</dimen>
 <dimen name="double_ld_img_height">312.59dp</dimen>

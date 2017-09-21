@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="@dimen/double_ld_img_width"
-    android:layout_height="@dimen/double_ld_img_height">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <tv.ismar.homepage.banner.IsmartvLinearLayout
         android:id="@+id/double_ld_ismartv_linear_layout"

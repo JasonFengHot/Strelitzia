@@ -10,37 +10,27 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.TimeZone;
-import java.util.concurrent.TimeUnit;
 
-import cn.ismartv.truetime.TrueTime;
-import rx.Observable;
-import rx.Observer;
-import rx.android.schedulers.AndroidSchedulers;
 import tv.ismar.app.BaseActivity;
 import tv.ismar.app.BaseControl;
 import tv.ismar.app.core.PageIntent;
 import tv.ismar.app.entity.ChannelEntity;
-import tv.ismar.app.receiver.TimeTickReceiver;
-import tv.ismar.app.service.TrueTimeService;
 import tv.ismar.app.util.BitmapDecoder;
 import tv.ismar.app.widget.TelescopicWrap;
 import tv.ismar.homepage.control.FetchDataControl;
+import tv.ismar.homepage.control.HomeControl;
 import tv.ismar.homepage.fragment.ChannelFragment;
-import tv.ismar.homepage.view.ChannelChangeObservable;
 import tv.ismar.homepage.widget.HorizontalTabView;
 import tv.ismar.library.exception.ExceptionUtils;
 
+import static tv.ismar.app.BaseControl.TAB_CHANGE_FALG;
 import static tv.ismar.homepage.control.FetchDataControl.FETCH_CHANNEL_TAB_FLAG;
 
 
@@ -53,8 +43,9 @@ import static tv.ismar.homepage.control.FetchDataControl.FETCH_CHANNEL_TAB_FLAG;
 public class HomeActivity extends BaseActivity implements View.OnClickListener, BaseControl.ControlCallBack, View.OnFocusChangeListener {
 
     public static final String HOME_PAGE_CHANNEL_TAG = "homepage";
-    private final FetchDataControl mControl = new FetchDataControl(this, this);//业务类引用
-    private HorizontalTabView channelTab;
+    private final FetchDataControl mFetchDataControl = new FetchDataControl(this, this);//业务类引用
+    private final HomeControl mHomeControl = new HomeControl(this, this);
+    private HorizontalTabView mChannelTab;
 
     private ViewGroup mViewGroup;
     private TextView mTimeTv;//时间
@@ -91,14 +82,14 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
             ExceptionUtils.sendProgramError(e);
             e.printStackTrace();
         }
-        startTrueTimeService();
+        mHomeControl.startTrueTimeService();
     }
 
     /*获取控件实例*/
     private void findViews(){
         mHoverView = findViewById(R.id.hover_view);
         mViewGroup = (ViewGroup) findViewById(R.id.home_view_layout);
-        channelTab = (HorizontalTabView) findViewById(R.id.channel_tab);
+        mChannelTab = (HorizontalTabView) findViewById(R.id.channel_tab);
         mTimeTv = (TextView) findViewById(R.id.guide_title_time_tv);
         mCollectionTv = (TextView) findViewById(R.id.collection_tv);
         mPersonCenterTv = (TextView) findViewById(R.id.center_tv);
@@ -123,7 +114,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         mPersonCenterLayout.setOnFocusChangeListener(this);
         mCollectionLayout.setOnClickListener(this);
         mPersonCenterLayout.setOnClickListener(this);
-        setChannelChange();
+        mHomeControl.setChannelChange(mChannelTab);
         IntentFilter filter = new IntentFilter();
         filter.addAction(Intent.ACTION_TIME_TICK);
         mTimeTickBroadcast = new TimeTickBroadcast();
@@ -139,41 +130,11 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     }
 
     private void initData(){
-        mTimeTv.setText(getNowTime());
-        mControl.fetchChannels();
+        mTimeTv.setText(mHomeControl.getNowTime());
+        mFetchDataControl.fetchChannels();
         ChannelFragment channelFragment = new ChannelFragment();
-        channelFragment.setChannel(HOME_PAGE_CHANNEL_TAG);
+        channelFragment.setChannel(HOME_PAGE_CHANNEL_TAG, "首页", 0);
         replaceFragment(channelFragment, "none");
-    }
-
-    /*监听频道tab变化*/
-    private void setChannelChange(){
-        Observable.create(new ChannelChangeObservable(channelTab))
-                .throttleLast(1, TimeUnit.SECONDS)
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<Integer>() {
-                    @Override
-                    public void onCompleted() {}
-
-                    @Override
-                    public void onError(Throwable e) {}
-
-                    @Override
-                    public void onNext(Integer position) {
-                        Log.d("channelTab", "channelTab ChannelChangeObservable");
-                        if(mControl.mChannels!=null && mControl.mChannels.length>position){
-                            ChannelFragment channelFragment = new ChannelFragment();
-                            channelFragment.setChannel( mControl.mChannels[position].getChannel());
-                            if(position > mLastSelectedIndex){//右切
-                                replaceFragment(channelFragment, "right");
-                            }if(position < mLastSelectedIndex){//左切
-                                replaceFragment(channelFragment, "left");
-                            }
-                            mLastSelectedIndex = position;
-                        }
-                    }
-                });
-
     }
 
     private void replaceFragment(Fragment fragment, String scrollType) {
@@ -194,14 +155,6 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         transaction.replace(R.id.fragment_layout, fragment, scrollType).commitAllowingStateLoss();
     }
 
-    /*获取当前时间*/
-    private String getNowTime(){
-        Date now = TrueTime.now();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm");
-        dateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Shanghai"));
-        return dateFormat.format(now);
-    }
-
     private void fillChannelTab(ChannelEntity[] channelEntities) {
         List<HorizontalTabView.Tab> tabs = new ArrayList<>();
         HorizontalTabView.Tab searchTab = new HorizontalTabView.Tab("", "搜索");
@@ -216,7 +169,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
             HorizontalTabView.Tab tab = new HorizontalTabView.Tab("", entity.getName());
             tabs.add(tab);
         }
-        channelTab.addAllViews(tabs, 0);
+        mChannelTab.addAllViews(tabs, 0);
     }
 
     @Override
@@ -249,6 +202,21 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
             ChannelEntity[] channelEntities = (ChannelEntity[]) args;
             fillChannelTab(channelEntities);
         }
+        if(flags == TAB_CHANGE_FALG){
+            int position = (int) args[0];
+            if(mFetchDataControl.mChannels!=null && mFetchDataControl.mChannels.length>position){
+                ChannelFragment channelFragment = new ChannelFragment();
+                channelFragment.setChannel( mFetchDataControl.mChannels[position].getChannel(),
+                        mFetchDataControl.mChannels[position].getName(),
+                        mFetchDataControl.mChannels[position].getStyle());
+                if(position > mLastSelectedIndex){//右切
+                    replaceFragment(channelFragment, "right");
+                }if(position < mLastSelectedIndex){//左切
+                    replaceFragment(channelFragment, "left");
+                }
+                mLastSelectedIndex = position;
+            }
+        }
     }
 
     /*时间跳动广播*/
@@ -256,7 +224,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            mTimeTv.setText(getNowTime());
+            mTimeTv.setText(mHomeControl.getNowTime());
         }
     }
 
@@ -265,12 +233,6 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         super.onDestroy();
         unregisterReceiver(mTimeTickBroadcast);
         mTimeTickBroadcast = null;
-    }
-
-    private void startTrueTimeService() {
-        Intent intent = new Intent();
-        intent.setClass(this, TrueTimeService.class);
-        startService(intent);
     }
 
     @Override

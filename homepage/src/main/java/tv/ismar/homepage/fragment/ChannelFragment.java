@@ -5,8 +5,11 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.TextView;
 
 import tv.ismar.app.BaseControl;
+import tv.ismar.app.core.PageIntent;
 import tv.ismar.app.entity.GuideBanner;
 import tv.ismar.homepage.HomeActivity;
 import tv.ismar.homepage.R;
@@ -31,11 +34,11 @@ import tv.ismar.library.util.StringUtils;
  * @DESC: 频道fragemnt
  */
 
-public class ChannelFragment extends BaseFragment implements BaseControl.ControlCallBack{
+public class ChannelFragment extends BaseFragment implements BaseControl.ControlCallBack, View.OnClickListener{
     private FetchDataControl mControl = null;//业务类引用
-    private String mChannel;//频道
 
     private RecycleLinearLayout mLinearContainer;//banner容器
+    private TextView mGetMoreBtn;
 
     @Override
     public void onAttach(Context context) {
@@ -48,22 +51,33 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
         View view = LayoutInflater.from(getActivity()).inflate(R.layout.channel_fragment_layout, null);
         findView(view);
         initData();
+        initListener();
         return view;
     }
 
     private void findView(View view){
         mLinearContainer = (RecycleLinearLayout) view.findViewById(R.id.scroll_linear_container);
+        mGetMoreBtn = (TextView) view.findViewById(R.id.get_more_btn);
     }
 
-    public void setChannel(String channel){
+    private String mChannel;//频道
+    private String mTitle;//标题
+    private int mStyle;//竖版或横版
+    public void setChannel(String channel, String title, int style){
         mChannel = channel;
+        mTitle = title;
+        mStyle = style;
+    }
+
+    private void initListener(){
+        mGetMoreBtn.setOnClickListener(this);
     }
 
     private void initData(){
         if(!StringUtils.isEmpty(mChannel)){
-            if(mChannel.equals(HomeActivity.HOME_PAGE_CHANNEL_TAG)){
+            if(mChannel.equals(HomeActivity.HOME_PAGE_CHANNEL_TAG)){//首页数据
                 mControl.fetchHomeBanners();
-            } else {
+            } else {//其他频道数据
                 mControl.fetchChannelBanners(mChannel);
             }
         }
@@ -139,9 +153,22 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
         return LayoutInflater.from(getContext()).inflate(layoutId, null);
     }
 
+    /*更多精彩*/
+    public void getMore(){
+        PageIntent intent = new PageIntent();
+        intent.toListPage(getContext(), mTitle, mChannel, mStyle);
+    }
+
     @Override
     public void onDestroy() {
         super.onDestroy();
         mLinearContainer.clearView();
+    }
+
+    @Override
+    public void onClick(View v) {
+        if(v == mGetMoreBtn){
+            getMore();
+        }
     }
 }
