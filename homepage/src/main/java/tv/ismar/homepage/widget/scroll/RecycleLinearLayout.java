@@ -15,6 +15,8 @@ import com.daimajia.androidanimations.library.YoYo;
 
 import java.util.ArrayList;
 
+import tv.ismar.homepage.R;
+
 /**
  * @AUTHOR: xi
  * @DATE: 1017/9/17
@@ -64,14 +66,14 @@ public class RecycleLinearLayout extends LinearLayout {
             mIsFirst = false;
             Log.i("RecycleLinearLayout", "down listsize:"+mAllViews.size());
             Log.i("RecycleLinearLayout", "down mSelectedChildIndex:"+mSelectedChildIndex);
-            if(getChildCount() > 1){
-                getChildAt(1).requestFocus();
-                removeViewAt(0);
-            }
             if(mSelectedChildIndex+2<mAllViews.size() &&
                     (mAllViews.get(mSelectedChildIndex+2).getWindowVisibility()==View.GONE)){
                 Log.i("RecycleLinearLayout", "down visibility:"+(mAllViews.get(mSelectedChildIndex+2).getWindowVisibility()==View.GONE));
                 addView(mAllViews.get(mSelectedChildIndex+2));
+            }
+            if(getChildCount() > 1){
+                getChildAt(1).requestFocus();
+                removeViewAt(0);
             }
         }
     }
@@ -81,7 +83,7 @@ public class RecycleLinearLayout extends LinearLayout {
         if(mSelectedChildIndex > 0){
             mSelectedChildIndex--;
             Log.i("RecycleLinearLayout", "up mSelectedChildIndex:"+mSelectedChildIndex);
-            if(getChildCount() > 1){
+            if(getChildCount() > 2){
                 removeViewAt(getChildCount()-1);
             }
             if(mSelectedChildIndex >= 0 &&
@@ -112,9 +114,10 @@ public class RecycleLinearLayout extends LinearLayout {
     public boolean dispatchKeyEvent(KeyEvent event) {
         int keyCode = event.getKeyCode();
         Log.i("RecycleLinearLayout", "action:"+event.getAction()+" keyCode:"+keyCode);
-        if(mSelectedChildIndex>=mAllViews.size()-1 && keyCode==KeyEvent.KEYCODE_DPAD_DOWN){//处理跳出该view时，焦点的处理
-            return false;
-        }
+//        if(mSelectedChildIndex>=mAllViews.size()-1 && keyCode==KeyEvent.KEYCODE_DPAD_DOWN){//处理跳出该view时，焦点的处理
+//            setNextFocusDownId(R.id.get_more_btn);
+//            return false;
+//        }
         if(event.getAction() == KeyEvent.ACTION_DOWN){
             if(keyCode == KeyEvent.KEYCODE_DPAD_UP){
                 upEvent();
