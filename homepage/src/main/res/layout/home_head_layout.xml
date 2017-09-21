@@ -32,21 +32,23 @@
         <RelativeLayout
             android:id="@+id/collection_layout"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_height="@dimen/guide_title_react_height"
             android:layout_alignParentRight="true"
             android:focusable="true"
             android:gravity="center"
-            android:layout_marginTop="@dimen/guide_title_histroy_margin_top"
-            android:orientation="horizontal">
+            android:layout_marginTop="@dimen/guide_title_histroy_margin_top">
 
             <TextView
                 android:id="@+id/collection_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="@dimen/guide_title_icon_padding_text"
                 android:layout_toLeftOf="@+id/person_collection_img"
                 android:singleLine="true"
                 android:text="历史收藏"
+                android:layout_marginRight="@dimen/guide_title_icon_padding_text"
+                android:layout_marginTop="@dimen/guide_title_react_padding"
+                android:layout_marginBottom="@dimen/guide_title_react_padding"
+                android:layout_marginLeft="@dimen/guide_title_react_padding"
                 android:textSize="@dimen/guide_title_text_size"
                 android:visibility="gone" />
 
@@ -55,6 +57,9 @@
                 android:layout_width="@dimen/guide_title_icon_size"
                 android:layout_height="@dimen/guide_title_icon_size"
                 android:layout_alignParentRight="true"
+                android:layout_marginTop="@dimen/guide_title_react_padding"
+                android:layout_marginBottom="@dimen/guide_title_react_padding"
+                android:layout_marginRight="@dimen/guide_title_react_padding"
                 android:src="@drawable/history_icon" />
         </RelativeLayout>
     </RelativeLayout>
@@ -82,17 +87,23 @@
                 android:id="@+id/center_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="@dimen/guide_title_icon_padding_text"
                 android:layout_toLeftOf="@+id/person_center_img"
                 android:singleLine="true"
                 android:text="个人中心"
                 android:textSize="@dimen/guide_title_text_size"
+                android:layout_marginTop="@dimen/guide_title_react_padding"
+                android:layout_marginBottom="@dimen/guide_title_react_padding"
+                android:layout_marginLeft="@dimen/guide_title_react_padding"
+                android:layout_marginRight="@dimen/guide_title_icon_padding_text"
                 android:visibility="gone" />
 
             <ImageView
                 android:id="@+id/person_center_img"
                 android:layout_width="@dimen/guide_title_icon_size"
                 android:layout_height="@dimen/guide_title_icon_size"
+                android:layout_marginTop="@dimen/guide_title_react_padding"
+                android:layout_marginBottom="@dimen/guide_title_react_padding"
+                android:layout_marginRight="@dimen/guide_title_react_padding"
                 android:layout_alignParentRight="true"
                 android:src="@drawable/person_center" />
         </RelativeLayout>
