@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.SeekBar;
@@ -22,6 +23,7 @@ import tv.ismar.app.BaseActivity;
 import tv.ismar.app.ad.AdsUpdateService;
 import tv.ismar.app.ad.AdvertiseManager;
 import tv.ismar.app.ad.Advertisement;
+import tv.ismar.app.core.VipMark;
 import tv.ismar.app.db.AdvertiseTable;
 import tv.ismar.app.player.CallaPlay;
 import tv.ismar.homepage.HomeActivity;
@@ -97,6 +99,7 @@ public class AdvertiseActivity extends BaseActivity implements MediaPlayer.OnPre
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.advertise_activity_layout);
+        setDisplayMetrics();
         initView();
         initListener();
         initData();
@@ -277,5 +280,15 @@ public class AdvertiseActivity extends BaseActivity implements MediaPlayer.OnPre
         Intent intent = new Intent();
         intent.setClass(this, AdsUpdateService.class);
         startService(intent);
+    }
+
+    private void setDisplayMetrics(){
+        DisplayMetrics metric = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(metric);
+        int width = metric.widthPixels;  // 屏幕宽度（像素）
+        int height = metric.heightPixels;  // 屏幕高度（像素）
+        float density = metric.density;  // 屏幕密度（0.75 / 1.0 / 1.5）
+        int densityDpi = metric.densityDpi;  // 屏幕密度DPI（120 / 160 / 240）
+        VipMark.getInstance().setHeight(height);
     }
 }

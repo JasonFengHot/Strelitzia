@@ -59,6 +59,7 @@ import tv.ismar.account.statistics.LogQueue;
 import tv.ismar.app.core.ImageCache;
 import tv.ismar.app.core.InitializeProcess;
 import tv.ismar.app.core.SimpleRestClient;
+import tv.ismar.app.core.VipMark;
 import tv.ismar.app.core.client.MessageQueue;
 import tv.ismar.app.core.preferences.AccountSharedPrefs;
 import tv.ismar.app.db.DBHelper;
@@ -139,6 +140,7 @@ public class VodApplication extends Application {
         initPicasso();
         File cacheFile = new File(VodApplication.getModuleAppContext().getCacheDir(), "");
         HttpManager.getInstance().initialize(mIsmartvHttpParamsInterceptor, getCacheInterceptor(), cacheFile);
+        VipMark.getInstance();
     }
 
     private void initLogCallback() {

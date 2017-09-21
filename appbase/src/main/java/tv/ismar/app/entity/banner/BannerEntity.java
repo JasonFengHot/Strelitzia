@@ -77,6 +77,24 @@ public class BannerEntity {
         private int pk;
         private boolean expense;
         private String model_name;
+        private String top_left_corner;
+        private String top_right_corner;
+
+        public String getTop_left_corner() {
+            return top_left_corner;
+        }
+
+        public void setTop_left_corner(String top_left_corner) {
+            this.top_left_corner = top_left_corner;
+        }
+
+        public String getTop_right_corner() {
+            return top_right_corner;
+        }
+
+        public void setTop_right_corner(String top_right_corner) {
+            this.top_right_corner = top_right_corner;
+        }
 
         public Object getVideo_image() {
             return video_image;
@@ -181,6 +199,34 @@ public class BannerEntity {
         private String custom_image;
         private Date order_date;
         private String display_order_date;
+
+        private String top_left_corner;
+        private String top_right_corner;
+        private float rating_average;
+
+        public float getRating_average() {
+            return rating_average;
+        }
+
+        public void setRating_average(float rating_average) {
+            this.rating_average = rating_average;
+        }
+
+        public String getTop_left_corner() {
+            return top_left_corner;
+        }
+
+        public void setTop_left_corner(String top_left_corner) {
+            this.top_left_corner = top_left_corner;
+        }
+
+        public String getTop_right_corner() {
+            return top_right_corner;
+        }
+
+        public void setTop_right_corner(String top_right_corner) {
+            this.top_right_corner = top_right_corner;
+        }
 
         public String getDisplay_order_date() {
             return display_order_date;

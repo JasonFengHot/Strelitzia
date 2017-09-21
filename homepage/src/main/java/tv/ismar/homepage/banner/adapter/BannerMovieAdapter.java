@@ -15,10 +15,12 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
+import java.text.DecimalFormat;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import tv.ismar.app.core.VipMark;
 import tv.ismar.app.entity.banner.BannerEntity;
 import tv.ismar.homepage.R;
 import tv.ismar.searchpage.utils.JasmineUtil;
@@ -89,6 +91,15 @@ public class BannerMovieAdapter extends RecyclerView.Adapter<BannerMovieAdapter.
         holder.mItemView.findViewById(R.id.item_layout).setTag(entity);
         holder.mItemView.findViewById(R.id.item_layout).setTag(R.id.banner_item_position, position);
 
+        Picasso.with(mContext).load(VipMark.getInstance().getBannerIconMarkImage(entity.getTop_left_corner())).into(holder.markLT);
+
+        if (entity.getRating_average() != 0){
+            holder.markRB.setText(new DecimalFormat("0.0").format(entity.getRating_average()));
+            holder.markRB.setVisibility(View.VISIBLE);
+        }else {
+            holder.markRB.setVisibility(View.INVISIBLE);
+        }
+
         if (position == 0){
             holder.mLeftSpace.setVisibility(View.GONE);
         }else {
@@ -108,6 +119,9 @@ public class BannerMovieAdapter extends RecyclerView.Adapter<BannerMovieAdapter.
         private TextView mTitle;
         private View mItemView;
         private Space mLeftSpace;
+        private ImageView markLT;
+        private TextView markRB;
+
 
         int getPostItemId(String url) {
             int id = 0;
@@ -134,6 +148,8 @@ public class BannerMovieAdapter extends RecyclerView.Adapter<BannerMovieAdapter.
             mImageView = (ImageView) itemView.findViewById(R.id.image_view);
             mTitle = (TextView) itemView.findViewById(R.id.title);
             mLeftSpace = (Space)itemView.findViewById(R.id.left_space);
+            markLT = (ImageView) itemView.findViewById(R.id.banner_mark_lt);
+            markRB = (TextView)itemView.findViewById(R.id.banner_mark_br);
         }
 
         @Override

@@ -53,6 +53,22 @@
                     android:scaleType="fitXY"
                     />
 
+                <ImageView
+                    android:id="@+id/banner_mark_lt"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_width="@dimen/banner_mark_lt_width"
+                    android:layout_height="@dimen/banner_mark_lt_width"/>
+
+                <TextView
+                    android:id="@+id/banner_mark_br"
+                    android:layout_width="@dimen/banner_mark_br_width"
+                    android:layout_height="@dimen/banner_mark_br_height"
+                    android:layout_alignParentRight="true"
+                    android:gravity="center"
+                    android:background="@drawable/banner_post_score_bg"
+                    android:layout_marginTop="@dimen/banner_movie_mark_br_mt"
+                    android:textSize="@dimen/text_size_30sp"/>
                 <TextView
                     android:id="@+id/title"
                     android:layout_width="@dimen/banner_movie_post_w"

@@ -850,4 +850,10 @@
 <dimen name="movie_mix_banner_recycler_pl">33.33dp</dimen>
 <dimen name="movie_mix_banner_recycler_pr">33.33dp</dimen>
 <dimen name="space_banner_item_width">13.33dp</dimen>
+<dimen name="banner_mark_lt_width">72.67dp</dimen>
+<dimen name="banner_mark_br_width">52.00dp</dimen>
+<dimen name="banner_mark_br_height">26.67dp</dimen>
+<dimen name="banner_mark_br_mt">80.67dp</dimen>
+<dimen name="banner_movie_mark_br_mt">168.67dp</dimen>
+<dimen name="banner__horizontal519_mark_br_height">130.00dp</dimen>
 </resources>

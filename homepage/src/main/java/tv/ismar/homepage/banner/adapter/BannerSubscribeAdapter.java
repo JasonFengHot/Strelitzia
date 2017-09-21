@@ -15,10 +15,12 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
+import java.text.DecimalFormat;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import tv.ismar.app.core.VipMark;
 import tv.ismar.app.entity.banner.BannerEntity;
 import tv.ismar.homepage.R;
 import tv.ismar.searchpage.utils.JasmineUtil;
@@ -97,6 +99,7 @@ public class BannerSubscribeAdapter
             layoutParams.setMarginEnd(0);
         }
 
+
         //        int itemId = getMovieItemId(entity.getContent_url());
         //
         //        if (entity.getSubscribeStatus() == BannerEntity.SubscribeStatus.None) {
@@ -116,6 +119,14 @@ public class BannerSubscribeAdapter
 
 //            String timeString = entity.getOrder_date().getMonth() +"月" + entity.getOrder_date().getDate() + "日";
         holder.mPublishTime.setText(entity.getDisplay_order_date());
+        Picasso.with(mContext).load(VipMark.getInstance().getBannerIconMarkImage(entity.getTop_left_corner())).into(holder.markLT);
+
+        if (entity.getRating_average() != 0){
+            holder.markRB.setText(new DecimalFormat("0.0").format(entity.getRating_average()));
+            holder.markRB.setVisibility(View.VISIBLE);
+        }else {
+            holder.markRB.setVisibility(View.INVISIBLE);
+        }
 
         holder.mIntroduction.setText(entity.getTitle() + " " + position);
         holder.mItemView.findViewById(R.id.item_layout).setTag(entity);
@@ -217,6 +228,8 @@ public class BannerSubscribeAdapter
         private View mItemView;
         private TextView mIntroduction;
         private ImageView mTimeLine;
+        private ImageView markLT;
+        private TextView markRB;
 
         public SubscribeViewHolder(View itemView) {
             super(itemView);
@@ -230,6 +243,8 @@ public class BannerSubscribeAdapter
             mIntroduction = (TextView) itemView.findViewById(R.id.introduction);
             mLeftSpace = (Space)itemView.findViewById(R.id.left_space);
             mTimeLine = (ImageView)itemView.findViewById(R.id.banner_item_timeline);
+            markLT = (ImageView) itemView.findViewById(R.id.banner_mark_lt);
+            markRB = (TextView)itemView.findViewById(R.id.banner_mark_br);
         }
 
         @Override
