@@ -84,7 +84,6 @@ public class TemplateDoubleLd extends Template implements BaseControl.ControlCal
         if(homeEntity != null){
             if(mAdapter == null){
                 mAdapter = new DoubleLdAdapter(mContext, homeEntity.posters);
-                mAdapter.setLeftMarginEnable(true);
                 mAdapter.setOnItemSelectedListener(this);
                 mAdapter.setHeaderView(mHeadView);
                 mRecyclerView.setAdapter(mAdapter);
@@ -119,7 +118,11 @@ public class TemplateDoubleLd extends Template implements BaseControl.ControlCal
 
     @Override
     public void itemSelected(View view, int position) {
-
+        if(position == 0){//第一张大图
+            mFetchDataControl.go2Detail(mFetchDataControl.mHomeEntity.bg_image);
+        } else {
+            mFetchDataControl.go2Detail(mFetchDataControl.mHomeEntity.posters.get(position));
+        }
     }
 
     @Override

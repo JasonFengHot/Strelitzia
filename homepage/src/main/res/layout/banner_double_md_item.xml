@@ -1,72 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
-    <View
-        android:id="@+id/double_md_top_margin"
-        android:layout_width="10dp"
-        android:visibility="gone"
-        android:layout_height="@dimen/double_md_poster_padding"
-        android:background="#00000000"/>
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-        <View
-            android:id="@+id/double_md_left_margin"
-            android:layout_width="@dimen/double_md_poster_padding"
-            android:layout_height="10dp"
-            android:visibility="gone"
-            android:background="#00000000"/>
-        <tv.ismar.homepage.banner.IsmartvLinearLayout
-            android:id="@+id/double_md_ismartv_linear_layout"
-            android:layout_width="@dimen/double_md_poster_width"
-            android:layout_height="@dimen/double_md_poster_height"
-            android:clipChildren="false"
-            android:clipToPadding="false"
-            android:focusable="true"
-            android:focusableInTouchMode="true"
-            android:background="#00000000"
-            android:foreground="@drawable/selector_item_banner_subscribe"
-            android:orientation="vertical">
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <tv.ismar.homepage.banner.IsmartvLinearLayout
+        android:id="@+id/double_md_ismartv_linear_layout"
+        android:layout_width="@dimen/double_md_poster_width"
+        android:layout_height="@dimen/double_md_poster_height"
+        android:layout_marginLeft="@dimen/double_md_poster_padding_left"
+        android:layout_marginTop="@dimen/double_md_poster_margin_top"
+        android:background="#00000000"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:foreground="@drawable/selector_item_banner_subscribe"
+        android:orientation="vertical">
 
-            <RelativeLayout
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/double_md_item_poster"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:clipChildren="false"
+                android:clipToPadding="false"
+                android:scaleType="fitXY" />
 
-                <ImageView
-                    android:id="@+id/double_md_item_poster"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:clipChildren="false"
-                    android:clipToPadding="false"
-                    android:scaleType="fitXY" />
+            <ImageView
+                android:id="@+id/double_md_item_lt_icon"
+                android:layout_width="@dimen/double_md_poster_lt_size"
+                android:layout_height="@dimen/double_md_poster_lt_size"
+                android:layout_gravity="left|top" />
 
-                <ImageView
-                    android:id="@+id/double_md_item_lt_icon"
-                    android:layout_width="@dimen/double_md_poster_lt_size"
-                    android:layout_height="@dimen/double_md_poster_lt_size"
-                    android:layout_gravity="left|top" />
+            <ImageView
+                android:id="@+id/double_md_item_rb_icon"
+                android:layout_width="@dimen/double_md_poster_rb_width"
+                android:layout_height="@dimen/double_md_poster_rb_height"
+                android:layout_above="@+id/double_md_item_title"
+                android:layout_marginBottom="@dimen/double_md_poster_rb_margin_bottom"
+                android:gravity="right|bottom"
+                android:textColor="#ffffff"
+                android:textSize="@dimen/double_md_poster_title_size" />
 
-                <ImageView
-                    android:id="@+id/double_md_item_rb_icon"
-                    android:layout_width="@dimen/double_md_poster_rb_width"
-                    android:layout_height="@dimen/double_md_poster_rb_height"
-                    android:layout_above="@+id/double_md_item_title"
-                    android:layout_marginBottom="@dimen/double_md_poster_rb_margin_bottom"
-                    android:gravity="right|bottom"
-                    android:textColor="#ffffff"
-                    android:textSize="@dimen/double_md_poster_title_size" />
-
-                <TextView
-                    android:id="@+id/double_md_item_title"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/double_md_poster_title_height"
-                    android:layout_alignParentBottom="true"
-                    android:textColor="#ffffff"
-                    android:textSize="@dimen/double_md_poster_title_size" />
-            </RelativeLayout>
-        </tv.ismar.homepage.banner.IsmartvLinearLayout>
-    </LinearLayout>
-</LinearLayout>
+            <TextView
+                android:id="@+id/double_md_item_title"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/double_md_poster_title_height"
+                android:layout_alignParentBottom="true"
+                android:textColor="#ffffff"
+                android:textSize="@dimen/double_md_poster_title_size" />
+        </RelativeLayout>
+    </tv.ismar.homepage.banner.IsmartvLinearLayout>
+</FrameLayout>

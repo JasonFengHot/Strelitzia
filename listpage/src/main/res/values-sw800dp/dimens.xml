@@ -515,4 +515,9 @@
 <dimen name="history_75">55.56dp</dimen>
 <dimen name="history_1328">983.70dp</dimen>
 <dimen name="history_592">438.52dp</dimen>
+<dimen name="history_155">114.81dp</dimen>
+<dimen name="history_115">85.19dp</dimen>
+<dimen name="history_259">191.85dp</dimen>
+<dimen name="history_299">221.48dp</dimen>
+<dimen name="history_169">125.19dp</dimen>
 </resources>

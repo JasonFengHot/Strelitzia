@@ -14,6 +14,7 @@ import com.squareup.picasso.Picasso;
 import java.util.List;
 
 import tv.ismar.app.entity.banner.BannerRecommend;
+import tv.ismar.homepage.OnItemSelectedListener;
 import tv.ismar.homepage.R;
 
 /**
@@ -22,7 +23,7 @@ import tv.ismar.homepage.R;
  * @DESC: 说明
  */
 
-public class RecommendAdapter extends RecyclerView.Adapter<RecommendAdapter.RecommendViewHolder>{
+public class RecommendAdapter extends BaseRecycleAdapter<RecommendAdapter.RecommendViewHolder>{
 
     private Context mContext;
     private List<BannerRecommend> mData;
@@ -60,10 +61,9 @@ public class RecommendAdapter extends RecyclerView.Adapter<RecommendAdapter.Reco
         public ImageView mPoster;
 
         public RecommendViewHolder(View itemView) {
-            super(itemView);
+            super(itemView, RecommendAdapter.this);
             mTitle = (TextView) itemView.findViewById(R.id.conlumn_item_tv);
             mPoster = (ImageView) itemView.findViewById(R.id.conlumn_item_poster);
-            itemView.findViewById(R.id.conlumn_ismartv_linear_layout).setOnClickListener(this);
         }
 
         @Override

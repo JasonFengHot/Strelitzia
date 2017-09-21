@@ -106,31 +106,8 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         mPersonCenterLayout = (ViewGroup) findViewById(R.id.center_layout);
         mCollectionTel = new TelescopicWrap(this, mCollectionLayout);
         mPersonCenterTel = new TelescopicWrap(this, mPersonCenterLayout);
-        Observable.create(new ChannelChangeObservable(channelTab))
-                .throttleLast(1, TimeUnit.SECONDS)
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<Integer>() {
-                    @Override
-                    public void onCompleted() {}
-
-                    @Override
-                    public void onError(Throwable e) {}
-
-                    @Override
-                    public void onNext(Integer position) {
-                        Log.d("channelTab", "channelTab ChannelChangeObservable");
-                        if(mControl.mChannels!=null && mControl.mChannels.length>position){
-                            ChannelFragment channelFragment = new ChannelFragment();
-                            channelFragment.setChannel( mControl.mChannels[position].getChannel());
-                            if(position > mLastSelectedIndex){//右切
-                                replaceFragment(channelFragment, "right");
-                            }if(position < mLastSelectedIndex){//左切
-                                replaceFragment(channelFragment, "left");
-                            }
-                        }
-                    }
-                });
-
+        mHoverView.setFocusable(true);
+        mHoverView.requestFocus();
         mBitmapDecoder = new BitmapDecoder();
         mBitmapDecoder.decode(this, R.drawable.homepage_background, new BitmapDecoder.Callback() {
             @Override
@@ -146,6 +123,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         mPersonCenterLayout.setOnFocusChangeListener(this);
         mCollectionLayout.setOnClickListener(this);
         mPersonCenterLayout.setOnClickListener(this);
+        setChannelChange();
         IntentFilter filter = new IntentFilter();
         filter.addAction(Intent.ACTION_TIME_TICK);
         mTimeTickBroadcast = new TimeTickBroadcast();
@@ -168,6 +146,36 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         replaceFragment(channelFragment, "none");
     }
 
+    /*监听频道tab变化*/
+    private void setChannelChange(){
+        Observable.create(new ChannelChangeObservable(channelTab))
+                .throttleLast(1, TimeUnit.SECONDS)
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<Integer>() {
+                    @Override
+                    public void onCompleted() {}
+
+                    @Override
+                    public void onError(Throwable e) {}
+
+                    @Override
+                    public void onNext(Integer position) {
+                        Log.d("channelTab", "channelTab ChannelChangeObservable");
+                        if(mControl.mChannels!=null && mControl.mChannels.length>position){
+                            ChannelFragment channelFragment = new ChannelFragment();
+                            channelFragment.setChannel( mControl.mChannels[position].getChannel());
+                            if(position > mLastSelectedIndex){//右切
+                                replaceFragment(channelFragment, "right");
+                            }if(position < mLastSelectedIndex){//左切
+                                replaceFragment(channelFragment, "left");
+                            }
+                            mLastSelectedIndex = position;
+                        }
+                    }
+                });
+
+    }
+
     private void replaceFragment(Fragment fragment, String scrollType) {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         switch (scrollType) {
@@ -183,7 +191,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                 break;
         }
 
-        transaction.replace(R.id.fragment_layout, fragment).commitAllowingStateLoss();
+        transaction.replace(R.id.fragment_layout, fragment, scrollType).commitAllowingStateLoss();
     }
 
     /*获取当前时间*/

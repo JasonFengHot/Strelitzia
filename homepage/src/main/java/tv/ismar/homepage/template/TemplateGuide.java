@@ -247,7 +247,12 @@ public class TemplateGuide extends Template implements BaseControl.ControlCallBa
     }
 
     @Override
-    public void itemSelected(View view, int position) {
+    public void itemSelected(View view, int position) {//item点击事件
+        if(position == 0){//第一张大图
+            mControl.go2Detail(mFetchDataControl.mHomeEntity.bg_image);
+        } else {
+            mControl.go2Detail(mFetchDataControl.mHomeEntity.posters.get(position));
+        }
     }
 
     @Override

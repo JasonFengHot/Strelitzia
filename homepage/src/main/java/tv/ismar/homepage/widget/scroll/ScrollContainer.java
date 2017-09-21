@@ -27,12 +27,12 @@ public abstract class ScrollContainer extends LinearLayout implements ScrollActi
 
     private static final int SCROLL_DURATION = 250;//默认滑动时间250ms
     private OverScroller mOverScroller = null;
-    private int mScreenWidth = 0;
+    private int mScreenWidth = 0;//屏幕宽度
     private int mScreenHeight = 0;
-    private int mMarginL = 0;
-    private int mMarginT = 0;
-    private int mMarginR = 0;
-    private int mMarginB = 0;
+    private int mMarginL = 0;//左边距
+    private int mMarginT = 0;//上边距
+    private int mMarginR = 0;//右边距
+    private int mMarginB = 0;//下边距
 
     private int mWidth = 0;
     private int mHeight = 0;
@@ -57,11 +57,11 @@ public abstract class ScrollContainer extends LinearLayout implements ScrollActi
 
     private void initScroll(AttributeSet attrs){
         this.mOverScroller = new OverScroller(getContext());
-        MarginLayoutParams params = generateLayoutParams(attrs);
-        mMarginL = params.leftMargin;
-        mMarginR = params.rightMargin;
-        mMarginT = params.topMargin;
-        mMarginB = params.bottomMargin;
+//        MarginLayoutParams params = generateLayoutParams(attrs);
+//        mMarginL = params.leftMargin;
+//        mMarginR = params.rightMargin;
+//        mMarginT = params.topMargin;
+//        mMarginB = params.bottomMargin;
         getScreenSize();
 
         setClipChildren(false);
@@ -73,6 +73,16 @@ public abstract class ScrollContainer extends LinearLayout implements ScrollActi
         mScreenWidth = dm.widthPixels;
         mScreenHeight = dm.heightPixels;
         Log.i(TAG, "mScreenWidth:"+mScreenWidth+"  mScreenHeight:"+mScreenHeight);
+    }
+
+    @Override
+    protected void onLayout(boolean changed, int l, int t, int r, int b) {
+        super.onLayout(changed, l, t, r, b);
+        int[] location = new int[]{0, 0};
+        getLocationOnScreen(location);
+        mMarginL = location[0];
+        mMarginT = location[1];
+        Log.i(TAG, "mMarginL:"+mMarginL+ " mMarginT:"+mMarginT +" mMarginR:"+mMarginR+ " mMarginB:"+mMarginB);
     }
 
     @Override
@@ -93,11 +103,6 @@ public abstract class ScrollContainer extends LinearLayout implements ScrollActi
         mOverScroller.startScroll(mOverScroller.getFinalX(), mOverScroller.getFinalY(), dx, dy, SCROLL_DURATION);
         Log.i(TAG, "fX:"+mOverScroller.getFinalX() + "  fY:"+mOverScroller.getFinalY());
         invalidate();//保证computeScroll()执行
-    }
-
-    @Override
-    protected void onFocusChanged(boolean gainFocus, int direction, @Nullable Rect previouslyFocusedRect) {
-        super.onFocusChanged(gainFocus, direction, previouslyFocusedRect);
     }
 
     @Override
@@ -196,7 +201,6 @@ public abstract class ScrollContainer extends LinearLayout implements ScrollActi
         if(getChildCount() <= 0) return null;
 
         int[] location = new int[]{0, 0};
-        Log.i(TAG, "getChildCount:"+getChildCount());
         View view = getChildAt(getChildCount()-1);
         view.getLocationOnScreen(location);
         return location;
@@ -326,11 +330,11 @@ public abstract class ScrollContainer extends LinearLayout implements ScrollActi
         int lastLocation = getLastChildLocation()[1];
         int lastHeight = getChildAt(getChildCount()-1).getHeight();
 
-        if(offSet>0 && lastLocation-offSet<mScreenHeight) {//向下滑动
-            Log.i(TAG, "lastLocation:"+lastLocation+" lastWidth:"+lastHeight+ " mMarginL:"+mMarginT);
-            smoothScrollBy(0, lastLocation+lastHeight+mMarginT-mScreenHeight);
-            return;
-        }
-        smoothScrollBy(0, offSet);
+        Log.i(TAG, "lastLocation:"+lastLocation+" lastHeight:"+lastHeight+ " mMarginL:"+mMarginT);
+//        if(offSet>0 && lastLocation-offSet<mScreenHeight) {//向下滑动
+//            smoothScrollBy(0, lastLocation+lastHeight+mMarginT-mScreenHeight);
+//            return;
+//        }
+        smoothScrollBy(0, offSet-mMarginT);
     }
 }

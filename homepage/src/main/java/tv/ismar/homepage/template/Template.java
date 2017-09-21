@@ -17,7 +17,7 @@ import tv.ismar.app.entity.banner.BannerEntity;
 /**
  * @AUTHOR: xi
  * @DATE: 2017/8/29
- * @DESC: 模版基类
+ * @DESC: 模版基类(只负责模版约束，其他的一律不能加，不能参杂任何业务)
  */
 
 public abstract class Template {

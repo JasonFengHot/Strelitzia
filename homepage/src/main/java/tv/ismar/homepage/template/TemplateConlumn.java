@@ -19,6 +19,7 @@ import tv.ismar.app.BaseControl;
 import tv.ismar.app.entity.banner.BannerPoster;
 import tv.ismar.app.entity.banner.BannerRecommend;
 import tv.ismar.app.entity.banner.HomeEntity;
+import tv.ismar.homepage.OnItemSelectedListener;
 import tv.ismar.homepage.R;
 import tv.ismar.homepage.adapter.ConlumnAdapter;
 import tv.ismar.homepage.control.FetchDataControl;
@@ -33,7 +34,8 @@ import static tv.ismar.homepage.control.FetchDataControl.FETCH_HOME_RECOMMEND_LI
  */
 
 public class TemplateConlumn extends Template implements BaseControl.ControlCallBack,
-        RecyclerViewTV.PagingableListener, LinearLayoutManagerTV.FocusSearchFailedListener {
+        RecyclerViewTV.PagingableListener, LinearLayoutManagerTV.FocusSearchFailedListener ,
+        OnItemSelectedListener{
     private TextView mTitleTv;//banner标题
     private TextView mIndexTv;//选中位置
     private RecyclerViewTV mRecyclerView;
@@ -83,6 +85,7 @@ public class TemplateConlumn extends Template implements BaseControl.ControlCall
         if(mAdapter == null){
             mAdapter = new ConlumnAdapter(mContext, posters);
             mRecyclerView.setAdapter(mAdapter);
+            mAdapter.setOnItemSelectedListener(this);
         }else {
             mAdapter.notifyDataSetChanged();
         }
@@ -109,5 +112,11 @@ public class TemplateConlumn extends Template implements BaseControl.ControlCall
             return focused;
         }
         return null;
+    }
+
+    @Override
+    public void itemSelected(View view, int position) {
+        //推荐这个跳转要再确认下
+//        mFetchDataControl.go2Detail(mFetchDataControl.mRecommends.get(position));
     }
 }

@@ -15,6 +15,7 @@ import com.squareup.picasso.Picasso;
 import java.util.List;
 
 import tv.ismar.app.entity.banner.BannerPoster;
+import tv.ismar.homepage.OnItemSelectedListener;
 import tv.ismar.homepage.R;
 
 /**
@@ -23,7 +24,7 @@ import tv.ismar.homepage.R;
  * @DESC: 栏目RecyclerView适配器
  */
 
-public class ConlumnAdapter extends RecyclerView.Adapter<ConlumnAdapter.ConlumnViewHolder> {
+public class ConlumnAdapter extends BaseRecycleAdapter<ConlumnAdapter.ConlumnViewHolder> {
 
     private Context mContext;
     private List<BannerPoster> mData;
@@ -56,16 +57,14 @@ public class ConlumnAdapter extends RecyclerView.Adapter<ConlumnAdapter.ConlumnV
         return (mData!=null)? mData.size() : 0;
     }
 
-    public static class ConlumnViewHolder extends BaseViewHolder{
+    public class ConlumnViewHolder extends BaseViewHolder{
         public TextView mTitle;
         public ImageView mPoster;
 
         public ConlumnViewHolder(View itemView) {
-            super(itemView);
+            super(itemView, ConlumnAdapter.this);
             mTitle = (TextView) itemView.findViewById(R.id.conlumn_item_tv);
             mPoster = (ImageView) itemView.findViewById(R.id.conlumn_item_poster);
-            itemView.findViewById(R.id.conlumn_ismartv_linear_layout).setOnFocusChangeListener(this);
-            itemView.findViewById(R.id.conlumn_ismartv_linear_layout).setOnClickListener(this);
         }
 
         @Override

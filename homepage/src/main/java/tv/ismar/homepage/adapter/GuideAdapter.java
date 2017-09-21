@@ -1,7 +1,6 @@
 package tv.ismar.homepage.adapter;
 
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,7 +13,6 @@ import com.squareup.picasso.Picasso;
 import java.util.List;
 
 import tv.ismar.app.entity.banner.BannerPoster;
-import tv.ismar.homepage.OnItemSelectedListener;
 import tv.ismar.homepage.R;
 
 /**
@@ -23,14 +21,13 @@ import tv.ismar.homepage.R;
  * @DESC: 导视recycleview适配器
  */
 
-public class GuideAdapter extends RecyclerView.Adapter<GuideAdapter.GuideViewHolder>{
+public class GuideAdapter extends BaseRecycleAdapter<GuideAdapter.GuideViewHolder>{
     public static final int TYPE_HEADER = 0;//头部
     public static final int TYPE_NORMAL = 1;//一般item
 
     private Context mContext;
     private List<BannerPoster> mData;
     private boolean mMarginLeftEnable = false;
-    private OnItemSelectedListener mClickListener = null;
 
     private View mHeaderView;
 
@@ -42,10 +39,6 @@ public class GuideAdapter extends RecyclerView.Adapter<GuideAdapter.GuideViewHol
     public void setHeaderView(View headerView) {
         mHeaderView = headerView;
         notifyItemInserted(0);
-    }
-
-    public void setOnItemSelectedListener(OnItemSelectedListener listener){
-        this.mClickListener = listener;
     }
 
     @Override
@@ -76,6 +69,7 @@ public class GuideAdapter extends RecyclerView.Adapter<GuideAdapter.GuideViewHol
 
     @Override
     public int getItemCount() {
+        if(mData == null) return 0;
         return (mHeaderView==null) ? mData.size() : mData.size() + 1;
     }
 
@@ -97,26 +91,18 @@ public class GuideAdapter extends RecyclerView.Adapter<GuideAdapter.GuideViewHol
         public TextView mTitleTv;//标题
         public View mMarginLeftView;//左边距
 
-        public int mPosition;//item位置
-
         public GuideViewHolder(View itemView) {
-            super(itemView);
+            super(itemView, GuideAdapter.this);
             mPosterIg = (ImageView) itemView.findViewById(R.id.guide_recycle_item_poster);
             mLtIconTv = (ImageView) itemView.findViewById(R.id.guide_recycle_item_lt_icon);
             mRbIconTv = (ImageView) itemView.findViewById(R.id.guide_recycle_item_rb_icon);
             mTitleTv = (TextView) itemView.findViewById(R.id.guide_recycle_item_title);
             mMarginLeftView = itemView.findViewById(R.id.guide_margin_left);
-            itemView.findViewById(R.id.guide_ismartv_linear_layout).setOnClickListener(this);
         }
 
         @Override
         protected int getScaleLayoutId() {
             return R.id.guide_ismartv_linear_layout;
-        }
-
-        @Override
-        public void onClick(View v) {//item选中
-            mClickListener.itemSelected(v, mPosition);
         }
     }
 }

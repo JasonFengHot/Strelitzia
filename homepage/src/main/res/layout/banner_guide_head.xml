@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="@dimen/guide_switch_container_width"
-    android:layout_height="@dimen/guide_recycle_item_height">
+    android:layout_height="@dimen/guide_recycle_item_height"
+    android:focusable="false">
 
     <tv.ismar.homepage.banner.IsmartvLinearLayout
         android:id="@+id/guide_ismartv_linear_layout"
@@ -18,18 +19,21 @@
         android:orientation="vertical">
         <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:focusable="false">
 
             <tv.ismar.homepage.widget.DaisyVideoView
                 android:id="@+id/guide_daisy_video_view"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:focusableInTouchMode="false" />
+                android:focusableInTouchMode="false"
+                android:focusable="false"/>
 
             <ImageView
                 android:id="@+id/guide_video_loading_image"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:focusable="false"
                 android:visibility="gone" />
 
             <TextView
@@ -39,6 +43,7 @@
                 android:layout_gravity="left|bottom"
                 android:text="变形金刚5:最后的骑士"
                 android:textColor="#ffffff"
+                android:singleLine="true"
                 android:textSize="@dimen/guide_video_title_size" />
             <LinearLayout
                 android:layout_width="wrap_content"

@@ -18,6 +18,7 @@ import tv.ismar.app.entity.banner.BannerCarousels;
 import tv.ismar.app.entity.banner.BannerEntity;
 import tv.ismar.app.entity.banner.BannerPoster;
 import tv.ismar.app.entity.banner.BannerRecommend;
+import tv.ismar.app.entity.banner.ConnerEntity;
 import tv.ismar.app.entity.banner.HomeEntity;
 import tv.ismar.app.network.SkyService;
 
@@ -36,11 +37,13 @@ public class FetchDataControl extends BaseControl{
     public static final int FETCH_M_BANNERS_LIST_FLAG = 0X05;//获取影视内容多个banner
     public static final int FETCH_M_BANNERS_LIST_NEXTPAGE_FLAG = 0X06;//获取影视内容多个banner
     public static final int FETCH_HOME_RECOMMEND_LIST_FLAG = 0X07;//推荐列表
+    public static final int FETCH_POSTER_CONNERS_FLAG = 0X08;//获取角标
 
-    public HomeEntity mHomeEntity = null;//单个banner实体类，包含mCarousels和mPoster数据
+    public HomeEntity mHomeEntity = new HomeEntity();//单个banner实体类，包含mCarousels和mPoster数据
     public List<BannerCarousels> mCarousels = new ArrayList<>();//导视数据
     public List<BannerPoster> mPoster = new ArrayList<>();//海报数据
     public List<BannerRecommend> mRecommends = new ArrayList<>();//首页推荐列表
+    public List<ConnerEntity> mConners = new ArrayList<>();//角标
     public GuideBanner[] mGuideBanners = null;//首页banner列表
     public ChannelEntity[] mChannels = null;//频道列表
 
@@ -77,6 +80,31 @@ public class FetchDataControl extends BaseControl{
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+    /*获取角标接口*/
+    public void fetchConners(){
+        SkyService.ServiceManager.getService().getConner()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<List<ConnerEntity>>() {
+                    @Override
+                    public void onCompleted() {}
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                        Log.i("onError", "onError");
+                    }
+
+                    @Override
+                    public void onNext(List<ConnerEntity> conners) {
+                        mConners.clear();
+                        mConners.addAll(conners);
+                        if (mCallBack != null && conners.size()>0) {
+                            mCallBack.callBack(FETCH_POSTER_CONNERS_FLAG, conners);
+                        }
+                    }
+                });
     }
 
     /*获取指定频道下的banner*/
@@ -210,7 +238,6 @@ public class FetchDataControl extends BaseControl{
 
                     @Override
                     public void onNext(HomeEntity homeEntities) {
-                        if(mCallBack!=null && homeEntities!=null){
                             if(homeEntities != null){
                                 mHomeEntity = homeEntities;
                                 if(homeEntities.carousels != null){
@@ -226,9 +253,10 @@ public class FetchDataControl extends BaseControl{
                                     mPoster.addAll(homeEntities.posters);
                                 }
                             }
-                            mCallBack.callBack(FETCH_BANNERS_LIST_FLAG, homeEntities);
+                            if(mCallBack != null){
+                                mCallBack.callBack(FETCH_BANNERS_LIST_FLAG, homeEntities);
+                            }
                         }
-                    }
                 });
     }
 
