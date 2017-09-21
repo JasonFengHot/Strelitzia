@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<tv.ismar.homepage.view.BannerLinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/banner_layout"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:clipChildren="false"
@@ -7,6 +9,10 @@
               android:orientation="vertical">
 
     <include layout="@layout/banner_title_layout"/>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
 
     <com.open.androidtvwidget.leanback.recycle.RecyclerViewTV
         android:id="@+id/horizontal_519_banner"
@@ -18,4 +24,27 @@
         android:clipToPadding="false"
         android:paddingLeft="@dimen/horizontal519_banner_recycler_pl"
         android:paddingRight="@dimen/horizontal519_banner_recycler_pr"/>
-</LinearLayout>
+
+        <Button
+            android:id="@+id/navigation_left"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:background="@drawable/selector_banner_movie_arrow_left"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            >
+        </Button>
+
+        <Button
+            android:id="@+id/navigation_right"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/selector_banner_movie_arrow_right"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            >
+        </Button>
+    </RelativeLayout>
+</tv.ismar.homepage.view.BannerLinearLayout>

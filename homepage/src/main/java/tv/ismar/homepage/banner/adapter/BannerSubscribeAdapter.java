@@ -1,6 +1,5 @@
 package tv.ismar.homepage.banner.adapter;
 
-import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.graphics.Rect;
 import android.support.v7.widget.RecyclerView;
@@ -22,9 +21,7 @@ import java.util.regex.Pattern;
 
 import tv.ismar.app.entity.banner.BannerEntity;
 import tv.ismar.homepage.R;
-
-import static android.view.View.SCALE_X;
-import static android.view.View.SCALE_Y;
+import tv.ismar.searchpage.utils.JasmineUtil;
 
 /**
  * Created by huibin on 25/08/2017.
@@ -117,12 +114,8 @@ public class BannerSubscribeAdapter
         //            loadSubscribeStatus(itemId, holder.mTitle, mSubscribeEntityList, position);
         //        }
 
-        try {
-            String timeString = entity.getOrder_date().getMonth() +"月" + entity.getOrder_date().getDate() + "日";
-            holder.mPublishTime.setText(timeString);
-        }catch (Exception e){
-            e.printStackTrace();
-        }
+//            String timeString = entity.getOrder_date().getMonth() +"月" + entity.getOrder_date().getDate() + "日";
+        holder.mPublishTime.setText(entity.getDisplay_order_date());
 
         holder.mIntroduction.setText(entity.getTitle() + " " + position);
         holder.mItemView.findViewById(R.id.item_layout).setTag(entity);
@@ -250,11 +243,11 @@ public class BannerSubscribeAdapter
         @Override
         public void onFocusChange(View v, boolean hasFocus) {
             if (hasFocus) {
-                v.requestFocusFromTouch();
                 scaleToLarge(v.findViewById(R.id.item_layout));
                 v.findViewById(R.id.title).setSelected(true);
                 v.findViewById(R.id.title).setBackgroundResource(R.color._ff9c3c);
                 v.findViewById(R.id.introduction).setSelected(true);
+                v.requestFocus();
             } else {
                 scaleToNormal(v.findViewById(R.id.item_layout));
                 v.findViewById(R.id.title).setSelected(false);
@@ -272,8 +265,8 @@ public class BannerSubscribeAdapter
                         int position = (int) v.getTag(R.id.banner_item_position);
                         mSubscribeHoverListener.onBannerHover(v, position, true);
                     }
-                    v.requestFocusFromTouch();
                     v.requestFocus();
+                    v.requestFocusFromTouch();
                     break;
                 case MotionEvent.ACTION_HOVER_EXIT:
                     if (mSubscribeHoverListener!= null){
@@ -286,21 +279,11 @@ public class BannerSubscribeAdapter
         }
 
         private void scaleToLarge(View view) {
-            ObjectAnimator objectAnimatorX = ObjectAnimator.ofFloat(view, SCALE_X, 1.0F, 1.1F);
-            objectAnimatorX.setDuration(100L);
-            objectAnimatorX.start();
-            ObjectAnimator objectAnimatorY = ObjectAnimator.ofFloat(view, SCALE_Y, 1.0F, 1.1F);
-            objectAnimatorY.setDuration(100L);
-            objectAnimatorY.start();
+            JasmineUtil.scaleOut3(view);
         }
 
         private void scaleToNormal(View view) {
-            ObjectAnimator objectAnimatorX = ObjectAnimator.ofFloat(view, SCALE_X, 1.1F, 1.0F);
-            objectAnimatorX.setDuration(100L);
-            objectAnimatorX.start();
-            ObjectAnimator objectAnimatorY = ObjectAnimator.ofFloat(view, SCALE_Y, 1.1F, 1.0F);
-            objectAnimatorY.setDuration(100L);
-            objectAnimatorY.start();
+            JasmineUtil.scaleIn3(view);
         }
 
         int getItemId(String url) {

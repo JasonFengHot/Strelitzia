@@ -23,6 +23,7 @@ import java.util.regex.Pattern;
 
 import tv.ismar.app.entity.banner.BannerEntity;
 import tv.ismar.homepage.R;
+import tv.ismar.searchpage.utils.JasmineUtil;
 
 import static android.view.View.SCALE_X;
 import static android.view.View.SCALE_Y;
@@ -120,7 +121,12 @@ public class BannerMovieMixAdapter extends RecyclerView.Adapter<BannerMovieMixAd
         }
 
         BannerEntity.PosterBean entity = mSubscribeEntityList.get(position);
-        String imageUrl = entity.getPoster_url();
+        String imageUrl;
+        if (position == 0) {
+            imageUrl = entity.getPoster_url();
+        }else {
+            imageUrl = entity.getVertical_url();
+        }
         String targetImageUrl = TextUtils.isEmpty(imageUrl) ? null : imageUrl;
 
         if (position == 0) {
@@ -230,22 +236,11 @@ public class BannerMovieMixAdapter extends RecyclerView.Adapter<BannerMovieMixAd
         }
 
         private void scaleToLarge(View view) {
-            ObjectAnimator objectAnimatorX = ObjectAnimator.ofFloat(view, SCALE_X, 1.0F, 1.1F);
-            objectAnimatorX.setDuration(100L);
-            objectAnimatorX.start();
-            ObjectAnimator objectAnimatorY = ObjectAnimator.ofFloat(view, SCALE_Y, 1.0F, 1.1F);
-            objectAnimatorY.setDuration(100L);
-            objectAnimatorY.start();
+            JasmineUtil.scaleOut3(view);
         }
 
-
         private void scaleToNormal(View view) {
-            ObjectAnimator objectAnimatorX = ObjectAnimator.ofFloat(view, SCALE_X, 1.1F, 1.0F);
-            objectAnimatorX.setDuration(100L);
-            objectAnimatorX.start();
-            ObjectAnimator objectAnimatorY = ObjectAnimator.ofFloat(view, SCALE_Y, 1.1F, 1.0F);
-            objectAnimatorY.setDuration(100L);
-            objectAnimatorY.start();
+            JasmineUtil.scaleIn3(view);
         }
     }
 
