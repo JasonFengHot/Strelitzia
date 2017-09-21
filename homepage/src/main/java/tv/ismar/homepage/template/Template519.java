@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
 
@@ -21,8 +22,13 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import tv.ismar.app.entity.banner.BannerEntity;
 import tv.ismar.app.network.SkyService;
+import tv.ismar.homepage.HomeActivity;
 import tv.ismar.homepage.R;
 import tv.ismar.homepage.banner.adapter.BannerHorizontal519Adapter;
+import tv.ismar.homepage.banner.adapter.BannerSubscribeAdapter;
+import tv.ismar.homepage.view.BannerLinearLayout;
+
+import static android.view.MotionEvent.BUTTON_PRIMARY;
 
 /**
  * @AUTHOR: xi
@@ -30,7 +36,7 @@ import tv.ismar.homepage.banner.adapter.BannerHorizontal519Adapter;
  * @DESC: 519横图模版
  */
 
-public class Template519 extends Template{
+public class Template519 extends Template implements View.OnClickListener, View.OnHoverListener{
     private static final String TAG = Template519.class.getSimpleName();
 
     private RecyclerViewTV horizontal519Banner;
@@ -39,6 +45,10 @@ public class Template519 extends Template{
     private String mBannerTitle;
     private TextView mTitleTv;
 
+    private View navigationLeft;
+    private View navigationRight;
+    private BannerLinearLayout mBannerLinearLayout;
+    private LinearLayoutManagerTV horizontal519LayoutManager;
 
     public Template519(Context context) {
         super(context);
@@ -46,10 +56,22 @@ public class Template519 extends Template{
 
     @Override
     public void getView(View view) {
+
+        navigationLeft = view.findViewById(R.id.navigation_left);
+        navigationRight = view.findViewById(R.id.navigation_right);
+        navigationLeft.setOnClickListener(this);
+        navigationRight.setOnClickListener(this);
+        navigationRight.setOnHoverListener(this);
+        navigationLeft.setOnHoverListener(this);
+
+        mBannerLinearLayout = (BannerLinearLayout) view.findViewById(R.id.banner_layout);
+        mBannerLinearLayout.setNavigationLeft(navigationLeft);
+        mBannerLinearLayout.setNavigationRight(navigationRight);
+
         mTitleCountTv = (TextView) view.findViewById(R.id.banner_title_count);
         mTitleTv = (TextView) view.findViewById(R.id.banner_title_tv);
         horizontal519Banner = (RecyclerViewTV)view.findViewById(R.id.horizontal_519_banner);
-        LinearLayoutManagerTV horizontal519LayoutManager = new LinearLayoutManagerTV(mContext, LinearLayoutManager.HORIZONTAL, false);
+         horizontal519LayoutManager = new LinearLayoutManagerTV(mContext, LinearLayoutManager.HORIZONTAL, false);
         int selectedItemSpace = mContext.getResources().getDimensionPixelSize(R.dimen.banner_item_SelectedItemSpace);
 //        horizontal519Banner.addItemDecoration(new BannerHorizontal519Adapter.SpacesItemDecoration(selectedItemSpace));
         horizontal519Banner.setLayoutManager(horizontal519LayoutManager);
@@ -157,6 +179,24 @@ public class Template519 extends Template{
 
     private void fillHorizontal519Banner(BannerEntity bannerEntity) {
         mHorizontal519Adapter = new BannerHorizontal519Adapter(mContext, bannerEntity);
+        mHorizontal519Adapter.setHoverListener(new BannerHorizontal519Adapter.OnBannerHoverListener() {
+            @Override
+            public void onBannerHover(View view, int position, boolean hovered) {
+//                Log.d(TAG, view + " : " + hovered);
+                if (hovered){
+                    horizontal519Banner.setHovered(true);
+                }else {
+                    horizontal519Banner.setHovered(false);
+                    HomeActivity.mHoverView.requestFocus();
+//                    Log.d(TAG, view + " : " + hovered);
+//                    Log.d(TAG, "view id: " + view.getId());
+//                    HomeActivity.mHoverView.setNextFocusUpId(view.getId());
+//                    HomeActivity.mHoverView.setNextFocusDownId(view.getId());
+//                    HomeActivity.mHoverView.setNextFocusRightId(view.getId());
+//                    HomeActivity.mHoverView.setNextFocusLeftId(view.getId());
+                }
+            }
+        });
         mHorizontal519Adapter.setBannerClickListener(new BannerHorizontal519Adapter.OnBannerClickListener() {
             @Override
             public void onBannerClick(View view, int position) {
@@ -165,5 +205,36 @@ public class Template519 extends Template{
         });
         horizontal519Banner.setAdapter(mHorizontal519Adapter);
         mTitleCountTv.setText(String.format(mContext.getString(R.string.home_item_title_count), (1) + "", mHorizontal519Adapter.getTatalItemCount() + ""));
+    }
+
+    @Override
+    public void onClick(View v) {
+        int i = v.getId();
+        if (i == R.id.navigation_left) {
+            horizontal519LayoutManager.scrollToPositionWithOffset(horizontal519Banner.findFirstVisibleItemPosition() - 1, 0);
+        } else if (i == R.id.navigation_right) {
+            horizontal519Banner.loadMore();
+            horizontal519LayoutManager.scrollToPositionWithOffset(horizontal519Banner.findFirstVisibleItemPosition() + 1, 0);
+        }
+    }
+
+    @Override
+    public boolean onHover(View v, MotionEvent event) {
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_HOVER_MOVE:
+            case MotionEvent.ACTION_HOVER_ENTER:
+                if (!v.hasFocus()) {
+                    v.requestFocus();
+                    v.requestFocusFromTouch();
+                }
+                break;
+            case MotionEvent.ACTION_HOVER_EXIT:
+                if (event.getButtonState() != BUTTON_PRIMARY) {
+                    navigationLeft.setVisibility(View.INVISIBLE);
+                    navigationRight.setVisibility(View.INVISIBLE);
+                }
+                break;
+        }
+        return false;
     }
 }

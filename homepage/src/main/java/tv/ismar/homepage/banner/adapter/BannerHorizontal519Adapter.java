@@ -1,11 +1,11 @@
 package tv.ismar.homepage.banner.adapter;
 
-import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.graphics.Rect;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -20,15 +20,13 @@ import java.util.regex.Pattern;
 
 import tv.ismar.app.entity.banner.BannerEntity;
 import tv.ismar.homepage.R;
-
-import static android.view.View.SCALE_X;
-import static android.view.View.SCALE_Y;
+import tv.ismar.searchpage.utils.JasmineUtil;
 
 /**
  * Created by huibin on 25/08/2017.
  */
 
-public class BannerHorizontal519Adapter extends RecyclerView.Adapter<BannerHorizontal519Adapter.SubscribeViewHolder>{
+public class BannerHorizontal519Adapter extends RecyclerView.Adapter<BannerHorizontal519Adapter.SubscribeViewHolder> {
     private Context mContext;
 
     private List<BannerEntity.PosterBean> mSubscribeEntityList;
@@ -36,6 +34,21 @@ public class BannerHorizontal519Adapter extends RecyclerView.Adapter<BannerHoriz
     private int currentPageNumber;
     private int totalPageCount;
     private int totalItemCount;
+
+    private BannerHorizontal519Adapter.OnBannerHoverListener mHoverListener;
+    private BannerHorizontal519Adapter.OnBannerClickListener mSubscribeClickListener;
+
+    public BannerHorizontal519Adapter(Context context, BannerEntity bannerEntity) {
+        mContext = context;
+        mSubscribeEntityList = bannerEntity.getPoster();
+        currentPageNumber = 1;
+        totalPageCount = bannerEntity.getCount_pages();
+        totalItemCount = bannerEntity.getCount();
+    }
+
+    public void setHoverListener(OnBannerHoverListener hoverListener) {
+        mHoverListener = hoverListener;
+    }
 
     public int getCurrentPageNumber() {
         return currentPageNumber;
@@ -61,14 +74,6 @@ public class BannerHorizontal519Adapter extends RecyclerView.Adapter<BannerHoriz
         this.totalItemCount = tatalItemCount;
     }
 
-    public BannerHorizontal519Adapter(Context context, BannerEntity bannerEntity) {
-        mContext = context;
-        mSubscribeEntityList = bannerEntity.getPoster();
-        currentPageNumber = 1;
-        totalPageCount = bannerEntity.getCount_pages();
-        totalItemCount = bannerEntity.getCount();
-    }
-
     @Override
     public SubscribeViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(mContext).inflate(R.layout.item_banner_horizontal_519, parent, false);
@@ -90,9 +95,9 @@ public class BannerHorizontal519Adapter extends RecyclerView.Adapter<BannerHoriz
         holder.mItemView.findViewById(R.id.item_layout).setTag(entity);
         holder.mItemView.findViewById(R.id.item_layout).setTag(R.id.banner_item_position, position);
 
-        if (position == 0){
+        if (position == 0) {
             holder.mLeftSpace.setVisibility(View.GONE);
-        }else {
+        } else {
             holder.mLeftSpace.setVisibility(View.VISIBLE);
         }
     }
@@ -100,84 +105,6 @@ public class BannerHorizontal519Adapter extends RecyclerView.Adapter<BannerHoriz
     @Override
     public int getItemCount() {
         return mSubscribeEntityList.size();
-    }
-
-
-    class SubscribeViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener,View.OnFocusChangeListener {
-
-        private Space mLeftSpace;
-        private ImageView mImageView;
-        private TextView mTitle;
-        private View mItemView;
-
-
-        public SubscribeViewHolder(View itemView) {
-            super(itemView);
-            mItemView = itemView;
-            mItemView.findViewById(R.id.item_layout).setOnClickListener(this);
-            mItemView.findViewById(R.id.item_layout).setOnFocusChangeListener(this);
-            mImageView = (ImageView) itemView.findViewById(R.id.image_view);
-            mTitle = (TextView) itemView.findViewById(R.id.title);
-            mLeftSpace = (Space)itemView.findViewById(R.id.left_space);
-
-        }
-
-        @Override
-        public void onClick(View v) {
-            if (mSubscribeClickListener != null) {
-                int position = (int) v.getTag(R.id.banner_item_position);
-                mSubscribeClickListener.onBannerClick(v, position);
-            }
-        }
-
-        @Override
-        public void onFocusChange(View v, boolean hasFocus) {
-
-            if (hasFocus){
-                scaleToLarge(v.findViewById(R.id.item_layout));
-                v.findViewById(R.id.title).setSelected(true);
-            }else {
-                scaleToNormal(v.findViewById(R.id.item_layout));
-                v.findViewById(R.id.title).setSelected(false);
-            }
-        }
-
-        private void scaleToLarge(View view) {
-            ObjectAnimator objectAnimatorX = ObjectAnimator.ofFloat(view, SCALE_X, 1.0F, 1.1F);
-            objectAnimatorX.setDuration(100L);
-            objectAnimatorX.start();
-            ObjectAnimator objectAnimatorY = ObjectAnimator.ofFloat(view, SCALE_Y, 1.0F, 1.1F);
-            objectAnimatorY.setDuration(100L);
-            objectAnimatorY.start();
-        }
-
-
-        private void scaleToNormal(View view) {
-            ObjectAnimator objectAnimatorX = ObjectAnimator.ofFloat(view, SCALE_X, 1.1F, 1.0F);
-            objectAnimatorX.setDuration(100L);
-            objectAnimatorX.start();
-            ObjectAnimator objectAnimatorY = ObjectAnimator.ofFloat(view, SCALE_Y, 1.1F, 1.0F);
-            objectAnimatorY.setDuration(100L);
-            objectAnimatorY.start();
-        }
-    }
-
-    public static class SpacesItemDecoration extends RecyclerView.ItemDecoration {
-        private int space;
-
-        public SpacesItemDecoration(int space) {
-            this.space = space;
-        }
-
-        @Override
-        public void getItemOffsets(Rect outRect, View view,
-                                   RecyclerView parent, RecyclerView.State state) {
-
-            outRect.bottom = space;
-            outRect.top = space;
-            outRect.right = space;
-            outRect.left = space;
-        }
     }
 
     public void addDatas(BannerEntity bannerEntity) {
@@ -201,12 +128,6 @@ public class BannerHorizontal519Adapter extends RecyclerView.Adapter<BannerHoriz
         mSubscribeEntityList.addAll(emptyList);
     }
 
-    private BannerHorizontal519Adapter.OnBannerClickListener mSubscribeClickListener;
-
-    public interface OnBannerClickListener {
-        void onBannerClick(View view, int position);
-    }
-
     public void setBannerClickListener(BannerHorizontal519Adapter.OnBannerClickListener subscribeClickListener) {
         mSubscribeClickListener = subscribeClickListener;
     }
@@ -226,5 +147,103 @@ public class BannerHorizontal519Adapter extends RecyclerView.Adapter<BannerHoriz
             e.printStackTrace();
         }
         return id;
+    }
+
+    public interface OnBannerHoverListener {
+        void onBannerHover(View view, int position, boolean hovered);
+    }
+
+    public interface OnBannerClickListener {
+        void onBannerClick(View view, int position);
+    }
+
+    public static class SpacesItemDecoration extends RecyclerView.ItemDecoration {
+        private int space;
+
+        public SpacesItemDecoration(int space) {
+            this.space = space;
+        }
+
+        @Override
+        public void getItemOffsets(Rect outRect, View view,
+                                   RecyclerView parent, RecyclerView.State state) {
+
+            outRect.bottom = space;
+            outRect.top = space;
+            outRect.right = space;
+            outRect.left = space;
+        }
+    }
+
+    class SubscribeViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnFocusChangeListener, View.OnHoverListener {
+
+        private Space mLeftSpace;
+        private ImageView mImageView;
+        private TextView mTitle;
+        private View mItemView;
+
+
+        public SubscribeViewHolder(View itemView) {
+            super(itemView);
+            mItemView = itemView;
+            View itemLayoutView = mItemView.findViewById(R.id.item_layout);
+            mItemView.findViewById(R.id.item_layout).setOnClickListener(this);
+            mItemView.findViewById(R.id.item_layout).setOnFocusChangeListener(this);
+            mItemView.findViewById(R.id.item_layout).setOnHoverListener(this);
+            mImageView = (ImageView) itemView.findViewById(R.id.image_view);
+            mTitle = (TextView) itemView.findViewById(R.id.title);
+            mLeftSpace = (Space) itemView.findViewById(R.id.left_space);
+
+        }
+
+        @Override
+        public void onClick(View v) {
+            if (mSubscribeClickListener != null) {
+                int position = (int) v.getTag(R.id.banner_item_position);
+                mSubscribeClickListener.onBannerClick(v, position);
+            }
+        }
+
+        @Override
+        public void onFocusChange(View v, boolean hasFocus) {
+
+            if (hasFocus) {
+                scaleToLarge(v.findViewById(R.id.item_layout));
+                v.findViewById(R.id.title).setSelected(true);
+            } else {
+                scaleToNormal(v.findViewById(R.id.item_layout));
+                v.findViewById(R.id.title).setSelected(false);
+            }
+        }
+
+        private void scaleToLarge(View view) {
+            JasmineUtil.scaleOut3(view);
+        }
+
+        private void scaleToNormal(View view) {
+            JasmineUtil.scaleIn3(view);
+        }
+
+        @Override
+        public boolean onHover(View v, MotionEvent event) {
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_HOVER_ENTER:
+                case MotionEvent.ACTION_HOVER_MOVE:
+                    if (mHoverListener != null) {
+                        int position = (int) v.getTag(R.id.banner_item_position);
+                        mHoverListener.onBannerHover(v, position, true);
+                    }
+                    v.requestFocusFromTouch();
+                    v.requestFocus();
+                    break;
+                case MotionEvent.ACTION_HOVER_EXIT:
+                    if (mHoverListener != null) {
+                        int position = (int) v.getTag(R.id.banner_item_position);
+                        mHoverListener.onBannerHover(v, position, false);
+                    }
+                    break;
+            }
+            return false;
+        }
     }
 }

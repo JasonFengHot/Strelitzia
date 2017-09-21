@@ -443,7 +443,7 @@ public class VodApplication extends Application {
                 .init("VOD_APPLICATION")                 // default PRETTYLOGGER or use just init()
                 .methodCount(10)                         // default 2
                 .logLevel(LogLevel.FULL)                 // default LogLevel.FULL
-                .methodOffset(2);                        // default 0
+                .methodOffset(1);                        // default 0
     }
 
     private void initKKMediaPlayer() {

@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
 
@@ -21,8 +22,13 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import tv.ismar.app.entity.banner.BannerEntity;
 import tv.ismar.app.network.SkyService;
+import tv.ismar.homepage.HomeActivity;
 import tv.ismar.homepage.R;
+import tv.ismar.homepage.banner.adapter.BannerHorizontal519Adapter;
 import tv.ismar.homepage.banner.adapter.BannerMovieMixAdapter;
+import tv.ismar.homepage.view.BannerLinearLayout;
+
+import static android.view.MotionEvent.BUTTON_PRIMARY;
 
 /**
  * @AUTHOR: xi
@@ -30,7 +36,7 @@ import tv.ismar.homepage.banner.adapter.BannerMovieMixAdapter;
  * @DESC: 大横小竖模版
  */
 
-public class TemplateBigSmallLd extends Template{
+public class TemplateBigSmallLd extends Template implements View.OnHoverListener, View.OnClickListener {
     private static final String TAG = TemplateBigSmallLd.class.getSimpleName();
     private RecyclerViewTV movieMixBanner;
 
@@ -40,16 +46,33 @@ public class TemplateBigSmallLd extends Template{
     private TextView mTitleTv;
     private String mBannerTitle;
 
+    private View navigationLeft;
+    private View navigationRight;
+    private BannerLinearLayout mBannerLinearLayout;
+    private LinearLayoutManagerTV movieMixLayoutManager;
+
     public TemplateBigSmallLd(Context context) {
         super(context);
     }
 
     @Override
     public void getView(View view) {
+        navigationLeft = view.findViewById(R.id.navigation_left);
+        navigationRight = view.findViewById(R.id.navigation_right);
+        navigationLeft.setOnClickListener(this);
+        navigationRight.setOnClickListener(this);
+        navigationRight.setOnHoverListener(this);
+        navigationLeft.setOnHoverListener(this);
+
+        mBannerLinearLayout = (BannerLinearLayout) view.findViewById(R.id.banner_layout);
+        mBannerLinearLayout.setNavigationLeft(navigationLeft);
+        mBannerLinearLayout.setNavigationRight(navigationRight);
+
+
         mTitleCountTv = (TextView) view.findViewById(R.id.banner_title_count);
         mTitleTv = (TextView) view.findViewById(R.id.banner_title_tv);
         movieMixBanner = (RecyclerViewTV) view.findViewById(R.id.movie_mix_banner);
-        LinearLayoutManagerTV movieMixLayoutManager = new LinearLayoutManagerTV(mContext, LinearLayoutManager.HORIZONTAL, false);
+         movieMixLayoutManager = new LinearLayoutManagerTV(mContext, LinearLayoutManager.HORIZONTAL, false);
         int selectedItemSpace = mContext.getResources().getDimensionPixelSize(R.dimen.banner_item_SelectedItemSpace);
 //        movieMixBanner.addItemDecoration(new BannerMovieMixAdapter.SpacesItemDecoration(selectedItemSpace));
         movieMixBanner.setLayoutManager(movieMixLayoutManager);
@@ -164,9 +187,52 @@ public class TemplateBigSmallLd extends Template{
                 goToNextPage(view);
             }
         });
+        adapter.setHoverListener(new BannerMovieMixAdapter.OnBannerHoverListener() {
+            @Override
+            public void onBannerHover(View view, int position, boolean hovered) {
+                Log.d(TAG, view + " : " + hovered);
+                if (hovered){
+                    movieMixBanner.setHovered(true);
+                }else {
+                    movieMixBanner.setHovered(false);
+                    HomeActivity.mHoverView.requestFocus();
+                }
+            }
+        });
         movieMixBanner.setAdapter(adapter);
         mTitleCountTv.setText(String.format(mContext.getString(R.string.home_item_title_count), (1) + "", adapter.getTatalItemCount() + ""));
 
+    }
+
+    @Override
+    public void onClick(View v) {
+        int i = v.getId();
+        if (i == R.id.navigation_left) {
+            movieMixLayoutManager.scrollToPositionWithOffset(movieMixBanner.findFirstVisibleItemPosition() - 1, 0);
+        } else if (i == R.id.navigation_right) {
+            movieMixBanner.loadMore();
+            movieMixLayoutManager.scrollToPositionWithOffset(movieMixBanner.findFirstVisibleItemPosition() + 1, 0);
+        }
+    }
+
+    @Override
+    public boolean onHover(View v, MotionEvent event) {
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_HOVER_MOVE:
+            case MotionEvent.ACTION_HOVER_ENTER:
+                if (!v.hasFocus()) {
+                    v.requestFocus();
+                    v.requestFocusFromTouch();
+                }
+                break;
+            case MotionEvent.ACTION_HOVER_EXIT:
+                if (event.getButtonState() != BUTTON_PRIMARY) {
+                    navigationLeft.setVisibility(View.INVISIBLE);
+                    navigationRight.setVisibility(View.INVISIBLE);
+                }
+                break;
+        }
+        return false;
     }
 
 }

@@ -15,7 +15,6 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 
-import com.open.androidtvwidget.leanback.adapter.GeneralAdapter;
 import com.open.androidtvwidget.leanback.recycle.impl.PrvInterface;
 import com.open.androidtvwidget.utils.OPENLOG;
 
@@ -164,6 +163,9 @@ public class RecyclerViewTV extends RecyclerView implements PrvInterface {
 
     @Override
     public boolean requestChildRectangleOnScreen(View child, Rect rect, boolean immediate) {
+        if (isHovered()){
+            return true;
+        }
         if (mOnItemFocusChangeListener != null){
             mOnItemFocusChangeListener.onItemFocusGain(child, getPositionByView(child));
         }
@@ -461,6 +463,7 @@ public class RecyclerViewTV extends RecyclerView implements PrvInterface {
 
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
+        setHovered(false);
         int action = event.getAction();
         if (action == KeyEvent.ACTION_UP) {
             isDispatch = true;
@@ -473,10 +476,10 @@ public class RecyclerViewTV extends RecyclerView implements PrvInterface {
             if (action == KeyEvent.ACTION_DOWN) {
                 if (!isHorizontalLayoutManger() && keyCode == KeyEvent.KEYCODE_DPAD_DOWN) {
                     // 垂直布局向下按键.
-                    exeuteKeyEvent();
+                    loadMore();
                 } else if (isHorizontalLayoutManger() && keyCode == KeyEvent.KEYCODE_DPAD_RIGHT) {
                     // 横向布局向右按键.
-                    exeuteKeyEvent();
+                    loadMore();
                 }
             }
             return super.dispatchKeyEvent(event);
@@ -492,7 +495,7 @@ public class RecyclerViewTV extends RecyclerView implements PrvInterface {
         }
     };
 
-    private boolean exeuteKeyEvent() {
+    public boolean loadMore() {
         int totalItemCount = getLayoutManager().getItemCount();
         int lastVisibleItem = findLastVisibleItemPosition();
         int lastComVisiPos = findLastCompletelyVisibleItemPosition();

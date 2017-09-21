@@ -180,6 +180,15 @@ public class BannerEntity {
         private int pk;
         private String custom_image;
         private Date order_date;
+        private String display_order_date;
+
+        public String getDisplay_order_date() {
+            return display_order_date;
+        }
+
+        public void setDisplay_order_date(String display_order_date) {
+            this.display_order_date = display_order_date;
+        }
 
         public Date getOrder_date() {
             return order_date;

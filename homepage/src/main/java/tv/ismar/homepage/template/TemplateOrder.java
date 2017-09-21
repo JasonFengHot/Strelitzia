@@ -2,8 +2,10 @@ package tv.ismar.homepage.template;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
 
@@ -11,7 +13,6 @@ import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 import com.open.androidtvwidget.leanback.recycle.LinearLayoutManagerTV;
 import com.open.androidtvwidget.leanback.recycle.RecyclerViewTV;
-import com.orhanobut.logger.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +26,11 @@ import tv.ismar.app.network.SkyService;
 import tv.ismar.homepage.R;
 import tv.ismar.homepage.banner.adapter.BannerSubscribeAdapter;
 import tv.ismar.homepage.control.OrderControl;
+import tv.ismar.homepage.view.BannerLinearLayout;
 
+import static android.view.MotionEvent.BUTTON_PRIMARY;
+import static tv.ismar.homepage.HomeActivity.mHoverView;
+import static tv.ismar.homepage.HomeActivity.mLastFocusView;
 import static tv.ismar.homepage.control.FetchDataControl.FETCH_BANNERS_LIST_FLAG;
 import static tv.ismar.homepage.control.FetchDataControl.FETCH_M_BANNERS_LIST_NEXTPAGE_FLAG;
 
@@ -35,7 +40,7 @@ import static tv.ismar.homepage.control.FetchDataControl.FETCH_M_BANNERS_LIST_NE
  * @DESC: 预约模版
  */
 
-public class TemplateOrder extends Template implements BaseControl.ControlCallBack {
+public class TemplateOrder extends Template implements BaseControl.ControlCallBack, View.OnHoverListener, View.OnClickListener {
 
     private static final String TAG = "TemplateOrder";
     private OrderControl mControl;
@@ -49,11 +54,23 @@ public class TemplateOrder extends Template implements BaseControl.ControlCallBa
     private TextView mTitleTv;
     private String mBannerTitle;
 
-//    private View subscribeArrowLeft;
-//    private View subscribeArrowRight;
+    private View navigationLeft;
+    private View navigationRight;
+    private BannerLinearLayout mBannerLinearLayout;
+
+    private LinearLayoutManagerTV subscribeLayoutManager;
+    private int selectedItemOffset;
+
+    private boolean isBannerNavigateClick = false;
+
+    private Handler hoverEventHandler;
+    private Runnable hoverEventRunnable;
+
+    private int currentFocusItemPosition = 0;
 
     public TemplateOrder(Context context) {
         super(context);
+        hoverEventHandler = new Handler();
         mControl = new OrderControl(mContext, this);
     }
 
@@ -61,15 +78,43 @@ public class TemplateOrder extends Template implements BaseControl.ControlCallBa
     public void getView(View view) {
         if (!isViewInit) {
             isViewInit = true;
+            navigationLeft = view.findViewById(R.id.navigation_left);
+            navigationRight = view.findViewById(R.id.navigation_right);
+            navigationLeft.setOnClickListener(this);
+            navigationRight.setOnClickListener(this);
+            navigationRight.setOnHoverListener(this);
+            navigationLeft.setOnHoverListener(this);
+
+            mBannerLinearLayout = (BannerLinearLayout) view.findViewById(R.id.banner_layout);
+            mBannerLinearLayout.setNavigationLeft(navigationLeft);
+            mBannerLinearLayout.setNavigationRight(navigationRight);
+
+
+//            mBannerLinearLayout.setOnHoverListener(new View.OnHoverListener() {
+//                @Override
+//                public boolean onHover(View v, MotionEvent event) {
+//                    Log.d(TAG , "mBannerLinearLayout  onHover");
+//                    return false;
+//                }
+//            });
+//            navigationLeft.setOnHoverListener(this);
+//            navigationRight.setOnHoverListener(this);
+
+//            arrowNormalLeft = view.findViewById(R.id.banner_arrow_left_normal);
+//            arrowNormalRight = view.findViewById(R.id.banner_arrow_right_normal);
+//
+//            arrowFocusLeft = view.findViewById(R.id.banner_arrow_left_focus);
+//            arrowFocusRight = view.findViewById(R.id.banner_arrow_right_focus);
+
             mTitleCountTv = (TextView) view.findViewById(R.id.banner_title_count);
             mTitleTv = (TextView) view.findViewById(R.id.banner_title_tv);
             subscribeBanner = (RecyclerViewTV) view.findViewById(R.id.subscribe_banner);
-            LinearLayoutManagerTV subscribeLayoutManager = new LinearLayoutManagerTV(mContext, LinearLayoutManagerTV.HORIZONTAL, false);
+            subscribeLayoutManager = new LinearLayoutManagerTV(mContext, LinearLayoutManagerTV.HORIZONTAL, false);
             int selectedItemSpace = mContext.getResources().getDimensionPixelSize(R.dimen.banner_item_SelectedItemSpace);
 //            subscribeBanner.addItemDecoration(new BannerSubscribeAdapter.SpacesItemDecoration(selectedItemSpace));
             subscribeBanner.setLayoutManager(subscribeLayoutManager);
             subscribeBanner.setSelectedItemAtCentered(false);
-            int selectedItemOffset = mContext.getResources().getDimensionPixelSize(R.dimen.banner_item_setSelectedItemOffset);
+            selectedItemOffset = mContext.getResources().getDimensionPixelSize(R.dimen.banner_item_setSelectedItemOffset);
             subscribeBanner.setSelectedItemOffset(selectedItemOffset, selectedItemOffset);
             subscribeBanner.setPagingableListener(new RecyclerViewTV.PagingableListener() {
                 @Override
@@ -109,6 +154,7 @@ public class TemplateOrder extends Template implements BaseControl.ControlCallBa
                 @Override
                 public void onItemFocusGain(View itemView, int position) {
                     if (itemView != null && mContext != null && mTitleCountTv != null && subscribeAdapter != null) {
+                        currentFocusItemPosition = position + 1;
                         mTitleCountTv.setText(String.format(mContext.getString(R.string.home_item_title_count), (position + 1) + "", subscribeAdapter.getTatalItemCount() + ""));
                     }
                 }
@@ -121,25 +167,16 @@ public class TemplateOrder extends Template implements BaseControl.ControlCallBa
 //                switch (event.getAction()) {
 //                    case MotionEvent.ACTION_HOVER_ENTER:
 //                    case MotionEvent.ACTION_HOVER_MOVE:
-//                        if (subscribeArrowLeft.getVisibility() == View.INVISIBLE){
-//                            subscribeArrowLeft.setVisibility(View.VISIBLE);
-//                        }
-//                        if (subscribeArrowRight.getVisibility() == View.INVISIBLE){
-//                            subscribeArrowRight.setVisibility(View.VISIBLE);
-//                        }
+//                        showNavigation(true);
 //                        break;
 //                    case MotionEvent.ACTION_HOVER_EXIT:
-//                        if (subscribeArrowLeft.getVisibility() == View.VISIBLE){
-//                            subscribeArrowLeft.setVisibility(View.INVISIBLE);
-//                        }
-//                        if (subscribeArrowRight.getVisibility() == View.VISIBLE){
-//                            subscribeArrowRight.setVisibility(View.INVISIBLE);
-//                        }
+//                        showNavigation(false);
 //                        break;
 //                }
 //                return false;
 //            }
 //        });
+
 //
 //        subscribeArrowLeft = view.findViewById(R.id.subscribe_arrow_left);
 //        subscribeArrowLeft.setOnHoverListener(new View.OnHoverListener() {
@@ -205,23 +242,22 @@ public class TemplateOrder extends Template implements BaseControl.ControlCallBa
         }
     }
 
-    private void nextPage(){
+    private void nextPage() {
 
     }
 
     @Override
     public void callBack(int flags, Object... args) {
         BannerEntity bannerEntity = (BannerEntity) args[0];
-        if (flags == FETCH_BANNERS_LIST_FLAG){
+        if (flags == FETCH_BANNERS_LIST_FLAG) {
             fillSubscribeBanner(bannerEntity);
-        }else if (flags == FETCH_M_BANNERS_LIST_NEXTPAGE_FLAG){
+        } else if (flags == FETCH_M_BANNERS_LIST_NEXTPAGE_FLAG) {
             subscribeAdapter.addDatas(bannerEntity);
         }
     }
 
 
     private void fetchSubscribeBanner(int bannerName, final int pageNumber) {
-        Logger.d("fetchSubscribeBanner");
         if (pageNumber != 1) {
             int startIndex = (pageNumber - 1) * 33;
             int endIndex;
@@ -273,8 +309,6 @@ public class TemplateOrder extends Template implements BaseControl.ControlCallBa
     }
 
     private void fillSubscribeBanner(BannerEntity bannerEntity) {
-//        Logger.d("fillSubscribeBanner");
-        Log.d(TAG, "fillSubscribeBanner");
         subscribeAdapter = new BannerSubscribeAdapter(mContext, bannerEntity);
         subscribeAdapter.setSubscribeClickListener(new BannerSubscribeAdapter.OnBannerClickListener() {
             @Override
@@ -282,7 +316,83 @@ public class TemplateOrder extends Template implements BaseControl.ControlCallBa
                 goToNextPage(view);
             }
         });
+        subscribeAdapter.setSubscribeHoverListener(new BannerSubscribeAdapter.OnBannerHoverListener() {
+            @Override
+            public void onBannerHover(View view, int position, boolean hovered) {
+                if (hovered) {
+                    mLastFocusView = view;
+                    mHoverView.setFocusable(true);
+                    subscribeBanner.setHovered(true);
+
+                } else {
+                    subscribeBanner.setHovered(false);
+                    mHoverView.requestFocus();
+                }
+            }
+        });
         subscribeBanner.setAdapter(subscribeAdapter);
         mTitleCountTv.setText(String.format(mContext.getString(R.string.home_item_title_count), (1) + "", subscribeAdapter.getTatalItemCount() + ""));
+    }
+
+    private void showNavigation(boolean isHovered) {
+//        if (isHovered){
+//            navigationLeft.setVisibility(View.VISIBLE);
+//            navigationRight.setVisibility(View.VISIBLE);
+//        }else {
+//            navigationLeft.setVisibility(View.INVISIBLE);
+//            navigationRight.setVisibility(View.INVISIBLE);
+//        }
+    }
+
+
+    @Override
+    public boolean onHover(View v, MotionEvent event) {
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_HOVER_MOVE:
+            case MotionEvent.ACTION_HOVER_ENTER:
+                if (!v.hasFocus()) {
+                    v.requestFocus();
+                    v.requestFocusFromTouch();
+                }
+                break;
+            case MotionEvent.ACTION_HOVER_EXIT:
+                if (event.getButtonState() != BUTTON_PRIMARY){
+                    navigationLeft.setVisibility(View.INVISIBLE);
+                    navigationRight.setVisibility(View.INVISIBLE);
+                }
+//                Log.d(TAG, "NAVIGATION ACTION_HOVER_EXIT");
+//                if (hoverEventRunnable!= null){
+//                    isBannerNavigateClick = true;
+//                    hoverEventHandler.removeCallbacks(hoverEventRunnable);
+//                }
+//                hoverEventRunnable = new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        if (isBannerNavigateClick) {
+//                            isBannerNavigateClick = false;
+//                        } else {
+//                            mHoverView.requestFocus();
+//                        }
+//                    }
+//                };
+//                hoverEventHandler.postDelayed(hoverEventRunnable, 20);
+                break;
+        }
+        return false;
+    }
+
+    @Override
+    public void onClick(View v) {
+        Log.d(TAG, "onClick findFirstVisibleItemPosition: " + subscribeBanner.findFirstVisibleItemPosition());
+        int i = v.getId();
+        if (i == R.id.navigation_left) {
+//            subscribeBanner.smoothScrollBy(-428, 0);
+            subscribeLayoutManager.scrollToPositionWithOffset(subscribeBanner.findFirstVisibleItemPosition() - 1, 0);
+//            subscribeBanner.smoothScrollToPosition(subscribeBanner.findLastVisibleItemPosition() - 1);
+        } else if (i == R.id.navigation_right) {
+            subscribeBanner.loadMore();
+//            subscribeBanner.smoothScrollToPosition(subscribeBanner.findLastVisibleItemPosition() + 1);
+            subscribeLayoutManager.scrollToPositionWithOffset(subscribeBanner.findFirstVisibleItemPosition() + 1, 0);
+        }
     }
 }

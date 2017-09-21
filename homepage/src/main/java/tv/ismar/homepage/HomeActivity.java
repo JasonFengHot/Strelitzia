@@ -11,6 +11,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -69,6 +70,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     private TimeTickBroadcast mTimeTickBroadcast = null;
 
     public static View mHoverView;
+    public static View mLastFocusView;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -269,5 +271,19 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         Intent intent = new Intent();
         intent.setClass(this, TrueTimeService.class);
         startService(intent);
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (mLastFocusView != null && mHoverView != null && mHoverView.hasFocus()){
+            mLastFocusView.requestFocus();
+            mLastFocusView.requestFocusFromTouch();
+            mHoverView.setFocusable(false);
+            mHoverView.setFocusableInTouchMode(false);
+            return true;
+        }
+        mHoverView.setFocusable(false);
+        mHoverView.setFocusableInTouchMode(false);
+        return super.onKeyDown(keyCode, event);
     }
 }
