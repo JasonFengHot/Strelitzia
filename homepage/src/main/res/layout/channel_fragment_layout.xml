@@ -1,26 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<tv.ismar.homepage.widget.scroll.RecycleLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/scroll_linear_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     android:clipChildren="false"
     android:clipToPadding="false"
     android:focusable="false"
-    android:orientation="vertical"
-    android:layout_height="match_parent"
-    android:layout_width="match_parent">
-    <tv.ismar.homepage.widget.scroll.RecycleLinearLayout
-        android:clipChildren="false"
-        android:clipToPadding="false"
-        android:focusable="false"
-        android:id="@+id/scroll_linear_container"
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        android:orientation="vertical"/>
-    <Button
-        android:id="@+id/get_more_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_margin="20dp"
-        android:textSize="30sp"
-        android:textColor="#ffffff"
-        android:text="更多精彩"/>
-</LinearLayout>
+    android:orientation="vertical" />

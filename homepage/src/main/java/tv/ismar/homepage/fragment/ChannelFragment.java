@@ -5,8 +5,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.TextView;
 
 import tv.ismar.app.BaseControl;
 import tv.ismar.app.core.PageIntent;
@@ -21,6 +19,7 @@ import tv.ismar.homepage.template.TemplateConlumn;
 import tv.ismar.homepage.template.TemplateDoubleLd;
 import tv.ismar.homepage.template.TemplateDoubleMd;
 import tv.ismar.homepage.template.TemplateGuide;
+import tv.ismar.homepage.template.TemplateMore;
 import tv.ismar.homepage.template.TemplateMovie;
 import tv.ismar.homepage.template.TemplateOrder;
 import tv.ismar.homepage.template.TemplateRecommend;
@@ -34,11 +33,10 @@ import tv.ismar.library.util.StringUtils;
  * @DESC: 频道fragemnt
  */
 
-public class ChannelFragment extends BaseFragment implements BaseControl.ControlCallBack, View.OnClickListener{
+public class ChannelFragment extends BaseFragment implements BaseControl.ControlCallBack {
     private FetchDataControl mControl = null;//业务类引用
 
     private RecycleLinearLayout mLinearContainer;//banner容器
-    private TextView mGetMoreBtn;
 
     @Override
     public void onAttach(Context context) {
@@ -51,13 +49,11 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
         View view = LayoutInflater.from(getActivity()).inflate(R.layout.channel_fragment_layout, null);
         findView(view);
         initData();
-        initListener();
         return view;
     }
 
     private void findView(View view){
         mLinearContainer = (RecycleLinearLayout) view.findViewById(R.id.scroll_linear_container);
-        mGetMoreBtn = (TextView) view.findViewById(R.id.get_more_btn);
     }
 
     private String mChannel;//频道
@@ -67,10 +63,6 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
         mChannel = channel;
         mTitle = title;
         mStyle = style;
-    }
-
-    private void initListener(){
-        mGetMoreBtn.setOnClickListener(this);
     }
 
     private void initData(){
@@ -146,29 +138,33 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
                 mLinearContainer.setView(bannerView);
             }
         }
+
+        addMoreView();
         mLinearContainer.initView();
+    }
+
+    public static final String MORE_TITLE_FLAG = "title";
+    public static final String MORE_CHANNEL_FLAG = "channel";
+    public static final String MORE_STYLE_FLAG = "style";
+
+    /*添加更多内容模版*/
+    private void addMoreView(){
+        Bundle bundle = new Bundle();
+        bundle.putString(MORE_TITLE_FLAG, mTitle);
+        bundle.putString(MORE_CHANNEL_FLAG, mChannel);
+        bundle.putInt(MORE_STYLE_FLAG, mStyle);
+        View bannerView = createView(R.layout.banner_more);
+        new TemplateMore(getContext()).setView(bannerView, bundle);
+        mLinearContainer.setView(bannerView);
     }
 
     private View createView(int layoutId){
         return LayoutInflater.from(getContext()).inflate(layoutId, null);
     }
 
-    /*更多精彩*/
-    public void getMore(){
-        PageIntent intent = new PageIntent();
-        intent.toListPage(getContext(), mTitle, mChannel, mStyle);
-    }
-
     @Override
     public void onDestroy() {
         super.onDestroy();
         mLinearContainer.clearView();
-    }
-
-    @Override
-    public void onClick(View v) {
-        if(v == mGetMoreBtn){
-            getMore();
-        }
     }
 }

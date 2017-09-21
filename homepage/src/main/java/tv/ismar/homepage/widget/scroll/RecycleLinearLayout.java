@@ -71,9 +71,12 @@ public class RecycleLinearLayout extends LinearLayout {
                 Log.i("RecycleLinearLayout", "down visibility:"+(mAllViews.get(mSelectedChildIndex+2).getWindowVisibility()==View.GONE));
                 addView(mAllViews.get(mSelectedChildIndex+2));
             }
-            if(getChildCount() > 1){
+            if(getChildCount() > 2){//常驻2个子view
                 getChildAt(1).requestFocus();
                 removeViewAt(0);
+            }
+            if(mSelectedChildIndex == mAllViews.size()-2){
+                getChildAt(1).requestFocus();
             }
         }
     }
@@ -125,7 +128,9 @@ public class RecycleLinearLayout extends LinearLayout {
                 downEvent();
             }
         }
-        if(event.getAction()==KeyEvent.ACTION_UP && keyCode==KeyEvent.KEYCODE_DPAD_DOWN){
+        if(event.getAction()==KeyEvent.ACTION_UP && //处理跳入到该view时的焦点
+                keyCode==KeyEvent.KEYCODE_DPAD_DOWN &&
+                mSelectedChildIndex==0){
             getChildAt(0).requestFocus();
         }
         if(keyCode==KeyEvent.KEYCODE_DPAD_DOWN || keyCode==KeyEvent.KEYCODE_DPAD_UP){
