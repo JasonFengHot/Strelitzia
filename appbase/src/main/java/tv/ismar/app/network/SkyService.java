@@ -50,6 +50,7 @@ import tv.ismar.app.entity.GuideBanner;
 import tv.ismar.app.entity.HomePagerEntity;
 import tv.ismar.app.entity.Item;
 import tv.ismar.app.entity.ItemList;
+import tv.ismar.app.entity.ListSectionEntity;
 import tv.ismar.app.entity.SectionList;
 import tv.ismar.app.entity.Subject;
 import tv.ismar.app.entity.VideoEntity;
@@ -128,6 +129,11 @@ public interface SkyService {
     @GET
     Observable<ItemEntity> apiItemByUrl(
             @Url String urlP
+    );
+
+    @GET
+    Observable<ListSectionEntity> getListChannel(
+            @Url String url
     );
 
     @GET

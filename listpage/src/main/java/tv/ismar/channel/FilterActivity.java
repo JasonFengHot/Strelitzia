@@ -41,6 +41,7 @@ import tv.ismar.Utils.PosterUtil;
 import tv.ismar.account.IsmartvActivator;
 import tv.ismar.adapter.FilterPosterAdapter;
 import tv.ismar.adapter.FocusGridLayoutManager;
+import tv.ismar.adapter.ListPosterAdapter;
 import tv.ismar.adapter.SpaceItemDecoration;
 import tv.ismar.app.AppConstant;
 import tv.ismar.app.BaseActivity;
@@ -50,6 +51,7 @@ import tv.ismar.app.core.client.NetworkUtils;
 import tv.ismar.app.entity.FilterNoresultPoster;
 import tv.ismar.app.entity.Item;
 import tv.ismar.app.entity.ItemList;
+import tv.ismar.app.entity.ListSectionEntity;
 import tv.ismar.app.entity.Section;
 import tv.ismar.app.entity.SectionList;
 import tv.ismar.app.models.FilterConditions;
@@ -89,9 +91,7 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
     private FocusGridLayoutManager mFocusGridLayoutManager;
     private ArrayList<Integer> specialPos;
     private int totalItemCount;
-    private static final int FLAG_FILTER=0;
-    private static final int FLAG_SECTION=1;
-    private ItemList mAllSectionItemList;
+    private ListSectionEntity mAllSectionItemList;
     private int checkedPos;
     private SectionList sectionList;
     private int sectionSize;
@@ -120,7 +120,7 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
     private LinearLayout filter_noresult_second_line;
     private View lastFocusedView;
     private boolean filterNoResult=false;
-    private FilterPosterAdapter listPosterAdapter;
+    private ListPosterAdapter listPosterAdapter;
     private FilterPosterAdapter filterPosterAdapter;
     private int nextPos;
     private boolean booleanFlag=true;
@@ -157,10 +157,10 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
     protected void onResume() {
         super.onResume();
         //日志相关
-        AppConstant.purchase_entrance_page = "filter";
-        AppConstant.purchase_page = "filter";
+        AppConstant.purchase_entrance_page = "list";
+        AppConstant.purchase_page = "list";
 
-        HashMap<String, Object> properties = new HashMap<String, Object>();
+        HashMap<String, Object> properties = new HashMap<>();
         properties.put(EventProperty.CATEGORY, channel);
         properties.put(EventProperty.TITLE, title);
 
@@ -315,7 +315,7 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                     }else{
                         filter_root_view.setShow_right_up(true);
                     }
-                    if (lastVisiablePos == mAllSectionItemList.objects.size()-1) {
+                    if (lastVisiablePos == mAllSectionItemList.getCount()-1) {
                         filter_root_view.setShow_right_down(false);
                     } else {
                         filter_root_view.setShow_right_down(true);
@@ -463,9 +463,12 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
             radioButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mFocusGridLayoutManager.scrollToPositionWithOffset(specialPos.get(checkedPos),0);
+//                    if(checkedPos==finalI){
+//                        return;
+//                    }
+                    mFocusGridLayoutManager.scrollToPositionWithOffset(specialPos.get(finalI),0);
                     if(isFirst) {
-                        fetchSectionData(section.url,1);
+                        fetchSectionData(section.url,finalI);
                         isFirst=false;
                     }
                     current_section_title.setText(sectionList.get(finalI).title);
@@ -476,7 +479,6 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     if(isChecked){
-                        checkedPos = finalI;
                         if(filterPopup!=null&&filterPopup.isShowing())
                             filterPopup.dismiss();
                         filter_checked_conditiion.setVisibility(View.INVISIBLE);
@@ -576,12 +578,13 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
         poster_recyclerview.setLayoutManager(mFilterFocusGridLayoutManager);
         list_poster_recyclerview.setLayoutManager(mFocusGridLayoutManager);
         totalItemCount+=sections.size();
-        mAllSectionItemList = new ItemList();
-        mAllSectionItemList.objects=new ArrayList<>();
+        mAllSectionItemList = new ListSectionEntity();
+        mAllSectionItemList.setObjects(new ArrayList<ListSectionEntity.ObjectsBean>());
         for (int i = 0; i <totalItemCount ; i++) {
-            Item item=new Item();
-            mAllSectionItemList.objects.add(item);
+            ListSectionEntity.ObjectsBean item=new ListSectionEntity.ObjectsBean();
+            mAllSectionItemList.getObjects().add(item);
         }
+        mAllSectionItemList.setCount(mAllSectionItemList.getObjects().size());
         mFocusGridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
             public int getSpanSize(int position) {
@@ -592,43 +595,46 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                 }
             }
         });
-        if(section_group.getChildAt(1)!=null)
+        if(section_group.getChildAt(1)!=null) {
             section_group.getChildAt(1).callOnClick();
-        ((RadioButton)section_group.getChildAt(1)).setChecked(true);
+            ((RadioButton) section_group.getChildAt(1)).setChecked(true);
+        }
     }
 
     //请求每个section的数据
-    private void fetchSectionData(String url, final int page) {
-        if(page!=1){
-            url+=page;
-        }
-        final String finalUrl = url;
-        mSkyService.getItemListChannel(url)
+    private void fetchSectionData(String url, final int index) {
+        sectionHasData[index]=true;
+        mSkyService.getListChannel(url)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new BaseObserver<ItemList>() {
+                .subscribe(new BaseObserver<ListSectionEntity>() {
                     @Override
                     public void onCompleted() {
 
                     }
 
                     @Override
-                    public void onNext(ItemList itemList) {
-                        if(page<itemList.num_pages){
-                            fetchSectionData(finalUrl,page+1);
-                        }
-                        for (int i = 0; i <itemList.objects.size() ; i++) {
-                            if(mAllSectionItemList.objects.size()>specialPos.get(checkedPos)+i+1+100*(page-1))
-                                mAllSectionItemList.objects.set(specialPos.get(checkedPos)+i+1+100*(page-1),itemList.objects.get(i));
+                    public void onError(Throwable e) {
+                        sectionHasData[index]=false;
+                        super.onError(e);
+                    }
+
+                    @Override
+                    public void onNext(ListSectionEntity listSectionEntity) {
+
+                        for (int i = 0; i <listSectionEntity.getObjects().size() ; i++) {
+                            if(mAllSectionItemList.getCount()>specialPos.get(index)+i+1)
+                                mAllSectionItemList.getObjects().set(specialPos.get(index)+i+1,listSectionEntity.getObjects().get(i));
                         }
                         int removeCount=0;
-                        if(page==itemList.num_pages&&checkedPos!=specialPos.size()-1&&specialPos.get(checkedPos)+itemList.objects.size()+100*(page-1)<specialPos.get(checkedPos+1)-1) {
-                            for (int i = specialPos.get(checkedPos) + itemList.objects.size() + 100 * (page - 1) + 1; i < specialPos.get(checkedPos + 1); i++) {
-                                mAllSectionItemList.objects.remove(i);
+                        if(index!=specialPos.size()-1&&specialPos.get(index)+listSectionEntity.getCount()<specialPos.get(index+1)-1) {
+                            for (int i = specialPos.get(index) + listSectionEntity.getCount()+1; i < specialPos.get(index + 1); i++) {
+                                mAllSectionItemList.getObjects().remove(i);
                                 removeCount++;
                             }
+                            mAllSectionItemList.setCount(mAllSectionItemList.getObjects().size());
                             Log.e("removecount", removeCount + "");
-                            for (int i = checkedPos + 1; i < sectionSize; i++) {
+                            for (int i = index + 1; i < sectionSize; i++) {
                                 specialPos.set(i, specialPos.get(i) - removeCount);
                             }
                                 if(vSpaceItemDecoration!=null)
@@ -639,11 +645,16 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                                     listPosterAdapter.setmSpecialPos(specialPos);
                                 if(mFocusGridLayoutManager!=null)
                                 mFocusGridLayoutManager.setSpecialPos(specialPos);
+                        }else if(index==sectionSize-1&&mAllSectionItemList.getCount()>specialPos.get(index-1)+listSectionEntity.getCount()){
+                            for (int i = specialPos.get(index-1)+listSectionEntity.getCount()+1; i <mAllSectionItemList.getCount() ; i++) {
+                                mAllSectionItemList.getObjects().remove(i);
+                                mAllSectionItemList.setCount(mAllSectionItemList.getCount()-1);
+                            }
                         }
-                        sectionHasData[checkedPos]=true;
-                        processResultData(mAllSectionItemList, FLAG_SECTION);
+                        processResultData(mAllSectionItemList);
                     }
                 });
+
 
     }
 
@@ -936,7 +947,7 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                             filterNoResult = false;
                             mFilterItemList.num_pages=itemList.num_pages;
                             mFilterItemList.objects.addAll(itemList.objects);
-                            processResultData(mFilterItemList, FLAG_FILTER);
+                            processResultData(mFilterItemList);
                             filter_noresult.setVisibility(View.GONE);
                             poster_recyclerview.setVisibility(View.VISIBLE);
                         }
@@ -944,76 +955,77 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                 });
     }
 
+    private void processResultData(final ItemList itemList) {
+        if(filterPosterAdapter==null) {
+            filterPosterAdapter=new FilterPosterAdapter(this,itemList,isVertical);
+            poster_recyclerview.swapAdapter(filterPosterAdapter,false);
+        }else{
+            if(lastFocusedView==null){
+                filterPosterAdapter.setFocusedPosition(-1);
+            }else{
+                filterPosterAdapter.setFocusedPosition(poster_recyclerview.getChildLayoutPosition(lastFocusedView));
+            }
+            filterPosterAdapter.setmItemList(itemList);
+            filterPosterAdapter.notifyDataSetChanged();
+        }
+        filterPosterAdapter.setItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                baseSection="";
+                PageIntent intent = new PageIntent();
+                Item item=itemList.objects.get(position);
+                if(item.content_model!=null&&item.content_model.contains("gather")){
+                    intent.toSubject(FilterActivity.this,item.content_model,item.pk,item.title,Source.RETRIEVAL.getValue(),baseChannel);
+                }else if(item.model_name!=null&&item.model_name.equals("package")){
+                    intent.toPackageDetail(FilterActivity.this,Source.RETRIEVAL.getValue(),item.pk);
+                }else if(item.is_complex) {
+                    intent.toDetailPage(FilterActivity.this,Source.RETRIEVAL.getValue(),item.pk);
+                }else{
+                    intent.toPlayPage(FilterActivity.this,item.pk,0, Source.RETRIEVAL);
+                }
+            }
+        });
+        filterPosterAdapter.setItemFocusedListener(new OnItemFocusedListener() {
+            @Override
+            public void onItemfocused(View view, int position, boolean hasFocus) {
+                if(hasFocus){
+                    lastFocusedView = view;
+                    if(!filter_root_view.horving) {
+                        if (view.getY() > getResources().getDimensionPixelOffset(R.dimen.filter_poster_start_scroll_length)) {
+                            mFilterFocusGridLayoutManager.scrollToPositionWithOffset(position, 0);
+                        } else if (view.getY() < 0) {
+                            if (isVertical) {
+                                mFilterFocusGridLayoutManager.scrollToPositionWithOffset(position, getResources().getDimensionPixelOffset(R.dimen.list_scroll_filter_offset_v));
+                            } else {
+                                mFilterFocusGridLayoutManager.scrollToPositionWithOffset(position, getResources().getDimensionPixelOffset(R.dimen.list_scroll_filter_offset_h));
+                            }
+                        }
+                    }
+                    JasmineUtil.scaleOut3(view);
+                    if(isVertical) {
+                        view.findViewById(R.id.item_vertical_poster_title).setSelected(true);
+                    }else {
+                        view.findViewById(R.id.item_horizontal_poster_title).setSelected(true);
+                    }
+                }else{
+                    JasmineUtil.scaleIn3(view);
+                    if(isVertical) {
+                        view.findViewById(R.id.item_vertical_poster_title).setSelected(false);
+                    }else {
+                        view.findViewById(R.id.item_horizontal_poster_title).setSelected(false);
+                    }
+                }
+            }
+        });
+    }
+
     /**
      * 处理请求到的数据
      */
     private boolean isFirst=true;
-    private void processResultData(final ItemList itemList, final int flagSection) {
-        if(flagSection==FLAG_FILTER){
-            if(filterPosterAdapter==null) {
-                filterPosterAdapter=new FilterPosterAdapter(this,itemList,isVertical);
-                poster_recyclerview.swapAdapter(filterPosterAdapter,false);
-            }else{
-                if(lastFocusedView==null){
-                    filterPosterAdapter.setFocusedPosition(-1);
-                }else{
-                    filterPosterAdapter.setFocusedPosition(poster_recyclerview.getChildLayoutPosition(lastFocusedView));
-                }
-                filterPosterAdapter.setmItemList(itemList);
-                filterPosterAdapter.notifyDataSetChanged();
-            }
-            filterPosterAdapter.setItemClickListener(new OnItemClickListener() {
-                @Override
-                public void onItemClick(View view, int position) {
-                    baseSection="";
-                    PageIntent intent = new PageIntent();
-                    Item item=itemList.objects.get(position);
-                    if(item.content_model!=null&&item.content_model.contains("gather")){
-                        intent.toSubject(FilterActivity.this,item.content_model,item.pk,item.title,Source.RETRIEVAL.getValue(),baseChannel);
-                    }else if(item.model_name!=null&&item.model_name.equals("package")){
-                        intent.toPackageDetail(FilterActivity.this,Source.RETRIEVAL.getValue(),item.pk);
-                    }else if(item.is_complex) {
-                        intent.toDetailPage(FilterActivity.this,Source.RETRIEVAL.getValue(),item.pk);
-                    }else{
-                        intent.toPlayPage(FilterActivity.this,item.pk,0, Source.RETRIEVAL);
-                    }
-                }
-            });
-            filterPosterAdapter.setItemFocusedListener(new OnItemFocusedListener() {
-                @Override
-                public void onItemfocused(View view, int position, boolean hasFocus) {
-                    if(hasFocus){
-                        lastFocusedView = view;
-                        if(!filter_root_view.horving) {
-                            if (view.getY() > getResources().getDimensionPixelOffset(R.dimen.filter_poster_start_scroll_length)) {
-                                mFilterFocusGridLayoutManager.scrollToPositionWithOffset(position, 0);
-                            } else if (view.getY() < 0) {
-                                if (isVertical) {
-                                    mFilterFocusGridLayoutManager.scrollToPositionWithOffset(position, getResources().getDimensionPixelOffset(R.dimen.list_scroll_filter_offset_v));
-                                } else {
-                                    mFilterFocusGridLayoutManager.scrollToPositionWithOffset(position, getResources().getDimensionPixelOffset(R.dimen.list_scroll_filter_offset_h));
-                                }
-                            }
-                        }
-                        JasmineUtil.scaleOut3(view);
-                        if(isVertical) {
-                            view.findViewById(R.id.item_vertical_poster_title).setSelected(true);
-                        }else {
-                            view.findViewById(R.id.item_horizontal_poster_title).setSelected(true);
-                        }
-                    }else{
-                        JasmineUtil.scaleIn3(view);
-                        if(isVertical) {
-                            view.findViewById(R.id.item_vertical_poster_title).setSelected(false);
-                        }else {
-                            view.findViewById(R.id.item_horizontal_poster_title).setSelected(false);
-                        }
-                    }
-                }
-            });
-        }else{
+    private void processResultData(final ListSectionEntity listSectionEntity) {
             if(listPosterAdapter==null) {
-                listPosterAdapter = new FilterPosterAdapter(FilterActivity.this, itemList, isVertical, specialPos, sectionList);
+                listPosterAdapter = new ListPosterAdapter(FilterActivity.this, listSectionEntity.getObjects(), isVertical, specialPos, sectionList);
                 list_poster_recyclerview.swapAdapter(listPosterAdapter,false);
                 listPosterAdapter.setFocusedPosition(1);
             }else{
@@ -1022,7 +1034,7 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                 }else{
                     listPosterAdapter.setFocusedPosition(list_poster_recyclerview.getChildLayoutPosition(lastFocusedView));
                 }
-                listPosterAdapter.setmItemList(itemList);
+                listPosterAdapter.setmItemList(listSectionEntity.getObjects());
                 listPosterAdapter.notifyDataSetChanged();
             }
             listPosterAdapter.setItemClickListener(new OnItemClickListener() {
@@ -1030,15 +1042,15 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                 public void onItemClick(View view, int position) {
                     baseSection="";
                     PageIntent intent = new PageIntent();
-                    Item item=itemList.objects.get(position);
-                    if(item.content_model!=null&&item.content_model.contains("gather")){
-                        intent.toSubject(FilterActivity.this,item.content_model,item.pk,item.title,Source.RETRIEVAL.getValue(),baseChannel);
-                    }else if(item.model_name!=null&&item.model_name.equals("package")){
-                        intent.toPackageDetail(FilterActivity.this,Source.RETRIEVAL.getValue(),item.pk);
-                    }else if(item.is_complex) {
-                        intent.toDetailPage(FilterActivity.this,Source.RETRIEVAL.getValue(),item.pk);
+                    ListSectionEntity.ObjectsBean item=listSectionEntity.getObjects().get(position);
+                    if(item.getContent_model()!=null&&item.getContent_model().contains("gather")){
+                        intent.toSubject(FilterActivity.this,item.getContent_model(),item.getPk(),item.getTitle(),Source.RETRIEVAL.getValue(),baseChannel);
+                    }else if(item.getModel_name()!=null&&item.getModel_name().equals("package")){
+                        intent.toPackageDetail(FilterActivity.this,Source.RETRIEVAL.getValue(),item.getPk());
+                    }else if("item".equals(item.getModel_name())) {
+                        intent.toDetailPage(FilterActivity.this,Source.RETRIEVAL.getValue(),item.getPk());
                     }else{
-                        intent.toPlayPage(FilterActivity.this,item.pk,0, Source.RETRIEVAL);
+                        intent.toPlayPage(FilterActivity.this,item.getPk(),0, Source.RETRIEVAL);
                     }
                 }
             });
@@ -1095,7 +1107,6 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                     }
                 }
             });
-        }
 
 
     }
@@ -1246,19 +1257,19 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
     private void showData(int position){
         Log.e("showdata",position+"");
         for (int i = 0; i <sectionSize ; i++) {
-            if(sectionHasData[i]) {
-                continue;
-            }else{
+//            if(sectionHasData[i]) {
+//                continue;
+//            }else{
                 if(i!=sectionSize-1){
                     booleanFlag=position<specialPos.get(i+1);
                 }else{
                     booleanFlag=true;
                 }
-                if(position>=specialPos.get(i)&&booleanFlag){
-                    fetchSectionData(sectionList.get(i).url,1);
-                    checkedPos=i;
+                if(position>=specialPos.get(i)&&booleanFlag&&!sectionHasData[i]){
+                    fetchSectionData(sectionList.get(i).url,i);
+//                    checkedPos=i;
                 }
-            }
+//            }
 
         }
     }
