@@ -5,6 +5,7 @@ import android.support.v4.widget.TextViewCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -122,6 +123,17 @@ public class FocusGridLayoutManager extends GridLayoutManager {
          */
         int nextPos = getNextViewPos(fromPos, focusDirection);
         View nextView=findViewByPosition(nextPos);
+//        if(focusDirection==View.FOCUS_DOWN) {
+//            Log.e("onfocussearch",fromPos+"&"+nextPos);
+//            for (int i = fromPos; i < nextPos; i++) {
+//                if (specialPos!=null&&specialPos.contains(i)) {
+//                    int nextSpecialPos=specialPos.indexOf(i);
+//                    int lastColumnCount=(i-specialPos.get(nextSpecialPos-1))%getSpanCount();
+//
+//                    nextView = findViewByPosition(i+currentLine);
+//                }
+//            }
+//        }
         if(nextView instanceof TextView){
             nextView=findViewByPosition(nextPos+1);
         }
