@@ -298,4 +298,14 @@ public class PageIntent implements PageIntentInterface {
         fragment.startActivityForResult(intent,0);
     }
 
+
+    @Override
+    public void toListPage(Context context,String title, String channel, int style) {
+        Intent intent = new Intent();
+        intent.setAction("tv.ismar.daisy.Filter");
+        intent.putExtra("title",title);
+        intent.putExtra("channel",channel);
+        intent.putExtra("style",style);
+        context.startActivity(intent);
+    }
 }

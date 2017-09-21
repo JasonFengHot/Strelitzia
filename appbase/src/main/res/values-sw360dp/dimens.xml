@@ -637,8 +637,9 @@
 <dimen name="guide_title_logo_height">20.67dp</dimen>
 <dimen name="guide_title_text_size">10.00dp</dimen>
 <dimen name="guide_title_icon_size">12.00dp</dimen>
-<dimen name="guide_title_react_height">23.33dp</dimen>
-<dimen name="guide_title_react_width">73.33dp</dimen>
+<dimen name="guide_title_react_height">36.67dp</dimen>
+<dimen name="guide_title_react_padding">5.00dp</dimen>
+<dimen name="guide_title_react_width">83.33dp</dimen>
 <dimen name="guide_title_icon_padding_text">1.00dp</dimen>
 <dimen name="guide_title_time_size">16.00dp</dimen>
 <dimen name="guide_title_logo_margin_top">3.67dp</dimen>

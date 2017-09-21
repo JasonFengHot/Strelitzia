@@ -253,6 +253,8 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                     poster_recyclerview.setVisibility(View.VISIBLE);
                     list_poster_recyclerview.setVisibility(View.GONE);
                     if(mFilterItemList==null){
+                        full_view.setVisibility(View.VISIBLE);
+                        full_view.requestFocus();
                         mFilterItemList=new ItemList();
                         mFilterItemList.objects=new ArrayList<>();
                         fetchFilterCondition(channel);
@@ -733,8 +735,6 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
      * 显示筛选条件popup
      */
     private void showFilterPopup() {
-        full_view.setVisibility(View.VISIBLE);
-        full_view.requestFocus();
         filterPopup = new PopupWindow(filter_condition_layout, getResources().getDimensionPixelOffset(R.dimen.filter_condition_popup_w), getResources().getDimensionPixelOffset(R.dimen.filter_condition_popup_h), true);
         filterPopup.setTouchable(true);
         filterPopup.setTouchInterceptor(new View.OnTouchListener() {
@@ -1172,6 +1172,8 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                 current_section_title.setVisibility(View.INVISIBLE);
             }
             if(filterPopup!=null&&!filterPopup.isShowing()) {
+                full_view.setVisibility(View.VISIBLE);
+                full_view.requestFocus();
                 showFilterPopup();
             }
         }else if(i==R.id.tab_arrow_up){

@@ -23,7 +23,6 @@ public class DetailPageStatistics {
     }
 
     public void videoDetailOut(ItemEntity itemEntity,String to) {
-        Log.e("videodetailout",to);
         HashMap<String, Object> dataCollectionProperties = new HashMap<>();
         if(itemEntity!=null) {
             dataCollectionProperties.put(EventProperty.ITEM, itemEntity.getPk());
