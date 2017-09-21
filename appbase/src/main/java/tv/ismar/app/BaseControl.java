@@ -4,13 +4,10 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 
-import rx.Observer;
 import tv.ismar.app.core.PageIntent;
 import tv.ismar.app.core.Source;
 import tv.ismar.app.entity.banner.BannerPoster;
 import tv.ismar.app.entity.banner.BigImage;
-import tv.ismar.app.entity.banner.HomeEntity;
-import tv.ismar.app.network.SkyService;
 import tv.ismar.library.util.StringUtils;
 
 /**
@@ -21,6 +18,16 @@ import tv.ismar.library.util.StringUtils;
 
 public class BaseControl {
     private String TAG = this.getClass().getSimpleName();
+
+    public static final int FETCH_CHANNEL_TAB_FLAG = 0X01;//获取频道列表
+    public static final int FETCH_HOME_BANNERS_FLAG = 0X02;//获取首页下banners
+    public static final int FETCH_CHANNEL_BANNERS_FLAG = 0X03;//获取指定频道下的banners
+    public static final int FETCH_BANNERS_LIST_FLAG = 0X04;//获取指定banner下的海报列表
+    public static final int FETCH_M_BANNERS_LIST_FLAG = 0X05;//获取影视内容多个banner
+    public static final int FETCH_M_BANNERS_LIST_NEXTPAGE_FLAG = 0X06;//获取影视内容多个banner
+    public static final int FETCH_HOME_RECOMMEND_LIST_FLAG = 0X07;//推荐列表
+    public static final int FETCH_POSTER_CONNERS_FLAG = 0X08;//获取角标
+    public static final int TAB_CHANGE_FALG = 0x09;//首页tab变化
 
     public Context mContext;
     public Activity mActivity;

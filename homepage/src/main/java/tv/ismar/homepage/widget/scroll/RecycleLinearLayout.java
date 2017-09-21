@@ -10,7 +10,12 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.widget.LinearLayout;
 
+import com.daimajia.androidanimations.library.Techniques;
+import com.daimajia.androidanimations.library.YoYo;
+
 import java.util.ArrayList;
+
+import tv.ismar.homepage.R;
 
 /**
  * @AUTHOR: xi
@@ -48,6 +53,12 @@ public class RecycleLinearLayout extends LinearLayout {
         addView(mAllViews.get(2));
     }
 
+    private void shakeWhenBottom(){
+        if(mSelectedChildIndex >= mAllViews.size()-1){
+            YoYo.with(Techniques.VerticalShake).duration(1000).playOn(mAllViews.get(mAllViews.size()-1));
+        }
+    }
+
     /*向下按键*/
     public void downEvent(){
         if(mSelectedChildIndex < mAllViews.size()-1){
@@ -55,14 +66,17 @@ public class RecycleLinearLayout extends LinearLayout {
             mIsFirst = false;
             Log.i("RecycleLinearLayout", "down listsize:"+mAllViews.size());
             Log.i("RecycleLinearLayout", "down mSelectedChildIndex:"+mSelectedChildIndex);
-            if(getChildCount() > 1){
-                removeViewAt(0);
-                getChildAt(0).requestFocus();
-            }
             if(mSelectedChildIndex+2<mAllViews.size() &&
                     (mAllViews.get(mSelectedChildIndex+2).getWindowVisibility()==View.GONE)){
                 Log.i("RecycleLinearLayout", "down visibility:"+(mAllViews.get(mSelectedChildIndex+2).getWindowVisibility()==View.GONE));
                 addView(mAllViews.get(mSelectedChildIndex+2));
+            }
+            if(getChildCount() > 2){//常驻2个子view
+                getChildAt(1).requestFocus();
+                removeViewAt(0);
+            }
+            if(mSelectedChildIndex == mAllViews.size()-2){
+                getChildAt(1).requestFocus();
             }
         }
     }
@@ -72,7 +86,7 @@ public class RecycleLinearLayout extends LinearLayout {
         if(mSelectedChildIndex > 0){
             mSelectedChildIndex--;
             Log.i("RecycleLinearLayout", "up mSelectedChildIndex:"+mSelectedChildIndex);
-            if(getChildCount() > 1){
+            if(getChildCount() > 2){
                 removeViewAt(getChildCount()-1);
             }
             if(mSelectedChildIndex >= 0 &&
@@ -103,6 +117,10 @@ public class RecycleLinearLayout extends LinearLayout {
     public boolean dispatchKeyEvent(KeyEvent event) {
         int keyCode = event.getKeyCode();
         Log.i("RecycleLinearLayout", "action:"+event.getAction()+" keyCode:"+keyCode);
+//        if(mSelectedChildIndex>=mAllViews.size()-1 && keyCode==KeyEvent.KEYCODE_DPAD_DOWN){//处理跳出该view时，焦点的处理
+//            setNextFocusDownId(R.id.get_more_btn);
+//            return false;
+//        }
         if(event.getAction() == KeyEvent.ACTION_DOWN){
             if(keyCode == KeyEvent.KEYCODE_DPAD_UP){
                 upEvent();
@@ -110,7 +128,9 @@ public class RecycleLinearLayout extends LinearLayout {
                 downEvent();
             }
         }
-        if(event.getAction()==KeyEvent.ACTION_UP && keyCode==KeyEvent.KEYCODE_DPAD_DOWN){
+        if(event.getAction()==KeyEvent.ACTION_UP && //处理跳入到该view时的焦点
+                keyCode==KeyEvent.KEYCODE_DPAD_DOWN &&
+                mSelectedChildIndex==0){
             getChildAt(0).requestFocus();
         }
         if(keyCode==KeyEvent.KEYCODE_DPAD_DOWN || keyCode==KeyEvent.KEYCODE_DPAD_UP){

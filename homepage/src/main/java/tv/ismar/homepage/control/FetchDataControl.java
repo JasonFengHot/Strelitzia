@@ -30,15 +30,6 @@ import tv.ismar.app.network.SkyService;
 
 public class FetchDataControl extends BaseControl{
 
-    public static final int FETCH_CHANNEL_TAB_FLAG = 0X01;//获取频道列表
-    public static final int FETCH_HOME_BANNERS_FLAG = 0X02;//获取首页下banners
-    public static final int FETCH_CHANNEL_BANNERS_FLAG = 0X03;//获取指定频道下的banners
-    public static final int FETCH_BANNERS_LIST_FLAG = 0X04;//获取指定banner下的海报列表
-    public static final int FETCH_M_BANNERS_LIST_FLAG = 0X05;//获取影视内容多个banner
-    public static final int FETCH_M_BANNERS_LIST_NEXTPAGE_FLAG = 0X06;//获取影视内容多个banner
-    public static final int FETCH_HOME_RECOMMEND_LIST_FLAG = 0X07;//推荐列表
-    public static final int FETCH_POSTER_CONNERS_FLAG = 0X08;//获取角标
-
     public HomeEntity mHomeEntity = new HomeEntity();//单个banner实体类，包含mCarousels和mPoster数据
     public List<BannerCarousels> mCarousels = new ArrayList<>();//导视数据
     public List<BannerPoster> mPoster = new ArrayList<>();//海报数据

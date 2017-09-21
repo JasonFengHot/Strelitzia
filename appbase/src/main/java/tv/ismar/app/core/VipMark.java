@@ -2,6 +2,7 @@ package tv.ismar.app.core;
 
 import android.app.Activity;
 import android.database.sqlite.SQLiteException;
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
 
@@ -12,8 +13,10 @@ import cn.ismartv.injectdb.library.query.Delete;
 import cn.ismartv.injectdb.library.query.Select;
 import rx.Observer;
 import rx.schedulers.Schedulers;
+import tv.ismar.app.database.BannerIconMarkTable;
 import tv.ismar.app.database.DpiTable2;
 import tv.ismar.app.network.SkyService;
+import tv.ismar.app.network.entity.BannerIconMarkEntity;
 import tv.ismar.app.network.entity.DpiEntity;
 import tv.ismar.library.exception.ExceptionUtils;
 
@@ -23,10 +26,15 @@ import tv.ismar.library.exception.ExceptionUtils;
 public class VipMark {
     private static final String TAG = "VipMark";
     private static VipMark mInstance;
+    private int height;
 
+    public void setHeight(int height) {
+        this.height = height;
+    }
 
     private VipMark() {
         fetchDpi();
+        apiNewDpi();
     }
 
 
@@ -77,6 +85,43 @@ public class VipMark {
 
     }
 
+
+    private void apiNewDpi(){
+        SkyService.ServiceManager.getService().apiNewDpi()
+                .subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.io())
+                .subscribe(new Observer<List<BannerIconMarkEntity>>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(List<BannerIconMarkEntity> bannerIconMarkEntities) {
+                        new Delete().from(BannerIconMarkTable.class).execute();
+                        ActiveAndroid.beginTransaction();
+                        try {
+                            for (BannerIconMarkEntity bannerIconMarkEntity : bannerIconMarkEntities) {
+                                BannerIconMarkTable bannerIconMarkTable = new BannerIconMarkTable();
+                                bannerIconMarkTable.pk = bannerIconMarkEntity.getPk();
+                                bannerIconMarkTable.name = bannerIconMarkEntity.getName();
+                                bannerIconMarkTable.image = bannerIconMarkEntity.getImage();
+                                bannerIconMarkTable.save();
+                            }
+                            ActiveAndroid.setTransactionSuccessful();
+                        } finally {
+                            ActiveAndroid.endTransaction();
+                        }
+                    }
+                });
+
+    }
+
     public String getImage(Activity activity, int payType, int cpId) {
         DisplayMetrics metric = new DisplayMetrics();
         activity.getWindowManager().getDefaultDisplay().getMetrics(metric);
@@ -98,6 +143,24 @@ public class VipMark {
             Log.e(TAG, e.getMessage());
         }
         return dpiTable == null ? "test" : dpiTable.image;
+    }
+
+    public String getBannerIconMarkImage(String pk) {
+        if (TextUtils.isEmpty(pk)) {
+            return null;
+        } else {
+            BannerIconMarkTable bannerIconMarkTable = null;
+            try {
+                bannerIconMarkTable = new Select().from(BannerIconMarkTable.class)
+                        .where("pk = ?", pk)
+                        .orderBy("abs(" + height + " - name) asc")
+                        .executeSingle();
+            } catch (SQLiteException e) {
+                ExceptionUtils.sendProgramError(e);
+                Log.e(TAG, e.getMessage());
+            }
+            return bannerIconMarkTable == null ? null : bannerIconMarkTable.image;
+        }
     }
 
 }

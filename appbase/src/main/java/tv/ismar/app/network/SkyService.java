@@ -7,8 +7,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import java.io.File;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
@@ -23,7 +21,6 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
 import okhttp3.Cache;
-import okhttp3.Dns;
 import okhttp3.OkHttpClient;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -44,7 +41,6 @@ import retrofit2.http.Streaming;
 import retrofit2.http.Url;
 import rx.Observable;
 import tv.ismar.account.IsmartvHttpLoggingInterceptor;
-import tv.ismar.account.IsmartvActivator;
 import tv.ismar.app.VodApplication;
 import tv.ismar.app.core.OfflineCheckManager;
 import tv.ismar.app.entity.ChannelEntity;
@@ -81,6 +77,7 @@ import tv.ismar.app.network.entity.AccountsLoginEntity;
 import tv.ismar.app.network.entity.AccountsOrdersEntity;
 import tv.ismar.app.network.entity.ActiveEntity;
 import tv.ismar.app.network.entity.AgreementEntity;
+import tv.ismar.app.network.entity.BannerIconMarkEntity;
 import tv.ismar.app.network.entity.BindedCdnEntity;
 import tv.ismar.app.network.entity.ChatMsgEntity;
 import tv.ismar.app.network.entity.DpiEntity;
@@ -760,6 +757,11 @@ public interface SkyService {
     @GET("accounts/item/subscribe/exists/")
     Observable<AccountsItemSubscribeExistsEntity> accountsItemSubscribeExists(
             @Query("item_id") int itemId
+    );
+
+    @GET("api/new_dpi/")
+    Observable<List<BannerIconMarkEntity>> apiNewDpi(
+
     );
 
     class ServiceManager {

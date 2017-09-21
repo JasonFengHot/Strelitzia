@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import tv.ismar.app.BaseControl;
+import tv.ismar.app.core.PageIntent;
 import tv.ismar.app.entity.GuideBanner;
 import tv.ismar.homepage.HomeActivity;
 import tv.ismar.homepage.R;
@@ -18,6 +19,7 @@ import tv.ismar.homepage.template.TemplateConlumn;
 import tv.ismar.homepage.template.TemplateDoubleLd;
 import tv.ismar.homepage.template.TemplateDoubleMd;
 import tv.ismar.homepage.template.TemplateGuide;
+import tv.ismar.homepage.template.TemplateMore;
 import tv.ismar.homepage.template.TemplateMovie;
 import tv.ismar.homepage.template.TemplateOrder;
 import tv.ismar.homepage.template.TemplateRecommend;
@@ -31,9 +33,8 @@ import tv.ismar.library.util.StringUtils;
  * @DESC: 频道fragemnt
  */
 
-public class ChannelFragment extends BaseFragment implements BaseControl.ControlCallBack{
+public class ChannelFragment extends BaseFragment implements BaseControl.ControlCallBack {
     private FetchDataControl mControl = null;//业务类引用
-    private String mChannel;//频道
 
     private RecycleLinearLayout mLinearContainer;//banner容器
 
@@ -55,15 +56,20 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
         mLinearContainer = (RecycleLinearLayout) view.findViewById(R.id.scroll_linear_container);
     }
 
-    public void setChannel(String channel){
+    private String mChannel;//频道
+    private String mTitle;//标题
+    private int mStyle;//竖版或横版
+    public void setChannel(String channel, String title, int style){
         mChannel = channel;
+        mTitle = title;
+        mStyle = style;
     }
 
     private void initData(){
         if(!StringUtils.isEmpty(mChannel)){
-            if(mChannel.equals(HomeActivity.HOME_PAGE_CHANNEL_TAG)){
+            if(mChannel.equals(HomeActivity.HOME_PAGE_CHANNEL_TAG)){//首页数据
                 mControl.fetchHomeBanners();
-            } else {
+            } else {//其他频道数据
                 mControl.fetchChannelBanners(mChannel);
             }
         }
@@ -132,7 +138,24 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
                 mLinearContainer.setView(bannerView);
             }
         }
+
+        addMoreView();
         mLinearContainer.initView();
+    }
+
+    public static final String MORE_TITLE_FLAG = "title";
+    public static final String MORE_CHANNEL_FLAG = "channel";
+    public static final String MORE_STYLE_FLAG = "style";
+
+    /*添加更多内容模版*/
+    private void addMoreView(){
+        Bundle bundle = new Bundle();
+        bundle.putString(MORE_TITLE_FLAG, mTitle);
+        bundle.putString(MORE_CHANNEL_FLAG, mChannel);
+        bundle.putInt(MORE_STYLE_FLAG, mStyle);
+        View bannerView = createView(R.layout.banner_more);
+        new TemplateMore(getContext()).setView(bannerView, bundle);
+        mLinearContainer.setView(bannerView);
     }
 
     private View createView(int layoutId){
