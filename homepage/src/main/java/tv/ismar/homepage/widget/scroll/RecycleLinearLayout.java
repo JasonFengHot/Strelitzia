@@ -84,6 +84,14 @@ public class RecycleLinearLayout extends LinearLayout {
 
     }
 
+    private void removeViewWithAnimation(){
+
+    }
+
+    private void addViewWithAnimation(){
+
+    }
+
     public void clearView(){
         mAllViews.clear();
         removeAllViews();
@@ -94,12 +102,16 @@ public class RecycleLinearLayout extends LinearLayout {
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
         int keyCode = event.getKeyCode();
+        Log.i("RecycleLinearLayout", "action:"+event.getAction()+" keyCode:"+keyCode);
         if(event.getAction() == KeyEvent.ACTION_DOWN){
             if(keyCode == KeyEvent.KEYCODE_DPAD_UP){
                 upEvent();
             } else if(keyCode == KeyEvent.KEYCODE_DPAD_DOWN){
                 downEvent();
             }
+        }
+        if(event.getAction()==KeyEvent.ACTION_UP && keyCode==KeyEvent.KEYCODE_DPAD_DOWN){
+            getChildAt(0).requestFocus();
         }
         if(keyCode==KeyEvent.KEYCODE_DPAD_DOWN || keyCode==KeyEvent.KEYCODE_DPAD_UP){
             Log.i("RecycleLinearLayout", "mIsFirst:"+mIsFirst);
