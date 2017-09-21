@@ -1,8 +1,6 @@
 package tv.ismar.homepage.widget.scroll;
 
-import android.annotation.TargetApi;
 import android.content.Context;
-import android.os.Build;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -14,8 +12,6 @@ import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 
 import java.util.ArrayList;
-
-import tv.ismar.homepage.R;
 
 /**
  * @AUTHOR: xi
@@ -63,7 +59,6 @@ public class RecycleLinearLayout extends LinearLayout {
     public void downEvent(){
         if(mSelectedChildIndex < mAllViews.size()-1){
             mSelectedChildIndex++;
-            mIsFirst = false;
             Log.i("RecycleLinearLayout", "down listsize:"+mAllViews.size());
             Log.i("RecycleLinearLayout", "down mSelectedChildIndex:"+mSelectedChildIndex);
             if(mSelectedChildIndex+2<mAllViews.size() &&
@@ -75,9 +70,9 @@ public class RecycleLinearLayout extends LinearLayout {
                 getChildAt(1).requestFocus();
                 removeViewAt(0);
             }
-            if(mSelectedChildIndex == mAllViews.size()-2){
-                getChildAt(1).requestFocus();
-            }
+//            if(mSelectedChildIndex == mAllViews.size()-2){
+//                getChildAt(1).requestFocus();
+//            }
         }
     }
 
@@ -111,16 +106,12 @@ public class RecycleLinearLayout extends LinearLayout {
         removeAllViews();
     }
 
-    private boolean mIsFirst = true;//判断是否已经到达第一个位置
+    private boolean mIsNotFirst = false;//判断是否已经到达第一个位置
 
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
         int keyCode = event.getKeyCode();
         Log.i("RecycleLinearLayout", "action:"+event.getAction()+" keyCode:"+keyCode);
-//        if(mSelectedChildIndex>=mAllViews.size()-1 && keyCode==KeyEvent.KEYCODE_DPAD_DOWN){//处理跳出该view时，焦点的处理
-//            setNextFocusDownId(R.id.get_more_btn);
-//            return false;
-//        }
         if(event.getAction() == KeyEvent.ACTION_DOWN){
             if(keyCode == KeyEvent.KEYCODE_DPAD_UP){
                 upEvent();
@@ -128,17 +119,21 @@ public class RecycleLinearLayout extends LinearLayout {
                 downEvent();
             }
         }
-        if(event.getAction()==KeyEvent.ACTION_UP && //处理跳入到该view时的焦点
+        //        if(mSelectedChildIndex>=mAllViews.size()-1 && keyCode==KeyEvent.KEYCODE_DPAD_DOWN){//处理底部跳出该view时，焦点的处理
+//            setNextFocusDownId(R.id.get_more_btn);
+//            return false;
+//        }
+        if(event.getAction()==KeyEvent.ACTION_UP && //处理顶部跳入到该view时的焦点
                 keyCode==KeyEvent.KEYCODE_DPAD_DOWN &&
                 mSelectedChildIndex==0){
             getChildAt(0).requestFocus();
         }
-        if(keyCode==KeyEvent.KEYCODE_DPAD_DOWN || keyCode==KeyEvent.KEYCODE_DPAD_UP){
-            Log.i("RecycleLinearLayout", "mIsFirst:"+mIsFirst);
-            if(!mIsFirst){
-                mIsFirst = (mSelectedChildIndex<=0);
-                return true;
-            }
+        if(keyCode==KeyEvent.KEYCODE_DPAD_DOWN || keyCode==KeyEvent.KEYCODE_DPAD_UP){//如果没有到达view第一个或最后一个位置，焦点要始终在改容器view中
+            if((mSelectedChildIndex>0) && (mSelectedChildIndex<mAllViews.size()-1)) return true;
+        }
+        if(keyCode==KeyEvent.KEYCODE_DPAD_DOWN &&   //到最后一个子view会抖动
+                mSelectedChildIndex>=mAllViews.size()-1){
+            shakeWhenBottom();
         }
         return super.dispatchKeyEvent(event);
     }

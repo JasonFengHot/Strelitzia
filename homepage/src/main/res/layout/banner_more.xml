@@ -22,6 +22,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="20dp"
             android:text="更多精彩"
+            android:focusable="false"
             android:textColor="#ffffff"
             android:textSize="30sp" />
 
