@@ -165,11 +165,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
             HorizontalTabView.Tab tab = new HorizontalTabView.Tab("", entity.getName());
             tabs.add(tab);
         }
-        for (ChannelEntity entity : channelEntities) {
-            HorizontalTabView.Tab tab = new HorizontalTabView.Tab("", entity.getName());
-            tabs.add(tab);
-        }
-        mChannelTab.addAllViews(tabs, 0);
+        mChannelTab.addAllViews(tabs, 1);
     }
 
     @Override
