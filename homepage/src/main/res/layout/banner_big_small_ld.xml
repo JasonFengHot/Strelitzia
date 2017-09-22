@@ -27,6 +27,7 @@
             android:paddingRight="@dimen/movie_mix_banner_recycler_pr"/>
 
         <Button
+            android:visibility="invisible"
             android:id="@+id/navigation_left"
             android:layout_width="@dimen/banner_navigation_width"
             android:layout_height="@dimen/banner_movie_navigation_height"
@@ -40,6 +41,7 @@
         </Button>
 
         <Button
+            android:visibility="invisible"
             android:id="@+id/navigation_right"
             android:layout_width="@dimen/banner_navigation_width"
             android:layout_height="@dimen/banner_movie_navigation_height"
