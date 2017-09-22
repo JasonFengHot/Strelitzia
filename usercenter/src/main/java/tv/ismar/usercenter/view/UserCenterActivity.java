@@ -29,7 +29,6 @@ import tv.ismar.app.entity.History;
 import tv.ismar.app.entity.Item;
 import tv.ismar.app.ui.HeadFragment;
 import tv.ismar.app.util.ActivityUtils;
-import tv.ismar.pay.CardPayFragment;
 import tv.ismar.pay.LoginFragment;
 import tv.ismar.usercenter.R;
 import tv.ismar.usercenter.presenter.HelpPresenter;
@@ -58,6 +57,7 @@ public class UserCenterActivity extends BaseActivity implements LoginFragment.Lo
     private ProductFragment mProductFragment;
     private PurchaseHistoryFragment mPurchaseHistoryFragment;
     private UserInfoFragment mUserInfoFragment;
+    private CardPayFragment cardPayFragment;
 
     private ProductPresenter mProductPresenter;
     private LocationPresenter mLocationPresenter;
@@ -77,7 +77,8 @@ public class UserCenterActivity extends BaseActivity implements LoginFragment.Lo
             R.string.usercenter_login_register,
             R.string.usercenter_purchase_history,
             R.string.usercenter_help,
-            R.string.usercenter_location
+            R.string.usercenter_location,
+            R.string.usercenter_cardActive
     };
 
     private static final int[] INDICATOR_ID_RES_ARRAY = {
@@ -86,7 +87,8 @@ public class UserCenterActivity extends BaseActivity implements LoginFragment.Lo
             R.id.usercenter_login_register,
             R.id.usercenter_purchase_history,
             R.id.usercenter_help,
-            R.id.usercenter_location
+            R.id.usercenter_location,
+            R.id.usercenter_card
     };
     private LinearLayout userCenterIndicatorLayout;
 
@@ -185,10 +187,11 @@ public class UserCenterActivity extends BaseActivity implements LoginFragment.Lo
                 frameLayout.setNextFocusUpId(frameLayout.getId());
             }
             if (i == 1) {
-                frameLayout.setNextFocusRightId(R.id.charge_money);
+                frameLayout.setNextFocusRightId(R.id.exit_account);
             }
-            if (i == 5) {
+            if (i == 6) {
                 frameLayout.setNextFocusDownId(frameLayout.getId());
+                frameLayout.setNextFocusRightId(R.id.shiyuncard_input);
             }
             if (i == 2){
                 frameLayout.setNextFocusRightId(R.id.pay_edit_mobile);
@@ -199,6 +202,9 @@ public class UserCenterActivity extends BaseActivity implements LoginFragment.Lo
 
         if (IsmartvActivator.getInstance().isLogin()) {
             changeViewState(indicatorView.get(2), ViewState.Disable);
+            indicatorView.get(6).setVisibility(View.VISIBLE);
+        }else {
+            indicatorView.get(6).setVisibility(View.GONE);
         }
 
 //        userCenterIndicatorLayout.getChildAt(0).callOnClick();
@@ -257,7 +263,7 @@ public class UserCenterActivity extends BaseActivity implements LoginFragment.Lo
         }
         // Create the fragment
         if(mLoginFragment==null)
-        mLoginFragment = LoginFragment.newInstance();
+            mLoginFragment = LoginFragment.newInstance();
         Bundle bundle = new Bundle();
         bundle.putString("source", "usercenter");
         mLoginFragment.setArguments(bundle);
@@ -305,6 +311,14 @@ public class UserCenterActivity extends BaseActivity implements LoginFragment.Lo
                 getSupportFragmentManager(), mHelpFragment, R.id.user_center_container);
 
     }
+    private void selectCardActive(){
+        if (getSupportFragmentManager().findFragmentById(R.id.user_center_container) instanceof PurchaseHistoryFragment) {
+            return;
+        }
+        cardPayFragment=new CardPayFragment();
+        ActivityUtils.addFragmentToActivity(
+                getSupportFragmentManager(), cardPayFragment, R.id.user_center_container);
+    }
 
     @Override
     protected void onResume() {
@@ -315,7 +329,9 @@ public class UserCenterActivity extends BaseActivity implements LoginFragment.Lo
         baseSection="";
         if (IsmartvActivator.getInstance().isLogin()) {
             changeViewState(indicatorView.get(2), ViewState.Disable);
+            indicatorView.get(6).setVisibility(View.VISIBLE);
         } else {
+            indicatorView.get(6).setVisibility(View.GONE);
             changeViewState(indicatorView.get(2), ViewState.Enable);
         }
 
@@ -362,7 +378,7 @@ public class UserCenterActivity extends BaseActivity implements LoginFragment.Lo
         indicatorView.get(1).callOnClick();
         indicatorView.get(1).requestFocus();
         changeViewState(indicatorView.get(1), ViewState.Select);
-
+        indicatorView.get(6).setVisibility(View.VISIBLE);
         fetchFavorite();
         getHistoryByNet();
     }
@@ -411,6 +427,8 @@ public class UserCenterActivity extends BaseActivity implements LoginFragment.Lo
                 selectHelp();
             } else if (i == R.id.usercenter_location) {
                 selectLocation();
+            }else if(i==R.id.usercenter_card){
+                selectCardActive();
             }
             changeViewState(v, ViewState.Select);
 
@@ -508,6 +526,17 @@ public class UserCenterActivity extends BaseActivity implements LoginFragment.Lo
                 parentView.setBackgroundResource(R.drawable._000000000);
                 parentView.setClickable(true);
                 break;
+            case Gone:
+                parentView.setEnabled(false);
+                textSelectImage.setVisibility(View.INVISIBLE);
+                textFocusImage.setVisibility(View.INVISIBLE);
+                textView.setVisibility(View.GONE);
+                textView.setTextColor(getResources().getColor(R.color.personinfo_login_button_disable));
+                parentView.setFocusable(false);
+                parentView.setFocusableInTouchMode(false);
+                parentView.setClickable(false);
+                break;
+
         }
 
     }
@@ -518,6 +547,7 @@ public class UserCenterActivity extends BaseActivity implements LoginFragment.Lo
         indicatorView.get(1).callOnClick();
         indicatorView.get(1).requestFocus();
         changeViewState(indicatorView.get(1), ViewState.Select);
+        indicatorView.get(6).setVisibility(View.GONE);
     }
 
     @Override
@@ -532,7 +562,8 @@ public class UserCenterActivity extends BaseActivity implements LoginFragment.Lo
         Select,
         Unfocus,
         Hover,
-        None
+        None,
+        Gone
     }
 
     public void clearTheLastHoveredVewState() {
@@ -601,6 +632,14 @@ public class UserCenterActivity extends BaseActivity implements LoginFragment.Lo
         super.onPause();
     }
 
+    public void refreshWeather() {
+        if (headFragment != null) {
+            HashMap<String, String> hashMap = IsmartvActivator.getInstance().getCity();
+            String geoId = hashMap.get("geo_id");
+          //  headFragment.fetchWeatherInfo(geoId);
+        }
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == CardPayFragment.CHARGE_MONEY_SUCCESS) {
@@ -609,6 +648,7 @@ public class UserCenterActivity extends BaseActivity implements LoginFragment.Lo
             }
         }
     }
+
 
 
     private void fetchFavorite() {
@@ -712,5 +752,10 @@ public class UserCenterActivity extends BaseActivity implements LoginFragment.Lo
         indicatorView.get(1).callOnClick();
         indicatorView.get(1).requestFocus();
         changeViewState(indicatorView.get(1), ViewState.Select);
+    }
+    public void cardActiveSuccess(){
+        if (mUserInfoFragment != null) {
+            mUserInfoFragment.setShowChargeSuccessPop(true);
+        }
     }
 }
