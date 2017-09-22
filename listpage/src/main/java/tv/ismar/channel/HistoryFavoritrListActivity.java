@@ -3,22 +3,12 @@ package tv.ismar.channel;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.google.gson.GsonBuilder;
-import com.open.androidtvwidget.leanback.recycle.RecyclerViewTV;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,20 +20,17 @@ import tv.ismar.account.IsmartvActivator;
 import tv.ismar.adapter.FocusGridLayoutManager;
 import tv.ismar.adapter.HistoryFavoriteListAdapter;
 import tv.ismar.adapter.HistorySpaceItemDecoration;
-import tv.ismar.adapter.SpaceItemDecoration;
 import tv.ismar.app.BaseActivity;
 import tv.ismar.app.core.DaisyUtils;
 import tv.ismar.app.core.PageIntent;
 import tv.ismar.app.core.SimpleRestClient;
 import tv.ismar.app.core.Source;
-import tv.ismar.app.entity.AdElement;
-import tv.ismar.app.entity.Item;
 import tv.ismar.app.network.SkyService;
 import tv.ismar.app.ui.adapter.OnItemClickListener;
 import tv.ismar.app.ui.adapter.OnItemFocusedListener;
 import tv.ismar.app.widget.ModuleMessagePopWindow;
 import tv.ismar.app.widget.MyRecyclerView;
-import tv.ismar.entity.HistoryFavoriteEntity;
+import tv.ismar.app.entity.HistoryFavoriteEntity;
 import tv.ismar.listpage.R;
 import tv.ismar.searchpage.utils.JasmineUtil;
 

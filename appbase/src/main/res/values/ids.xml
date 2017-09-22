@@ -6,4 +6,5 @@
     <item name="usercenter_purchase_history" type="id"/>
     <item name="usercenter_help" type="id"/>
     <item name="usercenter_location" type="id"/>
+    <item name="usercenter_card" type="id"/>
 </resources>

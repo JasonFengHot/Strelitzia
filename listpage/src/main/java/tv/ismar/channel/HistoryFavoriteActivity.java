@@ -43,7 +43,6 @@ import tv.ismar.app.core.DaisyUtils;
 import tv.ismar.app.core.PageIntent;
 import tv.ismar.app.core.SimpleRestClient;
 import tv.ismar.app.core.Source;
-import tv.ismar.app.core.cache.DownloadClient;
 import tv.ismar.app.core.client.NetworkUtils;
 import tv.ismar.app.entity.Expense;
 import tv.ismar.app.entity.Favorite;
@@ -52,7 +51,7 @@ import tv.ismar.app.network.SkyService;
 import tv.ismar.app.network.entity.EventProperty;
 import tv.ismar.app.ui.adapter.OnItemFocusedListener;
 import tv.ismar.app.ui.adapter.OnItemOnhoverlistener;
-import tv.ismar.entity.HistoryFavoriteEntity;
+import tv.ismar.app.entity.HistoryFavoriteEntity;
 import tv.ismar.listener.LfListItemClickListener;
 import tv.ismar.listpage.R;
 import tv.ismar.searchpage.utils.JasmineUtil;
@@ -473,6 +472,9 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
             HistoryFavoriteEntity history=historyLists.get(postion);
             boolean[] isSubItem = new boolean[1];
             int pk = SimpleRestClient.getItemId(history.getUrl(), isSubItem);
+            if(pk==0){
+                pk=history.getPk();
+            }
             if(postion!=historyLists.size()-1) {
                 intent.toPlayPage(this, pk, 0, Source.HISTORY);
             }else{
@@ -487,6 +489,9 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
             HistoryFavoriteEntity favoriteEntity=favoriteLists.get(postion);
             boolean[] isSubItem = new boolean[1];
             int pk = SimpleRestClient.getItemId(favoriteEntity.getUrl(), isSubItem);
+            if(pk==0){
+                pk=favoriteEntity.getPk();
+            }
             if(postion!=favoriteLists.size()-1) {
                 intent.toDetailPage(this, "favorite", pk);
             }else{

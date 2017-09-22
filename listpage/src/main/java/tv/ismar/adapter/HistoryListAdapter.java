@@ -1,7 +1,6 @@
 package tv.ismar.adapter;
 
 import android.content.Context;
-import android.graphics.Rect;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -9,22 +8,16 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import tv.ismar.app.entity.Item;
-import tv.ismar.app.ui.adapter.OnItemClickListener;
 import tv.ismar.app.ui.adapter.OnItemFocusedListener;
 import tv.ismar.app.ui.adapter.OnItemOnhoverlistener;
-import tv.ismar.app.ui.view.LabelImageView;
-import tv.ismar.entity.HistoryFavoriteEntity;
+import tv.ismar.app.entity.HistoryFavoriteEntity;
 import tv.ismar.listener.LfListItemClickListener;
 import tv.ismar.listpage.R;
 import tv.ismar.view.IsmartvLinearLayout;
@@ -83,6 +76,7 @@ public class HistoryListAdapter extends RecyclerView.Adapter<HistoryListAdapter.
                     holder.item_time.setText(date[0]+"月"+date[1]+"日");
                     lastTime=item.getDate();
                 }else {
+                    Log.i("date","itemDate: "+item.getDate()+"    lastTime: "+lastTime);
                     if (item.getDate().equals(lastTime) && !item.getDate().equals("")) {
                         holder.item_time.setVisibility(View.GONE);
                         holder.item_time_node.setVisibility(View.GONE);
@@ -90,6 +84,7 @@ public class HistoryListAdapter extends RecyclerView.Adapter<HistoryListAdapter.
                         holder.item_time.setText(date[0]+"月"+date[1]+"日");
                         holder.item_time_node.setVisibility(View.VISIBLE);
                         holder.item_time.setVisibility(View.VISIBLE);
+                        lastTime=item.getDate();
                     }
                 }
             }

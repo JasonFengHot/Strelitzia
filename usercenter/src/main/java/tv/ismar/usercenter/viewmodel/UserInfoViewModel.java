@@ -58,7 +58,7 @@ public class UserInfoViewModel extends BaseObservable {
     @Bindable
     public String getBalance() {
         BigDecimal balance = mPresenter.getBalance();
-        DecimalFormat format = new DecimalFormat("0.0");
+        DecimalFormat format = new DecimalFormat("0.00");
         return format.format(balance) + "元";
     }
 

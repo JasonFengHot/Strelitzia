@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -13,9 +14,18 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.google.gson.GsonBuilder;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
+import okhttp3.ResponseBody;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -26,10 +36,10 @@ import tv.ismar.app.core.DaisyUtils;
 import tv.ismar.app.core.InitializeProcess;
 import tv.ismar.app.entity.Favorite;
 import tv.ismar.app.entity.History;
+import tv.ismar.app.entity.HistoryFavoriteEntity;
 import tv.ismar.app.entity.Item;
 import tv.ismar.app.ui.HeadFragment;
 import tv.ismar.app.util.ActivityUtils;
-import tv.ismar.pay.CardPayFragment;
 import tv.ismar.pay.LoginFragment;
 import tv.ismar.usercenter.R;
 import tv.ismar.usercenter.presenter.HelpPresenter;
@@ -58,6 +68,7 @@ public class UserCenterActivity extends BaseActivity implements LoginFragment.Lo
     private ProductFragment mProductFragment;
     private PurchaseHistoryFragment mPurchaseHistoryFragment;
     private UserInfoFragment mUserInfoFragment;
+    private CardPayFragment cardPayFragment;
 
     private ProductPresenter mProductPresenter;
     private LocationPresenter mLocationPresenter;
@@ -77,7 +88,8 @@ public class UserCenterActivity extends BaseActivity implements LoginFragment.Lo
             R.string.usercenter_login_register,
             R.string.usercenter_purchase_history,
             R.string.usercenter_help,
-            R.string.usercenter_location
+            R.string.usercenter_location,
+            R.string.usercenter_cardActive
     };
 
     private static final int[] INDICATOR_ID_RES_ARRAY = {
@@ -86,7 +98,8 @@ public class UserCenterActivity extends BaseActivity implements LoginFragment.Lo
             R.id.usercenter_login_register,
             R.id.usercenter_purchase_history,
             R.id.usercenter_help,
-            R.id.usercenter_location
+            R.id.usercenter_location,
+            R.id.usercenter_card
     };
     private LinearLayout userCenterIndicatorLayout;
 
@@ -185,10 +198,11 @@ public class UserCenterActivity extends BaseActivity implements LoginFragment.Lo
                 frameLayout.setNextFocusUpId(frameLayout.getId());
             }
             if (i == 1) {
-                frameLayout.setNextFocusRightId(R.id.charge_money);
+                frameLayout.setNextFocusRightId(R.id.exit_account);
             }
-            if (i == 5) {
+            if (i == 6) {
                 frameLayout.setNextFocusDownId(frameLayout.getId());
+                frameLayout.setNextFocusRightId(R.id.shiyuncard_input);
             }
             if (i == 2){
                 frameLayout.setNextFocusRightId(R.id.pay_edit_mobile);
@@ -199,6 +213,9 @@ public class UserCenterActivity extends BaseActivity implements LoginFragment.Lo
 
         if (IsmartvActivator.getInstance().isLogin()) {
             changeViewState(indicatorView.get(2), ViewState.Disable);
+            indicatorView.get(6).setVisibility(View.VISIBLE);
+        }else {
+            indicatorView.get(6).setVisibility(View.GONE);
         }
 
 //        userCenterIndicatorLayout.getChildAt(0).callOnClick();
@@ -257,7 +274,7 @@ public class UserCenterActivity extends BaseActivity implements LoginFragment.Lo
         }
         // Create the fragment
         if(mLoginFragment==null)
-        mLoginFragment = LoginFragment.newInstance();
+            mLoginFragment = LoginFragment.newInstance();
         Bundle bundle = new Bundle();
         bundle.putString("source", "usercenter");
         mLoginFragment.setArguments(bundle);
@@ -305,6 +322,14 @@ public class UserCenterActivity extends BaseActivity implements LoginFragment.Lo
                 getSupportFragmentManager(), mHelpFragment, R.id.user_center_container);
 
     }
+    private void selectCardActive(){
+        if (getSupportFragmentManager().findFragmentById(R.id.user_center_container) instanceof PurchaseHistoryFragment) {
+            return;
+        }
+        cardPayFragment=new CardPayFragment();
+        ActivityUtils.addFragmentToActivity(
+                getSupportFragmentManager(), cardPayFragment, R.id.user_center_container);
+    }
 
     @Override
     protected void onResume() {
@@ -315,7 +340,9 @@ public class UserCenterActivity extends BaseActivity implements LoginFragment.Lo
         baseSection="";
         if (IsmartvActivator.getInstance().isLogin()) {
             changeViewState(indicatorView.get(2), ViewState.Disable);
+            indicatorView.get(6).setVisibility(View.VISIBLE);
         } else {
+            indicatorView.get(6).setVisibility(View.GONE);
             changeViewState(indicatorView.get(2), ViewState.Enable);
         }
 
@@ -362,9 +389,9 @@ public class UserCenterActivity extends BaseActivity implements LoginFragment.Lo
         indicatorView.get(1).callOnClick();
         indicatorView.get(1).requestFocus();
         changeViewState(indicatorView.get(1), ViewState.Select);
-
-        fetchFavorite();
-        getHistoryByNet();
+        indicatorView.get(6).setVisibility(View.VISIBLE);
+//        fetchFavorite();
+//        getHistoryByNet();
     }
 
     private View.OnFocusChangeListener indicatorOnFocusListener = new View.OnFocusChangeListener() {
@@ -411,6 +438,8 @@ public class UserCenterActivity extends BaseActivity implements LoginFragment.Lo
                 selectHelp();
             } else if (i == R.id.usercenter_location) {
                 selectLocation();
+            }else if(i==R.id.usercenter_card){
+                selectCardActive();
             }
             changeViewState(v, ViewState.Select);
 
@@ -508,6 +537,17 @@ public class UserCenterActivity extends BaseActivity implements LoginFragment.Lo
                 parentView.setBackgroundResource(R.drawable._000000000);
                 parentView.setClickable(true);
                 break;
+            case Gone:
+                parentView.setEnabled(false);
+                textSelectImage.setVisibility(View.INVISIBLE);
+                textFocusImage.setVisibility(View.INVISIBLE);
+                textView.setVisibility(View.GONE);
+                textView.setTextColor(getResources().getColor(R.color.personinfo_login_button_disable));
+                parentView.setFocusable(false);
+                parentView.setFocusableInTouchMode(false);
+                parentView.setClickable(false);
+                break;
+
         }
 
     }
@@ -518,6 +558,7 @@ public class UserCenterActivity extends BaseActivity implements LoginFragment.Lo
         indicatorView.get(1).callOnClick();
         indicatorView.get(1).requestFocus();
         changeViewState(indicatorView.get(1), ViewState.Select);
+        indicatorView.get(6).setVisibility(View.GONE);
     }
 
     @Override
@@ -532,7 +573,8 @@ public class UserCenterActivity extends BaseActivity implements LoginFragment.Lo
         Select,
         Unfocus,
         Hover,
-        None
+        None,
+        Gone
     }
 
     public void clearTheLastHoveredVewState() {
@@ -601,6 +643,14 @@ public class UserCenterActivity extends BaseActivity implements LoginFragment.Lo
         super.onPause();
     }
 
+    public void refreshWeather() {
+        if (headFragment != null) {
+            HashMap<String, String> hashMap = IsmartvActivator.getInstance().getCity();
+            String geoId = hashMap.get("geo_id");
+          //  headFragment.fetchWeatherInfo(geoId);
+        }
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == CardPayFragment.CHARGE_MONEY_SUCCESS) {
@@ -611,51 +661,60 @@ public class UserCenterActivity extends BaseActivity implements LoginFragment.Lo
     }
 
 
+
     private void fetchFavorite() {
-        bookmarksSub = mSkyService.getBookmarks()
+        bookmarksSub = mSkyService.getBookmarksV3()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new BaseObserver<Item[]>() {
+                .subscribe(new BaseObserver<ResponseBody>() {
                     @Override
                     public void onCompleted() {
 
                     }
 
                     @Override
-                    public void onNext(Item[] items) {
-                        for (Item item : items) {
-                            addFavorite(item);
+                    public void onNext(ResponseBody responseBody) {
+                        String result=null;
+                        try {
+                            result=responseBody.string();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        Log.i("result",result);
+                        List<HistoryFavoriteEntity> historyLists= parseResult(result);
+                        for (HistoryFavoriteEntity historyFavoriteEntity:historyLists){
+                            addFavorite(historyFavoriteEntity);
                         }
                     }
                 });
     }
 
 
-    private void addFavorite(Item mItem) {
+    private void addFavorite(HistoryFavoriteEntity mItem) {
         if (isFavorite(mItem)) {
-            String url = IsmartvActivator.getInstance().getApiDomain() + "/api/item/" + mItem.pk + "/";
+            String url = IsmartvActivator.getInstance().getApiDomain() + "/api/item/" + mItem.getPk() + "/";
             // DaisyUtils.getFavoriteManager(getContext())
             // .deleteFavoriteByUrl(url,"yes");
         } else {
-            String url = IsmartvActivator.getInstance().getApiDomain() + "/api/item/" + mItem.pk + "/";
+            String url = IsmartvActivator.getInstance().getApiDomain() + "/api/item/" + mItem.getPk() + "/";
             Favorite favorite = new Favorite();
-            favorite.title = mItem.title;
-            favorite.adlet_url = mItem.adlet_url;
-            favorite.content_model = mItem.content_model;
+            favorite.title = mItem.getTitle();
+            favorite.adlet_url = mItem.getAdlet_url();
+            favorite.content_model = mItem.getContent_model();
             favorite.url = url;
-            favorite.quality = mItem.quality;
-            favorite.is_complex = mItem.is_complex;
+            favorite.quality = mItem.getQuality();
+            favorite.is_complex = mItem.getIs_complex();
             favorite.isnet = "yes";
             DaisyUtils.getFavoriteManager(this).addFavorite(favorite, favorite.isnet);
         }
     }
 
 
-    private boolean isFavorite(Item mItem) {
+    private boolean isFavorite(HistoryFavoriteEntity mItem) {
         if (mItem != null) {
-            String url = mItem.item_url;
-            if (url == null && mItem.pk != 0) {
-                url = IsmartvActivator.getInstance().getApiDomain() + "/api/item/" + mItem.pk + "/";
+            String url = mItem.getUrl();
+            if (url == null && mItem.getPk() != 0) {
+                url = IsmartvActivator.getInstance().getApiDomain() + "/api/item/" + mItem.getPk() + "/";
             }
             Favorite favorite = DaisyUtils.getFavoriteManager(this).getFavoriteByUrl(url, "yes");
             if (favorite != null) {
@@ -667,37 +726,69 @@ public class UserCenterActivity extends BaseActivity implements LoginFragment.Lo
     }
 
     private void getHistoryByNet() {
-        historySub = mSkyService.getHistoryByNet()
+        historySub = mSkyService.getHistoryByNetV3()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new BaseObserver<Item[]>() {
+                .subscribe(new BaseObserver<ResponseBody>() {
                     @Override
                     public void onCompleted() {
 
                     }
 
                     @Override
-                    public void onNext(Item[] items) {
-                        for (Item item : items) {
-                            addHistory(item);
+                    public void onNext(ResponseBody responseBody) {
+                        String result=null;
+                        try {
+                            result=responseBody.string();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        Log.i("result",result);
+                        List<HistoryFavoriteEntity> historyLists= parseResult(result);
+                        for (HistoryFavoriteEntity historyFavoriteEntity:historyLists){
+                            addHistory(historyFavoriteEntity);
                         }
                     }
+
                 });
     }
+    private List<HistoryFavoriteEntity> parseResult(String result){
+        List<HistoryFavoriteEntity> lists=new ArrayList<>();
+        try {
+            JSONObject jsonObject=new JSONObject(result);
+            JSONObject info=jsonObject.getJSONObject("info");
+            JSONArray date=info.getJSONArray("date");
+            for(int i=0;i<date.length();i++){
+                JSONArray element=info.getJSONArray(date.getString(i));
+                for(int j=0;j<element.length();j++){
+                    HistoryFavoriteEntity historyFavoriteEntity=new GsonBuilder().create().fromJson(element.get(j).toString(),HistoryFavoriteEntity.class);
+                    historyFavoriteEntity.setDate(date.getString(i));
+                    lists.add(historyFavoriteEntity);
+                }
+            }
+            if(lists.size()>0) {
+                HistoryFavoriteEntity end = new HistoryFavoriteEntity();
+                lists.add(end);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return lists;
+    }
 
-    private void addHistory(Item item) {
+    private void addHistory(HistoryFavoriteEntity item) {
         History history = new History();
-        history.title = item.title;
-        history.adlet_url = item.adlet_url;
-        history.content_model = item.content_model;
-        history.is_complex = item.is_complex;
-        history.last_position = item.offset;
-        history.last_quality = item.quality;
-        if ("subitem".equals(item.model_name)) {
-            history.sub_url = item.url;
-            history.url = IsmartvActivator.getInstance().getApiDomain() + "/api/item/" + item.item_pk + "/";
+        history.title = item.getTitle();
+        history.adlet_url = item.getAdlet_url();
+        history.content_model = item.getContent_model();
+        history.is_complex = item.getIs_complex();
+        history.last_position = item.getOffset();
+        history.last_quality = item.getQuality();
+        if ("subitem".equals(item.getModel_name())) {
+            history.sub_url = item.getUrl();
+            history.url = IsmartvActivator.getInstance().getApiDomain() + "/api/item/" + item.getItem_pk() + "/";
         } else {
-            history.url = item.url;
+            history.url = item.getUrl();
         }
 
         history.is_continue = true;
@@ -712,5 +803,10 @@ public class UserCenterActivity extends BaseActivity implements LoginFragment.Lo
         indicatorView.get(1).callOnClick();
         indicatorView.get(1).requestFocus();
         changeViewState(indicatorView.get(1), ViewState.Select);
+    }
+    public void cardActiveSuccess(){
+        if (mUserInfoFragment != null) {
+            mUserInfoFragment.setShowChargeSuccessPop(true);
+        }
     }
 }

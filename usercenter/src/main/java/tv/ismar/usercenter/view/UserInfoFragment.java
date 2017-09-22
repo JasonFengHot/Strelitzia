@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.View.OnFocusChangeListener;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,7 +36,7 @@ import tv.ismar.app.core.Util;
 import tv.ismar.app.network.entity.AccountBalanceEntity;
 import tv.ismar.app.network.entity.AccountPlayAuthEntity;
 import tv.ismar.app.ui.MessageDialogFragment;
-import tv.ismar.library.exception.ExceptionUtils;
+import tv.ismar.library.network.HttpManager;
 import tv.ismar.usercenter.R;
 import tv.ismar.usercenter.UserInfoContract;
 import tv.ismar.usercenter.databinding.FragmentUserinfoBinding;
@@ -124,26 +125,27 @@ public class UserInfoFragment extends BaseFragment implements UserInfoContract.V
         userinfoBinding.exitAccount.setOnHoverListener(this);
         userinfoBinding.chargeMoney.setOnHoverListener(this);
 
-        userinfoBinding.exitAccount.setNextFocusDownId(R.id.exit_account);
-        userinfoBinding.exitAccount.setNextFocusLeftId(R.id.charge_money);
+        //userinfoBinding.exitAccount.setNextFocusDownId(R.id.exit_account);
+        userinfoBinding.exitAccount.setNextFocusLeftId(R.id.usercenter_userinfo);
+        userinfoBinding.exitAccount.setNextFocusRightId(R.id.exit_account);
 
-        userinfoBinding.chargeMoney.setNextFocusUpId(R.id.exit_account);
-        userinfoBinding.chargeMoney.setNextFocusRightId(R.id.exit_account);
-        userinfoBinding.chargeMoney.setNextFocusDownId(R.id.btn);
-        userinfoBinding.chargeMoney.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent();
-                intent.setAction("tv.ismar.pay.payment");
-                intent.putExtra(EXTRA_PRODUCT_CATEGORY, PageIntentInterface.ProductCategory.charge.name());
-                startActivityForResult(intent, REQUEST_CHARGE);
-            }
-        });
-
-        userinfoBinding.tmp.setNextFocusLeftId(R.id.usercenter_userinfo);
+//        userinfoBinding.chargeMoney.setNextFocusUpId(R.id.exit_account);
+//        userinfoBinding.chargeMoney.setNextFocusRightId(R.id.exit_account);
+//        userinfoBinding.chargeMoney.setNextFocusDownId(R.id.btn);
+//        userinfoBinding.chargeMoney.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent intent = new Intent();
+//                intent.setAction("tv.ismar.pay.payment");
+//                intent.putExtra(EXTRA_PRODUCT_CATEGORY, PageIntentInterface.ProductCategory.charge.name());
+//                startActivityForResult(intent, REQUEST_CHARGE);
+//            }
+//        });
+//
+//        userinfoBinding.tmp.setNextFocusLeftId(R.id.usercenter_userinfo);
         mPresenter.start();
         userinfoBinding.exitAccount.setOnFocusChangeListener(this);
-        userinfoBinding.chargeMoney.setOnFocusChangeListener(this);
+        //  userinfoBinding.chargeMoney.setOnFocusChangeListener(this);
 
     }
 
@@ -262,8 +264,8 @@ public class UserInfoFragment extends BaseFragment implements UserInfoContract.V
                 }
             }
         } else {
-            userInfo.setNextFocusRightId(R.id.charge_money);
-            userinfoBinding.exitAccount.setNextFocusDownId(R.id.charge_money);
+            userInfo.setNextFocusRightId(R.id.exit_account);
+            userinfoBinding.exitAccount.setNextFocusDownId(R.id.btn);
             if (privilegeView != null) {
                 for (View v : privilegeView) {
                     v.setNextFocusLeftId(R.id.usercenter_userinfo);
@@ -271,7 +273,7 @@ public class UserInfoFragment extends BaseFragment implements UserInfoContract.V
             }
         }
         mViewModel.refresh();
-        userinfoBinding.chargeMoney.setNextFocusLeftId(R.id.usercenter_userinfo);
+//        userinfoBinding.chargeMoney.setNextFocusLeftId(R.id.usercenter_userinfo);
 
         if (showChargeSuccessPop) {
             showChargeSuccessPop = false;
@@ -287,6 +289,7 @@ public class UserInfoFragment extends BaseFragment implements UserInfoContract.V
                     public void confirmClick(View view) {
                         dialog.dismiss();
                         IsmartvActivator.getInstance().removeUserInfo();
+                      //  HttpManager.getInstance().setAccessToken(null);
                     }
                 },
                 new MessageDialogFragment.CancelListener() {
@@ -368,6 +371,9 @@ public class UserInfoFragment extends BaseFragment implements UserInfoContract.V
                 return null;
             }
         }
+        if (focusDirection == View.FOCUS_LEFT){
+            return null;
+        }
         return view;
     }
 
@@ -412,6 +418,7 @@ public class UserInfoFragment extends BaseFragment implements UserInfoContract.V
             String remainday = mContext.getResources().getString(R.string.personcenter_orderlist_item_remainday);
             holder.date.setText(String.format(remainday, remaindDay(playAuth.getExpiry_date())));
             holder.title.setText(playAuth.getTitle());
+            Log.i("PlayAuth",playAuth.getAction()+"");
             if (playAuth.getAction() == null) {
                 holder.mButton.setVisibility(View.INVISIBLE);
             } else if (playAuth.getAction() == AccountPlayAuthEntity.Action.watch) {
@@ -448,7 +455,6 @@ public class UserInfoFragment extends BaseFragment implements UserInfoContract.V
             try {
                 return Util.daysBetween(Util.getTime(), exprieTime) + 1;
             } catch (ParseException e) {
-                ExceptionUtils.sendProgramError(e);
                 e.printStackTrace();
             }
             return 0;
@@ -461,6 +467,8 @@ public class UserInfoFragment extends BaseFragment implements UserInfoContract.V
             String pk = pathSegments.get(pathSegments.size() - 1);
             String type = pathSegments.get(pathSegments.size() - 2);
             PageIntent pageIntent = new PageIntent();
+            Log.i("playAuth",playAuth.getAction()+"");
+            Log.i("playAuth","Type: "+type);
             if (playAuth.getAction() == null) {
                 //
             } else if (playAuth.getAction() == AccountPlayAuthEntity.Action.watch) {
@@ -486,6 +494,7 @@ public class UserInfoFragment extends BaseFragment implements UserInfoContract.V
                         Toast.makeText(mContext, "因版权限制，此产品无法在当前设备查看", Toast.LENGTH_SHORT).show();
                 }
             } else {
+                Log.i("playAuth","OotherType: "+type);
                 //other type
             }
         }
@@ -504,6 +513,7 @@ public class UserInfoFragment extends BaseFragment implements UserInfoContract.V
             date = (TextView) itemView.findViewById(R.id.buydate_txt);
             mButton = (Button) itemView.findViewById(R.id.btn);
             mButton.setNextFocusRightId(R.id.charge_money);
+            mButton.setNextFocusLeftId(R.id.usercenter_userinfo);
         }
     }
 
