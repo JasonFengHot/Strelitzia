@@ -250,7 +250,7 @@ public final class IsmartvActivator {
                 isactive = true;
                 Response<ResultEntity> resultResponse = SKY_Retrofit.create(HttpService.class).
                         trustSecurityActive(sn, manufacture, kind, version, rsaEncryptResult,
-                                fingerprint, "v4_0", getAndroidDevicesInfo(), DeviceUtils.getLocalwlanAddress(), DeviceUtils.getLocalHardwareAddress())
+                                fingerprint, "v5_0", getAndroidDevicesInfo(), DeviceUtils.getLocalwlanAddress(), DeviceUtils.getLocalHardwareAddress())
                         .execute();
                 Log.i(TAG, DeviceUtils.getLocalwlanAddress() + "MAC: " + DeviceUtils.getLocalHardwareAddress());
                 if (resultResponse.errorBody() == null) {
