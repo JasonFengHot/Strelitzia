@@ -51,10 +51,7 @@ public class HistoryListAdapter extends RecyclerView.Adapter<HistoryListAdapter.
         this.itemClickListener = itemClickListener;
     }
 
-    public OnItemFocusedListener getItemFocusedListener() {
-        return itemFocusedListener;
-    }
-    private void setItemOnhoverlistener(OnItemOnhoverlistener itemOnhoverlistener){
+    public void setItemOnhoverlistener(OnItemOnhoverlistener itemOnhoverlistener){
         this.itemOnhoverlistener=itemOnhoverlistener;
     }
 
@@ -72,7 +69,8 @@ public class HistoryListAdapter extends RecyclerView.Adapter<HistoryListAdapter.
     public void onBindViewHolder(final HistoryViewholder holder, final int position) {
         if(position!=items.size()-1) {
             HistoryFavoriteEntity item = items.get(position);
-            Picasso.with(mContext).load(item.getAdlet_url()).into(holder.item_detail_image);
+            if(item.getAdlet_url()!=null)
+            Picasso.with(mContext).load(item.getAdlet_url()).error(R.drawable.list_item_preview_bg).into(holder.item_detail_image);
             holder.item_title.setText(item.getTitle());
             holder.item_title.setVisibility(View.VISIBLE);
             holder.item_title_layout.setVisibility(View.VISIBLE);
@@ -127,7 +125,7 @@ public class HistoryListAdapter extends RecyclerView.Adapter<HistoryListAdapter.
         holder.item_detail.setOnHoverListener(new View.OnHoverListener() {
             @Override
             public boolean onHover(View v, MotionEvent event) {
-//                itemOnhoverlistener.OnItemOnhoverlistener(v,event,position,0);
+               itemOnhoverlistener.OnItemOnhoverlistener(v,event,position,0);
                 return false;
             }
         });
