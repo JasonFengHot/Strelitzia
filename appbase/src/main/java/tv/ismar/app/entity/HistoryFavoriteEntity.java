@@ -1,10 +1,6 @@
-package tv.ismar.entity;
+package tv.ismar.app.entity;
 
 import java.io.Serializable;
-import java.util.List;
-
-import tv.ismar.app.entity.Clip;
-import tv.ismar.app.entity.Expense;
 
 /**
  * Created by liucan on 2017/8/28.

@@ -13,15 +13,12 @@ import android.widget.TextView;
 import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import tv.ismar.app.core.Source;
 import tv.ismar.app.core.VipMark;
-import tv.ismar.app.entity.Item;
 import tv.ismar.app.ui.adapter.OnItemClickListener;
 import tv.ismar.app.ui.adapter.OnItemFocusedListener;
-import tv.ismar.entity.HistoryFavoriteEntity;
+import tv.ismar.app.entity.HistoryFavoriteEntity;
 import tv.ismar.listpage.R;
 
 /**
