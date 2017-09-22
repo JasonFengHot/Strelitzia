@@ -5,7 +5,6 @@
     android:focusable="false">
 
     <tv.ismar.homepage.banner.IsmartvLinearLayout
-        android:id="@+id/guide_ismartv_linear_layout"
         android:layout_width="@dimen/guide_switch_container_width"
         android:layout_height="@dimen/guide_recycle_item_height"
         android:layout_marginTop="@dimen/guide_recycle_item_margin_top"

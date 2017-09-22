@@ -27,8 +27,10 @@ public abstract class BaseViewHolder extends RecyclerView.ViewHolder implements
     }
 
     private void initListener(){
-        itemView.findViewById(getScaleLayoutId()).setOnFocusChangeListener(this);
-        itemView.findViewById(getScaleLayoutId()).setOnClickListener(this);
+        if(itemView.findViewById(getScaleLayoutId()) != null){
+            itemView.findViewById(getScaleLayoutId()).setOnFocusChangeListener(this);
+            itemView.findViewById(getScaleLayoutId()).setOnClickListener(this);
+        }
     }
 
     protected abstract int getScaleLayoutId();
