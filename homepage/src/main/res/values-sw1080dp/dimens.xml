@@ -822,17 +822,17 @@
     <dimen name="banner_horizontal519_post_w">519dp</dimen>
     <dimen name="banner_horizontal519_post_h">292dp</dimen>
     <dimen name="banner_horizontal519_post_title_h">43dp</dimen>
-    <dimen name="subscribe_banner_recycler_h">450dp</dimen>
+    <dimen name="subscribe_banner_recycler_h">400dp</dimen>
     <dimen name="subscribe_banner_recycler_ml">50dp</dimen>
     <dimen name="subscribe_banner_recycler_mr">50dp</dimen>
     <dimen name="subscribe_banner_recycler_pl">50dp</dimen>
     <dimen name="subscribe_banner_recycler_pr">50dp</dimen>
-    <dimen name="movie_banner_recycler_h">450dp</dimen>
+    <dimen name="movie_banner_recycler_h">390dp</dimen>
     <dimen name="movie_banner_recycler_ml">50dp</dimen>
     <dimen name="movie_banner_recycler_mr">50dp</dimen>
     <dimen name="movie_banner_recycler_pl">50dp</dimen>
     <dimen name="movie_banner_recycler_pr">50dp</dimen>
-    <dimen name="horizontal519_banner_recycler_h">450dp</dimen>
+    <dimen name="horizontal519_banner_recycler_h">325dp</dimen>
     <dimen name="horizontal519_banner_recycler_ml">50dp</dimen>
     <dimen name="horizontal519_banner_recycler_mr">50dp</dimen>
     <dimen name="horizontal519_banner_recycler_pl">50dp</dimen>
@@ -844,7 +844,7 @@
     <dimen name="launcher_ad_1031">1031dp</dimen>
     <dimen name="launcher_ad_549">549dp</dimen>
     <dimen name="launcher_ad_445">445dp</dimen>
-    <dimen name="movie_mix_banner_recycler_h">450dp</dimen>
+    <dimen name="movie_mix_banner_recycler_h">390dp</dimen>
     <dimen name="movie_mix_banner_recycler_ml">50dp</dimen>
     <dimen name="movie_mix_banner_recycler_mr">50dp</dimen>
     <dimen name="movie_mix_banner_recycler_pl">50dp</dimen>
@@ -856,4 +856,8 @@
     <dimen name="banner_mark_br_mt">121dp</dimen>
     <dimen name="banner_movie_mark_br_mt">253dp</dimen>
     <dimen name="banner__horizontal519_mark_br_height">195dp</dimen>
+    <dimen name="banner_navigation_width">100dp</dimen>
+    <dimen name="banner_subscribe_navigation_height">397dp</dimen>
+    <dimen name="banner_horizontal519_navigation_height">292dp</dimen>
+    <dimen name="banner_movie_navigation_height">350dp</dimen>
 </resources>

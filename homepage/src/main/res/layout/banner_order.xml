@@ -12,7 +12,9 @@
 
     <RelativeLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:clipChildren="false"
+        android:clipToPadding="false">
 
         <com.open.androidtvwidget.leanback.recycle.RecyclerViewTV
             android:id="@+id/subscribe_banner"
@@ -27,23 +29,29 @@
 
         <Button
             android:id="@+id/navigation_left"
-            android:layout_width="140dp"
-            android:layout_height="450dp"
+            android:layout_width="@dimen/banner_navigation_width"
+            android:layout_height="@dimen/banner_subscribe_navigation_height"
+            android:layout_alignBaseline="@id/subscribe_banner"
             android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
             android:background="@drawable/selector_banner_subscribe_arrow_left"
             android:focusable="true"
             android:focusableInTouchMode="true"
+            android:gravity="center_vertical"
             >
         </Button>
 
         <Button
             android:id="@+id/navigation_right"
-            android:layout_width="140dp"
-            android:layout_height="450dp"
+            android:layout_width="@dimen/banner_navigation_width"
+            android:layout_height="@dimen/banner_subscribe_navigation_height"
+            android:layout_alignBaseline="@id/subscribe_banner"
             android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
             android:background="@drawable/selector_banner_subscribe_arrow_right"
             android:focusable="true"
             android:focusableInTouchMode="true"
+            android:gravity="center_vertical"
             >
         </Button>
 

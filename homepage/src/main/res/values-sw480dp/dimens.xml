@@ -822,17 +822,17 @@
 <dimen name="banner_horizontal519_post_w">230.67dp</dimen>
 <dimen name="banner_horizontal519_post_h">129.78dp</dimen>
 <dimen name="banner_horizontal519_post_title_h">19.11dp</dimen>
-<dimen name="subscribe_banner_recycler_h">200.00dp</dimen>
+<dimen name="subscribe_banner_recycler_h">177.78dp</dimen>
 <dimen name="subscribe_banner_recycler_ml">22.22dp</dimen>
 <dimen name="subscribe_banner_recycler_mr">22.22dp</dimen>
 <dimen name="subscribe_banner_recycler_pl">22.22dp</dimen>
 <dimen name="subscribe_banner_recycler_pr">22.22dp</dimen>
-<dimen name="movie_banner_recycler_h">200.00dp</dimen>
+<dimen name="movie_banner_recycler_h">173.33dp</dimen>
 <dimen name="movie_banner_recycler_ml">22.22dp</dimen>
 <dimen name="movie_banner_recycler_mr">22.22dp</dimen>
 <dimen name="movie_banner_recycler_pl">22.22dp</dimen>
 <dimen name="movie_banner_recycler_pr">22.22dp</dimen>
-<dimen name="horizontal519_banner_recycler_h">200.00dp</dimen>
+<dimen name="horizontal519_banner_recycler_h">144.44dp</dimen>
 <dimen name="horizontal519_banner_recycler_ml">22.22dp</dimen>
 <dimen name="horizontal519_banner_recycler_mr">22.22dp</dimen>
 <dimen name="horizontal519_banner_recycler_pl">22.22dp</dimen>
@@ -844,7 +844,7 @@
 <dimen name="launcher_ad_1031">458.22dp</dimen>
 <dimen name="launcher_ad_549">244.00dp</dimen>
 <dimen name="launcher_ad_445">197.78dp</dimen>
-<dimen name="movie_mix_banner_recycler_h">200.00dp</dimen>
+<dimen name="movie_mix_banner_recycler_h">173.33dp</dimen>
 <dimen name="movie_mix_banner_recycler_ml">22.22dp</dimen>
 <dimen name="movie_mix_banner_recycler_mr">22.22dp</dimen>
 <dimen name="movie_mix_banner_recycler_pl">22.22dp</dimen>
@@ -856,4 +856,8 @@
 <dimen name="banner_mark_br_mt">53.78dp</dimen>
 <dimen name="banner_movie_mark_br_mt">112.44dp</dimen>
 <dimen name="banner__horizontal519_mark_br_height">86.67dp</dimen>
+<dimen name="banner_navigation_width">44.44dp</dimen>
+<dimen name="banner_subscribe_navigation_height">176.44dp</dimen>
+<dimen name="banner_horizontal519_navigation_height">129.78dp</dimen>
+<dimen name="banner_movie_navigation_height">155.56dp</dimen>
 </resources>

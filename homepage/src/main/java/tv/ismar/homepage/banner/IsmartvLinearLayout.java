@@ -103,6 +103,7 @@ public class IsmartvLinearLayout extends LinearLayout {
     public void draw(Canvas canvas) {
         super.draw(canvas);
 
+
         if (foreground != null) {
             foreground.draw(canvas);
         }
