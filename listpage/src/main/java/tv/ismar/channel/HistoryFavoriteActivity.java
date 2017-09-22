@@ -51,6 +51,7 @@ import tv.ismar.app.entity.History;
 import tv.ismar.app.network.SkyService;
 import tv.ismar.app.network.entity.EventProperty;
 import tv.ismar.app.ui.adapter.OnItemFocusedListener;
+import tv.ismar.app.ui.adapter.OnItemOnhoverlistener;
 import tv.ismar.entity.HistoryFavoriteEntity;
 import tv.ismar.listener.LfListItemClickListener;
 import tv.ismar.listpage.R;
@@ -64,7 +65,7 @@ import static tv.ismar.listpage.R.id.arrow_line_2;
  * Created by liucan on 2017/8/22.
  */
 
-public class HistoryFavoriteActivity extends BaseActivity implements View.OnClickListener,OnItemFocusedListener,LfListItemClickListener,View.OnHoverListener{
+public class HistoryFavoriteActivity extends BaseActivity implements View.OnClickListener,OnItemFocusedListener,LfListItemClickListener,View.OnHoverListener,OnItemOnhoverlistener {
     private GetHistoryTask mGetHistoryTask;
     private Subscription historySub,favoriteSub;
     private SkyService skyService;
@@ -126,6 +127,7 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
         edit_history.setOnHoverListener(this);
         editBtnFocusListener();
 
+
         HashMap<String, Object> properties = new HashMap<String, Object>();
         properties.put(EventProperty.TITLE, "history");
         new NetworkUtils.DataCollectionTask().execute(NetworkUtils.VIDEO_HISTORY_IN, properties);
@@ -180,6 +182,8 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
             mGetHistoryTask = new GetHistoryTask();
             mGetHistoryTask.execute();
         }
+        edit_history.setFocusable(false);
+        edit_history.setFocusableInTouchMode(false);
         super.onResume();
     }
 
@@ -287,6 +291,7 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
                 favoritAdapter=new HistoryListAdapter(HistoryFavoriteActivity.this,favoriteLists,"favorite");
                 favoritAdapter.setItemFocusedListener(HistoryFavoriteActivity.this);
                 favoritAdapter.setItemClickListener(HistoryFavoriteActivity.this);
+                favoritAdapter.setItemOnhoverlistener(HistoryFavoriteActivity.this);
                 favoriteRecycler.setAdapter(favoritAdapter);
 
                 history_title.setText("历史");
@@ -295,6 +300,7 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
                 historyAdapter=new HistoryListAdapter(HistoryFavoriteActivity.this,historyLists,"history");
                 historyAdapter.setItemFocusedListener(HistoryFavoriteActivity.this);
                 historyAdapter.setItemClickListener(HistoryFavoriteActivity.this);
+                historyAdapter.setItemOnhoverlistener(HistoryFavoriteActivity.this);
                 historyRecycler.setAdapter(historyAdapter);
 
 
@@ -314,6 +320,7 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
                 historyAdapter=new HistoryListAdapter(HistoryFavoriteActivity.this,historyLists,"history");
                 historyAdapter.setItemFocusedListener(HistoryFavoriteActivity.this);
                 historyAdapter.setItemClickListener(HistoryFavoriteActivity.this);
+                historyAdapter.setItemOnhoverlistener(HistoryFavoriteActivity.this);
                 historyRecycler.setAdapter(historyAdapter);
 
             }
@@ -321,7 +328,9 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
                 @Override
                 public void run() {
                     if(!isEdit)
-                    historyRecycler.getChildAt(0).requestFocusFromTouch();
+                        historyRecycler.getChildAt(0).requestFocusFromTouch();
+                    edit_history.setFocusable(true);
+                    edit_history.setFocusableInTouchMode(true);
                 }
             },500);
         }else{
@@ -341,13 +350,15 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
                 historyAdapter=new HistoryListAdapter(HistoryFavoriteActivity.this,favoriteLists,"favorite");
                 historyAdapter.setItemFocusedListener(HistoryFavoriteActivity.this);
                 historyAdapter.setItemClickListener(HistoryFavoriteActivity.this);
+                historyAdapter.setItemOnhoverlistener(HistoryFavoriteActivity.this);
                 historyRecycler.setAdapter(historyAdapter);
-
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         if(!isEdit)
-                        historyRecycler.getChildAt(0).requestFocusFromTouch();
+                            historyRecycler.getChildAt(0).requestFocusFromTouch();
+                        edit_history.setFocusable(true);
+                        edit_history.setFocusableInTouchMode(true);
                     }
                 },500);
             }else{
@@ -359,6 +370,8 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
                 isEdit=false;
             }
         }
+        edit_history.setFocusable(true);
+        edit_history.setFocusableInTouchMode(true);
     }
     @Override
     public void onClick(View v) {
@@ -445,8 +458,6 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
     public void onItemfocused(View view, int position, boolean hasFocus) {
         RecyclerView.LayoutManager layoutManager = historyRecycler.getLayoutManager();
         Log.i("onItemfocus","position: "+position+"  lastPosition: "+((LinearLayoutManager) layoutManager).findLastVisibleItemPosition());
-        if(position==((LinearLayoutManager) layoutManager).findLastVisibleItemPosition()){
-        }
         if(hasFocus){
             JasmineUtil.scaleOut3(view);
         }else{
@@ -497,6 +508,16 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
                 break;
         }
         return false;
+    }
+
+    @Override
+    public void OnItemOnhoverlistener(View v, MotionEvent event, int position, int recommend) {
+        switch (event.getAction()){
+            case MotionEvent.ACTION_HOVER_ENTER:
+                  //  v.requestFocusFromTouch();
+                    break;
+
+        }
     }
 
 
