@@ -24,7 +24,7 @@ import tv.ismar.homepage.template.TemplateMovie;
 import tv.ismar.homepage.template.TemplateOrder;
 import tv.ismar.homepage.template.TemplateRecommend;
 import tv.ismar.homepage.template.TemplateTvPlay;
-import tv.ismar.homepage.widget.scroll.RecycleLinearLayout;
+import tv.ismar.homepage.widget.RecycleLinearLayout;
 import tv.ismar.library.util.StringUtils;
 
 /**
@@ -135,12 +135,12 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
                 new TemplateCenter(getContext()).setView(bannerView, bundle);
             }
             if(bannerView != null){
-                mLinearContainer.setView(bannerView);
+                mLinearContainer.addView(bannerView);
             }
         }
 
         addMoreView();
-        mLinearContainer.initView();
+//        mLinearContainer.initView();
     }
 
     public static final String MORE_TITLE_FLAG = "title";
@@ -155,7 +155,7 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
         bundle.putInt(MORE_STYLE_FLAG, mStyle);
         View bannerView = createView(R.layout.banner_more);
         new TemplateMore(getContext()).setView(bannerView, bundle);
-        mLinearContainer.setView(bannerView);
+        mLinearContainer.addView(bannerView);
     }
 
     private View createView(int layoutId){
