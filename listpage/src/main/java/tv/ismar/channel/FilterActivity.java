@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.TypedValue;
@@ -29,11 +28,8 @@ import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
-import java.util.regex.Matcher;
 
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -1031,17 +1027,20 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                 list_poster_recyclerview.swapAdapter(listPosterAdapter,false);
                 listPosterAdapter.setFocusedPosition(1);
             }else{
+                int position=-1;
                 if(lastFocusedView==null){
                     listPosterAdapter.setFocusedPosition(-1);
+                    position=index+1==specialPos.size()?-1:specialPos.get(index+1)-1;
                 }else{
                     listPosterAdapter.setFocusedPosition(list_poster_recyclerview.getChildLayoutPosition(lastFocusedView)-removeCount);
+                    position=list_poster_recyclerview.getChildLayoutPosition(lastFocusedView) - removeCount;
                 }
                 listPosterAdapter.setmItemList(listSectionEntity.getObjects());
                 if(isFirstPos) {
                     if (isVertical) {
-                        mFocusGridLayoutManager.scrollToPositionWithOffset(list_poster_recyclerview.getChildLayoutPosition(lastFocusedView) - removeCount, getResources().getDimensionPixelOffset(R.dimen.list_scroll_down_offset_v));
+                        mFocusGridLayoutManager.scrollToPositionWithOffset(position, getResources().getDimensionPixelOffset(R.dimen.list_scroll_down_offset_v));
                     } else {
-                        mFocusGridLayoutManager.scrollToPositionWithOffset(list_poster_recyclerview.getChildLayoutPosition(lastFocusedView) - removeCount, getResources().getDimensionPixelOffset(R.dimen.list_scroll_down_offset_h));
+                        mFocusGridLayoutManager.scrollToPositionWithOffset(position, getResources().getDimensionPixelOffset(R.dimen.list_scroll_down_offset_h));
                     }
                 }
                 listPosterAdapter.notifyDataSetChanged();
@@ -1218,7 +1217,7 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                     mFilterFocusGridLayoutManager.scrollToPositionWithOffset(mFilterFocusGridLayoutManager.findFirstVisibleItemPosition() - 1, getResources().getDimensionPixelOffset(R.dimen.list_scroll_filter_offset_h));
                 }
             }else{
-                nextPos = specialPos.contains(mFocusGridLayoutManager.findFirstVisibleItemPosition() - 1) ? mFocusGridLayoutManager.findFirstVisibleItemPosition() - 2 : mFocusGridLayoutManager.findFirstVisibleItemPosition() - 1;
+                nextPos = specialPos.contains(mFocusGridLayoutManager.findFirstVisibleItemPosition()) ? mFocusGridLayoutManager.findFirstVisibleItemPosition() - spanCount-1 : mFocusGridLayoutManager.findFirstVisibleItemPosition()-1 ;
                 if (isVertical) {
                     mFocusGridLayoutManager.scrollToPositionWithOffset(nextPos, getResources().getDimensionPixelOffset(R.dimen.list_scroll_up_offset_v));
                 } else {
@@ -1272,6 +1271,9 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                     booleanFlag=true;
                 }
                 if(position>=specialPos.get(i)&&booleanFlag&&!sectionHasData[i]){
+                    if(position==specialPos.get(i)){
+                        isFirstPos=false;
+                    }
                     fetchSectionData(sectionList.get(i).url,i,isFirstPos);
                 }
 
