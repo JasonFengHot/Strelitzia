@@ -55,8 +55,7 @@ import android.widget.TextView;
 
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
-
-import org.w3c.dom.Text;
+import com.orhanobut.logger.Logger;
 
 import java.util.List;
 
@@ -194,49 +193,49 @@ public class HorizontalTabView extends HorizontalScrollView implements View.OnCl
         item.setOnClickListener(this);
         item.setOnFocusChangeListener(this);
         item.setOnKeyListener(this);
-//        item.setOnHoverListener(new OnHoverListener() {
-//            @Override
-//            public boolean onHover(View v, MotionEvent event) {
-//                isOnKeyDown = false;
-//
-//                TextView itemView = (TextView) v;
-//                switch (event.getAction()) {
-//                    case MotionEvent.ACTION_HOVER_ENTER:
-//                    case MotionEvent.ACTION_HOVER_MOVE:
-//                        v.setHovered(true);
-//                        itemView.setBackground(selectedDrawable);
-//                        itemView.setTextColor(textFocusColor);
-//                        if (isScroll){
-//                            isScroll = false;
-//                            mCurrentState = STATE_FOCUS;
-//                            if (!v.hasFocus()) {
-//                                zoomInAnimation(v);
-//                                v.requestFocusFromTouch();
-//                                v.requestFocus();
-//                            }
-//                            mScrollHandler.sendEmptyMessageDelayed(0, 500);
-//                        }
-//                        return true;
-//                    case MotionEvent.ACTION_HOVER_EXIT:
-//                        zoomOutAnimation(v);
-//                        if (HomeActivity.mHoverView != null){
-//                            HomeActivity.mHoverView.requestFocus();
-//                        }
-//
-//                        TextView lastClickView = (TextView) linearContainer.getChildAt(mClickPosition);
-//                        if (itemView == lastClickView) {
-//                            lastClickView.setBackgroundResource(android.R.color.transparent);
-//                            lastClickView.setTextColor(textSelectColor);
-//                        }else {
-//                            itemView.setBackgroundResource(android.R.color.transparent);
-//                            itemView.setTextColor(defaultTextColor);
-//                        }
-//                        v.setHovered(false);
-//                        return true;
-//                }
-//                return false;
-//            }
-//        });
+        item.setOnHoverListener(new OnHoverListener() {
+            @Override
+            public boolean onHover(View v, MotionEvent event) {
+                isOnKeyDown = false;
+
+                TextView itemView = (TextView) v;
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_HOVER_ENTER:
+                    case MotionEvent.ACTION_HOVER_MOVE:
+                        v.setHovered(true);
+                        itemView.setBackground(selectedDrawable);
+                        itemView.setTextColor(textFocusColor);
+                        if (isScroll){
+                            isScroll = false;
+                            mCurrentState = STATE_FOCUS;
+                            if (!v.hasFocus()) {
+                                zoomInAnimation(v);
+                                v.requestFocusFromTouch();
+                                v.requestFocus();
+                            }
+                            mScrollHandler.sendEmptyMessageDelayed(0, 500);
+                        }
+                        return true;
+                    case MotionEvent.ACTION_HOVER_EXIT:
+                        zoomOutAnimation(v);
+                        if (HomeActivity.mHoverView != null){
+                            HomeActivity.mHoverView.requestFocus();
+                        }
+
+                        TextView lastClickView = (TextView) linearContainer.getChildAt(mClickPosition);
+                        if (itemView == lastClickView) {
+                            lastClickView.setBackgroundResource(android.R.color.transparent);
+                            lastClickView.setTextColor(textSelectColor);
+                        }else {
+                            itemView.setBackgroundResource(android.R.color.transparent);
+                            itemView.setTextColor(defaultTextColor);
+                        }
+                        v.setHovered(false);
+                        return true;
+                }
+                return false;
+            }
+        });
         item.setOnTouchListener(new OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -453,6 +452,8 @@ public class HorizontalTabView extends HorizontalScrollView implements View.OnCl
     }
 
     private void scrollChildPosition(View view) {
+        Logger.t(TAG).d("scrollChildPosition");
+
         if (linearContainer.getChildCount() < 10) {
             return;
         }
@@ -546,11 +547,29 @@ public class HorizontalTabView extends HorizontalScrollView implements View.OnCl
 
     @Override
     public void onFocusChange(View v, boolean hasFocus) {
-        if (v.isHovered()){
+        Logger.t(TAG).d("onFocusChange hovered: " + v.isHovered());
+
+        int tag = (int) v.getTag();
+
+        //空鼠操作状态
+        if (v.isHovered()) {
+            if (hasFocus) {
+                if (mCurrentState == STATE_LEAVE && mSelectedIndex != tag) {
+                    View selectedView = linearContainer.getChildAt(mSelectedIndex);
+//                    selectedView.requestFocus();
+                } else {
+                    changeSelection(v, tag != mSelectedIndex);
+                }
+
+            } else {
+                if (mCurrentState != STATE_LEAVE) {
+                    changeLostFocusStatus(v);
+                    zoomOutAnimation(v);
+                }
+            }
             return;
         }
 
-        int tag = (int) v.getTag();
         if (hasFocus) {
             for (int i = 0; i < linearContainer.getChildCount(); i++){
                 View subView = linearContainer.getChildAt(i);
