@@ -24,7 +24,7 @@ import tv.ismar.homepage.template.TemplateMovie;
 import tv.ismar.homepage.template.TemplateOrder;
 import tv.ismar.homepage.template.TemplateRecommend;
 import tv.ismar.homepage.template.TemplateTvPlay;
-import tv.ismar.homepage.widget.RecycleLinearLayout;
+import tv.ismar.homepage.widget.scroll.RecycleLinearLayout;
 import tv.ismar.library.util.StringUtils;
 
 /**
