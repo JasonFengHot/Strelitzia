@@ -323,8 +323,8 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                     if(filter_root_view.horving||poster_arrow_up.isFocused()||poster_arrow_down.isFocused()) {
                         changeCheckedTab(firstVisiablePos);
                     }
-                    showData(firstVisiablePos);
-                    showData(lastVisiablePos);
+                    showData(firstVisiablePos,true);
+                    showData(lastVisiablePos,false);
                     for (int i = 0; i < sectionSize; i++) {
                         if (i == sectionSize - 1) {
                             break;
@@ -465,7 +465,7 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                 public void onClick(View v) {
                     mFocusGridLayoutManager.scrollToPositionWithOffset(specialPos.get(finalI),0);
                     if(isFirst) {
-                        fetchSectionData(section.url,finalI);
+                        fetchSectionData(section.url,finalI,false);
                         isFirst=false;
                     }
                     current_section_title.setText(sectionList.get(finalI).title);
@@ -599,7 +599,7 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
     }
 
     //请求每个section的数据
-    private void fetchSectionData(String url, final int index) {
+    private void fetchSectionData(String url, final int index, final boolean isFirstPos) {
         sectionHasData[index]=true;
         mSkyService.getListChannel(url)
                 .subscribeOn(Schedulers.io())
@@ -631,7 +631,7 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                                 mAllSectionItemList.getObjects().addAll(list1);
                                 mAllSectionItemList.getObjects().addAll(list2);
                                 removeCount=specialPos.get(index+1)-1-specialPos.get(index)-listSectionEntity.getCount();
-                            mAllSectionItemList.setCount(mAllSectionItemList.getObjects().size());
+                                mAllSectionItemList.setCount(mAllSectionItemList.getObjects().size());
                             Log.e("removecount", removeCount + "");
                             for (int i = index + 1; i < sectionSize; i++) {
                                 specialPos.set(i, specialPos.get(i) - removeCount);
@@ -645,14 +645,15 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                                 if(mFocusGridLayoutManager!=null)
                                 mFocusGridLayoutManager.setSpecialPos(specialPos);
                         }else if(index==sectionSize-1&&mAllSectionItemList.getCount()>specialPos.get(index-1)+listSectionEntity.getCount()){
-                            for (int i = specialPos.get(index-1)+listSectionEntity.getCount()+1; i <mAllSectionItemList.getCount() ; i++) {
-                                mAllSectionItemList.getObjects().remove(i);
-                                mAllSectionItemList.setCount(mAllSectionItemList.getCount()-1);
-                            }
+                            List<ListSectionEntity.ObjectsBean> list1=mAllSectionItemList.getObjects().subList(0,specialPos.get(index) + listSectionEntity.getCount()+1);
+                            mAllSectionItemList.setObjects(new ArrayList<ListSectionEntity.ObjectsBean>());
+                            mAllSectionItemList.getObjects().addAll(list1);
+                            removeCount=mAllSectionItemList.getCount()-mAllSectionItemList.getObjects().size();
+                            mAllSectionItemList.setCount(mAllSectionItemList.getObjects().size());
                         }else{
                             removeCount=0;
                         }
-                        processResultData(mAllSectionItemList,index,removeCount);
+                        processResultData(mAllSectionItemList,index,removeCount,isFirstPos);
                     }
                 });
 
@@ -1024,7 +1025,7 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
      * 处理请求到的数据
      */
     private boolean isFirst=true;
-    private void processResultData(final ListSectionEntity listSectionEntity,int index,int removeCount) {
+    private void processResultData(final ListSectionEntity listSectionEntity,int index,int removeCount,boolean isFirstPos) {
             if(listPosterAdapter==null) {
                 listPosterAdapter = new ListPosterAdapter(FilterActivity.this, listSectionEntity.getObjects(), isVertical, specialPos, sectionList);
                 list_poster_recyclerview.swapAdapter(listPosterAdapter,false);
@@ -1036,10 +1037,12 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                     listPosterAdapter.setFocusedPosition(list_poster_recyclerview.getChildLayoutPosition(lastFocusedView)-removeCount);
                 }
                 listPosterAdapter.setmItemList(listSectionEntity.getObjects());
-                if(isVertical) {
-                    mFocusGridLayoutManager.scrollToPositionWithOffset(list_poster_recyclerview.getChildLayoutPosition(lastFocusedView) - removeCount, getResources().getDimensionPixelOffset(R.dimen.list_scroll_down_offset_v));
-                }else{
-                    mFocusGridLayoutManager.scrollToPositionWithOffset(list_poster_recyclerview.getChildLayoutPosition(lastFocusedView) - removeCount, getResources().getDimensionPixelOffset(R.dimen.list_scroll_down_offset_h));
+                if(isFirstPos) {
+                    if (isVertical) {
+                        mFocusGridLayoutManager.scrollToPositionWithOffset(list_poster_recyclerview.getChildLayoutPosition(lastFocusedView) - removeCount, getResources().getDimensionPixelOffset(R.dimen.list_scroll_down_offset_v));
+                    } else {
+                        mFocusGridLayoutManager.scrollToPositionWithOffset(list_poster_recyclerview.getChildLayoutPosition(lastFocusedView) - removeCount, getResources().getDimensionPixelOffset(R.dimen.list_scroll_down_offset_h));
+                    }
                 }
                 listPosterAdapter.notifyDataSetChanged();
             }
@@ -1260,7 +1263,7 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
      * 更新list数据区
      * @param position
      */
-    private void showData(int position){
+    private void showData(int position,boolean isFirstPos){
         Log.e("showdata",position+"");
         for (int i = 0; i <sectionSize ; i++) {
                 if(i!=sectionSize-1){
@@ -1269,7 +1272,7 @@ public class FilterActivity extends BaseActivity implements View.OnClickListener
                     booleanFlag=true;
                 }
                 if(position>=specialPos.get(i)&&booleanFlag&&!sectionHasData[i]){
-                    fetchSectionData(sectionList.get(i).url,i);
+                    fetchSectionData(sectionList.get(i).url,i,isFirstPos);
                 }
 
         }
