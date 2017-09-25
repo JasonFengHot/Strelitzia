@@ -4,23 +4,12 @@
     <application
     >
         <activity
-            android:name="tv.ismar.channel.FilterActivity"
+            android:name="tv.ismar.channel.FilterListActivity"
             android:screenOrientation="landscape"
             android:theme="@style/IsmartvAppTheme.Fullscreen"
             android:windowSoftInputMode="adjustUnspecified|stateHidden">
             <intent-filter>
                 <action android:name="tv.ismar.daisy.Filter"/>
-                <category android:name="android.intent.category.DEFAULT"/>
-            </intent-filter>
-        </activity>
-        <activity
-            android:name="tv.ismar.channel.ChannelListActivity"
-            android:hardwareAccelerated="true"
-            android:screenOrientation="landscape"
-            android:theme="@style/IsmartvAppTheme.Fullscreen">
-            <intent-filter>
-                <action android:name="tv.ismar.daisy.Channel"/>
-
                 <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>

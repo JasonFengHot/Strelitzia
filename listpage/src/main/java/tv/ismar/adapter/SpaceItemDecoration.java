@@ -1,9 +1,7 @@
 package tv.ismar.adapter;
 
-import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -11,6 +9,7 @@ import java.util.ArrayList;
 
 /**
  * Created by admin on 2017/6/9.
+ * 自定义ItemDecoration，分别控制在海报区和标题区不同的间隔
  */
 
 public class SpaceItemDecoration extends RecyclerView.ItemDecoration {

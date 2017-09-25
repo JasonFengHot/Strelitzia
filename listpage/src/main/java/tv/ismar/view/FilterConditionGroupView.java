@@ -23,6 +23,7 @@ import tv.ismar.listpage.R;
 
 /**
  * Created by admin on 2017/6/2.
+ * 筛选浮层全部条件的自定义view
  */
 
 public class FilterConditionGroupView extends LinearLayout implements View.OnHoverListener {
