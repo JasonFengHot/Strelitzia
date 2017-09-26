@@ -74,12 +74,6 @@ public class BannerLinearLayout extends LinearLayout {
     }
 
     @Override
-    public boolean dispatchGenericMotionEvent(MotionEvent event) {
-        Log.d(TAG, "dispatchGenericMotionEvent: " + event);
-        return super.dispatchGenericMotionEvent(event);
-    }
-
-    @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
             if (navigationLeft.getVisibility() == VISIBLE){
                 navigationLeft.setVisibility(INVISIBLE);

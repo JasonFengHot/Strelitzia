@@ -12,8 +12,6 @@ import com.squareup.picasso.Picasso;
 
 import tv.ismar.app.core.VipMark;
 import tv.ismar.app.entity.FilterNoresultPoster;
-import tv.ismar.app.entity.Item;
-import tv.ismar.channel.FilterActivity;
 import tv.ismar.listpage.R;
 
 /**
