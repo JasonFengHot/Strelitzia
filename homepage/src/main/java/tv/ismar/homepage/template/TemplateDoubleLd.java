@@ -1,8 +1,10 @@
 package tv.ismar.homepage.template;
 
 import android.content.Context;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -13,7 +15,10 @@ import android.widget.TextView;
 import com.open.androidtvwidget.leanback.recycle.RecyclerViewTV;
 import com.squareup.picasso.Picasso;
 
+import java.text.DecimalFormat;
+
 import tv.ismar.app.BaseControl;
+import tv.ismar.app.core.VipMark;
 import tv.ismar.app.entity.banner.BigImage;
 import tv.ismar.app.entity.banner.HomeEntity;
 import tv.ismar.homepage.OnItemSelectedListener;
@@ -33,7 +38,7 @@ public class TemplateDoubleLd extends Template implements BaseControl.ControlCal
     private TextView mTitleTv;//banner标题;
     private ImageView mVerticalImg;//大图海报
     private ImageView mLtImage;//左上角图标
-    private ImageView mRbImage;//右下角图标
+    private TextView mRbImage;//右下角图标
     private TextView mIgTitleTv;//大图标题
     private RecyclerViewTV mRecyclerView;
     private DoubleLdAdapter mAdapter;
@@ -54,7 +59,7 @@ public class TemplateDoubleLd extends Template implements BaseControl.ControlCal
         mHeadView = LayoutInflater.from(mContext).inflate(R.layout.banner_double_ld_head, null);
         mVerticalImg = (ImageView) mHeadView.findViewById(R.id.double_ld_image_poster);
         mLtImage = (ImageView) mHeadView.findViewById(R.id.double_ld_image_lt_icon);
-        mRbImage = (ImageView) mHeadView.findViewById(R.id.double_ld_image_rb_icon);
+        mRbImage = (TextView) mHeadView.findViewById(R.id.double_ld_image_rb_icon);
         mIgTitleTv = (TextView) mHeadView.findViewById(R.id.double_ld_image_title);
         StaggeredGridLayoutManager doubleLayoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.HORIZONTAL);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -101,8 +106,9 @@ public class TemplateDoubleLd extends Template implements BaseControl.ControlCal
             } else {
                 Picasso.with(mContext).load(R.drawable.list_item_preview_bg).into(mVerticalImg);
             }
-//        Picasso.with(mContext).load(data.poster_url).into(mLtImage);
-//        Picasso.with(mContext).load(data.poster_url).into(mRbImage);
+             Picasso.with(mContext).load(VipMark.getInstance().getBannerIconMarkImage(data.top_left_corner)).into(mLtImage);
+            mRbImage.setText(new DecimalFormat("0.0").format(data.rating_average));
+            mRbImage.setVisibility((data.rating_average==0) ? View.GONE:View.VISIBLE);
             mIgTitleTv.setText(data.title);
         }
     }
