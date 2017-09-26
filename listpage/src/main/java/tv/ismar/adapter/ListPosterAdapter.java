@@ -34,18 +34,26 @@ import tv.ismar.listpage.R;
 
 /**
  * Created by admin on 2017/5/27.
+ * 列表页横竖版海报poster
+ * 共两种类型的view：海报view和标题Textview
  */
 
 public class ListPosterAdapter extends RecyclerView.Adapter<ListPosterAdapter.FilterPosterHolder> {
 
 
     private Context mContext;
+    //海报data
     private List<ListSectionEntity.ObjectsBean> mItemList;
+    //横竖版区分标记
     private static boolean mIsVertical;
+    //对每个子view点击事件和焦点事件的监听
     private OnItemClickListener itemClickListener;
     private OnItemFocusedListener itemFocusedListener;
+    //标题所在的位置集合
     private ArrayList<Integer> mSpecialPos;
+    //标题data
     private SectionList mSectionList;
+    //填充数据之后默认获取焦点的view位置
     private int focusedPosition=-1;
     private Rect rect;
 

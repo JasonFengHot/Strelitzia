@@ -8,6 +8,7 @@ import android.widget.ScrollView;
 
 /**
  * Created by admin on 2017/8/29.
+ * 列表页左侧栏目部分的scrollview，用于控制上下箭头的显示与隐藏
  */
 
 public class FullScrollView extends ScrollView {

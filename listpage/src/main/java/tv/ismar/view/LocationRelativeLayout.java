@@ -9,6 +9,8 @@ import android.widget.RelativeLayout;
 
 /**
  * Created by admin on 2017/8/29.
+ * 整个列表页的自定义RelativeLayout，用于控制左右界面上下箭头的显示与隐藏
+ * 以及空鼠在空白处焦点隐藏的功能
  */
 
 public class LocationRelativeLayout extends RelativeLayout {
@@ -119,9 +121,6 @@ public class LocationRelativeLayout extends RelativeLayout {
                     }
                 }
             }
-//            requestFocus();
-        }else{
-//            horving=false;
         }
         return super.dispatchHoverEvent(event);
     }

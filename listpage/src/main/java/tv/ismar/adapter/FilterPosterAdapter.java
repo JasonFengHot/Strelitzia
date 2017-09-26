@@ -3,14 +3,11 @@ package tv.ismar.adapter;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
-import android.databinding.adapters.ViewGroupBindingAdapter;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.os.Build;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.TypedValue;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -21,19 +18,16 @@ import android.widget.TextView;
 import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
-
 import tv.ismar.app.core.VipMark;
 import tv.ismar.app.entity.Item;
 import tv.ismar.app.entity.ItemList;
-import tv.ismar.app.entity.SectionList;
 import tv.ismar.app.ui.adapter.OnItemClickListener;
 import tv.ismar.app.ui.adapter.OnItemFocusedListener;
-import tv.ismar.channel.FilterActivity;
 import tv.ismar.listpage.R;
 
 /**
  * Created by admin on 2017/5/27.
+ * 筛选海报横竖版adapter
  */
 
 public class FilterPosterAdapter extends RecyclerView.Adapter<FilterPosterAdapter.FilterPosterHolder> {

@@ -18,6 +18,8 @@ import tv.ismar.listpage.R;
 
 /**
  * Created by admin on 2017/6/20.
+ * 自定义recyclerview的layoutmanager
+ * 定制焦点的特殊移动规则、控制recyclerview是否可以滚动、设置nextleftFocusView
  */
 
 public class FocusGridLayoutManager extends GridLayoutManager {
@@ -80,8 +82,8 @@ public class FocusGridLayoutManager extends GridLayoutManager {
 
     @Override
     public View onInterceptFocusSearch(View focused, int direction) {
+        int index=getPosition(focused);
         if(direction==View.FOCUS_RIGHT){
-            int index=getPosition(focused);
             if(specialPos!=null&&specialPos.contains(index+1)){
                 int nextPos = getNextViewPos(getPosition(focused), direction);
                 scrollToPositionWithOffset(nextPos,0);
@@ -91,6 +93,11 @@ public class FocusGridLayoutManager extends GridLayoutManager {
             }
             if(index==getItemCount()-1){
                 YoYo.with(Techniques.HorizontalShake).duration(1000).playOn(focused);
+                return focused;
+            }
+        }else if(direction==View.FOCUS_UP){
+            if(specialPos!=null&&index<=getSpanCount()){
+                YoYo.with(Techniques.VerticalShake).duration(1000).playOn(focused);
                 return focused;
             }
         }
