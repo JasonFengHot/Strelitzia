@@ -48,9 +48,11 @@
                 android:id="@+id/double_md_item_title"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/double_md_poster_title_height"
-                android:layout_alignParentBottom="true"
                 android:background="@drawable/banner_subscrib_introduction_bg"
-                android:textColor="#ffffff"
+                android:textColor="@color/_ffffff"
+                android:ellipsize="marquee"
+                android:gravity="center"
+                android:layout_alignParentBottom="true"
                 android:textSize="@dimen/double_md_poster_title_size" />
         </RelativeLayout>
     </tv.ismar.homepage.banner.IsmartvLinearLayout>

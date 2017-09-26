@@ -39,12 +39,14 @@
                 android:layout_height="@dimen/guide_recycle_item_lt_icon_size"
                 android:layout_gravity="left|top" />
 
-            <ImageView
+            <TextView
                 android:id="@+id/guide_recycle_item_rb_icon"
                 android:layout_width="@dimen/guide_recycle_item_rb_icon_width"
                 android:layout_height="@dimen/guide_recycle_item_rb_icon_height"
                 android:layout_above="@+id/guide_recycle_item_title"
+                android:background="@drawable/banner_post_score_bg"
                 android:layout_marginBottom="@dimen/guide_recycle_item_rb_margin_bottom"
+                android:visibility="gone"
                 android:gravity="right|bottom"
                 android:textColor="#ffffff"
                 android:textSize="@dimen/guide_video_title_size" />
@@ -53,9 +55,12 @@
                 android:id="@+id/guide_recycle_item_title"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/guide_recycle_item_title_height"
-                android:layout_alignParentBottom="true"
                 android:background="@drawable/banner_subscrib_introduction_bg"
-                android:textColor="#ffffff"
+                android:textColor="@color/_ffffff"
+                android:ellipsize="marquee"
+                android:gravity="center"
+                android:singleLine="true"
+                android:layout_alignParentBottom="true"
                 android:textSize="@dimen/guide_video_title_size" />
         </RelativeLayout>
     </tv.ismar.homepage.banner.IsmartvLinearLayout>
