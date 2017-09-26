@@ -646,7 +646,7 @@
 <dimen name="guide_title_logo_margin_left">23.33dp</dimen>
 <dimen name="guide_title_time_margin_right">23.33dp</dimen>
 <dimen name="guide_title_time_margin_top">15.56dp</dimen>
-<dimen name="guide_title_histroy_margin_top">20.00dp</dimen>
+<dimen name="guide_title_histroy_margin_top">0.00dp</dimen>
 <dimen name="guide_title_person_center_margin_top">20.00dp</dimen>
 <dimen name="guide_title_person_center_margin_time">46.11dp</dimen>
 <dimen name="guide_title_history_margin_person_center">5.56dp</dimen>
@@ -680,6 +680,7 @@
 <dimen name="guide_recycle_item_lt_icon_size">60.56dp</dimen>
 <dimen name="guide_recycle_item_rb_icon_width">43.33dp</dimen>
 <dimen name="guide_recycle_item_rb_icon_height">22.22dp</dimen>
+<dimen name="guide_recycle_item_rb_icon_padding_left">6.67dp</dimen>
 <dimen name="guide_recycle_item_rb_icon_padding_right">2.22dp</dimen>
 <dimen name="guide_recycle_item_rb_margin_bottom">4.44dp</dimen>
 

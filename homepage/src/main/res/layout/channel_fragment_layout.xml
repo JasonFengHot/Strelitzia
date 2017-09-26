@@ -4,8 +4,7 @@
     android:layout_height="wrap_content"
     android:clipChildren="false"
     android:clipToPadding="false"
-    android:focusable="false"
-    android:orientation="vertical">
+    android:focusable="false">
     <tv.ismar.homepage.widget.RecycleLinearLayout
         android:id="@+id/scroll_linear_container"
         android:layout_width="match_parent"

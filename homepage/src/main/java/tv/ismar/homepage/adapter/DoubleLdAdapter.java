@@ -13,6 +13,7 @@ import com.squareup.picasso.Picasso;
 import java.text.DecimalFormat;
 import java.util.List;
 
+import tv.ismar.app.core.VipMark;
 import tv.ismar.app.entity.banner.BannerPoster;
 import tv.ismar.homepage.R;
 
@@ -56,6 +57,7 @@ public class DoubleLdAdapter extends BaseRecycleAdapter<DoubleLdAdapter.DoubleLd
             } else {
                 Picasso.with(mContext).load(R.drawable.list_item_preview_bg).into(holder.mPosterIg);
             }
+            Picasso.with(mContext).load(VipMark.getInstance().getBannerIconMarkImage(poster.top_left_corner)).into(holder.mLtIconTv);
             holder.mRbIconTv.setText(new DecimalFormat("0.0").format(poster.rating_average));
             holder.mRbIconTv.setVisibility((poster.rating_average==0) ? View.GONE:View.VISIBLE);
             holder.mTitleTv.setText(poster.title);

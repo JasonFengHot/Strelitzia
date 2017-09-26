@@ -34,7 +34,7 @@
                 android:layout_height="@dimen/double_md_poster_lt_size"
                 android:layout_gravity="left|top" />
 
-            <ImageView
+            <TextView
                 android:id="@+id/double_md_item_rb_icon"
                 android:layout_width="@dimen/double_md_poster_rb_width"
                 android:layout_height="@dimen/double_md_poster_rb_height"
