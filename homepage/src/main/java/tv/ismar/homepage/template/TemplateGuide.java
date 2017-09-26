@@ -271,8 +271,7 @@ public class TemplateGuide extends Template implements BaseControl.ControlCallBa
 
     @Override
     public void onFocusChange(View v, boolean hasFocus) {
-        Log.i(TAG, "v:"+v+" hasFocus:"+hasFocus);
-        mHeadView.setFocusable(true);
-        mHeadView.requestFocus();
+        mHeadView.findViewById(R.id.guide_head_ismartv_linearlayout).setFocusable(true);
+        mHeadView.findViewById(R.id.guide_head_ismartv_linearlayout).requestFocus();
     }
 }
