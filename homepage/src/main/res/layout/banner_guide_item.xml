@@ -45,9 +45,10 @@
                 android:layout_height="@dimen/guide_recycle_item_rb_icon_height"
                 android:layout_above="@+id/guide_recycle_item_title"
                 android:background="@drawable/banner_post_score_bg"
+                android:paddingRight="@dimen/guide_recycle_item_rb_icon_padding_right"
                 android:layout_marginBottom="@dimen/guide_recycle_item_rb_margin_bottom"
-                android:visibility="gone"
-                android:gravity="right|bottom"
+                android:layout_alignParentRight="true"
+                android:gravity="right"
                 android:textColor="#ffffff"
                 android:textSize="@dimen/guide_video_title_size" />
 

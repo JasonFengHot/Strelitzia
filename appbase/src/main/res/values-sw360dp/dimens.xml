@@ -678,8 +678,9 @@
 <dimen name="guide_recycle_item_margin_top">8.33dp</dimen>
 <dimen name="guide_recycle_item_title_height">14.33dp</dimen>
 <dimen name="guide_recycle_item_lt_icon_size">36.33dp</dimen>
-<dimen name="guide_recycle_item_rb_icon_width">20.67dp</dimen>
-<dimen name="guide_recycle_item_rb_icon_height">14.33dp</dimen>
+<dimen name="guide_recycle_item_rb_icon_width">26.00dp</dimen>
+<dimen name="guide_recycle_item_rb_icon_height">13.33dp</dimen>
+<dimen name="guide_recycle_item_rb_icon_padding_right">1.33dp</dimen>
 <dimen name="guide_recycle_item_rb_margin_bottom">2.67dp</dimen>
 
 <!--电视剧尺�?-->

@@ -106,7 +106,7 @@ public class TemplateGuide extends Template implements BaseControl.ControlCallBa
         mVideoView.setOnErrorListener(this);
         mVideoView.setOnPreparedListener(this);
         mRecycleView.setPagingableListener(this);
-        mHeadView.setOnFocusChangeListener(this);
+        mVideoView.setOnFocusChangeListener(this);
         mGuideLayoutManager.setFocusSearchFailedListener(this);
     }
 
@@ -271,6 +271,8 @@ public class TemplateGuide extends Template implements BaseControl.ControlCallBa
 
     @Override
     public void onFocusChange(View v, boolean hasFocus) {
-        Log.i(TAG, "hasFocus:"+hasFocus);
+        Log.i(TAG, "v:"+v+" hasFocus:"+hasFocus);
+        mHeadView.setFocusable(true);
+        mHeadView.requestFocus();
     }
 }
