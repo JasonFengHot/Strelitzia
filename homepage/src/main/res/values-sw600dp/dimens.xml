@@ -860,5 +860,5 @@
 <dimen name="banner_subscribe_navigation_height">220.56dp</dimen>
 <dimen name="banner_horizontal519_navigation_height">162.22dp</dimen>
 <dimen name="banner_movie_navigation_height">194.44dp</dimen>
-<dimen name="banner_margin_top">216.67dp</dimen>
+<dimen name="banner_margin_top">161.11dp</dimen>
 </resources>
