@@ -21,10 +21,15 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.TimeZone;
 
+import cn.ismartv.truetime.TrueTime;
 import okhttp3.ResponseBody;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -705,6 +710,12 @@ public class UserCenterActivity extends BaseActivity implements LoginFragment.Lo
             favorite.quality = mItem.getQuality();
             favorite.is_complex = mItem.getIs_complex();
             favorite.isnet = "yes";
+            DateFormat format=new SimpleDateFormat("MM-dd");
+            format.setTimeZone(TimeZone.getTimeZone("Asia/Shanghai"));
+            long time= TrueTime.now().getTime();
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTimeInMillis(time);
+            favorite.time=format.format(calendar.getTime());
             DaisyUtils.getFavoriteManager(this).addFavorite(favorite, favorite.isnet);
         }
     }

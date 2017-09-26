@@ -121,6 +121,7 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
         historyRecycler.setLayoutManager(historyLayoutManager);
         favoriteRecycler.setLayoutManager(favoriteManager);
         historyRecycler.setSelectedItemAtCentered(true);
+//        historyRecycler.setSelectedItemOffset(251,250);
         edit_history= (LinearLayout) findViewById(R.id.edit_btn);
         edit_history.setOnClickListener(this);
         edit_history.setOnHoverListener(this);
@@ -312,6 +313,7 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
                 RelativeLayout.LayoutParams editLp = new RelativeLayout.LayoutParams(getResources().getDimensionPixelSize(R.dimen.history_432),getResources().getDimensionPixelSize(R.dimen.history_306));
                 editLp.setMargins(getResources().getDimensionPixelSize(R.dimen.history_100),getResources().getDimensionPixelSize(R.dimen.history_299),0,0);
                 delet_history.setLayoutParams(editLp);
+                delete_favorite.setVisibility(View.GONE);
 
                 history_title.setText("历史");
                 history_title.setVisibility(View.VISIBLE);
@@ -331,10 +333,11 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
                     edit_history.setFocusable(true);
                     edit_history.setFocusableInTouchMode(true);
                 }
-            },500);
+            },600);
         }else{
             if(favoriteLists.size()>0){
                 edit_history.setVisibility(View.VISIBLE);
+
                 RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,getResources().getDimensionPixelSize(R.dimen.history_473));
                 lp.setMargins(0,getResources().getDimensionPixelSize(R.dimen.history_155),0,0);
                 history_relativelayout.setLayoutParams(lp);
@@ -342,6 +345,7 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
                 RelativeLayout.LayoutParams editLp = new RelativeLayout.LayoutParams(getResources().getDimensionPixelSize(R.dimen.history_432),getResources().getDimensionPixelSize(R.dimen.history_306));
                 editLp.setMargins(getResources().getDimensionPixelSize(R.dimen.history_100),getResources().getDimensionPixelSize(R.dimen.history_299),0,0);
                 delet_history.setLayoutParams(editLp);
+                delete_favorite.setVisibility(View.GONE);
 
                 history_title.setText("收藏");
                 history_title.setVisibility(View.VISIBLE);
@@ -468,10 +472,11 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
     @Override
     public void onlfItemClick(View v, int postion, String type) {
         PageIntent intent=new PageIntent();
+        int pk=0;
         if(type.equals("history")){
             HistoryFavoriteEntity history=historyLists.get(postion);
             boolean[] isSubItem = new boolean[1];
-            int pk = SimpleRestClient.getItemId(history.getUrl(), isSubItem);
+             pk = SimpleRestClient.getItemId(history.getUrl(), isSubItem);
             if(pk==0){
                 pk=history.getPk();
             }
@@ -488,12 +493,20 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
         }else {
             HistoryFavoriteEntity favoriteEntity=favoriteLists.get(postion);
             boolean[] isSubItem = new boolean[1];
-            int pk = SimpleRestClient.getItemId(favoriteEntity.getUrl(), isSubItem);
+            pk = SimpleRestClient.getItemId(favoriteEntity.getUrl(), isSubItem);
             if(pk==0){
                 pk=favoriteEntity.getPk();
             }
             if(postion!=favoriteLists.size()-1) {
-                intent.toDetailPage(this, "favorite", pk);
+                if(favoriteEntity.getContent_model().contains("gather")){
+                    intent.toSubject(this,favoriteEntity.getContent_model(),pk,favoriteEntity.getTitle(),"favorite","");
+                }else {
+                    if (favoriteEntity.getIs_complex()) {
+                        intent.toDetailPage(this, "favorite", pk);
+                    } else {
+                        intent.toPlayPageEpisode(this, pk, 0, Source.FAVORITE,favoriteEntity.getContent_model());
+                    }
+                }
             }else{
                 Intent intent1=new Intent();
                 intent1.setAction("tv.ismar.daisy.historyfavoriteList");
