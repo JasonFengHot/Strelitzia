@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -144,8 +145,12 @@ public class HistoryFavoritrListActivity extends BaseActivity implements OnItemC
     public void onItemClick(View view, int position) {
         PageIntent intent=new PageIntent();
         HistoryFavoriteEntity entity=mlists.get(position);
+        int pk=0;
         boolean[] isSubItem = new boolean[1];
-        int pk = SimpleRestClient.getItemId(entity.getUrl(), isSubItem);
+         pk = SimpleRestClient.getItemId(entity.getUrl(), isSubItem);
+        if(pk==0){
+            pk=entity.getPk();
+        }
         if(source.equals("edit")){
             if(type==1){
                 deleteHistory(pk,entity.getItem_pk(),position);
@@ -276,4 +281,38 @@ public class HistoryFavoritrListActivity extends BaseActivity implements OnItemC
             JasmineUtil.scaleIn3(view);
         }
     }
+    //防止recyclerview焦点乱跑
+    long mDownTime=0;
+    long mUpTime=0;
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        //长按滑动 滑动时焦点不会乱跳，但是每隔400毫秒滑动一次
+        if (keyCode == 20) {
+            long downTime =System.currentTimeMillis();
+            if(mDownTime==0){
+                mDownTime=downTime;
+                return false;
+            }
+            if(downTime-mDownTime>400){
+                mDownTime=downTime;
+                return false;
+            }
+            return true;
+        }
+        if (keyCode == 19) {
+            long upTime =System.currentTimeMillis();
+            if(mUpTime==0){
+                mUpTime=upTime;
+                return false;
+            }
+            if(upTime-mUpTime>400){
+                mUpTime=upTime;
+                return false;
+            }
+            return true;
+        }
+
+        return super.onKeyDown(keyCode, event);
+    }
+
 }

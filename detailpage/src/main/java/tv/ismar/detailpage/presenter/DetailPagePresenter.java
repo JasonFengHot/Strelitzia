@@ -347,13 +347,13 @@ public class DetailPagePresenter implements DetailPageContract.Presenter {
             Calendar calendar = Calendar.getInstance();
             calendar.setTimeInMillis(time);
             Favorite favorite = new Favorite();
+            favorite.time=format.format(calendar.getTime());
             favorite.title = mItemEntity.getTitle();
             favorite.adlet_url = mItemEntity.getAdletUrl();
             favorite.content_model = mItemEntity.getContentModel();
             favorite.url = url;
             favorite.quality = mItemEntity.getQuality();
             favorite.is_complex = mItemEntity.getIsComplex();
-            favorite.time=format.format(calendar.getTime());
             if (mItemEntity.getExpense() != null) {
                 favorite.cpid = mItemEntity.getExpense().getCpid();
                 favorite.cpname = mItemEntity.getExpense().getCpname();
