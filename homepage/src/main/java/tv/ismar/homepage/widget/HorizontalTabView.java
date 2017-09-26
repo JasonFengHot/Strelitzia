@@ -558,7 +558,7 @@ public class HorizontalTabView extends HorizontalScrollView implements View.OnCl
                     View selectedView = linearContainer.getChildAt(mSelectedIndex);
 //                    selectedView.requestFocus();
                 } else {
-                    changeSelection(v, tag != mSelectedIndex);
+                    changeSelection(v, false);
                 }
 
             } else {
