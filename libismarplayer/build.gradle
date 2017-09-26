@@ -5,11 +5,6 @@ android {
     compileSdkVersion rootProject.ext.androidCompileSdkVersion
     buildToolsVersion rootProject.ext.androidBuildToolsVersion
 
-    sourceSets.main {
-        jni.srcDirs 'src/main/jniLibs/ismart'
-        jni.srcDirs 'src/main/jniLibs/qiyi'
-    }
-
     defaultConfig {
         minSdkVersion rootProject.ext.androidMinSdkVersion
         targetSdkVersion rootProject.ext.androidTargetSdkVersion
