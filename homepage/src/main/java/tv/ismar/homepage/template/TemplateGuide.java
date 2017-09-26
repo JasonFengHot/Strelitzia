@@ -40,6 +40,7 @@ public class TemplateGuide extends Template implements BaseControl.ControlCallBa
         MediaPlayer.OnCompletionListener, MediaPlayer.OnErrorListener,
         MediaPlayer.OnPreparedListener, OnItemSelectedListener,
         RecyclerViewTV.PagingableListener,
+        View.OnFocusChangeListener,
         LinearLayoutManagerTV.FocusSearchFailedListener {
     private DaisyVideoView mVideoView;//导视view
     private ImageView mLoadingIg;//加载提示logo
@@ -105,6 +106,7 @@ public class TemplateGuide extends Template implements BaseControl.ControlCallBa
         mVideoView.setOnErrorListener(this);
         mVideoView.setOnPreparedListener(this);
         mRecycleView.setPagingableListener(this);
+        mHeadView.setOnFocusChangeListener(this);
         mGuideLayoutManager.setFocusSearchFailedListener(this);
     }
 
@@ -265,5 +267,10 @@ public class TemplateGuide extends Template implements BaseControl.ControlCallBa
             return focused;
         }
         return null;
+    }
+
+    @Override
+    public void onFocusChange(View v, boolean hasFocus) {
+        Log.i(TAG, "hasFocus:"+hasFocus);
     }
 }

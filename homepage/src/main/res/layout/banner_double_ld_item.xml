@@ -50,6 +50,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/double_ld_poster_title_height"
                 android:layout_alignParentBottom="true"
+                android:background="@drawable/banner_subscrib_introduction_bg"
                 android:textColor="#ffffff"
                 android:textSize="@dimen/double_ld_poster_title_size" />
         </RelativeLayout>

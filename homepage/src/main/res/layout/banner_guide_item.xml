@@ -54,6 +54,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/guide_recycle_item_title_height"
                 android:layout_alignParentBottom="true"
+                android:background="@drawable/banner_subscrib_introduction_bg"
                 android:textColor="#ffffff"
                 android:textSize="@dimen/guide_video_title_size" />
         </RelativeLayout>
