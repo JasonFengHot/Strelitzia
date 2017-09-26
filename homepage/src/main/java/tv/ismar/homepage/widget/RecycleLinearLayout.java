@@ -128,6 +128,8 @@ public class RecycleLinearLayout extends LinearLayout {
         setMeasuredDimension(mWidth, mHeight);
     }
 
+    private View mLastView;//记录焦点
+
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
         int keyCode = event.getKeyCode();
@@ -139,6 +141,8 @@ public class RecycleLinearLayout extends LinearLayout {
         } else if(event.getAction() == KeyEvent.ACTION_UP){
             if(keyCode==KeyEvent.KEYCODE_DPAD_DOWN || keyCode==KeyEvent.KEYCODE_DPAD_UP){
                 View view = getFocusedChild();
+                if(view == mLastView) return super.dispatchKeyEvent(event);
+                mLastView = view;
                 scrollToTop(/*findView(view)*/view);
                 Log.i(TAG, "up view:"+view);
             }
