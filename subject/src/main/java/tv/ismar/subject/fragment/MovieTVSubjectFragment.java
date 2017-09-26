@@ -23,6 +23,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import okhttp3.ResponseBody;
+import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import tv.ismar.account.IsmartvActivator;
@@ -31,7 +33,6 @@ import tv.ismar.app.BaseActivity;
 import tv.ismar.app.core.DaisyUtils;
 import tv.ismar.app.core.PageIntent;
 import tv.ismar.app.core.PageIntentInterface;
-import tv.ismar.app.core.SimpleRestClient;
 import tv.ismar.app.core.Source;
 import tv.ismar.app.core.client.NetworkUtils;
 import tv.ismar.app.db.FavoriteManager;
@@ -80,7 +81,6 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnClickList
     private View subject_movie;
     private View subject_tv;
     private String isnet="no";
-    final SimpleRestClient simpleRest = new SimpleRestClient();
     private FavoriteManager mFavoriteManager;
     private ImageView subject_bg;
     private View focusView;
@@ -382,26 +382,28 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnClickList
                     favorite.quality = 0;
                     favorite.is_complex = true;
                     favorite.isnet = isnet;
-                    if ("yes".equals(isnet)) {
-                        createFavoriteByNet();
-                    }
                     ArrayList<Favorite> favorites = DaisyUtils.getFavoriteManager(getActivity().getApplicationContext()).getAllFavorites("no");
                     if (favorites.size() > 49) {
                         mFavoriteManager.deleteFavoriteByUrl(favorites.get(favorites.size() - 1).url, "no");
                     }
                     mFavoriteManager.addFavorite(favorite, isnet);
-                    subject_btn_like.setBackgroundResource(R.drawable.liked_btn_selector);
-                    showToast("收藏成功");
+                    if ("yes".equals(isnet)) {
+                        createFavoriteByNet(id);
+                    }else{
+                        subject_btn_like.setBackgroundResource(R.drawable.liked_btn_selector);
+                        showToast("收藏成功");
+                    }
                 } else {
                     String url = IsmartvActivator.getInstance().getApiDomain() + "/api/item/" + id + "/";
                     if (IsmartvActivator.getInstance().isLogin()) {
-                        deleteFavoriteByNet();
+                        deleteFavoriteByNet(id);
                         mFavoriteManager.deleteFavoriteByUrl(url, "yes");
                     } else {
                         mFavoriteManager.deleteFavoriteByUrl(url, "no");
+                        subject_btn_like.setBackgroundResource(R.drawable.like_btn_selector);
+                        showToast("取消收藏成功");
                     }
-                    subject_btn_like.setBackgroundResource(R.drawable.like_btn_selector);
-                    showToast("取消收藏成功");
+
                 }
             }catch (Exception e){
                 ExceptionUtils.sendProgramError(e);
@@ -482,53 +484,50 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnClickList
         return false;
     }
 
-    private void createFavoriteByNet() {
-        simpleRest.doSendRequest("/api/bookmarks/create/", "post", "access_token=" + IsmartvActivator.getInstance().getAuthToken() + "&device_token=" + SimpleRestClient.device_token + "&item=" + id, new SimpleRestClient.HttpPostRequestInterface() {
+    private void createFavoriteByNet(int pk) {
+        ((SubjectActivity)getActivity()).mSkyService.apiBookmarksCreate(pk+"")
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(((SubjectActivity)getActivity()).new BaseObserver<ResponseBody>() {
+                    @Override
+                    public void onCompleted() {
 
-            @Override
-            public void onSuccess(String info) {
-                // TODO Auto-generated method stub
+                    }
 
-            }
+                    @Override
+                    public void onError(Throwable e) {
 
-            @Override
-            public void onPrepare() {
-                // TODO Auto-generated method stub
+                    }
 
-            }
-
-            @Override
-            public void onFailed(String error) {
-                // TODO Auto-generated method stub
-
-            }
-        });
+                    @Override
+                    public void onNext(ResponseBody responseBody) {
+                        subject_btn_like.setBackgroundResource(R.drawable.liked_btn_selector);
+                        showToast("收藏成功");                    }
+                });
     }
 
-    private void deleteFavoriteByNet() {
-        simpleRest.doSendRequest("/api/bookmarks/remove/", "post", "access_token=" +
-                IsmartvActivator.getInstance().getAuthToken() + "&device_token=" + SimpleRestClient.device_token + "&item=" + id, new SimpleRestClient.HttpPostRequestInterface() {
+    private void deleteFavoriteByNet(int pk) {
 
-            @Override
-            public void onSuccess(String info) {
-                // TODO Auto-generated method stub
-                if ("200".equals(info)) {
+        ((SubjectActivity)getActivity()).mSkyService.apiBookmarksRemove(pk+"")
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<ResponseBody>() {
+                    @Override
+                    public void onCompleted() {
 
-                }
-            }
+                    }
 
-            @Override
-            public void onPrepare() {
-                // TODO Auto-generated method stub
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                    }
 
-            }
-
-            @Override
-            public void onFailed(String error) {
-                // TODO Auto-generated method stub
-
-            }
-        });
+                    @Override
+                    public void onNext(ResponseBody responseBody) {
+                        subject_btn_like.setBackgroundResource(R.drawable.like_btn_selector);
+                        showToast("取消收藏成功");
+                    }
+                });
     }
 
     private void showToast(String text) {
