@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
+import java.text.DecimalFormat;
 import java.util.List;
 
 import tv.ismar.app.entity.banner.BannerPoster;
@@ -59,8 +60,8 @@ public class GuideAdapter extends BaseRecycleAdapter<GuideAdapter.GuideViewHolde
             } else {
                 Picasso.with(mContext).load(R.drawable.list_item_preview_bg).into(holder.mPosterIg);
             }
-//        Picasso.with(mContext).load(posters.poster_url).into(holder.mLtIconTv);
-//        Picasso.with(mContext).load(posters.poster_url).into(holder.mRbIconTv);
+            holder.mRbIconTv.setText(new DecimalFormat("0.0").format(poster.rating_average));
+            holder.mRbIconTv.setVisibility((poster.rating_average==0) ? View.GONE:View.VISIBLE);
 
             holder.mTitleTv.setText(poster.title);
             holder.mPosition = position;
@@ -87,7 +88,7 @@ public class GuideAdapter extends BaseRecycleAdapter<GuideAdapter.GuideViewHolde
     public class GuideViewHolder extends BaseViewHolder {
         public ImageView mPosterIg;//海报
         public ImageView mLtIconTv;//左上icon
-        public ImageView mRbIconTv;//右下icon
+        public TextView mRbIconTv;//右下icon
         public TextView mTitleTv;//标题
         public View mMarginLeftView;//左边距
 
@@ -95,7 +96,7 @@ public class GuideAdapter extends BaseRecycleAdapter<GuideAdapter.GuideViewHolde
             super(itemView, GuideAdapter.this);
             mPosterIg = (ImageView) itemView.findViewById(R.id.guide_recycle_item_poster);
             mLtIconTv = (ImageView) itemView.findViewById(R.id.guide_recycle_item_lt_icon);
-            mRbIconTv = (ImageView) itemView.findViewById(R.id.guide_recycle_item_rb_icon);
+            mRbIconTv = (TextView) itemView.findViewById(R.id.guide_recycle_item_rb_icon);
             mTitleTv = (TextView) itemView.findViewById(R.id.guide_recycle_item_title);
             mMarginLeftView = itemView.findViewById(R.id.guide_margin_left);
         }

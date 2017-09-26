@@ -7,10 +7,10 @@
 
     <ImageView
         android:id="@+id/hover_view"
-        android:layout_width="100px"
-        android:layout_height="100px"
         android:visibility="invisible"
-        android:background="@android:color/holo_green_dark"
+        android:layout_width="1px"
+        android:layout_height="1px"
+        android:background="@android:color/transparent"
         android:focusable="true"
         android:focusableInTouchMode="true"
         android:foregroundGravity="left|top"/>

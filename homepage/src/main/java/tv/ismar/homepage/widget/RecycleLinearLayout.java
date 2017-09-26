@@ -71,7 +71,7 @@ public class RecycleLinearLayout extends LinearLayout {
         return view.getLocalVisibleRect(mWindowRect);
     }
 
-    private static final int SCROLL_DURATION = 250;//默认滑动时间250ms
+    private static final int SCROLL_DURATION = 150;//默认滑动时间
     private OverScroller mOverScroller = null;
 
     @Override

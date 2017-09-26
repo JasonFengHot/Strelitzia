@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
+import java.text.DecimalFormat;
 import java.util.List;
 
 import tv.ismar.app.entity.banner.BannerPoster;
@@ -55,8 +56,8 @@ public class DoubleLdAdapter extends BaseRecycleAdapter<DoubleLdAdapter.DoubleLd
             } else {
                 Picasso.with(mContext).load(R.drawable.list_item_preview_bg).into(holder.mPosterIg);
             }
-//        Picasso.with(mContext).load(posters.poster_url).into(holder.mLtIconTv);
-//        Picasso.with(mContext).load(posters.poster_url).into(holder.mRbIconTv);
+            holder.mRbIconTv.setText(new DecimalFormat("0.0").format(poster.rating_average));
+            holder.mRbIconTv.setVisibility((poster.rating_average==0) ? View.GONE:View.VISIBLE);
             holder.mTitleTv.setText(poster.title);
         }
     }
@@ -80,7 +81,7 @@ public class DoubleLdAdapter extends BaseRecycleAdapter<DoubleLdAdapter.DoubleLd
     public class DoubleLdViewHolder extends BaseViewHolder{
         public ImageView mPosterIg;//海报
         public ImageView mLtIconTv;//左上icon
-        public ImageView mRbIconTv;//右下icon
+        public TextView mRbIconTv;//右下icon
         public TextView mTitleTv;//标题
         public int mPosition;//item位置
 
@@ -88,7 +89,7 @@ public class DoubleLdAdapter extends BaseRecycleAdapter<DoubleLdAdapter.DoubleLd
             super(itemView, DoubleLdAdapter.this);
             mPosterIg = (ImageView) itemView.findViewById(R.id.double_ld_item_poster);
             mLtIconTv = (ImageView) itemView.findViewById(R.id.double_ld_item_lt_icon);
-            mRbIconTv = (ImageView) itemView.findViewById(R.id.double_ld_item_rb_icon);
+            mRbIconTv = (TextView) itemView.findViewById(R.id.double_ld_item_rb_icon);
             mTitleTv = (TextView) itemView.findViewById(R.id.double_ld_item_title);
         }
 
