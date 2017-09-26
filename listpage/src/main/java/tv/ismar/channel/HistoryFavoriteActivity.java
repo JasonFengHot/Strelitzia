@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +19,7 @@ import android.widget.TextView;
 
 import com.google.gson.GsonBuilder;
 import com.open.androidtvwidget.leanback.recycle.RecyclerViewTV;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -47,6 +49,7 @@ import tv.ismar.app.core.client.NetworkUtils;
 import tv.ismar.app.entity.Expense;
 import tv.ismar.app.entity.Favorite;
 import tv.ismar.app.entity.History;
+import tv.ismar.app.entity.VideoEntity;
 import tv.ismar.app.network.SkyService;
 import tv.ismar.app.network.entity.EventProperty;
 import tv.ismar.app.ui.adapter.OnItemFocusedListener;
@@ -58,6 +61,7 @@ import tv.ismar.searchpage.utils.JasmineUtil;
 import tv.ismar.view.IsmartvLinearLayout;
 
 import static tv.ismar.listpage.R.id.arrow_line_2;
+import static tv.ismar.listpage.R.id.vip_image;
 
 
 /**
@@ -72,10 +76,12 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
     private HistoryListAdapter historyAdapter;
     private HistoryListAdapter favoritAdapter;
     private LinearLayout edit_history;
+    private LinearLayout recommend_list;
     private ImageView arrow_line1,arrow_line2;
     private TextView edit_text;
     private IsmartvLinearLayout delet_history,delete_favorite;
     private LinearLayout favorite_layout,list_layout;
+    private LinearLayout no_data;
     private RelativeLayout history_relativelayout,favorite_relativeLayout;
     private static final int HISTORY=1;
     private static final int FAVORITE=2;
@@ -100,9 +106,11 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
         favoriteRecycler= (RecyclerViewTV) findViewById(R.id.favorite_list);
         favorite_layout= (LinearLayout) findViewById(R.id.favorite_layout);
         list_layout= (LinearLayout) findViewById(R.id.list_layout);
+        no_data= (LinearLayout) findViewById(R.id.no_data);
         delet_history= (IsmartvLinearLayout) findViewById(R.id.history_edit);
         favorite_title= (TextView) findViewById(R.id.favorite_lyout_title);
         first_line_image= (ImageView) findViewById(R.id.first_line_delete_image);
+        recommend_list= (LinearLayout) findViewById(R.id.recommend_list);
         edit_text= (TextView) findViewById(R.id.edit_btn_text);
         second_line_image= (ImageView) findViewById(R.id.second_line_delete_image);
         history_title= (TextView) findViewById(R.id.history_layout_title);
@@ -273,13 +281,14 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
 
     private void loadData(){
         if(historyLists.size()>0){
+            no_data.setVisibility(View.GONE);
+            history_relativelayout.setVisibility(View.VISIBLE);
             if(!isEdit)
             edit_history.setVisibility(View.VISIBLE);
             if(favoriteLists.size()>0){
                 RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,getResources().getDimensionPixelSize(R.dimen.history_473));
                 lp.setMargins(0,getResources().getDimensionPixelSize(R.dimen.history_115),0,0);
                 history_relativelayout.setLayoutParams(lp);
-                history_relativelayout.setVisibility(View.VISIBLE);
                 favorite_relativeLayout.setVisibility(View.VISIBLE);
                 RelativeLayout.LayoutParams editLp = new RelativeLayout.LayoutParams(getResources().getDimensionPixelSize(R.dimen.history_432),getResources().getDimensionPixelSize(R.dimen.history_306));
                 editLp.setMargins(getResources().getDimensionPixelSize(R.dimen.history_100),getResources().getDimensionPixelSize(R.dimen.history_259),0,0);
@@ -336,10 +345,12 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
             },600);
         }else{
             if(favoriteLists.size()>0){
+                no_data.setVisibility(View.GONE);
                 edit_history.setVisibility(View.VISIBLE);
 
                 RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,getResources().getDimensionPixelSize(R.dimen.history_473));
                 lp.setMargins(0,getResources().getDimensionPixelSize(R.dimen.history_155),0,0);
+                history_relativelayout.setVisibility(View.VISIBLE);
                 history_relativelayout.setLayoutParams(lp);
                 favorite_relativeLayout.setVisibility(View.GONE);
                 RelativeLayout.LayoutParams editLp = new RelativeLayout.LayoutParams(getResources().getDimensionPixelSize(R.dimen.history_432),getResources().getDimensionPixelSize(R.dimen.history_306));
@@ -365,12 +376,10 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
                     }
                 },500);
             }else{
-                history_relativelayout.setVisibility(View.GONE);
-                favorite_relativeLayout.setVisibility(View.GONE);
-                history_title.setVisibility(View.GONE);
-                favorite_title.setVisibility(View.GONE);
-                edit_history.setVisibility(View.INVISIBLE);
-                isEdit=false;
+                if(isEdit)
+                    editRestore();
+                showNoData();
+
             }
         }
         edit_history.setFocusable(true);
@@ -455,6 +464,75 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
 
         historyLayoutManager.setScrollEnabled(true);
         favoriteManager.setScrollEnabled(true);
+    }
+    private void showNoData(){
+        history_relativelayout.setVisibility(View.GONE);
+        favorite_relativeLayout.setVisibility(View.GONE);
+        history_title.setVisibility(View.GONE);
+        favorite_title.setVisibility(View.GONE);
+        edit_history.setVisibility(View.INVISIBLE);
+        delete_favorite.setVisibility(View.GONE);
+        delet_history.setVisibility(View.GONE);
+        edit_shadow.setVisibility(View.GONE);
+        isEdit=false;
+        no_data.setVisibility(View.VISIBLE);
+        getRecommend();
+    }
+    private void  getRecommend(){
+        skyService.getTvHome().subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new BaseObserver<VideoEntity>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+                    @Override
+                    public void onNext(VideoEntity videoEntity) {
+                        if(videoEntity!=null) {
+                            setRecommend(videoEntity);
+                        }
+                    }
+                });
+    }
+
+    private void setRecommend(final VideoEntity videoEntity) {
+        recommend_list.removeAllViews();
+        for (int i=0;i<=3;i++) {
+            View container = LayoutInflater.from(this).inflate(R.layout.no_data_list_item, null);
+            container.setId(R.layout.no_data_list_item+i);
+            ImageView detail= (ImageView) container.findViewById(R.id.item_image);
+            ImageView vip= (ImageView) container.findViewById(vip_image);
+            IsmartvLinearLayout item= (IsmartvLinearLayout) container.findViewById(R.id.no_data_item);
+            TextView focus= (TextView) container.findViewById(R.id.focus_title);
+            TextView title= (TextView) container.findViewById(R.id.title);
+            final VideoEntity.Objects object=videoEntity.getObjects().get(i);
+
+            Picasso.with(this).load(object.getImage()).into(detail);
+            title.setText(object.getTitle());
+            item.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    boolean[] isSubItem = new boolean[1];
+                    int pk=SimpleRestClient.getItemId(object.getItem_url(),isSubItem);
+                    String contentMode=object.getContent_model();
+                    PageIntent intent=new PageIntent();
+                    if(contentMode!=null&&contentMode.contains("gather")) {
+                        intent.toSubject(HistoryFavoriteActivity.this, contentMode, pk, object.getTitle(), "tvhome", "");
+                    }else {
+                        if (object.isIs_complex()) {
+                            intent.toDetailPage(HistoryFavoriteActivity.this, "tvhome", pk);
+                        } else {
+                            //	intent.toPlayPage(getActivity(),pk,0, Source.HISTORY);
+                            intent.toPlayPageEpisode(HistoryFavoriteActivity.this, pk, 0, Source.HISTORY, object.getContent_model());
+                        }
+                    }
+                }
+            });
+            LinearLayout.LayoutParams params=new LinearLayout.LayoutParams(getResources().getDimensionPixelOffset(R.dimen.history_336),getResources().getDimensionPixelOffset(R.dimen.history_243));
+            params.setMargins(getResources().getDimensionPixelOffset(R.dimen.history_44),getResources().getDimensionPixelOffset(R.dimen.history_20),0,0);
+            container.setLayoutParams(params);
+            recommend_list.addView(container);
+        }
     }
 
     @Override

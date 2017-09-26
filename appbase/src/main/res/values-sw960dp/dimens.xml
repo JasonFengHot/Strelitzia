@@ -646,7 +646,7 @@
 <dimen name="guide_title_logo_margin_left">37.33dp</dimen>
 <dimen name="guide_title_time_margin_right">37.33dp</dimen>
 <dimen name="guide_title_time_margin_top">24.89dp</dimen>
-<dimen name="guide_title_histroy_margin_top">32.00dp</dimen>
+<dimen name="guide_title_histroy_margin_top">0.00dp</dimen>
 <dimen name="guide_title_person_center_margin_top">32.00dp</dimen>
 <dimen name="guide_title_person_center_margin_time">73.78dp</dimen>
 <dimen name="guide_title_history_margin_person_center">8.89dp</dimen>
@@ -680,6 +680,7 @@
 <dimen name="guide_recycle_item_lt_icon_size">96.89dp</dimen>
 <dimen name="guide_recycle_item_rb_icon_width">69.33dp</dimen>
 <dimen name="guide_recycle_item_rb_icon_height">35.56dp</dimen>
+<dimen name="guide_recycle_item_rb_icon_padding_left">10.67dp</dimen>
 <dimen name="guide_recycle_item_rb_icon_padding_right">3.56dp</dimen>
 <dimen name="guide_recycle_item_rb_margin_bottom">7.11dp</dimen>
 
@@ -704,7 +705,7 @@
 <dimen name="column_item_margin_left">88.89dp</dimen>
 <dimen name="column_item_margin_top">7.11dp</dimen>
 <!--横版双行尺寸-->
-<dimen name="double_ld_img_container_height">413.33dp</dimen>
+<dimen name="double_ld_img_container_height">462.22dp</dimen>
 <dimen name="double_ld_poster_margin_top">18.76dp</dimen>
 <dimen name="double_ld_margin_left">88.89dp</dimen>
 <dimen name="double_ld_img_height">375.11dp</dimen>

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clipChildren="false"
+    android:clipToPadding="false"
+    >
+    <tv.ismar.view.IsmartvLinearLayout
+        android:id="@+id/no_data_item"
+        android:layout_width="@dimen/history_336"
+        android:layout_height="@dimen/history_189"
+        android:background="#00000000"
+        android:foreground="@drawable/poster_focus_selector"
+        android:focusableInTouchMode="true"
+        android:focusable="true"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        >
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <ImageView
+                android:id="@+id/item_image"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+
+                />
+            <ImageView
+                android:id="@+id/vip_image"
+                android:layout_width="@dimen/history_100"
+                android:layout_height="@dimen/history_100"
+                />
+            <TextView
+                android:layout_width="@dimen/history_336"
+                android:layout_height="@dimen/history_35"
+                android:layout_marginTop="@dimen/history_153"
+                android:textSize="@dimen/text_size_24sp"
+                android:id="@+id/focus_title"
+                />
+        </RelativeLayout>
+    </tv.ismar.view.IsmartvLinearLayout>
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="@dimen/history_336"
+        android:layout_height="@dimen/history_43"
+        android:layout_marginTop="@dimen/history_11"
+        android:textSize="@dimen/text_size_30sp"
+        android:gravity="center"
+        />
+</LinearLayout>
