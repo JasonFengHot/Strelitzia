@@ -70,6 +70,7 @@
 
 
             <RelativeLayout
+                android:id="@+id/content_layout"
                 android:layout_width="@dimen/banner_subscribe_post_w"
                 android:layout_height="@dimen/banner_subscribe_post_h"
                 >

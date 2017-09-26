@@ -551,6 +551,8 @@ public class HorizontalTabView extends HorizontalScrollView implements View.OnCl
 
         int tag = (int) v.getTag();
 
+
+
         //空鼠操作状态
         if (v.isHovered()) {
             if (hasFocus) {
@@ -594,8 +596,6 @@ public class HorizontalTabView extends HorizontalScrollView implements View.OnCl
 
     @Override
     public boolean onKey(View v, int keyCode, KeyEvent event) {
-        Log.d(TAG, "onKey");
-
         switch (event.getAction()) {
             case KeyEvent.ACTION_DOWN:
                 isOnKeyDown = true;
@@ -685,6 +685,34 @@ public class HorizontalTabView extends HorizontalScrollView implements View.OnCl
 
     }
 
+    //五向键获取焦点
+    private void changeViewDPadFocusStatus(TextView view, boolean isFocus){
+        //五向键时禁止所有空鼠
+        for (int i = 0; i < linearContainer.getChildCount(); i++){
+            View itemView = linearContainer.getChildAt(i);
+            itemView.setHovered(false);
+        }
+
+        if (isFocus){
+            //获取焦点
+            view.requestFocus();
+
+        }else {
+            //失去焦点
+            //隐藏view获取焦点
+            if (HomeActivity.mHoverView != null){
+                HomeActivity.mHoverView.requestFocus();
+            }
+        }
+
+//        if (mCurrentState == STATE_LEAVE && mSelectedIndex != tag) {
+//            View selectedView = linearContainer.getChildAt(mSelectedIndex);
+//            selectedView.requestFocus();
+//        } else {
+//            changeSelection(v, tag != mSelectedIndex);
+//        }
+    }
+
     private void changeViewSelectedStatus(TextView view, boolean isSelected){
         if (isSelected){
             view.setSelected(true);
@@ -693,6 +721,15 @@ public class HorizontalTabView extends HorizontalScrollView implements View.OnCl
             view.setSelected(false);
             view.setTextColor(defaultTextColor);
         }
+    }
+
+    //缩小
+    private void zoomOut(View view){
+
+    }
+
+    private void zoomIn(View view){
+
     }
 
     private enum ViewStatus{

@@ -70,12 +70,21 @@ public class BannerMovieMixAdapter extends RecyclerView.Adapter<BannerMovieMixAd
 
     public BannerMovieMixAdapter(Context context, BannerEntity bannerEntity) {
         mContext = context;
-        mSubscribeEntityList = bannerEntity.getPoster();
         currentPageNumber = 1;
         totalPageCount = bannerEntity.getCount_pages();
         totalItemCount = bannerEntity.getCount();
         bigWidth = context.getResources().getDimensionPixelSize(R.dimen.banner_item_movie_big_width);
         smallWidth = context.getResources().getDimensionPixelSize(R.dimen.banner_item_movie_small_width);
+        //如果存在更多按钮，并且是在加载最后一页数据时，添加更多按钮的空数据
+//        if (bannerEntity.is_more() && bannerEntity.getNum_pages() == bannerEntity.getCount_pages()){
+        if (bannerEntity.getNum_pages() == bannerEntity.getCount_pages()) {
+            BannerEntity.PosterBean posterBean = new BannerEntity.PosterBean();
+            posterBean.setTitle("更多");
+            //横版海报更多按钮
+            posterBean.setPoster_url("more");
+            bannerEntity.getPoster().add(posterBean);
+        }
+        mSubscribeEntityList = bannerEntity.getPoster();
     }
 
     @Override
@@ -278,7 +287,15 @@ public class BannerMovieMixAdapter extends RecyclerView.Adapter<BannerMovieMixAd
     }
 
     public void addDatas(BannerEntity bannerEntity) {
-        //        mSubscribeEntityList.set()
+        //如果存在更多按钮，并且是在加载最后一页数据时，添加更多按钮的空数据
+//        if (bannerEntity.is_more() && bannerEntity.getNum_pages() == bannerEntity.getCount_pages()){
+        if (bannerEntity.getNum_pages() == bannerEntity.getCount_pages()) {
+            BannerEntity.PosterBean posterBean = new BannerEntity.PosterBean();
+            posterBean.setTitle("更多");
+            //横版海报更多按钮
+            posterBean.setPoster_url("more");
+            bannerEntity.getPoster().add(posterBean);
+        }
         int startIndex = (bannerEntity.getNum_pages() - 1) * 33;
         int endIndex;
         if (bannerEntity.getNum_pages() == bannerEntity.getCount_pages()) {

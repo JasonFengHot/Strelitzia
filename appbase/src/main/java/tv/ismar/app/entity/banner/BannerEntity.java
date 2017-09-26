@@ -13,6 +13,16 @@ public class BannerEntity {
     private int count;
     private int page;
     private int num_pages;
+    private boolean is_more;
+
+    public boolean is_more() {
+        return is_more;
+    }
+
+    public void setIs_more(boolean is_more) {
+        this.is_more = is_more;
+    }
+
     private String template;
     private List<CarouselsBean> carousels;
     private List<PosterBean> posters;
