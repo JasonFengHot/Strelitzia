@@ -520,4 +520,18 @@
 <dimen name="history_259">129.50dp</dimen>
 <dimen name="history_299">149.50dp</dimen>
 <dimen name="history_169">84.50dp</dimen>
+<dimen name="history_336">168.00dp</dimen>
+<dimen name="history_189">94.50dp</dimen>
+<dimen name="history_153">76.50dp</dimen>
+<dimen name="history_975">487.50dp</dimen>
+<dimen name="history_1694">847.00dp</dimen>
+<dimen name="history_67">33.50dp</dimen>
+<dimen name="history_113">56.50dp</dimen>
+<dimen name="history_262">131.00dp</dimen>
+<dimen name="history_278">139.00dp</dimen>
+<dimen name="history_222">111.00dp</dimen>
+<dimen name="history_4">2.00dp</dimen>
+<dimen name="history_1700">850.00dp</dimen>
+<dimen name="history_178">89.00dp</dimen>
+
 </resources>

@@ -208,4 +208,51 @@
             />
 
     </tv.ismar.view.IsmartvLinearLayout>
+    <LinearLayout
+        android:id="@+id/no_data"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/history_975"
+        android:layout_below="@+id/title_layout"
+        android:orientation="vertical"
+        android:visibility="gone"
+
+        >
+        <TextView
+            android:id="@+id/no_data_title"
+            android:layout_width="@dimen/history_1694"
+            android:layout_height="@dimen/history_67"
+            android:layout_marginLeft="@dimen/history_113"
+            android:layout_marginTop="@dimen/history_262"
+            android:gravity="center"
+            android:textSize="@dimen/text_size_48sp"
+            android:textColor="@color/_ffffff"
+            android:text="您还没有历史记录和观影收藏"
+            />
+        <TextView
+            android:layout_width="@dimen/history_278"
+            android:layout_height="@dimen/history_52"
+            android:layout_marginLeft="@dimen/history_109"
+            android:layout_marginTop="@dimen/history_222"
+            android:textSize="@dimen/text_size_36sp"
+            android:text="当前大家正在看"
+            />
+        <TextView
+            android:layout_width="@dimen/history_1694"
+            android:layout_height="@dimen/history_4"
+            android:layout_marginLeft="@dimen/history_113"
+            android:layout_marginTop="@dimen/history_2"
+            android:background="#0066cc"
+            />
+        <LinearLayout
+            android:id="@+id/recommend_list"
+            android:layout_width="@dimen/history_1700"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="@dimen/history_32"
+            android:layout_marginLeft="@dimen/history_178"
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            >
+        </LinearLayout>
+    </LinearLayout>
 </RelativeLayout>
