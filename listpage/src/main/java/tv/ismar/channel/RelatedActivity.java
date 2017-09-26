@@ -492,7 +492,7 @@ public class RelatedActivity extends BaseActivity implements RelateScrollableSec
 
     private void showToast(String text) {
         LayoutInflater inflater = getLayoutInflater();
-        View layout = inflater.inflate(R.layout.simple_toast, (ViewGroup) findViewById(R.id.simple_toast_root));
+        View layout = inflater.inflate(R.layout.list_simple_toast, (ViewGroup) findViewById(R.id.simple_toast_root));
         TextView toastText = (TextView) layout.findViewById(R.id.toast_text);
         toastText.setText(text);
         Toast toast = new Toast(getApplicationContext());
