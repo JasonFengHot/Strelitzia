@@ -89,7 +89,7 @@ public class BannerMovieMixAdapter extends RecyclerView.Adapter<BannerMovieMixAd
 
     @Override
     public SubscribeViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.item_banner_movie, parent, false);
+        View view = LayoutInflater.from(mContext).inflate(R.layout.item_banner_movie_mix, parent, false);
         SubscribeViewHolder holder = new SubscribeViewHolder(view);
         return holder;
     }

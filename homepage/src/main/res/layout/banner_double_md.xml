@@ -2,6 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:clipChildren="false"
+    android:clipToPadding="false"
     android:orientation="vertical">
 
     <include layout="@layout/banner_title_layout" />
@@ -11,5 +13,7 @@
         android:layout_width="wrap_content"
         android:paddingLeft="@dimen/double_md_margin_left"
         android:layout_height="@dimen/double_md_img_container_height"
+        android:clipChildren="false"
+        android:clipToPadding="false"
         android:focusable="false" />
 </LinearLayout>
