@@ -7,7 +7,7 @@
 
         <activity android:name=".SubjectActivity"
             android:screenOrientation="sensorLandscape"
-            android:theme="@style/IsmartvAppTheme.Fullscreen">
+            android:theme="@style/IsmartvAppUnifyBgTheme">
             <intent-filter>
                     <action android:name="tv.ismar.daisy.subject" />
                     <category android:name="android.intent.category.DEFAULT"/>
