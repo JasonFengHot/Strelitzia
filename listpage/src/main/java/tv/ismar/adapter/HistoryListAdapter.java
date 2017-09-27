@@ -3,6 +3,7 @@ package tv.ismar.adapter;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -16,6 +17,7 @@ import com.squareup.picasso.Picasso;
 import java.util.List;
 
 import tv.ismar.app.ui.adapter.OnItemFocusedListener;
+import tv.ismar.app.ui.adapter.OnItemKeyListener;
 import tv.ismar.app.ui.adapter.OnItemOnhoverlistener;
 import tv.ismar.app.entity.HistoryFavoriteEntity;
 import tv.ismar.listener.LfListItemClickListener;
@@ -32,6 +34,7 @@ public class HistoryListAdapter extends RecyclerView.Adapter<HistoryListAdapter.
     private OnItemFocusedListener itemFocusedListener;
     private LfListItemClickListener itemClickListener;
     private OnItemOnhoverlistener itemOnhoverlistener;
+    private OnItemKeyListener itemKeyListener;
     private String type="history";
     private String lastTime="";
 
@@ -50,6 +53,9 @@ public class HistoryListAdapter extends RecyclerView.Adapter<HistoryListAdapter.
 
     public void setItemFocusedListener(OnItemFocusedListener itemFocusedListener) {
         this.itemFocusedListener = itemFocusedListener;
+    }
+    public void setItemKeyListener(OnItemKeyListener itemKeyListener){
+        this.itemKeyListener=itemKeyListener;
     }
 
     @Override
@@ -121,6 +127,15 @@ public class HistoryListAdapter extends RecyclerView.Adapter<HistoryListAdapter.
             @Override
             public boolean onHover(View v, MotionEvent event) {
                itemOnhoverlistener.OnItemOnhoverlistener(v,event,position,0);
+                return false;
+            }
+        });
+        holder.item_detail.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if(event.getAction()==KeyEvent.ACTION_DOWN){
+                    itemKeyListener.onItemKeyListener(v,keyCode,event);
+                }
                 return false;
             }
         });

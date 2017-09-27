@@ -98,7 +98,6 @@ public class RecycleLinearLayout extends LinearLayout {
     private void smoothScrollBy(int dx, int dy){
         Log.i(TAG, "dx:"+dx+"  dy:"+dy);
         mOverScroller.startScroll(mOverScroller.getFinalX(), mOverScroller.getFinalY(), dx, dy, SCROLL_DURATION);
-        Log.i(TAG, "fX:"+mOverScroller.getFinalX() + "  fY:"+mOverScroller.getFinalY());
         invalidate();//保证computeScroll()执行
     }
 
@@ -106,7 +105,7 @@ public class RecycleLinearLayout extends LinearLayout {
         if(view != null){
             int[] location = new int[]{0, 0};
             view.getLocationOnScreen(location);
-            smoothScrollBy(0, location[1]-400);
+            smoothScrollBy(0, location[1]-300);
         }
     }
 
@@ -149,6 +148,7 @@ public class RecycleLinearLayout extends LinearLayout {
     }
 
     private View mLastView;//记录焦点
+    private static final int mScrollHeight = 10000;
 
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
@@ -160,26 +160,32 @@ public class RecycleLinearLayout extends LinearLayout {
         if(event.getAction() == KeyEvent.ACTION_DOWN){
             mLastView = getFocusedChild();
         }
+        Log.i(TAG, "action:"+event.getAction()+" keyCode:"+keyCode);
         if(event.getAction() == KeyEvent.ACTION_UP){
-            if(keyCode==KeyEvent.KEYCODE_DPAD_DOWN || keyCode==KeyEvent.KEYCODE_DPAD_UP){
+            if(keyCode==KeyEvent.KEYCODE_DPAD_DOWN || keyCode==KeyEvent.KEYCODE_DPAD_UP
+                    || keyCode==KeyEvent.KEYCODE_DPAD_LEFT || keyCode==KeyEvent.KEYCODE_DPAD_RIGHT){
                 View view = getFocusedChild();
                 if(view == mLastView) return super.dispatchKeyEvent(event);//banner抖动问题
                 int key = (int) view.getTag();
                 int tag = (int) view.getTag(key);
                 boolean canScroll = tag>>30==1;//1可滑动，0不可滑动
                 int position = (tag<<2)>>2;
+                Log.i(TAG, "key:"+key+" canScroll:"+canScroll+" position:"+position);
                 if(!canScroll){//限制滑动
+                    Log.i(TAG, "canScroll");
                     if(position-1 < 0) return super.dispatchKeyEvent(event);//将不可滑动的banner和前一个banner绑定为一个banner
-                    mScrollView.setBottom(10000+mScreenHeight);
+                    mScrollView.setBottom(mScrollHeight+mScreenHeight);
                     scrollToTop(getChildAt(position-1));
                     return super.dispatchKeyEvent(event);
                 }
                 //滑动处理
                 if(position==getChildCount()-1){
-//                    scrollToVisiable(view);
-                    mScrollView.setBottom(10000+mScreenHeight);
+                    Log.i(TAG, "scrollToVisiable");
+                    mScrollView.setBottom(mScrollHeight+mScreenHeight);
+                    scrollToVisiable(view);
                     YoYo.with(Techniques.VerticalShake).duration(1000).playOn(view);
                 } else {
+                    Log.i(TAG, "scrollToTop");
                     mScrollView.setBottom(mScreenHeight);
                     scrollToTop(view);
                 }
