@@ -637,7 +637,7 @@
 <dimen name="guide_title_logo_height">41.33dp</dimen>
 <dimen name="guide_title_text_size">20.00dp</dimen>
 <dimen name="guide_title_icon_size">24.00dp</dimen>
-<dimen name="guide_title_react_height">73.33dp</dimen>
+<dimen name="guide_title_react_height">68.00dp</dimen>
 <dimen name="guide_title_react_padding">10.00dp</dimen>
 <dimen name="guide_title_react_width">166.67dp</dimen>
 <dimen name="guide_title_icon_padding_text">2.00dp</dimen>
@@ -648,7 +648,7 @@
 <dimen name="guide_title_time_margin_top">18.67dp</dimen>
 <dimen name="guide_title_histroy_margin_top">0.00dp</dimen>
 <dimen name="guide_title_person_center_margin_top">24.00dp</dimen>
-<dimen name="guide_title_person_center_margin_time">55.33dp</dimen>
+<dimen name="guide_title_person_center_margin_time">23.33dp</dimen>
 <dimen name="guide_title_history_margin_person_center">6.67dp</dimen>
 
 <!--频道title尺寸-->
@@ -662,7 +662,7 @@
 <!--导视尺寸-->
 <dimen name="guide_switch_container_margin_left">66.67dp</dimen>
 <dimen name="guide_switch_container_width">790.67dp</dimen>
-<dimen name="guide_switch_container_height">365.33dp</dimen>
+<dimen name="guide_switch_container_height">332.00dp</dimen>
 <dimen name="guide_video_title_width">607.33dp</dimen>
 <dimen name="guide_video_title_height">28.67dp</dimen>
 <dimen name="guide_video_title_size">26.00dp</dimen>
@@ -698,7 +698,7 @@
 <dimen name="tv_play_poster_title_height">31.33dp</dimen>
 <dimen name="tv_play_poster_rb_margin_bottom">5.33dp</dimen>
 <!--栏目尺寸-->
-<dimen name="column_recyleview_height">106.67dp</dimen>
+<dimen name="column_recyleview_height">96.00dp</dimen>
 <dimen name="column_item_width">256.00dp</dimen>
 <dimen name="column_item_height">96.00dp</dimen>
 <dimen name="column_item_padding">26.67dp</dimen>

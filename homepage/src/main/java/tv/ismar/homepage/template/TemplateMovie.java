@@ -202,10 +202,14 @@ public class TemplateMovie extends Template implements View.OnClickListener, Vie
     public void onClick(View v) {
         int i = v.getId();
         if (i == R.id.navigation_left) {
-            movieLayoutManager.scrollToPositionWithOffset(movieBanner.findFirstVisibleItemPosition() - 1, 0);
+            if (movieLayoutManager.findFirstCompletelyVisibleItemPosition() -1 >= 0){
+                movieLayoutManager.smoothScrollToPosition(movieBanner, null, movieLayoutManager.findFirstCompletelyVisibleItemPosition() - 1);
+            }
         } else if (i == R.id.navigation_right) {
             movieBanner.loadMore();
-            movieLayoutManager.scrollToPositionWithOffset(movieBanner.findFirstVisibleItemPosition() + 1, 0);
+            if (movieLayoutManager.findFirstCompletelyVisibleItemPosition() + 1 <= mMovieAdapter.getTatalItemCount()){
+                movieLayoutManager.smoothScrollToPosition(movieBanner, null, movieLayoutManager.findLastCompletelyVisibleItemPosition() + 1);
+            }
         }
     }
 

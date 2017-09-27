@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -53,6 +54,7 @@ import tv.ismar.app.entity.VideoEntity;
 import tv.ismar.app.network.SkyService;
 import tv.ismar.app.network.entity.EventProperty;
 import tv.ismar.app.ui.adapter.OnItemFocusedListener;
+import tv.ismar.app.ui.adapter.OnItemKeyListener;
 import tv.ismar.app.ui.adapter.OnItemOnhoverlistener;
 import tv.ismar.app.entity.HistoryFavoriteEntity;
 import tv.ismar.listener.LfListItemClickListener;
@@ -68,7 +70,7 @@ import static tv.ismar.listpage.R.id.vip_image;
  * Created by liucan on 2017/8/22.
  */
 
-public class HistoryFavoriteActivity extends BaseActivity implements View.OnClickListener,OnItemFocusedListener,LfListItemClickListener,View.OnHoverListener,OnItemOnhoverlistener {
+public class HistoryFavoriteActivity extends BaseActivity implements View.OnClickListener,OnItemFocusedListener,LfListItemClickListener,View.OnHoverListener,OnItemOnhoverlistener,OnItemKeyListener{
     private GetHistoryTask mGetHistoryTask;
     private Subscription historySub,favoriteSub;
     private SkyService skyService;
@@ -134,7 +136,9 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
         edit_history.setOnClickListener(this);
         edit_history.setOnHoverListener(this);
         editBtnFocusListener();
-
+        delet_history.setOnHoverListener(this);
+        delete_favorite.setOnHoverListener(this);
+       // edit_shadow.setOnHoverListener(this);
 
         HashMap<String, Object> properties = new HashMap<String, Object>();
         properties.put(EventProperty.TITLE, "history");
@@ -301,15 +305,14 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
                 favoritAdapter.setItemFocusedListener(HistoryFavoriteActivity.this);
                 favoritAdapter.setItemClickListener(HistoryFavoriteActivity.this);
                 favoritAdapter.setItemOnhoverlistener(HistoryFavoriteActivity.this);
+                favoritAdapter.setItemKeyListener(HistoryFavoriteActivity.this);
                 favoriteRecycler.setAdapter(favoritAdapter);
 
                 history_title.setText("历史");
                 history_title.setVisibility(View.VISIBLE);
                 first_line_image.setBackgroundResource(R.drawable.history_delete_image);
                 historyAdapter=new HistoryListAdapter(HistoryFavoriteActivity.this,historyLists,"history");
-                historyAdapter.setItemFocusedListener(HistoryFavoriteActivity.this);
-                historyAdapter.setItemClickListener(HistoryFavoriteActivity.this);
-                historyAdapter.setItemOnhoverlistener(HistoryFavoriteActivity.this);
+                setHistoryListen();
                 historyRecycler.setAdapter(historyAdapter);
 
 
@@ -328,9 +331,7 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
                 history_title.setVisibility(View.VISIBLE);
                 first_line_image.setBackgroundResource(R.drawable.history_delete_image);
                 historyAdapter=new HistoryListAdapter(HistoryFavoriteActivity.this,historyLists,"history");
-                historyAdapter.setItemFocusedListener(HistoryFavoriteActivity.this);
-                historyAdapter.setItemClickListener(HistoryFavoriteActivity.this);
-                historyAdapter.setItemOnhoverlistener(HistoryFavoriteActivity.this);
+                setHistoryListen();
                 historyRecycler.setAdapter(historyAdapter);
 
             }
@@ -362,9 +363,7 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
                 history_title.setVisibility(View.VISIBLE);
                 first_line_image.setBackgroundResource(R.drawable.favorite_delete_image);
                 historyAdapter=new HistoryListAdapter(HistoryFavoriteActivity.this,favoriteLists,"favorite");
-                historyAdapter.setItemFocusedListener(HistoryFavoriteActivity.this);
-                historyAdapter.setItemClickListener(HistoryFavoriteActivity.this);
-                historyAdapter.setItemOnhoverlistener(HistoryFavoriteActivity.this);
+                setHistoryListen();
                 historyRecycler.setAdapter(historyAdapter);
                 new Handler().postDelayed(new Runnable() {
                     @Override
@@ -384,6 +383,12 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
         }
         edit_history.setFocusable(true);
         edit_history.setFocusableInTouchMode(true);
+    }
+    private void setHistoryListen(){
+        historyAdapter.setItemFocusedListener(HistoryFavoriteActivity.this);
+        historyAdapter.setItemClickListener(HistoryFavoriteActivity.this);
+        historyAdapter.setItemOnhoverlistener(HistoryFavoriteActivity.this);
+        historyAdapter.setItemKeyListener(HistoryFavoriteActivity.this);
     }
     @Override
     public void onClick(View v) {
@@ -610,10 +615,18 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
     public void OnItemOnhoverlistener(View v, MotionEvent event, int position, int recommend) {
         switch (event.getAction()){
             case MotionEvent.ACTION_HOVER_ENTER:
-                  //  v.requestFocusFromTouch();
+                    historyRecycler.setHoverd(true);
+                    favoriteRecycler.setHoverd(true);
+                    v.requestFocusFromTouch();
                     break;
 
         }
+    }
+
+    @Override
+    public void onItemKeyListener(View v, int keyCode, KeyEvent event) {
+        historyRecycler.setHoverd(false);
+        favoriteRecycler.setHoverd(false);
     }
 
 

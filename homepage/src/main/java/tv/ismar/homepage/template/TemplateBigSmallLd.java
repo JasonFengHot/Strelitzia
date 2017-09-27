@@ -209,10 +209,14 @@ public class TemplateBigSmallLd extends Template implements View.OnHoverListener
     public void onClick(View v) {
         int i = v.getId();
         if (i == R.id.navigation_left) {
-            movieMixLayoutManager.scrollToPositionWithOffset(movieMixBanner.findFirstVisibleItemPosition() - 1, 0);
+            if (movieMixLayoutManager.findFirstCompletelyVisibleItemPosition() -1 >= 0){
+                movieMixLayoutManager.smoothScrollToPosition(movieMixBanner, null, movieMixLayoutManager.findFirstCompletelyVisibleItemPosition() - 1);
+            }
         } else if (i == R.id.navigation_right) {
             movieMixBanner.loadMore();
-            movieMixLayoutManager.scrollToPositionWithOffset(movieMixBanner.findFirstVisibleItemPosition() + 1, 0);
+            if (movieMixLayoutManager.findFirstCompletelyVisibleItemPosition() + 1 <= adapter.getTatalItemCount()){
+                movieMixLayoutManager.smoothScrollToPosition(movieMixBanner, null, movieMixLayoutManager.findLastCompletelyVisibleItemPosition() + 1);
+            }
         }
     }
 

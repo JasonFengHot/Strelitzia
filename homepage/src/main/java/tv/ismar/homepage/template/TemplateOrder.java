@@ -383,16 +383,16 @@ public class TemplateOrder extends Template implements BaseControl.ControlCallBa
 
     @Override
     public void onClick(View v) {
-        Log.d(TAG, "onClick findFirstVisibleItemPosition: " + subscribeBanner.findFirstVisibleItemPosition());
         int i = v.getId();
         if (i == R.id.navigation_left) {
-//            subscribeBanner.smoothScrollBy(-428, 0);
-            subscribeLayoutManager.scrollToPositionWithOffset(subscribeBanner.findFirstVisibleItemPosition() - 1, 0);
-//            subscribeBanner.smoothScrollToPosition(subscribeBanner.findLastVisibleItemPosition() - 1);
+            if (subscribeLayoutManager.findFirstCompletelyVisibleItemPosition() -1 >= 0){
+                subscribeLayoutManager.smoothScrollToPosition(subscribeBanner, null, subscribeLayoutManager.findFirstCompletelyVisibleItemPosition() - 1);
+            }
         } else if (i == R.id.navigation_right) {
             subscribeBanner.loadMore();
-//            subscribeBanner.smoothScrollToPosition(subscribeBanner.findLastVisibleItemPosition() + 1);
-            subscribeLayoutManager.scrollToPositionWithOffset(subscribeBanner.findFirstVisibleItemPosition() + 1, 0);
+            if (subscribeLayoutManager.findFirstCompletelyVisibleItemPosition() + 1 <= subscribeAdapter.getTatalItemCount()){
+                subscribeLayoutManager.smoothScrollToPosition(subscribeBanner, null, subscribeLayoutManager.findLastCompletelyVisibleItemPosition() + 1);
+            }
         }
     }
 }

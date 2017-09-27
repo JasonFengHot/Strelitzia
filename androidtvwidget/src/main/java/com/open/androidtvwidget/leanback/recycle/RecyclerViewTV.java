@@ -50,6 +50,7 @@ public class RecyclerViewTV extends RecyclerView implements PrvInterface {
     private ItemListener mItemListener;
     private int offset = -1;
     private boolean isDispatch = true;
+    private boolean ishover=false;
 
     private RecyclerViewTV.OnChildViewHolderSelectedListener mChildViewHolderSelectedListener;
 
@@ -109,6 +110,9 @@ public class RecyclerViewTV extends RecyclerView implements PrvInterface {
         return getHeight() - getPaddingTop() - getPaddingBottom();
     }
 
+    public void setHoverd(boolean hoverd){
+        ishover=hoverd;
+    }
     @Override
     public void onChildAttachedToWindow(View child) {
         // 设置单击事件，修复.
@@ -165,7 +169,7 @@ public class RecyclerViewTV extends RecyclerView implements PrvInterface {
     @Override
     public boolean requestChildRectangleOnScreen(View child, Rect rect, boolean immediate) {
         Log.i("recyclerViewTV","ishoverd: "+isHovered());
-        if (isHovered()){
+        if (ishover){
             return true;
         }
         if (mOnItemFocusChangeListener != null){
@@ -505,7 +509,7 @@ public class RecyclerViewTV extends RecyclerView implements PrvInterface {
         int visibleItemCount = getChildCount();
         int firstVisibleItem = findFirstVisibleItemPosition();
         // 判断是否显示最底了.提前5个item预加载
-        if (!isLoading && totalItemCount - visibleItemCount <= firstVisibleItem + 5) {
+        if (!isLoading && totalItemCount - visibleItemCount <= firstVisibleItem + 10) {
             isLoading = true;
             if (mPagingableListener != null) {
 //                OPENLOG.D(" totalItemCount: " + totalItemCount +
