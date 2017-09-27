@@ -10,6 +10,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.Space;
 import android.widget.TextView;
 
@@ -68,8 +69,7 @@ public class BannerMovieAdapter extends RecyclerView.Adapter<BannerMovieAdapter.
         tatalItemCount = bannerEntity.getCount();
 
         //如果存在更多按钮，并且是在加载最后一页数据时，添加更多按钮的空数据
-//        if (bannerEntity.is_more() && bannerEntity.getNum_pages() == bannerEntity.getCount_pages()){
-        if (bannerEntity.getNum_pages() == bannerEntity.getCount_pages()) {
+        if (bannerEntity.is_more() && bannerEntity.getNum_pages() == bannerEntity.getCount_pages()){
             BannerEntity.PosterBean posterBean = new BannerEntity.PosterBean();
             posterBean.setTitle("更多");
             //横版海报更多按钮
@@ -94,13 +94,26 @@ public class BannerMovieAdapter extends RecyclerView.Adapter<BannerMovieAdapter.
         String imageUrl = entity.getVertical_url();
         String targetImageUrl = TextUtils.isEmpty(imageUrl) ? null : imageUrl;
 
-        Picasso.with(mContext).load(targetImageUrl).placeholder(R.drawable.list_item_ppreview_bg)
-                .error(R.drawable.list_item_ppreview_bg).into(holder.mImageView);
+        String title = entity.getTitle();
+
 
 
         holder.mTitle.setText(entity.getTitle() + " " + position);
         holder.mItemView.findViewById(R.id.item_layout).setTag(entity);
         holder.mItemView.findViewById(R.id.item_layout).setTag(R.id.banner_item_position, position);
+
+        if ("更多".equals(title)){
+            holder.mItemView.findViewById(R.id.item_layout).setBackgroundResource(R.drawable.banner_vertical_more);
+            holder.mTitle.setVisibility(View.INVISIBLE);
+            holder.itemWrapper.setVisibility(View.INVISIBLE);
+
+        }else {
+            holder.mItemView.findViewById(R.id.item_layout).setBackgroundResource(android.R.color.transparent);
+            holder.mTitle.setVisibility(View.VISIBLE);
+            holder.itemWrapper.setVisibility(View.VISIBLE);
+            Picasso.with(mContext).load(targetImageUrl).placeholder(R.drawable.list_item_ppreview_bg)
+                    .error(R.drawable.list_item_ppreview_bg).into(holder.mImageView);
+        }
 
         Picasso.with(mContext).load(VipMark.getInstance().getBannerIconMarkImage(entity.getTop_left_corner())).into(holder.markLT);
 
@@ -132,6 +145,7 @@ public class BannerMovieAdapter extends RecyclerView.Adapter<BannerMovieAdapter.
         private Space mLeftSpace;
         private ImageView markLT;
         private TextView markRB;
+        private RelativeLayout itemWrapper;
 
 
         int getPostItemId(String url) {
@@ -153,6 +167,7 @@ public class BannerMovieAdapter extends RecyclerView.Adapter<BannerMovieAdapter.
         public SubscribeViewHolder(View itemView) {
             super(itemView);
             mItemView = itemView;
+            itemWrapper = (RelativeLayout) mItemView.findViewById(R.id.item_wrapper);
             mItemView.findViewById(R.id.item_layout).setOnClickListener(this);
             mItemView.findViewById(R.id.item_layout).setOnFocusChangeListener(this);
             mItemView.findViewById(R.id.item_layout).setOnHoverListener(this);
@@ -234,8 +249,7 @@ public class BannerMovieAdapter extends RecyclerView.Adapter<BannerMovieAdapter.
 
     public void addDatas(BannerEntity bannerEntity) {
         //如果存在更多按钮，并且是在加载最后一页数据时，添加更多按钮的空数据
-//        if (bannerEntity.is_more() && bannerEntity.getNum_pages() == bannerEntity.getCount_pages()){
-        if (bannerEntity.getNum_pages() == bannerEntity.getCount_pages()) {
+        if (bannerEntity.is_more() && bannerEntity.getNum_pages() == bannerEntity.getCount_pages()){
             BannerEntity.PosterBean posterBean = new BannerEntity.PosterBean();
             posterBean.setTitle("更多");
             //横版海报更多按钮
@@ -245,7 +259,12 @@ public class BannerMovieAdapter extends RecyclerView.Adapter<BannerMovieAdapter.
         int startIndex = (bannerEntity.getNum_pages() - 1) * 33;
         int endIndex;
         if (bannerEntity.getNum_pages() == bannerEntity.getCount_pages()) {
-            endIndex = bannerEntity.getCount() - 1;
+            if (bannerEntity.is_more()){
+                mSubscribeEntityList.add(new BannerEntity.PosterBean());
+                endIndex = bannerEntity.getCount() - 1 + 1;
+            }else {
+                endIndex = bannerEntity.getCount() - 1;
+            }
         } else {
             endIndex = bannerEntity.getNum_pages() * 33 - 1;
         }

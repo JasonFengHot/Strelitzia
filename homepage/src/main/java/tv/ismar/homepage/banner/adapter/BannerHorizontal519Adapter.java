@@ -97,15 +97,26 @@ public class BannerHorizontal519Adapter extends RecyclerView.Adapter<BannerHoriz
     public void onBindViewHolder(SubscribeViewHolder holder, int position) {
         BannerEntity.PosterBean entity = mSubscribeEntityList.get(position);
 
+        String title = entity.getTitle();
         String imageUrl = entity.getPoster_url();
         String targetImageUrl = TextUtils.isEmpty(imageUrl) ? null : imageUrl;
 
-        Picasso.with(mContext).load(targetImageUrl).placeholder(R.drawable.list_item_preview_bg)
-                .error(R.drawable.list_item_preview_bg).into(holder.mImageView);
+        if ("更多".equals(title)){
+            holder.mItemView.findViewById(R.id.item_layout).setBackgroundResource(R.drawable.banner_horizontal_more);
+            holder.mTitle.setVisibility(View.INVISIBLE);
+            holder.mItemView.findViewById(R.id.content_layout).setVisibility(View.INVISIBLE);
+        }else {
+            holder.mItemView.findViewById(R.id.item_layout).setBackgroundResource(android.R.color.transparent);
+            holder.mTitle.setVisibility(View.VISIBLE);
+            holder.mItemView.findViewById(R.id.content_layout).setVisibility(View.VISIBLE);
+            Picasso.with(mContext).load(targetImageUrl).placeholder(R.drawable.list_item_preview_bg)
+                    .error(R.drawable.list_item_preview_bg).into(holder.mImageView);
+        }
 
         holder.mTitle.setText(entity.getTitle() + " " + position);
         holder.mItemView.findViewById(R.id.item_layout).setTag(entity);
         holder.mItemView.findViewById(R.id.item_layout).setTag(R.id.banner_item_position, position);
+
         Picasso.with(mContext).load(VipMark.getInstance().getBannerIconMarkImage(entity.getTop_left_corner())).into(holder.markLT);
 
         if (entity.getRating_average() != 0){
@@ -130,8 +141,7 @@ public class BannerHorizontal519Adapter extends RecyclerView.Adapter<BannerHoriz
 
     public void addDatas(BannerEntity bannerEntity) {
         //如果存在更多按钮，并且是在加载最后一页数据时，添加更多按钮的空数据
-//        if (bannerEntity.is_more() && bannerEntity.getNum_pages() == bannerEntity.getCount_pages()){
-        if (bannerEntity.getNum_pages() == bannerEntity.getCount_pages()) {
+        if (bannerEntity.is_more() && bannerEntity.getNum_pages() == bannerEntity.getCount_pages()){
             BannerEntity.PosterBean posterBean = new BannerEntity.PosterBean();
             posterBean.setTitle("更多");
             //横版海报更多按钮
@@ -141,7 +151,12 @@ public class BannerHorizontal519Adapter extends RecyclerView.Adapter<BannerHoriz
         int startIndex = (bannerEntity.getNum_pages() - 1) * 33;
         int endIndex;
         if (bannerEntity.getNum_pages() == bannerEntity.getCount_pages()) {
-            endIndex = bannerEntity.getCount() - 1;
+            if (bannerEntity.is_more()){
+                mSubscribeEntityList.add(new BannerEntity.PosterBean());
+                endIndex = bannerEntity.getCount() - 1 + 1;
+            }else {
+                endIndex = bannerEntity.getCount() - 1;
+            }
         } else {
             endIndex = bannerEntity.getNum_pages() * 33 - 1;
         }
