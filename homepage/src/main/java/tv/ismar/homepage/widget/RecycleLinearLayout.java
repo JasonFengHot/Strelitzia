@@ -113,20 +113,20 @@ public class RecycleLinearLayout extends LinearLayout {
 
     private int mWidth = 0;
     private int mHeight = 0;
-    @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        mWidth = 0;
-        mHeight = 0;
-        for(int i=0; i<getChildCount(); i++){
-            View childView = getChildAt(i);
-            measureChildWithMargins(childView, widthMeasureSpec, 0, heightMeasureSpec, 0);
-            mWidth = mWidth+childView.getMeasuredWidth();
-            mHeight = mHeight+childView.getMeasuredHeight();
-            Log.i("onMeasure", "childWidth:"+childView.getMeasuredWidth()+"  childHeight:"+childView.getMeasuredHeight());
-        }
-        Log.i("onMeasure", "mWidth:"+mWidth+"  mHeight:"+mHeight);
-        setMeasuredDimension(mWidth, mHeight);
-    }
+//    @Override
+//    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+//        mWidth = 0;
+//        mHeight = 0;
+//        for(int i=0; i<getChildCount(); i++){
+//            View childView = getChildAt(i);
+//            measureChildWithMargins(childView, widthMeasureSpec, 0, heightMeasureSpec, 0);
+//            mWidth = mWidth+childView.getMeasuredWidth();
+//            mHeight = mHeight+childView.getMeasuredHeight();
+//            Log.i("onMeasure", "childWidth:"+childView.getMeasuredWidth()+"  childHeight:"+childView.getMeasuredHeight());
+//        }
+//        Log.i("onMeasure", "mWidth:"+mWidth+"  mHeight:"+mHeight);
+//        setMeasuredDimension(mWidth, mHeight);
+//    }
 
     private View mLastView;//记录焦点
 
@@ -147,6 +147,6 @@ public class RecycleLinearLayout extends LinearLayout {
                 Log.i(TAG, "up view:"+view);
             }
         }
-        return false;
+        return super.dispatchKeyEvent(event);
     }
 }
