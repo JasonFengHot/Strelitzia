@@ -176,7 +176,7 @@ public class RecycleLinearLayout extends LinearLayout {
                 }
                 //滑动处理
                 if(position==getChildCount()-1){
-                    scrollToVisiable(view);
+//                    scrollToVisiable(view);
                     mScrollView.setBottom(10000+mScreenHeight);
                     YoYo.with(Techniques.VerticalShake).duration(1000).playOn(view);
                 } else {

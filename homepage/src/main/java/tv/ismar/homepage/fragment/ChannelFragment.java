@@ -151,12 +151,7 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
                 new TemplateCenter(getContext()).setView(bannerView, bundle);
             }
             if(bannerView != null){
-                int tag;
-                if(position ==1){//首页推荐,不可滑动
-                    tag = 0<<30 | position;
-                } else {
-                    tag = 1<<30 | position;
-                }
+                int tag = createTag(position, !(position==1));
                 bannerView.setTag(layoutId);
                 bannerView.setTag(layoutId, tag);
                 mLinearContainer.addView(bannerView);
@@ -165,6 +160,10 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
 
         addMoreView(data.length);
 //        mLinearContainer.initView();
+    }
+
+    private int createTag(int position, boolean canScroll){
+        return canScroll?(1<<30 | position):position;
     }
 
     public static final String MORE_TITLE_FLAG = "title";
@@ -179,7 +178,7 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
         bundle.putInt(MORE_STYLE_FLAG, mStyle);
         View bannerView = createView(R.layout.banner_more);
         bannerView.setTag(R.layout.banner_more);
-        bannerView.setTag(R.layout.banner_more, position);
+        bannerView.setTag(R.layout.banner_more, createTag(position, true));
         new TemplateMore(getContext()).setView(bannerView, bundle);
         mLinearContainer.addView(bannerView);
     }
