@@ -108,7 +108,8 @@ public class TemplateMovie extends Template implements View.OnClickListener, Vie
         movieBanner.setOnItemFocusChangeListener(new RecyclerViewTV.OnItemFocusChangeListener() {
             @Override
             public void onItemFocusGain(View itemView, int position) {
-                if (itemView != null && mContext != null && mTitleCountTv != null && mMovieAdapter != null) {
+                if (itemView != null && mContext != null && mTitleCountTv != null && mMovieAdapter != null
+                        && position < mMovieAdapter.getTatalItemCount()) {
                     mTitleCountTv.setText(String.format(mContext.getString(R.string.home_item_title_count), (1 + position) + "", mMovieAdapter.getTatalItemCount() + ""));                }
             }
         });

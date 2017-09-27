@@ -35,6 +35,7 @@
 
 
             <RelativeLayout
+                android:id="@+id/content_layout"
                 android:layout_width="@dimen/banner_horizontal519_post_w"
                 android:layout_height="@dimen/banner_horizontal519_post_h"
                 >

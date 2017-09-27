@@ -108,7 +108,8 @@ public class Template519 extends Template implements View.OnClickListener, View.
         horizontal519Banner.setOnItemFocusChangeListener(new RecyclerViewTV.OnItemFocusChangeListener() {
             @Override
             public void onItemFocusGain(View itemView, int position) {
-                if (itemView != null && mContext != null && mTitleCountTv != null && mHorizontal519Adapter != null) {
+                if (itemView != null && mContext != null && mTitleCountTv != null && mHorizontal519Adapter != null
+                        && position < mHorizontal519Adapter.getTatalItemCount()) {
                     mTitleCountTv.setText(String.format(mContext.getString(R.string.home_item_title_count), (1 + position) + "", mHorizontal519Adapter.getTatalItemCount() + ""));
                 }
             }

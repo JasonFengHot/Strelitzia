@@ -114,7 +114,8 @@ public class TemplateBigSmallLd extends Template implements View.OnHoverListener
         movieMixBanner.setOnItemFocusChangeListener(new RecyclerViewTV.OnItemFocusChangeListener() {
             @Override
             public void onItemFocusGain(View itemView, int position) {
-                if (itemView != null && mContext != null && mTitleCountTv != null && adapter != null) {
+                if (itemView != null && mContext != null && mTitleCountTv != null && adapter != null
+                        && position < adapter.getTatalItemCount()) {
                     mTitleCountTv.setText(String.format(mContext.getString(R.string.home_item_title_count), (1 + position) + "", adapter.getTatalItemCount() + ""));
                 }
             }
