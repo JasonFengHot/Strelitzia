@@ -9,7 +9,8 @@
         <activity
             android:name=".view.DetailPageActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:screenOrientation="sensorLandscape">
+            android:screenOrientation="sensorLandscape"
+            android:theme="@style/IsmartvAppUnifyBgTheme">
             <intent-filter>
                 <action android:name="tv.ismar.daisy.detailpage"/>
                 <category android:name="android.intent.category.DEFAULT"/>

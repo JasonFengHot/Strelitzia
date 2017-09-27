@@ -6,10 +6,15 @@ import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.FocusFinder;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.OverScroller;
+import android.widget.ScrollView;
+
+import com.daimajia.androidanimations.library.Techniques;
+import com.daimajia.androidanimations.library.YoYo;
 
 import java.util.ArrayList;
 
@@ -26,6 +31,8 @@ public class RecycleLinearLayout extends LinearLayout {
     private static final String TAG = RecycleLinearLayout.class.getSimpleName();
 
     private Context mContext;
+    private ScrollView mScrollView;
+    private int mScreenHeight;
     private int mSelectedChildIndex = 0;
     private ArrayList<View> mAllViews = new ArrayList<>();
 
@@ -38,6 +45,10 @@ public class RecycleLinearLayout extends LinearLayout {
     public RecycleLinearLayout(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         initWindow(context);
+    }
+
+    public void setScrollView(ScrollView view){
+        this.mScrollView = view;
     }
 
     public void setView(View view){
@@ -64,6 +75,7 @@ public class RecycleLinearLayout extends LinearLayout {
         this.mOverScroller = new OverScroller(getContext());
         DisplayMetrics dm = getResources().getDisplayMetrics();
         mWindowRect = new Rect(0, 0, dm.widthPixels, dm.heightPixels);
+        mScreenHeight = dm.heightPixels;
         Log.i(TAG, "screenWidth:"+dm.widthPixels+" screenHeight:"+dm.heightPixels);
     }
 
@@ -90,6 +102,14 @@ public class RecycleLinearLayout extends LinearLayout {
         invalidate();//保证computeScroll()执行
     }
 
+    private void scrollToVisiable(View view){
+        if(view != null){
+            int[] location = new int[]{0, 0};
+            view.getLocationOnScreen(location);
+            smoothScrollBy(0, location[1]-400);
+        }
+    }
+
     private void scrollToTop(View view){
         if(view != null){
             int[] location = new int[]{0, 0};
@@ -113,20 +133,20 @@ public class RecycleLinearLayout extends LinearLayout {
 
     private int mWidth = 0;
     private int mHeight = 0;
-//    @Override
-//    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-//        mWidth = 0;
-//        mHeight = 0;
-//        for(int i=0; i<getChildCount(); i++){
-//            View childView = getChildAt(i);
-//            measureChildWithMargins(childView, widthMeasureSpec, 0, heightMeasureSpec, 0);
-//            mWidth = mWidth+childView.getMeasuredWidth();
-//            mHeight = mHeight+childView.getMeasuredHeight();
-//            Log.i("onMeasure", "childWidth:"+childView.getMeasuredWidth()+"  childHeight:"+childView.getMeasuredHeight());
-//        }
-//        Log.i("onMeasure", "mWidth:"+mWidth+"  mHeight:"+mHeight);
-//        setMeasuredDimension(mWidth, mHeight);
-//    }
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        mWidth = 0;
+        mHeight = 0;
+        for(int i=0; i<getChildCount(); i++){
+            View childView = getChildAt(i);
+            measureChildWithMargins(childView, widthMeasureSpec, 0, heightMeasureSpec, 0);
+            mWidth = mWidth+childView.getMeasuredWidth();
+            mHeight = mHeight+childView.getMeasuredHeight();
+            Log.i("onMeasure", "childWidth:"+childView.getMeasuredWidth()+"  childHeight:"+childView.getMeasuredHeight());
+        }
+        Log.i("onMeasure", "mWidth:"+mWidth+"  mHeight:"+mHeight);
+        setMeasuredDimension(mWidth, mHeight);
+    }
 
     private View mLastView;//记录焦点
 
@@ -138,13 +158,31 @@ public class RecycleLinearLayout extends LinearLayout {
 //            getChildAt(0).requestFocus();
 //        }
         if(event.getAction() == KeyEvent.ACTION_DOWN){
-        } else if(event.getAction() == KeyEvent.ACTION_UP){
+            mLastView = getFocusedChild();
+        }
+        if(event.getAction() == KeyEvent.ACTION_UP){
             if(keyCode==KeyEvent.KEYCODE_DPAD_DOWN || keyCode==KeyEvent.KEYCODE_DPAD_UP){
                 View view = getFocusedChild();
-                if(view == mLastView) return super.dispatchKeyEvent(event);
-                mLastView = view;
-                scrollToTop(/*findView(view)*/view);
-                Log.i(TAG, "up view:"+view);
+                if(view == mLastView) return super.dispatchKeyEvent(event);//banner抖动问题
+                int key = (int) view.getTag();
+                int tag = (int) view.getTag(key);
+                boolean canScroll = tag>>30==1;//1可滑动，0不可滑动
+                int position = (tag<<2)>>2;
+                if(!canScroll){//限制滑动
+                    if(position-1 < 0) return super.dispatchKeyEvent(event);//将不可滑动的banner和前一个banner绑定为一个banner
+                    mScrollView.setBottom(10000+mScreenHeight);
+                    scrollToTop(getChildAt(position-1));
+                    return super.dispatchKeyEvent(event);
+                }
+                //滑动处理
+                if(position==getChildCount()-1){
+//                    scrollToVisiable(view);
+                    mScrollView.setBottom(10000+mScreenHeight);
+                    YoYo.with(Techniques.VerticalShake).duration(1000).playOn(view);
+                } else {
+                    mScrollView.setBottom(mScreenHeight);
+                    scrollToTop(view);
+                }
             }
         }
         return super.dispatchKeyEvent(event);

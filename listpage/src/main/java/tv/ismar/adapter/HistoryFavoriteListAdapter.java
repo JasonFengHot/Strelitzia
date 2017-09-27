@@ -5,6 +5,7 @@ import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -19,6 +20,7 @@ import tv.ismar.app.core.VipMark;
 import tv.ismar.app.ui.adapter.OnItemClickListener;
 import tv.ismar.app.ui.adapter.OnItemFocusedListener;
 import tv.ismar.app.entity.HistoryFavoriteEntity;
+import tv.ismar.app.ui.adapter.OnItemOnhoverlistener;
 import tv.ismar.listpage.R;
 
 /**
@@ -32,6 +34,7 @@ public class HistoryFavoriteListAdapter extends RecyclerView.Adapter<HistoryFavo
     private String listsource;
     private OnItemClickListener itemClickListener;
     private OnItemFocusedListener itemFocusedListener;
+    private OnItemOnhoverlistener itemOnhoverlistener;
     public HistoryFavoriteListAdapter(Context context,List<HistoryFavoriteEntity> item,int typeId,String source) {
         mContext=context;
         items=item;
@@ -43,6 +46,9 @@ public class HistoryFavoriteListAdapter extends RecyclerView.Adapter<HistoryFavo
     }
     public void setItemFocusedListener(OnItemFocusedListener itemFocusedListener) {
         this.itemFocusedListener = itemFocusedListener;
+    }
+    public void setItemOnhoverlistener(OnItemOnhoverlistener onhoverlistener){
+        this.itemOnhoverlistener=onhoverlistener;
     }
 
     @Override
@@ -96,6 +102,13 @@ public class HistoryFavoriteListAdapter extends RecyclerView.Adapter<HistoryFavo
                 @Override
                 public void onClick(View v) {
                     itemClickListener.onItemClick(v, position);
+                }
+            });
+            holder.itemView.setOnHoverListener(new View.OnHoverListener() {
+                @Override
+                public boolean onHover(View v, MotionEvent event) {
+                    itemOnhoverlistener.OnItemOnhoverlistener(v,event,position,0);
+                    return false;
                 }
             });
         }

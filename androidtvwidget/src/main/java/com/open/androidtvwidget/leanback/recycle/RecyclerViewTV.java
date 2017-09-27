@@ -11,6 +11,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -163,6 +164,7 @@ public class RecyclerViewTV extends RecyclerView implements PrvInterface {
 
     @Override
     public boolean requestChildRectangleOnScreen(View child, Rect rect, boolean immediate) {
+        Log.i("recyclerViewTV","ishoverd: "+isHovered());
         if (isHovered()){
             return true;
         }
@@ -220,6 +222,7 @@ public class RecyclerViewTV extends RecyclerView implements PrvInterface {
         } else {
             offset = isVertical() ? dy : dx;
             if (dx != 0 || dy != 0) {
+                Log.i("recyclerViewTV","immediate: "+immediate);
                 if (immediate) {
                     scrollBy(dx, dy);
                 } else {
