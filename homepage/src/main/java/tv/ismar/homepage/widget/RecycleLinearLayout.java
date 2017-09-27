@@ -166,7 +166,16 @@ public class RecycleLinearLayout extends LinearLayout {
                 if(view == mLastView) return super.dispatchKeyEvent(event);//banner抖动问题
                 int key = (int) view.getTag();
                 int tag = (int) view.getTag(key);
-                if(tag == getChildCount()-1){
+                boolean canScroll = tag>>30==1;//1可滑动，0不可滑动
+                int position = (tag<<2)>>2;
+                if(!canScroll){//限制滑动
+                    if(position-1 < 0) return super.dispatchKeyEvent(event);//将不可滑动的banner和前一个banner绑定为一个banner
+                    mScrollView.setBottom(10000+mScreenHeight);
+                    scrollToTop(getChildAt(position-1));
+                    return super.dispatchKeyEvent(event);
+                }
+                //滑动处理
+                if(position==getChildCount()-1){
                     scrollToVisiable(view);
                     mScrollView.setBottom(10000+mScreenHeight);
                     YoYo.with(Techniques.VerticalShake).duration(1000).playOn(view);

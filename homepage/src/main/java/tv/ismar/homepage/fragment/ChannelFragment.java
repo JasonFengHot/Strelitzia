@@ -151,8 +151,14 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
                 new TemplateCenter(getContext()).setView(bannerView, bundle);
             }
             if(bannerView != null){
+                int tag;
+                if(position ==1){//首页推荐,不可滑动
+                    tag = 0<<30 | position;
+                } else {
+                    tag = 1<<30 | position;
+                }
                 bannerView.setTag(layoutId);
-                bannerView.setTag(layoutId, position);
+                bannerView.setTag(layoutId, tag);
                 mLinearContainer.addView(bannerView);
             }
         }
