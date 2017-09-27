@@ -404,6 +404,11 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
                     }
 
                     @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                    }
+
+                    @Override
                     public void onNext(SectionList sections) {
                         //筛选出分类下有内容的栏目，去除内容个数为0的栏目
                         sectionList=new SectionList();
@@ -422,6 +427,8 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
                         fillSections(sectionList);
                     }
                 });
+
+
     }
 
     //请求单个栏目的数据
@@ -439,7 +446,8 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
                     @Override
                     public void onError(Throwable e) {
                         sectionHasData[index]=false;
-                        super.onError(e);
+                        e.printStackTrace();
+//                        super.onError(e);
                     }
 
                     @Override
@@ -537,6 +545,10 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
                     @Override
                     public void onCompleted() {
 
+                    }
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
                     }
 
                     @Override
@@ -647,7 +659,7 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
                     @Override
                     public void onError(Throwable e) {
                         noResultFetched=false;
-                        super.onError(e);
+                        e.printStackTrace();
                     }
 
                     @Override
@@ -758,6 +770,10 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
                     @Override
                     public void onCompleted() {
 
+                    }
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
                     }
 
                     @Override
