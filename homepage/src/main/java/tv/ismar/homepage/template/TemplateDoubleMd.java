@@ -3,18 +3,22 @@ package tv.ismar.homepage.template;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.daimajia.androidanimations.library.Techniques;
+import com.daimajia.androidanimations.library.YoYo;
 import com.open.androidtvwidget.leanback.recycle.RecyclerViewTV;
+import com.open.androidtvwidget.leanback.recycle.StaggeredGridLayoutManagerTV;
 import com.squareup.picasso.Picasso;
 
 import tv.ismar.app.BaseControl;
 import tv.ismar.app.entity.banner.BigImage;
-import tv.ismar.app.entity.banner.HomeEntity;
 import tv.ismar.homepage.OnItemSelectedListener;
 import tv.ismar.homepage.R;
 import tv.ismar.homepage.adapter.DoubleMdAdapter;
@@ -30,7 +34,8 @@ import static tv.ismar.homepage.fragment.ChannelFragment.TITLE_KEY;
 
 public class TemplateDoubleMd extends Template implements BaseControl.ControlCallBack,
         OnItemSelectedListener,
-        RecyclerViewTV.OnItemFocusChangeListener {
+        RecyclerViewTV.OnItemFocusChangeListener,
+        StaggeredGridLayoutManagerTV.FocusSearchFailedListener {
     private TextView mTitleTv;//banner标题
     private TextView mIndexTv;//选中位置
     private ImageView mVerticalImg;//大图海报
@@ -48,6 +53,7 @@ public class TemplateDoubleMd extends Template implements BaseControl.ControlCal
     }
 
     private View mHeadView;//recylview头view
+    private StaggeredGridLayoutManagerTV mDoubleLayoutManager;
 
     @Override
     public void getView(View view) {
@@ -60,15 +66,16 @@ public class TemplateDoubleMd extends Template implements BaseControl.ControlCal
         mLtImage = (ImageView) mHeadView.findViewById(R.id.double_md_image_lt_icon);
         mRbImage = (ImageView) mHeadView.findViewById(R.id.double_md_image_rb_icon);
         mImgeTitleTv = (TextView) mHeadView.findViewById(R.id.double_md_image_title);
-        StaggeredGridLayoutManager doubleLayoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.HORIZONTAL);
+        mDoubleLayoutManager = new StaggeredGridLayoutManagerTV(2, StaggeredGridLayoutManager.HORIZONTAL);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        mRecyclerView.setLayoutManager(doubleLayoutManager);
+        mRecyclerView.setLayoutManager(mDoubleLayoutManager);
     }
 
     @Override
     protected void initListener(View view) {
         super.initListener(view);
         mRecyclerView.setOnItemFocusChangeListener(this);
+        mDoubleLayoutManager.setFocusSearchFailedListener(this);
     }
 
     @Override
@@ -130,5 +137,17 @@ public class TemplateDoubleMd extends Template implements BaseControl.ControlCal
         } else {
             mFetchDataControl.go2Detail(mFetchDataControl.mHomeEntity.posters.get(position));
         }
+    }
+
+    @Override
+    public View onFocusSearchFailed(View focused, int focusDirection, RecyclerView.Recycler recycler, RecyclerView.State state) {
+        if (focusDirection == View.FOCUS_RIGHT || focusDirection == View.FOCUS_LEFT){
+            if (mRecyclerView.getChildAt(0).findViewById(R.id.double_md_ismartv_linear_layout) == focused ||
+                    mRecyclerView.getChildAt(mRecyclerView.getChildCount() - 1).findViewById(R.id.double_md_ismartv_linear_layout) == focused){
+                YoYo.with(Techniques.HorizontalShake).duration(1000).playOn(focused);
+            }
+            return focused;
+        }
+        return null;
     }
 }

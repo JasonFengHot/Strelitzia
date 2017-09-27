@@ -1,7 +1,6 @@
 package tv.ismar.homepage.template;
 
 import android.content.Context;
-import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.RecyclerView;
@@ -12,7 +11,12 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.daimajia.androidanimations.library.Techniques;
+import com.daimajia.androidanimations.library.YoYo;
+import com.open.androidtvwidget.leanback.recycle.GridLayoutManagerTV;
+import com.open.androidtvwidget.leanback.recycle.LinearLayoutManagerTV;
 import com.open.androidtvwidget.leanback.recycle.RecyclerViewTV;
+import com.open.androidtvwidget.leanback.recycle.StaggeredGridLayoutManagerTV;
 import com.squareup.picasso.Picasso;
 
 import java.text.DecimalFormat;
@@ -33,7 +37,8 @@ import tv.ismar.homepage.control.FetchDataControl;
  */
 
 public class TemplateDoubleLd extends Template implements BaseControl.ControlCallBack,
-        OnItemSelectedListener, RecyclerViewTV.OnItemFocusChangeListener{
+        OnItemSelectedListener, RecyclerViewTV.OnItemFocusChangeListener,
+        LinearLayoutManagerTV.FocusSearchFailedListener {
     private int mSelectItemPosition = 1;//标题--选中海报位置
     private TextView mTitleTv;//banner标题;
     private ImageView mVerticalImg;//大图海报
@@ -50,6 +55,7 @@ public class TemplateDoubleLd extends Template implements BaseControl.ControlCal
     }
 
     private View mHeadView;//recylview头view
+    private GridLayoutManagerTV mDoubleLayoutManager;
 
     @Override
     public void getView(View view) {
@@ -61,9 +67,10 @@ public class TemplateDoubleLd extends Template implements BaseControl.ControlCal
         mLtImage = (ImageView) mHeadView.findViewById(R.id.double_ld_image_lt_icon);
         mRbImage = (TextView) mHeadView.findViewById(R.id.double_ld_image_rb_icon);
         mIgTitleTv = (TextView) mHeadView.findViewById(R.id.double_ld_image_title);
-        StaggeredGridLayoutManager doubleLayoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.HORIZONTAL);
+        mDoubleLayoutManager = new GridLayoutManagerTV(mContext, 2);
+        mDoubleLayoutManager.setOrientation(GridLayoutManagerTV.HORIZONTAL);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        mRecyclerView.setLayoutManager(doubleLayoutManager);
+        mRecyclerView.setLayoutManager(mDoubleLayoutManager);
     }
 
     private void initTitle(){
@@ -75,6 +82,7 @@ public class TemplateDoubleLd extends Template implements BaseControl.ControlCal
     protected void initListener(View view) {
         super.initListener(view);
         mRecyclerView.setOnItemFocusChangeListener(this);
+        mDoubleLayoutManager.setFocusSearchFailedListener(this);
     }
 
     @Override
@@ -135,5 +143,18 @@ public class TemplateDoubleLd extends Template implements BaseControl.ControlCal
     public void onItemFocusGain(View itemView, int position) {
         mSelectItemPosition = position+1;
         initTitle();
+    }
+
+    /*第1个和最后一个海报抖动功能*/
+    @Override
+    public View onFocusSearchFailed(View focused, int focusDirection, RecyclerView.Recycler recycler, RecyclerView.State state) {
+        if (focusDirection == View.FOCUS_RIGHT || focusDirection == View.FOCUS_LEFT){
+            if (mRecyclerView.getChildAt(0).findViewById(R.id.double_ld_ismartv_linear_layout) == focused ||
+                    mRecyclerView.getChildAt(mRecyclerView.getChildCount() - 1).findViewById(R.id.double_ld_ismartv_linear_layout) == focused){
+                YoYo.with(Techniques.HorizontalShake).duration(1000).playOn(focused);
+            }
+            return focused;
+        }
+        return null;
     }
 }

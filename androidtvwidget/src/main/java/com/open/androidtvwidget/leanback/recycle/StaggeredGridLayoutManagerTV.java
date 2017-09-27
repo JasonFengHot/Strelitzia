@@ -1,26 +1,25 @@
 package com.open.androidtvwidget.leanback.recycle;
 
 import android.content.Context;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 
 /**
- * Created by hailongqiu on 2016/8/25.
+ * @AUTHOR: xi
+ * @DATE: 2017/9/27
+ * @DESC: 说明
  */
-public class GridLayoutManagerTV extends GridLayoutManager {
-    public GridLayoutManagerTV(Context context, int spanCount) {
-        super(context, spanCount);
-    }
 
-    public GridLayoutManagerTV(Context context, int spanCount, int orientation, boolean reverseLayout) {
-        super(context, spanCount, orientation, reverseLayout);
-    }
-
-    public GridLayoutManagerTV(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+public class StaggeredGridLayoutManagerTV extends StaggeredGridLayoutManager {
+    public StaggeredGridLayoutManagerTV(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
+    }
+
+    public StaggeredGridLayoutManagerTV(int spanCount, int orientation) {
+        super(spanCount, orientation);
     }
 
     @Override
@@ -29,17 +28,14 @@ public class GridLayoutManagerTV extends GridLayoutManager {
         Log.d("LinearLayoutManagerTV", "onFocusSearchFailed: " + nextFocus);
         return this.focusSearchFailedListener != null ? this.focusSearchFailedListener.onFocusSearchFailed(focused, focusDirection, recycler, state) : null;
     }
-
     public interface FocusSearchFailedListener {
 
         View onFocusSearchFailed(View focused, int focusDirection, RecyclerView.Recycler recycler, RecyclerView.State state);
     }
 
-    private LinearLayoutManagerTV.FocusSearchFailedListener focusSearchFailedListener;
+    private FocusSearchFailedListener focusSearchFailedListener;
 
-    public void setFocusSearchFailedListener(LinearLayoutManagerTV.FocusSearchFailedListener focusSearchFailedListener) {
+    public void setFocusSearchFailedListener(FocusSearchFailedListener focusSearchFailedListener) {
         this.focusSearchFailedListener = focusSearchFailedListener;
     }
-
-
 }
