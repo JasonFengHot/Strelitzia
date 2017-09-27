@@ -505,7 +505,7 @@ public class RecyclerViewTV extends RecyclerView implements PrvInterface {
         int visibleItemCount = getChildCount();
         int firstVisibleItem = findFirstVisibleItemPosition();
         // 判断是否显示最底了.提前5个item预加载
-        if (!isLoading && totalItemCount - visibleItemCount <= firstVisibleItem + 5) {
+        if (!isLoading && totalItemCount - visibleItemCount <= firstVisibleItem + 10) {
             isLoading = true;
             if (mPagingableListener != null) {
 //                OPENLOG.D(" totalItemCount: " + totalItemCount +

@@ -212,10 +212,17 @@ public class Template519 extends Template implements View.OnClickListener, View.
     public void onClick(View v) {
         int i = v.getId();
         if (i == R.id.navigation_left) {
-            horizontal519LayoutManager.scrollToPositionWithOffset(horizontal519Banner.findFirstVisibleItemPosition() - 1, 0);
+//            horizontal519LayoutManager.scrollToPositionWithOffset(horizontal519Banner.findFirstVisibleItemPosition() - 1, 0);
+
+            if (horizontal519LayoutManager.findFirstCompletelyVisibleItemPosition() -1 >= 0){
+                horizontal519LayoutManager.smoothScrollToPosition(horizontal519Banner, null, horizontal519LayoutManager.findFirstCompletelyVisibleItemPosition() - 1);
+            }
         } else if (i == R.id.navigation_right) {
             horizontal519Banner.loadMore();
-            horizontal519LayoutManager.scrollToPositionWithOffset(horizontal519Banner.findFirstVisibleItemPosition() + 1, 0);
+
+            if (horizontal519LayoutManager.findFirstCompletelyVisibleItemPosition() + 1 <= mHorizontal519Adapter.getTatalItemCount()){
+                horizontal519LayoutManager.smoothScrollToPosition(horizontal519Banner, null, horizontal519LayoutManager.findLastCompletelyVisibleItemPosition() + 1);
+            }
         }
     }
 
