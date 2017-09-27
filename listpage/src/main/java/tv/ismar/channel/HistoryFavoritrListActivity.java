@@ -6,6 +6,7 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -29,6 +30,7 @@ import tv.ismar.app.core.Source;
 import tv.ismar.app.network.SkyService;
 import tv.ismar.app.ui.adapter.OnItemClickListener;
 import tv.ismar.app.ui.adapter.OnItemFocusedListener;
+import tv.ismar.app.ui.adapter.OnItemOnhoverlistener;
 import tv.ismar.app.widget.ModuleMessagePopWindow;
 import tv.ismar.app.widget.MyRecyclerView;
 import tv.ismar.app.entity.HistoryFavoriteEntity;
@@ -39,7 +41,7 @@ import tv.ismar.searchpage.utils.JasmineUtil;
  * Created by liucan on 2017/8/29.
  */
 
-public class HistoryFavoritrListActivity extends BaseActivity implements OnItemClickListener,OnItemFocusedListener{
+public class HistoryFavoritrListActivity extends BaseActivity implements OnItemClickListener,OnItemFocusedListener,OnItemOnhoverlistener{
     private Subscription listSub;
     private Subscription removeSub;
     private SkyService skyService;
@@ -132,6 +134,7 @@ public class HistoryFavoritrListActivity extends BaseActivity implements OnItemC
         adapter=new HistoryFavoriteListAdapter(HistoryFavoritrListActivity.this,mlists,type,source);
         adapter.setItemClickListener(HistoryFavoritrListActivity.this);
         adapter.setItemFocusedListener(HistoryFavoritrListActivity.this);
+        adapter.setItemOnhoverlistener(HistoryFavoritrListActivity.this);
         recyclerView.setAdapter(adapter);
         if(mlists.size()>0) {
             new Handler().postDelayed(new Runnable() {
@@ -162,7 +165,11 @@ public class HistoryFavoritrListActivity extends BaseActivity implements OnItemC
             if(type==1){
                 intent.toPlayPage(this,pk,0, Source.HISTORY);
             }else{
-                intent.toDetailPage(this,"history",pk);
+                if(entity.getContent_model().contains("gather")){
+                    intent.toSubject(this,entity.getContent_model(),pk,entity.getTitle(),"favorite","");
+                }else {
+                    intent.toDetailPage(this, "history", pk);
+                }
             }
         }
     }
@@ -280,15 +287,17 @@ public class HistoryFavoritrListActivity extends BaseActivity implements OnItemC
 
     @Override
     public void onItemfocused(View view, int position, boolean hasFocus) {
-        if(hasFocus){
+        if(hasFocus) {
             JasmineUtil.scaleOut3(view);
-            Log.i("ViewY",view.getY()+"");
-            if(view.getY()>getResources().getDimensionPixelSize(R.dimen.history_636)){
-                focusGridLayoutManager.setCanScroll(true);
-                recyclerView.smoothScrollBy(0,getResources().getDimensionPixelOffset(R.dimen.history_732));
-            }else if(view.getY()<0){
-                focusGridLayoutManager.setCanScroll(true);
-                recyclerView.smoothScrollBy(0,-getResources().getDimensionPixelOffset(R.dimen.history_732));
+            Log.i("ViewY", view.getY() + "");
+            if (!ishover) {
+                if (view.getY() > getResources().getDimensionPixelSize(R.dimen.history_636)) {
+                    focusGridLayoutManager.setCanScroll(true);
+                    recyclerView.smoothScrollBy(0, getResources().getDimensionPixelOffset(R.dimen.history_732));
+                } else if (view.getY() < 0) {
+                    focusGridLayoutManager.setCanScroll(true);
+                    recyclerView.smoothScrollBy(0, -getResources().getDimensionPixelOffset(R.dimen.history_732));
+                }
             }
         }else{
             JasmineUtil.scaleIn3(view);
@@ -324,8 +333,20 @@ public class HistoryFavoritrListActivity extends BaseActivity implements OnItemC
             }
             return true;
         }
+        ishover=false;
 
         return super.onKeyDown(keyCode, event);
     }
 
+    boolean ishover=false;
+    @Override
+    public void OnItemOnhoverlistener(View v, MotionEvent event, int position, int recommend) {
+        switch (event.getAction()){
+            case MotionEvent.ACTION_HOVER_ENTER:
+            case MotionEvent.ACTION_HOVER_MOVE:
+                ishover=true;
+                v.requestFocusFromTouch();
+                break;
+        }
+    }
 }
