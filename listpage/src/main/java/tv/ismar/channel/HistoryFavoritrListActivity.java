@@ -117,6 +117,7 @@ public class HistoryFavoritrListActivity extends BaseActivity implements OnItemC
                 }else{
                     emptyFavorite();
                 }
+                clearAll.setVisibility(View.GONE);
             }
         }, new ModuleMessagePopWindow.CancelListener() {
             @Override
@@ -170,6 +171,9 @@ public class HistoryFavoritrListActivity extends BaseActivity implements OnItemC
             DaisyUtils.getHistoryManager(this).deleteHistory(mlists.get(position).getUrl(),"no");
             mlists.remove(position);
             adapter.notifyDataSetChanged();
+            if(mlists.size()==0){
+                clearAll.setVisibility(View.GONE);
+            }
         }else{
             removeSub = skyService.apiHistoryRemove(pk, item_pk).subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -183,6 +187,9 @@ public class HistoryFavoritrListActivity extends BaseActivity implements OnItemC
                         public void onNext(ResponseBody responseBody) {
                             mlists.remove(position);
                             adapter.notifyDataSetChanged();
+                            if(mlists.size()==0){
+                                clearAll.setVisibility(View.GONE);
+                            }
                         }
                     });
         }
@@ -192,6 +199,9 @@ public class HistoryFavoritrListActivity extends BaseActivity implements OnItemC
             DaisyUtils.getFavoriteManager(this).deleteFavoriteByUrl(mlists.get(position).getUrl(),"no");
             mlists.remove(position);
             adapter.notifyDataSetChanged();
+            if(mlists.size()==0){
+                clearAll.setVisibility(View.GONE);
+            }
         }else {
             removeSub = skyService.apiBookmarksRemove(pk+"").subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -205,6 +215,9 @@ public class HistoryFavoritrListActivity extends BaseActivity implements OnItemC
                         public void onNext(ResponseBody responseBody) {
                             mlists.remove(position);
                             adapter.notifyDataSetChanged();
+                            if(mlists.size()==0){
+                                clearAll.setVisibility(View.GONE);
+                            }
                         }
                     });
         }
