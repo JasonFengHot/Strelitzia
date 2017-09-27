@@ -28,6 +28,8 @@ public class FocusGridLayoutManager extends GridLayoutManager {
     private View leftFocusView;
     private Context context;
     private boolean scroll=false;
+    private boolean isFavorite=false;
+
 
     public FocusGridLayoutManager(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
@@ -43,7 +45,9 @@ public class FocusGridLayoutManager extends GridLayoutManager {
         super(context, spanCount, orientation, reverseLayout);
     }
 
-
+    public void setFavorite(boolean favorite){
+        isFavorite=favorite;
+    }
     @Override
     public int getChildCount() {
         return super.getChildCount();
@@ -100,6 +104,11 @@ public class FocusGridLayoutManager extends GridLayoutManager {
                 YoYo.with(Techniques.VerticalShake).duration(1000).playOn(focused);
                 return focused;
             }
+        }else if(direction==View.FOCUS_LEFT){
+            if(isFavorite&&index==0){
+                YoYo.with(Techniques.VerticalShake).duration(1000).playOn(focused);
+                return focused;
+            }
         }
         return super.onInterceptFocusSearch(focused, direction);
     }
@@ -118,8 +127,10 @@ public class FocusGridLayoutManager extends GridLayoutManager {
 
         // Need to be called in order to layout new row/column
         View nextFocus = super.onFocusSearchFailed(focused, focusDirection, recycler, state);
-        if (nextFocus == null&&focusDirection==View.FOCUS_LEFT){
-            return leftFocusView;
+        if(!isFavorite) {
+            if (nextFocus == null && focusDirection == View.FOCUS_LEFT) {
+                return leftFocusView;
+            }
         }
         /**
          * 获取当前焦点的位置
@@ -158,9 +169,10 @@ public class FocusGridLayoutManager extends GridLayoutManager {
 
     protected int getNextViewPos(int fromPos, int direction) {
         int offset = calcOffsetToNextView(direction);
-
-        if (hitBorder(fromPos, offset)) {
-            return fromPos+offset+1;
+        if(!isFavorite) {
+            if (hitBorder(fromPos, offset)) {
+                return fromPos + offset + 1;
+            }
         }
 
         return fromPos + offset;

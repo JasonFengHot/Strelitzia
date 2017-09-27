@@ -3,6 +3,7 @@ package tv.ismar.channel;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -37,11 +38,13 @@ import tv.ismar.app.entity.HistoryFavoriteEntity;
 import tv.ismar.listpage.R;
 import tv.ismar.searchpage.utils.JasmineUtil;
 
+import static android.support.v7.widget.RecyclerView.SCROLL_STATE_IDLE;
+
 /**
  * Created by liucan on 2017/8/29.
  */
 
-public class HistoryFavoritrListActivity extends BaseActivity implements OnItemClickListener,OnItemFocusedListener,OnItemOnhoverlistener{
+public class HistoryFavoritrListActivity extends BaseActivity implements OnItemClickListener,OnItemFocusedListener,OnItemOnhoverlistener,View.OnHoverListener,View.OnClickListener{
     private Subscription listSub;
     private Subscription removeSub;
     private SkyService skyService;
@@ -81,6 +84,7 @@ public class HistoryFavoritrListActivity extends BaseActivity implements OnItemC
         recyclerView=findView(R.id.history_favorite_list);
         recyclerView.addItemDecoration(mSpaceItemDecoration);
         focusGridLayoutManager=new FocusGridLayoutManager(this,4);
+        focusGridLayoutManager.setFavorite(true);
         recyclerView.setLayoutManager(focusGridLayoutManager);
         if(source.equals("edit")){
             if(type==1) {
@@ -97,12 +101,12 @@ public class HistoryFavoritrListActivity extends BaseActivity implements OnItemC
             }
             clearAll.setVisibility(View.GONE);
         }
-        clearAll.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showPop();
-            }
-        });
+        clearAll.setOnHoverListener(this);
+        clearAll.setOnClickListener(this);
+        arrow_down.setOnHoverListener(this);
+        arrow_up.setOnHoverListener(this);
+        arrow_down.setOnClickListener(this);
+        arrow_up.setOnClickListener(this);
         loadData();
     }
 
@@ -144,6 +148,33 @@ public class HistoryFavoritrListActivity extends BaseActivity implements OnItemC
                 }
             }, 500);
         }
+        if(mlists.size()>12){
+            arrow_down.setVisibility(View.VISIBLE);
+        }
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                if(newState==SCROLL_STATE_IDLE){
+                    if(focusGridLayoutManager!=null){
+                        int pos=focusGridLayoutManager.findFirstCompletelyVisibleItemPosition();
+                        int endPos=focusGridLayoutManager.findLastCompletelyVisibleItemPosition();
+                        if(pos!=0){
+                            arrow_up.setVisibility(View.VISIBLE);
+                        }else{
+                            arrow_up.setVisibility(View.GONE);
+                        }
+                        if(endPos!=mlists.size()-1){
+                            arrow_down.setVisibility(View.VISIBLE);
+                        }else{
+                            arrow_down.setVisibility(View.GONE);
+                        }
+
+                    }
+
+                }
+                super.onScrollStateChanged(recyclerView, newState);
+            }
+        });
     }
     @Override
     public void onItemClick(View view, int position) {
@@ -291,7 +322,7 @@ public class HistoryFavoritrListActivity extends BaseActivity implements OnItemC
             JasmineUtil.scaleOut3(view);
             Log.i("ViewY", view.getY() + "");
             if (!ishover) {
-                if (view.getY() > getResources().getDimensionPixelSize(R.dimen.history_636)) {
+                if (view.getY() > getResources().getDimensionPixelSize(R.dimen.history_640)) {
                     focusGridLayoutManager.setCanScroll(true);
                     recyclerView.smoothScrollBy(0, getResources().getDimensionPixelOffset(R.dimen.history_732));
                 } else if (view.getY() < 0) {
@@ -309,6 +340,11 @@ public class HistoryFavoritrListActivity extends BaseActivity implements OnItemC
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         //长按滑动 滑动时焦点不会乱跳，但是每隔400毫秒滑动一次
+        ishover=false;
+        arrow_up.setFocusableInTouchMode(false);
+        arrow_up.setFocusable(false);
+        arrow_down.setFocusable(false);
+        arrow_down.setFocusableInTouchMode(false);
         if (keyCode == 20) {
             long downTime =System.currentTimeMillis();
             if(mDownTime==0){
@@ -333,8 +369,6 @@ public class HistoryFavoritrListActivity extends BaseActivity implements OnItemC
             }
             return true;
         }
-        ishover=false;
-
         return super.onKeyDown(keyCode, event);
     }
 
@@ -345,8 +379,36 @@ public class HistoryFavoritrListActivity extends BaseActivity implements OnItemC
             case MotionEvent.ACTION_HOVER_ENTER:
             case MotionEvent.ACTION_HOVER_MOVE:
                 ishover=true;
+                focusGridLayoutManager.setCanScroll(false);
                 v.requestFocusFromTouch();
                 break;
+        }
+    }
+
+    @Override
+    public boolean onHover(View v, MotionEvent event) {
+        switch (event.getAction()){
+            case MotionEvent.ACTION_HOVER_ENTER:
+                case MotionEvent.ACTION_HOVER_MOVE:
+                    v.setFocusable(true);
+                    v.setFocusableInTouchMode(true);
+                    v.requestFocusFromTouch();
+                    break;
+        }
+        return false;
+    }
+
+    @Override
+    public void onClick(View v) {
+        int id=v.getId();
+        if(id==R.id.poster_arrow_up){
+            focusGridLayoutManager.setCanScroll(true);
+            recyclerView.smoothScrollBy(0, -getResources().getDimensionPixelOffset(R.dimen.history_732));
+        }else if(id==R.id.poster_arrow_down){
+            focusGridLayoutManager.setCanScroll(true);
+            recyclerView.smoothScrollBy(0, getResources().getDimensionPixelOffset(R.dimen.history_732));
+        }else if(id==R.id.clear_all){
+            showPop();
         }
     }
 }

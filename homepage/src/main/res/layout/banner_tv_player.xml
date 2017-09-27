@@ -3,7 +3,10 @@
     android:orientation="vertical"
     android:focusable="false"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:clipChildren="false"
+    android:clipToPadding="false"
+    >
 
     <include layout="@layout/banner_title_layout" />
 
@@ -12,5 +15,7 @@
         android:layout_width="wrap_content"
         android:layout_marginLeft="@dimen/tv_player_recycleview_margin_left"
         android:focusable="false"
+        android:clipChildren="false"
+        android:clipToPadding="false"
         android:layout_height="@dimen/tv_play_recycleview_height" />
 </LinearLayout>

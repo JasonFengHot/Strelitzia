@@ -52,22 +52,18 @@
     </LinearLayout>
     <Button
         android:id="@+id/poster_arrow_up"
-        android:layout_width="1415dp"
+        android:layout_width="@dimen/history_1415"
         android:layout_height="@dimen/filter_layout_poster_arrow_h"
         android:layout_centerHorizontal="true"
-        android:focusable="true"
-        android:focusableInTouchMode="true"
         android:visibility="gone"
         android:background="@drawable/poster_arrow_up_selector"/>
 
     <Button
         android:id="@+id/poster_arrow_down"
-        android:layout_width="1415dp"
+        android:layout_width="@dimen/history_1415"
         android:layout_height="@dimen/filter_layout_poster_arrowdown_h"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:focusable="true"
-        android:focusableInTouchMode="true"
         android:visibility="gone"
         android:background="@drawable/poster_arrow_down_selector"/>
 </RelativeLayout>

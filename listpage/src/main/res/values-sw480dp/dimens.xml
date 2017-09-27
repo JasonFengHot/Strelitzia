@@ -499,7 +499,7 @@
 <dimen name="history_44">19.56dp</dimen>
 <dimen name="history_15">6.67dp</dimen>
 <dimen name="history_35">15.56dp</dimen>
-<dimen name="history_636">282.67dp</dimen>
+<dimen name="history_640">284.44dp</dimen>
 <dimen name="history_732">325.33dp</dimen>
 <dimen name="history_105">46.67dp</dimen>
 <dimen name="history_817">363.11dp</dimen>
@@ -533,5 +533,6 @@
 <dimen name="history_4">1.78dp</dimen>
 <dimen name="history_1700">755.56dp</dimen>
 <dimen name="history_178">79.11dp</dimen>
+<dimen name="history_1415">628.89dp</dimen>
 
 </resources>
