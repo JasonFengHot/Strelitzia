@@ -138,11 +138,11 @@ public class TemplateGuide extends Template implements BaseControl.ControlCallBa
 
     /*初始化导视数字指示*/
     private void initCarousel(){
-        mFirstIcon.setVisibility(View.GONE);
-        mSecondIcon.setVisibility(View.GONE);
-        mThirdIcon.setVisibility(View.GONE);
-        mFourIcon.setVisibility(View.GONE);
-        mFiveIcon.setVisibility(View.GONE);
+        mFirstIcon.setVisibility(View.INVISIBLE);
+        mSecondIcon.setVisibility(View.INVISIBLE);
+        mThirdIcon.setVisibility(View.INVISIBLE);
+        mFourIcon.setVisibility(View.INVISIBLE);
+        mFiveIcon.setVisibility(View.INVISIBLE);
         int size = mFetchDataControl.mCarousels.size();
         if(size >= 3){
             mFirstIcon.setVisibility(View.VISIBLE);

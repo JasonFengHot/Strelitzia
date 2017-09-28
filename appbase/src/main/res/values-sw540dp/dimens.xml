@@ -665,6 +665,7 @@
 <dimen name="guide_switch_container_height">249.00dp</dimen>
 <dimen name="guide_video_title_width">455.50dp</dimen>
 <dimen name="guide_video_title_height">21.50dp</dimen>
+<dimen name="guide_video_icon_width">140.00dp</dimen>
 <dimen name="guide_video_title_size">19.50dp</dimen>
 <dimen name="guide_swithc_container_icon_size">16.00dp</dimen>
 <dimen name="guide_swithc_container_icon_margin_left">8.50dp</dimen>
