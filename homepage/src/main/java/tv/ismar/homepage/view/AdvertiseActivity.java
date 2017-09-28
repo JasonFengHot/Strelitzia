@@ -83,9 +83,9 @@ public class AdvertiseActivity extends BaseActivity implements MediaPlayer.OnPre
                             }
                         }
                         mCountAdTime--;
-                        if(mCountAdTime <= 0){
-                            go2HomeActivity();
-                        }
+//                        if(mCountAdTime <= 0){
+//                            go2HomeActivity();
+//                        }
                     } else {
                         refreshTime = 500;
                         mCountAdTime = getAdCountDownTime();
@@ -136,6 +136,7 @@ public class AdvertiseActivity extends BaseActivity implements MediaPlayer.OnPre
             mCountAdTime += duration;
         }
         mSeekBar.setMax(mCountAdTime);
+        mTotleTime=mCountAdTime;
         playLaunchAd(0);
     }
 
