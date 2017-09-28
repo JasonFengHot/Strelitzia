@@ -185,6 +185,7 @@ public class HistoryFavoritrListActivity extends BaseActivity implements OnItemC
          pk = SimpleRestClient.getItemId(entity.getUrl(), isSubItem);
         if(pk==0){
             pk=entity.getPk();
+
         }
         if(source.equals("edit")){
             if(type==1){
