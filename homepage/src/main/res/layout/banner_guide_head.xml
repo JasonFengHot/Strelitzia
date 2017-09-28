@@ -2,7 +2,10 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="@dimen/guide_switch_container_width"
     android:layout_height="@dimen/guide_recycle_item_height"
-    android:focusable="false">
+    android:focusable="false"
+    android:clipChildren="false"
+    android:clipToPadding="false"
+    >
 
     <tv.ismar.homepage.banner.IsmartvLinearLayout
         android:id="@+id/guide_head_ismartv_linearlayout"
@@ -20,6 +23,8 @@
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:clipChildren="false"
+            android:clipToPadding="false"
             android:focusable="false">
 
             <tv.ismar.homepage.widget.DaisyVideoView

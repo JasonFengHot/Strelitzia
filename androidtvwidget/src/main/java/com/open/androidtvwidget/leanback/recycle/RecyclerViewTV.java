@@ -110,9 +110,6 @@ public class RecyclerViewTV extends RecyclerView implements PrvInterface {
         return getHeight() - getPaddingTop() - getPaddingBottom();
     }
 
-    public void setHoverd(boolean hoverd){
-        ishover=hoverd;
-    }
     @Override
     public void onChildAttachedToWindow(View child) {
         // 设置单击事件，修复.
@@ -169,7 +166,7 @@ public class RecyclerViewTV extends RecyclerView implements PrvInterface {
     @Override
     public boolean requestChildRectangleOnScreen(View child, Rect rect, boolean immediate) {
         Log.i("recyclerViewTV","ishoverd: "+isHovered());
-        if (ishover){
+        if (isHovered()){
             return true;
         }
         if (mOnItemFocusChangeListener != null){

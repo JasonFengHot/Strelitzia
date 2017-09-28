@@ -63,6 +63,7 @@ public class AdvertiseActivity extends BaseActivity implements MediaPlayer.OnPre
                     if (!mIsPlayingVideo && mCountAdTime == 0) {
                         mHandler.removeMessages(MSG_AD_COUNTDOWN);
                         mSeekBar.setProgress(mTotleTime);
+                        go2HomeActivity();
                         return;
                     }
                     mSeekBar.setProgress(mTotleTime - mCountAdTime);

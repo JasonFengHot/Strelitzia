@@ -2,7 +2,10 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    android:clipChildren="false"
+    android:clipToPadding="false"
+    >
     <View
         android:id="@+id/guide_margin_left"
         android:layout_width="@dimen/guide_recycle_item_padding"
@@ -23,7 +26,10 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            >
 
             <ImageView
                 android:id="@+id/guide_recycle_item_poster"
