@@ -42,7 +42,7 @@ public class GuideAdapter extends BaseRecycleAdapter<GuideAdapter.GuideViewHolde
     @Override
     public void onBindViewHolder(GuideViewHolder holder, int position) {
         holder.mMarginLeftView.setVisibility(mMarginLeftEnable?View.VISIBLE:View.GONE);
-        if(position==0) holder.mMarginLeftView.setVisibility(View.GONE);
+//        if(position==0) holder.mMarginLeftView.setVisibility(View.GONE);
         BannerPoster poster = mData.get(position);
         if (!TextUtils.isEmpty(poster.poster_url)) {
             Picasso.with(mContext).load(poster.poster_url).into(holder.mPosterIg);
