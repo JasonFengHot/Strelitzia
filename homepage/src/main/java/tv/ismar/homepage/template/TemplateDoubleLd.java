@@ -38,7 +38,7 @@ import tv.ismar.homepage.control.FetchDataControl;
 
 public class TemplateDoubleLd extends Template implements BaseControl.ControlCallBack,
         OnItemSelectedListener, RecyclerViewTV.OnItemFocusChangeListener,
-        LinearLayoutManagerTV.FocusSearchFailedListener {
+        StaggeredGridLayoutManagerTV.FocusSearchFailedListener {
     private int mSelectItemPosition = 1;//标题--选中海报位置
     private TextView mTitleTv;//banner标题;
     private ImageView mVerticalImg;//大图海报
@@ -55,7 +55,7 @@ public class TemplateDoubleLd extends Template implements BaseControl.ControlCal
     }
 
     private View mHeadView;//recylview头view
-    private GridLayoutManagerTV mDoubleLayoutManager;
+    private StaggeredGridLayoutManagerTV mDoubleLayoutManager;
 
     @Override
     public void getView(View view) {
@@ -67,7 +67,7 @@ public class TemplateDoubleLd extends Template implements BaseControl.ControlCal
         mLtImage = (ImageView) mHeadView.findViewById(R.id.double_ld_image_lt_icon);
         mRbImage = (TextView) mHeadView.findViewById(R.id.double_ld_image_rb_icon);
         mIgTitleTv = (TextView) mHeadView.findViewById(R.id.double_ld_image_title);
-        mDoubleLayoutManager = new GridLayoutManagerTV(mContext, 2);
+        mDoubleLayoutManager = new StaggeredGridLayoutManagerTV(2, StaggeredGridLayoutManager.HORIZONTAL);
         mDoubleLayoutManager.setOrientation(GridLayoutManagerTV.HORIZONTAL);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         mRecyclerView.setLayoutManager(mDoubleLayoutManager);

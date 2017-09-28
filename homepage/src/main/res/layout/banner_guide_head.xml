@@ -50,8 +50,6 @@
                 android:layout_width="@dimen/guide_video_icon_width"
                 android:layout_height="@dimen/guide_video_title_height"
                 android:layout_gravity="bottom|right"
-                android:paddingLeft="@dimen/guide_swithc_container_icon_margin_left"
-                android:paddingRight="@dimen/guide_swithc_container_icon_margin_right"
                 android:focusable="false"
                 android:background="@drawable/banner_subscrib_introduction_bg"
                 android:orientation="horizontal">
@@ -103,6 +101,7 @@
                     android:layout_marginBottom="@dimen/guide_swithc_container_icon_margin_bottom"
                     android:layout_marginLeft="@dimen/guide_swithc_container_icon_padding"
                     android:layout_marginTop="@dimen/guide_swithc_container_icon_margin_top"
+                    android:layout_marginRight="@dimen/guide_swithc_container_icon_margin_right"
                     android:background="@drawable/five_video_normal_icon"
                     android:visibility="gone" />
             </LinearLayout>
