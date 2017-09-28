@@ -4,6 +4,7 @@ import android.animation.ObjectAnimator;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
+import tv.ismar.homepage.OnItemClickListener;
 import tv.ismar.homepage.OnItemSelectedListener;
 
 import static android.view.View.SCALE_X;
@@ -18,11 +19,13 @@ public abstract class BaseViewHolder extends RecyclerView.ViewHolder implements
         View.OnFocusChangeListener, View.OnClickListener{
 
     public int mPosition;//item位置
-    private OnItemSelectedListener mClickListener = null;
+    private OnItemClickListener mClickListener = null;
+    private OnItemSelectedListener mSelectedListener = null;
 
     public BaseViewHolder(View itemView, BaseRecycleAdapter baseAdapter) {
         super(itemView);
         this.mClickListener = baseAdapter.mClickListener;
+        this.mSelectedListener = baseAdapter.mSelectedListener;
         initListener();
     }
 
@@ -39,6 +42,8 @@ public abstract class BaseViewHolder extends RecyclerView.ViewHolder implements
     public void onFocusChange(View v, boolean hasFocus) {
         if (hasFocus) {
             scaleToLarge(v.findViewById(getScaleLayoutId()));
+            if(mSelectedListener == null) return;
+            mSelectedListener.onItemSelect(v, mPosition);
         } else {
             scaleToNormal(v.findViewById(getScaleLayoutId()));
         }
@@ -47,7 +52,7 @@ public abstract class BaseViewHolder extends RecyclerView.ViewHolder implements
     @Override
     public void onClick(View v) {
         if(mClickListener!=null && v.getId()==getScaleLayoutId()){//item选中事件
-            mClickListener.itemSelected(v, mPosition);
+            mClickListener.onItemClick(v, mPosition);
         }
     }
 

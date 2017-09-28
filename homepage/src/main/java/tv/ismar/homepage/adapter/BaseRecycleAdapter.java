@@ -1,11 +1,10 @@
 package tv.ismar.homepage.adapter;
 
-import android.animation.ObjectAnimator;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
-import android.view.View;
 import android.view.ViewGroup;
 
+import tv.ismar.homepage.OnItemClickListener;
 import tv.ismar.homepage.OnItemSelectedListener;
 
 /**
@@ -15,7 +14,8 @@ import tv.ismar.homepage.OnItemSelectedListener;
  */
 
 public abstract class BaseRecycleAdapter<VH extends RecyclerView.ViewHolder> extends RecyclerView.Adapter<VH>{
-    public OnItemSelectedListener mClickListener = null;
+    public OnItemClickListener mClickListener = null;
+    public OnItemSelectedListener mSelectedListener = null;
 
     @Override
     public void onViewAttachedToWindow(VH holder) {
@@ -29,7 +29,11 @@ public abstract class BaseRecycleAdapter<VH extends RecyclerView.ViewHolder> ext
         }
     }
 
-    public void setOnItemSelectedListener(OnItemSelectedListener listener){
+    public void setOnItemClickListener(OnItemClickListener listener){
         this.mClickListener = listener;
+    }
+
+    public void setOnItemSelectedListener(OnItemSelectedListener listener){
+        this.mSelectedListener = listener;
     }
 }

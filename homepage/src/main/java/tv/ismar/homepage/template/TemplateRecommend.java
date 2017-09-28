@@ -15,7 +15,7 @@ import java.util.List;
 
 import tv.ismar.app.BaseControl;
 import tv.ismar.app.entity.banner.BannerRecommend;
-import tv.ismar.homepage.OnItemSelectedListener;
+import tv.ismar.homepage.OnItemClickListener;
 import tv.ismar.homepage.R;
 import tv.ismar.homepage.adapter.RecommendAdapter;
 import tv.ismar.homepage.control.FetchDataControl;
@@ -28,7 +28,7 @@ import tv.ismar.homepage.control.FetchDataControl;
 
 public class TemplateRecommend extends Template implements BaseControl.ControlCallBack,
         RecyclerViewTV.PagingableListener, LinearLayoutManagerTV.FocusSearchFailedListener,
-        OnItemSelectedListener{
+        OnItemClickListener {
     private RecyclerViewTV mRecyclerView;
     private LinearLayoutManagerTV mRecommendLayoutManager;
     private RecommendAdapter mAdapter;
@@ -71,7 +71,7 @@ public class TemplateRecommend extends Template implements BaseControl.ControlCa
         if(mAdapter == null){
             mAdapter = new RecommendAdapter(mContext, recommends);
             mRecyclerView.setAdapter(mAdapter);
-            mAdapter.setOnItemSelectedListener(this);
+            mAdapter.setOnItemClickListener(this);
         }else {
             mAdapter.notifyDataSetChanged();
         }
@@ -95,7 +95,7 @@ public class TemplateRecommend extends Template implements BaseControl.ControlCa
     }
 
     @Override
-    public void itemSelected(View view, int position) {
+    public void onItemClick(View view, int position) {
         mFetchDataControl.go2Detail(mFetchDataControl.mHomeEntity.posters.get(position));
     }
 }

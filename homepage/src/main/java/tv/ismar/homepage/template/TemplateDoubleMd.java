@@ -19,7 +19,7 @@ import com.squareup.picasso.Picasso;
 
 import tv.ismar.app.BaseControl;
 import tv.ismar.app.entity.banner.BigImage;
-import tv.ismar.homepage.OnItemSelectedListener;
+import tv.ismar.homepage.OnItemClickListener;
 import tv.ismar.homepage.R;
 import tv.ismar.homepage.adapter.DoubleMdAdapter;
 import tv.ismar.homepage.control.FetchDataControl;
@@ -33,7 +33,7 @@ import static tv.ismar.homepage.fragment.ChannelFragment.TITLE_KEY;
  */
 
 public class TemplateDoubleMd extends Template implements BaseControl.ControlCallBack,
-        OnItemSelectedListener,
+        OnItemClickListener,
         RecyclerViewTV.OnItemFocusChangeListener,
         StaggeredGridLayoutManagerTV.FocusSearchFailedListener {
     private TextView mTitleTv;//banner标题
@@ -93,7 +93,7 @@ public class TemplateDoubleMd extends Template implements BaseControl.ControlCal
     private void initRecycleView(){
         if(mAdapter == null){
             mAdapter = new DoubleMdAdapter(mContext, mFetchDataControl.mHomeEntity.posters);
-            mAdapter.setOnItemSelectedListener(this);
+            mAdapter.setOnItemClickListener(this);
             mAdapter.setHeaderView(mHeadView);
             mRecyclerView.setAdapter(mAdapter);
         }else {
@@ -131,7 +131,7 @@ public class TemplateDoubleMd extends Template implements BaseControl.ControlCal
     }
 
     @Override
-    public void itemSelected(View view, int position) {
+    public void onItemClick(View view, int position) {
         if(position == 0){//第一张大图
             mFetchDataControl.go2Detail(mFetchDataControl.mHomeEntity.bg_image);
         } else {

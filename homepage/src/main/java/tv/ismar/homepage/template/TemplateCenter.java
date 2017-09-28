@@ -15,7 +15,7 @@ import com.open.androidtvwidget.leanback.recycle.RecyclerViewTV;
 
 import tv.ismar.app.BaseControl;
 import tv.ismar.app.entity.banner.HomeEntity;
-import tv.ismar.homepage.OnItemSelectedListener;
+import tv.ismar.homepage.OnItemClickListener;
 import tv.ismar.homepage.R;
 import tv.ismar.homepage.adapter.CenterAdapter;
 import tv.ismar.homepage.control.FetchDataControl;
@@ -28,7 +28,7 @@ import tv.ismar.homepage.control.FetchDataControl;
 
 public class TemplateCenter extends Template implements BaseControl.ControlCallBack,
         RecyclerViewTV.PagingableListener, LinearLayoutManagerTV.FocusSearchFailedListener,
-        OnItemSelectedListener{
+        OnItemClickListener {
     public FetchDataControl mFetchDataControl = null;
     private TextView mHeadTitleTv;
     private TextView mHeadCountTv;
@@ -73,7 +73,7 @@ public class TemplateCenter extends Template implements BaseControl.ControlCallB
         if(mAdapter == null){
             mAdapter = new CenterAdapter(mContext, mFetchDataControl.mHomeEntity.posters);
             mRecycleView.setAdapter(mAdapter);
-            mAdapter.setOnItemSelectedListener(this);
+            mAdapter.setOnItemClickListener(this);
         }else {
             mAdapter.notifyDataSetChanged();
         }
@@ -110,7 +110,7 @@ public class TemplateCenter extends Template implements BaseControl.ControlCallB
     }
 
     @Override
-    public void itemSelected(View view, int position) {
+    public void onItemClick(View view, int position) {
         mFetchDataControl.go2Detail(mFetchDataControl.mHomeEntity.posters.get(position));
     }
 }

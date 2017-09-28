@@ -24,63 +24,41 @@ import tv.ismar.homepage.R;
  */
 
 public class GuideAdapter extends BaseRecycleAdapter<GuideAdapter.GuideViewHolder>{
-    public static final int TYPE_HEADER = 0;//头部
-    public static final int TYPE_NORMAL = 1;//一般item
-
     private Context mContext;
     private List<BannerPoster> mData;
     private boolean mMarginLeftEnable = false;
-
-    private View mHeaderView;
 
     public GuideAdapter(Context context, List<BannerPoster> data){
         this.mContext = context;
         this.mData = data;
     }
 
-    public void setHeaderView(View headerView) {
-        mHeaderView = headerView;
-        notifyItemInserted(0);
-    }
-
     @Override
     public GuideViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        if (mHeaderView != null && viewType == TYPE_HEADER)
-            return new GuideViewHolder(mHeaderView);
         View view = LayoutInflater.from(mContext).inflate(R.layout.banner_guide_item,parent,false);
         return new GuideViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(GuideViewHolder holder, int position) {
-        if(position != 0){
-            holder.mMarginLeftView.setVisibility(mMarginLeftEnable?View.VISIBLE:View.GONE);
-            BannerPoster poster = mData.get(position-1);
-            if (!TextUtils.isEmpty(poster.poster_url)) {
-                Picasso.with(mContext).load(poster.poster_url).into(holder.mPosterIg);
-            } else {
-                Picasso.with(mContext).load(R.drawable.list_item_preview_bg).into(holder.mPosterIg);
-            }
-            Picasso.with(mContext).load(VipMark.getInstance().getBannerIconMarkImage(poster.top_left_corner)).into(holder.mLtIconTv);
-            holder.mRbIconTv.setText(new DecimalFormat("0.0").format(poster.rating_average));
-            holder.mRbIconTv.setVisibility((poster.rating_average==0) ? View.GONE:View.VISIBLE);
-
-            holder.mTitleTv.setText(poster.title);
-            holder.mPosition = position;
+        holder.mMarginLeftView.setVisibility(mMarginLeftEnable?View.VISIBLE:View.GONE);
+        BannerPoster poster = mData.get(position);
+        if (!TextUtils.isEmpty(poster.poster_url)) {
+            Picasso.with(mContext).load(poster.poster_url).into(holder.mPosterIg);
+        } else {
+            Picasso.with(mContext).load(R.drawable.list_item_preview_bg).into(holder.mPosterIg);
         }
+        Picasso.with(mContext).load(VipMark.getInstance().getBannerIconMarkImage(poster.top_left_corner)).into(holder.mLtIconTv);
+        holder.mRbIconTv.setText(new DecimalFormat("0.0").format(poster.rating_average));
+        holder.mRbIconTv.setVisibility((poster.rating_average==0) ? View.GONE:View.VISIBLE);
+
+        holder.mTitleTv.setText(poster.title);
+        holder.mPosition = position;
     }
 
     @Override
     public int getItemCount() {
-        if(mData == null) return 0;
-        return (mHeaderView==null) ? mData.size() : mData.size() + 1;
-    }
-
-    @Override
-    public int getItemViewType(int position) {
-        if (mHeaderView == null) return TYPE_NORMAL;
-        if (position == 0) return TYPE_HEADER;
-        return TYPE_NORMAL;
+        return (mData!=null) ? mData.size() : 0;
     }
 
     public void setMarginLeftEnable(boolean enable){

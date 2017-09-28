@@ -22,13 +22,13 @@ import tv.ismar.app.core.SimpleRestClient;
 import tv.ismar.app.entity.banner.HomeEntity;
 import tv.ismar.app.player.CallaPlay;
 import tv.ismar.app.util.BitmapDecoder;
+import tv.ismar.homepage.OnItemClickListener;
 import tv.ismar.homepage.OnItemSelectedListener;
 import tv.ismar.homepage.R;
 import tv.ismar.homepage.adapter.GuideAdapter;
 import tv.ismar.homepage.control.FetchDataControl;
 import tv.ismar.homepage.control.GuideControl;
 import tv.ismar.homepage.widget.DaisyVideoView;
-import tv.ismar.homepage.widget.HomeItemContainer;
 
 /**
  * @AUTHOR: xi
@@ -38,13 +38,14 @@ import tv.ismar.homepage.widget.HomeItemContainer;
 
 public class TemplateGuide extends Template implements BaseControl.ControlCallBack,
         MediaPlayer.OnCompletionListener, MediaPlayer.OnErrorListener,
-        MediaPlayer.OnPreparedListener, OnItemSelectedListener,
+        MediaPlayer.OnPreparedListener, OnItemClickListener,
         RecyclerViewTV.PagingableListener,
         View.OnFocusChangeListener,
-        LinearLayoutManagerTV.FocusSearchFailedListener {
+        LinearLayoutManagerTV.FocusSearchFailedListener,
+        OnItemSelectedListener {
     private DaisyVideoView mVideoView;//导视view
     private ImageView mLoadingIg;//加载提示logo
-    private TextView mVideTitleTv;//导视标题
+    private TextView mVideoTitleTv;//导视标题
     private TextView mFirstIcon;//第一个视频指示数字
     private TextView mSecondIcon;
     private TextView mThirdIcon;
@@ -69,15 +70,15 @@ public class TemplateGuide extends Template implements BaseControl.ControlCallBa
 
     @Override
     public void getView(View view) {
-        mHeadView = LayoutInflater.from(mContext).inflate(R.layout.banner_guide_head, null);
-        mVideoView = (DaisyVideoView) mHeadView.findViewById(R.id.guide_daisy_video_view);
-        mLoadingIg = (ImageView) mHeadView.findViewById(R.id.guide_video_loading_image);
-        mVideTitleTv = (TextView) mHeadView.findViewById(R.id.guide_video_title);
-        mFirstIcon = (TextView) mHeadView.findViewById(R.id.first_video_icon);
-        mSecondIcon = (TextView) mHeadView.findViewById(R.id.second_video_icon);
-        mThirdIcon = (TextView) mHeadView.findViewById(R.id.third_video_icon);
-        mFourIcon = (TextView) mHeadView.findViewById(R.id.four_video_icon);
-        mFiveIcon = (TextView) mHeadView.findViewById(R.id.five_video_icon);
+        mHeadView = view.findViewById(R.id.banner_guide_head);
+        mVideoView = (DaisyVideoView) view.findViewById(R.id.guide_daisy_video_view);
+        mLoadingIg = (ImageView) view.findViewById(R.id.guide_video_loading_image);
+        mVideoTitleTv = (TextView) view.findViewById(R.id.guide_video_title);
+        mFirstIcon = (TextView) view.findViewById(R.id.first_video_icon);
+        mSecondIcon = (TextView) view.findViewById(R.id.second_video_icon);
+        mThirdIcon = (TextView) view.findViewById(R.id.third_video_icon);
+        mFourIcon = (TextView) view.findViewById(R.id.four_video_icon);
+        mFiveIcon = (TextView) view.findViewById(R.id.five_video_icon);
 
         mRecycleView = (RecyclerViewTV) view.findViewById(R.id.guide_recyclerview);
         mGuideLayoutManager = new LinearLayoutManagerTV(mContext, LinearLayoutManager.HORIZONTAL, false);
@@ -163,7 +164,7 @@ public class TemplateGuide extends Template implements BaseControl.ControlCallBa
             if(mAdapter == null){
                 mAdapter = new GuideAdapter(mContext, homeEntity.posters);
                 mAdapter.setMarginLeftEnable(true);
-                mAdapter.setHeaderView(mHeadView);
+                mAdapter.setOnItemClickListener(this);
                 mAdapter.setOnItemSelectedListener(this);
                 mRecycleView.setAdapter(mAdapter);
             }else {
@@ -185,7 +186,7 @@ public class TemplateGuide extends Template implements BaseControl.ControlCallBa
     /*播放导视*/
     private void playGuideVideo(int index){
         try {
-            mVideTitleTv.setText(mFetchDataControl.mCarousels.get(index).title);
+            mVideoTitleTv.setText(mFetchDataControl.mCarousels.get(index).title);
             mVideoView.setFocusable(false);
             mVideoView.setFocusableInTouchMode(false);
             String videoPath = mControl.getGuideVideoPath(index, mFetchDataControl.mCarousels);
@@ -249,7 +250,7 @@ public class TemplateGuide extends Template implements BaseControl.ControlCallBa
     }
 
     @Override
-    public void itemSelected(View view, int position) {//item点击事件
+    public void onItemClick(View view, int position) {//item点击事件
         if(position == 0){//第一张大图
             mControl.go2Detail(mFetchDataControl.mHomeEntity.bg_image);
         } else {
@@ -260,11 +261,15 @@ public class TemplateGuide extends Template implements BaseControl.ControlCallBa
     @Override
     public View onFocusSearchFailed(View focused, int focusDirection, RecyclerView.Recycler recycler, RecyclerView.State state) {
         if (focusDirection == View.FOCUS_RIGHT || focusDirection == View.FOCUS_LEFT){
-            if (mRecycleView.getChildAt(0).findViewById(R.id.guide_ismartv_linear_layout) == focused ||
-                    mRecycleView.getChildAt(mRecycleView.getChildCount() - 1).findViewById(R.id.guide_ismartv_linear_layout) == focused){
-                YoYo.with(Techniques.HorizontalShake).duration(1000).playOn(focused);
+            if (mRecycleView.getChildAt(0).findViewById(R.id.guide_ismartv_linear_layout) == focused){
+                mHeadView.requestFocus();
+                YoYo.with(Techniques.HorizontalShake).duration(1000).playOn(mHeadView);
+                return mHeadView;
             }
-            return focused;
+            if(mRecycleView.getChildAt(mRecycleView.getChildCount() - 1).findViewById(R.id.guide_ismartv_linear_layout) == focused){
+                YoYo.with(Techniques.HorizontalShake).duration(1000).playOn(focused);
+                return focused;
+            }
         }
         return null;
     }
@@ -273,5 +278,14 @@ public class TemplateGuide extends Template implements BaseControl.ControlCallBa
     public void onFocusChange(View v, boolean hasFocus) {
         mHeadView.findViewById(R.id.guide_head_ismartv_linearlayout).setFocusable(true);
         mHeadView.findViewById(R.id.guide_head_ismartv_linearlayout).requestFocus();
+    }
+
+    @Override
+    public void onItemSelect(View view, int position) {
+        if(position < 1){
+            mHeadView.setVisibility(View.VISIBLE);
+        } else {
+            mHeadView.setVisibility(View.GONE);
+        }
     }
 }

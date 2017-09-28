@@ -4,10 +4,10 @@ import android.view.View;
 
 /**
  * @AUTHOR: xi
- * @DATE: 2017/9/14
- * @DESC: item选中监听
+ * @DATE: 2017/9/28
+ * @DESC: item选中事件
  */
 
 public interface OnItemSelectedListener {
-    public void itemSelected(View view, int position);
+    void onItemSelect(View view, int position);
 }

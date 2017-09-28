@@ -14,7 +14,6 @@ import android.widget.TextView;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 import com.open.androidtvwidget.leanback.recycle.GridLayoutManagerTV;
-import com.open.androidtvwidget.leanback.recycle.LinearLayoutManagerTV;
 import com.open.androidtvwidget.leanback.recycle.RecyclerViewTV;
 import com.open.androidtvwidget.leanback.recycle.StaggeredGridLayoutManagerTV;
 import com.squareup.picasso.Picasso;
@@ -25,7 +24,7 @@ import tv.ismar.app.BaseControl;
 import tv.ismar.app.core.VipMark;
 import tv.ismar.app.entity.banner.BigImage;
 import tv.ismar.app.entity.banner.HomeEntity;
-import tv.ismar.homepage.OnItemSelectedListener;
+import tv.ismar.homepage.OnItemClickListener;
 import tv.ismar.homepage.R;
 import tv.ismar.homepage.adapter.DoubleLdAdapter;
 import tv.ismar.homepage.control.FetchDataControl;
@@ -37,7 +36,7 @@ import tv.ismar.homepage.control.FetchDataControl;
  */
 
 public class TemplateDoubleLd extends Template implements BaseControl.ControlCallBack,
-        OnItemSelectedListener, RecyclerViewTV.OnItemFocusChangeListener,
+        OnItemClickListener, RecyclerViewTV.OnItemFocusChangeListener,
         StaggeredGridLayoutManagerTV.FocusSearchFailedListener {
     private int mSelectItemPosition = 1;//标题--选中海报位置
     private TextView mTitleTv;//banner标题;
@@ -97,7 +96,7 @@ public class TemplateDoubleLd extends Template implements BaseControl.ControlCal
         if(homeEntity != null){
             if(mAdapter == null){
                 mAdapter = new DoubleLdAdapter(mContext, homeEntity.posters);
-                mAdapter.setOnItemSelectedListener(this);
+                mAdapter.setOnItemClickListener(this);
                 mAdapter.setHeaderView(mHeadView);
                 mRecyclerView.setAdapter(mAdapter);
             }else {
@@ -131,7 +130,7 @@ public class TemplateDoubleLd extends Template implements BaseControl.ControlCal
     }
 
     @Override
-    public void itemSelected(View view, int position) {
+    public void onItemClick(View view, int position) {
         if(position == 0){//第一张大图
             mFetchDataControl.go2Detail(mFetchDataControl.mHomeEntity.bg_image);
         } else {
