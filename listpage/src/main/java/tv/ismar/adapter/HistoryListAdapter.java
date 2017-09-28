@@ -12,6 +12,8 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.daimajia.androidanimations.library.Techniques;
+import com.daimajia.androidanimations.library.YoYo;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -101,8 +103,9 @@ public class HistoryListAdapter extends RecyclerView.Adapter<HistoryListAdapter.
             holder.more.setVisibility(View.VISIBLE);
             holder.item_time_node.setVisibility(View.GONE);
             holder.item_time.setVisibility(View.GONE);
-
+            holder.item_detail.setNextFocusRightId(holder.item_detail.getId());
         }
+
         holder.item_detail.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
@@ -135,6 +138,9 @@ public class HistoryListAdapter extends RecyclerView.Adapter<HistoryListAdapter.
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 if(event.getAction()==KeyEvent.ACTION_DOWN){
                     itemKeyListener.onItemKeyListener(v,keyCode,event);
+                    if(position==items.size()-1&&keyCode==22){
+                        YoYo.with(Techniques.HorizontalShake).duration(1000).playOn(holder.item_detail);
+                    }
                 }
                 return false;
             }

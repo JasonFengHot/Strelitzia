@@ -605,6 +605,7 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
     public boolean onHover(View v, MotionEvent event) {
         switch (event.getAction()){
             case MotionEvent.ACTION_HOVER_ENTER:
+                if(!isEdit)
                 v.requestFocusFromTouch();
                 break;
         }
@@ -615,9 +616,11 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
     public void OnItemOnhoverlistener(View v, MotionEvent event, int position, int recommend) {
         switch (event.getAction()){
             case MotionEvent.ACTION_HOVER_ENTER:
-                    historyRecycler.setHoverd(true);
-                    favoriteRecycler.setHoverd(true);
+                if(!isEdit) {
+                    historyRecycler.setHovered(true);
+                    favoriteRecycler.setHovered(true);
                     v.requestFocusFromTouch();
+                }
                     break;
 
         }
@@ -625,8 +628,8 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
 
     @Override
     public void onItemKeyListener(View v, int keyCode, KeyEvent event) {
-        historyRecycler.setHoverd(false);
-        favoriteRecycler.setHoverd(false);
+        historyRecycler.setHovered(false);
+        favoriteRecycler.setHovered(false);
     }
 
 
