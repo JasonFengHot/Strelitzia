@@ -198,13 +198,25 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
             ChannelEntity[] channelEntities = (ChannelEntity[]) args;
             fillChannelTab(channelEntities);
         }
-        if(flags == TAB_CHANGE_FALG){
+        if(flags == TAB_CHANGE_FALG){//频道切换
             int position = (int) args[0];
             if(mFetchDataControl.mChannels!=null && mFetchDataControl.mChannels.length>position){
                 ChannelFragment channelFragment = new ChannelFragment();
-                channelFragment.setChannel( mFetchDataControl.mChannels[position].getChannel(),
-                        mFetchDataControl.mChannels[position].getName(),
-                        mFetchDataControl.mChannels[position].getStyle());
+                switch(position){
+                    case 0://搜索
+                        PageIntent intent = new PageIntent();
+                        intent.toSearch(this);
+                        break;
+                    case 1://首页
+                        channelFragment.setChannel(HOME_PAGE_CHANNEL_TAG, "首页", 0);
+                        break;
+                    default://其他频道
+                        if(position-2<0) return;
+                        channelFragment.setChannel( mFetchDataControl.mChannels[position-2].getChannel(),
+                                mFetchDataControl.mChannels[position-2].getName(),
+                                mFetchDataControl.mChannels[position-2].getStyle());
+                        break;
+                }
                 if(position > mLastSelectedIndex){//右切
                     replaceFragment(channelFragment, "right");
                 }if(position < mLastSelectedIndex){//左切

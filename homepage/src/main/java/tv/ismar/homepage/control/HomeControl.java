@@ -42,7 +42,7 @@ public class HomeControl extends BaseControl{
 
                     @Override
                     public void onNext(Integer position) {
-                        mCallBack.callBack(TAB_CHANGE_FALG, position);
+                        mCallBack.callBack(TAB_CHANGE_FALG, position);//0-搜索，1-首页
                     }
                 });
 
