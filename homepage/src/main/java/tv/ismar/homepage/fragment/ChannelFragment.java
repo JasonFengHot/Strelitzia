@@ -88,7 +88,7 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
     public static final String URL_KEY = "url";
     public static final String BANNER_KEY = "banner";
     public static final String TEMPLATE_KEY = "template";
-
+    public static final String CHANNEL_KEY= "channel";
     /*初始化banner视图*/
     private void initBanner(GuideBanner[] data){
         if(data==null || data.length<=0){
@@ -105,6 +105,7 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
             bundle.putString(URL_KEY, data[position].banner_url);
             bundle.putInt(BANNER_KEY, data[position].page_banner_pk);
             bundle.putString(TEMPLATE_KEY, template);
+            bundle.putString(CHANNEL_KEY, mChannel);
             if(template.equals("template_guide")){//导视
                 layoutId = R.layout.banner_guide;
                 bannerView = createView(R.layout.banner_guide);
