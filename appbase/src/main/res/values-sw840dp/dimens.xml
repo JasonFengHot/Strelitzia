@@ -774,4 +774,19 @@
 <dimen name="msg_text_item_text_h">40.44dp</dimen>
 <dimen name="msg_text_item_text_ts">28.00dp</dimen>
 <dimen name="msg_text_item_text_mb">15.56dp</dimen>
+
+<!--升级提示�?-->
+<dimen name="popup_update_w">831.44dp</dimen>
+<dimen name="popup_update_h">636.22dp</dimen>
+<dimen name="popup_update_mt">77.78dp</dimen>
+<dimen name="popup_update_ml">330.56dp</dimen>
+<dimen name="popup_update_pt">235.67dp</dimen>
+<dimen name="popup_update_text_w">682.89dp</dimen>
+<dimen name="popup_update_text_h">40.44dp</dimen>
+<dimen name="popup_update_text_ts">28.00dp</dimen>
+<dimen name="popup_update_text_mt">34.22dp</dimen>
+<dimen name="popup_update_btn_mt">39.67dp</dimen>
+<dimen name="popup_update_btn_w">234.89dp</dimen>
+<dimen name="popup_update_btn_h">56.78dp</dimen>
+<dimen name="popup_update_btn_ml">63.00dp</dimen>
 </resources>
