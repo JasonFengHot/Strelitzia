@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/home_head_layout"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="@dimen/guide_title_height"
     android:gravity="center_vertical">
 
     <ImageView
@@ -15,12 +15,13 @@
         android:focusableInTouchMode="true"
         android:foregroundGravity="left|top"/>
 
-    <TextView
+    <ImageView
         android:layout_width="@dimen/guide_title_logo_width"
         android:layout_height="@dimen/guide_title_logo_height"
         android:layout_marginLeft="@dimen/guide_title_logo_margin_left"
         android:layout_marginTop="@dimen/guide_title_logo_margin_top"
-        android:background="@drawable/baishi_logo" />
+        android:scaleType="fitXY"
+        android:src="@drawable/baishi_logo"/>
 
     <RelativeLayout
         android:layout_width="@dimen/guide_title_react_width"

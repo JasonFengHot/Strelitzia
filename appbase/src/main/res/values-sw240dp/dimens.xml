@@ -632,7 +632,7 @@
 
 <!--首页 begin-->
 <!--标题尺寸-->
-<dimen name="guide_title_height">8.89dp</dimen>
+<dimen name="guide_title_height">22.67dp</dimen>
 <dimen name="guide_title_logo_width">93.56dp</dimen>
 <dimen name="guide_title_logo_height">13.78dp</dimen>
 <dimen name="guide_title_text_size">6.67dp</dimen>

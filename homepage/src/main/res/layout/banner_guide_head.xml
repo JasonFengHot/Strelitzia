@@ -36,13 +36,18 @@
                 android:focusable="false"
                 android:visibility="gone" />
 
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/guide_video_title_height"
+                android:layout_gravity="bottom"
+                android:background="@drawable/banner_subscrib_introduction_bg"/>
+
             <TextView
                 android:id="@+id/guide_video_title"
                 android:layout_width="@dimen/guide_video_title_width"
                 android:layout_height="@dimen/guide_video_title_height"
                 android:layout_gravity="left|bottom"
                 android:text="变形金刚5:最后的骑士"
-                android:background="@drawable/banner_subscrib_introduction_bg"
                 android:textColor="#ffffff"
                 android:singleLine="true"
                 android:textSize="@dimen/guide_video_title_size" />
@@ -51,7 +56,6 @@
                 android:layout_height="@dimen/guide_video_title_height"
                 android:layout_gravity="bottom|right"
                 android:focusable="false"
-                android:background="@drawable/banner_subscrib_introduction_bg"
                 android:orientation="horizontal">
 
                 <TextView
