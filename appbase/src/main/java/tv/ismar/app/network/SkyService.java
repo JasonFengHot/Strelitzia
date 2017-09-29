@@ -829,7 +829,7 @@ public interface SkyService {
                     .addInterceptor(VodApplication.getHttpParamsInterceptor())
                     .addInterceptor(VodApplication.getModuleAppContext().getCacheInterceptor())
                     .addInterceptor(interceptor)
-                    .addNetworkInterceptor(VodApplication.getModuleAppContext().getCacheInterceptor())
+//                    .addNetworkInterceptor(VodApplication.getModuleAppContext().getCacheInterceptor())
                     .addInterceptor(new UserAgentInterceptor())
 //                    .dns(new Dns() {
 //                        @Override
