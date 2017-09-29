@@ -225,6 +225,14 @@ public class HistoryFavoritrListActivity extends BaseActivity implements OnItemC
             adapter.notifyDataSetChanged();
             if(mlists.size()==0){
                 clearAll.setVisibility(View.GONE);
+            }else{
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        if(recyclerView.getChildAt(0)!=null)
+                            recyclerView.getChildAt(0).requestFocusFromTouch();
+                    }
+                },200);
             }
         }else{
             removeSub = skyService.apiHistoryRemove(pk, item_pk).subscribeOn(Schedulers.io())
@@ -241,6 +249,14 @@ public class HistoryFavoritrListActivity extends BaseActivity implements OnItemC
                             adapter.notifyDataSetChanged();
                             if(mlists.size()==0){
                                 clearAll.setVisibility(View.GONE);
+                            }else{
+                                new Handler().postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        if(recyclerView.getChildAt(0)!=null)
+                                            recyclerView.getChildAt(0).requestFocusFromTouch();
+                                    }
+                                },200);
                             }
                         }
                     });
@@ -253,6 +269,14 @@ public class HistoryFavoritrListActivity extends BaseActivity implements OnItemC
             adapter.notifyDataSetChanged();
             if(mlists.size()==0){
                 clearAll.setVisibility(View.GONE);
+            }else{
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        if(recyclerView.getChildAt(0)!=null)
+                            recyclerView.getChildAt(0).requestFocusFromTouch();
+                    }
+                },200);
             }
         }else {
             removeSub = skyService.apiBookmarksRemove(pk+"").subscribeOn(Schedulers.io())
@@ -269,6 +293,14 @@ public class HistoryFavoritrListActivity extends BaseActivity implements OnItemC
                             adapter.notifyDataSetChanged();
                             if(mlists.size()==0){
                                 clearAll.setVisibility(View.GONE);
+                            }else{
+                                new Handler().postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        if(recyclerView.getChildAt(0)!=null)
+                                        recyclerView.getChildAt(0).requestFocusFromTouch();
+                                    }
+                                },200);
                             }
                         }
                     });
