@@ -53,6 +53,7 @@ public class TemplateMovie extends Template implements View.OnClickListener, Vie
     private LinearLayoutManagerTV movieLayoutManager;
     private String channelKey;
     private String nameKey;
+    private boolean isMore;
 
     public TemplateMovie(Context context) {
         super(context);
@@ -168,6 +169,7 @@ public class TemplateMovie extends Template implements View.OnClickListener, Vie
 
                     @Override
                     public void onNext(BannerEntity bannerEntity) {
+                        isMore = bannerEntity.is_more();
                         if (pageNumber == 1){
                             fillMovieBanner(bannerEntity);
                         }else {
@@ -211,17 +213,42 @@ public class TemplateMovie extends Template implements View.OnClickListener, Vie
 
     @Override
     public void onClick(View v) {
+        int totalItemCount = isMore ? mMovieAdapter.getTatalItemCount() + 1:mMovieAdapter.getTatalItemCount();
         int i = v.getId();
         if (i == R.id.navigation_left) {
-            if (movieLayoutManager.findFirstCompletelyVisibleItemPosition() -1 >= 0){
-                movieLayoutManager.smoothScrollToPosition(movieBanner, null, movieLayoutManager.findFirstCompletelyVisibleItemPosition() - 1);
+            if (movieLayoutManager.findFirstCompletelyVisibleItemPosition() - 1 >= 0) {
+                int targetPosition = movieLayoutManager.findFirstCompletelyVisibleItemPosition() - 6;
+                if (targetPosition >= 0) {
+                    //表示可以滑动
+                } else {
+                    targetPosition = 0;
+                }
+                setBannerItemCount(targetPosition);
+                movieLayoutManager.smoothScrollToPosition(movieBanner, null, targetPosition);
+            }else {
+//                View firstView = movieBanner.getChildAt(0).findViewById(R.id.item_layout) ;
+//                YoYo.with(Techniques.HorizontalShake).duration(1000).playOn(firstView);
             }
         } else if (i == R.id.navigation_right) {
             movieBanner.loadMore();
-            if (movieLayoutManager.findFirstCompletelyVisibleItemPosition() + 1 <= mMovieAdapter.getTatalItemCount()){
-                movieLayoutManager.smoothScrollToPosition(movieBanner, null, movieLayoutManager.findLastCompletelyVisibleItemPosition() + 1);
+            if (movieLayoutManager.findLastCompletelyVisibleItemPosition() + 1 <= totalItemCount) {
+                int targetPosition = movieLayoutManager.findLastCompletelyVisibleItemPosition() + 6;
+                if (targetPosition < totalItemCount) {
+                    //表示可以滑动
+                } else {
+                    targetPosition = totalItemCount - 1;
+                }
+                setBannerItemCount(targetPosition >= mMovieAdapter.getTatalItemCount() ? mMovieAdapter.getTatalItemCount() - 1 : targetPosition);
+                movieLayoutManager.smoothScrollToPosition(movieBanner, null, targetPosition);
+            }else {
+//                View lastView = movieBanner.getChildAt(totalItemCount - 1).findViewById(R.id.item_layout) ;
+//                YoYo.with(Techniques.HorizontalShake).duration(1000).playOn(lastView);
             }
         }
+    }
+
+    private void setBannerItemCount(int position){
+        mTitleCountTv.setText(String.format(mContext.getString(R.string.home_item_title_count), (position + 1) + "", mMovieAdapter.getTatalItemCount() + ""));
     }
 
     @Override

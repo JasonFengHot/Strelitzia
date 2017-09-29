@@ -27,7 +27,6 @@ import tv.ismar.app.network.SkyService;
 import tv.ismar.homepage.HomeActivity;
 import tv.ismar.homepage.R;
 import tv.ismar.homepage.banner.adapter.BannerHorizontal519Adapter;
-import tv.ismar.homepage.banner.adapter.BannerSubscribeAdapter;
 import tv.ismar.homepage.fragment.ChannelFragment;
 import tv.ismar.homepage.view.BannerLinearLayout;
 
@@ -54,6 +53,7 @@ public class Template519 extends Template implements View.OnClickListener, View.
     private LinearLayoutManagerTV horizontal519LayoutManager;
     private String channelName;
     private String nameKey;
+    private boolean isMore;
 
     public Template519(Context context) {
         super(context);
@@ -171,6 +171,7 @@ public class Template519 extends Template implements View.OnClickListener, View.
 
                     @Override
                     public void onNext(BannerEntity bannerEntity) {
+                        isMore = bannerEntity.is_more();
 //                        List<BannerEntity.PosterBean> posterBeanList = bannerSubscribeEntities.getPoster();
 //                        fillHorizontal519Banner(posterBeanList);
 
@@ -222,20 +223,39 @@ public class Template519 extends Template implements View.OnClickListener, View.
 
     @Override
     public void onClick(View v) {
+        int totalItemCount = isMore ? mHorizontal519Adapter.getTatalItemCount() + 1:mHorizontal519Adapter.getTatalItemCount();
         int i = v.getId();
         if (i == R.id.navigation_left) {
 //            horizontal519LayoutManager.scrollToPositionWithOffset(horizontal519Banner.findFirstVisibleItemPosition() - 1, 0);
 
-            if (horizontal519LayoutManager.findFirstCompletelyVisibleItemPosition() -1 >= 0){
-                horizontal519LayoutManager.smoothScrollToPosition(horizontal519Banner, null, horizontal519LayoutManager.findFirstCompletelyVisibleItemPosition() - 1);
+            if (horizontal519LayoutManager.findFirstCompletelyVisibleItemPosition() - 1 >= 0) {
+                int targetPosition = horizontal519LayoutManager.findFirstCompletelyVisibleItemPosition() - 3;
+                if (targetPosition >= 0) {
+                    //表示可以滑动
+                } else {
+                    targetPosition = 0;
+                }
+                setBannerItemCount(targetPosition);
+                horizontal519LayoutManager.smoothScrollToPosition(horizontal519Banner, null, targetPosition);
             }
         } else if (i == R.id.navigation_right) {
             horizontal519Banner.loadMore();
 
-            if (horizontal519LayoutManager.findFirstCompletelyVisibleItemPosition() + 1 <= mHorizontal519Adapter.getTatalItemCount()){
-                horizontal519LayoutManager.smoothScrollToPosition(horizontal519Banner, null, horizontal519LayoutManager.findLastCompletelyVisibleItemPosition() + 1);
+            if (horizontal519LayoutManager.findLastCompletelyVisibleItemPosition() + 1 <= mHorizontal519Adapter.getTatalItemCount()) {
+                int targetPosition = horizontal519LayoutManager.findLastCompletelyVisibleItemPosition() + 3;
+                if (targetPosition < totalItemCount) {
+                    //表示可以滑动
+                } else {
+                    targetPosition = totalItemCount - 1;
+                }
+                setBannerItemCount(targetPosition >= mHorizontal519Adapter.getTatalItemCount() ? mHorizontal519Adapter.getTatalItemCount() - 1:targetPosition);
+                horizontal519LayoutManager.smoothScrollToPosition(horizontal519Banner, null, targetPosition);
             }
         }
+    }
+
+    private void setBannerItemCount(int position){
+        mTitleCountTv.setText(String.format(mContext.getString(R.string.home_item_title_count), (position + 1) + "", mHorizontal519Adapter.getTatalItemCount() + ""));
     }
 
     @Override

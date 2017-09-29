@@ -26,7 +26,6 @@ import tv.ismar.app.entity.banner.BannerEntity;
 import tv.ismar.app.network.SkyService;
 import tv.ismar.homepage.HomeActivity;
 import tv.ismar.homepage.R;
-import tv.ismar.homepage.banner.adapter.BannerHorizontal519Adapter;
 import tv.ismar.homepage.banner.adapter.BannerMovieMixAdapter;
 import tv.ismar.homepage.fragment.ChannelFragment;
 import tv.ismar.homepage.view.BannerLinearLayout;
@@ -55,6 +54,7 @@ public class TemplateBigSmallLd extends Template implements View.OnHoverListener
     private LinearLayoutManagerTV movieMixLayoutManager;
     private String channelName;
     private String nameKey;
+    private boolean isMore;
 
     public TemplateBigSmallLd(Context context) {
         super(context);
@@ -176,6 +176,7 @@ public class TemplateBigSmallLd extends Template implements View.OnHoverListener
 
                     @Override
                     public void onNext(BannerEntity bannerEntity) {
+                        isMore = bannerEntity.is_more();
                         if (pageNumber == 1){
                             fillMovieMixBanner(bannerEntity);
                         }else {
@@ -219,17 +220,43 @@ public class TemplateBigSmallLd extends Template implements View.OnHoverListener
 
     @Override
     public void onClick(View v) {
+        int totalItemCount = isMore ? adapter.getTatalItemCount() + 1 : adapter.getTatalItemCount();
         int i = v.getId();
         if (i == R.id.navigation_left) {
-            if (movieMixLayoutManager.findFirstCompletelyVisibleItemPosition() -1 >= 0){
-                movieMixLayoutManager.smoothScrollToPosition(movieMixBanner, null, movieMixLayoutManager.findFirstCompletelyVisibleItemPosition() - 1);
+            if (movieMixLayoutManager.findFirstCompletelyVisibleItemPosition() - 1 >= 0) {
+                int targetPosition = movieMixLayoutManager.findFirstCompletelyVisibleItemPosition() - 6;
+                if (targetPosition >= 0) {
+                    //表示可以滑动
+                } else {
+                    targetPosition = 0;
+                }
+                setBannerItemCount(targetPosition);
+                movieMixLayoutManager.smoothScrollToPosition(movieMixBanner, null, targetPosition);
+            } else {
+//                View firstView = movieMixBanner.getChildAt(0).findViewById(R.id.item_layout);
+//                YoYo.with(Techniques.HorizontalShake).duration(1000).playOn(firstView);
             }
         } else if (i == R.id.navigation_right) {
             movieMixBanner.loadMore();
-            if (movieMixLayoutManager.findFirstCompletelyVisibleItemPosition() + 1 <= adapter.getTatalItemCount()){
-                movieMixLayoutManager.smoothScrollToPosition(movieMixBanner, null, movieMixLayoutManager.findLastCompletelyVisibleItemPosition() + 1);
+
+            if (movieMixLayoutManager.findLastCompletelyVisibleItemPosition() + 1 <= totalItemCount) {
+                int targetPosition = movieMixLayoutManager.findLastCompletelyVisibleItemPosition() + 6;
+                if (targetPosition < totalItemCount) {
+                    //表示可以滑动
+                } else {
+                    targetPosition = totalItemCount - 1;
+                }
+                setBannerItemCount(targetPosition >= adapter.getTatalItemCount() ? adapter.getTatalItemCount() -1 : targetPosition);
+                movieMixLayoutManager.smoothScrollToPosition(movieMixBanner, null, targetPosition);
+            } else {
+//                View lastView = movieMixBanner.getChildAt(totalItemCount - 1).findViewById(R.id.item_layout) ;
+//                YoYo.with(Techniques.HorizontalShake).duration(1000).playOn(lastView);
             }
         }
+    }
+
+    private void setBannerItemCount(int position){
+        mTitleCountTv.setText(String.format(mContext.getString(R.string.home_item_title_count), (position + 1) + "", adapter.getTatalItemCount() + ""));
     }
 
     @Override
