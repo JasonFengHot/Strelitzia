@@ -244,6 +244,7 @@ public class TemplateGuide extends Template implements BaseControl.ControlCallBa
         HomeEntity homeEntity = mFetchDataControl.mHomeEntity;
         if(homeEntity != null){
             if(homeEntity.page < homeEntity.num_pages){
+                mRecycleView.setOnLoadMoreComplete();
                 mFetchDataControl.fetchBanners(mBannerPk, ++homeEntity.page, true);
             }
         }

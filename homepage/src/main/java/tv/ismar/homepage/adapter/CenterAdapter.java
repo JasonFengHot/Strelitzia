@@ -42,9 +42,14 @@ public class CenterAdapter extends BaseRecycleAdapter<CenterAdapter.CenterViewHo
         BannerPoster poster = mData.get(position);
         holder.mTitle.setText(poster.title);
         if (!TextUtils.isEmpty(poster.poster_url)) {
-            Picasso.with(mContext).load(poster.poster_url).into(holder.mPoster);
+            if(poster.poster_url.equals("更多")){
+                Picasso.with(mContext).load(R.drawable.banner_vertical_more).into(holder.mPosterIg);
+            } else {
+                Picasso.with(mContext).load(poster.poster_url).into(holder.mPosterIg);
+            }
+            Picasso.with(mContext).load(poster.poster_url).into(holder.mPosterIg);
         } else {
-            Picasso.with(mContext).load(R.drawable.list_item_preview_bg).into(holder.mPoster);
+            Picasso.with(mContext).load(R.drawable.list_item_preview_bg).into(holder.mPosterIg);
         }
     }
 
@@ -55,12 +60,12 @@ public class CenterAdapter extends BaseRecycleAdapter<CenterAdapter.CenterViewHo
 
     public class CenterViewHolder extends BaseViewHolder{
         public TextView mTitle;
-        public ImageView mPoster;
+        public ImageView mPosterIg;
 
         public CenterViewHolder(View itemView) {
             super(itemView, CenterAdapter.this);
             mTitle = (TextView) itemView.findViewById(R.id.center_item_title);
-            mPoster = (ImageView) itemView.findViewById(R.id.center_item_poster);
+            mPosterIg = (ImageView) itemView.findViewById(R.id.center_item_poster);
         }
 
         @Override

@@ -6,6 +6,7 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -29,6 +30,9 @@ import tv.ismar.homepage.R;
 import tv.ismar.homepage.adapter.DoubleLdAdapter;
 import tv.ismar.homepage.control.FetchDataControl;
 
+import static tv.ismar.homepage.fragment.ChannelFragment.BANNER_KEY;
+import static tv.ismar.homepage.fragment.ChannelFragment.TITLE_KEY;
+
 /**
  * @AUTHOR: xi
  * @DATE: 2017/8/29
@@ -36,7 +40,7 @@ import tv.ismar.homepage.control.FetchDataControl;
  */
 
 public class TemplateDoubleLd extends Template implements BaseControl.ControlCallBack,
-        OnItemClickListener, RecyclerViewTV.OnItemFocusChangeListener,
+        OnItemClickListener, RecyclerViewTV.OnItemFocusChangeListener, RecyclerViewTV.PagingableListener,
         StaggeredGridLayoutManagerTV.FocusSearchFailedListener {
     private int mSelectItemPosition = 1;//标题--选中海报位置
     private TextView mTitleTv;//banner标题;
@@ -84,11 +88,12 @@ public class TemplateDoubleLd extends Template implements BaseControl.ControlCal
         mDoubleLayoutManager.setFocusSearchFailedListener(this);
     }
 
+    private int mBannerPk;//banner标记
     @Override
     public void initData(Bundle bundle) {
-        mTitleTv.setText(bundle.getString("title"));
-        mTitleCountTv.setText(String.format(mContext.getString(R.string.home_item_title_count), 1+"", 40+""));
-        mFetchDataControl.fetchBanners(bundle.getInt("banner"), 1, false);
+        mTitleTv.setText(bundle.getString(TITLE_KEY));
+        mBannerPk = bundle.getInt(BANNER_KEY);
+        mFetchDataControl.fetchBanners(mBannerPk, 1, false);
     }
 
     private void initRecycleView(){
@@ -155,5 +160,17 @@ public class TemplateDoubleLd extends Template implements BaseControl.ControlCal
             return focused;
         }
         return null;
+    }
+
+    @Override
+    public void onLoadMoreItems() {
+        Log.i(TAG, "onLoadMoreItems");
+        HomeEntity homeEntity = mFetchDataControl.mHomeEntity;
+        if(homeEntity != null){
+            if(homeEntity.page < homeEntity.num_pages){
+                mRecyclerView.setOnLoadMoreComplete();
+                mFetchDataControl.fetchBanners(mBannerPk, ++homeEntity.page, true);
+            }
+        }
     }
 }

@@ -91,6 +91,7 @@ public class TemplateConlumn extends Template implements BaseControl.ControlCall
         HomeEntity homeEntity = mFetchDataControl.mHomeEntity;
         if(homeEntity != null){
             if(homeEntity.page < homeEntity.num_pages){
+                mRecyclerView.setOnLoadMoreComplete();
                 mFetchDataControl.fetchBanners(mBannerPk, ++homeEntity.page, true);
             }
         }
