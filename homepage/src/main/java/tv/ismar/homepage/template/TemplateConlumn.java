@@ -16,6 +16,7 @@ import com.open.androidtvwidget.leanback.recycle.RecyclerViewTV;
 import java.util.List;
 
 import tv.ismar.app.BaseControl;
+import tv.ismar.app.core.PageIntent;
 import tv.ismar.app.entity.banner.BannerPoster;
 import tv.ismar.app.entity.banner.HomeEntity;
 import tv.ismar.homepage.OnItemClickListener;
@@ -23,6 +24,9 @@ import tv.ismar.homepage.R;
 import tv.ismar.homepage.adapter.ConlumnAdapter;
 import tv.ismar.homepage.control.FetchDataControl;
 import tv.ismar.homepage.fragment.ChannelFragment;
+
+import static tv.ismar.homepage.fragment.ChannelFragment.CHANNEL_KEY;
+import static tv.ismar.homepage.fragment.ChannelFragment.NAME_KEY;
 
 /**
  * @AUTHOR: xi
@@ -33,7 +37,6 @@ import tv.ismar.homepage.fragment.ChannelFragment;
 public class TemplateConlumn extends Template implements BaseControl.ControlCallBack,
         RecyclerViewTV.PagingableListener, LinearLayoutManagerTV.FocusSearchFailedListener ,
         OnItemClickListener {
-    private TextView mTitleTv;//banner标题
     private TextView mIndexTv;//选中位置
     private RecyclerViewTV mRecyclerView;
     private LinearLayoutManagerTV mConlumnLayoutManager;
@@ -47,7 +50,6 @@ public class TemplateConlumn extends Template implements BaseControl.ControlCall
 
     @Override
     public void getView(View view) {
-        mTitleTv = (TextView) view.findViewById(R.id.banner_title_tv);
         mTitleCountTv = (TextView) view.findViewById(R.id.banner_title_count);
         mRecyclerView = (RecyclerViewTV) view.findViewById(R.id.conlumn_recyclerview);
         mConlumnLayoutManager = new LinearLayoutManagerTV(mContext, LinearLayoutManager.HORIZONTAL, false);
@@ -58,10 +60,13 @@ public class TemplateConlumn extends Template implements BaseControl.ControlCall
     }
 
     private int mBannerPk;
+    private String mName;//频道名称（中文）
+    private String mChannel;//频道名称（英文）
     @Override
     public void initData(Bundle bundle) {
         mBannerPk = bundle.getInt(ChannelFragment.BANNER_KEY);
-        mTitleTv.setText(bundle.getString(ChannelFragment.TITLE_KEY));
+        mName = bundle.getString(NAME_KEY);
+        mChannel = bundle.getString(CHANNEL_KEY);
         mFetchDataControl.fetchBanners(mBannerPk, 1, false);
     }
 
@@ -94,6 +99,7 @@ public class TemplateConlumn extends Template implements BaseControl.ControlCall
         HomeEntity homeEntity = mFetchDataControl.mHomeEntity;
         if(homeEntity != null){
             if(homeEntity.page < homeEntity.num_pages){
+                mRecyclerView.setOnLoadMoreComplete();
                 mFetchDataControl.fetchBanners(mBannerPk, ++homeEntity.page, true);
             }
         }
@@ -113,7 +119,10 @@ public class TemplateConlumn extends Template implements BaseControl.ControlCall
 
     @Override
     public void onItemClick(View view, int position) {
-        //推荐这个跳转要再确认下
-//        mFetchDataControl.go2Detail(mFetchDataControl.mRecommends.get(position));
+        if(position == mFetchDataControl.mHomeEntity.count-1){
+            new PageIntent().toListPage(mContext, mName, mChannel, 0);
+        }else {
+            mFetchDataControl.go2Detail(mFetchDataControl.mHomeEntity.posters.get(position));
+        }
     }
 }

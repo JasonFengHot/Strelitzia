@@ -6,6 +6,7 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -18,12 +19,17 @@ import com.open.androidtvwidget.leanback.recycle.StaggeredGridLayoutManagerTV;
 import com.squareup.picasso.Picasso;
 
 import tv.ismar.app.BaseControl;
+import tv.ismar.app.core.PageIntent;
 import tv.ismar.app.entity.banner.BigImage;
+import tv.ismar.app.entity.banner.HomeEntity;
 import tv.ismar.homepage.OnItemClickListener;
 import tv.ismar.homepage.R;
 import tv.ismar.homepage.adapter.DoubleMdAdapter;
 import tv.ismar.homepage.control.FetchDataControl;
 
+import static tv.ismar.homepage.fragment.ChannelFragment.BANNER_KEY;
+import static tv.ismar.homepage.fragment.ChannelFragment.CHANNEL_KEY;
+import static tv.ismar.homepage.fragment.ChannelFragment.NAME_KEY;
 import static tv.ismar.homepage.fragment.ChannelFragment.TITLE_KEY;
 
 /**
@@ -33,7 +39,7 @@ import static tv.ismar.homepage.fragment.ChannelFragment.TITLE_KEY;
  */
 
 public class TemplateDoubleMd extends Template implements BaseControl.ControlCallBack,
-        OnItemClickListener,
+        OnItemClickListener, RecyclerViewTV.PagingableListener,
         RecyclerViewTV.OnItemFocusChangeListener,
         StaggeredGridLayoutManagerTV.FocusSearchFailedListener {
     private TextView mTitleTv;//banner标题
@@ -78,10 +84,16 @@ public class TemplateDoubleMd extends Template implements BaseControl.ControlCal
         mDoubleLayoutManager.setFocusSearchFailedListener(this);
     }
 
+    private int mBannerPk;//banner标记
+    private String mName;//频道名称（中文）
+    private String mChannel;//频道名称（英文）
     @Override
     public void initData(Bundle bundle) {
         mTitleTv.setText(bundle.getString(TITLE_KEY));
-        mFetchDataControl.fetchBanners(bundle.getInt("banner"), 1, false);
+        mBannerPk = bundle.getInt(BANNER_KEY);
+        mName = bundle.getString(NAME_KEY);
+        mChannel = bundle.getString(CHANNEL_KEY);
+        mFetchDataControl.fetchBanners(mBannerPk, 1, false);
     }
 
     private void initTitle(){
@@ -134,7 +146,9 @@ public class TemplateDoubleMd extends Template implements BaseControl.ControlCal
     public void onItemClick(View view, int position) {
         if(position == 0){//第一张大图
             mFetchDataControl.go2Detail(mFetchDataControl.mHomeEntity.bg_image);
-        } else {
+        } else if(position == mFetchDataControl.mHomeEntity.count-1){
+            new PageIntent().toListPage(mContext, mName, mChannel, 0);
+        }else {
             mFetchDataControl.go2Detail(mFetchDataControl.mHomeEntity.posters.get(position));
         }
     }
@@ -149,5 +163,17 @@ public class TemplateDoubleMd extends Template implements BaseControl.ControlCal
             return focused;
         }
         return null;
+    }
+
+    @Override
+    public void onLoadMoreItems() {
+        Log.i(TAG, "onLoadMoreItems");
+        HomeEntity homeEntity = mFetchDataControl.mHomeEntity;
+        if(homeEntity != null){
+            if(homeEntity.page < homeEntity.num_pages){
+                mRecyclerView.setOnLoadMoreComplete();
+                mFetchDataControl.fetchBanners(mBannerPk, ++homeEntity.page, true);
+            }
+        }
     }
 }

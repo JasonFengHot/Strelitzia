@@ -18,6 +18,7 @@ import com.open.androidtvwidget.leanback.recycle.LinearLayoutManagerTV;
 import com.open.androidtvwidget.leanback.recycle.RecyclerViewTV;
 
 import tv.ismar.app.BaseControl;
+import tv.ismar.app.core.PageIntent;
 import tv.ismar.app.core.SimpleRestClient;
 import tv.ismar.app.entity.banner.HomeEntity;
 import tv.ismar.app.player.CallaPlay;
@@ -28,7 +29,12 @@ import tv.ismar.homepage.R;
 import tv.ismar.homepage.adapter.GuideAdapter;
 import tv.ismar.homepage.control.FetchDataControl;
 import tv.ismar.homepage.control.GuideControl;
+import tv.ismar.homepage.fragment.ChannelFragment;
 import tv.ismar.homepage.widget.DaisyVideoView;
+
+import static tv.ismar.homepage.fragment.ChannelFragment.BANNER_KEY;
+import static tv.ismar.homepage.fragment.ChannelFragment.CHANNEL_KEY;
+import static tv.ismar.homepage.fragment.ChannelFragment.NAME_KEY;
 
 /**
  * @AUTHOR: xi
@@ -87,9 +93,13 @@ public class TemplateGuide extends Template implements BaseControl.ControlCallBa
     }
 
     private int mBannerPk;//banner标记
+    private String mName;//频道名称（中文）
+    private String mChannel;//频道名称（英文）
     @Override
     public void initData(Bundle bundle) {
-        mBannerPk = bundle.getInt("banner");
+        mBannerPk = bundle.getInt(BANNER_KEY);
+        mName = bundle.getString(NAME_KEY);
+        mChannel = bundle.getString(CHANNEL_KEY);
         mFetchDataControl.fetchBanners(mBannerPk, 1, false);
         mVideoView.setTag(0);
         mBitmapDecoder = new BitmapDecoder();
@@ -244,6 +254,7 @@ public class TemplateGuide extends Template implements BaseControl.ControlCallBa
         HomeEntity homeEntity = mFetchDataControl.mHomeEntity;
         if(homeEntity != null){
             if(homeEntity.page < homeEntity.num_pages){
+                mRecycleView.setOnLoadMoreComplete();
                 mFetchDataControl.fetchBanners(mBannerPk, ++homeEntity.page, true);
             }
         }
@@ -253,7 +264,9 @@ public class TemplateGuide extends Template implements BaseControl.ControlCallBa
     public void onItemClick(View view, int position) {//item点击事件
         if(position == 0){//第一张大图
             mControl.go2Detail(mFetchDataControl.mHomeEntity.bg_image);
-        } else {
+        } else if(position == mFetchDataControl.mHomeEntity.count-1){
+            new PageIntent().toListPage(mContext, mName, mChannel, 0);
+        }else {
             mControl.go2Detail(mFetchDataControl.mHomeEntity.posters.get(position));
         }
     }

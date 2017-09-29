@@ -15,6 +15,7 @@ import java.util.List;
 
 import tv.ismar.app.BaseControl;
 import tv.ismar.app.entity.banner.BannerRecommend;
+import tv.ismar.app.entity.banner.HomeEntity;
 import tv.ismar.homepage.OnItemClickListener;
 import tv.ismar.homepage.R;
 import tv.ismar.homepage.adapter.RecommendAdapter;
@@ -91,7 +92,6 @@ public class TemplateRecommend extends Template implements BaseControl.ControlCa
 
     @Override
     public void onLoadMoreItems() {
-
     }
 
     @Override

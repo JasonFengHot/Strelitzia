@@ -15,7 +15,6 @@
         android:clipToPadding="false"
         android:focusable="true"
         android:focusableInTouchMode="true"
-        android:layout_marginTop="@dimen/double_ld_poster_padding"
         android:layout_marginLeft="@dimen/double_ld_poster_padding"
         android:foreground="@drawable/selector_item_banner_subscribe"
         android:orientation="vertical">

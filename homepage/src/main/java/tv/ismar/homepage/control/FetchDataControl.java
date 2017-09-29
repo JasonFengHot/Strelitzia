@@ -243,6 +243,13 @@ public class FetchDataControl extends BaseControl{
                                     }
                                     mPoster.addAll(homeEntities.posters);
                                 }
+                                if(mHomeEntity.page==mHomeEntity.num_pages && mHomeEntity.is_more){//最后一页更多按钮
+                                    BannerPoster morePoster = new BannerPoster();
+                                    morePoster.poster_url = "更多";
+                                    morePoster.title = "";
+                                    mHomeEntity.posters.add(morePoster);
+                                    mPoster.add(morePoster);
+                                }
                             }
                             if(mCallBack != null){
                                 mCallBack.callBack(FETCH_BANNERS_LIST_FLAG, homeEntities);
