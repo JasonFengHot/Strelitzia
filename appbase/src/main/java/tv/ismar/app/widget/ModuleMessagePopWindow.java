@@ -16,14 +16,14 @@ import tv.ismar.app.R;
  * Created by huaijie on 9/24/15.
  */
 public class ModuleMessagePopWindow extends PopupWindow implements View.OnClickListener {
-    private Button confirmBtn;
-    private Button cancelBtn;
+    private Button popup_tip_confirm;
+    private Button popup_tip_cancel;
     private ConfirmListener confirmListener;
     private CancelListener cancleListener;
     public boolean isConfirmClick = false;
 
     private Context mContext;
-    private LinearLayout popup_content;
+    private final TextView popup_tip_msg;
 
     public interface CancelListener {
         void cancelClick(View view);
@@ -43,15 +43,13 @@ public class ModuleMessagePopWindow extends PopupWindow implements View.OnClickL
         setWidth(screenWidth);
         setHeight(screenHeight);
 
-        View contentView = LayoutInflater.from(context).inflate(R.layout.popup_layout_style1, null);
-        TextView popup_title= (TextView) contentView.findViewById(R.id.popup_title);
-        confirmBtn = (Button) contentView.findViewById(R.id.popup_btn_confirm);
-        cancelBtn = (Button) contentView.findViewById(R.id.popup_btn_cancel);
-        popup_content = (LinearLayout) contentView.findViewById(R.id.popup_content);
-        popup_title.setText("提示");
-        confirmBtn.setOnClickListener(this);
-        cancelBtn.setOnClickListener(this);
-        confirmBtn.setOnHoverListener(new View.OnHoverListener() {
+        View contentView = LayoutInflater.from(context).inflate(R.layout.popup_tip_layout, null);
+        popup_tip_confirm = (Button) contentView.findViewById(R.id.popup_tip_confirm);
+        popup_tip_cancel = (Button) contentView.findViewById(R.id.popup_tip_cancel);
+        popup_tip_msg = (TextView) contentView.findViewById(R.id.popup_tip_msg);
+        popup_tip_confirm.setOnClickListener(this);
+        popup_tip_cancel.setOnClickListener(this);
+        popup_tip_confirm.setOnHoverListener(new View.OnHoverListener() {
 
             @Override
             public boolean onHover(View v, MotionEvent event) {
@@ -61,7 +59,7 @@ public class ModuleMessagePopWindow extends PopupWindow implements View.OnClickL
                 return false;
             }
         });
-        cancelBtn.setOnHoverListener(new View.OnHoverListener() {
+        popup_tip_cancel.setOnHoverListener(new View.OnHoverListener() {
 
             @Override
             public boolean onHover(View v, MotionEvent event) {
@@ -88,19 +86,16 @@ public class ModuleMessagePopWindow extends PopupWindow implements View.OnClickL
     }
 
     public void setMessage(String message) {
-        View textLayout = LayoutInflater.from(mContext).inflate(R.layout.msg_text_item, null);
-        TextView textContent= (TextView) textLayout.findViewById(R.id.msg_text);
-        textContent.setText(message);
-        popup_content.addView(textLayout);
+        popup_tip_msg.setText(message);
     }
 
 
     public void setConfirmBtn(String text) {
-        confirmBtn.setText(text);
+        popup_tip_confirm.setText(text);
     }
 
     public void setCancelBtn(String text) {
-        cancelBtn.setText(text);
+        popup_tip_cancel.setText(text);
     }
 
     public void setBackground(){
@@ -108,21 +103,21 @@ public class ModuleMessagePopWindow extends PopupWindow implements View.OnClickL
     }
 
     public void hideCancelBtn() {
-        cancelBtn.setVisibility(View.GONE);
+        popup_tip_cancel.setVisibility(View.GONE);
     }
 
 
     @Override
     public void onClick(View v) {
         int i = v.getId();
-        if (i == R.id.popup_btn_confirm) {
+        if (i == R.id.popup_tip_confirm) {
             if (confirmListener != null) {
                 isConfirmClick = true;
                 confirmListener.confirmClick(v);
 
             }
 
-        } else if (i == R.id.popup_btn_cancel) {
+        } else if (i == R.id.popup_tip_cancel) {
             if (cancleListener != null) {
                 isConfirmClick = false;
                 cancleListener.cancelClick(v);
@@ -135,11 +130,11 @@ public class ModuleMessagePopWindow extends PopupWindow implements View.OnClickL
     public void showAtLocation(View parent, int gravity, int x, int y, ConfirmListener confirmListener,
                                CancelListener cancleListener) {
         if (confirmListener == null) {
-            confirmBtn.setVisibility(View.GONE);
+            popup_tip_confirm.setVisibility(View.GONE);
         }
 
         if (cancleListener == null) {
-            cancelBtn.setVisibility(View.GONE);
+            popup_tip_cancel.setVisibility(View.GONE);
         }
         this.confirmListener = confirmListener;
         this.cancleListener = cancleListener;
