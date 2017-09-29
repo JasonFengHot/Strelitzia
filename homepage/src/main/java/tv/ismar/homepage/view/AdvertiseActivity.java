@@ -1,6 +1,7 @@
 package tv.ismar.homepage.view;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
@@ -8,6 +9,7 @@ import android.os.Looper;
 import android.os.Message;
 import android.util.DisplayMetrics;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 
@@ -54,6 +56,7 @@ public class AdvertiseActivity extends BaseActivity implements MediaPlayer.OnPre
     private boolean mIsPlayingVideo = false;
     private int mCountAdTime = 0;
     private int mTotleTime = 0;
+    private Button timeBtn;
 
     private Handler mHandler = new Handler(Looper.getMainLooper()) {
         @Override
@@ -67,6 +70,11 @@ public class AdvertiseActivity extends BaseActivity implements MediaPlayer.OnPre
                         return;
                     }
                     mSeekBar.setProgress(mTotleTime - mCountAdTime);
+                    if (timeBtn.getVisibility() != View.VISIBLE) {
+                        timeBtn.setVisibility(View.VISIBLE);
+                    }
+                    timeBtn.setTextColor(Color.WHITE);
+                    timeBtn.setText(mCountAdTime + "s");
                     int refreshTime;
                     if (!mIsPlayingVideo) {
                         refreshTime = 1000;
@@ -116,6 +124,7 @@ public class AdvertiseActivity extends BaseActivity implements MediaPlayer.OnPre
         mVideoView = (DaisyVideoView) findViewById(R.id.home_ad_video);
         mPicImg = (ImageView) findViewById(R.id.home_ad_pic);
         mSeekBar = (SeekBar) findViewById(R.id.home_ad_seekbar);
+        timeBtn= (Button) findViewById(R.id.home_ad_timer);
     }
 
     private void initListener(){
