@@ -14,6 +14,7 @@
         android:layout_toRightOf="@+id/banner_guide_head"
         android:layout_height="@dimen/guide_switch_container_height"
         android:paddingRight="@dimen/history_100"
+        android:layout_marginTop="@dimen/guide_recycle_item_margin_top"
         android:clipChildren="false"
         android:clipToPadding="false"
         android:focusable="false" />

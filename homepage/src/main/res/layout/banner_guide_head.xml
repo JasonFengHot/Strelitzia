@@ -6,13 +6,13 @@
     android:focusable="false"
     android:clipChildren="false"
     android:clipToPadding="false"
+    android:layout_marginTop="@dimen/guide_recycle_item_margin_top"
     >
 
     <tv.ismar.homepage.banner.IsmartvLinearLayout
         android:id="@+id/guide_head_ismartv_linearlayout"
         android:layout_width="@dimen/guide_switch_container_width"
         android:layout_height="@dimen/guide_recycle_item_height"
-        android:layout_marginTop="@dimen/guide_recycle_item_margin_top"
         android:background="#00000000"
         android:clipChildren="false"
         android:clipToPadding="false"

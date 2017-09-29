@@ -676,7 +676,7 @@
 <dimen name="guide_recycle_item_padding">20.00dp</dimen>
 <dimen name="guide_recycle_item_width">118.33dp</dimen>
 <dimen name="guide_recycle_item_height">166.00dp</dimen>
-<dimen name="guide_recycle_item_margin_top">8.33dp</dimen>
+<dimen name="guide_recycle_item_margin_top">13.33dp</dimen>
 <dimen name="guide_recycle_item_title_height">14.33dp</dimen>
 <dimen name="guide_recycle_item_lt_icon_size">36.33dp</dimen>
 <dimen name="guide_recycle_item_rb_icon_width">26.00dp</dimen>
