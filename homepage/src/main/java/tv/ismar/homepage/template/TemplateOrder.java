@@ -405,6 +405,7 @@ public class TemplateOrder extends Template implements BaseControl.ControlCallBa
                 } else {
                     targetPosition = subscribeAdapter.getTatalItemCount() - 1;
                 }
+                setBannerItemCount(targetPosition);
                 subscribeLayoutManager.smoothScrollToPosition(subscribeBanner, null, targetPosition);
             }
         }
