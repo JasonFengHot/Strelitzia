@@ -19,6 +19,7 @@ import com.open.androidtvwidget.leanback.recycle.StaggeredGridLayoutManagerTV;
 import com.squareup.picasso.Picasso;
 
 import tv.ismar.app.BaseControl;
+import tv.ismar.app.core.PageIntent;
 import tv.ismar.app.entity.banner.BigImage;
 import tv.ismar.app.entity.banner.HomeEntity;
 import tv.ismar.homepage.OnItemClickListener;
@@ -27,6 +28,8 @@ import tv.ismar.homepage.adapter.DoubleMdAdapter;
 import tv.ismar.homepage.control.FetchDataControl;
 
 import static tv.ismar.homepage.fragment.ChannelFragment.BANNER_KEY;
+import static tv.ismar.homepage.fragment.ChannelFragment.CHANNEL_KEY;
+import static tv.ismar.homepage.fragment.ChannelFragment.NAME_KEY;
 import static tv.ismar.homepage.fragment.ChannelFragment.TITLE_KEY;
 
 /**
@@ -82,10 +85,14 @@ public class TemplateDoubleMd extends Template implements BaseControl.ControlCal
     }
 
     private int mBannerPk;//banner标记
+    private String mName;//频道名称（中文）
+    private String mChannel;//频道名称（英文）
     @Override
     public void initData(Bundle bundle) {
         mTitleTv.setText(bundle.getString(TITLE_KEY));
         mBannerPk = bundle.getInt(BANNER_KEY);
+        mName = bundle.getString(NAME_KEY);
+        mChannel = bundle.getString(CHANNEL_KEY);
         mFetchDataControl.fetchBanners(mBannerPk, 1, false);
     }
 
@@ -139,7 +146,9 @@ public class TemplateDoubleMd extends Template implements BaseControl.ControlCal
     public void onItemClick(View view, int position) {
         if(position == 0){//第一张大图
             mFetchDataControl.go2Detail(mFetchDataControl.mHomeEntity.bg_image);
-        } else {
+        } else if(position == mFetchDataControl.mHomeEntity.count-1){
+            new PageIntent().toListPage(mContext, mName, mChannel, 0);
+        }else {
             mFetchDataControl.go2Detail(mFetchDataControl.mHomeEntity.posters.get(position));
         }
     }

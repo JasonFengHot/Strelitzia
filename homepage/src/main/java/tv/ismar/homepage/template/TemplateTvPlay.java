@@ -14,12 +14,16 @@ import com.open.androidtvwidget.leanback.recycle.LinearLayoutManagerTV;
 import com.open.androidtvwidget.leanback.recycle.RecyclerViewTV;
 
 import tv.ismar.app.BaseControl;
+import tv.ismar.app.core.PageIntent;
 import tv.ismar.app.entity.banner.BannerPoster;
 import tv.ismar.app.entity.banner.HomeEntity;
 import tv.ismar.homepage.OnItemClickListener;
 import tv.ismar.homepage.R;
 import tv.ismar.homepage.adapter.TvPlayAdapter;
 import tv.ismar.homepage.control.FetchDataControl;
+
+import static tv.ismar.homepage.fragment.ChannelFragment.CHANNEL_KEY;
+import static tv.ismar.homepage.fragment.ChannelFragment.NAME_KEY;
 
 /**
  * @AUTHOR: xi
@@ -62,10 +66,14 @@ public class TemplateTvPlay extends Template implements BaseControl.ControlCallB
     }
 
     private int mBannerPk;
+    private String mName;//频道名称（中文）
+    private String mChannel;//频道名称（英文）
     @Override
     public void initData(Bundle bundle) {
         mTitleTv.setText(bundle.getString("title"));
         mBannerPk = bundle.getInt("banner");
+        mName = bundle.getString(NAME_KEY);
+        mChannel = bundle.getString(CHANNEL_KEY);
         mFetchDataControl.fetchBanners(mBannerPk, 1, false);
     }
 
@@ -126,6 +134,10 @@ public class TemplateTvPlay extends Template implements BaseControl.ControlCallB
 
     @Override
     public void onItemClick(View view, int position) {
-        mFetchDataControl.go2Detail(mFetchDataControl.mHomeEntity.posters.get(position));
+        if(position == mFetchDataControl.mHomeEntity.count-1){
+            new PageIntent().toListPage(mContext, mName, mChannel, 0);
+        } else {
+            mFetchDataControl.go2Detail(mFetchDataControl.mHomeEntity.posters.get(position));
+        }
     }
 }
