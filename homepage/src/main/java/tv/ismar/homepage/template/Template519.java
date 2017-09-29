@@ -13,6 +13,7 @@ import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 import com.open.androidtvwidget.leanback.recycle.LinearLayoutManagerTV;
 import com.open.androidtvwidget.leanback.recycle.RecyclerViewTV;
+import com.orhanobut.logger.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,12 +21,14 @@ import java.util.List;
 import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+import tv.ismar.app.core.PageIntent;
 import tv.ismar.app.entity.banner.BannerEntity;
 import tv.ismar.app.network.SkyService;
 import tv.ismar.homepage.HomeActivity;
 import tv.ismar.homepage.R;
 import tv.ismar.homepage.banner.adapter.BannerHorizontal519Adapter;
 import tv.ismar.homepage.banner.adapter.BannerSubscribeAdapter;
+import tv.ismar.homepage.fragment.ChannelFragment;
 import tv.ismar.homepage.view.BannerLinearLayout;
 
 import static android.view.MotionEvent.BUTTON_PRIMARY;
@@ -49,6 +52,8 @@ public class Template519 extends Template implements View.OnClickListener, View.
     private View navigationRight;
     private BannerLinearLayout mBannerLinearLayout;
     private LinearLayoutManagerTV horizontal519LayoutManager;
+    private String channelName;
+    private String nameKey;
 
     public Template519(Context context) {
         super(context);
@@ -120,6 +125,8 @@ public class Template519 extends Template implements View.OnClickListener, View.
     public void initData(Bundle bundle) {
         mBannerName = bundle.getInt("banner");
         mBannerTitle = bundle.getString("title");
+        channelName = bundle.getString(ChannelFragment.CHANNEL_KEY);
+        nameKey = bundle.getString(ChannelFragment.NAME_KEY);
         mTitleTv.setText(mBannerTitle);
         fetchHorizontal519Banner(mBannerName, 1);
     }
@@ -178,7 +185,7 @@ public class Template519 extends Template implements View.OnClickListener, View.
                 });
     }
 
-    private void fillHorizontal519Banner(BannerEntity bannerEntity) {
+    private void fillHorizontal519Banner(final BannerEntity bannerEntity) {
         mHorizontal519Adapter = new BannerHorizontal519Adapter(mContext, bannerEntity);
         mHorizontal519Adapter.setHoverListener(new BannerHorizontal519Adapter.OnBannerHoverListener() {
             @Override
@@ -201,7 +208,12 @@ public class Template519 extends Template implements View.OnClickListener, View.
         mHorizontal519Adapter.setBannerClickListener(new BannerHorizontal519Adapter.OnBannerClickListener() {
             @Override
             public void onBannerClick(View view, int position) {
-                goToNextPage(view);
+                if (position < bannerEntity.getCount()){
+                    goToNextPage(view);
+                }else {
+                    Logger.t(TAG).d("more click: title -> %s, channel -> %s", nameKey, channelName);
+                    new PageIntent().toListPage(mContext, nameKey, channelName, 0);
+                }
             }
         });
         horizontal519Banner.setAdapter(mHorizontal519Adapter);

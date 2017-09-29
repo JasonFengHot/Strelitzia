@@ -21,11 +21,13 @@ import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import tv.ismar.app.BaseControl;
+import tv.ismar.app.core.PageIntent;
 import tv.ismar.app.entity.banner.BannerEntity;
 import tv.ismar.app.network.SkyService;
 import tv.ismar.homepage.R;
 import tv.ismar.homepage.banner.adapter.BannerSubscribeAdapter;
 import tv.ismar.homepage.control.OrderControl;
+import tv.ismar.homepage.fragment.ChannelFragment;
 import tv.ismar.homepage.view.BannerLinearLayout;
 
 import static android.view.MotionEvent.BUTTON_PRIMARY;
@@ -49,7 +51,6 @@ public class TemplateOrder extends Template implements BaseControl.ControlCallBa
     private BannerSubscribeAdapter subscribeAdapter;
     private int mBannerName;
 
-    private boolean isInit = false;
     private boolean isViewInit = false;
     private TextView mTitleTv;
     private String mBannerTitle;
@@ -67,6 +68,8 @@ public class TemplateOrder extends Template implements BaseControl.ControlCallBa
     private Runnable hoverEventRunnable;
 
     private int currentFocusItemPosition = 0;
+
+    private String channelName;
 
     public TemplateOrder(Context context) {
         super(context);
@@ -233,18 +236,13 @@ public class TemplateOrder extends Template implements BaseControl.ControlCallBa
 
     @Override
     public void initData(Bundle bundle) {
-        if (!isInit) {
-            isInit = true;
             mBannerName = bundle.getInt("banner");
             mBannerTitle = bundle.getString("title");
+            channelName = bundle.getString(ChannelFragment.CHANNEL_KEY);
             mTitleTv.setText(mBannerTitle);
             fetchSubscribeBanner(mBannerName, 1);
-        }
     }
 
-    private void nextPage() {
-
-    }
 
     @Override
     public void callBack(int flags, Object... args) {
@@ -308,12 +306,15 @@ public class TemplateOrder extends Template implements BaseControl.ControlCallBa
                 });
     }
 
-    private void fillSubscribeBanner(BannerEntity bannerEntity) {
+    private void fillSubscribeBanner(final BannerEntity bannerEntity) {
         subscribeAdapter = new BannerSubscribeAdapter(mContext, bannerEntity);
         subscribeAdapter.setSubscribeClickListener(new BannerSubscribeAdapter.OnBannerClickListener() {
             @Override
             public void onBannerClick(View view, int position) {
-                goToNextPage(view);
+                if (position < bannerEntity.getCount()){
+                    goToNextPage(view);
+                }else {
+                }
             }
         });
         subscribeAdapter.setSubscribeHoverListener(new BannerSubscribeAdapter.OnBannerHoverListener() {

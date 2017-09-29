@@ -13,6 +13,7 @@ import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 import com.open.androidtvwidget.leanback.recycle.LinearLayoutManagerTV;
 import com.open.androidtvwidget.leanback.recycle.RecyclerViewTV;
+import com.orhanobut.logger.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,12 +21,13 @@ import java.util.List;
 import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+import tv.ismar.app.core.PageIntent;
 import tv.ismar.app.entity.banner.BannerEntity;
 import tv.ismar.app.network.SkyService;
 import tv.ismar.homepage.HomeActivity;
 import tv.ismar.homepage.R;
 import tv.ismar.homepage.banner.adapter.BannerMovieAdapter;
-import tv.ismar.homepage.banner.adapter.BannerMovieMixAdapter;
+import tv.ismar.homepage.fragment.ChannelFragment;
 import tv.ismar.homepage.view.BannerLinearLayout;
 
 import static android.view.MotionEvent.BUTTON_PRIMARY;
@@ -49,6 +51,8 @@ public class TemplateMovie extends Template implements View.OnClickListener, Vie
     private View navigationRight;
     private BannerLinearLayout mBannerLinearLayout;
     private LinearLayoutManagerTV movieLayoutManager;
+    private String channelKey;
+    private String nameKey;
 
     public TemplateMovie(Context context) {
         super(context);
@@ -119,6 +123,8 @@ public class TemplateMovie extends Template implements View.OnClickListener, Vie
     public void initData(Bundle bundle) {
         mBannerName = bundle.getInt("banner");
         mBannerTitle = bundle.getString("title");
+        channelKey = bundle.getString(ChannelFragment.CHANNEL_KEY);
+        nameKey = bundle.getString(ChannelFragment.NAME_KEY);
         mTitleTv.setText(mBannerTitle);
         fetchMovieBanner(mBannerName, 1);
     }
@@ -173,12 +179,17 @@ public class TemplateMovie extends Template implements View.OnClickListener, Vie
                 });
     }
 
-    private void fillMovieBanner(BannerEntity bannerEntity) {
+    private void fillMovieBanner(final BannerEntity bannerEntity) {
         mMovieAdapter = new BannerMovieAdapter(mContext, bannerEntity);
         mMovieAdapter.setSubscribeClickListener(new BannerMovieAdapter.OnBannerClickListener() {
             @Override
             public void onBannerClick(View view, int position) {
-                goToNextPage(view);
+                if (position < bannerEntity.getCount()){
+                    goToNextPage(view);
+                }else {
+                    Logger.t(TAG).d("more click: title -> %s, channel -> %s", nameKey, channelKey);
+                    new PageIntent().toListPage(mContext, nameKey, channelKey, 1);
+                }
             }
         });
         mMovieAdapter.setHoverListener(new BannerMovieAdapter.OnBannerHoverListener() {

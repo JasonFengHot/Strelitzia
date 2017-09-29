@@ -13,6 +13,7 @@ import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 import com.open.androidtvwidget.leanback.recycle.LinearLayoutManagerTV;
 import com.open.androidtvwidget.leanback.recycle.RecyclerViewTV;
+import com.orhanobut.logger.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,12 +21,14 @@ import java.util.List;
 import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+import tv.ismar.app.core.PageIntent;
 import tv.ismar.app.entity.banner.BannerEntity;
 import tv.ismar.app.network.SkyService;
 import tv.ismar.homepage.HomeActivity;
 import tv.ismar.homepage.R;
 import tv.ismar.homepage.banner.adapter.BannerHorizontal519Adapter;
 import tv.ismar.homepage.banner.adapter.BannerMovieMixAdapter;
+import tv.ismar.homepage.fragment.ChannelFragment;
 import tv.ismar.homepage.view.BannerLinearLayout;
 
 import static android.view.MotionEvent.BUTTON_PRIMARY;
@@ -50,6 +53,8 @@ public class TemplateBigSmallLd extends Template implements View.OnHoverListener
     private View navigationRight;
     private BannerLinearLayout mBannerLinearLayout;
     private LinearLayoutManagerTV movieMixLayoutManager;
+    private String channelName;
+    private String nameKey;
 
     public TemplateBigSmallLd(Context context) {
         super(context);
@@ -126,6 +131,8 @@ public class TemplateBigSmallLd extends Template implements View.OnHoverListener
     public void initData(Bundle bundle) {
         mBannerName = bundle.getInt("banner");
         mBannerTitle = bundle.getString("title");
+        channelName = bundle.getString(ChannelFragment.CHANNEL_KEY);
+        nameKey = bundle.getString(ChannelFragment.NAME_KEY);
         mTitleTv.setText(mBannerTitle);
         fetchMovieMixBanner(mBannerName, 1);
     }
@@ -180,12 +187,17 @@ public class TemplateBigSmallLd extends Template implements View.OnHoverListener
                 });
     }
 
-    private void fillMovieMixBanner(BannerEntity bannerEntity) {
+    private void fillMovieMixBanner(final BannerEntity bannerEntity) {
         adapter = new BannerMovieMixAdapter(mContext, bannerEntity);
         adapter.setSubscribeClickListener(new BannerMovieMixAdapter.OnBannerClickListener() {
             @Override
             public void onBannerClick(View view, int position) {
-                goToNextPage(view);
+                if (position < bannerEntity.getCount()){
+                    goToNextPage(view);
+                }else {
+                    Logger.t(TAG).d("more click: title -> %s, channel -> %s", nameKey, channelName);
+                    new PageIntent().toListPage(mContext, nameKey, channelName, 1);
+                }
             }
         });
         adapter.setHoverListener(new BannerMovieMixAdapter.OnBannerHoverListener() {
