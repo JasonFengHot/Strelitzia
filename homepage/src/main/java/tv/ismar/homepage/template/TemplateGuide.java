@@ -83,7 +83,7 @@ public class TemplateGuide extends Template implements BaseControl.ControlCallBa
         mRecycleView = (RecyclerViewTV) view.findViewById(R.id.guide_recyclerview);
         mGuideLayoutManager = new LinearLayoutManagerTV(mContext, LinearLayoutManager.HORIZONTAL, false);
         mRecycleView.setLayoutManager(mGuideLayoutManager);
-        mRecycleView.setSelectedItemOffset(10, 10);
+        mRecycleView.setSelectedItemOffset(100, 100);
     }
 
     private int mBannerPk;//banner标记

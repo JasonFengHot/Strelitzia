@@ -15,6 +15,7 @@
         android:id="@+id/conlumn_recyclerview"
         android:layout_width="wrap_content"
         android:layout_marginLeft="@dimen/column_item_margin_left"
+        android:paddingRight="@dimen/history_100"
         android:clipChildren="false"
         android:clipToPadding="false"
         android:focusable="false"
