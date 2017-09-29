@@ -7,8 +7,10 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -61,7 +63,8 @@ public class HistoryFavoritrListActivity extends BaseActivity implements OnItemC
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.history_favorite_list_layout);
+        View view= LayoutInflater.from(this).inflate(R.layout.history_favorite_list_layout,null);
+        setContentView(view);
         Intent intent=getIntent();
         type=intent.getIntExtra("type",0);
         source=intent.getStringExtra("source");
@@ -108,6 +111,16 @@ public class HistoryFavoritrListActivity extends BaseActivity implements OnItemC
         arrow_down.setOnClickListener(this);
         arrow_up.setOnClickListener(this);
         loadData();
+        recyclerView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(hasFocus){
+                    if(recyclerView.getChildAt(0)!=null){
+                        recyclerView.getChildAt(0).requestFocusFromTouch();
+                    }
+                }
+            }
+        });
     }
 
     private void showPop() {

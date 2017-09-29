@@ -97,6 +97,7 @@
                 android:layout_marginTop="@dimen/history_16"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:paddingRight="@dimen/history_100"
                 android:clipChildren="false"
                 android:clipToPadding="false"
                 >
@@ -145,6 +146,7 @@
                 android:layout_marginTop="@dimen/history_16"
                 android:layout_width="wrap_content"
                 android:clipToPadding="false"
+                android:paddingRight="@dimen/history_100"
                 android:clipChildren="false"
                 android:layout_height="wrap_content">
             </com.open.androidtvwidget.leanback.recycle.RecyclerViewTV>

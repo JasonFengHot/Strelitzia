@@ -45,6 +45,7 @@
         android:id="@+id/history_favorite_list"
         android:layout_marginLeft="@dimen/history_20"
         android:clipToPadding="false"
+        android:focusableInTouchMode="false"
         android:clipChildren="false"
         android:layout_width="@dimen/history_1848"
         android:layout_height="wrap_content">
