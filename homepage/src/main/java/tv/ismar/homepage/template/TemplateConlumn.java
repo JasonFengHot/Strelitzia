@@ -33,7 +33,6 @@ import tv.ismar.homepage.fragment.ChannelFragment;
 public class TemplateConlumn extends Template implements BaseControl.ControlCallBack,
         RecyclerViewTV.PagingableListener, LinearLayoutManagerTV.FocusSearchFailedListener ,
         OnItemClickListener {
-    private TextView mTitleTv;//banner标题
     private TextView mIndexTv;//选中位置
     private RecyclerViewTV mRecyclerView;
     private LinearLayoutManagerTV mConlumnLayoutManager;
@@ -47,7 +46,6 @@ public class TemplateConlumn extends Template implements BaseControl.ControlCall
 
     @Override
     public void getView(View view) {
-        mTitleTv = (TextView) view.findViewById(R.id.banner_title_tv);
         mTitleCountTv = (TextView) view.findViewById(R.id.banner_title_count);
         mRecyclerView = (RecyclerViewTV) view.findViewById(R.id.conlumn_recyclerview);
         mConlumnLayoutManager = new LinearLayoutManagerTV(mContext, LinearLayoutManager.HORIZONTAL, false);
@@ -61,7 +59,6 @@ public class TemplateConlumn extends Template implements BaseControl.ControlCall
     @Override
     public void initData(Bundle bundle) {
         mBannerPk = bundle.getInt(ChannelFragment.BANNER_KEY);
-        mTitleTv.setText(bundle.getString(ChannelFragment.TITLE_KEY));
         mFetchDataControl.fetchBanners(mBannerPk, 1, false);
     }
 
