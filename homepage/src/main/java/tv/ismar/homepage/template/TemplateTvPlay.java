@@ -14,6 +14,7 @@ import com.open.androidtvwidget.leanback.recycle.LinearLayoutManagerTV;
 import com.open.androidtvwidget.leanback.recycle.RecyclerViewTV;
 
 import tv.ismar.app.BaseControl;
+import tv.ismar.app.entity.banner.BannerPoster;
 import tv.ismar.app.entity.banner.HomeEntity;
 import tv.ismar.homepage.OnItemClickListener;
 import tv.ismar.homepage.R;
@@ -98,6 +99,7 @@ public class TemplateTvPlay extends Template implements BaseControl.ControlCallB
         HomeEntity homeEntity = mFetchDataControl.mHomeEntity;
         if(homeEntity != null){
             if(homeEntity.page < homeEntity.num_pages){
+                mRecycleView.setOnLoadMoreComplete();
                 mFetchDataControl.fetchBanners(mBannerPk, ++homeEntity.page, true);
             }
         }
