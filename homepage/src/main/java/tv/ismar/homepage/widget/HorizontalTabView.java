@@ -98,7 +98,7 @@ public class HorizontalTabView extends HorizontalScrollView implements View.OnCl
     private int mSelectedIndex = -1;
     private int mTabMargin;
     private OnItemSelectedListener onItemSelectedListener;
-    private int mCurrentState;
+    private int mCurrentState=STATE_LEAVE;
     private int mCurrentPosition=-1;
 
     private int mClickPosition = -1;
@@ -310,7 +310,7 @@ public class HorizontalTabView extends HorizontalScrollView implements View.OnCl
     }
 
 
-    private void changeSelection(final View v, final boolean callItemListener) {
+    public void changeSelection(final View v, final boolean callItemListener) {
         int tempIndex = (int) v.getTag();
         if (mSelectedIndex == tempIndex && v.getAnimation() != null) {
             return;
