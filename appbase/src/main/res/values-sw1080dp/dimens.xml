@@ -729,7 +729,6 @@
     <!--竖版双行尺寸-->
     <dimen name="double_md_margin_left">100dp</dimen>
     <dimen name="double_md_img_container_width">619dp</dimen>
-    <dimen name="double_md_img_container_height">812dp</dimen>
     <dimen name="double_md_img_height">770dp</dimen>
     <dimen name="double_md_img_width">562dp</dimen>
     <dimen name="double_md_img_lt_size">109dp</dimen>

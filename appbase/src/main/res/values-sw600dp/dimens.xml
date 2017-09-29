@@ -633,7 +633,7 @@
 <!--首页 begin-->
 <!--标题尺寸-->
 <dimen name="guide_title_height">56.67dp</dimen>
-<dimen name="guide_title_logo_width">233.89dp</dimen>
+<dimen name="guide_title_logo_width">361.11dp</dimen>
 <dimen name="guide_title_logo_height">34.44dp</dimen>
 <dimen name="guide_title_text_size">16.67dp</dimen>
 <dimen name="guide_title_icon_size">20.00dp</dimen>
@@ -729,7 +729,6 @@
 <!--竖版双行尺寸-->
 <dimen name="double_md_margin_left">55.56dp</dimen>
 <dimen name="double_md_img_container_width">343.89dp</dimen>
-<dimen name="double_md_img_container_height">451.11dp</dimen>
 <dimen name="double_md_img_height">427.78dp</dimen>
 <dimen name="double_md_img_width">312.22dp</dimen>
 <dimen name="double_md_img_lt_size">60.56dp</dimen>

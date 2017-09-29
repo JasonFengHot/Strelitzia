@@ -133,7 +133,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         mTimeTv.setText(mHomeControl.getNowTime());
         mFetchDataControl.fetchChannels();
         ChannelFragment channelFragment = new ChannelFragment();
-        channelFragment.setChannel(HOME_PAGE_CHANNEL_TAG, "首页", 0);
+        channelFragment.setChannel("首页", HOME_PAGE_CHANNEL_TAG, "首页", 0);
         replaceFragment(channelFragment, "none");
     }
 
@@ -208,11 +208,12 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                         intent.toSearch(this);
                         break;
                     case 1://首页
-                        channelFragment.setChannel(HOME_PAGE_CHANNEL_TAG, "首页", 0);
+                        channelFragment.setChannel("首页", HOME_PAGE_CHANNEL_TAG, "首页", 0);
                         break;
                     default://其他频道
                         if(position-2<0) return;
-                        channelFragment.setChannel( mFetchDataControl.mChannels[position-2].getChannel(),
+                        channelFragment.setChannel( mFetchDataControl.mChannels[position-2].getName(),
+                                mFetchDataControl.mChannels[position-2].getChannel(),
                                 mFetchDataControl.mChannels[position-2].getName(),
                                 mFetchDataControl.mChannels[position-2].getStyle());
                         break;

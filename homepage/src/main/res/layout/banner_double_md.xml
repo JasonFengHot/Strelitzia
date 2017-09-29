@@ -12,7 +12,7 @@
         android:id="@+id/double_md_recyclerview"
         android:layout_width="wrap_content"
         android:paddingLeft="@dimen/double_md_margin_left"
-        android:layout_height="@dimen/double_md_img_container_height"
+        android:layout_height="@dimen/double_md_img_height"
         android:clipChildren="false"
         android:clipToPadding="false"
         android:focusable="false" />

@@ -60,9 +60,11 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
     }
 
     private String mChannel;//频道
+    private String mName;//频道名称
     private String mTitle;//标题
     private int mStyle;//竖版或横版
-    public void setChannel(String channel, String title, int style){
+    public void setChannel(String name, String channel, String title, int style){
+        mName = name;
         mChannel = channel;
         mTitle = title;
         mStyle = style;
@@ -89,6 +91,7 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
     public static final String BANNER_KEY = "banner";
     public static final String TEMPLATE_KEY = "template";
     public static final String CHANNEL_KEY= "channel";
+    public static final String NAME_KEY = "name";
     /*初始化banner视图*/
     private void initBanner(GuideBanner[] data){
         if(data==null || data.length<=0){
@@ -106,6 +109,7 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
             bundle.putInt(BANNER_KEY, data[position].page_banner_pk);
             bundle.putString(TEMPLATE_KEY, template);
             bundle.putString(CHANNEL_KEY, mChannel);
+            bundle.putString(NAME_KEY, mName);
             if(template.equals("template_guide")){//导视
                 layoutId = R.layout.banner_guide;
                 bannerView = createView(R.layout.banner_guide);
