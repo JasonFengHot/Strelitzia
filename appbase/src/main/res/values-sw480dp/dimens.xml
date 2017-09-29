@@ -788,4 +788,25 @@
 <dimen name="popup_update_btn_w">134.22dp</dimen>
 <dimen name="popup_update_btn_h">32.44dp</dimen>
 <dimen name="popup_update_btn_ml">36.00dp</dimen>
+
+<!--普�?�提示框-->
+<dimen name="popup_tip_w">475.11dp</dimen>
+<dimen name="popup_tip_h">270.67dp</dimen>
+<dimen name="popup_tip_ml">188.89dp</dimen>
+<dimen name="popup_tip_mt">98.67dp</dimen>
+<dimen name="popup_tip_text_w">390.22dp</dimen>
+<dimen name="popup_tip_text_h">23.11dp</dimen>
+<dimen name="popup_tip_text_ts">16.00dp</dimen>
+<dimen name="popup_tip_text_mt">153.78dp</dimen>
+<dimen name="popup_tip_btn_w">134.22dp</dimen>
+<dimen name="popup_tip_btn_h">32.44dp</dimen>
+<dimen name="popup_tip_btn_ts">16.00dp</dimen>
+<dimen name="popup_tip_btn_ml">36.00dp</dimen>
+<dimen name="popup_tip_btn_mt">38.22dp</dimen>
+
+<!--吐司提示�?-->
+<dimen name="toast_content_h">25.78dp</dimen>
+<dimen name="toast_content_w">431.56dp</dimen>
+<dimen name="toast_content_mb">36.89dp</dimen>
+<dimen name="toast_content_ts">13.33dp</dimen>
 </resources>

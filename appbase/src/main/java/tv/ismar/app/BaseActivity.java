@@ -287,7 +287,6 @@ public class BaseActivity extends AppCompatActivity {
         }
         if(dialog==null) {
             dialog = new NoNetConnectDialog(this, R.style.NoNetDialog);
-            dialog.setFirstMessage(getString(R.string.no_connectNet));
             dialog.setConfirmBtn(getString(R.string.setting_network));
             dialog.setCancelBtn(getString(R.string.exit_app));
             dialog.setCanceledOnTouchOutside(false);
@@ -321,7 +320,6 @@ public class BaseActivity extends AppCompatActivity {
         }
         if(dialog==null) {
             dialog = new NoNetConnectDialog(this, R.style.NoNetDialog);
-            dialog.setFirstMessage(getString(R.string.no_connectNet));
             dialog.setConfirmBtn(getString(R.string.setting_network));
             dialog.setCancelBtn(getString(R.string.exit_app));
             dialog.setCanceledOnTouchOutside(false);

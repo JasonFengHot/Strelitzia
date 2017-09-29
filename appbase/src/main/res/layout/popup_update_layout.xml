@@ -17,7 +17,7 @@
         android:layout_marginTop="@dimen/popup_update_mt"
         android:layout_marginLeft="@dimen/popup_update_ml"
         android:gravity="center_horizontal"
-        android:paddingTop="303dp"
+        android:paddingTop="@dimen/popup_update_pt"
         android:background="@drawable/update_bg">
 
         <TextView

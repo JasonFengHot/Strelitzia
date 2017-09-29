@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <View
+        android:id="@+id/tmp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#000000"
+        android:alpha="0.85"/>
+    
+    <LinearLayout
+        android:layout_width="@dimen/popup_tip_w"
+        android:layout_height="@dimen/popup_tip_h"
+        android:layout_marginLeft="@dimen/popup_tip_ml"
+        android:background="@drawable/popup_bg"
+        android:orientation="vertical"
+        android:layout_marginTop="@dimen/popup_tip_mt"
+        >
+        
+        <TextView
+            android:id="@+id/popup_tip_msg"
+            android:layout_width="@dimen/popup_tip_text_w"
+            android:layout_height="@dimen/popup_tip_text_h"
+            android:textSize="@dimen/popup_tip_text_ts"
+            android:textColor="#999999"
+            android:gravity="center_vertical"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/popup_tip_text_mt"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/popup_tip_btn_h"
+            android:layout_marginTop="@dimen/popup_tip_btn_mt"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/popup_tip_confirm"
+                android:layout_width="@dimen/popup_tip_btn_w"
+                android:layout_height="@dimen/popup_tip_btn_h"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:nextFocusLeft="@id/popup_tip_confirm"
+                android:nextFocusUp="@id/popup_tip_confirm"
+                android:nextFocusDown="@id/popup_tip_confirm"
+                android:gravity="center"
+                android:textColor="@color/popup_btn_text"
+                android:textSize="@dimen/popup_tip_btn_ts"
+                android:background="@drawable/popup_btn_selector" />
+
+            <Button
+                android:id="@+id/popup_tip_cancel"
+                android:layout_width="@dimen/popup_tip_btn_w"
+                android:layout_height="@dimen/popup_tip_btn_h"
+                android:layout_marginLeft="@dimen/popup_tip_btn_ml"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:nextFocusRight="@id/popup_tip_cancel"
+                android:nextFocusUp="@id/popup_tip_cancel"
+                android:nextFocusDown="@id/popup_tip_cancel"
+                android:gravity="center"
+                android:textColor="@color/popup_btn_text"
+                android:textSize="@dimen/popup_tip_btn_ts"
+                android:background="@drawable/popup_btn_selector" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+</RelativeLayout>
