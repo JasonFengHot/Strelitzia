@@ -31,7 +31,7 @@ public class RecycleLinearLayout extends LinearLayout {
     private static final String TAG = RecycleLinearLayout.class.getSimpleName();
 
     private Context mContext;
-    private ScrollView mScrollView;
+//    private ScrollView mScrollView;
     private int mScreenHeight;
     private int mSelectedChildIndex = 0;
     private ArrayList<View> mAllViews = new ArrayList<>();
@@ -47,9 +47,9 @@ public class RecycleLinearLayout extends LinearLayout {
         initWindow(context);
     }
 
-    public void setScrollView(ScrollView view){
-        this.mScrollView = view;
-    }
+//    public void setScrollView(ScrollView view){
+//        this.mScrollView = view;
+//    }
 
     public void setView(View view){
         if(view==null) return;
@@ -174,19 +174,19 @@ public class RecycleLinearLayout extends LinearLayout {
                 if(!canScroll){//限制滑动
                     Log.i(TAG, "canScroll");
                     if(position-1 < 0) return super.dispatchKeyEvent(event);//将不可滑动的banner和前一个banner绑定为一个banner
-                    mScrollView.setBottom(mScrollHeight+mScreenHeight);
+//                    mScrollView.setBottom(mScrollHeight+mScreenHeight);
                     scrollToTop(getChildAt(position-1));
                     return super.dispatchKeyEvent(event);
                 }
                 //滑动处理
                 if(position==getChildCount()-1){
                     Log.i(TAG, "scrollToVisiable");
-                    mScrollView.setBottom(mScrollHeight+mScreenHeight);
+//                    mScrollView.setBottom(mScrollHeight+mScreenHeight);
                     scrollToVisiable(view);
                     YoYo.with(Techniques.VerticalShake).duration(1000).playOn(view);
                 } else {
                     Log.i(TAG, "scrollToTop");
-                    mScrollView.setBottom(mScreenHeight);
+//                    mScrollView.setBottom(mScreenHeight);
                     scrollToTop(view);
                 }
             }

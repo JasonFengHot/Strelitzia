@@ -1,16 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/scroll_view"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+<tv.ismar.homepage.widget.RecycleLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:clipChildren="false"
     android:clipToPadding="false"
-    android:focusable="false">
-    <tv.ismar.homepage.widget.RecycleLinearLayout
-        android:id="@+id/scroll_linear_container"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:clipChildren="false"
-        android:clipToPadding="false"
-        android:orientation="vertical" />
-</ScrollView>
+    android:id="@+id/scroll_linear_container"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    android:orientation="vertical" />

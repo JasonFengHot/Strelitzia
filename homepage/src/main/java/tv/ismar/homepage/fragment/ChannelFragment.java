@@ -38,7 +38,6 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
     private FetchDataControl mControl = null;//业务类引用
 
     private RecycleLinearLayout mLinearContainer;//banner容器
-    private ScrollView mScrollView;
 
     @Override
     public void onAttach(Context context) {
@@ -56,7 +55,6 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
 
     private void findView(View view){
         mLinearContainer = (RecycleLinearLayout) view.findViewById(R.id.scroll_linear_container);
-        mScrollView = (ScrollView) view.findViewById(R.id.scroll_view);
     }
 
     private String mChannel;//频道
@@ -98,7 +96,6 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
             return;
         }
         mLinearContainer.removeAllViews();
-        mLinearContainer.setScrollView(mScrollView);
         for(int position=0; position<data.length; position++){
             View bannerView = null;
             int layoutId = -1;
