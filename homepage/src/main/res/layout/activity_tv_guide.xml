@@ -37,8 +37,6 @@
                 android:layout_marginTop="@dimen/channel_tab_mt"
                 app:tvTabFocusTextColor="#ff9c3c"
                 app:tvTabHeight="80dp"
-                app:tvTabScaleBaseline="fromCenter"
-                app:tvTabScaleMultiple="1.1"
                 app:tvTabSelectedDrawable="@drawable/channel_indicator_focus"
                 app:tvTabSpace="@dimen/channel_tab_space"
                 app:tvTabStartEndPadding="16dp"

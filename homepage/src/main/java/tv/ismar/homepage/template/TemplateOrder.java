@@ -21,7 +21,6 @@ import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import tv.ismar.app.BaseControl;
-import tv.ismar.app.core.PageIntent;
 import tv.ismar.app.entity.banner.BannerEntity;
 import tv.ismar.app.network.SkyService;
 import tv.ismar.homepage.R;
@@ -386,14 +385,33 @@ public class TemplateOrder extends Template implements BaseControl.ControlCallBa
     public void onClick(View v) {
         int i = v.getId();
         if (i == R.id.navigation_left) {
-            if (subscribeLayoutManager.findFirstCompletelyVisibleItemPosition() -1 >= 0){
-                subscribeLayoutManager.smoothScrollToPosition(subscribeBanner, null, subscribeLayoutManager.findFirstCompletelyVisibleItemPosition() - 1);
+            if (subscribeLayoutManager.findFirstCompletelyVisibleItemPosition() - 1 >= 0) {
+                int targetPosition = subscribeLayoutManager.findFirstCompletelyVisibleItemPosition() - 4;
+                if (targetPosition >= 0) {
+                    //表示可以滑动
+                } else {
+                    targetPosition = 0;
+                }
+                setBannerItemCount(targetPosition);
+                subscribeLayoutManager.smoothScrollToPosition(subscribeBanner, null, targetPosition);
             }
         } else if (i == R.id.navigation_right) {
             subscribeBanner.loadMore();
-            if (subscribeLayoutManager.findFirstCompletelyVisibleItemPosition() + 1 <= subscribeAdapter.getTatalItemCount()){
-                subscribeLayoutManager.smoothScrollToPosition(subscribeBanner, null, subscribeLayoutManager.findLastCompletelyVisibleItemPosition() + 1);
+            if (subscribeLayoutManager.findFirstCompletelyVisibleItemPosition() + 1 <= subscribeAdapter.getTatalItemCount()) {
+
+                int targetPosition = subscribeLayoutManager.findLastCompletelyVisibleItemPosition() + 4;
+                if (targetPosition < subscribeAdapter.getTatalItemCount()) {
+                    //表示可以滑动
+                } else {
+                    targetPosition = subscribeAdapter.getTatalItemCount() - 1;
+                }
+                setBannerItemCount(targetPosition);
+                subscribeLayoutManager.smoothScrollToPosition(subscribeBanner, null, targetPosition);
             }
         }
+    }
+
+    private void setBannerItemCount(int position){
+        mTitleCountTv.setText(String.format(mContext.getString(R.string.home_item_title_count), (position + 1) + "", subscribeAdapter.getTatalItemCount() + ""));
     }
 }

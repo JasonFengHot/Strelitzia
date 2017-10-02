@@ -9,7 +9,7 @@
         android:layout_height="@dimen/guide_title_logo_height"
         android:layout_marginLeft="@dimen/guide_title_logo_margin_left"
         android:layout_marginTop="@dimen/guide_title_logo_margin_top"
-        android:background="@drawable/guide_title_logo"/>
+        android:background="@drawable/baishi_logo"/>
     <TextView
         android:id="@+id/guide_title_time_tv"
         android:layout_width="wrap_content"

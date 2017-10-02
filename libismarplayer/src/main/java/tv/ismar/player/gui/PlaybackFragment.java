@@ -1559,7 +1559,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
         String message = getString(R.string.player_error);
         String cancelText = getString(R.string.player_pop_cancel);
         String confirmText = getString(R.string.player_pop_ok);
-        boolean hideCancel = false;
+        boolean hideCancel = true;
         switch (popType) {
             case POP_TYPE_BUFFERING_LONG:
                 if (mHandler.hasMessages(MSG_SHOW_BUFFERING_LONG)) {
@@ -1568,6 +1568,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
                 message = getString(R.string.player_buffering_long);
                 confirmText = getString(R.string.player_pop_cancel);
                 cancelText = getString(R.string.player_pop_switch_quality);
+                hideCancel=false;
                 break;
             case POP_TYPE_PLAYER_ERROR:
                 timerStop();
@@ -1578,6 +1579,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
                 message = getString(R.string.player_net_data_error);
                 confirmText = getString(R.string.player_pop_set_net);
                 cancelText = getString(R.string.player_pop_back);
+                hideCancel=false;
                 break;
         }
         popDialog = new ModuleMessagePopWindow(getActivity());
