@@ -108,10 +108,10 @@ public class TemplateBigSmallLd extends Template implements View.OnHoverListener
                     return view;
                 }
 
-                if (focusDirection == View.FOCUS_DOWN) {
-                    YoYo.with(Techniques.VerticalShake).duration(1000).playOn(view);
-                    return view;
-                }
+//                if (focusDirection == View.FOCUS_DOWN) {
+//                    YoYo.with(Techniques.VerticalShake).duration(1000).playOn(view);
+//                    return view;
+//                }
                 return null;
             }
         });

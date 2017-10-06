@@ -40,7 +40,8 @@ import static tv.ismar.homepage.control.FetchDataControl.FETCH_CHANNEL_TAB_FLAG;
  * @DESC: home页
  */
 
-public class HomeActivity extends BaseActivity implements View.OnClickListener, BaseControl.ControlCallBack, View.OnFocusChangeListener {
+public class HomeActivity extends BaseActivity implements View.OnClickListener, BaseControl.ControlCallBack,
+        View.OnFocusChangeListener, View.OnKeyListener {
 
     public static final String HOME_PAGE_CHANNEL_TAG = "homepage";
     private final FetchDataControl mFetchDataControl = new FetchDataControl(this, this);//业务类引用
@@ -112,6 +113,8 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     private void initListener(){
         mCollectionLayout.setOnFocusChangeListener(this);
         mPersonCenterLayout.setOnFocusChangeListener(this);
+        mCollectionLayout.setOnKeyListener(this);
+        mPersonCenterLayout.setOnKeyListener(this);
         mCollectionLayout.setOnClickListener(this);
         mPersonCenterLayout.setOnClickListener(this);
         mHomeControl.setChannelChange(mChannelTab);
@@ -226,6 +229,27 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                 mLastSelectedIndex = position;
             }
         }
+    }
+
+    @Override
+    public boolean onKey(View v, int keyCode, KeyEvent event) {
+        if(v==mCollectionLayout && keyCode==KeyEvent.KEYCODE_DPAD_LEFT){
+            return true;
+        }
+        if(v==mPersonCenterLayout && keyCode==KeyEvent.KEYCODE_DPAD_RIGHT){
+            return true;
+        }
+        if(v==mCollectionLayout && keyCode==KeyEvent.KEYCODE_DPAD_RIGHT){
+            mPersonCenterLayout.setFocusable(true);
+            mPersonCenterLayout.requestFocus();
+            return true;
+        }
+        if(v==mPersonCenterLayout && keyCode==KeyEvent.KEYCODE_DPAD_LEFT){
+            mCollectionLayout.setFocusable(true);
+            mCollectionLayout.requestFocus();
+            return true;
+        }
+        return false;
     }
 
     /*时间跳动广播*/

@@ -640,7 +640,7 @@
 <dimen name="guide_title_react_height">22.67dp</dimen>
 <dimen name="guide_title_react_padding">3.33dp</dimen>
 <dimen name="guide_title_react_width">55.56dp</dimen>
-<dimen name="guide_title_icon_padding_text">0.67dp</dimen>
+<dimen name="guide_title_icon_padding_text">2.22dp</dimen>
 <dimen name="guide_title_time_size">10.67dp</dimen>
 <dimen name="guide_title_logo_margin_top">2.44dp</dimen>
 <dimen name="guide_title_logo_margin_left">9.33dp</dimen>

@@ -5,6 +5,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -18,12 +19,12 @@ import tv.ismar.app.R;
  */
 
 public class TelescopicWrap {
-    private int mTextWidth;
-    private int mIconWidth;
+    private static final String TAG = TelescopicWrap.class.getSimpleName();
+
+    private static int mTextWidth;
+    private static int mIconWidth;
 
     private ViewGroup mLayout;//隐藏的layout
-
-    private boolean mIsOpen = false;//是否隐缩，true—显示文字
 
     public TelescopicWrap(Context context, ViewGroup viewGroup) {
         init(context);
@@ -31,9 +32,8 @@ public class TelescopicWrap {
     }
 
     private void init(Context context){
-        mIconWidth = context.getResources().getDimensionPixelSize(R.dimen.guide_title_icon_size);
-        mTextWidth = context.getResources().getDimensionPixelSize(R.dimen.guide_title_react_width)
-                - mIconWidth;
+        mIconWidth = context.getResources().getDimensionPixelSize(R.dimen.guide_title_icon_size)+36;
+        mTextWidth = context.getResources().getDimensionPixelSize(R.dimen.guide_title_react_width);
     }
 
     public void setView(ViewGroup view){
@@ -51,16 +51,14 @@ public class TelescopicWrap {
     private void animateOpen() {
         if(mLayout != null){
             ValueAnimator animator = createDropAnimator(mLayout, 0,
-                    mTextWidth);
+                    mTextWidth, true);
             animator.start();
-            mIsOpen = true;
         }
     }
 
     private void animateClose() {
         if(mLayout != null){
-            mIsOpen = false;
-            ValueAnimator animator = createDropAnimator(mLayout, mTextWidth, 0);
+            ValueAnimator animator = createDropAnimator(mLayout, mTextWidth, 0, false);
             animator.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
@@ -71,16 +69,17 @@ public class TelescopicWrap {
         }
     }
 
-    private ValueAnimator createDropAnimator(final View v, int start, int end) {
+    private ValueAnimator createDropAnimator(final View v, int start, int end, final boolean isOpen) {
         ValueAnimator animator = ValueAnimator.ofInt(start, end);
         animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
 
             @Override
             public void onAnimationUpdate(ValueAnimator arg0) {
                 int value = (int) arg0.getAnimatedValue();
-                if(!mIsOpen && value<mIconWidth){
+                if(!isOpen && value<=mIconWidth){
                     return;
                 }
+                Log.i(TAG, "value:"+value+" mIconWidth:"+mIconWidth);
                 ViewGroup.LayoutParams layoutParams = v.getLayoutParams();
                 layoutParams.width = value;
                 mLayout.setBackgroundResource(R.drawable.title_focuse_bg);
