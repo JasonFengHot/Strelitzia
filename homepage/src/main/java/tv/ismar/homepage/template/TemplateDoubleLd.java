@@ -87,6 +87,7 @@ public class TemplateDoubleLd extends Template implements BaseControl.ControlCal
     @Override
     protected void initListener(View view) {
         super.initListener(view);
+        mRecyclerView.setPagingableListener(this);
         mRecyclerView.setOnItemFocusChangeListener(this);
         mDoubleLayoutManager.setFocusSearchFailedListener(this);
     }
@@ -174,6 +175,7 @@ public class TemplateDoubleLd extends Template implements BaseControl.ControlCal
     @Override
     public void onLoadMoreItems() {
         Log.i(TAG, "onLoadMoreItems");
+        Log.i("RecyclerViewTV", "onLoadMoreItems");
         HomeEntity homeEntity = mFetchDataControl.mHomeEntity;
         if(homeEntity != null){
             if(homeEntity.page < homeEntity.num_pages){

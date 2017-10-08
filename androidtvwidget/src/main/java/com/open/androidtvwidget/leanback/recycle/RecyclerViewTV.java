@@ -499,12 +499,26 @@ public class RecyclerViewTV extends RecyclerView implements PrvInterface {
         }
     };
 
+    private static final int LOAD_MORE_VALUE = 5;
     public boolean loadMore() {
         int totalItemCount = getLayoutManager().getItemCount();
         int lastVisibleItem = findLastVisibleItemPosition();
         int lastComVisiPos = findLastCompletelyVisibleItemPosition();
         int visibleItemCount = getChildCount();
         int firstVisibleItem = findFirstVisibleItemPosition();
+
+        if(getLayoutManager() instanceof StaggeredGridLayoutManager){
+            View view = getLayoutManager().getFocusedChild();
+            int adapterPosition = getChildAdapterPosition(view);
+//            int layoutPosition = getChildLayoutPosition(view);
+            Log.i("RecyclerViewTV","totalItemCount:"+totalItemCount+"adapterPosition:"+(adapterPosition+3));
+            if(!isLoading && view!=null && totalItemCount-(adapterPosition+3)<=LOAD_MORE_VALUE){
+                isLoading = true;
+                if(mPagingableListener != null) mPagingableListener.onLoadMoreItems();
+            }
+            return true;
+        }
+
         // 判断是否显示最底了.提前5个item预加载
         if (!isLoading && totalItemCount - visibleItemCount <= firstVisibleItem + 10) {
             isLoading = true;
@@ -532,6 +546,11 @@ public class RecyclerViewTV extends RecyclerView implements PrvInterface {
             if (lm instanceof GridLayoutManager) {
                 GridLayoutManager glm = (GridLayoutManager) lm;
                 return GridLayoutManager.HORIZONTAL == glm.getOrientation();
+            }
+            if(lm instanceof StaggeredGridLayoutManager){
+                StaggeredGridLayoutManager slm = (StaggeredGridLayoutManager) lm;
+                Log.i("RecyclerViewTV", "isHorizontalLayoutManger:"+(StaggeredGridLayoutManager.HORIZONTAL == slm.getOrientation()));
+                return StaggeredGridLayoutManager.HORIZONTAL == slm.getOrientation();
             }
         }
         return false;
