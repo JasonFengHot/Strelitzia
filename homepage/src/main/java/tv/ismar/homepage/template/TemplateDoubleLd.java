@@ -105,16 +105,13 @@ public class TemplateDoubleLd extends Template implements BaseControl.ControlCal
     }
 
     private void initRecycleView(){
-        HomeEntity homeEntity = mFetchDataControl.mHomeEntity;
-        if(homeEntity != null){
-            if(mAdapter == null){
-                mAdapter = new DoubleLdAdapter(mContext, homeEntity.posters);
-                mAdapter.setOnItemClickListener(this);
-                mAdapter.setHeaderView(mHeadView);
-                mRecyclerView.setAdapter(mAdapter);
-            }else {
-                mAdapter.notifyDataSetChanged();
-            }
+        if(mAdapter == null){
+            mAdapter = new DoubleLdAdapter(mContext, mFetchDataControl.mPoster);
+            mAdapter.setOnItemClickListener(this);
+            mAdapter.setHeaderView(mHeadView);
+            mRecyclerView.setAdapter(mAdapter);
+        }else {
+            mAdapter.notifyDataSetChanged();
         }
     }
 
