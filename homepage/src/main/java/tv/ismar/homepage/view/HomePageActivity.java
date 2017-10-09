@@ -89,7 +89,6 @@ import tv.ismar.app.network.SkyService;
 import tv.ismar.app.player.CallaPlay;
 import tv.ismar.app.service.TrueTimeService;
 import tv.ismar.app.ui.HeadFragment;
-import tv.ismar.app.ui.MessageDialogFragment;
 import tv.ismar.app.update.UpdateService;
 import tv.ismar.app.util.BitmapDecoder;
 import tv.ismar.app.util.DeviceUtils;
@@ -1165,17 +1164,19 @@ public class HomePageActivity extends BaseActivity implements LinearLayoutManage
     private void showNetErrorPopup() {
         if (neterrorshow)
             return;
-        final MessageDialogFragment dialog = new MessageDialogFragment(HomePageActivity.this, getString(R.string.fetch_net_data_error), null);
-        dialog.setButtonText(getString(R.string.setting_network), getString(R.string.i_know));
+        final ModuleMessagePopWindow dialog = new ModuleMessagePopWindow(HomePageActivity.this);
+        dialog.setMessage(getString(R.string.fetch_net_data_error));
+        dialog.setConfirmBtn(getString(R.string.setting_network));
+        dialog.setCancelBtn(getString(R.string.i_know));
         try {
-            dialog.showAtLocation(getRootView(), Gravity.CENTER,
-                    new MessageDialogFragment.ConfirmListener() {
+            dialog.showAtLocation(getRootView(), Gravity.CENTER,0,0,
+                    new ModuleMessagePopWindow.ConfirmListener() {
                         @Override
                         public void confirmClick(View view) {
                             Intent intent = new Intent(Settings.ACTION_SETTINGS);
                             HomePageActivity.this.startActivity(intent);
                         }
-                    }, new MessageDialogFragment.CancelListener() {
+                    }, new ModuleMessagePopWindow.CancelListener() {
 
                         @Override
                         public void cancelClick(View view) {

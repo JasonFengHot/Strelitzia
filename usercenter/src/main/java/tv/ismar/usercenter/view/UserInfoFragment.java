@@ -2,7 +2,6 @@ package tv.ismar.usercenter.view;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
@@ -16,7 +15,6 @@ import android.view.View;
 import android.view.View.OnFocusChangeListener;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,18 +29,15 @@ import java.util.List;
 import tv.ismar.account.IsmartvActivator;
 import tv.ismar.app.BaseFragment;
 import tv.ismar.app.core.PageIntent;
-import tv.ismar.app.core.PageIntentInterface;
 import tv.ismar.app.core.Util;
 import tv.ismar.app.network.entity.AccountBalanceEntity;
 import tv.ismar.app.network.entity.AccountPlayAuthEntity;
-import tv.ismar.app.ui.MessageDialogFragment;
-import tv.ismar.library.network.HttpManager;
+import tv.ismar.app.widget.ModuleMessagePopWindow;
 import tv.ismar.usercenter.R;
 import tv.ismar.usercenter.UserInfoContract;
 import tv.ismar.usercenter.databinding.FragmentUserinfoBinding;
 import tv.ismar.usercenter.viewmodel.UserInfoViewModel;
 
-import static tv.ismar.app.core.PageIntentInterface.EXTRA_PRODUCT_CATEGORY;
 import static tv.ismar.app.network.entity.AccountPlayAuthEntity.PlayAuth;
 
 /**
@@ -283,8 +278,10 @@ public class UserInfoFragment extends BaseFragment implements UserInfoContract.V
 
 
     public void showExitAccountConfirmPop() {
-        final MessageDialogFragment dialog = new MessageDialogFragment(getContext(), getString(R.string.confirm_exit_account_text), null);
-        dialog.showAtLocation(getView(), Gravity.CENTER, new MessageDialogFragment.ConfirmListener() {
+        final ModuleMessagePopWindow dialog = new ModuleMessagePopWindow(getContext());
+        dialog.setMessage(getString(R.string.confirm_exit_account_text));
+
+        dialog.showAtLocation(getView(), Gravity.CENTER,0,0,new ModuleMessagePopWindow.ConfirmListener() {
                     @Override
                     public void confirmClick(View view) {
                         dialog.dismiss();
@@ -292,7 +289,7 @@ public class UserInfoFragment extends BaseFragment implements UserInfoContract.V
                       //  HttpManager.getInstance().setAccessToken(null);
                     }
                 },
-                new MessageDialogFragment.CancelListener() {
+                new ModuleMessagePopWindow.CancelListener() {
                     @Override
                     public void cancelClick(View view) {
                         dialog.dismiss();
@@ -305,8 +302,9 @@ public class UserInfoFragment extends BaseFragment implements UserInfoContract.V
     }
 
     private void showExitAccountMessagePop() {
-        final MessageDialogFragment dialog = new MessageDialogFragment(getContext(), getString(R.string.exit_account_message_text), null);
-        dialog.showAtLocation(getView(), Gravity.CENTER, new MessageDialogFragment.ConfirmListener() {
+        final ModuleMessagePopWindow dialog = new ModuleMessagePopWindow(getContext());
+        dialog.setMessage(getString(R.string.exit_account_message_text));
+        dialog.showAtLocation(getView(), Gravity.CENTER,0,0, new ModuleMessagePopWindow.ConfirmListener() {
                     @Override
                     public void confirmClick(View view) {
                         dialog.dismiss();
@@ -378,8 +376,9 @@ public class UserInfoFragment extends BaseFragment implements UserInfoContract.V
     }
 
     public void showChargeSuccessPop(BigDecimal balance) {
-        final MessageDialogFragment dialog = new MessageDialogFragment(getContext(), "当前账户余额" + balance + "元", null);
-        dialog.showAtLocation(getView(), Gravity.CENTER, new MessageDialogFragment.ConfirmListener() {
+        final ModuleMessagePopWindow dialog = new ModuleMessagePopWindow(getContext());
+        dialog.setMessage("当前账户余额" + balance + "元");
+        dialog.showAtLocation(getView(), Gravity.CENTER,0,0, new ModuleMessagePopWindow.ConfirmListener() {
                     @Override
                     public void confirmClick(View view) {
                         dialog.dismiss();

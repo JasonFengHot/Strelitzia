@@ -36,8 +36,8 @@ import tv.ismar.app.network.SkyService;
 import tv.ismar.app.network.entity.ChatMsgEntity;
 import tv.ismar.app.network.entity.FeedBackEntity;
 import tv.ismar.app.network.entity.ProblemEntity;
-import tv.ismar.app.ui.MessageDialogFragment;
 import tv.ismar.app.util.BitmapDecoder;
+import tv.ismar.app.widget.ModuleMessagePopWindow;
 import tv.ismar.helperpage.R;
 import tv.ismar.helperpage.core.FeedbackProblem;
 import tv.ismar.helperpage.ui.activity.HomeActivity;
@@ -343,15 +343,16 @@ public class FeedbackFragment extends Fragment implements RadioGroup.OnCheckedCh
     private void initPopWindow() {
         submitButton.clearFocus();
 
-        final MessageDialogFragment messageDialogFragment = new MessageDialogFragment(mContext, "是否提交反馈信息?", null);
-        messageDialogFragment.showAtLocation(getView(), Gravity.CENTER, new MessageDialogFragment.ConfirmListener() {
+        final ModuleMessagePopWindow messageDialogFragment = new ModuleMessagePopWindow(mContext);
+        messageDialogFragment.setMessage("是否提交反馈信息?");
+        messageDialogFragment.showAtLocation(getView(), Gravity.CENTER,0,0, new ModuleMessagePopWindow.ConfirmListener() {
             @Override
             public void confirmClick(View view) {
                 messageDialogFragment.dismiss();
                 submitButton.setEnabled(false);
                 uploadFeedback();
             }
-        }, new MessageDialogFragment.CancelListener() {
+        }, new ModuleMessagePopWindow.CancelListener() {
             @Override
             public void cancelClick(View view) {
                 messageDialogFragment.dismiss();
