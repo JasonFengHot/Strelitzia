@@ -338,7 +338,7 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    if(!isEdit)
+                    if(!isEdit&&historyRecycler.getChildAt(0)!=null)
                         historyRecycler.getChildAt(0).requestFocusFromTouch();
                     edit_history.setFocusable(true);
                     edit_history.setFocusableInTouchMode(true);
