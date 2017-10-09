@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.MotionEvent;
 import android.view.View;
 
 import com.daimajia.androidanimations.library.Techniques;
@@ -16,10 +17,14 @@ import java.util.List;
 import tv.ismar.app.BaseControl;
 import tv.ismar.app.entity.banner.BannerRecommend;
 import tv.ismar.app.entity.banner.HomeEntity;
+import tv.ismar.homepage.HomeActivity;
 import tv.ismar.homepage.OnItemClickListener;
 import tv.ismar.homepage.R;
 import tv.ismar.homepage.adapter.RecommendAdapter;
 import tv.ismar.homepage.control.FetchDataControl;
+import tv.ismar.homepage.view.BannerLinearLayout;
+
+import static android.view.MotionEvent.BUTTON_PRIMARY;
 
 /**
  * @AUTHOR: xi
@@ -29,11 +34,14 @@ import tv.ismar.homepage.control.FetchDataControl;
 
 public class TemplateRecommend extends Template implements BaseControl.ControlCallBack,
         RecyclerViewTV.PagingableListener, LinearLayoutManagerTV.FocusSearchFailedListener,
-        OnItemClickListener {
+        OnItemClickListener, View.OnHoverListener, View.OnClickListener {
     private RecyclerViewTV mRecyclerView;
     private LinearLayoutManagerTV mRecommendLayoutManager;
     private RecommendAdapter mAdapter;
     private FetchDataControl mFetchDataControl = null;
+    private BannerLinearLayout mBannerLinearLayout;
+    private View navigationLeft;
+    private View navigationRight;
 
     public TemplateRecommend(Context context) {
         super(context);
@@ -48,6 +56,11 @@ public class TemplateRecommend extends Template implements BaseControl.ControlCa
         mRecyclerView.setSelectedItemAtCentered(false);
         int selectedItemOffset = mContext.getResources().getDimensionPixelSize(R.dimen.banner_item_setSelectedItemOffset);
         mRecyclerView.setSelectedItemOffset(selectedItemOffset, selectedItemOffset);
+        navigationLeft = view.findViewById(R.id.navigation_left);
+        navigationRight = view.findViewById(R.id.navigation_right);
+        mBannerLinearLayout = (BannerLinearLayout) view.findViewById(R.id.banner_layout);
+        mBannerLinearLayout.setNavigationLeft(navigationLeft);
+        mBannerLinearLayout.setNavigationRight(navigationRight);
     }
 
     @Override
@@ -57,6 +70,10 @@ public class TemplateRecommend extends Template implements BaseControl.ControlCa
 
     @Override
     protected void initListener(View view) {
+        navigationLeft.setOnClickListener(this);
+        navigationRight.setOnClickListener(this);
+        navigationRight.setOnHoverListener(this);
+        navigationLeft.setOnHoverListener(this);
         mRecyclerView.setPagingableListener(this);
         mRecommendLayoutManager.setFocusSearchFailedListener(this);
     }
@@ -74,7 +91,9 @@ public class TemplateRecommend extends Template implements BaseControl.ControlCa
             mRecyclerView.setAdapter(mAdapter);
             mAdapter.setOnItemClickListener(this);
         }else {
-            mAdapter.notifyDataSetChanged();
+            int start = mFetchDataControl.mPoster.size() - mFetchDataControl.mHomeEntity.posters.size();
+            int end = mFetchDataControl.mPoster.size();
+            mAdapter.notifyItemRangeChanged(start, end);
         }
     }
 
@@ -97,5 +116,49 @@ public class TemplateRecommend extends Template implements BaseControl.ControlCa
     @Override
     public void onItemClick(View view, int position) {
         mFetchDataControl.go2Detail(mFetchDataControl.mHomeEntity.posters.get(position));
+    }
+
+    @Override
+    public void onClick(View v) {
+        int i = v.getId();
+        if (i == R.id.navigation_left) {
+            if (mRecommendLayoutManager.findFirstCompletelyVisibleItemPosition() - 1 >= 0) {//向左滑动
+                int targetPosition = mRecommendLayoutManager.findFirstCompletelyVisibleItemPosition() - 5;
+                if (targetPosition <= 0) targetPosition = 0;
+                mRecommendLayoutManager.smoothScrollToPosition(mRecyclerView, null, targetPosition);
+            }
+        } else if (i == R.id.navigation_right) {//向右滑动
+            mRecyclerView.loadMore();
+            if (mRecommendLayoutManager.findLastCompletelyVisibleItemPosition() <= mFetchDataControl.mHomeEntity.count) {
+                int targetPosition = mRecommendLayoutManager.findLastCompletelyVisibleItemPosition() + 5;
+                if (targetPosition >= mFetchDataControl.mHomeEntity.count) {
+                    targetPosition = mFetchDataControl.mHomeEntity.count;
+                }
+                mRecommendLayoutManager.smoothScrollToPosition(mRecyclerView, null, targetPosition);
+                if (targetPosition == mFetchDataControl.mHomeEntity.count)
+                    YoYo.with(Techniques.HorizontalShake).duration(1000).playOn(mRecyclerView.getChildAt(mRecyclerView.getChildCount() - 1).findViewById(R.id.tv_player_ismartv_linear_layout));
+            }
+        }
+    }
+
+    @Override
+    public boolean onHover(View v, MotionEvent event) {
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_HOVER_MOVE:
+            case MotionEvent.ACTION_HOVER_ENTER:
+                if (!v.hasFocus()) {
+                    v.requestFocus();
+                    v.requestFocusFromTouch();
+                }
+                break;
+            case MotionEvent.ACTION_HOVER_EXIT:
+                if (event.getButtonState() != BUTTON_PRIMARY) {
+                    navigationLeft.setVisibility(View.INVISIBLE);
+                    navigationRight.setVisibility(View.INVISIBLE);
+                    HomeActivity.mHoverView.requestFocus();//将焦点放置到一块隐藏view中
+                }
+                break;
+        }
+        return false;
     }
 }

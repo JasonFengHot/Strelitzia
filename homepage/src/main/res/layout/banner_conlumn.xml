@@ -1,21 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<tv.ismar.homepage.view.BannerLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/banner_layout"
     android:orientation="vertical"
     android:focusable="false"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:clipToPadding="false"
-    android:clipChildren="false"
-    >
-    <com.open.androidtvwidget.leanback.recycle.RecyclerViewTV
-        android:id="@+id/conlumn_recyclerview"
-        android:layout_width="wrap_content"
-        android:layout_marginLeft="@dimen/column_item_margin_left"
-        android:paddingRight="@dimen/history_100"
-        android:clipChildren="false"
-        android:clipToPadding="false"
-        android:focusable="false"
-        android:layout_height="@dimen/column_recyleview_height"
-        android:layout_marginTop="@dimen/column_item_margin_left"/>
+    android:clipChildren="false">
 
-</LinearLayout>
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clipChildren="false"
+        android:clipToPadding="false">
+        <com.open.androidtvwidget.leanback.recycle.RecyclerViewTV
+            android:id="@+id/conlumn_recyclerview"
+            android:layout_width="wrap_content"
+            android:layout_marginLeft="@dimen/column_item_margin_left"
+            android:paddingRight="@dimen/history_100"
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            android:focusable="false"
+            android:layout_height="@dimen/column_recyleview_height"
+            android:layout_marginTop="@dimen/column_item_margin_left"/>
+        <Button
+            android:visibility="invisible"
+            android:id="@+id/navigation_left"
+            android:layout_width="@dimen/banner_navigation_width"
+            android:layout_height="@dimen/tv_play_poster_height"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:background="@drawable/selector_banner_movie_arrow_left"
+            android:focusable="true"
+            android:focusableInTouchMode="true" />
+
+        <Button
+            android:visibility="invisible"
+            android:id="@+id/navigation_right"
+            android:layout_width="@dimen/banner_navigation_width"
+            android:layout_height="@dimen/tv_play_poster_height"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:background="@drawable/selector_banner_movie_arrow_right"
+            android:focusable="true"
+            android:focusableInTouchMode="true" />
+    </RelativeLayout>
+
+</tv.ismar.homepage.view.BannerLinearLayout>

@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
 
@@ -19,12 +20,15 @@ import tv.ismar.app.BaseControl;
 import tv.ismar.app.core.PageIntent;
 import tv.ismar.app.entity.banner.BannerPoster;
 import tv.ismar.app.entity.banner.HomeEntity;
+import tv.ismar.homepage.HomeActivity;
 import tv.ismar.homepage.OnItemClickListener;
 import tv.ismar.homepage.R;
 import tv.ismar.homepage.adapter.ConlumnAdapter;
 import tv.ismar.homepage.control.FetchDataControl;
 import tv.ismar.homepage.fragment.ChannelFragment;
+import tv.ismar.homepage.view.BannerLinearLayout;
 
+import static android.view.MotionEvent.BUTTON_PRIMARY;
 import static tv.ismar.homepage.fragment.ChannelFragment.CHANNEL_KEY;
 import static tv.ismar.homepage.fragment.ChannelFragment.NAME_KEY;
 
@@ -36,12 +40,14 @@ import static tv.ismar.homepage.fragment.ChannelFragment.NAME_KEY;
 
 public class TemplateConlumn extends Template implements BaseControl.ControlCallBack,
         RecyclerViewTV.PagingableListener, LinearLayoutManagerTV.FocusSearchFailedListener ,
-        OnItemClickListener {
-    private TextView mIndexTv;//选中位置
+        OnItemClickListener, View.OnHoverListener, View.OnClickListener {
     private RecyclerViewTV mRecyclerView;
     private LinearLayoutManagerTV mConlumnLayoutManager;
     private ConlumnAdapter mAdapter;
     private FetchDataControl mFetchDataControl = null;
+    private BannerLinearLayout mBannerLinearLayout;
+    private View navigationLeft;
+    private View navigationRight;
 
     public TemplateConlumn(Context context) {
         super(context);
@@ -57,6 +63,11 @@ public class TemplateConlumn extends Template implements BaseControl.ControlCall
         mRecyclerView.setSelectedItemAtCentered(false);
         int selectedItemOffset = mContext.getResources().getDimensionPixelSize(R.dimen.banner_item_setSelectedItemOffset);
         mRecyclerView.setSelectedItemOffset(selectedItemOffset, selectedItemOffset);
+        navigationLeft = view.findViewById(R.id.navigation_left);
+        navigationRight = view.findViewById(R.id.navigation_right);
+        mBannerLinearLayout = (BannerLinearLayout) view.findViewById(R.id.banner_layout);
+        mBannerLinearLayout.setNavigationLeft(navigationLeft);
+        mBannerLinearLayout.setNavigationRight(navigationRight);
     }
 
     private int mBannerPk;
@@ -72,6 +83,10 @@ public class TemplateConlumn extends Template implements BaseControl.ControlCall
 
     @Override
     protected void initListener(View view) {
+        navigationLeft.setOnClickListener(this);
+        navigationRight.setOnClickListener(this);
+        navigationRight.setOnHoverListener(this);
+        navigationLeft.setOnHoverListener(this);
         mRecyclerView.setPagingableListener(this);
         mConlumnLayoutManager.setFocusSearchFailedListener(this);
     }
@@ -89,7 +104,9 @@ public class TemplateConlumn extends Template implements BaseControl.ControlCall
             mRecyclerView.setAdapter(mAdapter);
             mAdapter.setOnItemClickListener(this);
         }else {
-            mAdapter.notifyDataSetChanged();
+            int start = mFetchDataControl.mPoster.size() - mFetchDataControl.mHomeEntity.posters.size();
+            int end = mFetchDataControl.mPoster.size();
+            mAdapter.notifyItemRangeChanged(start, end);
         }
     }
 
@@ -124,5 +141,49 @@ public class TemplateConlumn extends Template implements BaseControl.ControlCall
         }else {
             mFetchDataControl.go2Detail(mFetchDataControl.mHomeEntity.posters.get(position));
         }
+    }
+
+    @Override
+    public void onClick(View v) {
+        int i = v.getId();
+        if (i == R.id.navigation_left) {
+            if (mConlumnLayoutManager.findFirstCompletelyVisibleItemPosition() - 1 >= 0) {//向左滑动
+                int targetPosition = mConlumnLayoutManager.findFirstCompletelyVisibleItemPosition() - 5;
+                if (targetPosition <= 0) targetPosition = 0;
+                mConlumnLayoutManager.smoothScrollToPosition(mRecyclerView, null, targetPosition);
+            }
+        } else if (i == R.id.navigation_right) {//向右滑动
+            mRecyclerView.loadMore();
+            if (mConlumnLayoutManager.findLastCompletelyVisibleItemPosition() <= mFetchDataControl.mHomeEntity.count) {
+                int targetPosition = mConlumnLayoutManager.findLastCompletelyVisibleItemPosition() + 5;
+                if (targetPosition >= mFetchDataControl.mHomeEntity.count) {
+                    targetPosition = mFetchDataControl.mHomeEntity.count;
+                }
+                mConlumnLayoutManager.smoothScrollToPosition(mRecyclerView, null, targetPosition);
+                if (targetPosition == mFetchDataControl.mHomeEntity.count)
+                    YoYo.with(Techniques.HorizontalShake).duration(1000).playOn(mRecyclerView.getChildAt(mRecyclerView.getChildCount() - 1).findViewById(R.id.conlumn_ismartv_linear_layout));
+            }
+        }
+    }
+
+    @Override
+    public boolean onHover(View v, MotionEvent event) {
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_HOVER_MOVE:
+            case MotionEvent.ACTION_HOVER_ENTER:
+                if (!v.hasFocus()) {
+                    v.requestFocus();
+                    v.requestFocusFromTouch();
+                }
+                break;
+            case MotionEvent.ACTION_HOVER_EXIT:
+                if (event.getButtonState() != BUTTON_PRIMARY) {
+                    navigationLeft.setVisibility(View.INVISIBLE);
+                    navigationRight.setVisibility(View.INVISIBLE);
+                    HomeActivity.mHoverView.requestFocus();//将焦点放置到一块隐藏view中
+                }
+                break;
+        }
+        return false;
     }
 }

@@ -80,6 +80,8 @@ public class TemplateDoubleLd extends Template implements BaseControl.ControlCal
     }
 
     private void initTitle(){
+        if(mSelectItemPosition > mFetchDataControl.mHomeEntity.count)
+            mSelectItemPosition  = mFetchDataControl.mHomeEntity.count;
         mTitleCountTv.setText(String.format(mContext.getString(R.string.home_item_title_count), mSelectItemPosition+"",
                 mFetchDataControl.mHomeEntity.count+""));
     }
@@ -111,7 +113,9 @@ public class TemplateDoubleLd extends Template implements BaseControl.ControlCal
             mAdapter.setHeaderView(mHeadView);
             mRecyclerView.setAdapter(mAdapter);
         }else {
-            mAdapter.notifyDataSetChanged();
+            int start = mFetchDataControl.mPoster.size() - mFetchDataControl.mHomeEntity.posters.size();
+            int end = mFetchDataControl.mPoster.size();
+            mAdapter.notifyItemRangeChanged(start, end);
         }
     }
 
