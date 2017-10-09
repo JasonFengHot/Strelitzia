@@ -322,6 +322,9 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
                     showData(lastVisiablePos,false);
                     for (int i = 0; i < sectionSize; i++) {
                         if (i == sectionSize - 1) {
+                            if(firstVisiablePos>=specialPos.get(i)){
+                                current_section_title.setText(sectionList.get(i).title);
+                            }
                             break;
                         }
                         if (firstVisiablePos >= specialPos.get(i) && firstVisiablePos < specialPos.get(i + 1)) {
@@ -404,11 +407,6 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
                     }
 
                     @Override
-                    public void onError(Throwable e) {
-                        e.printStackTrace();
-                    }
-
-                    @Override
                     public void onNext(SectionList sections) {
                         //筛选出分类下有内容的栏目，去除内容个数为0的栏目
                         sectionList=new SectionList();
@@ -446,8 +444,7 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
                     @Override
                     public void onError(Throwable e) {
                         sectionHasData[index]=false;
-                        e.printStackTrace();
-//                        super.onError(e);
+                        super.onError(e);
                     }
 
                     @Override
@@ -545,10 +542,6 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
                     @Override
                     public void onCompleted() {
 
-                    }
-                    @Override
-                    public void onError(Throwable e) {
-                        e.printStackTrace();
                     }
 
                     @Override
@@ -659,7 +652,7 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
                     @Override
                     public void onError(Throwable e) {
                         noResultFetched=false;
-                        e.printStackTrace();
+                        super.onError(e);
                     }
 
                     @Override
@@ -770,10 +763,6 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
                     @Override
                     public void onCompleted() {
 
-                    }
-                    @Override
-                    public void onError(Throwable e) {
-                        e.printStackTrace();
                     }
 
                     @Override
@@ -1246,6 +1235,7 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
                     if(hasFocus){
                         lastFocusedView = view;
                         changeCheckedTab(position);
+                        Log.e("onitemfocus", view.getY()+"");
                         if(!filter_root_view.horving) {
                             if (view.getY() > getResources().getDimensionPixelOffset(R.dimen.filter_poster_start_scroll_length)) {
                                 if (isVertical) {
