@@ -111,7 +111,9 @@ public class TemplateDoubleLd extends Template implements BaseControl.ControlCal
             mAdapter.setHeaderView(mHeadView);
             mRecyclerView.setAdapter(mAdapter);
         }else {
-            mAdapter.notifyDataSetChanged();
+            int start = mFetchDataControl.mPoster.size() - mFetchDataControl.mHomeEntity.posters.size();
+            int end = mFetchDataControl.mPoster.size();
+            mAdapter.notifyItemRangeChanged(start, end);
         }
     }
 
