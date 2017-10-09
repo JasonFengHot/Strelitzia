@@ -114,8 +114,9 @@ public class TemplateDoubleMd extends Template implements BaseControl.ControlCal
     }
 
     private void initTitle(){
-        mTitleCountTv.setText(String.format(mContext.getString(R.string.home_item_title_count),
-                mSelectItemPosition+"",
+        if(mSelectItemPosition > mFetchDataControl.mHomeEntity.count)
+            mSelectItemPosition  = mFetchDataControl.mHomeEntity.count;
+        mTitleCountTv.setText(String.format(mContext.getString(R.string.home_item_title_count), mSelectItemPosition+"",
                 mFetchDataControl.mHomeEntity.count+""));
     }
 
@@ -205,7 +206,7 @@ public class TemplateDoubleMd extends Template implements BaseControl.ControlCal
             if (positions[1] - 1 >= 0) {//向左滑动
                 int targetPosition = positions[1] - 8;
                 if (targetPosition <= 0) targetPosition = 0;
-                mSelectItemPosition = targetPosition-1;
+                mSelectItemPosition = targetPosition;
                 mDoubleLayoutManager.smoothScrollToPosition(mRecyclerView, null, targetPosition);
             }
         } else if (i == R.id.navigation_right) {//向右滑动
@@ -215,7 +216,7 @@ public class TemplateDoubleMd extends Template implements BaseControl.ControlCal
                 if (targetPosition >= mFetchDataControl.mHomeEntity.count) {
                     targetPosition = mFetchDataControl.mHomeEntity.count;
                 }
-                mSelectItemPosition = targetPosition-1;
+                mSelectItemPosition = targetPosition;
                 mDoubleLayoutManager.smoothScrollToPosition(mRecyclerView, null, targetPosition);
                 if(targetPosition==mFetchDataControl.mHomeEntity.count)
                     YoYo.with(Techniques.HorizontalShake).duration(1000).playOn(mRecyclerView.getChildAt(mRecyclerView.getChildCount() - 1).findViewById(R.id.double_md_ismartv_linear_layout));

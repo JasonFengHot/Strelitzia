@@ -96,6 +96,8 @@ public class TemplateTvPlay extends Template implements BaseControl.ControlCallB
     }
 
     private void initTitle(){
+        if(mSelectItemPosition > mFetchDataControl.mHomeEntity.count)
+            mSelectItemPosition  = mFetchDataControl.mHomeEntity.count;
         mTitleCountTv.setText(String.format(mContext.getString(R.string.home_item_title_count), mSelectItemPosition+"",
                 mFetchDataControl.mHomeEntity.count+""));
     }

@@ -80,6 +80,8 @@ public class TemplateDoubleLd extends Template implements BaseControl.ControlCal
     }
 
     private void initTitle(){
+        if(mSelectItemPosition > mFetchDataControl.mHomeEntity.count)
+            mSelectItemPosition  = mFetchDataControl.mHomeEntity.count;
         mTitleCountTv.setText(String.format(mContext.getString(R.string.home_item_title_count), mSelectItemPosition+"",
                 mFetchDataControl.mHomeEntity.count+""));
     }
