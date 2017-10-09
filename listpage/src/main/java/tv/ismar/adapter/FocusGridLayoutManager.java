@@ -141,17 +141,37 @@ public class FocusGridLayoutManager extends GridLayoutManager {
          */
         int nextPos = getNextViewPos(fromPos, focusDirection);
         View nextView=findViewByPosition(nextPos);
-//        if(focusDirection==View.FOCUS_DOWN) {
-//            Log.e("onfocussearch",fromPos+"&"+nextPos);
-//            for (int i = fromPos; i < nextPos; i++) {
-//                if (specialPos!=null&&specialPos.contains(i)) {
-//                    int nextSpecialPos=specialPos.indexOf(i);
-//                    int lastColumnCount=(i-specialPos.get(nextSpecialPos-1))%getSpanCount();
-//
-//                    nextView = findViewByPosition(i+currentLine);
-//                }
-//            }
-//        }
+        if(focusDirection==View.FOCUS_DOWN) {
+            for (int i = fromPos; i < nextPos; i++) {
+                if (specialPos!=null&&specialPos.contains(i)) {
+                    int nextSpecialPos=specialPos.indexOf(i);
+                    int lastColumnCount=(i-specialPos.get(nextSpecialPos-1)-1)%getSpanCount();
+                    if(lastColumnCount==0){
+                        lastColumnCount=getSpanCount();
+                    }
+                    int currentLine=fromPos-specialPos.get(nextSpecialPos)+lastColumnCount+1;
+                    nextView = findViewByPosition(i+currentLine);
+                    break;
+                }
+            }
+        }else if(focusDirection==View.FOCUS_UP){
+            for (int i = fromPos; i >= nextPos; i--) {
+                if (specialPos!=null&&specialPos.contains(i)) {
+                    int nextSpecialPos=specialPos.indexOf(i);
+                    int lastColumnCount=(i-specialPos.get(nextSpecialPos-1)-1)%getSpanCount();
+                    if(lastColumnCount==0){
+                        lastColumnCount=getSpanCount();
+                    }
+                    int currentLine=fromPos-i;
+                    if(currentLine>lastColumnCount){
+                        nextView=findViewByPosition(i-1);
+                    }else{
+                        nextView = findViewByPosition(i-(lastColumnCount-currentLine)-1);
+                    }
+                    break;
+                }
+            }
+        }
         if(nextView instanceof TextView){
             nextView=findViewByPosition(nextPos+1);
         }

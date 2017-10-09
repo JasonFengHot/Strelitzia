@@ -6,11 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.util.Log;
-import android.view.Gravity;
-import android.view.View;
-
-import tv.ismar.app.R;
-import tv.ismar.app.ui.MessageDialogFragment;
 
 /**
  * Created by huibin on 9/13/16.
@@ -245,21 +240,6 @@ public class PageIntent implements PageIntentInterface {
             intent.setAction("cn.ismar.sakura.launcher");
             context.startActivity(intent);
        }
-    }
-
-    private static void showNetErrorPopup(Context context, String message) {
-        View rootView = ((Activity) context).getWindow().getDecorView();
-        final MessageDialogFragment dialog = new MessageDialogFragment(context, message, null);
-
-        dialog.setButtonText(context.getString(R.string.vod_i_know), null);
-        dialog.showAtLocation(rootView, Gravity.CENTER,
-                new MessageDialogFragment.ConfirmListener() {
-                    @Override
-                    public void confirmClick(View view) {
-                        dialog.dismiss();
-                    }
-                }, null);
-
     }
 
     @Override

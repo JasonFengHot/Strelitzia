@@ -47,6 +47,7 @@
                 android:gravity="center"
                 android:textColor="@color/popup_btn_text"
                 android:textSize="@dimen/popup_tip_btn_ts"
+                android:text="确认"
                 android:background="@drawable/popup_btn_selector" />
 
             <Button
@@ -62,6 +63,7 @@
                 android:gravity="center"
                 android:textColor="@color/popup_btn_text"
                 android:textSize="@dimen/popup_tip_btn_ts"
+                android:text="取消"
                 android:background="@drawable/popup_btn_selector" />
         </LinearLayout>
 
