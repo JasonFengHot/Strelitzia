@@ -147,6 +147,7 @@ public class HistoryFavoritrListActivity extends BaseActivity implements OnItemC
     }
 
     private void loadData(){
+        if(mlists.size()>1)
         mlists.remove(mlists.size()-1);
         adapter=new HistoryFavoriteListAdapter(HistoryFavoritrListActivity.this,mlists,type,source);
         adapter.setItemClickListener(HistoryFavoritrListActivity.this);

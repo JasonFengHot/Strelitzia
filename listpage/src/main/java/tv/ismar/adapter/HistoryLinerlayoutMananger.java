@@ -9,7 +9,7 @@ import com.open.androidtvwidget.leanback.recycle.LinearLayoutManagerTV;
  * Created by liucan on 2017/8/28.
  */
 
-public class HistoryLinerlayoutMananger extends LinearLayoutManagerTV {
+public class HistoryLinerlayoutMananger extends LinearLayoutManager {
     private boolean isScrollEnabled = true;
 
     public HistoryLinerlayoutMananger(Context context) {

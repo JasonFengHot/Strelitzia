@@ -103,7 +103,6 @@ public class HistoryListAdapter extends RecyclerView.Adapter<HistoryListAdapter.
             holder.more.setVisibility(View.VISIBLE);
             holder.item_time_node.setVisibility(View.GONE);
             holder.item_time.setVisibility(View.GONE);
-            holder.item_detail.setNextFocusRightId(holder.item_detail.getId());
         }
 
         holder.item_detail.setOnFocusChangeListener(new View.OnFocusChangeListener() {

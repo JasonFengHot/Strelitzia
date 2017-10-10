@@ -139,6 +139,12 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
         delet_history.setOnHoverListener(this);
         delete_favorite.setOnHoverListener(this);
        // edit_shadow.setOnHoverListener(this);
+        edit_shadow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                delet_history.requestFocusFromTouch();
+            }
+        });
 
         HashMap<String, Object> properties = new HashMap<String, Object>();
         properties.put(EventProperty.TITLE, "history");
@@ -646,7 +652,7 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
                 Log.i("listSize","HistorySize: "+mHistories.size()+"");
                 if(mHistories.size()>0) {
                     Collections.sort(mHistories);
-                    for(int i=0;i<mHistories.size();++i) {
+                    for(int i=0;i<mHistories.size();i++) {
                         History history = mHistories.get(i);
                         HistoryFavoriteEntity item = getItem(history);
                         historyLists.add(item);
