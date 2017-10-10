@@ -68,32 +68,25 @@ public class HistoryListAdapter extends RecyclerView.Adapter<HistoryListAdapter.
 
     @Override
     public void onBindViewHolder(final HistoryViewholder holder, final int position) {
-        if(position!=items.size()-1) {
-            HistoryFavoriteEntity item = items.get(position);
+        HistoryFavoriteEntity item = items.get(position);
+        if(item.getType()!=2){
             if(item.getAdlet_url()!=null)
-            Picasso.with(mContext).load(item.getAdlet_url()).error(R.drawable.list_item_preview_bg).into(holder.item_detail_image);
-            holder.item_title.setText(item.getTitle());
-            holder.item_title.setVisibility(View.VISIBLE);
-            holder.item_title_layout.setVisibility(View.VISIBLE);
-            holder.item_detail_image.setVisibility(View.VISIBLE);
-            holder.more.setVisibility(View.GONE);
-            holder.item_time_node.setVisibility(View.VISIBLE);
+                Picasso.with(mContext).load(item.getAdlet_url()).error(R.drawable.list_item_preview_bg).into(holder.item_detail_image);
+                holder.item_title.setText(item.getTitle());
+                holder.item_title.setVisibility(View.VISIBLE);
+                holder.item_title_layout.setVisibility(View.VISIBLE);
+                holder.item_detail_image.setVisibility(View.VISIBLE);
+                holder.more.setVisibility(View.GONE);
+                holder.item_time_node.setVisibility(View.VISIBLE);
             if(item.getDate()!=null&&item.getDate().contains("-")){
                 String[] date=item.getDate().split("-");
-                if(position==0){
+                if(item.isShowDate()){
                     holder.item_time.setText(date[0]+"月"+date[1]+"日");
-                    lastTime=item.getDate();
-                }else {
-                    Log.i("date","itemDate: "+item.getDate()+"    lastTime: "+lastTime);
-                    if (item.getDate().equals(lastTime) && !item.getDate().equals("")) {
-                        holder.item_time.setVisibility(View.GONE);
-                        holder.item_time_node.setVisibility(View.GONE);
-                    } else {
-                        holder.item_time.setText(date[0]+"月"+date[1]+"日");
-                        holder.item_time_node.setVisibility(View.VISIBLE);
-                        holder.item_time.setVisibility(View.VISIBLE);
-                        lastTime=item.getDate();
-                    }
+                    holder.item_time_node.setVisibility(View.VISIBLE);
+                    holder.item_time.setVisibility(View.VISIBLE);
+                }else{
+                    holder.item_time.setVisibility(View.GONE);
+                    holder.item_time_node.setVisibility(View.GONE);
                 }
             }
 
@@ -139,6 +132,7 @@ public class HistoryListAdapter extends RecyclerView.Adapter<HistoryListAdapter.
                     itemKeyListener.onItemKeyListener(v,keyCode,event);
                     if(position==items.size()-1&&keyCode==22){
                         YoYo.with(Techniques.HorizontalShake).duration(1000).playOn(holder.item_detail);
+                        return true;
                     }
                 }
                 return false;
