@@ -84,7 +84,9 @@ public class TemplateDoubleLd extends Template implements BaseControl.ControlCal
         mDoubleLayoutManager.setOrientation(GridLayoutManagerTV.HORIZONTAL);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         mRecyclerView.setLayoutManager(mDoubleLayoutManager);
-//        mRecyclerView.setSelectedItemAtCentered(false);
+        mRecyclerView.setSelectedItemAtCentered(false);
+        int selectedItemOffset = mContext.getResources().getDimensionPixelSize(R.dimen.banner_item_setSelectedItemOffset);
+        mRecyclerView.setSelectedItemOffset(selectedItemOffset, selectedItemOffset);
         navigationLeft = view.findViewById(R.id.navigation_left);
         navigationRight = view.findViewById(R.id.navigation_right);
         mBannerLinearLayout = (BannerLinearLayout) view.findViewById(R.id.banner_layout);
