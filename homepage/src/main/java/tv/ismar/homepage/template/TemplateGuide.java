@@ -8,6 +8,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -23,6 +24,7 @@ import tv.ismar.app.core.SimpleRestClient;
 import tv.ismar.app.entity.banner.HomeEntity;
 import tv.ismar.app.player.CallaPlay;
 import tv.ismar.app.util.BitmapDecoder;
+import tv.ismar.homepage.HomeActivity;
 import tv.ismar.homepage.OnItemClickListener;
 import tv.ismar.homepage.OnItemSelectedListener;
 import tv.ismar.homepage.R;
@@ -30,8 +32,10 @@ import tv.ismar.homepage.adapter.GuideAdapter;
 import tv.ismar.homepage.control.FetchDataControl;
 import tv.ismar.homepage.control.GuideControl;
 import tv.ismar.homepage.fragment.ChannelFragment;
+import tv.ismar.homepage.view.BannerLinearLayout;
 import tv.ismar.homepage.widget.DaisyVideoView;
 
+import static android.view.MotionEvent.BUTTON_PRIMARY;
 import static tv.ismar.homepage.fragment.ChannelFragment.BANNER_KEY;
 import static tv.ismar.homepage.fragment.ChannelFragment.CHANNEL_KEY;
 import static tv.ismar.homepage.fragment.ChannelFragment.NAME_KEY;
@@ -46,9 +50,9 @@ public class TemplateGuide extends Template implements BaseControl.ControlCallBa
         MediaPlayer.OnCompletionListener, MediaPlayer.OnErrorListener,
         MediaPlayer.OnPreparedListener, OnItemClickListener,
         RecyclerViewTV.PagingableListener,
-        View.OnFocusChangeListener,
+        View.OnFocusChangeListener, View.OnHoverListener,
         LinearLayoutManagerTV.FocusSearchFailedListener,
-        OnItemSelectedListener {
+        OnItemSelectedListener,View.OnClickListener {
     private DaisyVideoView mVideoView;//导视view
     private ImageView mLoadingIg;//加载提示logo
     private TextView mVideoTitleTv;//导视标题
@@ -65,6 +69,9 @@ public class TemplateGuide extends Template implements BaseControl.ControlCallBa
     private GuideAdapter mAdapter;
 
     private BitmapDecoder mBitmapDecoder;//视频加载图片decoder
+    private BannerLinearLayout mBannerLinearLayout;
+    private View navigationLeft;
+    private View navigationRight;
 
     public TemplateGuide(Context context) {
         super(context);
@@ -90,6 +97,11 @@ public class TemplateGuide extends Template implements BaseControl.ControlCallBa
         mGuideLayoutManager = new LinearLayoutManagerTV(mContext, LinearLayoutManager.HORIZONTAL, false);
         mRecycleView.setLayoutManager(mGuideLayoutManager);
         mRecycleView.setSelectedItemOffset(100, 100);
+        navigationLeft = view.findViewById(R.id.navigation_left);
+        navigationRight = view.findViewById(R.id.navigation_right);
+        mBannerLinearLayout = (BannerLinearLayout) view.findViewById(R.id.banner_layout);
+        mBannerLinearLayout.setNavigationLeft(navigationLeft);
+        mBannerLinearLayout.setNavigationRight(navigationRight);
     }
 
     private int mBannerPk;//banner标记
@@ -113,12 +125,17 @@ public class TemplateGuide extends Template implements BaseControl.ControlCallBa
 
     @Override
     protected void initListener(View view){
+        navigationLeft.setOnClickListener(this);
+        navigationRight.setOnClickListener(this);
+        navigationRight.setOnHoverListener(this);
+        navigationLeft.setOnHoverListener(this);
         mVideoView.setOnCompletionListener(this);
         mVideoView.setOnErrorListener(this);
         mVideoView.setOnPreparedListener(this);
         mRecycleView.setPagingableListener(this);
         mVideoView.setOnFocusChangeListener(this);
         mGuideLayoutManager.setFocusSearchFailedListener(this);
+        mHeadView.findViewById(R.id.guide_head_ismartv_linearlayout).setOnHoverListener(this);
     }
 
     /*更改图标背景*/
@@ -300,5 +317,50 @@ public class TemplateGuide extends Template implements BaseControl.ControlCallBa
         } else {
             mHeadView.setVisibility(View.GONE);
         }
+    }
+
+    @Override
+    public void onClick(View v) {
+        int i = v.getId();
+        if (i == R.id.navigation_left) {
+            if (mGuideLayoutManager.findFirstCompletelyVisibleItemPosition() - 1 >= 0) {//向左滑动
+                int targetPosition = mGuideLayoutManager.findFirstCompletelyVisibleItemPosition() - 5;
+                if (targetPosition <= 0) targetPosition = 0;
+                mGuideLayoutManager.smoothScrollToPosition(mRecycleView, null, targetPosition);
+            }
+        } else if (i == R.id.navigation_right) {//向右滑动
+            mRecycleView.loadMore();
+            mHeadView.setVisibility(View.GONE);
+            if (mGuideLayoutManager.findLastCompletelyVisibleItemPosition()  <= mFetchDataControl.mHomeEntity.count) {
+                int targetPosition = mGuideLayoutManager.findLastCompletelyVisibleItemPosition() + 5;
+                if (targetPosition >= mFetchDataControl.mHomeEntity.count) {
+                    targetPosition = mFetchDataControl.mHomeEntity.count;
+                }
+                mGuideLayoutManager.smoothScrollToPosition(mRecycleView, null, targetPosition);
+                if(targetPosition==mFetchDataControl.mHomeEntity.count)
+                    YoYo.with(Techniques.HorizontalShake).duration(1000).playOn(mRecycleView.getChildAt(mRecycleView.getChildCount() - 1).findViewById(R.id.tv_player_ismartv_linear_layout));
+            }
+        }
+    }
+
+    @Override
+    public boolean onHover(View v, MotionEvent event) {
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_HOVER_MOVE:
+            case MotionEvent.ACTION_HOVER_ENTER:
+                if (!v.hasFocus()) {
+                    v.requestFocus();
+                    v.requestFocusFromTouch();
+                }
+                break;
+            case MotionEvent.ACTION_HOVER_EXIT:
+                if (event.getButtonState() != BUTTON_PRIMARY) {
+                    navigationLeft.setVisibility(View.INVISIBLE);
+                    navigationRight.setVisibility(View.INVISIBLE);
+                    HomeActivity.mHoverView.requestFocus();//将焦点放置到一块隐藏view中
+                }
+                break;
+        }
+        return false;
     }
 }
