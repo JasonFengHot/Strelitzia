@@ -306,6 +306,9 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
 
                 favorite_title.setText("收藏");
                 favorite_title.setVisibility(View.VISIBLE);
+                if(isEdit)
+                delete_favorite.setVisibility(View.VISIBLE);
+
                 second_line_image.setBackgroundResource(R.drawable.favorite_delete_image);
                 favoritAdapter=new HistoryListAdapter(HistoryFavoriteActivity.this,favoriteLists,"favorite");
                 favoritAdapter.setItemFocusedListener(HistoryFavoriteActivity.this);
