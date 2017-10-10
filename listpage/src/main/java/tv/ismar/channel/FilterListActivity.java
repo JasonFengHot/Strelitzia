@@ -315,7 +315,7 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
                     } else {
                         filter_root_view.setShow_right_down(true);
                     }
-                    if(filter_root_view.horving||poster_arrow_up.isFocused()||poster_arrow_down.isFocused()) {
+                    if(poster_arrow_up.isFocused()||poster_arrow_down.isFocused()) {
                         changeCheckedTab(firstVisiablePos);
                     }
                     showData(firstVisiablePos,true);
@@ -1127,8 +1127,16 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
                             if (lastFocusedView != null) {
                                 lastFocusedView.requestFocus();
                             } else {
-                                View firstView = mFocusGridLayoutManager.findViewByPosition(specialPos.get(finalI) + 1);
-                                if (specialPos != null && firstView != null) {
+                                View firstView = null;
+                                if(finalI==sectionSize-1&&mAllSectionItemList.getCount()-specialPos.get(finalI)<spanCount){
+                                    firstView=mFocusGridLayoutManager.findViewByPosition(specialPos.get(finalI)+1);
+                                }else if(list_poster_recyclerview.getChildCount()>spanCount) {
+                                    firstView = list_poster_recyclerview.getChildAt(spanCount);
+                                }
+                                if(list_poster_recyclerview.getChildAt(0) instanceof TextView){
+                                    firstView=list_poster_recyclerview.getChildAt(1);
+                                }
+                                if (firstView != null) {
                                     firstView.requestFocus();
                                 }
                             }

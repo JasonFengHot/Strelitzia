@@ -138,7 +138,13 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
         editBtnFocusListener();
         delet_history.setOnHoverListener(this);
         delete_favorite.setOnHoverListener(this);
-       // edit_shadow.setOnHoverListener(this);
+       // edit_shadow.setListener(this);
+        edit_shadow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                delet_history.requestFocusFromTouch();
+            }
+        });
 
         HashMap<String, Object> properties = new HashMap<String, Object>();
         properties.put(EventProperty.TITLE, "history");
@@ -300,6 +306,9 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
 
                 favorite_title.setText("收藏");
                 favorite_title.setVisibility(View.VISIBLE);
+                if(isEdit)
+                delete_favorite.setVisibility(View.VISIBLE);
+
                 second_line_image.setBackgroundResource(R.drawable.favorite_delete_image);
                 favoritAdapter=new HistoryListAdapter(HistoryFavoriteActivity.this,favoriteLists,"favorite");
                 favoritAdapter.setItemFocusedListener(HistoryFavoriteActivity.this);
@@ -338,7 +347,7 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    if(!isEdit)
+                    if(!isEdit&&historyRecycler.getChildAt(0)!=null)
                         historyRecycler.getChildAt(0).requestFocusFromTouch();
                     edit_history.setFocusable(true);
                     edit_history.setFocusableInTouchMode(true);
@@ -368,7 +377,7 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        if(!isEdit)
+                        if(!isEdit&&historyRecycler.getChildAt(0)!=null)
                             historyRecycler.getChildAt(0).requestFocusFromTouch();
                         edit_history.setFocusable(true);
                         edit_history.setFocusableInTouchMode(true);
@@ -537,6 +546,8 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
             params.setMargins(getResources().getDimensionPixelOffset(R.dimen.history_44),getResources().getDimensionPixelOffset(R.dimen.history_20),0,0);
             container.setLayoutParams(params);
             recommend_list.addView(container);
+            if(recommend_list.getChildAt(0)!=null)
+            recommend_list.getChildAt(0).requestFocusFromTouch();
         }
     }
 
@@ -605,7 +616,6 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
     public boolean onHover(View v, MotionEvent event) {
         switch (event.getAction()){
             case MotionEvent.ACTION_HOVER_ENTER:
-                if(!isEdit)
                 v.requestFocusFromTouch();
                 break;
         }
@@ -646,7 +656,7 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
                 Log.i("listSize","HistorySize: "+mHistories.size()+"");
                 if(mHistories.size()>0) {
                     Collections.sort(mHistories);
-                    for(int i=0;i<mHistories.size();++i) {
+                    for(int i=0;i<mHistories.size();i++) {
                         History history = mHistories.get(i);
                         HistoryFavoriteEntity item = getItem(history);
                         historyLists.add(item);
