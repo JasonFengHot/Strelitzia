@@ -546,6 +546,7 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
             params.setMargins(getResources().getDimensionPixelOffset(R.dimen.history_44),getResources().getDimensionPixelOffset(R.dimen.history_20),0,0);
             container.setLayoutParams(params);
             recommend_list.addView(container);
+            recommend_list.getChildAt(0).requestFocusFromTouch();
         }
     }
 
