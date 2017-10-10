@@ -70,8 +70,9 @@ public class HistoryListAdapter extends RecyclerView.Adapter<HistoryListAdapter.
     public void onBindViewHolder(final HistoryViewholder holder, final int position) {
         HistoryFavoriteEntity item = items.get(position);
         if(item.getType()!=2){
-            if(item.getAdlet_url()!=null)
+            if(item.getAdlet_url()!=null&&!item.getAdlet_url().isEmpty()) {
                 Picasso.with(mContext).load(item.getAdlet_url()).error(R.drawable.list_item_preview_bg).into(holder.item_detail_image);
+            }
                 holder.item_title.setText(item.getTitle());
                 holder.item_title.setVisibility(View.VISIBLE);
                 holder.item_title_layout.setVisibility(View.VISIBLE);
