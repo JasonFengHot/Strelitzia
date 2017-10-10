@@ -11,6 +11,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -30,6 +31,7 @@ import tv.ismar.homepage.fragment.ChannelFragment;
 import tv.ismar.homepage.widget.HorizontalTabView;
 import tv.ismar.library.exception.ExceptionUtils;
 
+import static android.view.MotionEvent.BUTTON_PRIMARY;
 import static tv.ismar.app.BaseControl.TAB_CHANGE_FALG;
 import static tv.ismar.homepage.control.FetchDataControl.FETCH_CHANNEL_TAB_FLAG;
 
@@ -41,7 +43,7 @@ import static tv.ismar.homepage.control.FetchDataControl.FETCH_CHANNEL_TAB_FLAG;
  */
 
 public class HomeActivity extends BaseActivity implements View.OnClickListener, BaseControl.ControlCallBack,
-        View.OnFocusChangeListener, View.OnKeyListener {
+        View.OnFocusChangeListener, View.OnKeyListener, View.OnHoverListener {
 
     public static final String HOME_PAGE_CHANNEL_TAG = "homepage";
     private final FetchDataControl mFetchDataControl = new FetchDataControl(this, this);//业务类引用
@@ -118,6 +120,8 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         mCollectionLayout.setOnClickListener(this);
         mPersonCenterLayout.setOnClickListener(this);
         mHomeControl.setChannelChange(mChannelTab);
+        mCollectionLayout.setOnHoverListener(this);
+        mPersonCenterLayout.setOnHoverListener(this);
         IntentFilter filter = new IntentFilter();
         filter.addAction(Intent.ACTION_TIME_TICK);
         mTimeTickBroadcast = new TimeTickBroadcast();
@@ -179,6 +183,22 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         } else if(v == mPersonCenterLayout){
             pageIntent.toUserCenter(this);
         }
+    }
+
+    @Override
+    public boolean onHover(View v, MotionEvent event) {
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_HOVER_ENTER:
+                if(!v.hasFocus()){
+                    v.setFocusable(true);
+                    v.requestFocus();
+                }
+                break;
+            case MotionEvent.ACTION_HOVER_EXIT:
+//                onFocusChange(v,  false);
+                break;
+        }
+        return false;
     }
 
     @Override

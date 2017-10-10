@@ -17,7 +17,7 @@ import tv.ismar.library.util.StringUtils;
  */
 
 public class BaseControl {
-    private String TAG = this.getClass().getSimpleName();
+    protected String TAG = this.getClass().getSimpleName();
 
     public static final int FETCH_CHANNEL_TAB_FLAG = 0X01;//获取频道列表
     public static final int FETCH_HOME_BANNERS_FLAG = 0X02;//获取首页下banners

@@ -127,6 +127,8 @@ public class TemplateDoubleMd extends Template implements BaseControl.ControlCal
             mAdapter.setHeaderView(mHeadView);
             mRecyclerView.setAdapter(mAdapter);
         }else {
+            Log.i(TAG, "size:"+mFetchDataControl.mHomeEntity.posters.size()+
+                    " url:"+mFetchDataControl.mHomeEntity.posters.get(mFetchDataControl.mHomeEntity.posters.size()-1).poster_url);
             int start = mFetchDataControl.mPoster.size() - mFetchDataControl.mHomeEntity.posters.size();
             int end = mFetchDataControl.mPoster.size();
             mAdapter.notifyItemRangeChanged(start, end);

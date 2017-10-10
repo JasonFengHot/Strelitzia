@@ -65,10 +65,10 @@ public class DoubleMdAdapter extends BaseRecycleAdapter<DoubleMdAdapter.DoubleMd
             BannerPoster poster = mData.get(position-1);
             holder.mTitleTv.setText(poster.title);
             if (!TextUtils.isEmpty(poster.vertical_url)) {
-                if(poster.poster_url.equals("更多")){
+                if(poster.vertical_url.equals("更多")){
                     Picasso.with(mContext).load(R.drawable.banner_vertical_more).into(holder.mPosterIg);
                 } else {
-                    Picasso.with(mContext).load(poster.poster_url).into(holder.mPosterIg);
+                    Picasso.with(mContext).load(poster.vertical_url).into(holder.mPosterIg);
                 }
             } else {
                 Picasso.with(mContext).load(R.drawable.list_item_preview_bg).into(holder.mPosterIg);
