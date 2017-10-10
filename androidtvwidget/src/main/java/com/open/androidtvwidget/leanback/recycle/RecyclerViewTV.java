@@ -499,7 +499,7 @@ public class RecyclerViewTV extends RecyclerView implements PrvInterface {
         }
     };
 
-    private static final int LOAD_MORE_VALUE = 5;
+    private static final int LOAD_MORE_VALUE = 10;
     public boolean loadMore() {
         int totalItemCount = getLayoutManager().getItemCount();
         int lastVisibleItem = findLastVisibleItemPosition();
@@ -512,6 +512,7 @@ public class RecyclerViewTV extends RecyclerView implements PrvInterface {
             int adapterPosition = getChildAdapterPosition(view);
 //            int layoutPosition = getChildLayoutPosition(view);
             Log.i("RecyclerViewTV","totalItemCount:"+totalItemCount+"adapterPosition:"+(adapterPosition+3));
+            Log.i("RecyclerViewTV","visibleItemCount:"+totalItemCount+"adapterPosition:"+(adapterPosition+3));
             if(!isLoading && view!=null && totalItemCount-(adapterPosition+3)<=LOAD_MORE_VALUE){
                 isLoading = true;
                 if(mPagingableListener != null) mPagingableListener.onLoadMoreItems();

@@ -61,6 +61,7 @@ public class TemplateRecommend extends Template implements BaseControl.ControlCa
         mBannerLinearLayout = (BannerLinearLayout) view.findViewById(R.id.banner_layout);
         mBannerLinearLayout.setNavigationLeft(navigationLeft);
         mBannerLinearLayout.setNavigationRight(navigationRight);
+        mRecyclerView.requestFocus();
     }
 
     @Override
