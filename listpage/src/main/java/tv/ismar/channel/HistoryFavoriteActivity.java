@@ -89,6 +89,8 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
     private static final int FAVORITE=2;
     private List<HistoryFavoriteEntity> historyLists=new ArrayList<>();
     private List<HistoryFavoriteEntity> favoriteLists=new ArrayList<>();
+    private List<HistoryFavoriteEntity> allfavoriteLists=new ArrayList<>();
+    private List<HistoryFavoriteEntity> allhistoryLists=new ArrayList<>();
     private HistoryLinerlayoutMananger historyLayoutManager,favoriteManager;
     private GetFavoriteTask getFavoriteTask;
     private TextView favorite_title,history_title;
@@ -96,6 +98,7 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
     private ImageView edit_shadow;
     private HashMap<String, Object> mDataCollectionProperties;
     private Boolean isEdit=false;
+    private boolean isMore=false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -273,15 +276,34 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
             JSONArray date=info.getJSONArray("date");
             for(int i=0;i<date.length();i++){
                 JSONArray element=info.getJSONArray(date.getString(i));
+                if(i==3){
+                    HistoryFavoriteEntity more = new HistoryFavoriteEntity();
+                    more.setType(2);
+                    lists.add(more);
+                }
                 for(int j=0;j<element.length();j++){
                     HistoryFavoriteEntity historyFavoriteEntity=new GsonBuilder().create().fromJson(element.get(j).toString(),HistoryFavoriteEntity.class);
+                    if(j==0){
+                        historyFavoriteEntity.setShowDate(true);
+                    }else{
+                        historyFavoriteEntity.setShowDate(false);
+                    }
                     historyFavoriteEntity.setDate(date.getString(i));
-                    lists.add(historyFavoriteEntity);
+                    if(i<3) {
+                        lists.add(historyFavoriteEntity);
+                        if(type==FAVORITE){
+                            allfavoriteLists.add(historyFavoriteEntity);
+                        }else{
+                            allhistoryLists.add(historyFavoriteEntity);
+                        }
+                    } else{
+                        if(type==FAVORITE){
+                            allfavoriteLists.add(historyFavoriteEntity);
+                        }else{
+                            allhistoryLists.add(historyFavoriteEntity);
+                        }
+                    }
                 }
-            }
-            if(lists.size()>0) {
-                HistoryFavoriteEntity end = new HistoryFavoriteEntity();
-                lists.add(end);
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -581,7 +603,7 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
                 intent1.setAction("tv.ismar.daisy.historyfavoriteList");
                 intent1.putExtra("source","list");
                 intent1.putExtra("type",1);
-                intent1.putExtra("List",(Serializable) historyLists);
+                intent1.putExtra("List",(Serializable) allhistoryLists);
                 startActivity(intent1);
             }
         }else {
@@ -606,7 +628,7 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
                 intent1.setAction("tv.ismar.daisy.historyfavoriteList");
                 intent1.putExtra("source","list");
                 intent1.putExtra("type",2);
-                intent1.putExtra("List",(Serializable) favoriteLists);
+                intent1.putExtra("List",(Serializable) allfavoriteLists);
                 startActivity(intent1);
             }
         }
@@ -659,9 +681,9 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
                     for(int i=0;i<mHistories.size();i++) {
                         History history = mHistories.get(i);
                         HistoryFavoriteEntity item = getItem(history);
-                        historyLists.add(item);
+                        allhistoryLists.add(item);
                     }
-                    historyLists.add(new HistoryFavoriteEntity());
+                    srotHistoryFavoriteList(allhistoryLists,historyLists);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -682,18 +704,42 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
         protected Void doInBackground(Void... params) {
             ArrayList<Favorite> favorites = DaisyUtils.getFavoriteManager(HistoryFavoriteActivity.this).getAllFavorites("no");
             Log.i("listSize","Favorite: "+favorites.size()+"");
-            for(Favorite favorite:favorites){
-                HistoryFavoriteEntity item=getFavoriteItem(favorite);
-                favoriteLists.add(item);
+            for (Favorite favorite : favorites) {
+                HistoryFavoriteEntity item = getFavoriteItem(favorite);
+                allfavoriteLists.add(item);
             }
-            if(favoriteLists.size()>0)
-            favoriteLists.add(new HistoryFavoriteEntity());
+            srotHistoryFavoriteList(allfavoriteLists,favoriteLists);
             return null;
         }
 
         @Override
         protected void onPostExecute(Void aVoid) {
                 loadData();
+        }
+    }
+    private void srotHistoryFavoriteList(List<HistoryFavoriteEntity> list,List<HistoryFavoriteEntity> list2){
+        int count=0;
+        if(list.size()>0){
+            for(int i=0;i<list.size();i++){
+                if(count>=3){
+                    HistoryFavoriteEntity more=new HistoryFavoriteEntity();
+                    more.setType(2);
+                    list2.add(more);
+                    return;
+                }
+                HistoryFavoriteEntity item=list.get(i);
+                if(i==0){
+                    item.setShowDate(true);
+                }else{
+                    if(item.getDate().equals(list.get(i-1).getDate())){
+                        item.setShowDate(false);
+                    }else{
+                        item.setShowDate(true);
+                        count++;
+                    }
+                }
+                list2.add(item);
+            }
         }
     }
     private HistoryFavoriteEntity getItem(History history){
@@ -705,6 +751,7 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
         item.setTitle(history.title);
         item.setUrl(history.url);
         item.setDate(history.add_time);
+        item.setType(1);
 //		if(history.price==0){
 //			item.expense = null;
 //		}
@@ -732,6 +779,7 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
         item.setTitle(favorite.title);
         item.setUrl(favorite.url);
         item.setDate(favorite.time);
+        item.setType(1);
 //		if(history.price==0){
 //			item.expense = null;
 //		}

@@ -83,6 +83,24 @@ public class HistoryFavoriteEntity implements Serializable{
     private double bean_score;
     private String url;
     private String date;
+    private boolean showDate;
+    private int type;  //1表示正常item，2表示更多按钮
+
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
+    }
+
+    public boolean isShowDate() {
+        return showDate;
+    }
+
+    public void setShowDate(boolean showDate) {
+        this.showDate = showDate;
+    }
 
     public String getUrl() {
         return url;
