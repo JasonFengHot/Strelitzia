@@ -138,7 +138,7 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
         editBtnFocusListener();
         delet_history.setOnHoverListener(this);
         delete_favorite.setOnHoverListener(this);
-       // edit_shadow.setOnHoverListener(this);
+       // edit_shadow.setListener(this);
         edit_shadow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -614,7 +614,6 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
     public boolean onHover(View v, MotionEvent event) {
         switch (event.getAction()){
             case MotionEvent.ACTION_HOVER_ENTER:
-                if(!isEdit)
                 v.requestFocusFromTouch();
                 break;
         }
