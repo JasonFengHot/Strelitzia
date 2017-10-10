@@ -151,6 +151,15 @@ public class RecycleLinearLayout extends LinearLayout {
     private static final int mScrollHeight = 10000;
 
     @Override
+    public boolean onKeyLongPress(int keyCode, KeyEvent event) {
+        if(keyCode==KeyEvent.KEYCODE_DPAD_DOWN ||
+                keyCode==KeyEvent.KEYCODE_DPAD_UP){
+            return true;
+        }
+        return super.onKeyLongPress(keyCode, event);
+    }
+
+    @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
         int keyCode = event.getKeyCode();
 //        if(event.getAction()==KeyEvent.ACTION_UP && //处理顶部跳入到该view时的焦点

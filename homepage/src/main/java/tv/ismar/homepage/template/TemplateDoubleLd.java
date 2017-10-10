@@ -8,6 +8,7 @@ import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -26,11 +27,14 @@ import tv.ismar.app.core.PageIntent;
 import tv.ismar.app.core.VipMark;
 import tv.ismar.app.entity.banner.BigImage;
 import tv.ismar.app.entity.banner.HomeEntity;
+import tv.ismar.homepage.HomeActivity;
 import tv.ismar.homepage.OnItemClickListener;
 import tv.ismar.homepage.R;
 import tv.ismar.homepage.adapter.DoubleLdAdapter;
 import tv.ismar.homepage.control.FetchDataControl;
+import tv.ismar.homepage.view.BannerLinearLayout;
 
+import static android.view.MotionEvent.BUTTON_PRIMARY;
 import static tv.ismar.homepage.fragment.ChannelFragment.BANNER_KEY;
 import static tv.ismar.homepage.fragment.ChannelFragment.CHANNEL_KEY;
 import static tv.ismar.homepage.fragment.ChannelFragment.NAME_KEY;
@@ -44,7 +48,7 @@ import static tv.ismar.homepage.fragment.ChannelFragment.TITLE_KEY;
 
 public class TemplateDoubleLd extends Template implements BaseControl.ControlCallBack,
         OnItemClickListener, RecyclerViewTV.OnItemFocusChangeListener, RecyclerViewTV.PagingableListener,
-        StaggeredGridLayoutManagerTV.FocusSearchFailedListener {
+        StaggeredGridLayoutManagerTV.FocusSearchFailedListener, View.OnHoverListener, View.OnClickListener {
     private int mSelectItemPosition = 1;//标题--选中海报位置
     private TextView mTitleTv;//banner标题;
     private ImageView mVerticalImg;//大图海报
@@ -54,6 +58,9 @@ public class TemplateDoubleLd extends Template implements BaseControl.ControlCal
     private RecyclerViewTV mRecyclerView;
     private DoubleLdAdapter mAdapter;
     private FetchDataControl mFetchDataControl = null;
+    private BannerLinearLayout mBannerLinearLayout;
+    private View navigationLeft;
+    private View navigationRight;
 
     public TemplateDoubleLd(Context context) {
         super(context);
@@ -77,6 +84,12 @@ public class TemplateDoubleLd extends Template implements BaseControl.ControlCal
         mDoubleLayoutManager.setOrientation(GridLayoutManagerTV.HORIZONTAL);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         mRecyclerView.setLayoutManager(mDoubleLayoutManager);
+        mRecyclerView.setSelectedItemAtCentered(false);
+        navigationLeft = view.findViewById(R.id.navigation_left);
+        navigationRight = view.findViewById(R.id.navigation_right);
+        mBannerLinearLayout = (BannerLinearLayout) view.findViewById(R.id.banner_layout);
+        mBannerLinearLayout.setNavigationLeft(navigationLeft);
+        mBannerLinearLayout.setNavigationRight(navigationRight);
     }
 
     private void initTitle(){
@@ -89,6 +102,10 @@ public class TemplateDoubleLd extends Template implements BaseControl.ControlCal
     @Override
     protected void initListener(View view) {
         super.initListener(view);
+        navigationLeft.setOnClickListener(this);
+        navigationRight.setOnClickListener(this);
+        navigationRight.setOnHoverListener(this);
+        navigationLeft.setOnHoverListener(this);
         mRecyclerView.setPagingableListener(this);
         mRecyclerView.setOnItemFocusChangeListener(this);
         mDoubleLayoutManager.setFocusSearchFailedListener(this);
@@ -184,5 +201,54 @@ public class TemplateDoubleLd extends Template implements BaseControl.ControlCal
                 mFetchDataControl.fetchBanners(mBannerPk, ++homeEntity.page, true);
             }
         }
+    }
+
+    @Override
+    public void onClick(View v) {
+        int i = v.getId();
+        int[] positions = new int[]{0, 0};
+        mDoubleLayoutManager.findFirstCompletelyVisibleItemPositions(positions);
+        if (i == R.id.navigation_left) {
+            if (positions[1] - 1 >= 0) {//向左滑动
+                int targetPosition = positions[1] - 8;
+                if (targetPosition <= 0) targetPosition = 0;
+                mSelectItemPosition = targetPosition;
+                mDoubleLayoutManager.smoothScrollToPosition(mRecyclerView, null, targetPosition);
+            }
+        } else if (i == R.id.navigation_right) {//向右滑动
+            mRecyclerView.loadMore();
+            if (positions[1]  <= mFetchDataControl.mHomeEntity.count) {
+                int targetPosition = positions[1] + 8;
+                if (targetPosition >= mFetchDataControl.mHomeEntity.count) {
+                    targetPosition = mFetchDataControl.mHomeEntity.count;
+                }
+                mSelectItemPosition = targetPosition;
+                mDoubleLayoutManager.smoothScrollToPosition(mRecyclerView, null, targetPosition);
+                if(targetPosition==mFetchDataControl.mHomeEntity.count)
+                    YoYo.with(Techniques.HorizontalShake).duration(1000).playOn(mRecyclerView.getChildAt(mRecyclerView.getChildCount() - 1).findViewById(R.id.double_md_ismartv_linear_layout));
+            }
+            initTitle();
+        }
+    }
+
+    @Override
+    public boolean onHover(View v, MotionEvent event) {
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_HOVER_MOVE:
+            case MotionEvent.ACTION_HOVER_ENTER:
+                if (!v.hasFocus()) {
+                    v.requestFocus();
+                    v.requestFocusFromTouch();
+                }
+                break;
+            case MotionEvent.ACTION_HOVER_EXIT:
+                if (event.getButtonState() != BUTTON_PRIMARY) {
+                    navigationLeft.setVisibility(View.INVISIBLE);
+                    navigationRight.setVisibility(View.INVISIBLE);
+                    HomeActivity.mHoverView.requestFocus();//将焦点放置到一块隐藏view中
+                }
+                break;
+        }
+        return false;
     }
 }
