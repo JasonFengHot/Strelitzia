@@ -102,8 +102,12 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         mPersonCenterTel = new TelescopicWrap(this, mPersonCenterLayout);
         mHoverView.setFocusable(true);
         mHoverView.requestFocus();
+        setBackground(R.drawable.homepage_background);
+    }
+
+    private void setBackground(int id){
         mBitmapDecoder = new BitmapDecoder();
-        mBitmapDecoder.decode(this, R.drawable.homepage_background, new BitmapDecoder.Callback() {
+        mBitmapDecoder.decode(this, id, new BitmapDecoder.Callback() {
             @Override
             public void onSuccess(BitmapDrawable bitmapDrawable) {
                 mViewGroup.setBackground(bitmapDrawable);
@@ -235,6 +239,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                         break;
                     default://其他频道
                         if(position-2<0) return;
+                        if(mFetchDataControl.mChannels[position-2].getChannel().equals("comic")) setBackground(R.drawable.juvenile_bg);
                         channelFragment.setChannel( mFetchDataControl.mChannels[position-2].getName(),
                                 mFetchDataControl.mChannels[position-2].getChannel(),
                                 mFetchDataControl.mChannels[position-2].getName(),
