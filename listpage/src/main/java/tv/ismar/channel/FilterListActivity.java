@@ -673,7 +673,21 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
                                         final View recommendView= View.inflate(FilterListActivity.this,R.layout.filter_item_vertical_poster,null);
                                         recommendView.setId(R.layout.filter_item_vertical_poster+i);
                                         PosterUtil.fillPoster(FilterListActivity.this,0,item,(ImageView)recommendView.findViewById(R.id.item_vertical_poster_img),(ImageView)recommendView.findViewById(R.id.item_vertical_poster_vip),(TextView)recommendView.findViewById(R.id.item_vertical_poster_mark),(TextView)recommendView.findViewById(R.id.item_vertical_poster_title),null);
-                                        recommendView.setOnFocusChangeListener(mOnFocusChangeListener);
+                                        recommendView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                                            @Override
+                                            public void onFocusChange(View v, boolean hasFocus) {
+                                                TextView title= (TextView) recommendView.findViewById(R.id.item_vertical_poster_title);
+                                                if(hasFocus){
+                                                    JasmineUtil.scaleOut3(v);
+                                                    title.setEllipsize(TextUtils.TruncateAt.MARQUEE);
+                                                    title.setSelected(true);
+                                                }else{
+                                                    JasmineUtil.scaleIn3(v);
+                                                    title.setEllipsize(TextUtils.TruncateAt.END);
+                                                    title.setSelected(true);
+                                                }
+                                            }
+                                        });
                                         recommendView.setOnHoverListener(FilterListActivity.this);
                                         recommendView.setOnClickListener(new View.OnClickListener() {
                                             @Override
@@ -700,10 +714,24 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
                                 for (int i = 0; i <8 ; i++) {
                                     final FilterNoresultPoster item = items.get(i);
                                     if(item!=null) {
-                                        View recommendView= View.inflate(FilterListActivity.this,R.layout.item_filter_noresult_poster,null);
+                                        final View recommendView= View.inflate(FilterListActivity.this,R.layout.item_filter_noresult_poster,null);
                                         recommendView.setId(R.layout.item_filter_noresult_poster+i);
                                         PosterUtil.fillPoster(FilterListActivity.this,1,item,(ImageView)recommendView.findViewById(R.id.item_filter_noresult_img),(ImageView)recommendView.findViewById(R.id.item_filter_noresult_vip),(TextView)recommendView.findViewById(R.id.item_filter_noresult_mark),(TextView)recommendView.findViewById(R.id.item_filter_noresult_title),(TextView)recommendView.findViewById(R.id.item_filter_noresult_descrip));
-                                        recommendView.setOnFocusChangeListener(mOnFocusChangeListener);
+                                        recommendView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                                            @Override
+                                            public void onFocusChange(View v, boolean hasFocus) {
+                                                TextView title= (TextView) recommendView.findViewById(R.id.item_filter_noresult_title);
+                                                if(hasFocus){
+                                                    JasmineUtil.scaleOut3(v);
+                                                    title.setEllipsize(TextUtils.TruncateAt.MARQUEE);
+                                                    title.setSelected(true);
+                                                }else{
+                                                    JasmineUtil.scaleIn3(v);
+                                                    title.setEllipsize(TextUtils.TruncateAt.END);
+                                                    title.setSelected(false);
+                                                }
+                                            }
+                                        });
                                         recommendView.setOnHoverListener(FilterListActivity.this);
                                         recommendView.setOnClickListener(new View.OnClickListener() {
                                             @Override
@@ -734,17 +762,6 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
                     }
                 });
     }
-
-    private View.OnFocusChangeListener mOnFocusChangeListener=new View.OnFocusChangeListener() {
-        @Override
-        public void onFocusChange(View v, boolean hasFocus) {
-            if(hasFocus){
-                JasmineUtil.scaleOut3(v);
-            }else{
-                JasmineUtil.scaleIn3(v);
-            }
-        }
-    };
 
     /**
      * 根据已选条件请求筛选结果
@@ -1042,6 +1059,7 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
                 @Override
                 public void onFocusChange(View v, boolean hasFocus) {
                     if(hasFocus){
+                        if(listPosterAdapter!=null)
                         listPosterAdapter.setFocusedPosition(-1);
                         radioButton.setTextSize(TypedValue.COMPLEX_UNIT_PX,getResources().getDimensionPixelSize(R.dimen.filter_layout_left_view_tab_ts_scaled));
                         radioButton.setEllipsize(TextUtils.TruncateAt.MARQUEE);

@@ -62,7 +62,7 @@
         android:layout_marginTop="@dimen/item_filter_noresult_poster_title_mt"
         android:textColor="@color/_ffffff"
         android:gravity="center"
-        android:ellipsize="marquee"
+        android:ellipsize="end"
         android:marqueeRepeatLimit="marquee_forever"
         android:focusable="true"
         android:singleLine="true"
