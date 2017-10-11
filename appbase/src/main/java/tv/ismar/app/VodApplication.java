@@ -141,13 +141,13 @@ public class VodApplication extends Application {
         File cacheFile = new File(VodApplication.getModuleAppContext().getCacheDir(), "");
         HttpManager.getInstance().initialize(mIsmartvHttpParamsInterceptor, getCacheInterceptor(), cacheFile);
         VipMark.getInstance();
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                IsmartvActivator.getInstance().execute();
-            }
-        }
-        ).start();
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                IsmartvActivator.getInstance().execute();
+//            }
+//        }
+//        ).start();
     }
 
     private void initLogCallback() {
