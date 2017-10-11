@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -17,19 +18,31 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
+import cn.ismartv.truetime.TrueTime;
 import tv.ismar.app.BaseActivity;
 import tv.ismar.app.BaseControl;
+import tv.ismar.app.VodApplication;
+import tv.ismar.app.core.DaisyUtils;
 import tv.ismar.app.core.PageIntent;
+import tv.ismar.app.core.SimpleRestClient;
+import tv.ismar.app.core.client.MessageQueue;
 import tv.ismar.app.entity.ChannelEntity;
+import tv.ismar.app.network.SkyService;
+import tv.ismar.app.player.CallaPlay;
 import tv.ismar.app.util.BitmapDecoder;
+import tv.ismar.app.widget.ModuleMessagePopWindow;
 import tv.ismar.app.widget.TelescopicWrap;
+import tv.ismar.homepage.adapter.HomeAdapter;
 import tv.ismar.homepage.control.FetchDataControl;
 import tv.ismar.homepage.control.HomeControl;
 import tv.ismar.homepage.fragment.ChannelFragment;
+import tv.ismar.homepage.view.HomePageActivity;
 import tv.ismar.homepage.widget.HorizontalTabView;
 import tv.ismar.library.exception.ExceptionUtils;
+import tv.ismar.player.gui.PlaybackService;
 
 import static android.view.MotionEvent.BUTTON_PRIMARY;
 import static tv.ismar.app.BaseControl.TAB_CHANGE_FALG;
@@ -288,9 +301,52 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
 
     @Override
     public void onBackPressed() {
-        finish();
+        showExitPopup(mViewGroup);
+    }
 
-        super.onBackPressed();
+    private ModuleMessagePopWindow exitPopup;
+    private void showExitPopup(View view) {
+        exitPopup = new ModuleMessagePopWindow(this);
+        exitPopup.setConfirmBtn(getString(R.string.vod_ok));
+        exitPopup.setCancelBtn(getString(R.string.vod_cancel));
+        exitPopup.setMessage(getString(R.string.str_exit));
+
+        exitPopup.showAtLocation(view, Gravity.CENTER, 0, 0, new ModuleMessagePopWindow.ConfirmListener() {
+                    @Override
+                    public void confirmClick(View view) {
+                        isCheckoutUpdate = true;
+                        SkyService.ServiceManager.executeActive = true;
+                        exitPopup.dismiss();
+                        CallaPlay callaPlay = new CallaPlay();
+//                        callaPlay.app_exit(TrueTime.now().getTime() - app_start_time, SimpleRestClient.appVersion);
+                        callaPlay.app_exit(TrueTime.now().getTime() - app_start_time, SimpleRestClient.appVersion);
+                        ArrayList<String> cache_log = MessageQueue.getQueueList();
+                        HashSet<String> hasset_log = new HashSet<String>();
+                        for (int i = 0; i < cache_log.size(); i++) {
+                            hasset_log.add(cache_log.get(i));
+                        }
+                        DaisyUtils
+                                .getVodApplication(HomeActivity.this)
+                                .getEditor()
+                                .putStringSet(VodApplication.CACHED_LOG,
+                                        hasset_log);
+                        DaisyUtils.getVodApplication(getApplicationContext())
+                                .save();
+                        BaseActivity.baseChannel = "";
+                        BaseActivity.baseSection = "";
+                        stopService(new Intent(HomeActivity.this, PlaybackService.class));
+                        HomeActivity.super.onBackPressed();
+                        android.os.Process.killProcess(android.os.Process.myPid());
+                        System.exit(0);
+                    }
+                },
+                new ModuleMessagePopWindow.CancelListener() {
+                    @Override
+                    public void cancelClick(View view) {
+                        exitPopup.dismiss();
+                    }
+                }
+        );
     }
 
     @Override
