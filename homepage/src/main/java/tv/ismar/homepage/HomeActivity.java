@@ -357,9 +357,9 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     @Override
     protected void onStop() {
         super.onStop();
-        HomeActivity.super.onBackPressed();
-        android.os.Process.killProcess(android.os.Process.myPid());
-        System.exit(0);
+//        HomeActivity.super.onBackPressed();
+//        android.os.Process.killProcess(android.os.Process.myPid());
+//        System.exit(0);
     }
 
     @Override
