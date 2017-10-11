@@ -24,7 +24,6 @@
             android:id="@+id/update_msg1"
             android:layout_width="@dimen/popup_update_text_w"
             android:layout_height="@dimen/popup_update_text_h"
-            android:layout_marginTop="@dimen/popup_update_pt"
             android:textSize="@dimen/popup_update_text_ts"
             android:gravity="center_vertical"
             android:textColor="#999999"/>
