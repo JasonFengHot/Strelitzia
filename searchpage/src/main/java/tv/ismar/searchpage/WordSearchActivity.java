@@ -38,6 +38,7 @@ import tv.ismar.app.models.HotWords;
 import tv.ismar.app.models.Recommend;
 import tv.ismar.app.models.VodFacetEntity;
 import tv.ismar.app.models.VodSearchRequestEntity;
+import tv.ismar.app.ui.ToastTip;
 import tv.ismar.app.util.DeviceUtils;
 import tv.ismar.app.util.NetworkUtils;
 import tv.ismar.app.util.SystemFileUtil;
@@ -121,7 +122,7 @@ public class WordSearchActivity extends BaseActivity implements View.OnClickList
                     Log.i("onNoNet", "" + NetworkUtils.isConnected(WordSearchActivity.this));
                     showNoNetConnectDialog();
                 }else{
-                    showNetWorkErrorDialog(new Exception());
+                    ToastTip.showToast(WordSearchActivity.this,"网络连接失败，请重试");
                 }
                 handler.removeMessages(1);
 

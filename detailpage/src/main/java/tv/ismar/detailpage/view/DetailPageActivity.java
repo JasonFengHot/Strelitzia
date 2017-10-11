@@ -31,6 +31,7 @@ import tv.ismar.app.db.HistoryManager;
 import tv.ismar.app.entity.ClipEntity;
 import tv.ismar.app.entity.History;
 import tv.ismar.app.network.entity.ItemEntity;
+import tv.ismar.app.ui.ToastTip;
 import tv.ismar.app.util.Utils;
 import tv.ismar.app.widget.LoadingDialog;
 import tv.ismar.detailpage.R;
@@ -77,7 +78,7 @@ public class DetailPageActivity extends BaseActivity implements PlaybackService.
         public boolean handleMessage(Message msg) {
             if (mLoadingDialog.isShowing()) {
                 mLoadingDialog.dismiss();
-                showNetWorkErrorDialog(new TimeoutException());
+                ToastTip.showToast(DetailPageActivity.this,"网络连接超时，请重试");
             }
             return false;
         }

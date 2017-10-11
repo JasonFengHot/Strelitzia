@@ -27,11 +27,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import tv.ismar.account.IsmartvActivator;
+import tv.ismar.app.BaseActivity;
 import tv.ismar.app.BaseFragment;
 import tv.ismar.app.core.PageIntent;
 import tv.ismar.app.core.Util;
 import tv.ismar.app.network.entity.AccountBalanceEntity;
 import tv.ismar.app.network.entity.AccountPlayAuthEntity;
+import tv.ismar.app.ui.ToastTip;
 import tv.ismar.app.widget.ModuleMessagePopWindow;
 import tv.ismar.usercenter.R;
 import tv.ismar.usercenter.UserInfoContract;
@@ -302,17 +304,7 @@ public class UserInfoFragment extends BaseFragment implements UserInfoContract.V
     }
 
     private void showExitAccountMessagePop() {
-        final ModuleMessagePopWindow dialog = new ModuleMessagePopWindow(getContext());
-        dialog.setMessage(getString(R.string.exit_account_message_text));
-        dialog.showAtLocation(getView(), Gravity.CENTER,0,0, new ModuleMessagePopWindow.ConfirmListener() {
-                    @Override
-                    public void confirmClick(View view) {
-                        dialog.dismiss();
-
-                    }
-                },
-                null
-        );
+        ToastTip.showToast(getActivity(),getString(R.string.exit_account_message_text));
     }
 
     @Override

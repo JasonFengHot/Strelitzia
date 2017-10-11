@@ -9,6 +9,7 @@ import java.util.ArrayList;
 
 import retrofit2.adapter.rxjava.HttpException;
 import tv.ismar.app.BaseActivity;
+import tv.ismar.app.ui.ToastTip;
 import tv.ismar.app.util.NetworkUtils;
 import tv.ismar.helperpage.R;
 import tv.ismar.helperpage.ui.adapter.IndicatorAdapter;
@@ -63,11 +64,13 @@ public class HomeActivity extends BaseActivity {
             HttpException httpException = (HttpException) e;
             if (httpException.code() == 401) {
                 showExpireAccessTokenPop();
-            } else {
-                showNetWorkErrorDialog(e);
+            } else if (httpException.code() == 408) {
+                ToastTip.showToast(this, "网络连接超时，请重试");
+            } else if (httpException.code() == 504) {
+                ToastTip.showToast(this, "服务器繁忙，请稍后再试");
             }
         } else {
-            showNetWorkErrorDialog(e);
+            ToastTip.showToast(this, "网络连接失败，请重试");
         }
     }
 }
