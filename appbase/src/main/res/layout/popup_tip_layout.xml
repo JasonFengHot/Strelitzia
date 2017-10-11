@@ -25,7 +25,7 @@
             android:layout_height="@dimen/popup_tip_text_h"
             android:textSize="@dimen/popup_tip_text_ts"
             android:textColor="#999999"
-            android:gravity="center_vertical"
+            android:gravity="center"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="@dimen/popup_tip_text_mt"/>
         <LinearLayout
