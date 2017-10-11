@@ -84,6 +84,8 @@ public class TemplateGuide extends Template implements BaseControl.ControlCallBa
     @Override
     public void getView(View view) {
         mHeadView = view.findViewById(R.id.banner_guide_head);
+//        mHeadView.findViewById(R.id.guide_head_ismartv_linearlayout).setFocusable(true);
+        mHeadView.findViewById(R.id.guide_head_ismartv_linearlayout).requestFocus();
         mVideoView = (DaisyVideoView) view.findViewById(R.id.guide_daisy_video_view);
         mLoadingIg = (ImageView) view.findViewById(R.id.guide_video_loading_image);
         mVideoTitleTv = (TextView) view.findViewById(R.id.guide_video_title);
@@ -189,13 +191,15 @@ public class TemplateGuide extends Template implements BaseControl.ControlCallBa
     private void initRecycleView(HomeEntity homeEntity){
         if(homeEntity != null){
             if(mAdapter == null){
-                mAdapter = new GuideAdapter(mContext, homeEntity.posters);
+                mAdapter = new GuideAdapter(mContext, mFetchDataControl.mPoster);
                 mAdapter.setMarginLeftEnable(true);
                 mAdapter.setOnItemClickListener(this);
                 mAdapter.setOnItemSelectedListener(this);
                 mRecycleView.setAdapter(mAdapter);
             }else {
-                mAdapter.notifyDataSetChanged();
+                int start = mFetchDataControl.mPoster.size() - mFetchDataControl.mHomeEntity.posters.size();
+                int end = mFetchDataControl.mPoster.size();
+                mAdapter.notifyItemRangeChanged(start, end);
             }
         }
     }

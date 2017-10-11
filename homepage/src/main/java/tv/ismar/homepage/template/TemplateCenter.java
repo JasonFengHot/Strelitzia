@@ -48,9 +48,9 @@ public class TemplateCenter extends Template implements BaseControl.ControlCallB
         mRecycleView = (RecyclerViewTV) view.findViewById(R.id.center_recyclerview);
         mCenterLayoutManager = new LinearLayoutManagerTV(mContext, LinearLayoutManager.HORIZONTAL, false);
         mRecycleView.setLayoutManager(mCenterLayoutManager);
-        mRecycleView.setSelectedItemAtCentered(false);
-        int selectedItemOffset = mContext.getResources().getDimensionPixelSize(R.dimen.banner_item_setSelectedItemOffset);
-        mRecycleView.setSelectedItemOffset(selectedItemOffset, selectedItemOffset);
+        mRecycleView.setSelectedItemAtCentered(true);
+//        int selectedItemOffset = mContext.getResources().getDimensionPixelSize(R.dimen.banner_item_setSelectedItemOffset);
+//        mRecycleView.setSelectedItemOffset(selectedItemOffset, selectedItemOffset);
     }
 
     private int mBannerPk;
@@ -71,11 +71,13 @@ public class TemplateCenter extends Template implements BaseControl.ControlCallB
 
     private void initRecycle(){
         if(mAdapter == null){
-            mAdapter = new CenterAdapter(mContext, mFetchDataControl.mHomeEntity.posters);
+            mAdapter = new CenterAdapter(mContext, mFetchDataControl.mCarousels);
             mRecycleView.setAdapter(mAdapter);
             mAdapter.setOnItemClickListener(this);
         }else {
-            mAdapter.notifyDataSetChanged();
+            int start = mFetchDataControl.mCarousels.size() - mFetchDataControl.mHomeEntity.carousels.size();
+            int end = mFetchDataControl.mPoster.size();
+            mAdapter.notifyItemRangeChanged(start, end);
         }
     }
 

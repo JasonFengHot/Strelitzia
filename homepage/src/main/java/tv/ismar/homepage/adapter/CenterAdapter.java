@@ -12,7 +12,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-import tv.ismar.app.entity.banner.BannerPoster;
+import tv.ismar.app.entity.banner.BannerCarousels;
 import tv.ismar.homepage.R;
 
 /**
@@ -24,9 +24,9 @@ import tv.ismar.homepage.R;
 public class CenterAdapter extends BaseRecycleAdapter<CenterAdapter.CenterViewHolder> {
 
     private Context mContext;
-    private List<BannerPoster> mData;
+    private List<BannerCarousels> mData;
 
-    public CenterAdapter(Context context, List<BannerPoster> data){
+    public CenterAdapter(Context context, List<BannerCarousels> data){
         this.mContext = context;
         this.mData = data;
     }
@@ -39,15 +39,10 @@ public class CenterAdapter extends BaseRecycleAdapter<CenterAdapter.CenterViewHo
 
     @Override
     public void onBindViewHolder(CenterViewHolder holder, int position) {
-        BannerPoster poster = mData.get(position);
-        holder.mTitle.setText(poster.title);
-        if (!TextUtils.isEmpty(poster.poster_url)) {
-            if(poster.poster_url.equals("更多")){
-                Picasso.with(mContext).load(R.drawable.banner_vertical_more).into(holder.mPosterIg);
-            } else {
-                Picasso.with(mContext).load(poster.poster_url).into(holder.mPosterIg);
-            }
-            Picasso.with(mContext).load(poster.poster_url).into(holder.mPosterIg);
+        BannerCarousels carousels = mData.get(position);
+        holder.mTitle.setText(carousels.title);
+        if (!TextUtils.isEmpty(carousels.video_image)) {
+            Picasso.with(mContext).load(carousels.video_image).into(holder.mPosterIg);
         } else {
             Picasso.with(mContext).load(R.drawable.list_item_preview_bg).into(holder.mPosterIg);
         }

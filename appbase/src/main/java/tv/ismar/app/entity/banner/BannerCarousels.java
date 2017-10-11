@@ -7,7 +7,7 @@ package tv.ismar.app.entity.banner;
  */
 
 public class BannerCarousels {
-    public Object video_image;//轮播用的视频图片地址
+    public String video_image;//轮播用的视频图片地址
     public String video_url;//轮播用的视频地址
     public String content_model;//媒体类型
     public int pause_time;//图片暂停时间

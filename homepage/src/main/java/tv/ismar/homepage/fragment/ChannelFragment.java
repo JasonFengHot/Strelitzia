@@ -147,7 +147,7 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
                 layoutId = R.layout.banner_double_ld;
                 bannerView = createView(R.layout.banner_double_ld);
                 new TemplateDoubleLd(getContext()).setView(bannerView, bundle);
-            } else if(template.equals("template_center")){//居中模版
+            } else if(template.equals("template_teleplay_first")){//居中模版
                 layoutId = R.layout.banner_center;
                 bannerView = createView(R.layout.banner_center);
                 new TemplateCenter(getContext()).setView(bannerView, bundle);
