@@ -318,7 +318,6 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                         SkyService.ServiceManager.executeActive = true;
                         exitPopup.dismiss();
                         CallaPlay callaPlay = new CallaPlay();
-//                        callaPlay.app_exit(TrueTime.now().getTime() - app_start_time, SimpleRestClient.appVersion);
                         callaPlay.app_exit(TrueTime.now().getTime() - app_start_time, SimpleRestClient.appVersion);
                         ArrayList<String> cache_log = MessageQueue.getQueueList();
                         HashSet<String> hasset_log = new HashSet<String>();
@@ -350,6 +349,14 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     }
 
     @Override
+    protected void onStop() {
+        super.onStop();
+        HomeActivity.super.onBackPressed();
+        android.os.Process.killProcess(android.os.Process.myPid());
+        System.exit(0);
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         unregisterReceiver(mTimeTickBroadcast);
@@ -369,4 +376,5 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         mHoverView.setFocusableInTouchMode(false);
         return super.onKeyDown(keyCode, event);
     }
+
 }
