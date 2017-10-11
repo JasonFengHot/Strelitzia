@@ -1042,6 +1042,7 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
                 @Override
                 public void onFocusChange(View v, boolean hasFocus) {
                     if(hasFocus){
+                        listPosterAdapter.setFocusedPosition(-1);
                         radioButton.setTextSize(TypedValue.COMPLEX_UNIT_PX,getResources().getDimensionPixelSize(R.dimen.filter_layout_left_view_tab_ts_scaled));
                         radioButton.setEllipsize(TextUtils.TruncateAt.MARQUEE);
                         if(radioButton.isChecked()){
