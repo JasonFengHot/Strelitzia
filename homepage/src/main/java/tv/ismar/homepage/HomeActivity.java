@@ -32,6 +32,7 @@ import tv.ismar.app.core.client.MessageQueue;
 import tv.ismar.app.entity.ChannelEntity;
 import tv.ismar.app.network.SkyService;
 import tv.ismar.app.player.CallaPlay;
+import tv.ismar.app.ui.ToastTip;
 import tv.ismar.app.util.BitmapDecoder;
 import tv.ismar.app.widget.ModuleMessagePopWindow;
 import tv.ismar.app.widget.TelescopicWrap;
@@ -95,7 +96,6 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         try {
             System.setProperty("http.keepAlive", "false");
         } catch (Exception e) {
-            ExceptionUtils.sendProgramError(e);
             e.printStackTrace();
         }
         mHomeControl.startTrueTimeService();
@@ -299,9 +299,15 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         }
     }
 
+    private long currentTime =0;
     @Override
     public void onBackPressed() {
-        showExitPopup(mViewGroup);
+        if(currentTime==0||System.currentTimeMillis()-currentTime>4000) {
+            currentTime = System.currentTimeMillis();
+            ToastTip.showToast(this, "再次点击返回按键，退出应用");
+        }else {
+            showExitPopup(mViewGroup);
+        }
     }
 
     private ModuleMessagePopWindow exitPopup;
