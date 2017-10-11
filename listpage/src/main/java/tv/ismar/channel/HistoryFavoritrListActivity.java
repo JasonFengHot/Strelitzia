@@ -199,11 +199,15 @@ public class HistoryFavoritrListActivity extends BaseActivity implements OnItemC
          pk = SimpleRestClient.getItemId(entity.getUrl(), isSubItem);
         if(pk==0){
             pk=entity.getPk();
-
         }
         if(source.equals("edit")){
             if(type==1){
-                deleteHistory(pk,entity.getItem_pk(),position);
+                if(entity.getModel_name().equals("item")){
+                    deleteHistory(entity.getItem_pk(),0,position);
+                }else{
+                    deleteHistory(entity.getItem_pk(),pk,position);
+                }
+
             }else{
                 deleteBookmark(pk,position);
             }
