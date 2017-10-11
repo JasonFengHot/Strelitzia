@@ -158,6 +158,7 @@ public final class IsmartvActivator {
                 .baseUrl(SKY_HOST_TEST)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
+
     }
 
     private String getDeviceId() {
