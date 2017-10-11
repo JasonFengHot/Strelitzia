@@ -13,7 +13,7 @@ import tv.ismar.app.R;
 
 public class ToastTip {
 
-    public void showToast(Context context, String tip){
+    public static void showToast(Context context, String tip){
         Toast toast=new Toast(context);
         View toastView=View.inflate(context, R.layout.tip_toast,null);
         TextView toast_content= (TextView) toastView.findViewById(R.id.toast_content);

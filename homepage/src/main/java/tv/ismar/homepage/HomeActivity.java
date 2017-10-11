@@ -32,6 +32,7 @@ import tv.ismar.app.core.client.MessageQueue;
 import tv.ismar.app.entity.ChannelEntity;
 import tv.ismar.app.network.SkyService;
 import tv.ismar.app.player.CallaPlay;
+import tv.ismar.app.ui.ToastTip;
 import tv.ismar.app.util.BitmapDecoder;
 import tv.ismar.app.widget.ModuleMessagePopWindow;
 import tv.ismar.app.widget.TelescopicWrap;
@@ -299,54 +300,38 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         }
     }
 
+    private long currentTime =0;
     @Override
     public void onBackPressed() {
-        showExitPopup(mViewGroup);
-    }
-
-    private ModuleMessagePopWindow exitPopup;
-    private void showExitPopup(View view) {
-        exitPopup = new ModuleMessagePopWindow(this);
-        exitPopup.setConfirmBtn(getString(R.string.vod_ok));
-        exitPopup.setCancelBtn(getString(R.string.vod_cancel));
-        exitPopup.setMessage(getString(R.string.str_exit));
-
-        exitPopup.showAtLocation(view, Gravity.CENTER, 0, 0, new ModuleMessagePopWindow.ConfirmListener() {
-                    @Override
-                    public void confirmClick(View view) {
-                        isCheckoutUpdate = true;
-                        SkyService.ServiceManager.executeActive = true;
-                        exitPopup.dismiss();
-                        CallaPlay callaPlay = new CallaPlay();
+        if(currentTime==0||System.currentTimeMillis()-currentTime>4000){
+            currentTime=System.currentTimeMillis();
+            ToastTip.showToast(this,"再次点击返回按键，退出应用");
+        }else{
+            isCheckoutUpdate = true;
+            SkyService.ServiceManager.executeActive = true;
+            CallaPlay callaPlay = new CallaPlay();
 //                        callaPlay.app_exit(TrueTime.now().getTime() - app_start_time, SimpleRestClient.appVersion);
-                        callaPlay.app_exit(TrueTime.now().getTime() - app_start_time, SimpleRestClient.appVersion);
-                        ArrayList<String> cache_log = MessageQueue.getQueueList();
-                        HashSet<String> hasset_log = new HashSet<String>();
-                        for (int i = 0; i < cache_log.size(); i++) {
-                            hasset_log.add(cache_log.get(i));
-                        }
-                        DaisyUtils
-                                .getVodApplication(HomeActivity.this)
-                                .getEditor()
-                                .putStringSet(VodApplication.CACHED_LOG,
-                                        hasset_log);
-                        DaisyUtils.getVodApplication(getApplicationContext())
-                                .save();
-                        BaseActivity.baseChannel = "";
-                        BaseActivity.baseSection = "";
-                        stopService(new Intent(HomeActivity.this, PlaybackService.class));
-                        HomeActivity.super.onBackPressed();
-                        android.os.Process.killProcess(android.os.Process.myPid());
-                        System.exit(0);
-                    }
-                },
-                new ModuleMessagePopWindow.CancelListener() {
-                    @Override
-                    public void cancelClick(View view) {
-                        exitPopup.dismiss();
-                    }
-                }
-        );
+            callaPlay.app_exit(TrueTime.now().getTime() - app_start_time, SimpleRestClient.appVersion);
+            ArrayList<String> cache_log = MessageQueue.getQueueList();
+            HashSet<String> hasset_log = new HashSet<String>();
+            for (int i = 0; i < cache_log.size(); i++) {
+                hasset_log.add(cache_log.get(i));
+            }
+            DaisyUtils
+                    .getVodApplication(HomeActivity.this)
+                    .getEditor()
+                    .putStringSet(VodApplication.CACHED_LOG,
+                            hasset_log);
+            DaisyUtils.getVodApplication(getApplicationContext())
+                    .save();
+            BaseActivity.baseChannel = "";
+            BaseActivity.baseSection = "";
+            stopService(new Intent(HomeActivity.this, PlaybackService.class));
+            HomeActivity.super.onBackPressed();
+            android.os.Process.killProcess(android.os.Process.myPid());
+            System.exit(0);
+            super.onBackPressed();
+        }
     }
 
     @Override

@@ -5,12 +5,14 @@
 
     <TextView
         android:id="@+id/toast_content"
-        android:layout_width="@dimen/toast_content_w"
+        android:layout_width="wrap_content"
         android:layout_height="@dimen/toast_content_h"
         android:textColor="#ffffff"
         android:textSize="@dimen/toast_content_ts"
         android:background="@drawable/toast_bg"
-        android:layout_gravity="center_horizontal|bottom"
-        android:gravity="center"
-        android:layout_marginBottom="@dimen/toast_content_mb"/>
+        android:layout_gravity="center_horizontal"
+        android:gravity="center_horizontal"
+        android:paddingTop="@dimen/toast_content_pt"
+        android:layout_marginTop="@dimen/toast_content_mt"
+        />
 </LinearLayout>

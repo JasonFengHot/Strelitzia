@@ -703,6 +703,7 @@
 <dimen name="column_item_height">32.00dp</dimen>
 <dimen name="column_item_padding">8.89dp</dimen>
 <dimen name="column_item_margin_left">13.33dp</dimen>
+
 <dimen name="column_item_margin_top">1.78dp</dimen>
 <!--横版双行尺寸-->
 <dimen name="double_ld_img_container_height">101.78dp</dimen>
@@ -804,8 +805,9 @@
 <dimen name="popup_tip_btn_mt">19.11dp</dimen>
 
 <!--吐司提示�?-->
-<dimen name="toast_content_h">12.89dp</dimen>
+<dimen name="toast_content_h">16.67dp</dimen>
 <dimen name="toast_content_w">215.78dp</dimen>
-<dimen name="toast_content_mb">18.44dp</dimen>
+<dimen name="toast_content_mt">204.89dp</dimen>
 <dimen name="toast_content_ts">6.67dp</dimen>
+<dimen name="toast_content_pt">2.22dp</dimen>
 </resources>

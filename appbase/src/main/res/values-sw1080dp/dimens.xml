@@ -805,8 +805,9 @@
     <dimen name="popup_tip_btn_mt">86dp</dimen>
 
     <!--吐司提示框-->
-    <dimen name="toast_content_h">58dp</dimen>
+    <dimen name="toast_content_h">75dp</dimen>
     <dimen name="toast_content_w">971dp</dimen>
-    <dimen name="toast_content_mb">83dp</dimen>
+    <dimen name="toast_content_mt">922dp</dimen>
     <dimen name="toast_content_ts">30dp</dimen>
+    <dimen name="toast_content_pt">10dp</dimen>
 </resources>

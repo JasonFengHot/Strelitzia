@@ -31,6 +31,7 @@ import tv.ismar.app.core.PageIntent;
 import tv.ismar.app.core.SimpleRestClient;
 import tv.ismar.app.core.Source;
 import tv.ismar.app.network.SkyService;
+import tv.ismar.app.ui.ToastTip;
 import tv.ismar.app.ui.adapter.OnItemClickListener;
 import tv.ismar.app.ui.adapter.OnItemFocusedListener;
 import tv.ismar.app.ui.adapter.OnItemOnhoverlistener;
@@ -318,6 +319,7 @@ public class HistoryFavoritrListActivity extends BaseActivity implements OnItemC
             adapter.notifyDataSetChanged();
             if(pop!=null)
                 pop.dismiss();
+            ToastTip.showToast(this,"您已清空所有历史记录");
         }else {
             DaisyUtils.getHistoryManager(this).deleteAll("no");
             removeSub = skyService.emptyHistory(IsmartvActivator.getInstance().getDeviceToken()).subscribeOn(Schedulers.io())
@@ -334,6 +336,7 @@ public class HistoryFavoritrListActivity extends BaseActivity implements OnItemC
                             adapter.notifyDataSetChanged();
                             if(pop!=null)
                                 pop.dismiss();
+                            ToastTip.showToast(HistoryFavoritrListActivity.this,"您已清空所有历史记录");
                         }
                     });
         }
@@ -345,6 +348,7 @@ public class HistoryFavoritrListActivity extends BaseActivity implements OnItemC
             adapter.notifyDataSetChanged();
             if(pop!=null)
                 pop.dismiss();
+            ToastTip.showToast(this,"您已清空所有收藏记录");
         }else {
             DaisyUtils.getFavoriteManager(this).deleteAll("no");
             removeSub=skyService.emptyBookmarks(IsmartvActivator.getInstance().getDeviceToken())
@@ -362,6 +366,7 @@ public class HistoryFavoritrListActivity extends BaseActivity implements OnItemC
                             adapter.notifyDataSetChanged();
                             if(pop!=null)
                                 pop.dismiss();
+                            ToastTip.showToast(HistoryFavoritrListActivity.this,"您已清空所有收藏记录");
                         }
                     });
         }
