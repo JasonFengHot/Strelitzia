@@ -68,7 +68,7 @@
             android:textSize="@dimen/text_size_36sp"
             android:gravity="center"
             android:singleLine="true"
-            android:ellipsize="marquee"
+            android:ellipsize="end"
             android:marqueeRepeatLimit="marquee_forever"
             android:focusable="true"
 

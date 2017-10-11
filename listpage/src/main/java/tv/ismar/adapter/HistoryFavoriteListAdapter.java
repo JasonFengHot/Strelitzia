@@ -91,9 +91,11 @@ public class HistoryFavoriteListAdapter extends RecyclerView.Adapter<HistoryFavo
                             holder.delete_bg.setVisibility(View.VISIBLE);
                         }
                         holder.title.setSelected(true);
+                        holder.title.setEllipsize(TextUtils.TruncateAt.MARQUEE);
                     } else {
                         holder.delete_bg.setVisibility(View.GONE);
                         holder.title.setSelected(false);
+                        holder.title.setEllipsize(TextUtils.TruncateAt.END);
                     }
                     itemFocusedListener.onItemfocused(v, position, hasFocus);
                 }

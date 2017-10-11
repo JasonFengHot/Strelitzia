@@ -2,6 +2,7 @@ package tv.ismar.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -106,8 +107,10 @@ public class HistoryListAdapter extends RecyclerView.Adapter<HistoryListAdapter.
                 itemFocusedListener.onItemfocused(v, pos, hasFocus);
                 if(hasFocus){
                     holder.item_title.setSelected(true);
+                    holder.item_title.setEllipsize(TextUtils.TruncateAt.MARQUEE);
                 }else{
                     holder.item_title.setSelected(false);
+                    holder.item_title.setEllipsize(TextUtils.TruncateAt.END);
                 }
 
             }
