@@ -8,6 +8,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.util.DisplayMetrics;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -31,6 +32,7 @@ import tv.ismar.app.player.CallaPlay;
 import tv.ismar.homepage.HomeActivity;
 import tv.ismar.homepage.R;
 import tv.ismar.homepage.widget.DaisyVideoView;
+import tv.ismar.homepage.widget.HorizontalTabView;
 
 /**
  * @AUTHOR: xi
@@ -131,6 +133,12 @@ public class AdvertiseActivity extends BaseActivity implements MediaPlayer.OnPre
         mVideoView.setOnPreparedListener(this);
         mVideoView.setOnCompletionListener(this);
         mVideoView.setOnErrorListener(this);
+        mSeekBar.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                return true;
+            }
+        });
     }
 
     private void initData(){
