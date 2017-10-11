@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
 
@@ -15,10 +16,14 @@ import com.open.androidtvwidget.leanback.recycle.RecyclerViewTV;
 
 import tv.ismar.app.BaseControl;
 import tv.ismar.app.entity.banner.HomeEntity;
+import tv.ismar.homepage.HomeActivity;
 import tv.ismar.homepage.OnItemClickListener;
 import tv.ismar.homepage.R;
 import tv.ismar.homepage.adapter.CenterAdapter;
 import tv.ismar.homepage.control.FetchDataControl;
+import tv.ismar.homepage.view.BannerLinearLayout;
+
+import static android.view.MotionEvent.BUTTON_PRIMARY;
 
 /**
  * @AUTHOR: xi
@@ -28,13 +33,14 @@ import tv.ismar.homepage.control.FetchDataControl;
 
 public class TemplateCenter extends Template implements BaseControl.ControlCallBack,
         RecyclerViewTV.PagingableListener, LinearLayoutManagerTV.FocusSearchFailedListener,
-        OnItemClickListener {
+        OnItemClickListener, View.OnHoverListener {
     public FetchDataControl mFetchDataControl = null;
-    private TextView mHeadTitleTv;
-    private TextView mHeadCountTv;
     private RecyclerViewTV mRecycleView;//海报recycleview
     private LinearLayoutManagerTV mCenterLayoutManager;
     private CenterAdapter mAdapter;
+    private BannerLinearLayout mBannerLinearLayout;
+    private View navigationLeft;
+    private View navigationRight;
 
     public TemplateCenter(Context context) {
         super(context);
@@ -43,28 +49,29 @@ public class TemplateCenter extends Template implements BaseControl.ControlCallB
 
     @Override
     public void getView(View view) {
-        mHeadTitleTv = (TextView) view.findViewById(R.id.banner_title_tv);
-        mHeadCountTv = (TextView) view.findViewById(R.id.banner_title_count);
         mRecycleView = (RecyclerViewTV) view.findViewById(R.id.center_recyclerview);
         mCenterLayoutManager = new LinearLayoutManagerTV(mContext, LinearLayoutManager.HORIZONTAL, false);
         mRecycleView.setLayoutManager(mCenterLayoutManager);
         mRecycleView.setSelectedItemAtCentered(true);
-//        int selectedItemOffset = mContext.getResources().getDimensionPixelSize(R.dimen.banner_item_setSelectedItemOffset);
-//        mRecycleView.setSelectedItemOffset(selectedItemOffset, selectedItemOffset);
+        navigationLeft = view.findViewById(R.id.navigation_left);
+        navigationRight = view.findViewById(R.id.navigation_right);
+        mBannerLinearLayout = (BannerLinearLayout) view.findViewById(R.id.banner_layout);
+        mBannerLinearLayout.setNavigationLeft(navigationLeft);
+        mBannerLinearLayout.setNavigationRight(navigationRight);
     }
 
     private int mBannerPk;
     @Override
     public void initData(Bundle bundle) {
         mBannerPk = bundle.getInt("banner");
-        mHeadTitleTv.setText(bundle.getString("title"));
-        mHeadCountTv.setText(String.format(mContext.getString(R.string.home_item_title_count), 1+"", 40+""));
         mFetchDataControl.fetchBanners(mBannerPk, 1, false);
     }
 
     @Override
     protected void initListener(View view) {
         super.initListener(view);
+        navigationRight.setOnHoverListener(this);
+        navigationLeft.setOnHoverListener(this);
         mRecycleView.setPagingableListener(this);
         mCenterLayoutManager.setFocusSearchFailedListener(this);
     }
@@ -115,5 +122,26 @@ public class TemplateCenter extends Template implements BaseControl.ControlCallB
     @Override
     public void onItemClick(View view, int position) {
         mFetchDataControl.go2Detail(mFetchDataControl.mHomeEntity.posters.get(position));
+    }
+
+    @Override
+    public boolean onHover(View v, MotionEvent event) {
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_HOVER_MOVE:
+            case MotionEvent.ACTION_HOVER_ENTER:
+                if (!v.hasFocus()) {
+                    v.requestFocus();
+                    v.requestFocusFromTouch();
+                }
+                break;
+            case MotionEvent.ACTION_HOVER_EXIT:
+                if (event.getButtonState() != BUTTON_PRIMARY) {
+                    navigationLeft.setVisibility(View.INVISIBLE);
+                    navigationRight.setVisibility(View.INVISIBLE);
+                    HomeActivity.mHoverView.requestFocus();//将焦点放置到一块隐藏view中
+                }
+                break;
+        }
+        return false;
     }
 }
