@@ -99,6 +99,7 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
         for(int position=0; position<data.length; position++){
             View bannerView = null;
             int layoutId = -1;
+            boolean canScroll = true;//是否可以滑动,默认可以滑动
             String template = data[position].template;
             Bundle bundle = new Bundle();
             bundle.putString(TITLE_KEY, data[position].title);
@@ -132,6 +133,7 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
                 bannerView = createView(R.layout.banner_conlumn);
                 new TemplateConlumn(getContext()).setView(bannerView, bundle);
             }else if(template.equals("template_recommend")){//推荐模版
+                canScroll = false;
                 layoutId = R.layout.banner_conlumn;
                 bannerView = createView(R.layout.banner_conlumn);
                 new TemplateRecommend(getContext()).setView(bannerView, bundle);
@@ -147,13 +149,13 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
                 layoutId = R.layout.banner_double_ld;
                 bannerView = createView(R.layout.banner_double_ld);
                 new TemplateDoubleLd(getContext()).setView(bannerView, bundle);
-            } else if(template.equals("template_teleplay_first")){//居中模版
+            } else if(template.equals("template_teleplay_first")){//电视剧首行居中模版
                 layoutId = R.layout.banner_center;
                 bannerView = createView(R.layout.banner_center);
                 new TemplateCenter(getContext()).setView(bannerView, bundle);
             }
             if(bannerView != null){
-                int tag = createTag(position, !(position==1));
+                int tag = createTag(position, canScroll);
                 bannerView.setTag(layoutId);
                 bannerView.setTag(layoutId, tag);
                 mLinearContainer.addView(bannerView);
