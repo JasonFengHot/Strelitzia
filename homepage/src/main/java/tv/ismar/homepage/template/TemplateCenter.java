@@ -121,7 +121,7 @@ public class TemplateCenter extends Template implements BaseControl.ControlCallB
 
     @Override
     public void onItemClick(View view, int position) {
-        mFetchDataControl.go2Detail(mFetchDataControl.mHomeEntity.posters.get(position));
+        mFetchDataControl.go2Detail(mFetchDataControl.mCarousels.get(position));
     }
 
     @Override

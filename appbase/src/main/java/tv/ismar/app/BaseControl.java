@@ -6,6 +6,7 @@ import android.content.Intent;
 
 import tv.ismar.app.core.PageIntent;
 import tv.ismar.app.core.Source;
+import tv.ismar.app.entity.banner.BannerCarousels;
 import tv.ismar.app.entity.banner.BannerPoster;
 import tv.ismar.app.entity.banner.BigImage;
 import tv.ismar.library.util.StringUtils;
@@ -72,6 +73,11 @@ public class BaseControl {
     public void go2Detail(BannerPoster entity){
         if(entity == null) return;
         go2Detail(entity.pk, entity.model_name, entity.content_model, entity.content_url, entity.title);
+    }
+
+    public void go2Detail(BannerCarousels entity){
+        if(entity == null) return;
+        go2Detail(entity.pk, entity.model_name, entity.content_model, entity.url, entity.title);
     }
 
     /**
