@@ -19,6 +19,8 @@
             android:clipChildren="false"
             android:clipToPadding="false"
             android:layout_height="@dimen/center_recycleview_height"
+            android:layout_marginRight="@dimen/center_padding"
+            android:layout_marginTop="@dimen/guide_recycle_item_margin_top"
             android:focusable="false" />
         <Button
             android:visibility="invisible"
