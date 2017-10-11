@@ -96,6 +96,7 @@ public class DetailPageFragment extends Fragment implements DetailPageContract.V
     private String mHeadTitle;
     private volatile boolean itemIsLoad;
     private volatile boolean relateIsLoad;
+    private volatile boolean expenseNotified=false;
     private ItemEntity mItemEntity;
     private ItemEntity[] relateItems;
     private int mRemandDay = 0;
@@ -240,7 +241,7 @@ public class DetailPageFragment extends Fragment implements DetailPageContract.V
 //        String sn = IsmartvActivator.getInstance().getSnToken();
 //        Log.i("LH/", "sn:" + sn);
         if(!((DetailPageActivity)getActivity()).sendLog)
-        mPageStatistics.videoDetailOut(mItemEntity,to);
+            mPageStatistics.videoDetailOut(mItemEntity,to);
         super.onStop();
     }
 
@@ -264,6 +265,9 @@ public class DetailPageFragment extends Fragment implements DetailPageContract.V
         }
         mModel.replaceItem(itemEntity);
         itemIsLoad = true;
+        if(itemEntity.getExpense()==null){
+            expenseNotified=true;
+        }
         hideLoading();
         mItemEntity = itemEntity;
     }
@@ -384,7 +388,7 @@ public class DetailPageFragment extends Fragment implements DetailPageContract.V
     public void notifyPlayCheck(PlayCheckEntity playCheckEntity) {
         mModel.notifyPlayCheck(playCheckEntity);
         mRemandDay = playCheckEntity.getRemainDay();
-        handler.sendEmptyMessageDelayed(0,300);
+        handler.sendEmptyMessageDelayed(0,100);
 
         // 0秒起播功能添加
         boolean isBuy;
@@ -398,6 +402,8 @@ public class DetailPageFragment extends Fragment implements DetailPageContract.V
 
     private void notifyActivityPreload(boolean permission){
         ((DetailPageActivity)getActivity()).playCheckResult(permission);
+        expenseNotified=true;
+        hideLoading();
     }
 
     @Override
@@ -437,40 +443,40 @@ public class DetailPageFragment extends Fragment implements DetailPageContract.V
     }
 
     private void hideLoading() {
-            if (((DetailPageActivity) getActivity()).mLoadingDialog != null && ((DetailPageActivity) getActivity()).mLoadingDialog.isShowing() && itemIsLoad && relateIsLoad) {
-                ((DetailPageActivity) getActivity()).mLoadingDialog.dismiss();
-                HashMap<String, Object> dataCollectionProperties = new HashMap<>();
-                dataCollectionProperties.put(EventProperty.CLIP, mItemEntity.getClip().getPk());
-                dataCollectionProperties.put(EventProperty.DURATION, (int) ((System.currentTimeMillis() - ((DetailPageActivity) getActivity()).start_time) / 1000));
-                String quality = "";
-                switch (mItemEntity.getQuality()) {
-                    case 2:
-                        quality = "normal";
-                        break;
-                    case 3:
-                        quality = "medium";
-                        break;
-                    case 4:
-                        quality = "high";
-                        break;
-                    case 5:
-                        quality = "ultra";
-                        break;
-                    default:
-                        quality = "adaptive";
-                        break;
-                }
-                dataCollectionProperties.put(EventProperty.QUALITY, quality);
-                dataCollectionProperties.put(EventProperty.TITLE, mItemEntity.getTitle());
-                dataCollectionProperties.put(EventProperty.ITEM, mItemEntity.getPk());
-                dataCollectionProperties.put(EventProperty.SUBITEM, mItemEntity.getItemPk());
-                dataCollectionProperties.put(EventProperty.LOCATION, "detail");
-                new NetworkUtils.DataCollectionTask().execute(NetworkUtils.DETAIL_PLAY_LOAD, dataCollectionProperties);
-                if(isLogin.equals("no")||mItemEntity.getExpense()==null||mRemandDay>0)
-                    handler.sendEmptyMessageDelayed(0,300);
+        if (((DetailPageActivity) getActivity()).mLoadingDialog != null && ((DetailPageActivity) getActivity()).mLoadingDialog.isShowing() && itemIsLoad && relateIsLoad&&expenseNotified) {
+            if(isLogin.equals("no")||mItemEntity.getExpense()==null||mRemandDay>0)
+                handler.sendEmptyMessageDelayed(0,100);
+            ((DetailPageActivity) getActivity()).mLoadingDialog.dismiss();
+            HashMap<String, Object> dataCollectionProperties = new HashMap<>();
+            dataCollectionProperties.put(EventProperty.CLIP, mItemEntity.getClip().getPk());
+            dataCollectionProperties.put(EventProperty.DURATION, (int) ((System.currentTimeMillis() - ((DetailPageActivity) getActivity()).start_time) / 1000));
+            String quality = "";
+            switch (mItemEntity.getQuality()) {
+                case 2:
+                    quality = "normal";
+                    break;
+                case 3:
+                    quality = "medium";
+                    break;
+                case 4:
+                    quality = "high";
+                    break;
+                case 5:
+                    quality = "ultra";
+                    break;
+                default:
+                    quality = "adaptive";
+                    break;
             }
+            dataCollectionProperties.put(EventProperty.QUALITY, quality);
+            dataCollectionProperties.put(EventProperty.TITLE, mItemEntity.getTitle());
+            dataCollectionProperties.put(EventProperty.ITEM, mItemEntity.getPk());
+            dataCollectionProperties.put(EventProperty.SUBITEM, mItemEntity.getItemPk());
+            dataCollectionProperties.put(EventProperty.LOCATION, "detail");
+            new NetworkUtils.DataCollectionTask().execute(NetworkUtils.DETAIL_PLAY_LOAD, dataCollectionProperties);
+        }
 
-            mModel.showLayout();
+        mModel.showLayout();
     }
 
     private View.OnClickListener relateItemOnClickListener = new View.OnClickListener() {
@@ -545,7 +551,8 @@ public class DetailPageFragment extends Fragment implements DetailPageContract.V
             mEntertainmentBinding.setActionHandler(mPresenter);
             contentView = mEntertainmentBinding.getRoot();
             tmp = mEntertainmentBinding.tmp;
-
+            tmp.requestFocus();
+            tmp.requestFocusFromTouch();
             palyBtnView = mEntertainmentBinding.detailBtnPlay;
 //            purchaseBtnView = mEntertainmentBinding.
             exposideBtnView = mEntertainmentBinding.detailBtnDrama;
@@ -559,6 +566,8 @@ public class DetailPageFragment extends Fragment implements DetailPageContract.V
             mMovieBinding.setActionHandler(mPresenter);
             contentView = mMovieBinding.getRoot();
             tmp = mMovieBinding.tmp;
+            tmp.requestFocus();
+            tmp.requestFocusFromTouch();
             palyBtnView = mMovieBinding.detailBtnPlay;
             purchaseBtnView = mMovieBinding.detailBtnBuy;
 //            exposideBtnView = mMovieBinding.detailBtnDrama;
@@ -572,6 +581,8 @@ public class DetailPageFragment extends Fragment implements DetailPageContract.V
             mNormalBinding.setActionHandler(mPresenter);
             contentView = mNormalBinding.getRoot();
             tmp = mNormalBinding.tmp;
+            tmp.requestFocus();
+            tmp.requestFocusFromTouch();
             palyBtnView = mNormalBinding.detailBtnPlay;
             purchaseBtnView = mNormalBinding.detailBtnBuy;
             exposideBtnView = mNormalBinding.detailBtnDrama;
@@ -657,7 +668,7 @@ public class DetailPageFragment extends Fragment implements DetailPageContract.V
         try {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             if(mItemEntity.getStartTime()!=null)
-            startDate = sdf.parse(mItemEntity.getStartTime());
+                startDate = sdf.parse(mItemEntity.getStartTime());
         } catch (ParseException e) {
             ExceptionUtils.sendProgramError(e);
             System.out.println(e.getMessage());

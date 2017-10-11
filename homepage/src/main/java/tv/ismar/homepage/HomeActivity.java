@@ -244,15 +244,21 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                 ChannelFragment channelFragment = new ChannelFragment();
                 switch(position){
                     case 0://搜索
+                        setBackground(R.drawable.homepage_background);
                         PageIntent intent = new PageIntent();
                         intent.toSearch(this);
                         break;
                     case 1://首页
+                        setBackground(R.drawable.homepage_background);
                         channelFragment.setChannel("首页", HOME_PAGE_CHANNEL_TAG, "首页", 0);
                         break;
                     default://其他频道
                         if(position-2<0) return;
-                        if(mFetchDataControl.mChannels[position-2].getChannel().equals("comic")) setBackground(R.drawable.juvenile_bg);
+                        if(mFetchDataControl.mChannels[position-2].getChannel().equals("comic")) {
+                            setBackground(R.drawable.juvenile_bg);
+                        } else {
+                            setBackground(R.drawable.homepage_background);
+                        }
                         channelFragment.setChannel( mFetchDataControl.mChannels[position-2].getName(),
                                 mFetchDataControl.mChannels[position-2].getChannel(),
                                 mFetchDataControl.mChannels[position-2].getName(),
