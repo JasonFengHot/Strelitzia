@@ -23,18 +23,16 @@ import java.util.Stack;
 import cn.ismartv.truetime.TrueTime;
 import retrofit2.adapter.rxjava.HttpException;
 import rx.Observer;
-import tv.ismar.account.IsmartvActivator;
 import tv.ismar.app.network.SkyService;
 import tv.ismar.app.player.OnNoNetConfirmListener;
+import tv.ismar.app.ui.ToastTip;
 import tv.ismar.app.update.UpdateService;
 import tv.ismar.app.util.NetworkUtils;
-import tv.ismar.app.widget.ExpireAccessTokenPop;
 import tv.ismar.app.widget.ItemOffLinePopWindow;
 import tv.ismar.app.widget.LoadingDialog;
 import tv.ismar.app.widget.Login_hint_dialog;
 import tv.ismar.app.widget.ModuleMessagePopWindow;
 import tv.ismar.app.widget.NetErrorPopWindow;
-import tv.ismar.app.widget.NoNetConnectDialog;
 import tv.ismar.app.widget.UpdatePopupWindow;
 import tv.ismar.library.exception.ExceptionUtils;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
@@ -49,9 +47,8 @@ public class BaseActivity extends AppCompatActivity {
     private UpdatePopupWindow updatePopupWindow;
     private LoadingDialog mLoadingDialog;
     private ModuleMessagePopWindow netErrorPopWindow;
-    private ModuleMessagePopWindow expireAccessTokenPop;
     private ModuleMessagePopWindow itemOffLinePop;
-    private NoNetConnectDialog dialog;
+    private ModuleMessagePopWindow dialog;
     public SkyService mSkyService;
     public SkyService mWeatherSkyService;
     public SkyService mWxApiService;
@@ -151,10 +148,6 @@ public class BaseActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         activityIsAlive = false;
-        if (expireAccessTokenPop != null) {
-            expireAccessTokenPop.dismiss();
-            expireAccessTokenPop = null;
-        }
         try {
             unregisterReceiver(mUpdateReceiver);
         } catch (Exception e) {
@@ -281,66 +274,99 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     public void showNoNetConnectDialog(final OnNoNetConfirmListener onNoNetConfirmListener) {
-        Log.i("onNoNet", "showNet!!!");
         if(dialog!=null&&dialog.isShowing()){
             return;
         }
-        if(dialog==null) {
-            dialog = new NoNetConnectDialog(this, R.style.NoNetDialog);
-            dialog.setConfirmBtn(getString(R.string.setting_network));
-            dialog.setCancelBtn(getString(R.string.exit_app));
-            dialog.setCanceledOnTouchOutside(false);
-            dialog.keyListen(new ModuleMessagePopWindow.ConfirmListener() {
-                @Override
-                public void confirmClick(View view) {
-                    dialog.dismiss();
-                    Intent intent = new Intent(Settings.ACTION_SETTINGS);
-                    startActivity(intent);
-                    if(onNoNetConfirmListener != null){
-                        onNoNetConfirmListener.onNoNetConfirm();
-                    }
+        Log.i("onNoNet", "showNet!!!");
+        final String act = getCurrentActivityName(BaseActivity.this);
+        dialog = new NetErrorPopWindow(this);
+        dialog.setMessage(getString(R.string.no_connectNet));
+        dialog.setConfirmBtn(getString(R.string.setting_network));
+        dialog.setCancelBtn(getString(R.string.exit_app));
+        dialog.setOnDismissListener(new PopupWindow.OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                if (!(act.contains("HomeActivity") || act.contains("WordSearchActivity") || act.contains("FilmStar")||act.contains("UserCenterActivity"))) {
+                    if(act.contains("PlayFinishedActivity"))
+                        setResult(EXIT_PLAY);
+                    finish();
                 }
-            }, new ModuleMessagePopWindow.CancelListener() {
-                @Override
-                public void cancelClick(View view) {
-                    dialog.dismiss();
-                    Intent intent = new Intent();
-                    intent.setAction(NO_NET_CONNECT_ACTION);
-                    sendBroadcast(intent);
-                }
-            });
+            }
+        });
+        try {
+            dialog.showAtLocation(getRootView(), Gravity.CENTER, 0, 0, new ModuleMessagePopWindow.ConfirmListener() {
+                        @Override
+                        public void confirmClick(View view) {
+                            dialog.dismiss();
+                            Intent intent = new Intent(Settings.ACTION_SETTINGS);
+                            startActivity(intent);
+                            if(onNoNetConfirmListener != null){
+                                onNoNetConfirmListener.onNoNetConfirm();
+                            }
+
+                        }
+                    },
+                    new ModuleMessagePopWindow.CancelListener() {
+                        @Override
+                        public void cancelClick(View view) {
+                            dialog.dismiss();
+                            Intent intent = new Intent();
+                            intent.setAction(NO_NET_CONNECT_ACTION);
+                            sendBroadcast(intent);
+                        }
+                    });
+            showTime=System.currentTimeMillis();
+        } catch (Exception e) {
+            ExceptionUtils.sendProgramError(e);
+            e.printStackTrace();
         }
-        dialog.show();
+
     }
 
     public void showNoNetConnectDialog() {
-        Log.i("onNoNet", "showNet!!!");
         if(dialog!=null&&dialog.isShowing()){
             return;
         }
-        if(dialog==null) {
-            dialog = new NoNetConnectDialog(this, R.style.NoNetDialog);
-            dialog.setConfirmBtn(getString(R.string.setting_network));
-            dialog.setCancelBtn(getString(R.string.exit_app));
-            dialog.setCanceledOnTouchOutside(false);
-            dialog.keyListen(new ModuleMessagePopWindow.ConfirmListener() {
-                @Override
-                public void confirmClick(View view) {
-                    dialog.dismiss();
-                    Intent intent = new Intent(Settings.ACTION_SETTINGS);
-                    startActivity(intent);
+        final String act = getCurrentActivityName(BaseActivity.this);
+        Log.i("onNoNet", "showNet!!!");
+        dialog = new NetErrorPopWindow(this);
+        dialog.setMessage(getString(R.string.no_connectNet));
+        dialog.setConfirmBtn(getString(R.string.setting_network));
+        dialog.setCancelBtn(getString(R.string.exit_app));
+        dialog.setOnDismissListener(new PopupWindow.OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                if (!(act.contains("HomeActivity") || act.contains("WordSearchActivity") || act.contains("FilmStar")||act.contains("UserCenterActivity"))) {
+                    if(act.contains("PlayFinishedActivity"))
+                        setResult(EXIT_PLAY);
+                    finish();
                 }
-            }, new ModuleMessagePopWindow.CancelListener() {
-                @Override
-                public void cancelClick(View view) {
-                    dialog.dismiss();
-                    Intent intent = new Intent();
-                    intent.setAction(NO_NET_CONNECT_ACTION);
-                    sendBroadcast(intent);
-                }
-            });
+            }
+        });
+        try {
+            dialog.showAtLocation(getRootView(), Gravity.CENTER, 0, 0, new ModuleMessagePopWindow.ConfirmListener() {
+                        @Override
+                        public void confirmClick(View view) {
+                            dialog.dismiss();
+                            Intent intent = new Intent(Settings.ACTION_SETTINGS);
+                            startActivity(intent);
+
+                        }
+                    },
+                    new ModuleMessagePopWindow.CancelListener() {
+                        @Override
+                        public void cancelClick(View view) {
+                            dialog.dismiss();
+                            Intent intent = new Intent();
+                            intent.setAction(NO_NET_CONNECT_ACTION);
+                            sendBroadcast(intent);
+                        }
+                    });
+            showTime=System.currentTimeMillis();
+        } catch (Exception e) {
+            ExceptionUtils.sendProgramError(e);
+            e.printStackTrace();
         }
-        dialog.show();
     }
     public boolean isshowNetWorkErrorDialog() {
         return netErrorPopWindow != null && netErrorPopWindow.isShowing();
@@ -371,25 +397,7 @@ public class BaseActivity extends AppCompatActivity {
         }
     }
     public void showExpireAccessTokenPop() {
-        expireAccessTokenPop = ExpireAccessTokenPop.getInstance(this);
-        expireAccessTokenPop.setMessage(getString(R.string.access_token_expire));
-        expireAccessTokenPop.setConfirmBtn(getString(R.string.confirm));
-        expireAccessTokenPop.setOnDismissListener(new PopupWindow.OnDismissListener() {
-            @Override
-            public void onDismiss() {
-                isExpireAccessToken = true;
-                IsmartvActivator.getInstance().removeUserInfo();
-            }
-        });
-        expireAccessTokenPop.showAtLocation(getRootView(), Gravity.CENTER, 0, 0, new ModuleMessagePopWindow.ConfirmListener() {
-                    @Override
-                    public void confirmClick(View view) {
-                        expireAccessTokenPop.dismiss();
-                    }
-                },
-                null);
-
-
+        ToastTip.showToast(this,getString(R.string.access_token_expire));
     }
 
     public void showItemOffLinePop() {

@@ -212,6 +212,8 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
     protected void onPause() {
         historyLists.clear();
         favoriteLists.clear();
+        allhistoryLists.clear();
+        allfavoriteLists.clear();
 
         HashMap<String, Object> properties = mDataCollectionProperties;
         new NetworkUtils.DataCollectionTask().execute(NetworkUtils.VIDEO_HISTORY_OUT, properties);
@@ -598,7 +600,7 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
             if(pk==0){
                 pk=history.getPk();
             }
-            if(postion!=historyLists.size()-1) {
+            if(history.getType()!=2) {
                 intent.toPlayPage(this, pk, 0, Source.HISTORY);
             }else{
                 Intent intent1=new Intent();
@@ -615,7 +617,7 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
             if(pk==0){
                 pk=favoriteEntity.getPk();
             }
-            if(postion!=favoriteLists.size()-1) {
+            if(favoriteEntity.getType()!=2) {
                 if(favoriteEntity.getContent_model().contains("gather")){
                     intent.toSubject(this,favoriteEntity.getContent_model(),pk,favoriteEntity.getTitle(),"favorite","");
                 }else {
