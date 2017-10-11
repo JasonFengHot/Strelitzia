@@ -315,6 +315,7 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
         if(historyLists.size()>0){
             no_data.setVisibility(View.GONE);
             history_relativelayout.setVisibility(View.VISIBLE);
+            Log.i("favoriteaci","isEdit: "+isEdit);
             if(!isEdit)
             edit_history.setVisibility(View.VISIBLE);
             if(favoriteLists.size()>0){
@@ -378,6 +379,7 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
         }else{
             if(favoriteLists.size()>0){
                 no_data.setVisibility(View.GONE);
+                if(!isEdit)
                 edit_history.setVisibility(View.VISIBLE);
 
                 RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,getResources().getDimensionPixelSize(R.dimen.history_473));
