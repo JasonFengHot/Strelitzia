@@ -241,9 +241,6 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
                         Log.i("result",result);
                         historyLists= parseResult(result,HISTORY);
                         getFavoriteByNet();
-//                        historyAdapter=new HistoryListAdapter(HistoryFavoriteActivity.this,mlists);
-//                        historyAdapter.setItemFocusedListener(HistoryFavoriteActivity.this);
-//                        historyRecycler.setAdapter(historyAdapter);
                     }
                 });
     }
@@ -592,6 +589,7 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
     @Override
     public void onlfItemClick(View v, int postion, String type) {
         PageIntent intent=new PageIntent();
+        mDataCollectionProperties=new HashMap<>();
         int pk=0;
         if(type.equals("history")){
             HistoryFavoriteEntity history=historyLists.get(postion);
@@ -601,6 +599,10 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
                 pk=history.getPk();
             }
             if(history.getType()!=2) {
+                mDataCollectionProperties.put("to_item",history.getItem_pk());
+                mDataCollectionProperties.put("to_subitem",pk);
+                mDataCollectionProperties.put("to_title", history.getTitle());
+//                mDataCollectionProperties.put("position", history.get/1000);
                 intent.toPlayPage(this, pk, 0, Source.HISTORY);
             }else{
                 Intent intent1=new Intent();
