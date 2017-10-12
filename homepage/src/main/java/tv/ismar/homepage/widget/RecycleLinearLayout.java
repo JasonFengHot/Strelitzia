@@ -2,7 +2,6 @@ package tv.ismar.homepage.widget;
 
 import android.content.Context;
 import android.graphics.Rect;
-import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -42,7 +41,7 @@ public class RecycleLinearLayout extends LinearLayout {
         initWindow(context);
     }
 
-    public RecycleLinearLayout(Context context, @Nullable AttributeSet attrs) {
+    public RecycleLinearLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
         initWindow(context);
     }
