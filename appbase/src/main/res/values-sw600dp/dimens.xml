@@ -757,6 +757,7 @@
 <dimen name="center_title_height">26.11dp</dimen>
 <dimen name="center_title_size">21.67dp</dimen>
 <dimen name="center_padding">83.33dp</dimen>
+<dimen name="center_padding_offset">251.11dp</dimen>
 <!--首页 end-->
 
 <dimen name="popup_layout_style_title_view_h">56.11dp</dimen>

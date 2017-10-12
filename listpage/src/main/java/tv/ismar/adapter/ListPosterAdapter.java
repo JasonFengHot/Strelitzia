@@ -178,8 +178,8 @@ public class ListPosterAdapter extends RecyclerView.Adapter<ListPosterAdapter.Fi
                         holder.item_horizontal_poster_title.setText("");
                         holder.item_horizontal_title_bg.setVisibility(View.INVISIBLE);
                     }
-                    if (!TextUtils.isEmpty(item.getIntroduction())) {
-                        holder.item_horizontal_poster_des.setText(item.getIntroduction());
+                    if (!TextUtils.isEmpty(item.getFocus())) {
+                        holder.item_horizontal_poster_des.setText(item.getFocus());
                     }else {
                         holder.item_horizontal_poster_des.setVisibility(View.INVISIBLE);
                     }

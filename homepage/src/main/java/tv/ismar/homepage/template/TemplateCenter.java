@@ -80,6 +80,7 @@ public class TemplateCenter extends Template implements BaseControl.ControlCallB
         if(mAdapter == null){
             mAdapter = new CenterAdapter(mContext, mFetchDataControl.mCarousels);
             mRecycleView.setAdapter(mAdapter);
+            mCenterLayoutManager.scrollToPositionWithOffset(1000,mContext.getResources().getDimensionPixelOffset(R.dimen.center_padding_offset));
             mAdapter.setOnItemClickListener(this);
         }else {
             int start = mFetchDataControl.mCarousels.size() - mFetchDataControl.mHomeEntity.carousels.size();

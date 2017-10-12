@@ -46,6 +46,7 @@ public class ListSectionEntity {
         private String title;
         private String url;
         private String introduction;
+        private String focus;
         private float bean_score;
         private String poster_url;
         private int pk;
@@ -53,6 +54,14 @@ public class ListSectionEntity {
         private String model_name;
         private Object custom_image;
         private ExpenseInfoBean expense_info;
+
+        public String getFocus() {
+            return focus;
+        }
+
+        public void setFocus(String focus) {
+            this.focus = focus;
+        }
 
         public String getVertical_url() {
             return vertical_url;

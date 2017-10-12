@@ -39,7 +39,7 @@ public class CenterAdapter extends BaseRecycleAdapter<CenterAdapter.CenterViewHo
 
     @Override
     public void onBindViewHolder(CenterViewHolder holder, int position) {
-        BannerCarousels carousels = mData.get(position);
+        BannerCarousels carousels = mData.get(position%mData.size());
         holder.mTitle.setText(carousels.title);
         if (!TextUtils.isEmpty(carousels.video_image)) {
             Picasso.with(mContext).load(carousels.video_image).into(holder.mPosterIg);
@@ -50,7 +50,7 @@ public class CenterAdapter extends BaseRecycleAdapter<CenterAdapter.CenterViewHo
 
     @Override
     public int getItemCount() {
-        return (mData!=null)? mData.size() : 0;
+        return Integer.MAX_VALUE;
     }
 
     public class CenterViewHolder extends BaseViewHolder{
