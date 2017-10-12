@@ -667,6 +667,8 @@
 <dimen name="guide_video_title_height">28.67dp</dimen>
 <dimen name="guide_video_icon_width">186.67dp</dimen>
 <dimen name="guide_video_title_size">26.00dp</dimen>
+<dimen name="guide_navigation_width">28.00dp</dimen>
+<dimen name="guide_navigation_height">48.67dp</dimen>
 <dimen name="guide_swithc_container_icon_size">21.33dp</dimen>
 <dimen name="guide_swithc_container_icon_margin_left">11.33dp</dimen>
 <dimen name="guide_swithc_container_icon_margin_right">14.67dp</dimen>
@@ -728,6 +730,7 @@
 <dimen name="double_ld_poster_padding">24.00dp</dimen>
 <!--竖版双行尺寸-->
 <dimen name="double_md_margin_left">66.67dp</dimen>
+<dimen name="double_md_margin_right">28.00dp</dimen>
 <dimen name="double_md_img_container_width">412.67dp</dimen>
 <dimen name="double_md_img_height">513.33dp</dimen>
 <dimen name="double_md_img_width">374.67dp</dimen>
