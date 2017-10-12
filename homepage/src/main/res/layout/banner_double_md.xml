@@ -26,8 +26,8 @@
         <Button
             android:visibility="invisible"
             android:id="@+id/navigation_left"
-            android:layout_width="@dimen/banner_navigation_width"
-            android:layout_height="@dimen/double_md_img_height"
+            android:layout_width="@dimen/guide_navigation_width"
+            android:layout_height="@dimen/guide_navigation_height"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
             android:background="@drawable/selector_banner_movie_arrow_left"
@@ -37,8 +37,8 @@
         <Button
             android:visibility="invisible"
             android:id="@+id/navigation_right"
-            android:layout_width="@dimen/banner_navigation_width"
-            android:layout_height="@dimen/double_md_img_height"
+            android:layout_width="@dimen/guide_navigation_width"
+            android:layout_height="@dimen/guide_navigation_height"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:background="@drawable/selector_banner_movie_arrow_right"
