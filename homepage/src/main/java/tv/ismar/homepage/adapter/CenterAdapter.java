@@ -64,6 +64,11 @@ public class CenterAdapter extends BaseRecycleAdapter<CenterAdapter.CenterViewHo
         }
 
         @Override
+        protected float getScaleXY() {
+            return 1.2F;
+        }
+
+        @Override
         protected int getScaleLayoutId() {
             return R.id.center_ismartv_linear_layout;
         }

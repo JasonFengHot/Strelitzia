@@ -46,6 +46,10 @@ public abstract class BaseViewHolder extends RecyclerView.ViewHolder implements
 
     protected abstract int getScaleLayoutId();
 
+    protected  float getScaleXY(){
+        return 1.1F;
+    }
+
     @Override
     public void onFocusChange(View v, boolean hasFocus) {
         if (hasFocus) {
@@ -88,10 +92,10 @@ public abstract class BaseViewHolder extends RecyclerView.ViewHolder implements
 
     /*缩放到1.1倍*/
     protected void scaleToLarge(View view) {
-        ObjectAnimator objectAnimatorX = ObjectAnimator.ofFloat(view, SCALE_X, 1.0F, 1.1F);
+        ObjectAnimator objectAnimatorX = ObjectAnimator.ofFloat(view, SCALE_X, 1.0F, getScaleXY());
         objectAnimatorX.setDuration(100L);
         objectAnimatorX.start();
-        ObjectAnimator objectAnimatorY = ObjectAnimator.ofFloat(view, SCALE_Y, 1.0F, 1.1F);
+        ObjectAnimator objectAnimatorY = ObjectAnimator.ofFloat(view, SCALE_Y, 1.0F, getScaleXY());
         objectAnimatorY.setDuration(100L);
         objectAnimatorY.start();
     }
