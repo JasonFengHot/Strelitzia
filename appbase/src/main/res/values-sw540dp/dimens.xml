@@ -756,7 +756,7 @@
 <dimen name="center_poster_height">229.50dp</dimen>
 <dimen name="center_title_height">23.50dp</dimen>
 <dimen name="center_title_size">19.50dp</dimen>
-<dimen name="center_padding">75.00dp</dimen>
+<dimen name="center_padding">37.50dp</dimen>
 <dimen name="center_padding_offset">226.00dp</dimen>
 <!--首页 end-->
 

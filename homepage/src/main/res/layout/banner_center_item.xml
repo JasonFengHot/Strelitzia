@@ -41,4 +41,9 @@
                 android:textSize="@dimen/center_title_size" />
         </RelativeLayout>
     </tv.ismar.homepage.banner.IsmartvLinearLayout>
+    <View
+        android:id="@+id/center_margin_right"
+        android:layout_width="@dimen/center_padding"
+        android:layout_height="10dp"
+        android:background="#00000000"/>
 </LinearLayout>
