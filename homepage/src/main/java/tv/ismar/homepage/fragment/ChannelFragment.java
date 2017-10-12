@@ -2,12 +2,13 @@ package tv.ismar.homepage.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ScrollView;
 
 import tv.ismar.app.BaseControl;
+import tv.ismar.app.core.PageIntent;
 import tv.ismar.app.entity.GuideBanner;
 import tv.ismar.homepage.HomeActivity;
 import tv.ismar.homepage.R;
@@ -33,7 +34,7 @@ import tv.ismar.library.util.StringUtils;
  * @DESC: 频道fragemnt
  */
 
-public class ChannelFragment extends BaseFragment implements BaseControl.ControlCallBack, RecycleLinearLayout.ViewHolder {
+public class ChannelFragment extends BaseFragment implements BaseControl.ControlCallBack {
     private FetchDataControl mControl = null;//业务类引用
 
     private RecycleLinearLayout mLinearContainer;//banner容器
@@ -54,7 +55,6 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
 
     private void findView(View view){
         mLinearContainer = (RecycleLinearLayout) view.findViewById(R.id.scroll_linear_container);
-        mLinearContainer.setHolder(this);
     }
 
     private String mChannel;//频道
@@ -80,13 +80,8 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
 
     @Override
     public void callBack(int flags, Object... args) {
-        initView();
-    }
-
-    private void initView(){
-        mLinearContainer.clearView();
-        mLinearContainer.addView(getBanner(0));
-        mLinearContainer.addView(getBanner(1));
+        GuideBanner[] banners = (GuideBanner[]) args;
+        initBanner(banners);
     }
 
     public static final String TITLE_KEY = "title";
@@ -95,20 +90,21 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
     public static final String TEMPLATE_KEY = "template";
     public static final String CHANNEL_KEY= "channel";
     public static final String NAME_KEY = "name";
-
-    /*获取指定banner视图*/
-    private View getBanner(int position){
-        View bannerView = null;
-        if(mControl.mGuideBanners != null){
-            if(position<0 || position>mControl.mGuideBanners.length) return null;
-            GuideBanner data = mControl.mGuideBanners[position];
+    /*初始化banner视图*/
+    private void initBanner(GuideBanner[] data){
+        if(data==null || data.length<=0){
+            return;
+        }
+        mLinearContainer.removeAllViews();
+        for(int position=0; position<data.length; position++){
+            View bannerView = null;
             int layoutId = -1;
             boolean canScroll = true;//是否可以滑动,默认可以滑动
-            String template = data.template;
+            String template = data[position].template;
             Bundle bundle = new Bundle();
-            bundle.putString(TITLE_KEY, data.title);
-            bundle.putString(URL_KEY, data.banner_url);
-            bundle.putInt(BANNER_KEY, data.page_banner_pk);
+            bundle.putString(TITLE_KEY, data[position].title);
+            bundle.putString(URL_KEY, data[position].banner_url);
+            bundle.putInt(BANNER_KEY, data[position].page_banner_pk);
             bundle.putString(TEMPLATE_KEY, template);
             bundle.putString(CHANNEL_KEY, mChannel);
             bundle.putString(NAME_KEY, mName);
@@ -162,9 +158,12 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
                 int tag = createTag(position, canScroll);
                 bannerView.setTag(layoutId);
                 bannerView.setTag(layoutId, tag);
+                mLinearContainer.addView(bannerView);
             }
         }
-        return (bannerView==null)?(new View(getContext())):bannerView;
+
+        addMoreView(data.length);
+//        mLinearContainer.initView();
     }
 
     private int createTag(int position, boolean canScroll){
@@ -196,22 +195,5 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
     public void onDestroy() {
         super.onDestroy();
         mLinearContainer.clearView();
-    }
-
-    @Override
-    public void onCreateView(int position, int orientation) {
-        if(orientation == KeyEvent.KEYCODE_DPAD_DOWN){//向下
-            View banner = getBanner(position+1);
-            if(banner==null) return;
-            //添加一个成功，就删除一个
-            if(banner.getWindowVisibility()==View.GONE) mLinearContainer.addView(banner);
-            mLinearContainer.removeViewAt(0);
-        }
-        if(orientation == KeyEvent.KEYCODE_DPAD_UP){//向上
-            View banner = getBanner(position-1);
-            if(banner==null) return;
-            if(banner.getWindowVisibility()==View.GONE) mLinearContainer.addView(banner, 0);
-            mLinearContainer.removeViewAt(mLinearContainer.getChildCount()-1);
-        }
     }
 }
