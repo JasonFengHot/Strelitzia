@@ -730,7 +730,6 @@
 <dimen name="double_ld_poster_padding">18.00dp</dimen>
 <!--竖版双行尺寸-->
 <dimen name="double_md_margin_left">50.00dp</dimen>
-<dimen name="double_md_margin_right">21.00dp</dimen>
 <dimen name="double_md_img_container_width">309.50dp</dimen>
 <dimen name="double_md_img_height">385.00dp</dimen>
 <dimen name="double_md_img_width">281.00dp</dimen>
