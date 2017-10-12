@@ -89,7 +89,7 @@ public class FilterPosterAdapter extends RecyclerView.Adapter<FilterPosterAdapte
     @Override
     public void onBindViewHolder(final FilterPosterHolder holder, final int position) {
             if(position<mItemList.objects.size()) {
-                Item item = mItemList.objects.get(position);
+                final Item item = mItemList.objects.get(position);
                 if (mIsVertical) {
                     if (item.bean_score > 0) {
                         holder.item_vertical_poster_mark.setText(item.bean_score + "");
@@ -122,8 +122,14 @@ public class FilterPosterAdapter extends RecyclerView.Adapter<FilterPosterAdapte
                             @Override
                             public void onFocusChange(View v, boolean hasFocus) {
                                 if(hasFocus){
+                                    if(!TextUtils.isEmpty(item.focus)){
+                                        holder.item_vertical_poster_title.setText(item.focus);
+                                    }
                                     holder.item_vertical_poster_title.setEllipsize(TextUtils.TruncateAt.MARQUEE);
                                 }else{
+                                    if(!TextUtils.isEmpty(item.title)){
+                                        holder.item_vertical_poster_title.setText(item.title);
+                                    }
                                     holder.item_vertical_poster_title.setEllipsize(TextUtils.TruncateAt.END);
                                 }
                                 itemFocusedListener.onItemfocused(v, position, hasFocus);
