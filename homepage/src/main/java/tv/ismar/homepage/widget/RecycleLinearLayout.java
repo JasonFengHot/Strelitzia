@@ -157,9 +157,11 @@ public class RecycleLinearLayout extends LinearLayout {
 
     private boolean excuteKeyEvent(KeyEvent event){
         int keyCode = event.getKeyCode();
-//        if(event.getAction()==KeyEvent.ACTION_UP && //处理顶部跳入到该view时的焦点
-//                keyCode==KeyEvent.KEYCODE_DPAD_DOWN){
-//            getChildAt(0).requestFocus();
+        //测试删除view是否可以减少内存
+//        if(event.getAction()==KeyEvent.ACTION_UP
+//                && keyCode==KeyEvent.KEYCODE_DPAD_DOWN){
+//            removeViewAt(0);
+//            return true;
 //        }
         if(event.getAction() == KeyEvent.ACTION_DOWN){
             mLastView = getFocusedChild();
@@ -174,6 +176,7 @@ public class RecycleLinearLayout extends LinearLayout {
                 int tag = (int) view.getTag(key);
                 boolean canScroll = tag>>30==1;//1可滑动，0不可滑动
                 int position = (tag<<2)>>2;
+                mHolder.onCreateView(position, keyCode);
                 Log.i(TAG, "key:"+key+" canScroll:"+canScroll+" position:"+position);
                 if(!canScroll){//限制滑动
                     Log.i(TAG, "canScroll");
@@ -196,5 +199,15 @@ public class RecycleLinearLayout extends LinearLayout {
             }
         }
         return super.dispatchKeyEvent(event);
+    }
+
+    private ViewHolder mHolder;
+
+    public void setHolder(ViewHolder holder){
+        this.mHolder = holder;
+    }
+
+    public interface ViewHolder {
+        void onCreateView(int position, int orientation);
     }
 }

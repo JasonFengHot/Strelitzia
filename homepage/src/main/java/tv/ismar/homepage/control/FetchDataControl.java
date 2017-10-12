@@ -87,6 +87,7 @@ public class FetchDataControl extends BaseControl{
                     @Override
                     public void onNext(GuideBanner[] guideBanners) {
                         if (mCallBack != null && guideBanners != null) {
+                            mGuideBanners = guideBanners;
                             mCallBack.callBack(FETCH_CHANNEL_BANNERS_FLAG, guideBanners);
                         }
                     }

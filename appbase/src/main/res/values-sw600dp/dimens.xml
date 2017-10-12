@@ -667,6 +667,8 @@
 <dimen name="guide_video_title_height">23.89dp</dimen>
 <dimen name="guide_video_icon_width">155.56dp</dimen>
 <dimen name="guide_video_title_size">21.67dp</dimen>
+<dimen name="guide_navigation_width">23.33dp</dimen>
+<dimen name="guide_navigation_height">40.56dp</dimen>
 <dimen name="guide_swithc_container_icon_size">17.78dp</dimen>
 <dimen name="guide_swithc_container_icon_margin_left">9.44dp</dimen>
 <dimen name="guide_swithc_container_icon_margin_right">12.22dp</dimen>
