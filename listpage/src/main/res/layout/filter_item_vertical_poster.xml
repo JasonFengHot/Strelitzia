@@ -51,7 +51,7 @@
         android:textSize="@dimen/item_vertical_poster_title_ts"
         android:textColor="#f0f0f0"
         android:gravity="center"
-        android:ellipsize="marquee"
+        android:ellipsize="end"
         android:marqueeRepeatLimit="marquee_forever"
         android:singleLine="true"
         android:layout_below="@id/item_vertical_poster_img"

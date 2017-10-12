@@ -57,6 +57,7 @@ import tv.ismar.app.network.SkyService;
 import tv.ismar.app.network.entity.AdElementEntity;
 import tv.ismar.app.network.entity.ItemEntity;
 import tv.ismar.app.player.OnNoNetConfirmListener;
+import tv.ismar.app.ui.ToastTip;
 import tv.ismar.app.widget.ModuleMessagePopWindow;
 import tv.ismar.library.exception.ExceptionUtils;
 import tv.ismar.library.util.LogUtils;
@@ -750,7 +751,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
                 mPlaybackService.addHistory(0, true);
             }
             if (NetworkUtils.isConnected(getActivity())) {
-                baseActivity.showNetWorkErrorDialog(throwable);
+                ToastTip.showToast(getContext(),"网络连接失败，请重试");
             } else {
                 baseActivity.showNoNetConnectDialog(onNoNetConfirmListener);
             }
@@ -1576,11 +1577,8 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
                 hideCancel = true;
                 break;
             case POP_TYPE_PLAYER_NET_ERROR:
-                message = getString(R.string.player_net_data_error);
-                confirmText = getString(R.string.player_pop_set_net);
-                cancelText = getString(R.string.player_pop_back);
-                hideCancel=false;
-                break;
+                ToastTip.showToast(getActivity(),"网络连接失败，请重试");
+                return;
         }
         popDialog = new ModuleMessagePopWindow(getActivity());
         popDialog.setConfirmBtn(confirmText);

@@ -87,7 +87,7 @@ public class FilterPosterAdapter extends RecyclerView.Adapter<FilterPosterAdapte
     }
 
     @Override
-    public void onBindViewHolder(FilterPosterHolder holder, final int position) {
+    public void onBindViewHolder(final FilterPosterHolder holder, final int position) {
             if(position<mItemList.objects.size()) {
                 Item item = mItemList.objects.get(position);
                 if (mIsVertical) {
@@ -116,6 +116,19 @@ public class FilterPosterAdapter extends RecyclerView.Adapter<FilterPosterAdapte
                         holder.item_vertical_poster_vip.setVisibility(View.VISIBLE);
                     } else {
                         holder.item_vertical_poster_vip.setVisibility(View.GONE);
+                    }
+                    if (itemFocusedListener != null) {
+                        holder.itemView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                            @Override
+                            public void onFocusChange(View v, boolean hasFocus) {
+                                if(hasFocus){
+                                    holder.item_vertical_poster_title.setEllipsize(TextUtils.TruncateAt.MARQUEE);
+                                }else{
+                                    holder.item_vertical_poster_title.setEllipsize(TextUtils.TruncateAt.END);
+                                }
+                                itemFocusedListener.onItemfocused(v, position, hasFocus);
+                            }
+                        });
                     }
 
                 } else {
@@ -149,6 +162,19 @@ public class FilterPosterAdapter extends RecyclerView.Adapter<FilterPosterAdapte
                     } else {
                         holder.item_horizontal_poster_vip.setVisibility(View.GONE);
                     }
+                    if (itemFocusedListener != null) {
+                        holder.itemView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                            @Override
+                            public void onFocusChange(View v, boolean hasFocus) {
+                                if(hasFocus){
+                                    holder.item_horizontal_poster_title.setEllipsize(TextUtils.TruncateAt.MARQUEE);
+                                }else{
+                                    holder.item_horizontal_poster_title.setEllipsize(TextUtils.TruncateAt.END);
+                                }
+                                itemFocusedListener.onItemfocused(v, position, hasFocus);
+                            }
+                        });
+                    }
                 }
                 if (itemClickListener != null) {
                     holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -158,14 +184,7 @@ public class FilterPosterAdapter extends RecyclerView.Adapter<FilterPosterAdapte
                         }
                     });
                 }
-                if (itemFocusedListener != null) {
-                    holder.itemView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-                        @Override
-                        public void onFocusChange(View v, boolean hasFocus) {
-                            itemFocusedListener.onItemfocused(v, position, hasFocus);
-                        }
-                    });
-                }
+
             }
             holder.itemView.setOnHoverListener(new View.OnHoverListener() {
                 @Override

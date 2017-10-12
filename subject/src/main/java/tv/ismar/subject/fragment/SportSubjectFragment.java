@@ -55,6 +55,7 @@ import tv.ismar.app.entity.Subject;
 import tv.ismar.app.network.SkyService;
 import tv.ismar.app.network.entity.EventProperty;
 import tv.ismar.app.network.entity.PlayCheckEntity;
+import tv.ismar.app.ui.ToastTip;
 import tv.ismar.app.widget.LoadingDialog;
 import tv.ismar.library.exception.ExceptionUtils;
 import tv.ismar.subject.R;
@@ -98,7 +99,7 @@ public class SportSubjectFragment extends Fragment implements View.OnHoverListen
         public boolean handleMessage(Message msg) {
             if(mLoadingDialog.isShowing()) {
                 mLoadingDialog.dismiss();
-                ((BaseActivity)getActivity()).showNetWorkErrorDialog(new TimeoutException());
+                ToastTip.showToast(getActivity(),"网络连接超时，请重试");
             }
             return false;
         }

@@ -210,58 +210,6 @@ public class BaseActivity extends AppCompatActivity {
         return ((ViewGroup) (getWindow().getDecorView().findViewById(android.R.id.content))).getChildAt(0);
     }
     long showTime=0;
-    long nowTime=0;
-    public void showNetWorkErrorDialog(Throwable e) {
-        nowTime=System.currentTimeMillis();
-        if (netErrorPopWindow != null && netErrorPopWindow.isShowing()) {
-            return;
-        }
-        Log.i("nowTime",nowTime-showTime+"");
-        if(nowTime-showTime<8000)
-            return;
-        final String act = getCurrentActivityName(BaseActivity.this);
-        netErrorPopWindow = new NetErrorPopWindow(this);
-        netErrorPopWindow.setMessage(getString(R.string.fetch_net_data_error));
-        netErrorPopWindow.setConfirmBtn(getString(R.string.setting_network));
-        netErrorPopWindow.setCancelBtn(getString(R.string.back));
-        netErrorPopWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
-            @Override
-            public void onDismiss() {
-                if (!(act.contains("HomePageActivity") || act.contains("WordSearchActivity") || act.contains("FilmStar")||act.contains("UserCenterActivity"))) {
-                    if(act.contains("PlayFinishedActivity"))
-                        setResult(EXIT_PLAY);
-                    finish();
-                }
-            }
-        });
-        try {
-            netErrorPopWindow.showAtLocation(getRootView(), Gravity.CENTER, 0, 0, new ModuleMessagePopWindow.ConfirmListener() {
-                        @Override
-                        public void confirmClick(View view) {
-                            netErrorPopWindow.dismiss();
-                            Intent intent = new Intent(Settings.ACTION_SETTINGS);
-                            startActivity(intent);
-
-                        }
-                    },
-                    new ModuleMessagePopWindow.CancelListener() {
-                        @Override
-                        public void cancelClick(View view) {
-                            netErrorPopWindow.dismiss();
-                            if (!(act.contains("HomePageActivity") || act.contains("WordSearchActivity") || act.contains("FilmStar")||act.contains("UserCenterActivity"))) {
-                                if(act.contains("PlayFinishedActivity"))
-                                    setResult(EXIT_PLAY);
-                                finish();
-                            }
-                        }
-                    });
-            showTime=System.currentTimeMillis();
-        } catch (Exception exception) {
-            ExceptionUtils.sendProgramError(e);
-            exception.printStackTrace();
-        }
-
-    }
 
     public void dismissNoNetConnectDialog() {
         if(dialog != null && dialog.isShowing()) {
@@ -388,11 +336,13 @@ public class BaseActivity extends AppCompatActivity {
                 HttpException httpException = (HttpException) e;
                 if (httpException.code() == 401) {
                     showExpireAccessTokenPop();
-                } else {
-                    showNetWorkErrorDialog(e);
+                } else if(httpException.code() == 408){
+                    ToastTip.showToast(BaseActivity.this,"网络连接超时，请重试");
+                }else if(httpException.code() == 504){
+                    ToastTip.showToast(BaseActivity.this,"服务器繁忙，请稍后再试");
                 }
             } else {
-                showNetWorkErrorDialog(e);
+                ToastTip.showToast(BaseActivity.this,"网络连接失败，请重试");
             }
         }
     }

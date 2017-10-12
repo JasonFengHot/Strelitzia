@@ -89,6 +89,7 @@ import tv.ismar.app.network.SkyService;
 import tv.ismar.app.player.CallaPlay;
 import tv.ismar.app.service.TrueTimeService;
 import tv.ismar.app.ui.HeadFragment;
+import tv.ismar.app.ui.ToastTip;
 import tv.ismar.app.update.UpdateService;
 import tv.ismar.app.util.BitmapDecoder;
 import tv.ismar.app.util.DeviceUtils;
@@ -97,6 +98,7 @@ import tv.ismar.app.util.SPUtils;
 import tv.ismar.app.util.SystemFileUtil;
 import tv.ismar.app.widget.ExpireAccessTokenPop;
 import tv.ismar.app.widget.ModuleMessagePopWindow;
+import tv.ismar.homepage.HomeActivity;
 import tv.ismar.homepage.R;
 import tv.ismar.homepage.banner.adapter.BannerHorizontal519Adapter;
 import tv.ismar.homepage.banner.adapter.BannerMovieAdapter;
@@ -790,7 +792,8 @@ public class HomePageActivity extends BaseActivity implements LinearLayoutManage
                             if (!NetworkUtils.isConnected(HomePageActivity.this) && !NetworkUtils.isWifi(HomePageActivity.this)) {
 //                                showNoNetConnectDialog();
                             } else {
-                                showNetWorkErrorDialog(e);
+                                ToastTip.showToast(HomePageActivity.this,"网络连接失败，请重试");
+
                             }
                         }
                     }

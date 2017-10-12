@@ -238,7 +238,7 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
-                        Log.i("result",result);
+                        Log.i("historyRequest",result);
                         historyLists= parseResult(result,HISTORY);
                         getFavoriteByNet();
                     }
@@ -261,7 +261,7 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
-                        Log.i("result",result);
+                        Log.i("historyRequest",result);
                         favoriteLists= parseResult(result,FAVORITE);
                         loadData();
                     }
