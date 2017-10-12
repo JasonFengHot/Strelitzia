@@ -176,7 +176,7 @@ public class RecycleLinearLayout extends LinearLayout {
                 int tag = (int) view.getTag(key);
                 boolean canScroll = tag>>30==1;//1可滑动，0不可滑动
                 int position = (tag<<2)>>2;
-                mHolder.onCreateView(position, keyCode);
+//                mHolder.onCreateView(position, keyCode);
                 Log.i(TAG, "key:"+key+" canScroll:"+canScroll+" position:"+position);
                 if(!canScroll){//限制滑动
                     Log.i(TAG, "canScroll");
