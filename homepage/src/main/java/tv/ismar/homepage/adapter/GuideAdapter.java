@@ -45,10 +45,10 @@ public class GuideAdapter extends BaseRecycleAdapter<GuideAdapter.GuideViewHolde
 //        if(position==0) holder.mMarginLeftView.setVisibility(View.GONE);
         BannerPoster poster = mData.get(position);
         if (!TextUtils.isEmpty(poster.vertical_url)) {
-            if(poster.poster_url!=null&&poster.poster_url.equals("更多")){
+            if(poster.vertical_url.equals("更多")){
                 Picasso.with(mContext).load(R.drawable.banner_vertical_more).into(holder.mPosterIg);
             } else {
-                Picasso.with(mContext).load(poster.vertical_url).into(holder.mPosterIg);
+                Picasso.with(mContext).load(poster.vertical_url).error(R.drawable.list_item_preview_bg).into(holder.mPosterIg);
             }
         } else {
             Picasso.with(mContext).load(R.drawable.list_item_preview_bg).into(holder.mPosterIg);
