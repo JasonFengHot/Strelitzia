@@ -758,6 +758,11 @@
 <dimen name="center_title_size">8.67dp</dimen>
 <dimen name="center_padding">16.67dp</dimen>
 <dimen name="center_padding_offset">100.44dp</dimen>
+<!--更多模版-->
+<dimen name="more_btn_width">106.67dp</dimen>
+<dimen name="more_btn_height">22.22dp</dimen>
+<dimen name="more_btn_margin_top_bottom">22.22dp</dimen>
+<dimen name="more_btn_text_size">10.67dp</dimen>
 <!--首页 end-->
 
 <dimen name="popup_layout_style_title_view_h">22.44dp</dimen>

@@ -102,9 +102,12 @@ public class RecycleLinearLayout extends LinearLayout {
 
     private void scrollToVisiable(View view){
         if(view != null){
+            int height = view.getHeight();
             int[] location = new int[]{0, 0};
             view.getLocationOnScreen(location);
-            smoothScrollBy(0, location[1]-300);
+            smoothScrollBy(0, location[1]-(mScreenHeight-height));
+            Log.i("scrollToVisiable", "height:"+height+"  location[1]:"+location[1]+
+            " location[1]-(mScreenHeight-height):"+(location[1]-(mScreenHeight-height)));
         }
     }
 
@@ -151,17 +154,16 @@ public class RecycleLinearLayout extends LinearLayout {
 
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
+//        int count = event.getRepeatCount();
+//        Log.i("RepeatCount", "RepeatCount:"+count);
+//        if(count > 0){
+//            return true;
+//        }
         return excuteKeyEvent(event);
     }
 
     private boolean excuteKeyEvent(KeyEvent event){
         int keyCode = event.getKeyCode();
-        //测试删除view是否可以减少内存
-//        if(event.getAction()==KeyEvent.ACTION_UP
-//                && keyCode==KeyEvent.KEYCODE_DPAD_DOWN){
-//            removeViewAt(0);
-//            return true;
-//        }
         if(event.getAction() == KeyEvent.ACTION_DOWN){
             mLastView = getFocusedChild();
         }

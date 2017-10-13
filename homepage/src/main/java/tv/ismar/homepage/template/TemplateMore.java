@@ -3,6 +3,7 @@ package tv.ismar.homepage.template;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 
 import tv.ismar.app.core.PageIntent;
 import tv.ismar.homepage.R;
@@ -15,7 +16,7 @@ import tv.ismar.homepage.fragment.ChannelFragment;
  */
 
 public class TemplateMore extends Template implements View.OnClickListener{
-    private View mMoreLayout;
+    private Button mButton;
     private String mChannel;//频道
     private String mTitle;//标题
     private int mStyle;//竖版或横版
@@ -26,13 +27,13 @@ public class TemplateMore extends Template implements View.OnClickListener{
 
     @Override
     public void getView(View view) {
-        mMoreLayout = view.findViewById(R.id.more_ismartv_linear_layout);
+        mButton = (Button) view.findViewById(R.id.get_more_btn);
     }
 
     @Override
     protected void initListener(View view) {
         super.initListener(view);
-        mMoreLayout.setOnClickListener(this);
+        mButton.setOnClickListener(this);
     }
 
     @Override
