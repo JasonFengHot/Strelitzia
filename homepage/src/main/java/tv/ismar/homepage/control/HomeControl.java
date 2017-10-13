@@ -3,7 +3,9 @@ package tv.ismar.homepage.control;
 import android.content.Context;
 import android.content.Intent;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
@@ -50,10 +52,12 @@ public class HomeControl extends BaseControl{
 
     /*获取当前时间*/
     public String getNowTime(){
-        Date now = TrueTime.now();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm");
-        dateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Shanghai"));
-        return dateFormat.format(now);
+        DateFormat format=new SimpleDateFormat("HH:mm");
+        format.setTimeZone(TimeZone.getTimeZone("Asia/Shanghai"));
+        long time= TrueTime.now().getTime();
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(time);
+        return format.format(calendar.getTime());
     }
 
     /*同步服务器时间*/

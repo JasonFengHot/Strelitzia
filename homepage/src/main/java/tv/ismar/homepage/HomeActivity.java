@@ -91,6 +91,12 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         initData();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mTimeTv.setText(mHomeControl.getNowTime());
+    }
+
     /*初始化一些系统参数*/
     private void systemInit(){
         try {
@@ -143,18 +149,9 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         filter.addAction(Intent.ACTION_TIME_TICK);
         mTimeTickBroadcast = new TimeTickBroadcast();
         registerReceiver(mTimeTickBroadcast, filter);
-        mTimeTv.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent=new Intent();
-                intent.setAction("tv.ismar.daisy.listtest");
-                startActivity(intent);
-            }
-        });
     }
 
     private void initData(){
-        mTimeTv.setText(mHomeControl.getNowTime());
         mFetchDataControl.fetchChannels();
         ChannelFragment channelFragment = new ChannelFragment();
         channelFragment.setChannel("首页", HOME_PAGE_CHANNEL_TAG, "首页", 0);
