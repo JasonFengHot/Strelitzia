@@ -328,7 +328,23 @@
                         android:layout_below="@id/detail_des_container3"
                         android:layout_marginTop="@dimen/entertainment_detail_button_mt"
                         android:orientation="horizontal">
+
                         <TextView
+                            android:visibility="@{tasks.subscribeTextVisibility}"
+                            android:text="@{tasks.subscribeText}"
+                            android:onClick="@{()->actionHandler.handleSubscribe()}"
+                            android:id="@+id/subscribe_status_btn"
+                            android:layout_width="@dimen/subscribe_status_btn_w"
+                            android:layout_height="@dimen/subscribe_status_btn_h"
+                            android:gravity="center"
+                            android:background="@drawable/selector_item_subscribe_btn"
+                            android:paddingLeft="@dimen/entertainment_detail_button_padding_left"
+                            android:textColor="@color/module_color_white"
+                            android:textSize="@dimen/text_size_32sp"
+                            />
+
+                        <TextView
+                            android:layout_marginLeft="@dimen/entertainment_detail_button_ml"
                             android:id="@+id/detail_btn_play"
                             android:layout_width="@{tasks.playTextWidthIsLong ? @dimen/entertainment_detail_button3_w : @dimen/entertainment_detail_play_short_w, default=wrap_content}"
                             android:layout_height="@dimen/entertainment_detail_button_h"
@@ -356,6 +372,7 @@
                             android:onClick="@{() -> actionHandler.handleBookmark()}"
                             android:paddingLeft="@dimen/entertainment_detail_button_padding_left"
                             android:text="@{tasks.bookmarkText}"
+                            android:visibility="@{tasks.bookmarkVisibility}"
                             android:textColor="@color/module_color_white"
                             android:textSize="@dimen/h1_size"/>
 

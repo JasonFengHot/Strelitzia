@@ -747,11 +747,10 @@ public interface SkyService {
             @Query("play_scale") int play_scale
     );
 
-    @FormUrlEncoded
-    @POST("accounts/item/subscribe/")
+    @GET("accounts/item/subscribe/")
     Observable<ResponseBody> accountsItemSubscribe(
-            @Field("item_id") int itemId,
-            @Field("content_model") String contentModel
+            @Query("item_id") int itemId,
+            @Query("content_model") String contentModel
     );
 
     @GET("accounts/item/subscribe/exists/")

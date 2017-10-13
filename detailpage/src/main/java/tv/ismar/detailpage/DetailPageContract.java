@@ -2,6 +2,7 @@ package tv.ismar.detailpage;
 
 import android.app.Activity;
 
+import okhttp3.ResponseBody;
 import tv.ismar.app.BasePresenter;
 import tv.ismar.app.BaseView;
 import tv.ismar.app.network.entity.ItemEntity;
@@ -20,9 +21,13 @@ public interface DetailPageContract {
 
         void notifyBookmark(boolean mark, boolean isSuccess);
 
+        void notifySubscribeStatus(boolean isSubscribed);
+
         Activity getActivity();
 
         void onError();
+
+        void showSubscribeDialog(ResponseBody responseBody);
     }
 
 
@@ -46,5 +51,9 @@ public interface DetailPageContract {
         void handleMoreRelate();
 
         void handleEpisode();
+
+        void handleSubscribe();
+
+//        void fetchSubscribeStatus(int pk);
     }
 }

@@ -306,6 +306,21 @@
                             >
 
                             <Button
+                                android:onClick="@{()->actionHandler.handleSubscribe()}"
+                                android:visibility="@{tasks.subscribeTextVisibility}"
+                                android:text="@{tasks.subscribeText}"
+                                android:id="@+id/subscribe_status_btn"
+                                android:layout_width="@dimen/subscribe_status_btn_w"
+                                android:layout_height="@dimen/subscribe_status_btn_h"
+                                android:background="@drawable/selector_item_subscribe_btn"
+                                android:gravity="center"
+                                android:paddingLeft="@dimen/movie_detail_button_padding_left"
+                                android:textColor="@color/module_color_white"
+                                android:textSize="@dimen/text_size_32sp"
+                                />
+
+                            <Button
+                                android:layout_marginLeft="@dimen/movie_detail_button_space"
                                 android:id="@+id/detail_btn_play"
                                 android:layout_width="@dimen/movie_detail_button_w"
                                 android:layout_height="@dimen/movie_detail_button_h"
@@ -315,7 +330,8 @@
                                 android:paddingLeft="@dimen/movie_detail_button_padding_left"
                                 android:text="@{tasks.playText}"
                                 android:textColor="@color/module_color_white"
-                                android:textSize="@dimen/text_size_32sp"/>
+                                android:textSize="@dimen/text_size_32sp"
+                                />
 
                             <Button
                                 android:id="@+id/detail_btn_buy"
@@ -332,6 +348,7 @@
                                 android:visibility="@{tasks.purchaseVisibility}"/>
 
                             <Button
+                                android:visibility="@{tasks.bookmarkVisibility}"
                                 android:id="@+id/detail_btn_collect"
                                 android:layout_width="@dimen/movie_detail_button_w"
                                 android:layout_height="@dimen/movie_detail_button_h"

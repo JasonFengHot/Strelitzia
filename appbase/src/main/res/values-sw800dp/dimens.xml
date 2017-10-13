@@ -687,7 +687,7 @@
 <dimen name="guide_recycle_item_rb_icon_padding_right">2.96dp</dimen>
 <dimen name="guide_recycle_item_rb_margin_bottom">5.93dp</dimen>
 
-<!--电视剧尺�?-->
+<!--电视剧尺寸-->
 <dimen name="tv_player_recycleview_margin_left">44.44dp</dimen>
 <dimen name="tv_play_recycleview_item_padding">29.63dp</dimen>
 <dimen name="tv_play_item_margin_top">8.15dp</dimen>
@@ -777,7 +777,7 @@
 <dimen name="msg_text_item_text_ts">26.67dp</dimen>
 <dimen name="msg_text_item_text_mb">14.81dp</dimen>
 
-<!--升级提示�?-->
+<!--升级提示框-->
 <dimen name="popup_update_w">791.85dp</dimen>
 <dimen name="popup_update_h">605.93dp</dimen>
 <dimen name="popup_update_mt">74.07dp</dimen>
@@ -792,7 +792,7 @@
 <dimen name="popup_update_btn_h">54.07dp</dimen>
 <dimen name="popup_update_btn_ml">60.00dp</dimen>
 
-<!--普�?�提示框-->
+<!--普通提示框-->
 <dimen name="popup_tip_w">791.85dp</dimen>
 <dimen name="popup_tip_h">451.11dp</dimen>
 <dimen name="popup_tip_ml">314.81dp</dimen>
@@ -807,7 +807,7 @@
 <dimen name="popup_tip_btn_ml">60.00dp</dimen>
 <dimen name="popup_tip_btn_mt">63.70dp</dimen>
 
-<!--吐司提示�?-->
+<!--吐司提示框-->
 <dimen name="toast_content_h">55.56dp</dimen>
 <dimen name="toast_content_w">719.26dp</dimen>
 <dimen name="toast_content_mt">682.96dp</dimen>

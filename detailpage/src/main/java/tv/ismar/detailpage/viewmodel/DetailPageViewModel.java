@@ -106,6 +106,8 @@ public class DetailPageViewModel extends BaseObservable {
         notifyPropertyChanged(BR.bookmarkText);
         notifyPropertyChanged(BR.visibility);
         notifyPropertyChanged(BR.enabled);
+        notifyPropertyChanged(BR.bookmarkVisibility);
+
         if (historyManager == null) {
             historyManager = VodApplication.getModuleAppContext().getModuleHistoryManager();
         }
@@ -287,7 +289,15 @@ public class DetailPageViewModel extends BaseObservable {
 
     @Bindable
     public int getPurchaseVisibility() {
-        return mItemEntity.getExpense() != null && mRemandDay <= 0 ? View.VISIBLE : View.GONE;
+        if (mItemEntity.is_order()){
+            if (mItemEntity.getLiveVideo()){
+                return mItemEntity.getExpense() != null && mRemandDay <= 0 ? View.VISIBLE : View.GONE;
+            }else {
+                return View.GONE;
+            }
+        }else {
+            return mItemEntity.getExpense() != null && mRemandDay <= 0 ? View.VISIBLE : View.GONE;
+        }
     }
 
     @Bindable
@@ -441,7 +451,6 @@ public class DetailPageViewModel extends BaseObservable {
 
     @Bindable
     public int getEpisodesVisibility() {
-
         if (!TextUtils.isEmpty(getEpisodes())) {
             if (mItemEntity.getExpense() != null) {
                 if (mRemandDay > 0) {
@@ -454,6 +463,25 @@ public class DetailPageViewModel extends BaseObservable {
             }
 
         } else {
+            return View.GONE;
+        }
+    }
+
+    //取消预约判断，由微信端实现
+    @Bindable
+    public String getSubscribeText(){
+//        if (mPresenter.isSubscribed()){
+//            return "已预约";
+//        }else {
+            return "预约";
+//        }
+    }
+
+    @Bindable
+    public int getSubscribeTextVisibility(){
+        if (mItemEntity.is_order()){
+            return View.VISIBLE;
+        }else {
             return View.GONE;
         }
     }
@@ -481,11 +509,13 @@ public class DetailPageViewModel extends BaseObservable {
                         }
                     }
                     if (subItems == null || subItems.length == 0) {
-                        return mItemEntity.getExpense() != null && mRemandDay <= 0 ? mContext.getString(R.string.video_preview) :
+                        return mItemEntity.getExpense() != null && mRemandDay <= 0 ? (mItemEntity.is_order() ?mContext.getString(R.string.detail_prevue):
+                                mContext.getString(R.string.video_preview) ):
                                 mContext.getString(R.string.video_play);
                     } else {
                         return mItemEntity.getExpense() != null && mRemandDay <= 0 ?
-                                mContext.getString(R.string.video_preview)
+                                (mItemEntity.is_order() ?mContext.getString(R.string.detail_prevue):
+                                        mContext.getString(R.string.video_preview) )
                                         + " " + subitem_title
 //                                    subItems[subItems.length - 1].getSubtitle()
                                 :
@@ -494,7 +524,8 @@ public class DetailPageViewModel extends BaseObservable {
                     }
 
                 default:
-                    return mItemEntity.getExpense() != null && mRemandDay <= 0 ? mContext.getString(R.string.video_preview) :
+                    return mItemEntity.getExpense() != null && mRemandDay <= 0 ? (mItemEntity.is_order() ?mContext.getString(R.string.detail_prevue):
+                            mContext.getString(R.string.video_preview) ) :
                             mContext.getString(R.string.video_play);
             }
         }catch (Exception e){
@@ -522,7 +553,7 @@ public class DetailPageViewModel extends BaseObservable {
     @Bindable
     public int getVisibility() {
 
-                if(getPlayText().equals(mContext.getString(R.string.video_preview))){
+                if(getPlayText().equals(mContext.getString(R.string.video_preview)) ||getPlayText().equals(mContext.getString(R.string.detail_prevue))){
                     if(mItemEntity.getPreview()==null){
                         return View.GONE;
                     }else{
@@ -617,6 +648,11 @@ public class DetailPageViewModel extends BaseObservable {
         }
     }
 
+    public void notifySubscibeStatus(){
+        notifyPropertyChanged(BR.subscribeText);
+        notifyPropertyChanged(BR.subscribeTextVisibility);
+    }
+
     @Bindable
     public int getItemLayoutVisibility() {
         return itemIsload ? View.VISIBLE : View.INVISIBLE;
@@ -662,5 +698,13 @@ public class DetailPageViewModel extends BaseObservable {
         }
     }
 
+    @Bindable
+    public int getBookmarkVisibility(){
+        if (mItemEntity.is_order()){
+            return View.GONE;
+        }else {
+            return View.VISIBLE;
+        }
+    }
 
 }

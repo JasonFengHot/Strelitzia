@@ -3,6 +3,9 @@ package tv.ismar.detailpage.view;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.databinding.DataBindingUtil;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -15,6 +18,10 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,6 +37,7 @@ import java.util.Locale;
 import java.util.TimeZone;
 
 import cn.ismartv.truetime.TrueTime;
+import okhttp3.ResponseBody;
 import tv.ismar.account.IsmartvActivator;
 import tv.ismar.app.AppConstant;
 import tv.ismar.app.BaseActivity;
@@ -109,12 +117,15 @@ public class DetailPageFragment extends Fragment implements DetailPageContract.V
     private View exposideBtnView;
     private View favoriteBtnView;
     private View moreBtnView;
+    private View subscribeBtnView;
+
 
     private DetailPageStatistics mPageStatistics;
     private String isLogin = "no";
     private String to="";
     private int position;
     private String type="item";
+    private PopupWindow popupWindow;
 
     public DetailPageFragment() {
         // Required empty public constructor
@@ -124,15 +135,20 @@ public class DetailPageFragment extends Fragment implements DetailPageContract.V
         @Override
         public boolean handleMessage(Message msg) {
             Log.e("handler","handler");
-            if (videoIsStart()&&palyBtnView.getVisibility()==View.VISIBLE) {
-                palyBtnView.requestFocus();
-                palyBtnView.requestFocusFromTouch();
-            } else if(purchaseBtnView.getVisibility()== View.VISIBLE){
-                purchaseBtnView.requestFocus();
-                purchaseBtnView.requestFocusFromTouch();
-            }else{
-                favoriteBtnView.requestFocus();
-                favoriteBtnView.requestFocusFromTouch();
+            if (mItemEntity.is_order()){
+                subscribeBtnView.requestFocus();
+                subscribeBtnView.requestFocusFromTouch();
+            }else {
+                if (videoIsStart()&&palyBtnView.getVisibility()==View.VISIBLE) {
+                    palyBtnView.requestFocus();
+                    palyBtnView.requestFocusFromTouch();
+                } else if(purchaseBtnView.getVisibility()== View.VISIBLE){
+                    purchaseBtnView.requestFocus();
+                    purchaseBtnView.requestFocusFromTouch();
+                }else{
+                    favoriteBtnView.requestFocus();
+                    favoriteBtnView.requestFocusFromTouch();
+                }
             }
             return false;
         }
@@ -223,6 +239,7 @@ public class DetailPageFragment extends Fragment implements DetailPageContract.V
                 loadItem(mItemEntity);
             }
         }).start();
+//        mPresenter.fetchSubscribeStatus(mItemEntity.getPk());
         mPageStatistics.videoDetailIn(mItemEntity, fromPage);
 
         mModel.notifyBookmark(true);
@@ -425,6 +442,11 @@ public class DetailPageFragment extends Fragment implements DetailPageContract.V
     }
 
     @Override
+    public void notifySubscribeStatus(boolean isSubscribed) {
+        mModel.notifySubscibeStatus();
+    }
+
+    @Override
     public void onError() {
         try {
             if (((DetailPageActivity) getActivity()).mLoadingDialog != null && ((DetailPageActivity) getActivity()).mLoadingDialog.isShowing()) {
@@ -436,6 +458,7 @@ public class DetailPageFragment extends Fragment implements DetailPageContract.V
         }
 
     }
+
 
     @Override
     public void setPresenter(DetailPageContract.Presenter presenter) {
@@ -559,6 +582,7 @@ public class DetailPageFragment extends Fragment implements DetailPageContract.V
             favoriteBtnView = mEntertainmentBinding.detailBtnCollect;
             moreBtnView = mEntertainmentBinding.detailRelativeButton;
             palyBtnView.setNextFocusDownId(R.id.detail_relative_button);
+            subscribeBtnView = mEntertainmentBinding.subscribeStatusBtn;
         } else if ("movie".equals(content_model)) {
             relViews = 6;
             mMovieBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_detailpage_movie_sharp, container, false);
@@ -573,6 +597,7 @@ public class DetailPageFragment extends Fragment implements DetailPageContract.V
 //            exposideBtnView = mMovieBinding.detailBtnDrama;
             favoriteBtnView = mMovieBinding.detailBtnCollect;
             moreBtnView = mMovieBinding.detailRelativeButton;
+            subscribeBtnView = mMovieBinding.subscribeStatusBtn;
         } else {
             relViews = 4;
             relFocusTextViews = new TextView[relViews];
@@ -588,8 +613,10 @@ public class DetailPageFragment extends Fragment implements DetailPageContract.V
             exposideBtnView = mNormalBinding.detailBtnDrama;
             favoriteBtnView = mNormalBinding.detailBtnCollect;
             moreBtnView = mNormalBinding.detailRelativeButton;
+            subscribeBtnView = mNormalBinding.subscribeStatusBtn;
         }
 
+        subscribeBtnView.setOnHoverListener(this);
         palyBtnView.setOnHoverListener(this);
         palyBtnView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
@@ -733,5 +760,25 @@ public class DetailPageFragment extends Fragment implements DetailPageContract.V
             }
         }.start();
 
+    }
+
+    @Override
+    public void showSubscribeDialog(ResponseBody responseBody) {
+        View contentView = LayoutInflater.from(getActivity()).inflate(R.layout.detail_subscribe_dialog, null);
+        popupWindow = new PopupWindow(contentView, LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT, true);
+        popupWindow.setContentView(contentView);
+        popupWindow.setBackgroundDrawable(getResources().getDrawable(R.drawable.transparent));
+        popupWindow.showAtLocation(getView(), Gravity.CENTER, 0, 0);
+        final ImageView code = (ImageView) contentView.findViewById(R.id.code_image);
+        Bitmap bitmap = BitmapFactory.decodeStream(responseBody.byteStream());
+        BitmapDrawable bd = new BitmapDrawable(bitmap);
+        code.setBackground(bd);
+        Button btn = (Button) contentView.findViewById(R.id.subscribe_back);
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                popupWindow.dismiss();
+            }
+        });
     }
 }

@@ -311,6 +311,22 @@
                     android:orientation="horizontal">
 
                     <Button
+                        android:onClick="@{()->actionHandler.handleSubscribe()}"
+                        android:visibility="@{tasks.subscribeTextVisibility}"
+                        android:text="@{tasks.subscribeText}"
+                        android:layout_marginRight="@dimen/normal_detail_button_space"
+                        android:id="@+id/subscribe_status_btn"
+                        android:layout_width="@dimen/subscribe_status_btn_w"
+                        android:layout_height="@dimen/subscribe_status_btn_h"
+                        android:background="@drawable/selector_item_subscribe_btn"
+                        android:gravity="center"
+                        android:paddingLeft="@dimen/normal_detail_button_padding_left"
+                        android:textColor="@color/module_color_white"
+                        android:textSize="@dimen/text_size_32sp"
+                        />
+
+                    <Button
+
                         android:id="@+id/detail_btn_play"
                         android:layout_width="@dimen/normal_detail_button1_w"
                         android:layout_height="@dimen/normal_detail_button_h"
@@ -346,6 +362,7 @@
                         android:visibility="@{tasks.purchaseVisibility}"/>
 
                     <Button
+                        android:visibility="@{tasks.bookmarkVisibility}"
                         android:id="@+id/detail_btn_collect"
                         android:layout_width="@dimen/normal_detail_button2_w"
                         android:layout_height="@dimen/normal_detail_button_h"
