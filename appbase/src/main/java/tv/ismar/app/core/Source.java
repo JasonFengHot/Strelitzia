@@ -9,6 +9,7 @@ public enum Source {
 
     LAUNCHER("launcher"),//launcher进入
     LIST("list"),//列表页进入
+    FILTER("filter"),//筛选进入
     HISTORY("history"),//历史记录
     FAVORITE("favorite"),//我的收藏
     SEARCH("search"),//文字搜索

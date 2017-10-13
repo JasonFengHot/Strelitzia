@@ -129,6 +129,7 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
     private View full_view;
     private SpaceItemDecoration vSpaceItemDecoration;
     private SpaceItemDecoration hSpaceItemDecoration;
+    private int checkedTab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -154,6 +155,8 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
         //日志相关
         AppConstant.purchase_entrance_page = "list";
         AppConstant.purchase_page = "list";
+        BaseActivity.baseChannel="";
+        BaseActivity.baseSection="";
 
         HashMap<String, Object> properties = new HashMap<>();
         properties.put(EventProperty.CATEGORY, channel);
@@ -818,16 +821,17 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
                 @Override
                 public void onItemClick(View view, int position) {
                     baseSection="";
+                    baseChannel=channel;
                     PageIntent intent = new PageIntent();
                     Item item=itemList.objects.get(position);
                     if(item.content_model!=null&&item.content_model.contains("gather")){
-                        intent.toSubject(FilterListActivity.this,item.content_model,item.pk,item.title,Source.RETRIEVAL.getValue(),baseChannel);
+                        intent.toSubject(FilterListActivity.this,item.content_model,item.pk,item.title,Source.FILTER.getValue(),baseChannel);
                     }else if(item.model_name!=null&&item.model_name.equals("package")){
-                        intent.toPackageDetail(FilterListActivity.this,Source.RETRIEVAL.getValue(),item.pk);
+                        intent.toPackageDetail(FilterListActivity.this,Source.FILTER.getValue(),item.pk);
                     }else if(item.is_complex) {
-                        intent.toDetailPage(FilterListActivity.this,Source.RETRIEVAL.getValue(),item.pk);
+                        intent.toDetailPage(FilterListActivity.this,Source.FILTER.getValue(),item.pk);
                     }else{
-                        intent.toPlayPage(FilterListActivity.this,item.pk,0, Source.RETRIEVAL);
+                        intent.toPlayPage(FilterListActivity.this,item.pk,0, Source.FILTER);
                     }
                 }
             });
@@ -1100,6 +1104,7 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     if(isChecked){
+                        checkedTab = finalI;
                         if(filterPopup!=null&&filterPopup.isShowing())
                             filterPopup.dismiss();
                         filter_checked_conditiion.setVisibility(View.INVISIBLE);
@@ -1243,17 +1248,18 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
             listPosterAdapter.setItemClickListener(new OnItemClickListener() {
                 @Override
                 public void onItemClick(View view, int position) {
-                    baseSection="";
+                    baseSection=sectionList.get(checkedTab).slug;
+                    baseChannel=channel;
                     PageIntent intent = new PageIntent();
                     ListSectionEntity.ObjectsBean item=listSectionEntity.getObjects().get(position);
                     if(item.getContent_model()!=null&&item.getContent_model().contains("gather")){
-                        intent.toSubject(FilterListActivity.this,item.getContent_model(),item.getPk(),item.getTitle(),Source.RETRIEVAL.getValue(),baseChannel);
+                        intent.toSubject(FilterListActivity.this,item.getContent_model(),item.getPk(),item.getTitle(),Source.LIST.getValue(),baseChannel);
                     }else if(item.getModel_name()!=null&&item.getModel_name().equals("package")){
-                        intent.toPackageDetail(FilterListActivity.this,Source.RETRIEVAL.getValue(),item.getPk());
+                        intent.toPackageDetail(FilterListActivity.this,Source.LIST.getValue(),item.getPk());
                     }else if("item".equals(item.getModel_name())) {
-                        intent.toDetailPage(FilterListActivity.this,Source.RETRIEVAL.getValue(),item.getPk());
+                        intent.toDetailPage(FilterListActivity.this,Source.LIST.getValue(),item.getPk());
                     }else{
-                        intent.toPlayPage(FilterListActivity.this,item.getPk(),0, Source.RETRIEVAL);
+                        intent.toPlayPage(FilterListActivity.this,item.getPk(),0, Source.LIST);
                     }
                 }
             });
