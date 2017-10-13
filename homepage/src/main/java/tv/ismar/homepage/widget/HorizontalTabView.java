@@ -163,7 +163,7 @@ public class HorizontalTabView extends HorizontalScrollView
         item.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
         item.setTextColor(defaultTextColor);
         item.setFocusable(true);
-        item.setFocusableInTouchMode(true);
+//        item.setFocusableInTouchMode(true);
         item.setOnClickListener(this);
         item.setOnFocusChangeListener(this);
         item.setOnKeyListener(this);
