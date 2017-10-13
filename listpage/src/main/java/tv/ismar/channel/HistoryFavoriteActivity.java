@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -62,6 +63,7 @@ import tv.ismar.listpage.R;
 import tv.ismar.searchpage.utils.JasmineUtil;
 import tv.ismar.view.IsmartvLinearLayout;
 
+import static android.support.v7.widget.RecyclerView.SCROLL_STATE_IDLE;
 import static tv.ismar.listpage.R.id.arrow_line_2;
 import static tv.ismar.listpage.R.id.vip_image;
 
@@ -96,6 +98,7 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
     private TextView favorite_title,history_title;
     private ImageView first_line_image,second_line_image;
     private ImageView edit_shadow;
+    private Button history_left_arrow,history_right_arrow,favorite_left_arrow,favorite_right_arrow;
     private HashMap<String, Object> mDataCollectionProperties;
     private Boolean isEdit=false;
     private boolean isMore=false;
@@ -107,6 +110,11 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
         initView();
     }
     private void initView(){
+        history_left_arrow= (Button) findViewById(R.id.history_left_arrow);
+        history_right_arrow= (Button) findViewById(R.id.history_right_arrow);
+        favorite_left_arrow= (Button) findViewById(R.id.favorite_left_arrow);
+        favorite_right_arrow= (Button) findViewById(R.id.favorite_right_arrow);
+
         historyRecycler= (RecyclerViewTV) findViewById(R.id.history_list);
         favoriteRecycler= (RecyclerViewTV) findViewById(R.id.favorite_list);
         favorite_layout= (LinearLayout) findViewById(R.id.favorite_layout);
@@ -146,6 +154,65 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
             @Override
             public void onClick(View v) {
                 delet_history.requestFocusFromTouch();
+            }
+        });
+        history_right_arrow.setOnHoverListener(this);
+        history_left_arrow.setOnHoverListener(this);
+        favorite_right_arrow.setOnHoverListener(this);
+        favorite_left_arrow.setOnHoverListener(this);
+        historyRecycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                if(newState==SCROLL_STATE_IDLE){
+                    if(historyLayoutManager!=null){
+                        int pos=historyLayoutManager.findFirstCompletelyVisibleItemPosition();
+                        int endPos=historyLayoutManager.findLastCompletelyVisibleItemPosition();
+                        if(pos!=0){
+                            history_left_arrow.setVisibility(View.VISIBLE);
+                        }else{
+                            history_left_arrow.setVisibility(View.GONE);
+                        }
+                        if(historyLists.size()>0) {
+                            if (endPos != historyLists.size() - 1) {
+                                history_right_arrow.setVisibility(View.VISIBLE);
+                            } else {
+                                history_right_arrow.setVisibility(View.GONE);
+                            }
+                        }else{
+                            if (endPos != favoriteLists.size() - 1) {
+                                history_right_arrow.setVisibility(View.VISIBLE);
+                            } else {
+                                history_right_arrow.setVisibility(View.GONE);
+                            }
+                        }
+
+                    }
+
+                }
+                super.onScrollStateChanged(recyclerView, newState);
+            }
+        });
+        favoriteRecycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                if(newState==SCROLL_STATE_IDLE){
+                    if(favoriteManager!=null){
+                        int pos=favoriteManager.findFirstCompletelyVisibleItemPosition();
+                        int endPos=favoriteManager.findLastCompletelyVisibleItemPosition();
+                        if(pos!=0){
+                            favorite_left_arrow.setVisibility(View.VISIBLE);
+                        }else{
+                            favorite_left_arrow.setVisibility(View.GONE);
+                        }
+                        if (endPos != historyLists.size() - 1) {
+                            favorite_right_arrow.setVisibility(View.VISIBLE);
+                        } else {
+                            favorite_right_arrow.setVisibility(View.GONE);
+                        }
+                    }
+
+                }
+                super.onScrollStateChanged(recyclerView, newState);
             }
         });
 
@@ -345,7 +412,6 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
                 historyAdapter=new HistoryListAdapter(HistoryFavoriteActivity.this,historyLists,"history");
                 setHistoryListen();
                 historyRecycler.setAdapter(historyAdapter);
-
 
             }else{
                 RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,getResources().getDimensionPixelSize(R.dimen.history_473));
@@ -644,6 +710,8 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
     public boolean onHover(View v, MotionEvent event) {
         switch (event.getAction()){
             case MotionEvent.ACTION_HOVER_ENTER:
+                v.setFocusable(true);
+                v.setFocusableInTouchMode(true);
                 v.requestFocusFromTouch();
                 break;
         }
@@ -668,6 +736,10 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
     public void onItemKeyListener(View v, int keyCode, KeyEvent event) {
         historyRecycler.setHovered(false);
         favoriteRecycler.setHovered(false);
+        history_left_arrow.setFocusable(false);
+        history_right_arrow.setFocusable(false);
+        favorite_right_arrow.setFocusable(false);
+        favorite_left_arrow.setFocusable(false);
     }
 
 

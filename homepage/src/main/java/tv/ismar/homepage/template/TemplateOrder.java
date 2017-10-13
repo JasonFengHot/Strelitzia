@@ -323,7 +323,7 @@ public class TemplateOrder extends Template implements BaseControl.ControlCallBa
                     mLastFocusView = view;
                     mHoverView.setFocusable(true);
                     subscribeBanner.setHovered(true);
-
+                    mTitleCountTv.setText(String.format(mContext.getString(R.string.home_item_title_count), (position + 1) + "", subscribeAdapter.getTatalItemCount() + ""));
                 } else {
                     subscribeBanner.setHovered(false);
                     mHoverView.requestFocus();

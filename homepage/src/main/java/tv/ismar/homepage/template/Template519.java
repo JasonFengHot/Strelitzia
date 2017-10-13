@@ -194,6 +194,7 @@ public class Template519 extends Template implements View.OnClickListener, View.
 //                Log.d(TAG, view + " : " + hovered);
                 if (hovered){
                     horizontal519Banner.setHovered(true);
+                    mTitleCountTv.setText(String.format(mContext.getString(R.string.home_item_title_count), (1 + position) + "", mHorizontal519Adapter.getTatalItemCount() + ""));
                 }else {
                     horizontal519Banner.setHovered(false);
                     HomeActivity.mHoverView.requestFocus();
