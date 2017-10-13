@@ -150,7 +150,11 @@ public class FocusGridLayoutManager extends GridLayoutManager {
                         lastColumnCount=getSpanCount();
                     }
                     int currentLine=fromPos-specialPos.get(nextSpecialPos)+lastColumnCount+1;
-                    nextView = findViewByPosition(i+currentLine);
+                    if(i+currentLine>=specialPos.get(nextSpecialPos+1)){
+                        nextView = findViewByPosition(specialPos.get(nextSpecialPos+1)-1);
+                    }else{
+                        nextView = findViewByPosition(i+currentLine);
+                    }
                     break;
                 }
             }
