@@ -152,27 +152,42 @@ public class RecycleLinearLayout extends LinearLayout {
     private View mLastView;//记录焦点
     private static final int mScrollHeight = 10000;
 
+    private long mLastTime = 0;
+    private long mCurrentTime = 0;
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
-//        int count = event.getRepeatCount();
-//        Log.i("RepeatCount", "RepeatCount:"+count);
-//        if(count > 0){
-//            return true;
-//        }
-        return excuteKeyEvent(event);
+        int count = event.getRepeatCount();
+        boolean longPress = false;
+        Log.i("RepeatCount", "RepeatCount:"+count);
+        if(count == 0){
+            mLastTime = System.currentTimeMillis();
+            mCurrentTime = mLastTime;
+        }
+        if(count > 0){
+            longPress = true;
+            mCurrentTime = System.currentTimeMillis();
+        }
+        if(longPress && mCurrentTime-mLastTime<500){
+            return true;
+        } else {
+            mLastTime = mCurrentTime;
+        }
+        return excuteKeyEvent(event, longPress);
     }
 
-    private boolean excuteKeyEvent(KeyEvent event){
+    private boolean excuteKeyEvent(KeyEvent event, boolean longPress){
         int keyCode = event.getKeyCode();
         if(event.getAction() == KeyEvent.ACTION_DOWN){
             mLastView = getFocusedChild();
         }
         Log.i(TAG, "action:"+event.getAction()+" keyCode:"+keyCode);
-        if(event.getAction() == KeyEvent.ACTION_UP){
+        if(longPress || event.getAction() == KeyEvent.ACTION_UP){
             if(keyCode==KeyEvent.KEYCODE_DPAD_DOWN || keyCode==KeyEvent.KEYCODE_DPAD_UP
                     || keyCode==KeyEvent.KEYCODE_DPAD_LEFT || keyCode==KeyEvent.KEYCODE_DPAD_RIGHT){
                 View view = getFocusedChild();
-                if(view == mLastView) return super.dispatchKeyEvent(event);//banner抖动问题
+                View view1 = findFocus();
+                Log.i(TAG, "debug1"+" view:"+view+" view1:"+view1);
+                if(view==mLastView && !longPress) return super.dispatchKeyEvent(event);//banner抖动问题
                 int key = (int) view.getTag();
                 int tag = (int) view.getTag(key);
                 boolean canScroll = tag>>30==1;//1可滑动，0不可滑动
