@@ -115,7 +115,7 @@ public class TemplateRecommend extends Template implements BaseControl.ControlCa
 
     @Override
     public void onItemClick(View view, int position) {
-        mFetchDataControl.go2Detail(mFetchDataControl.mPoster.get(position));
+//        mFetchDataControl.go2Detail(mFetchDataControl.mPoster.get(position));
     }
 
     @Override

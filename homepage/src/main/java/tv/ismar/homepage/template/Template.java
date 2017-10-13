@@ -37,6 +37,12 @@ public abstract class Template {
         return this;
     }
 
+    public void onPause(){}
+
+    public void onStop(){}
+
+    public void onDestroy(){}
+
     /*设置数量view*/
     public Template setTitleCountView(TextView view) {
         mTitleCountTv = view;
