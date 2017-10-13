@@ -255,6 +255,8 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
                         full_view.requestFocus();
                         mFilterItemList=new ItemList();
                         mFilterItemList.objects=new ArrayList<>();
+                        filter_root_view.setShow_right_up(false);
+                        filter_root_view.setShow_right_down(false);
                         fetchFilterCondition(channel);
                     }else {
                         filter();
@@ -552,32 +554,34 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
 
                     @Override
                     public void onNext(FilterConditions filterConditions) {
-                        content_model = filterConditions.getContent_model();
-                        mFilterConditions = filterConditions;
-                        //填充筛选条件view
-                        if(filterConditions.getAttributes().getGenre()!=null)
-                            fillConditionLayout(filterConditions.getAttributes().getGenre().getLabel(),filterConditions.getAttributes().getGenre().getValues());
-                        if(filterConditions.getAttributes().getArea()!=null)
-                            fillConditionLayout(filterConditions.getAttributes().getArea().getLabel(),filterConditions.getAttributes().getArea().getValues());
-                        if(filterConditions.getAttributes().getAir_date()!=null)
-                            fillConditionLayout(filterConditions.getAttributes().getAir_date().getLabel(),filterConditions.getAttributes().getAir_date().getValues());
-                        if(filterConditions.getAttributes().getAge()!=null)
-                            fillConditionLayout(filterConditions.getAttributes().getAge().getLabel(),filterConditions.getAttributes().getAge().getValues());
-                        if(filterConditions.getAttributes().getFeature()!=null)
-                            fillConditionLayout(filterConditions.getAttributes().getFeature().getLabel(),filterConditions.getAttributes().getFeature().getValues());
-                        fetchFilterResult(filterConditions.getContent_model(),filterConditions.getDefaultX(),1);
-                        //筛选条件popup焦点控制
-                        String conditionsForLog="";
-                        for (int i = 0; i <filter_conditions.getChildCount() ; i++) {
-                            FilterConditionGroupView filter= (FilterConditionGroupView) filter_conditions.getChildAt(i);
-                            if(filter_conditions.getChildAt(i-1)!=null)
-                                filter.setNextUpView(filter_conditions.getChildAt(i-1));
-                            if(filter_conditions.getChildAt(i+1)!=null)
-                                filter.setNextDownView(filter_conditions.getChildAt(i+1));
-                            conditionsForLog+=";";
+                        if (filterConditions != null) {
+                            content_model = filterConditions.getContent_model();
+                            mFilterConditions = filterConditions;
+                            //填充筛选条件view
+                            if (filterConditions.getAttributes().getGenre() != null)
+                                fillConditionLayout(filterConditions.getAttributes().getGenre().getLabel(), filterConditions.getAttributes().getGenre().getValues());
+                            if (filterConditions.getAttributes().getArea() != null)
+                                fillConditionLayout(filterConditions.getAttributes().getArea().getLabel(), filterConditions.getAttributes().getArea().getValues());
+                            if (filterConditions.getAttributes().getAir_date() != null)
+                                fillConditionLayout(filterConditions.getAttributes().getAir_date().getLabel(), filterConditions.getAttributes().getAir_date().getValues());
+                            if (filterConditions.getAttributes().getAge() != null)
+                                fillConditionLayout(filterConditions.getAttributes().getAge().getLabel(), filterConditions.getAttributes().getAge().getValues());
+                            if (filterConditions.getAttributes().getFeature() != null)
+                                fillConditionLayout(filterConditions.getAttributes().getFeature().getLabel(), filterConditions.getAttributes().getFeature().getValues());
+                            fetchFilterResult(filterConditions.getContent_model(), filterConditions.getDefaultX(), 1);
+                            //筛选条件popup焦点控制
+                            String conditionsForLog = "";
+                            for (int i = 0; i < filter_conditions.getChildCount(); i++) {
+                                FilterConditionGroupView filter = (FilterConditionGroupView) filter_conditions.getChildAt(i);
+                                if (filter_conditions.getChildAt(i - 1) != null)
+                                    filter.setNextUpView(filter_conditions.getChildAt(i - 1));
+                                if (filter_conditions.getChildAt(i + 1) != null)
+                                    filter.setNextDownView(filter_conditions.getChildAt(i + 1));
+                                conditionsForLog += ";";
+                            }
+                            AppConstant.purchase_entrance_keyword = conditionsForLog.substring(0, conditionsForLog.lastIndexOf(";"));
+                            showFilterPopup();
                         }
-                        AppConstant.purchase_entrance_keyword = conditionsForLog.substring(0,conditionsForLog.lastIndexOf(";"));
-                        showFilterPopup();
                     }
 
                 });
@@ -613,6 +617,7 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
                     }
                 }
                 filter_tab.setFocusable(true);
+                filter_tab.setFocusableInTouchMode(true);
                 full_view.setVisibility(View.GONE);
             }
         });
@@ -928,6 +933,7 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
             checked.setGravity(Gravity.CENTER);
             checked.setTag("");
             filter_checked_conditiion.addView(checked);
+            if(mFilterConditions!=null)
             condition=mFilterConditions.getDefaultX()+"!";
         }
 
@@ -937,8 +943,10 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
                 condition += filter_checked_conditiion.getChildAt(i).getTag().toString() + "!";
             }
         }
-        AppConstant.purchase_entrance_keyword = conditionForLog.substring(0,conditionForLog.lastIndexOf(";"));
-        fetchFilterResult(content_model,condition.substring(0,condition.lastIndexOf("!")),1);
+        if(!TextUtils.isEmpty(conditionForLog))
+            AppConstant.purchase_entrance_keyword = conditionForLog.substring(0,conditionForLog.lastIndexOf(";"));
+        if(!TextUtils.isEmpty(condition))
+            fetchFilterResult(content_model,condition.substring(0,condition.lastIndexOf("!")),1);
     }
 
     @Override
