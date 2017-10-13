@@ -665,8 +665,6 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
                     public void onNext(List<FilterNoresultPoster> items) {
                         if(items!=null){
                             noResultFetched=true;
-                            filter_noresult.setVisibility(View.VISIBLE);
-                            poster_recyclerview.setVisibility(View.GONE);
                             filter_noresult_first_line = (LinearLayout) filter_noresult.findViewById(R.id.filter_noresult_first_line);
                             filter_noresult_second_line = (LinearLayout) filter_noresult.findViewById(R.id.filter_noresult_second_line);
                             filter_noresult_first_line.removeAllViews();
@@ -798,6 +796,8 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
                                 filter_noresult.setVisibility(View.VISIBLE);
                                 poster_recyclerview.setVisibility(View.GONE);
                             }else{
+                                filter_noresult.setVisibility(View.VISIBLE);
+                                poster_recyclerview.setVisibility(View.GONE);
                                 fetchFilterNoResult();
                             }
                             poster_recyclerview.setVisibility(View.GONE);
