@@ -248,6 +248,7 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if(isChecked) {
+                    current_section_title.setText("");
                     poster_recyclerview.setVisibility(View.VISIBLE);
                     list_poster_recyclerview.setVisibility(View.GONE);
                     if(mFilterItemList==null){
@@ -553,6 +554,12 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
                     }
 
                     @Override
+                    public void onError(Throwable e) {
+                        full_view.setVisibility(View.GONE);
+                        super.onError(e);
+                    }
+
+                    @Override
                     public void onNext(FilterConditions filterConditions) {
                         if (filterConditions != null) {
                             content_model = filterConditions.getContent_model();
@@ -580,6 +587,8 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
                                 conditionsForLog += ";";
                             }
                             AppConstant.purchase_entrance_keyword = conditionsForLog.substring(0, conditionsForLog.lastIndexOf(";"));
+                            full_view.setVisibility(View.VISIBLE);
+                            full_view.requestFocus();
                             showFilterPopup();
                         }
                     }
@@ -616,8 +625,6 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
                         poster_recyclerview.getChildAt(0).requestFocus();
                     }
                 }
-                filter_tab.setFocusable(true);
-                filter_tab.setFocusableInTouchMode(true);
                 full_view.setVisibility(View.GONE);
             }
         });
@@ -634,6 +641,8 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
         no_limit.add("");
         no_limit.add("全部");
         values.add(0,no_limit);
+        values.addAll(values);
+        values.addAll(values);
         final FilterConditionGroupView filterConditionGroupView=new FilterConditionGroupView(this,values,label);
         filterConditionGroupView.filter_condition_radio_group.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
@@ -960,7 +969,6 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
             }
             if(filterPopup!=null&&!filterPopup.isShowing()) {
                 full_view.setVisibility(View.VISIBLE);
-                filter_tab.setFocusable(false);
                 full_view.requestFocus();
                 showFilterPopup();
             }
