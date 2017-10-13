@@ -57,6 +57,11 @@ public class GuideAdapter extends BaseRecycleAdapter<GuideAdapter.GuideViewHolde
         holder.mRbIconTv.setText(new DecimalFormat("0.0").format(poster.rating_average));
         holder.mRbIconTv.setVisibility((poster.rating_average==0) ? View.GONE:View.VISIBLE);
 
+        if(poster.vertical_url.equals("更多")){
+            holder.mTitleTv.setVisibility(View.INVISIBLE);
+        } else {
+            holder.mTitleTv.setVisibility(View.VISIBLE);
+        }
         holder.mTitleTv.setText(poster.title);
         holder.mPosition = position;
     }

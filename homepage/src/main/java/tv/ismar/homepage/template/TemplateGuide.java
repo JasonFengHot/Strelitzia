@@ -85,7 +85,7 @@ public class TemplateGuide extends Template implements BaseControl.ControlCallBa
     public void getView(View view) {
         mHeadView = view.findViewById(R.id.banner_guide_head);
 //        mHeadView.findViewById(R.id.guide_head_ismartv_linearlayout).setFocusable(true);
-        mHeadView.findViewById(R.id.guide_head_ismartv_linearlayout).requestFocus();
+//        mHeadView.findViewById(R.id.guide_head_ismartv_linearlayout).requestFocus();
         mVideoView = (DaisyVideoView) view.findViewById(R.id.guide_daisy_video_view);
         mLoadingIg = (ImageView) view.findViewById(R.id.guide_video_loading_image);
         mVideoTitleTv = (TextView) view.findViewById(R.id.guide_video_title);

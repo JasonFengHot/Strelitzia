@@ -1,33 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:clipChildren="false"
-    android:clipToPadding="false"
-    >
-    <tv.ismar.homepage.banner.IsmartvLinearLayout
-        android:id="@+id/more_ismartv_linear_layout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/double_ld_poster_padding"
-        android:background="#00000000"
-        android:clipChildren="false"
-        android:clipToPadding="false"
-        android:focusable="true"
-        android:focusableInTouchMode="true"
-        android:layout_gravity="center"
-        android:foreground="@drawable/selector_item_banner_subscribe"
-        android:orientation="vertical">
-
+    android:clipToPadding="false">
         <Button
             android:id="@+id/get_more_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="20dp"
+            android:layout_width="@dimen/more_btn_width"
+            android:layout_height="@dimen/more_btn_height"
+            android:gravity="center"
             android:text="更多精彩"
-            android:focusable="false"
+            android:background="@drawable/banner_more_selector"
+            android:layout_marginTop="@dimen/more_btn_margin_top_bottom"
+            android:layout_marginBottom="@dimen/more_btn_margin_top_bottom"
+            android:layout_centerHorizontal="true"
             android:textColor="#ffffff"
             android:textSize="30sp" />
-
-    </tv.ismar.homepage.banner.IsmartvLinearLayout>
-</FrameLayout>
+</RelativeLayout>
