@@ -46,7 +46,7 @@ public class TvPlayAdapter extends BaseRecycleAdapter<TvPlayAdapter.TvPlayerView
         BannerPoster poster = mData.get(position);
         if (!TextUtils.isEmpty(poster.poster_url)) {
              if(poster.poster_url.equals("更多")){
-                 Picasso.with(mContext).load(R.drawable.banner_vertical_more).into(holder.mPosterIg);
+                 Picasso.with(mContext).load(R.drawable.banner_horizontal_more).into(holder.mPosterIg);
              } else {
                  Picasso.with(mContext).load(poster.poster_url).into(holder.mPosterIg);
              }
