@@ -49,7 +49,6 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = LayoutInflater.from(getActivity()).inflate(R.layout.channel_fragment_layout, null);
         findView(view);
-        initData();
         return view;
     }
 
@@ -76,6 +75,18 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
                 mControl.fetchChannelBanners(mChannel);
             }
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        initData();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        mLinearContainer.removeAllViews();
     }
 
     @Override
