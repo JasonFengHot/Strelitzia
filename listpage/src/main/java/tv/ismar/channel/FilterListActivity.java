@@ -612,6 +612,7 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
                         poster_recyclerview.getChildAt(0).requestFocus();
                     }
                 }
+                filter_tab.setFocusable(true);
                 full_view.setVisibility(View.GONE);
             }
         });
@@ -951,6 +952,7 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
             }
             if(filterPopup!=null&&!filterPopup.isShowing()) {
                 full_view.setVisibility(View.VISIBLE);
+                filter_tab.setFocusable(false);
                 full_view.requestFocus();
                 showFilterPopup();
             }
