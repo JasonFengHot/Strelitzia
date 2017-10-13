@@ -605,7 +605,7 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
             @Override
             public void onDismiss() {
                 if(filterNoResult){
-                    if(filter_noresult_first_line.getChildAt(0)!=null)
+                    if(filter_noresult_first_line!=null&&filter_noresult_first_line.getChildAt(0)!=null)
                     filter_noresult_first_line.getChildAt(0).requestFocus();
                 }else {
                     if (poster_recyclerview.getChildAt(0) != null) {
