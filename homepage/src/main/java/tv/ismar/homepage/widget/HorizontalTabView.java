@@ -133,7 +133,7 @@ public class HorizontalTabView extends HorizontalScrollView
         if (initFocus != null) {
             mSelectedIndex = initSelected;
             mClickPosition = initSelected;
-            changeViewStatus(initFocus, ViewStatus.Selected);
+            changeViewStatus(initFocus, ViewStatus.Focused);
         }
     }
 
