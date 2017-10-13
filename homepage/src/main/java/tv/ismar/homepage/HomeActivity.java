@@ -91,6 +91,14 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         initData();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (mLastSelectedIndex == 0){
+            mChannelTab.setSelectedPosition(1, true);
+        }
+    }
+
     /*初始化一些系统参数*/
     private void systemInit(){
         try {
@@ -244,10 +252,11 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                 ChannelFragment channelFragment = new ChannelFragment();
                 switch(position){
                     case 0://搜索
+                        mLastSelectedIndex = position;
                         setBackground(R.drawable.homepage_background);
                         PageIntent intent = new PageIntent();
                         intent.toSearch(this);
-                        break;
+                        return;
                     case 1://首页
                         setBackground(R.drawable.homepage_background);
                         channelFragment.setChannel("首页", HOME_PAGE_CHANNEL_TAG, "首页", 0);
@@ -265,6 +274,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                                 mFetchDataControl.mChannels[position-2].getStyle());
                         break;
                 }
+
                 if(position > mLastSelectedIndex){//右切
                     replaceFragment(channelFragment, "right");
                 }if(position < mLastSelectedIndex){//左切
