@@ -66,6 +66,15 @@ public class ItemEntity {
     private boolean renew_buy;
     @SerializedName("start_time")
     private String startTime;
+    private boolean is_order;
+
+    public boolean is_order() {
+        return is_order;
+    }
+
+    public void setIs_order(boolean is_order) {
+        this.is_order = is_order;
+    }
 
     public boolean isRenew_buy() {
         return renew_buy;

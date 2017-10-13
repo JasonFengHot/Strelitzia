@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#333333"
+            android:alpha="0.75"
+            />
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="@dimen/subscribe_601"
+        android:layout_height="@dimen/subscribe_83"
+        android:textColor="@color/_ff9c3c"
+        android:text="请使用微信扫描二维码"
+        android:textSize="@dimen/text_size_60sp"
+        android:gravity="center"
+        android:layout_marginLeft="@dimen/subscribe_659"
+        android:layout_marginTop="@dimen/subscribe_144"
+        />
+    <ImageView
+        android:id="@+id/code_image"
+        android:layout_width="@dimen/subscribe_512"
+        android:layout_height="@dimen/subscribe_512"
+        android:layout_marginTop="@dimen/subscribe_43"
+        android:layout_below="@+id/title"
+        android:layout_marginLeft="@dimen/subscribe_704"
+        />
+    <Button
+        android:id="@+id/subscribe_back"
+        android:layout_width="@dimen/subscribe_216"
+        android:layout_height="@dimen/subscribe_72"
+        android:background="@drawable/detail_subcribe_back"
+        android:layout_marginTop="@dimen/subscribe_44"
+        android:layout_marginLeft="@dimen/subscribe_852"
+        android:layout_below="@+id/code_image"
+        />
+    </RelativeLayout>
+</LinearLayout>

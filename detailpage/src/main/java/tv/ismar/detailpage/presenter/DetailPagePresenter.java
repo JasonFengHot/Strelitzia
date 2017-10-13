@@ -27,6 +27,7 @@ import tv.ismar.app.core.DaisyUtils;
 import tv.ismar.app.core.PageIntent;
 import tv.ismar.app.db.FavoriteManager;
 import tv.ismar.app.entity.Favorite;
+import tv.ismar.app.entity.banner.AccountsItemSubscribeExistsEntity;
 import tv.ismar.app.network.SkyService;
 import tv.ismar.app.network.entity.ItemEntity;
 import tv.ismar.app.network.entity.PlayCheckEntity;
@@ -54,12 +55,15 @@ public class DetailPagePresenter implements DetailPageContract.Presenter {
     private Subscription itemRelateSubsc;
     private Subscription removeBookmarksSubsc;
     private Subscription playCheckSubsc;
+    private Subscription subscribeStatusSubsc;
+    private Subscription subscribeSubsc;
 
     private ItemEntity mItemEntity = new ItemEntity();
     private String mContentModel;
     private ItemEntity[] relatedItemList;
 
     private DetailPageActivity detailPageActivity;
+    private boolean isSubscribed = false;
 
 
     public DetailPagePresenter(DetailPageActivity activity, DetailPageContract.View detailView, String contentModel) {
@@ -71,6 +75,10 @@ public class DetailPagePresenter implements DetailPageContract.Presenter {
 
     public String getContentModel() {
         return mContentModel;
+    }
+
+    public boolean isSubscribed() {
+        return isSubscribed;
     }
 
     @Override
@@ -295,6 +303,7 @@ public class DetailPagePresenter implements DetailPageContract.Presenter {
     }
 
 
+
     @Override
     public void handleMoreRelate() {
         ((DetailPageActivity) mDetailView.getActivity()).stopPreload();
@@ -321,6 +330,34 @@ public class DetailPagePresenter implements DetailPageContract.Presenter {
         intent.putExtra(EXTRA_SOURCE, "detail");
         mDetailView.getActivity().startActivity(intent);
 
+    }
+
+    @Override
+    public void handleSubscribe() {
+        if (subscribeSubsc != null && !subscribeSubsc.isUnsubscribed()) {
+            subscribeSubsc.unsubscribe();
+        }
+
+        subscribeSubsc = mSkyService.accountsItemSubscribe(mItemEntity.getItemPk(), mItemEntity.getContentModel())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<ResponseBody>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(ResponseBody responseBody) {
+                        mDetailView.showSubscribeDialog(responseBody);
+//                        fetchSubscribeStatus(mItemEntity.getPk());
+                    }
+                });
     }
 
     private void addFavorite() {
@@ -414,4 +451,41 @@ public class DetailPagePresenter implements DetailPageContract.Presenter {
     public void setItemEntity(ItemEntity itemEntity) {
         mItemEntity = itemEntity;
     }
+
+//    @Override
+//    public void fetchSubscribeStatus(int pk){
+//        if (subscribeStatusSubsc != null && !subscribeStatusSubsc.isUnsubscribed()) {
+//            subscribeStatusSubsc.unsubscribe();
+//        }
+//        subscribeStatusSubsc = mSkyService.accountsItemSubscribeExists(pk)
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(new Observer<AccountsItemSubscribeExistsEntity>() {
+//                    @Override
+//                    public void onCompleted() {
+//
+//                    }
+//
+//                    @Override
+//                    public void onError(Throwable e) {
+//
+//                    }
+//
+//                    @Override
+//                    public void onNext(AccountsItemSubscribeExistsEntity entity) {
+//                        if (!mItemEntity.is_order()){
+//                            isSubscribed = false;
+//                            mDetailView.notifySubscribeStatus(false);
+//                        }else {
+//                            if (entity != null && entity.getInfo() != null && entity.getInfo().getStatus() == 1){
+//                                isSubscribed = true;
+//                                mDetailView.notifySubscribeStatus(true);
+//                            }else {
+//                                isSubscribed = false;
+//                                mDetailView.notifySubscribeStatus(false);
+//                            }
+//                        }
+//                    }
+//                });
+//    }
 }
