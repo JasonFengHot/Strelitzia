@@ -632,6 +632,7 @@
 
 <!--首页 begin-->
 <!--标题尺寸-->
+<dimen name="guide_title_react_offset">62.50dp</dimen>
 <dimen name="guide_title_height">51.00dp</dimen>
 <dimen name="guide_title_logo_width">325.00dp</dimen>
 <dimen name="guide_title_logo_height">31.00dp</dimen>

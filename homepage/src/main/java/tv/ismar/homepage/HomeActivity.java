@@ -68,6 +68,8 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     private TextView mTimeTv;//时间
     private TextView mCollectionTv;//收藏tv
     private TextView mPersonCenterTv;//个人中心tv
+    private ViewGroup mCollectionRect;
+    private ViewGroup mCenterRect;
     private ViewGroup mCollectionLayout;//历史收藏layout
     private ViewGroup mPersonCenterLayout;//个人中心
     private TelescopicWrap mCollectionTel;//历史收藏伸缩包装类
@@ -118,10 +120,14 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         mTimeTv = (TextView) findViewById(R.id.guide_title_time_tv);
         mCollectionTv = (TextView) findViewById(R.id.collection_tv);
         mPersonCenterTv = (TextView) findViewById(R.id.center_tv);
+        mCollectionRect = (ViewGroup) findViewById(R.id.collection_rect_layout);
+        mCenterRect = (ViewGroup) findViewById(R.id.center_rect_layout);
         mCollectionLayout = (ViewGroup) findViewById(R.id.collection_layout);
         mPersonCenterLayout = (ViewGroup) findViewById(R.id.center_layout);
         mCollectionTel = new TelescopicWrap(this, mCollectionLayout);
+        mCollectionTel.setTextView(mCollectionTv);
         mPersonCenterTel = new TelescopicWrap(this, mPersonCenterLayout);
+        mPersonCenterTel.setTextView(mPersonCenterTv);
         mHoverView.setFocusable(true);
         mHoverView.requestFocus();
         setBackground(R.drawable.homepage_background);
@@ -139,19 +145,27 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     }
 
     private void initListener(){
-        mCollectionLayout.setOnFocusChangeListener(this);
-        mPersonCenterLayout.setOnFocusChangeListener(this);
-        mCollectionLayout.setOnKeyListener(this);
-        mPersonCenterLayout.setOnKeyListener(this);
-        mCollectionLayout.setOnClickListener(this);
-        mPersonCenterLayout.setOnClickListener(this);
+        mCenterRect.setOnFocusChangeListener(this);
+        mCenterRect.setOnKeyListener(this);
+        mCenterRect.setOnClickListener(this);
+        mCollectionRect.setOnKeyListener(this);
+        mCollectionRect.setOnFocusChangeListener(this);
+        mCollectionRect.setOnClickListener(this);
         mHomeControl.setChannelChange(mChannelTab);
-        mCollectionLayout.setOnHoverListener(this);
-        mPersonCenterLayout.setOnHoverListener(this);
+        mCollectionRect.setOnHoverListener(this);
+        mCenterRect.setOnHoverListener(this);
         IntentFilter filter = new IntentFilter();
         filter.addAction(Intent.ACTION_TIME_TICK);
         mTimeTickBroadcast = new TimeTickBroadcast();
         registerReceiver(mTimeTickBroadcast, filter);
+        mTimeTv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent();
+                intent.setAction("tv.ismar.daisy.listtest");
+                startActivity(intent);
+            }
+        });
     }
 
     private void initData(){
@@ -195,15 +209,23 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     @Override
     public void onClick(View v) {
         PageIntent pageIntent = new PageIntent();
-        if(v == mCollectionLayout){
+        if(v == mCollectionRect){
             pageIntent.toHistory(this);
-        } else if(v == mPersonCenterLayout){
+        } else if(v == mCenterRect){
             pageIntent.toUserCenter(this);
         }
     }
 
     @Override
     public boolean onHover(View v, MotionEvent event) {
+//        if(mCenterRect == v){
+//            mPersonCenterLayout.setFocusable(true);
+//            mPersonCenterLayout.requestFocus();
+//        }
+//        if(mCollectionRect == v){
+//            mCollectionLayout.setFocusable(true);
+//            mCollectionLayout.requestFocus();
+//        }
         switch (event.getAction()) {
             case MotionEvent.ACTION_HOVER_ENTER:
                 if(!v.hasFocus()){
@@ -220,13 +242,11 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
 
     @Override
     public void onFocusChange(View v, boolean hasFocus) {
-        if(v == mCollectionLayout){//历史收藏伸缩处理
-            mCollectionTv.setVisibility(hasFocus?View.VISIBLE:View.GONE);
+        if(v == mCollectionRect){//历史收藏伸缩处理
             mCollectionTel.openOrClose(hasFocus);
             return;
         }
-        if(v == mPersonCenterLayout){//个人中心伸缩处理
-            mPersonCenterTv.setVisibility(hasFocus?View.VISIBLE:View.GONE);
+        if(v == mCenterRect){//个人中心伸缩处理
             mPersonCenterTel.openOrClose(hasFocus);
             return;
         }
@@ -278,20 +298,20 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
 
     @Override
     public boolean onKey(View v, int keyCode, KeyEvent event) {
-        if(v==mCollectionLayout && keyCode==KeyEvent.KEYCODE_DPAD_LEFT){
+        if(v==mCollectionRect && keyCode==KeyEvent.KEYCODE_DPAD_LEFT){
             return true;
         }
-        if(v==mPersonCenterLayout && keyCode==KeyEvent.KEYCODE_DPAD_RIGHT){
+        if(v==mCenterRect && keyCode==KeyEvent.KEYCODE_DPAD_RIGHT){
             return true;
         }
-        if(v==mCollectionLayout && keyCode==KeyEvent.KEYCODE_DPAD_RIGHT){
-            mPersonCenterLayout.setFocusable(true);
-            mPersonCenterLayout.requestFocus();
+        if(v==mCollectionRect && keyCode==KeyEvent.KEYCODE_DPAD_RIGHT){
+            mCenterRect.setFocusable(true);
+            mCenterRect.requestFocus();
             return true;
         }
-        if(v==mPersonCenterLayout && keyCode==KeyEvent.KEYCODE_DPAD_LEFT){
-            mCollectionLayout.setFocusable(true);
-            mCollectionLayout.requestFocus();
+        if(v==mCenterRect && keyCode==KeyEvent.KEYCODE_DPAD_LEFT){
+            mCollectionRect.setFocusable(true);
+            mCollectionRect.requestFocus();
             return true;
         }
         return false;

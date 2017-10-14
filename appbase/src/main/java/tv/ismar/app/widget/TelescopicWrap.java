@@ -8,6 +8,8 @@ import android.graphics.Color;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import tv.ismar.app.R;
 
@@ -21,6 +23,7 @@ import tv.ismar.app.R;
 public class TelescopicWrap {
     private static final String TAG = TelescopicWrap.class.getSimpleName();
 
+    private Context mContext;
     private static int mTextWidth;
     private static int mIconWidth;
 
@@ -31,7 +34,18 @@ public class TelescopicWrap {
         this.mLayout = viewGroup;
     }
 
+    private TextView mTv;
+    private ImageView mIconv;
+    public void setTextView(TextView view){
+        this.mTv = view;
+    }
+
+    public void setIcon(ImageView view){
+        this.mIconv = view;
+    }
+
     private void init(Context context){
+        this.mContext = context;
         mIconWidth = context.getResources().getDimensionPixelSize(R.dimen.guide_title_icon_size)+36;
         mTextWidth = context.getResources().getDimensionPixelSize(R.dimen.guide_title_react_width);
     }
@@ -50,6 +64,8 @@ public class TelescopicWrap {
 
     private void animateOpen() {
         if(mLayout != null){
+            mTv.setVisibility(View.VISIBLE);
+            mTv.setWidth(0);
             ValueAnimator animator = createDropAnimator(mLayout, 0,
                     mTextWidth, true);
             animator.start();
@@ -63,6 +79,7 @@ public class TelescopicWrap {
                 @Override
                 public void onAnimationEnd(Animator animation) {
                     mLayout.setBackgroundColor(Color.parseColor("#00000000"));
+                    mTv.setVisibility(View.GONE);
                 }
             });
             animator.start();
@@ -76,10 +93,11 @@ public class TelescopicWrap {
             @Override
             public void onAnimationUpdate(ValueAnimator arg0) {
                 int value = (int) arg0.getAnimatedValue();
-                if(!isOpen && value<=mIconWidth){
-                    return;
-                }
                 Log.i(TAG, "value:"+value+" mIconWidth:"+mIconWidth);
+                ViewGroup.LayoutParams tvParams = mTv.getLayoutParams();
+                tvParams.width = value- mContext.getResources().getDimensionPixelOffset(R.dimen.guide_title_react_offset);
+                mTv.setLayoutParams(tvParams);
+
                 ViewGroup.LayoutParams layoutParams = v.getLayoutParams();
                 layoutParams.width = value;
                 mLayout.setBackgroundResource(R.drawable.title_focuse_bg);
