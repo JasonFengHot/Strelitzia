@@ -5,6 +5,7 @@ import android.animation.AnimatorInflater;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
+import android.graphics.Rect;
 import android.os.Handler;
 import android.os.Message;
 import android.util.AttributeSet;
@@ -19,6 +20,8 @@ import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.daimajia.androidanimations.library.Techniques;
+import com.daimajia.androidanimations.library.YoYo;
 import com.orhanobut.logger.Logger;
 
 import java.util.List;
@@ -124,6 +127,26 @@ public class HorizontalTabView extends HorizontalScrollView
             addItemView(datas.size(), i, tab.getTabTitle());
             i++;
         }
+
+        //最后一个焦点不能向右移动
+        TextView lastItemView = (TextView) linearContainer.getChildAt(datas.size() -1);
+        lastItemView.setNextFocusRightId(lastItemView.getId());
+
+        //最后一个按右键抖动动画
+        lastItemView.setOnKeyListener(new OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                switch (event.getAction()){
+                    case KeyEvent.ACTION_DOWN:
+                        if (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT){
+                            YoYo.with(Techniques.HorizontalShake).duration(1000).playOn(v);
+                        }
+                        break;
+                }
+                return false;
+            }
+        });
+
 
         TextView initFocus = (TextView) linearContainer.getChildAt(initSelected);
         if (initFocus != null) {
@@ -339,10 +362,13 @@ public class HorizontalTabView extends HorizontalScrollView
     private void changeViewDPadFocusStatus(TextView view, boolean isFocus, boolean isDpad) {
 
         // 五向键时禁止所有空鼠
+//        if (isOnKeyDown && isDpad) {
+
             for (int i = 0; i < linearContainer.getChildCount(); i++) {
                 View itemView = linearContainer.getChildAt(i);
                 itemView.setHovered(false);
             }
+//        }
 
         if (isFocus) {
             // 获取焦点
@@ -507,4 +533,22 @@ public class HorizontalTabView extends HorizontalScrollView
             changeViewStatus(initFocus, ViewStatus.Focused);
         }
     }
+
+    @Override
+    public boolean requestChildRectangleOnScreen(View child, Rect rectangle, boolean immediate) {
+        Log.d(TAG, "requestChildRectangleOnScreen");
+        return super.requestChildRectangleOnScreen(child, rectangle, immediate);
+    }
+
+//    @Override
+//    public void requestChildFocus(View child, View focused) {
+//        Log.d(TAG, "requestChildFocus child hovered: "  + focused);
+//        Log.d(TAG, "requestChildFocus child hovered: "  + focused.isHovered());
+////        super.requestChildFocus(child, focused);
+//        if (isOnKeyDown){
+//            super.requestChildFocus(child, focused);
+//        }else {
+//
+//        }
+//    }
 }
