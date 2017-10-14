@@ -107,6 +107,7 @@ public class DetailPageViewModel extends BaseObservable {
         notifyPropertyChanged(BR.visibility);
         notifyPropertyChanged(BR.enabled);
         notifyPropertyChanged(BR.bookmarkVisibility);
+        notifyPropertyChanged(BR.subscribeTextVisibility);
 
         if (historyManager == null) {
             historyManager = VodApplication.getModuleAppContext().getModuleHistoryManager();

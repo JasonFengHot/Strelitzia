@@ -103,6 +103,26 @@
                 >
             </com.open.androidtvwidget.leanback.recycle.RecyclerViewTV>
         </LinearLayout>
+        <Button
+            android:id="@+id/history_left_arrow"
+            android:layout_width="@dimen/history_100"
+            android:layout_height="@dimen/history_306"
+            android:layout_below="@+id/arrow_line_1"
+            android:layout_alignParentLeft="true"
+            android:layout_marginTop="@dimen/history_67"
+            android:background="@drawable/selector_history_left_arrow"
+            android:visibility="gone"
+            />
+        <Button
+            android:id="@+id/history_right_arrow"
+            android:layout_width="@dimen/history_100"
+            android:layout_height="@dimen/history_306"
+            android:layout_below="@+id/arrow_line_1"
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="@dimen/history_67"
+            android:background="@drawable/selector_history_right_arrow"
+            android:visibility="gone"
+            />
     </RelativeLayout>
     <RelativeLayout
         android:id="@+id/favorite_relateLayout"
@@ -151,7 +171,26 @@
                 android:layout_height="wrap_content">
             </com.open.androidtvwidget.leanback.recycle.RecyclerViewTV>
         </LinearLayout>
-        
+        <Button
+            android:id="@+id/favorite_left_arrow"
+            android:layout_width="@dimen/history_100"
+            android:layout_height="@dimen/history_306"
+            android:layout_below="@+id/arrow_line_2"
+            android:layout_alignParentLeft="true"
+            android:layout_marginTop="@dimen/history_67"
+            android:background="@drawable/selector_history_left_arrow"
+            android:visibility="gone"
+            />
+        <Button
+            android:id="@+id/favorite_right_arrow"
+            android:layout_width="@dimen/history_100"
+            android:layout_height="@dimen/history_306"
+            android:layout_below="@+id/arrow_line_2"
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="@dimen/history_67"
+            android:background="@drawable/selector_history_right_arrow"
+            android:visibility="gone"
+            />
     </RelativeLayout>
     <ImageView
         android:id="@+id/edit_shadow"
