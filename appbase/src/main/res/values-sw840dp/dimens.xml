@@ -660,6 +660,7 @@
 <dimen name="channel_title_height">52.11dp</dimen>
 
 <!--导视尺寸-->
+<dimen name="guide_switch_shade_width">233.33dp</dimen>
 <dimen name="guide_switch_container_margin_left">77.78dp</dimen>
 <dimen name="guide_switch_container_width">922.44dp</dimen>
 <dimen name="guide_switch_container_height">387.33dp</dimen>
@@ -687,7 +688,7 @@
 <dimen name="guide_recycle_item_rb_icon_padding_right">3.11dp</dimen>
 <dimen name="guide_recycle_item_rb_margin_bottom">6.22dp</dimen>
 
-<!--电视剧尺寸-->
+<!--电视剧尺�?-->
 <dimen name="tv_player_recycleview_margin_left">46.67dp</dimen>
 <dimen name="tv_play_recycleview_item_padding">31.11dp</dimen>
 <dimen name="tv_play_item_margin_top">8.56dp</dimen>
@@ -729,6 +730,7 @@
 <dimen name="double_ld_poster_title_size">30.33dp</dimen>
 <dimen name="double_ld_poster_padding">28.00dp</dimen>
 <!--竖版双行尺寸-->
+<dimen name="double_shade_width">311.11dp</dimen>
 <dimen name="double_md_margin_left">77.78dp</dimen>
 <dimen name="double_md_img_container_width">481.44dp</dimen>
 <dimen name="double_md_img_height">598.89dp</dimen>
@@ -782,7 +784,7 @@
 <dimen name="msg_text_item_text_ts">28.00dp</dimen>
 <dimen name="msg_text_item_text_mb">15.56dp</dimen>
 
-<!--升级提示框-->
+<!--升级提示�?-->
 <dimen name="popup_update_w">831.44dp</dimen>
 <dimen name="popup_update_h">636.22dp</dimen>
 <dimen name="popup_update_mt">77.78dp</dimen>
@@ -797,7 +799,7 @@
 <dimen name="popup_update_btn_h">56.78dp</dimen>
 <dimen name="popup_update_btn_ml">63.00dp</dimen>
 
-<!--普通提示框-->
+<!--普�?�提示框-->
 <dimen name="popup_tip_w">831.44dp</dimen>
 <dimen name="popup_tip_h">473.67dp</dimen>
 <dimen name="popup_tip_ml">330.56dp</dimen>
@@ -812,7 +814,7 @@
 <dimen name="popup_tip_btn_ml">63.00dp</dimen>
 <dimen name="popup_tip_btn_mt">66.89dp</dimen>
 
-<!--吐司提示框-->
+<!--吐司提示�?-->
 <dimen name="toast_content_h">58.33dp</dimen>
 <dimen name="toast_content_w">755.22dp</dimen>
 <dimen name="toast_content_mt">717.11dp</dimen>

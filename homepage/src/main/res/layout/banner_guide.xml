@@ -30,6 +30,7 @@
             android:clipToPadding="false"
             android:focusable="false"
             android:paddingRight="@dimen/history_100" />
+
         <Button
             android:visibility="invisible"
             android:id="@+id/navigation_left"
@@ -39,6 +40,13 @@
             android:background="@drawable/selector_guide_arrow_left"
             android:focusable="true"
             android:focusableInTouchMode="true" />
+
+        <View
+            android:id="@+id/guide_shade"
+            android:layout_width="@dimen/guide_switch_shade_width"
+            android:layout_height="@dimen/guide_switch_container_height"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true" />
 
         <Button
             android:visibility="invisible"

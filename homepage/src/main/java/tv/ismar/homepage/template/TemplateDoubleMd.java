@@ -53,6 +53,7 @@ public class TemplateDoubleMd extends Template implements BaseControl.ControlCal
     private ImageView mRbImage;//右下角图标
     private TextView mImgeTitleTv;//大图标题
     private RecyclerViewTV mRecyclerView;
+    private View mHoverView;
     private DoubleMdAdapter mAdapter;
     private FetchDataControl mFetchDataControl = null;
     private int mSelectItemPosition = 1;//标题--选中海报位置
@@ -73,6 +74,7 @@ public class TemplateDoubleMd extends Template implements BaseControl.ControlCal
         mTitleTv = (TextView) view.findViewById(R.id.banner_title_tv);
         mTitleCountTv = (TextView) view.findViewById(R.id.banner_title_count);
         mRecyclerView = (RecyclerViewTV) view.findViewById(R.id.double_md_recyclerview);
+        mHoverView = view.findViewById(R.id.double_md_shade);
 
         mHeadView = LayoutInflater.from(mContext).inflate(R.layout.banner_double_md_head, null);
         mVerticalImg = (ImageView) mHeadView.findViewById(R.id.double_md_image_poster);
@@ -84,7 +86,7 @@ public class TemplateDoubleMd extends Template implements BaseControl.ControlCal
         mRecyclerView.setLayoutManager(mDoubleLayoutManager);
         mRecyclerView.setSelectedItemAtCentered(false);
         int selectedItemOffset = mContext.getResources().getDimensionPixelSize(R.dimen.banner_item_setSelectedItemOffset);
-        mRecyclerView.setSelectedItemOffset(selectedItemOffset, selectedItemOffset);
+        mRecyclerView.setSelectedItemOffset(100, 100);
         navigationLeft = view.findViewById(R.id.navigation_left);
         navigationRight = view.findViewById(R.id.navigation_right);
         mBannerLinearLayout = (BannerLinearLayout) view.findViewById(R.id.banner_layout);
@@ -99,6 +101,7 @@ public class TemplateDoubleMd extends Template implements BaseControl.ControlCal
         navigationRight.setOnClickListener(this);
         navigationRight.setOnHoverListener(this);
         navigationLeft.setOnHoverListener(this);
+        mHoverView.setOnHoverListener(this);
         mRecyclerView.setPagingableListener(this);
         mRecyclerView.setOnItemFocusChangeListener(this);
         mDoubleLayoutManager.setFocusSearchFailedListener(this);
@@ -232,6 +235,7 @@ public class TemplateDoubleMd extends Template implements BaseControl.ControlCal
 
     @Override
     public boolean onHover(View v, MotionEvent event) {
+        if(mHoverView == v) return true;
         switch (event.getAction()) {
             case MotionEvent.ACTION_HOVER_MOVE:
             case MotionEvent.ACTION_HOVER_ENTER:

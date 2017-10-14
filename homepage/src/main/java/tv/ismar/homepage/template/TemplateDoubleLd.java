@@ -61,6 +61,7 @@ public class TemplateDoubleLd extends Template implements BaseControl.ControlCal
     private BannerLinearLayout mBannerLinearLayout;
     private View navigationLeft;
     private View navigationRight;
+    private View mHoverView;
 
     public TemplateDoubleLd(Context context) {
         super(context);
@@ -85,8 +86,8 @@ public class TemplateDoubleLd extends Template implements BaseControl.ControlCal
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         mRecyclerView.setLayoutManager(mDoubleLayoutManager);
         mRecyclerView.setSelectedItemAtCentered(false);
-        int selectedItemOffset = mContext.getResources().getDimensionPixelSize(R.dimen.banner_item_setSelectedItemOffset);
-        mRecyclerView.setSelectedItemOffset(selectedItemOffset, selectedItemOffset);
+        mHoverView = view.findViewById(R.id.double_ld_shade);
+        mRecyclerView.setSelectedItemOffset(100, 100);
         navigationLeft = view.findViewById(R.id.navigation_left);
         navigationRight = view.findViewById(R.id.navigation_right);
         mBannerLinearLayout = (BannerLinearLayout) view.findViewById(R.id.banner_layout);
@@ -108,6 +109,7 @@ public class TemplateDoubleLd extends Template implements BaseControl.ControlCal
         navigationRight.setOnClickListener(this);
         navigationRight.setOnHoverListener(this);
         navigationLeft.setOnHoverListener(this);
+        mHoverView.setOnHoverListener(this);
         mRecyclerView.setPagingableListener(this);
         mRecyclerView.setOnItemFocusChangeListener(this);
         mDoubleLayoutManager.setFocusSearchFailedListener(this);
@@ -235,6 +237,7 @@ public class TemplateDoubleLd extends Template implements BaseControl.ControlCal
 
     @Override
     public boolean onHover(View v, MotionEvent event) {
+        if(mHoverView == v) return true;
         switch (event.getAction()) {
             case MotionEvent.ACTION_HOVER_MOVE:
             case MotionEvent.ACTION_HOVER_ENTER:
