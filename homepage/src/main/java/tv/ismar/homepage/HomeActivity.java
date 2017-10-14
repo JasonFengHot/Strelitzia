@@ -74,7 +74,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     private TelescopicWrap mPersonCenterTel;//个人中心包装类
 
     private BitmapDecoder mBitmapDecoder;
-    private int mLastSelectedIndex = 0;//记录上一次选中的位置
+    private int mLastSelectedIndex = 1;//记录上一次选中的位置
     private TimeTickBroadcast mTimeTickBroadcast = null;
 
     public static View mHoverView;
@@ -95,6 +95,9 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     protected void onResume() {
         super.onResume();
         mTimeTv.setText(mHomeControl.getNowTime());
+        if (mLastSelectedIndex == 0){
+            mChannelTab.setDefaultSelection(1);
+        }
     }
 
     /*初始化一些系统参数*/
@@ -241,10 +244,11 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                 ChannelFragment channelFragment = new ChannelFragment();
                 switch(position){
                     case 0://搜索
+                        mLastSelectedIndex = position;
                         setBackground(R.drawable.homepage_background);
                         PageIntent intent = new PageIntent();
                         intent.toSearch(this);
-                        break;
+                        return;
                     case 1://首页
                         setBackground(R.drawable.homepage_background);
                         channelFragment.setChannel("首页", HOME_PAGE_CHANNEL_TAG, "首页", 0);

@@ -5,7 +5,6 @@ import android.animation.AnimatorInflater;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.Message;
 import android.util.AttributeSet;
@@ -20,8 +19,6 @@ import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.daimajia.androidanimations.library.Techniques;
-import com.daimajia.androidanimations.library.YoYo;
 import com.orhanobut.logger.Logger;
 
 import java.util.List;
@@ -30,13 +27,14 @@ import tv.ismar.homepage.HomeActivity;
 import tv.ismar.homepage.R;
 
 public class HorizontalTabView extends HorizontalScrollView
-        implements View.OnClickListener, View.OnFocusChangeListener, View.OnKeyListener, View.OnHoverListener, View.OnTouchListener {
+        implements View.OnClickListener,
+        View.OnFocusChangeListener,
+        View.OnKeyListener,
+        View.OnHoverListener,
+        View.OnTouchListener {
 
     private static final String TAG = "LH/HorizontalTabView";
-    private static final int STATE_FOCUS = 0;
-    private static final int STATE_LEAVE = 1;
 
-    private Drawable selectedDrawable;
     private int tabHeight;
     private int tabSpace;
     private int startEndPadding;
@@ -48,22 +46,19 @@ public class HorizontalTabView extends HorizontalScrollView
     private Context mContext;
     private LinearLayout linearContainer;
     private int mSelectedIndex = -1;
+    private int mFocusedIndex = -1;
     private int mTabMargin;
     private OnItemSelectedListener onItemSelectedListener;
-    private int mCurrentState = STATE_LEAVE;
-    private int mCurrentPosition = -1;
 
-    private int mClickPosition = -1;
+    private boolean isCanScroll = true;
 
-    private boolean isScroll = true;
-    Handler mScrollHandler =
+    Handler mScrollEventHandler =
             new Handler() {
                 @Override
                 public void handleMessage(Message msg) {
-                    isScroll = true;
+                    isCanScroll = true;
                 }
             };
-    private boolean isOnKeyDown = false;
 
     public HorizontalTabView(Context context) {
         this(context, null);
@@ -75,25 +70,19 @@ public class HorizontalTabView extends HorizontalScrollView
 
     public HorizontalTabView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        TypedArray typedArray =
-                context.obtainStyledAttributes(attrs, R.styleable.HorizontalTabView);
-        selectedDrawable =
-                typedArray.getDrawable(R.styleable.HorizontalTabView_tvTabSelectedDrawable);
+        TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.HorizontalTabView);
         tabHeight = typedArray.getDimensionPixelSize(R.styleable.HorizontalTabView_tvTabHeight, 0);
         tabSpace =
-                typedArray.getDimensionPixelSize(
-                        R.styleable.HorizontalTabView_tvTabSpace, dp2px(10));
+                typedArray.getDimensionPixelSize(R.styleable.HorizontalTabView_tvTabSpace, dp2px(10));
         startEndPadding =
                 typedArray.getDimensionPixelSize(
                         R.styleable.HorizontalTabView_tvTabStartEndPadding, dp2px(16));
         textSize =
-                typedArray.getDimensionPixelSize(
-                        R.styleable.HorizontalTabView_tvTabTextSize, dp2px(18));
+                typedArray.getDimensionPixelSize(R.styleable.HorizontalTabView_tvTabTextSize, dp2px(18));
         defaultTextColor =
                 typedArray.getColor(R.styleable.HorizontalTabView_tvTabTextColor, Color.WHITE);
         textSelectColor =
-                typedArray.getColor(
-                        R.styleable.HorizontalTabView_tvTabSelectTextColor, Color.WHITE);
+                typedArray.getColor(R.styleable.HorizontalTabView_tvTabSelectTextColor, Color.WHITE);
         textFocusColor =
                 typedArray.getColor(R.styleable.HorizontalTabView_tvTabFocusTextColor, Color.WHITE);
         typedArray.recycle();
@@ -132,7 +121,6 @@ public class HorizontalTabView extends HorizontalScrollView
         TextView initFocus = (TextView) linearContainer.getChildAt(initSelected);
         if (initFocus != null) {
             mSelectedIndex = initSelected;
-            mClickPosition = initSelected;
             changeViewStatus(initFocus, ViewStatus.Focused);
         }
     }
@@ -141,14 +129,11 @@ public class HorizontalTabView extends HorizontalScrollView
         LinearLayout.LayoutParams layoutParams;
         layoutParams =
                 new LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.WRAP_CONTENT,
-                        LinearLayout.LayoutParams.MATCH_PARENT);
+                        LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT);
         final TextView item;
         if (label.equals("搜索")) {
             item =
-                    (TextView)
-                            LayoutInflater.from(getContext())
-                                    .inflate(R.layout.item_channel_search, null);
+                    (TextView) LayoutInflater.from(getContext()).inflate(R.layout.item_channel_search, null);
             item.setCompoundDrawablePadding(10);
         } else {
             item = new TextView(mContext);
@@ -163,7 +148,7 @@ public class HorizontalTabView extends HorizontalScrollView
         item.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
         item.setTextColor(defaultTextColor);
         item.setFocusable(true);
-//        item.setFocusableInTouchMode(true);
+        item.setFocusableInTouchMode(true);
         item.setOnClickListener(this);
         item.setOnFocusChangeListener(this);
         item.setOnKeyListener(this);
@@ -191,97 +176,16 @@ public class HorizontalTabView extends HorizontalScrollView
         linearContainer.addView(item);
     }
 
-    public void setSelectedPosition(int position, boolean requestFocus) {
-        TextView currentTextView = (TextView) linearContainer.getChildAt(position);
-        if (currentTextView != null) {
-            changeSelection(currentTextView, false);
-            if (requestFocus) {
-                currentTextView.requestFocus();
-            }
-        }
-    }
-
-    public int getSelectedPosition() {
-        if (linearContainer == null) {
-            return -1;
-        }
-        return mSelectedIndex;
-    }
-
-    private void changeLostFocusStatus(View view) {
-        if (view != null) {
-            TextView lastClickView = (TextView) linearContainer.getChildAt(mClickPosition);
-            if (view == lastClickView) {
-                lastClickView.setBackgroundResource(android.R.color.transparent);
-                lastClickView.setTextColor(textSelectColor);
-            } else {
-                TextView textView = (TextView) view;
-                textView.setBackgroundResource(android.R.color.transparent);
-                textView.setTextColor(defaultTextColor);
-            }
-        }
-    }
-
-    private void changeGainFocusStatus(View view) {
-        if (view != null) {
-            TextView textView = (TextView) view;
-            textView.setBackground(selectedDrawable);
-            textView.setTextColor(textFocusColor);
-        }
-    }
-
-    public void changeSelection(final View v, final boolean callItemListener) {
-        int tempIndex = (int) v.getTag();
-        if (mSelectedIndex == tempIndex && v.getAnimation() != null) {
-            return;
-        }
-        TextView lastSelectedView = (TextView) linearContainer.getChildAt(mSelectedIndex);
-        if (lastSelectedView != null) {
-            lastSelectedView.setBackgroundResource(android.R.color.transparent);
-            lastSelectedView.setTextColor(defaultTextColor);
-        }
-
-        TextView lastClickView = (TextView) linearContainer.getChildAt(mClickPosition);
-        if (lastClickView != null && mClickPosition != tempIndex) {
-            lastClickView.setBackgroundResource(android.R.color.transparent);
-            lastClickView.setTextColor(textSelectColor);
-        }
-
-        mSelectedIndex = tempIndex;
-        TextView currentTextView = (TextView) linearContainer.getChildAt(mSelectedIndex);
-        if (currentTextView == null) {
-            Log.e(TAG, "error on null view selected.");
-            return;
-        }
-        currentTextView.setBackground(selectedDrawable);
-        currentTextView.setTextColor(textFocusColor);
-
-
-        scrollChildPosition(v);
-
-        zoomIn(v);
-
-        if (onItemSelectedListener != null && callItemListener) {
-            onItemSelectedListener.onItemSelected(v, mSelectedIndex);
-        }
-    }
-
-
     private int[] getTextSize(TextView textView) {
         int spec = MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED);
         textView.measure(spec, spec);
         int measuredWidth = textView.getMeasuredWidth();
         int measuredHeight = textView.getMeasuredHeight();
+
         return new int[]{measuredWidth, measuredHeight};
     }
 
     private void scrollChildPosition(View view) {
-        Logger.t(TAG).d("scrollChildPosition");
-
-        if (linearContainer.getChildCount() < 10) {
-            return;
-        }
-
         int baseRightX = getWidth() - mTabMargin;
         int[] currentRect = new int[2];
         view.getLocationOnScreen(currentRect);
@@ -297,36 +201,18 @@ public class HorizontalTabView extends HorizontalScrollView
                 int[] lastleftRect = new int[2];
                 linearContainer.getChildAt(mSelectedIndex - 1).getLocationOnScreen(lastleftRect);
                 smoothScrollBy(
-                        -(currentRect[0] - (lastleftRect[0] + leftViewWidth) + leftViewWidth / 2),
-                        0);
+                        -(currentRect[0] - (lastleftRect[0] + leftViewWidth) + leftViewWidth / 2), 0);
             }
-            //右滑
+            // 右滑
         } else if (currentRect[0] + view.getWidth()
                 >= baseRightX) { // current view right more than right margin
             if (mSelectedIndex == linearContainer.getChildCount() - 1) {
                 smoothScrollBy(currentRect[0] + view.getWidth() - baseRightX, 0);
             } else {
                 int rightViewWidth = linearContainer.getChildAt(mSelectedIndex + 1).getWidth();
-                smoothScrollBy(
-                        currentRect[0] + view.getWidth() - baseRightX + rightViewWidth / 2, 0);
+                smoothScrollBy(currentRect[0] + view.getWidth() - baseRightX + rightViewWidth / 2, 0);
             }
         }
-    }
-
-    public void setSelectedDrawable(Drawable selectedDrawable) {
-        this.selectedDrawable = selectedDrawable;
-    }
-
-    public void setTabHeight(int tabHeight) {
-        this.tabHeight = tabHeight;
-    }
-
-    public void setTabSpace(int tabSpace) {
-        this.tabSpace = tabSpace;
-    }
-
-    public void setStartEndPadding(int startEndPadding) {
-        this.startEndPadding = startEndPadding;
     }
 
     public void setTextSize(int textSize) {
@@ -345,64 +231,23 @@ public class HorizontalTabView extends HorizontalScrollView
 
     @Override
     public void onClick(View v) {
-        int tag = (int) v.getTag();
-        if (mSelectedIndex == mCurrentPosition) {
-            return;
-        }
-        TextView lastClickView = (TextView) linearContainer.getChildAt(mClickPosition);
-        if (lastClickView != null) {
-            lastClickView.setBackgroundResource(android.R.color.transparent);
-            lastClickView.setTextColor(defaultTextColor);
-        }
-        mCurrentState = STATE_FOCUS;
-        mCurrentPosition = (int) v.getTag();
-        mClickPosition = (int) v.getTag();
-        changeSelection(v, tag != mSelectedIndex);
+        changeViewDPadFocusStatus((TextView) v, true, true);
     }
 
     @Override
     public void onFocusChange(View v, boolean hasFocus) {
-        Logger.t(TAG).d("onFocusChange hovered: " + v.isHovered());
-
-        int tag = (int) v.getTag();
-
-        //空鼠操作状态
-        if (v.isHovered()) {
-            if (hasFocus) {
-                if (mCurrentState == STATE_LEAVE && mSelectedIndex != tag) {
-                    View selectedView = linearContainer.getChildAt(mSelectedIndex);
-                    //                    selectedView.requestFocus();
-                } else {
-                    changeSelection(v, false);
-                }
-
-            } else {
-                if (mCurrentState != STATE_LEAVE) {
-                    changeLostFocusStatus(v);
-                    zoomOut(v);
-                }
-            }
-            return;
-        }
-
+        TextView textView = (TextView) v;
         if (hasFocus) {
-            for (int i = 0; i < linearContainer.getChildCount(); i++) {
-                View subView = linearContainer.getChildAt(i);
-                subView.setHovered(false);
+            //获取焦点的位置
+            mFocusedIndex = (int) textView.getTag();
+            if (v.isHovered()){
+                //空鼠标获取焦点
+                changeViewStatus(textView, ViewStatus.Hovered);
+            }else {
+                changeViewStatus(textView, ViewStatus.Focused);
             }
-
-            if (mCurrentState == STATE_LEAVE && mSelectedIndex != tag) {
-                View selectedView = linearContainer.getChildAt(mSelectedIndex);
-                selectedView.requestFocus();
-            } else {
-                changeSelection(v, tag != mSelectedIndex);
-            }
-
         } else {
-            if (mCurrentState != STATE_LEAVE) {
-                changeLostFocusStatus(v);
-                zoomOut(v);
-            }
+            changeViewStatus(textView, ViewStatus.UnFocused);
         }
     }
 
@@ -410,24 +255,25 @@ public class HorizontalTabView extends HorizontalScrollView
     public boolean onKey(View v, int keyCode, KeyEvent event) {
         switch (event.getAction()) {
             case KeyEvent.ACTION_DOWN:
-                isOnKeyDown = true;
+                //按下按键,频道栏获取焦点
+                Log.d(TAG, "onKey ACTION_DOWN");
                 if (keyCode == KeyEvent.KEYCODE_DPAD_DOWN || keyCode == KeyEvent.KEYCODE_DPAD_UP) {
-                    mCurrentState = STATE_LEAVE;
-                    changeLostFocusStatus(v);
-                }
 
-                if ((linearContainer.indexOfChild(v) == 0 && keyCode == KeyEvent.KEYCODE_DPAD_LEFT)
-                        || (linearContainer.indexOfChild(v) == linearContainer.getChildCount() - 1
-                        && keyCode == KeyEvent.KEYCODE_DPAD_RIGHT)) {
-                    YoYo.with(Techniques.HorizontalShake).duration(1000).playOn(v);
                 }
                 break;
             case KeyEvent.ACTION_UP:
-                changeGainFocusStatus(v);
-                mCurrentState = STATE_FOCUS;
+                //松开按鍵,频道栏获取焦点
+                Log.d(TAG, "onKey ACTION_UP");
+                if (keyCode == KeyEvent.KEYCODE_DPAD_DOWN || keyCode == KeyEvent.KEYCODE_DPAD_UP) {
+                    TextView lastSelectedView = (TextView) linearContainer.getChildAt(mSelectedIndex);
+                    Log.d(TAG, "onKey ACTION_UP: " + mSelectedIndex);
+                    lastSelectedView.requestFocus();
+                    return true;
+                }
                 break;
         }
         return false;
+
     }
 
     public void setOnItemSelectedListener(OnItemSelectedListener onItemSelectedListener) {
@@ -442,68 +288,104 @@ public class HorizontalTabView extends HorizontalScrollView
     private void changeViewStatus(TextView view, ViewStatus status) {
         switch (status) {
             case Hovered:
-                changeViewHoveredStatus(view, true);
+                changeViewDPadFocusStatus(view, true, false);
                 break;
             case UnHovered:
-                changeViewHoveredStatus(view, false);
+                changeViewDPadFocusStatus(view, false, false);
                 break;
-            case Selected:
-                changeViewSelectedStatus(view, true);
-                break;
-            case UnSelected:
-                changeViewSelectedStatus(view, false);
-                break;
+//            case Selected:
+//                changeViewSelectedStatus(view, true);
+//                break;
+//            case UnSelected:
+//                changeViewSelectedStatus(view, false);
+//                break;
             case Focused:
-                changeViewDPadFocusStatus(view, true);
+                changeViewDPadFocusStatus(view, true, true);
                 break;
             case UnFocused:
-                changeViewDPadFocusStatus(view, false);
+                changeViewDPadFocusStatus(view, false, true);
                 break;
         }
+
     }
 
-    private void changeViewHoveredStatus(TextView view, boolean isHovered) {
-    }
 
-    //五向键获取焦点
-    private void changeViewDPadFocusStatus(TextView view, boolean isFocus) {
-        //五向键时禁止所有空鼠
-        for (int i = 0; i < linearContainer.getChildCount(); i++) {
-            View itemView = linearContainer.getChildAt(i);
-            itemView.setHovered(false);
-        }
+    // 五向键获取焦点
+    /**
+     * @param view
+     * @param isFocus
+     * @param isDpad 是否回调
+     */
+    private void changeViewDPadFocusStatus(TextView view, boolean isFocus, boolean isDpad) {
+
+        // 五向键时禁止所有空鼠
+            for (int i = 0; i < linearContainer.getChildCount(); i++) {
+                View itemView = linearContainer.getChildAt(i);
+                itemView.setHovered(false);
+            }
 
         if (isFocus) {
-            //获取焦点
-            view.requestFocus();
+            // 获取焦点
+            zoomIn(view);
+            view.setTextColor(textFocusColor);
+            view.setBackgroundResource(android.R.color.transparent);
+
+            //五向键操作
+            if (onItemSelectedListener != null && !view.isHovered() && isDpad) {
+                if (!view.hasFocus()){
+                    view.requestFocus();
+                }
+                mSelectedIndex = (int) view.getTag();
+                Logger.t(TAG).d("onItemSelectedListener.onItemSelected(view, mSelectedIndex);");
+                onItemSelectedListener.onItemSelected(view, mSelectedIndex);
+            }else {
+                //空鼠获取焦点
+                if (!view.hasFocus()){
+                    Logger.t(TAG).d("空鼠获取焦点");
+                    view.setHovered(true);
+                    view.requestFocus();
+                }
+            }
+            //计算滑动位置
+            scrollChildPosition(view);
 
         } else {
-            //失去焦点
-            //隐藏view获取焦点
+            // 失去焦点
+            view.setHovered(false);
+            zoomOut(view);
+            view.setTextColor(defaultTextColor);
+            view.setBackgroundResource(android.R.color.transparent);
+
+            // 隐藏view获取焦点
             if (HomeActivity.mHoverView != null) {
                 HomeActivity.mHoverView.requestFocus();
             }
         }
 
-        //        if (mCurrentState == STATE_LEAVE && mSelectedIndex != tag) {
-        //            View selectedView = linearContainer.getChildAt(mSelectedIndex);
-        //            selectedView.requestFocus();
-        //        } else {
-        //            changeSelection(v, tag != mSelectedIndex);
-        //        }
+//        if (!isDpad){
+//            if (mSelectedIndex != mFocusedIndex) {
+//                view.setTextColor(textSelectColor);
+//            }
+//            for (int i = 0; i < linearContainer.getChildCount(); i++) {
+//                if (i != mSelectedIndex && i != mFocusedIndex) {
+//                    TextView textView = (TextView) linearContainer.getChildAt(i);
+//                    textView.setTextColor(defaultTextColor);
+//                }
+//            }
+//        }
     }
 
-    private void changeViewSelectedStatus(TextView view, boolean isSelected) {
-        if (isSelected) {
-            view.setSelected(true);
-            view.setTextColor(textSelectColor);
-        } else {
-            view.setSelected(false);
-            view.setTextColor(defaultTextColor);
-        }
-    }
+//    private void changeViewSelectedStatus(TextView view, boolean isSelected) {
+//        if (isSelected) {
+//            view.setSelected(true);
+//            view.setTextColor(textSelectColor);
+//        } else {
+//            view.setSelected(false);
+//            view.setTextColor(defaultTextColor);
+//        }
+//    }
 
-    //缩小
+    // 缩小
     private void zoomOut(View view) {
         Animator animator =
                 AnimatorInflater.loadAnimator(
@@ -512,56 +394,31 @@ public class HorizontalTabView extends HorizontalScrollView
         animator.start();
     }
 
-    //放大
+    // 放大
     private void zoomIn(View view) {
         Animator animator =
                 AnimatorInflater.loadAnimator(
-                        view.getContext(),
-                        tv.ismar.searchpage.R.animator.scaleout_recommend_poster);
+                        view.getContext(), tv.ismar.searchpage.R.animator.scaleout_recommend_poster);
         animator.setTarget(view);
         animator.start();
     }
 
     @Override
     public boolean onHover(View v, MotionEvent event) {
-        isOnKeyDown = false;
-
-        TextView itemView = (TextView) v;
+        TextView textView = (TextView) v;
         switch (event.getAction()) {
             case MotionEvent.ACTION_HOVER_ENTER:
             case MotionEvent.ACTION_HOVER_MOVE:
                 v.setHovered(true);
-                itemView.setBackground(selectedDrawable);
-                itemView.setTextColor(textFocusColor);
-                if (isScroll) {
-                    isScroll = false;
-                    mCurrentState = STATE_FOCUS;
-                    if (!v.hasFocus()) {
-                        zoomIn(v);
-                        v.requestFocusFromTouch();
-                        v.requestFocus();
-                    }
-                    mScrollHandler.sendEmptyMessageDelayed(0, 500);
+                if (isCanScroll){
+                    isCanScroll = false;
+                    changeViewStatus(textView, ViewStatus.Hovered);
+                    mScrollEventHandler.sendEmptyMessageDelayed(0, 500);
                 }
-                return true;
+                break;
             case MotionEvent.ACTION_HOVER_EXIT:
-                zoomOut(v);
-                if (HomeActivity.mHoverView != null) {
-                    HomeActivity.mHoverView.requestFocus();
-                }
-
-                TextView lastClickView =
-                        (TextView) linearContainer.getChildAt(mClickPosition);
-                if (itemView == lastClickView) {
-                    lastClickView.setBackgroundResource(
-                            android.R.color.transparent);
-                    lastClickView.setTextColor(textSelectColor);
-                } else {
-                    itemView.setBackgroundResource(android.R.color.transparent);
-                    itemView.setTextColor(defaultTextColor);
-                }
-                v.setHovered(false);
-                return true;
+                changeViewStatus(textView, ViewStatus.UnHovered);
+                break;
         }
         return false;
     }
@@ -570,7 +427,6 @@ public class HorizontalTabView extends HorizontalScrollView
     public boolean onTouch(View v, MotionEvent event) {
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                mCurrentState = STATE_FOCUS;
                 break;
         }
         return false;
@@ -578,10 +434,10 @@ public class HorizontalTabView extends HorizontalScrollView
 
     private enum ViewStatus {
         Hovered,
-        Selected,
+//        Selected,
+//        UnSelected,
         Focused,
         UnHovered,
-        UnSelected,
         UnFocused,
     }
 
@@ -608,6 +464,15 @@ public class HorizontalTabView extends HorizontalScrollView
 
         public String getTabTitle() {
             return tabTitle;
+        }
+    }
+
+    public void setDefaultSelection(int position){
+        TextView initFocus = (TextView) linearContainer.getChildAt(position);
+        if (initFocus != null) {
+            mSelectedIndex = position;
+            mFocusedIndex = position;
+            changeViewStatus(initFocus, ViewStatus.Focused);
         }
     }
 }
