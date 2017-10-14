@@ -207,6 +207,7 @@ public class TemplateBigSmallLd extends Template implements View.OnHoverListener
                 Log.d(TAG, view + " : " + hovered);
                 if (hovered){
                     movieMixBanner.setHovered(true);
+                    mTitleCountTv.setText(String.format(mContext.getString(R.string.home_item_title_count), (1 + position) + "", adapter.getTatalItemCount() + ""));
                 }else {
                     movieMixBanner.setHovered(false);
                     HomeActivity.mHoverView.requestFocus();

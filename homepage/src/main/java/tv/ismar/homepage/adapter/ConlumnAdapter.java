@@ -44,7 +44,7 @@ public class ConlumnAdapter extends BaseRecycleAdapter<ConlumnAdapter.ConlumnVie
         Log.d("ConlumnAdapter", "position:"+position);
         holder.mTitle.setText(poster.title);
         if (!TextUtils.isEmpty(poster.poster_url)) {
-            if(poster.poster_url.equals("更多")){
+            if(!TextUtils.isEmpty(poster.poster_url) && poster.poster_url.equals("更多")){
                 Picasso.with(mContext).load(R.drawable.banner_horizontal_more).into(holder.mPoster);
             } else {
                 Picasso.with(mContext).load(poster.poster_url).into(holder.mPoster);

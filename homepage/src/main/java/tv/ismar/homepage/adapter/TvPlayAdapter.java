@@ -56,7 +56,7 @@ public class TvPlayAdapter extends BaseRecycleAdapter<TvPlayAdapter.TvPlayerView
         Picasso.with(mContext).load(VipMark.getInstance().getBannerIconMarkImage(poster.top_left_corner)).into(holder.mLtIconTv);
         holder.mRbIconTv.setText(new DecimalFormat("0.0").format(poster.rating_average));
         holder.mRbIconTv.setVisibility((poster.rating_average==0) ? View.GONE:View.VISIBLE);
-        if(poster.poster_url.equals("更多")){
+        if(!TextUtils.isEmpty(poster.poster_url) && poster.poster_url.equals("更多")){
             holder.mTitleTv.setVisibility(View.INVISIBLE);
         } else {
             holder.mTitleTv.setVisibility(View.VISIBLE);

@@ -94,9 +94,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     @Override
     protected void onResume() {
         super.onResume();
-        if (mLastSelectedIndex == 0){
-            mChannelTab.setSelectedPosition(1, true);
-        }
+        mTimeTv.setText(mHomeControl.getNowTime());
     }
 
     /*初始化一些系统参数*/
@@ -151,18 +149,9 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         filter.addAction(Intent.ACTION_TIME_TICK);
         mTimeTickBroadcast = new TimeTickBroadcast();
         registerReceiver(mTimeTickBroadcast, filter);
-        mTimeTv.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent=new Intent();
-                intent.setAction("tv.ismar.daisy.listtest");
-                startActivity(intent);
-            }
-        });
     }
 
     private void initData(){
-        mTimeTv.setText(mHomeControl.getNowTime());
         mFetchDataControl.fetchChannels();
         ChannelFragment channelFragment = new ChannelFragment();
         channelFragment.setChannel("首页", HOME_PAGE_CHANNEL_TAG, "首页", 0);
@@ -252,11 +241,10 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                 ChannelFragment channelFragment = new ChannelFragment();
                 switch(position){
                     case 0://搜索
-                        mLastSelectedIndex = position;
                         setBackground(R.drawable.homepage_background);
                         PageIntent intent = new PageIntent();
                         intent.toSearch(this);
-                        return;
+                        break;
                     case 1://首页
                         setBackground(R.drawable.homepage_background);
                         channelFragment.setChannel("首页", HOME_PAGE_CHANNEL_TAG, "首页", 0);
@@ -274,7 +262,6 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                                 mFetchDataControl.mChannels[position-2].getStyle());
                         break;
                 }
-
                 if(position > mLastSelectedIndex){//右切
                     replaceFragment(channelFragment, "right");
                 }if(position < mLastSelectedIndex){//左切

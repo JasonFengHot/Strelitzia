@@ -200,6 +200,7 @@ public class TemplateMovie extends Template implements View.OnClickListener, Vie
                 Log.d(TAG, view + " : " + hovered);
                 if (hovered){
                     movieBanner.setHovered(true);
+                    mTitleCountTv.setText(String.format(mContext.getString(R.string.home_item_title_count), (1 + position) + "", mMovieAdapter.getTatalItemCount() + ""));
                 }else {
                     movieBanner.setHovered(false);
                     HomeActivity.mHoverView.requestFocus();
