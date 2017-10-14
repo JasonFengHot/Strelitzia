@@ -118,7 +118,9 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         mCollectionLayout = (ViewGroup) findViewById(R.id.collection_layout);
         mPersonCenterLayout = (ViewGroup) findViewById(R.id.center_layout);
         mCollectionTel = new TelescopicWrap(this, mCollectionLayout);
+        mCollectionTel.setTextView(mCollectionTv);
         mPersonCenterTel = new TelescopicWrap(this, mPersonCenterLayout);
+        mPersonCenterTel.setTextView(mPersonCenterTv);
         mHoverView.setFocusable(true);
         mHoverView.requestFocus();
         setBackground(R.drawable.homepage_background);
