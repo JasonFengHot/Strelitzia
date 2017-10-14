@@ -84,7 +84,7 @@ public class TemplateDoubleMd extends Template implements BaseControl.ControlCal
         mRecyclerView.setLayoutManager(mDoubleLayoutManager);
         mRecyclerView.setSelectedItemAtCentered(false);
         int selectedItemOffset = mContext.getResources().getDimensionPixelSize(R.dimen.banner_item_setSelectedItemOffset);
-        mRecyclerView.setSelectedItemOffset(selectedItemOffset, selectedItemOffset);
+        mRecyclerView.setSelectedItemOffset(10, 10);
         navigationLeft = view.findViewById(R.id.navigation_left);
         navigationRight = view.findViewById(R.id.navigation_right);
         mBannerLinearLayout = (BannerLinearLayout) view.findViewById(R.id.banner_layout);
