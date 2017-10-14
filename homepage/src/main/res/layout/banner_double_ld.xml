@@ -34,6 +34,13 @@
             android:focusable="true"
             android:focusableInTouchMode="true" />
 
+        <View
+            android:id="@+id/double_ld_shade"
+            android:layout_width="@dimen/double_shade_width"
+            android:layout_height="@dimen/guide_switch_container_height"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true" />
+
         <Button
             android:visibility="invisible"
             android:id="@+id/navigation_right"

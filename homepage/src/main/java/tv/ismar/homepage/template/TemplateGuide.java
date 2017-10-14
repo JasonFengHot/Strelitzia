@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
@@ -31,7 +30,6 @@ import tv.ismar.homepage.R;
 import tv.ismar.homepage.adapter.GuideAdapter;
 import tv.ismar.homepage.control.FetchDataControl;
 import tv.ismar.homepage.control.GuideControl;
-import tv.ismar.homepage.fragment.ChannelFragment;
 import tv.ismar.homepage.view.BannerLinearLayout;
 import tv.ismar.homepage.widget.DaisyVideoView;
 
@@ -61,6 +59,7 @@ public class TemplateGuide extends Template implements BaseControl.ControlCallBa
     private TextView mThirdIcon;
     private TextView mFourIcon;
     private TextView mFiveIcon;
+    private View mHoverView;
     private RecyclerViewTV mRecycleView;//海报recycleview
     private LinearLayoutManagerTV mGuideLayoutManager;
 
@@ -84,6 +83,7 @@ public class TemplateGuide extends Template implements BaseControl.ControlCallBa
     @Override
     public void getView(View view) {
         mHeadView = view.findViewById(R.id.banner_guide_head);
+        mHoverView = view.findViewById(R.id.guide_shade);
 //        mHeadView.findViewById(R.id.guide_head_ismartv_linearlayout).setFocusable(true);
 //        mHeadView.findViewById(R.id.guide_head_ismartv_linearlayout).requestFocus();
         mVideoView = (DaisyVideoView) view.findViewById(R.id.guide_daisy_video_view);
@@ -104,6 +104,7 @@ public class TemplateGuide extends Template implements BaseControl.ControlCallBa
         mBannerLinearLayout = (BannerLinearLayout) view.findViewById(R.id.banner_layout);
         mBannerLinearLayout.setNavigationLeft(navigationLeft);
         mBannerLinearLayout.setNavigationRight(navigationRight);
+
     }
 
     private int mBannerPk;//banner标记
@@ -131,6 +132,7 @@ public class TemplateGuide extends Template implements BaseControl.ControlCallBa
         navigationRight.setOnClickListener(this);
         navigationRight.setOnHoverListener(this);
         navigationLeft.setOnHoverListener(this);
+        mHoverView.setOnHoverListener(this);
         mVideoView.setOnCompletionListener(this);
         mVideoView.setOnErrorListener(this);
         mVideoView.setOnPreparedListener(this);
@@ -349,6 +351,7 @@ public class TemplateGuide extends Template implements BaseControl.ControlCallBa
 
     @Override
     public boolean onHover(View v, MotionEvent event) {
+        if(mHoverView == v) return true;
         switch (event.getAction()) {
             case MotionEvent.ACTION_HOVER_MOVE:
             case MotionEvent.ACTION_HOVER_ENTER:
@@ -356,7 +359,7 @@ public class TemplateGuide extends Template implements BaseControl.ControlCallBa
                     v.requestFocus();
                     v.requestFocusFromTouch();
                 }
-                break;
+                return false;
             case MotionEvent.ACTION_HOVER_EXIT:
                 if (event.getButtonState() != BUTTON_PRIMARY) {
                     navigationLeft.setVisibility(View.INVISIBLE);
