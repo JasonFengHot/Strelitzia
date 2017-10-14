@@ -45,12 +45,19 @@ public class HorizontalTabView extends HorizontalScrollView
 
     private Context mContext;
     private LinearLayout linearContainer;
-    private int mSelectedIndex = -1;
-    private int mFocusedIndex = -1;
+    private int mSelectedIndex = 1;
+    private int mFocusedIndex = 1;
     private int mTabMargin;
     private OnItemSelectedListener onItemSelectedListener;
+    private OnItemClickedListener onItemClickedListener;
+
+    public void setOnItemClickedListener(OnItemClickedListener onItemClickedListener) {
+        this.onItemClickedListener = onItemClickedListener;
+    }
 
     private boolean isCanScroll = true;
+    private boolean isOnKeyDown = false;
+    private boolean isOnViewClick = false;
 
     Handler mScrollEventHandler =
             new Handler() {
@@ -142,24 +149,24 @@ public class HorizontalTabView extends HorizontalScrollView
             item.setHeight(tabHeight);
         }
         item.setGravity(Gravity.CENTER);
-        item.setId(R.id.libbeaver_tab_item + i);
+        item.setId(View.generateViewId());
         item.setTag(i);
         item.setText(label);
         item.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
         item.setTextColor(defaultTextColor);
         item.setFocusable(true);
-        item.setFocusableInTouchMode(true);
+        item.setClickable(true);
         item.setOnClickListener(this);
         item.setOnFocusChangeListener(this);
         item.setOnKeyListener(this);
         item.setOnHoverListener(this);
         item.setOnTouchListener(this);
 
-        if (i == 0) {
-            item.setNextFocusLeftId(R.id.libbeaver_tab_item);
-        } else if (i == dataSize - 1) {
-            item.setNextFocusRightId(R.id.libbeaver_tab_item + dataSize - 1);
-        }
+//        if (i == 0) {
+//            item.setNextFocusLeftId(R.id.libbeaver_tab_item);
+//        } else if (i == dataSize - 1) {
+//            item.setNextFocusRightId(R.id.libbeaver_tab_item + dataSize - 1);
+//        }
 
         int[] size = getTextSize(item);
         mTabMargin = startEndPadding;
@@ -231,6 +238,8 @@ public class HorizontalTabView extends HorizontalScrollView
 
     @Override
     public void onClick(View v) {
+        Log.d("onClick", "position:" + (int)v.getTag());
+        isOnViewClick = true;
         changeViewDPadFocusStatus((TextView) v, true, true);
     }
 
@@ -255,6 +264,8 @@ public class HorizontalTabView extends HorizontalScrollView
     public boolean onKey(View v, int keyCode, KeyEvent event) {
         switch (event.getAction()) {
             case KeyEvent.ACTION_DOWN:
+                isOnKeyDown = true;
+                isOnViewClick = false;
                 //按下按键,频道栏获取焦点
                 Log.d(TAG, "onKey ACTION_DOWN");
                 if (keyCode == KeyEvent.KEYCODE_DPAD_DOWN || keyCode == KeyEvent.KEYCODE_DPAD_UP) {
@@ -282,6 +293,7 @@ public class HorizontalTabView extends HorizontalScrollView
 
     @Override
     public boolean dispatchGenericMotionEvent(MotionEvent event) {
+        Log.d("MotionEvent", event.toString());
         return super.dispatchGenericMotionEvent(event);
     }
 
@@ -306,7 +318,15 @@ public class HorizontalTabView extends HorizontalScrollView
                 changeViewDPadFocusStatus(view, false, true);
                 break;
         }
-
+//        for (int i = 0; i < linearContainer.getChildCount(); i++){
+//            if (i == mSelectedIndex){
+//                ((TextView)linearContainer.getChildAt(i)).setTextColor(textSelectColor);
+//            }else if (i == mFocusedIndex){
+//                ((TextView)linearContainer.getChildAt(i)).setTextColor(textFocusColor);
+//            }else {
+//                ((TextView)linearContainer.getChildAt(i)).setTextColor(defaultTextColor);
+//            }
+//        }
     }
 
 
@@ -329,16 +349,23 @@ public class HorizontalTabView extends HorizontalScrollView
             zoomIn(view);
             view.setTextColor(textFocusColor);
             view.setBackgroundResource(android.R.color.transparent);
-
+            if (!view.hasFocus()){
+                view.requestFocus();
+            }
             //五向键操作
-            if (onItemSelectedListener != null && !view.isHovered() && isDpad) {
-                if (!view.hasFocus()){
-                    view.requestFocus();
-                }
+            if (onItemSelectedListener != null && ((isOnKeyDown && isDpad)|| isOnViewClick)) {
                 mSelectedIndex = (int) view.getTag();
                 Logger.t(TAG).d("onItemSelectedListener.onItemSelected(view, mSelectedIndex);");
-                onItemSelectedListener.onItemSelected(view, mSelectedIndex);
-            }else {
+                //计算滑动位置
+                scrollChildPosition(view);
+                if (isOnViewClick){
+                    if (onItemClickedListener != null){
+                        onItemClickedListener.onItemClicked(view, mSelectedIndex);
+                    }
+                }else {
+                    onItemSelectedListener.onItemSelected(view, mSelectedIndex);
+                }
+            }else if (onItemSelectedListener != null &&!isOnKeyDown && !isDpad){
                 //空鼠获取焦点
                 if (!view.hasFocus()){
                     Logger.t(TAG).d("空鼠获取焦点");
@@ -346,8 +373,6 @@ public class HorizontalTabView extends HorizontalScrollView
                     view.requestFocus();
                 }
             }
-            //计算滑动位置
-            scrollChildPosition(view);
 
         } else {
             // 失去焦点
@@ -361,6 +386,7 @@ public class HorizontalTabView extends HorizontalScrollView
                 HomeActivity.mHoverView.requestFocus();
             }
         }
+
 
 //        if (!isDpad){
 //            if (mSelectedIndex != mFocusedIndex) {
@@ -409,6 +435,8 @@ public class HorizontalTabView extends HorizontalScrollView
         switch (event.getAction()) {
             case MotionEvent.ACTION_HOVER_ENTER:
             case MotionEvent.ACTION_HOVER_MOVE:
+                isOnKeyDown = false;
+                isOnViewClick = false;
                 v.setHovered(true);
                 if (isCanScroll){
                     isCanScroll = false;
@@ -443,6 +471,10 @@ public class HorizontalTabView extends HorizontalScrollView
 
     public interface OnItemSelectedListener {
         void onItemSelected(View v, int position);
+    }
+
+    public interface OnItemClickedListener {
+        void onItemClicked(View v, int position);
     }
 
     public static class Tab {

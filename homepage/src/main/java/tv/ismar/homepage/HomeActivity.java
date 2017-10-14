@@ -112,7 +112,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
 
     /*获取控件实例*/
     private void findViews(){
-        mHoverView = findViewById(R.id.hover_view);
+        mHoverView = findViewById(R.id.home_view_layout);
         mViewGroup = (ViewGroup) findViewById(R.id.home_view_layout);
         mChannelTab = (HorizontalTabView) findViewById(R.id.channel_tab);
         mTimeTv = (TextView) findViewById(R.id.guide_title_time_tv);
