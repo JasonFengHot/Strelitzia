@@ -821,24 +821,27 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
         int count=0;
         if(list.size()>0){
             for(int i=0;i<list.size();i++){
-                if(count>=3){
+                if(count==3){
                     HistoryFavoriteEntity more=new HistoryFavoriteEntity();
                     more.setType(2);
                     list2.add(more);
                     return;
                 }
-                HistoryFavoriteEntity item=list.get(i);
-                if(i==0){
-                    item.setShowDate(true);
-                }else{
-                    if(item.getDate().equals(list.get(i-1).getDate())){
-                        item.setShowDate(false);
-                    }else{
+                if(count<3) {
+                    HistoryFavoriteEntity item = list.get(i);
+                    if (i == 0) {
                         item.setShowDate(true);
-                        count++;
+                    } else {
+                        if (item.getDate().equals(list.get(i - 1).getDate())) {
+                            item.setShowDate(false);
+                        } else {
+                            item.setShowDate(true);
+                            count++;
+                        }
                     }
+                    if(count!=3)
+                    list2.add(item);
                 }
-                list2.add(item);
             }
         }
     }
