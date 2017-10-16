@@ -41,6 +41,7 @@
         android:maxHeight="1dp"
         android:paddingLeft="0dp"
         android:paddingRight="0dp"
+        android:visibility="gone"
         android:progressDrawable="@drawable/launcher_ad_seekbar_style"
         android:splitTrack="false"
         android:thumb="@drawable/launcher_thumb" />

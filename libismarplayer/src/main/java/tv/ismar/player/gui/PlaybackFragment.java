@@ -264,6 +264,11 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
     public void onPause() {
         super.onPause();
         LogUtils.i(TAG, "onPause > setup : " + sharpSetupKeyClick + " sdcard : " + mounted);
+        if (mPlaybackService != null) {
+            if (!mPlaybackService.isPlayingAd() && !isPlayExitLayerShow && mCurrentPosition > 0) {
+                mPlaybackService.addHistory(mCurrentPosition, false);// 在非按返回键退出应用时需添加历史记录，此时无需发送至服务器，addHistory不能统一写到此处
+            }
+        }
 //        if (sharpSetupKeyClick || mounted) {
 //            sharpSetupKeyClick = false;
 //            mounted = false;
