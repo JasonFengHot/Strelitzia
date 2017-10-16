@@ -1712,14 +1712,18 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
     private void hideBuffer() {
         // buffer消失，就需要remove50秒延时消息
         removeBufferingLongTime();
-
-        if (player_buffer_layout != null && player_buffer_layout.getVisibility() == View.VISIBLE) {
-            player_buffer_layout.setVisibility(View.GONE);
-            player_buffer_text.setText(getString(R.string.loading_text));
-            if (animationDrawable != null && animationDrawable.isRunning()) {
-                animationDrawable.stop();
+        try {
+            if (player_buffer_layout != null && player_buffer_layout.getVisibility() == View.VISIBLE) {
+                player_buffer_layout.setVisibility(View.GONE);
+                player_buffer_text.setText(getString(R.string.loading_text));
+                if (animationDrawable != null && animationDrawable.isRunning()) {
+                    animationDrawable.stop();
+                }
             }
+        }catch (Exception e){
+            e.printStackTrace();
         }
+
 
     }
 
