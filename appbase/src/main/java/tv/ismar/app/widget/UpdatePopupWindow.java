@@ -97,10 +97,10 @@ public class UpdatePopupWindow extends PopupWindow implements View.OnHoverListen
                 AppUtils.installApp(path, "tv.ismar.daisy.provider");
 
                 SharedPreferences sp=context.getSharedPreferences("Daisy",0);
-                if(sp!=null&&!IsmartvActivator.getInstance().isLogin()) {
-                    SharedPreferences.Editor editor = sp.edit();
-                    editor.putBoolean("fristopne", true).commit();
-                }
+//                if(sp!=null&&!IsmartvActivator.getInstance().isLogin()) {
+//                    SharedPreferences.Editor editor = sp.edit();
+//                    editor.putBoolean("fristopne", true).commit();
+//                }
             }
         });
         update_later_btn.setOnClickListener(new View.OnClickListener() {

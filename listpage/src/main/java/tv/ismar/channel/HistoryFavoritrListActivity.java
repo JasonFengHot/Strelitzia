@@ -157,6 +157,7 @@ public class HistoryFavoritrListActivity extends BaseActivity implements OnItemC
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
+                    if(recyclerView.getChildAt(0)!=null)
                     recyclerView.getChildAt(0).requestFocusFromTouch();
                 }
             }, 500);
@@ -234,7 +235,7 @@ public class HistoryFavoritrListActivity extends BaseActivity implements OnItemC
                 },200);
             }
         }else{
-            if(modelName.equals("subitem")){
+            if(!modelName.equals("subitem")){
                item_pk=0;
             }
             removeSub = skyService.apiHistoryRemove(pk, item_pk).subscribeOn(Schedulers.io())
