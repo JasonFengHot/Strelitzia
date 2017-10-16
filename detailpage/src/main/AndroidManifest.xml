@@ -36,7 +36,8 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".view.EpisodeActivity">
+        <activity android:name=".view.EpisodeActivity"
+            android:theme="@style/IsmartvAppUnifyBgTheme">
             <intent-filter>
                 <action android:name="tv.ismar.daisy.episode"/>
                 <category android:name="android.intent.category.DEFAULT"/>
