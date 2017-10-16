@@ -299,8 +299,11 @@ public class HorizontalTabView extends HorizontalScrollView
                         @Override
                         public void run() {
                             TextView itemView = (TextView) v;
-                            itemView.setTextColor(textSelectColor);
-                            itemView.setBackgroundResource(android.R.color.transparent);
+                            int position = (int) itemView.getTag();
+                            if (position == mSelectedIndex){
+                                itemView.setTextColor(textSelectColor);
+                                itemView.setBackgroundResource(android.R.color.transparent);
+                            }
                         }
                     }, 50);
                 }
