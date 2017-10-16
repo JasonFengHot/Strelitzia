@@ -379,7 +379,7 @@ public class HorizontalTabView extends HorizontalScrollView
             // 获取焦点
             if (!view.hasFocus()){
                 view.requestFocus();
-                return;
+//                return;
             }
             zoomIn(view);
             view.setTextColor(textFocusColor);
