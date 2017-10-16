@@ -7,6 +7,7 @@ import android.content.IntentFilter;
 import android.graphics.PixelFormat;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -91,7 +92,14 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         findViews();
         initListener();
         initData();
+        new Handler().postDelayed(mRunnable,1000);
     }
+    private Runnable mRunnable=new Runnable() {
+        @Override
+        public void run() {
+            showLoginHint();
+        }
+    };
 
     @Override
     protected void onResume() {
@@ -371,6 +379,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         super.onDestroy();
         unregisterReceiver(mTimeTickBroadcast);
         mTimeTickBroadcast = null;
+
     }
 
     @Override
