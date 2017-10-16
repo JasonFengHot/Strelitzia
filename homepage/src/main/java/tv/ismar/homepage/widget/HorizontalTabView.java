@@ -286,20 +286,26 @@ public class HorizontalTabView extends HorizontalScrollView
     }
 
     @Override
-    public boolean onKey(View v, int keyCode, KeyEvent event) {
+    public boolean onKey(final View v, int keyCode, KeyEvent event) {
         Log.d(TAG, "onkey: " + "view: " + v + " event: " + event);
         switch (event.getAction()) {
             case KeyEvent.ACTION_DOWN:
                 isOnKeyDown = true;
                 isOnViewClick = false;
-                //按下按键,频道栏获取焦点
                 Log.d(TAG, "onKey ACTION_DOWN");
                 if (keyCode == KeyEvent.KEYCODE_DPAD_DOWN || keyCode == KeyEvent.KEYCODE_DPAD_UP) {
-
+                    Log.d(TAG, "KeyEvent.KEYCODE_DPAD_DOWN || keyCode == KeyEvent.KEYCODE_DPAD_UP");
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            TextView itemView = (TextView) v;
+                            itemView.setTextColor(textSelectColor);
+                            itemView.setBackgroundResource(android.R.color.transparent);
+                        }
+                    }, 50);
                 }
                 break;
             case KeyEvent.ACTION_UP:
-                //松开按鍵,频道栏获取焦点
                 Log.d(TAG, "onKey ACTION_UP");
                 if (keyCode == KeyEvent.KEYCODE_DPAD_DOWN || keyCode == KeyEvent.KEYCODE_DPAD_UP) {
                     TextView lastSelectedView = (TextView) linearContainer.getChildAt(mSelectedIndex);
