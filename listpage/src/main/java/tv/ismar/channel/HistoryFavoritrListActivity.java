@@ -148,8 +148,6 @@ public class HistoryFavoritrListActivity extends BaseActivity implements OnItemC
     }
 
     private void loadData(){
-        if(mlists.size()>1)
-        mlists.remove(mlists.size()-1);
         adapter=new HistoryFavoriteListAdapter(HistoryFavoritrListActivity.this,mlists,type,source);
         adapter.setItemClickListener(HistoryFavoritrListActivity.this);
         adapter.setItemFocusedListener(HistoryFavoritrListActivity.this);
@@ -203,12 +201,7 @@ public class HistoryFavoritrListActivity extends BaseActivity implements OnItemC
         }
         if(source.equals("edit")){
             if(type==1){
-                if(!entity.getModel_name().equals("subitem")){
-                    deleteHistory(entity.getItem_pk(),0,position);
-                }else{
-                    deleteHistory(entity.getItem_pk(),pk,position);
-                }
-
+                deleteHistory(entity.getItem_pk(),pk,position,entity.getModel_name());
             }else{
                 deleteBookmark(pk,position);
             }
@@ -224,7 +217,7 @@ public class HistoryFavoritrListActivity extends BaseActivity implements OnItemC
             }
         }
     }
-    private void deleteHistory(int pk, int item_pk, final int position){
+    private void deleteHistory(int pk, int item_pk, final int position,String modelName){
         if(!IsmartvActivator.getInstance().isLogin()) {
             DaisyUtils.getHistoryManager(this).deleteHistory(mlists.get(position).getUrl(),"no");
             mlists.remove(position);
@@ -241,6 +234,9 @@ public class HistoryFavoritrListActivity extends BaseActivity implements OnItemC
                 },200);
             }
         }else{
+            if(modelName.equals("subitem")){
+               item_pk=0;
+            }
             removeSub = skyService.apiHistoryRemove(pk, item_pk).subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new BaseObserver<ResponseBody>() {
