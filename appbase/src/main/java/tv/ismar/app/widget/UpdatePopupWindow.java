@@ -75,6 +75,7 @@ public class UpdatePopupWindow extends PopupWindow implements View.OnHoverListen
         if (force_upgrade){
             update_later_btn.setVisibility(View.GONE);
             update_now_btn.setNextFocusRightId(update_later_btn.getId());
+        }else{
             setBackgroundDrawable(context.getResources().getDrawable(R.drawable.transparent));
         }
 
