@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.Rect;
 import android.os.Handler;
 import android.os.Message;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -39,13 +38,30 @@ public class FilterConditionGroupView extends LinearLayout implements View.OnHov
     private int totalwidth;
     private int rightLimit=0;
     private boolean canScroll=false;
+    private Rect rect;
 
     public Handler handler=new Handler(new Handler.Callback() {
         @Override
         public boolean handleMessage(Message msg) {
             if(msg.arg1!=-1){
-                filter_condition_radio_group.getChildAt(msg.arg1).requestFocus();
-                filter_condition_radio_group.getChildAt(msg.arg1).requestFocusFromTouch();
+                if(msg.arg1==0){
+                    for (int i = values.size()-1; i >=0 ; i--) {
+                        if(filter_condition_radio_group.getChildAt(i).getLocalVisibleRect(rect)){
+                            filter_condition_radio_group.getChildAt(i).requestFocus();
+                            filter_condition_radio_group.getChildAt(i).requestFocusFromTouch();
+                            break;
+                        }
+                    }
+                }else if(msg.arg1==1){
+                    for (int i = 0; i<values.size() ; i++) {
+                        if(filter_condition_radio_group.getChildAt(i).getLocalVisibleRect(rect)){
+                            filter_condition_radio_group.getChildAt(i).requestFocus();
+                            filter_condition_radio_group.getChildAt(i).requestFocusFromTouch();
+                            break;
+                        }
+                    }
+                }
+
             }else {
                 findViewById(filter_condition_radio_group.getCheckedRadioButtonId()).requestFocus();
                 findViewById(filter_condition_radio_group.getCheckedRadioButtonId()).requestFocusFromTouch();
@@ -55,22 +71,13 @@ public class FilterConditionGroupView extends LinearLayout implements View.OnHov
     });
     private View left_layer;
     private View right_layer;
-    public void setNextUpView(View nextUpView) {
-        this.nextUpView = nextUpView;
-    }
-
-    public void setNextDownView(View nextDownView) {
-        this.nextDownView = nextDownView;
-    }
-
-    private View nextUpView;
-    private View nextDownView;
 
     public FilterConditionGroupView(Context context,List<List<String>> values,String label) {
         super(context);
         this.label = label;
         this.values = values;
         initView(context);
+        rect=new Rect(filter_condition_radio_group.getLeft(),filter_condition_radio_group.getTop(),filter_condition_radio_group.getLeft()+filter_condition_radio_group.getWidth(),filter_condition_radio_group.getTop()+filter_condition_radio_group.getHeight());
         initData(context);
 
     }
@@ -110,45 +117,19 @@ public class FilterConditionGroupView extends LinearLayout implements View.OnHov
                     v.requestFocusFromTouch();
                 }
             });
-            radio.setOnKeyListener(new OnKeyListener() {
-                @Override
-                public boolean onKey(View v, int keyCode, KeyEvent event) {
-                    if (event.getAction() == KeyEvent.ACTION_DOWN) {
-                        if (keyCode == 20&&nextDownView!=null) {
-                            ((FilterConditionGroupView) nextDownView).handler.sendEmptyMessage(0);
-                            return true;
-                        } else if (keyCode == 19&&nextUpView!=null) {
-                            ((FilterConditionGroupView) nextUpView).handler.sendEmptyMessage(0);
-                            return true;
-                        } else {
-                            return false;
-                        }
-                    } else {
-                        return false;
-                    }
-                }
-
-            });
             radio.setOnFocusChangeListener(new OnFocusChangeListener() {
                 @Override
                 public void onFocusChange(View v, boolean hasFocus) {
-                    if(filter_condition_group_scrollview.getScrollX()>0){
-                        filter_condition_group_arrow_left.setVisibility(View.VISIBLE);
-                        left_layer.setVisibility(View.VISIBLE);
-                    }else{
-                        filter_condition_group_arrow_left.setVisibility(View.INVISIBLE);
-                    }
-                    if(canScroll) {
-                        if (finalI == values.size() - 1) {
+                    if(hasFocus&&canScroll){
+                        if(filter_condition_radio_group.getChildAt(0).getLocalVisibleRect(rect)){
+                            filter_condition_group_arrow_left.setVisibility(View.INVISIBLE);
+                        }else{
+                            filter_condition_group_arrow_left.setVisibility(View.VISIBLE);
+                        }
+                        if(filter_condition_radio_group.getChildAt(values.size()-1).getLocalVisibleRect(rect)){
                             filter_condition_group_arrow_right.setVisibility(View.INVISIBLE);
-                            rightLimit = filter_condition_group_scrollview.getScrollX();
-                        } else {
-                            if (rightLimit != 0 && filter_condition_group_scrollview.getScrollX() == rightLimit) {
-                                filter_condition_group_arrow_right.setVisibility(View.INVISIBLE);
-                            } else {
-                                filter_condition_group_arrow_right.setVisibility(View.VISIBLE);
-                                right_layer.setVisibility(View.VISIBLE);
-                            }
+                        }else{
+                            filter_condition_group_arrow_right.setVisibility(View.VISIBLE);
                         }
                     }
                     if(hasFocus&&canScroll){
@@ -175,11 +156,9 @@ public class FilterConditionGroupView extends LinearLayout implements View.OnHov
         filter_condition_group_arrow_right.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                filter_condition_group_arrow_left.setVisibility(View.VISIBLE);
-                filter_condition_group_arrow_right.setVisibility(View.INVISIBLE);
                 filter_condition_group_scrollview.pageScroll(View.FOCUS_RIGHT);
                 Message msg=new Message();
-                msg.arg1=values.size()-1;
+                msg.arg1=0;
                 handler.sendMessageDelayed(msg,300);
             }
         });
@@ -188,11 +167,9 @@ public class FilterConditionGroupView extends LinearLayout implements View.OnHov
 
             @Override
             public void onClick(View v) {
-                filter_condition_group_arrow_right.setVisibility(View.VISIBLE);
-                filter_condition_group_arrow_left.setVisibility(View.INVISIBLE);
                 filter_condition_group_scrollview.pageScroll(View.FOCUS_LEFT);
                 Message msg=new Message();
-                msg.arg1=0;
+                msg.arg1=1;
                 handler.sendMessageDelayed(msg,300);
             }
         });
@@ -221,10 +198,24 @@ public class FilterConditionGroupView extends LinearLayout implements View.OnHov
                                                                                                          }
                                                                                                      }
                                                                                                      if(totalwidth>context.getResources().getDimensionPixelOffset(R.dimen.filter_condition_group_recycler_w)){
-                                                                                                         filter_condition_group_arrow_right.setVisibility(View.VISIBLE);
                                                                                                          right_layer.setVisibility(View.VISIBLE);
                                                                                                          canScroll=true;
-                                                                                                     }
+                                                                                                     }else{
+                                                                                                            filter_condition_group_arrow_right.setVisibility(View.INVISIBLE);
+                                                                                                             RadioButton view = new RadioButton(context);
+                                                                                                             RadioGroup.LayoutParams params=new RadioGroup.LayoutParams(RadioGroup.LayoutParams.MATCH_PARENT, RadioGroup.LayoutParams.MATCH_PARENT);
+                                                                                                             view.setLayoutParams(params);
+                                                                                                             view.setClickable(false);
+                                                                                                             view.setId(R.id.radio+values.size());
+                                                                                                             view.setOnFocusChangeListener(new OnFocusChangeListener() {
+                                                                                                                 @Override
+                                                                                                                 public void onFocusChange(View v, boolean hasFocus) {
+                                                                                                                     if(hasFocus)
+                                                                                                                     filter_condition_radio_group.getChildAt(values.size()-1).requestFocus();
+                                                                                                                 }
+                                                                                                             });
+                                                                                                         filter_condition_radio_group.addView(view);
+                                                                                                         }
                                                                                                  }
 
                                                                                              });

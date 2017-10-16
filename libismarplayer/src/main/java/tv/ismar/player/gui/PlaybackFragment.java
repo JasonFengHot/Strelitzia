@@ -1671,7 +1671,6 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
             }
         });
     }
-
     private void showBuffer(String msg) {
         LogUtils.d(TAG, "showBuffer:" + msg + " " + mPlaybackService);
         if (mIsExiting) {
@@ -1683,7 +1682,11 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
             mPlaybackService.addHistory(mCurrentPosition, false);
             hidePanel();
             timerStop();
-            ((BaseActivity) getActivity()).showNoNetConnectDialog(null);
+            try {
+                ((BaseActivity) getActivity()).showNoNetConnectDialog(null);
+            }catch (Exception e){
+                e.printStackTrace();
+            }
             return;
         }
         if ((mIsOnPaused && !isSeeking) || isPopWindowShow()) {
@@ -1712,14 +1715,18 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
     private void hideBuffer() {
         // buffer消失，就需要remove50秒延时消息
         removeBufferingLongTime();
-
-        if (player_buffer_layout != null && player_buffer_layout.getVisibility() == View.VISIBLE) {
-            player_buffer_layout.setVisibility(View.GONE);
-            player_buffer_text.setText(getString(R.string.loading_text));
-            if (animationDrawable != null && animationDrawable.isRunning()) {
-                animationDrawable.stop();
+        try {
+            if (player_buffer_layout != null && player_buffer_layout.getVisibility() == View.VISIBLE) {
+                player_buffer_layout.setVisibility(View.GONE);
+                player_buffer_text.setText(getString(R.string.loading_text));
+                if (animationDrawable != null && animationDrawable.isRunning()) {
+                    animationDrawable.stop();
+                }
             }
+        }catch (Exception e){
+            e.printStackTrace();
         }
+
 
     }
 
