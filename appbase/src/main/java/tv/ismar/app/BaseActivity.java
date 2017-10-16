@@ -460,7 +460,6 @@ public class BaseActivity extends AppCompatActivity {
                 && !currentActivityName.equals("tv.ismar.daisy.PlayFinishedActivity")) {
             updateBundle = stack.pop();
             updatePopupWindow = new UpdatePopupWindow(this, updateBundle);
-            updatePopupWindow.setBackgroundDrawable(getResources().getDrawable(R.drawable.transparent));
             updatePopupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
             updatePopupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
                 @Override
