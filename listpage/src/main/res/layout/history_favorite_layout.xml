@@ -4,12 +4,10 @@
     android:layout_height="match_parent"
     android:clipToPadding="false"
     android:clipChildren="false"
+    android:focusableInTouchMode="true"
+    android:focusable="true"
+    android:id="@+id/empty"
     >
-   <View
-       android:layout_width="match_parent"
-       android:layout_height="match_parent"
-       android:id="@+id/empty"
-       />
     <RelativeLayout
         android:id="@+id/title_layout"
         android:layout_width="match_parent"
