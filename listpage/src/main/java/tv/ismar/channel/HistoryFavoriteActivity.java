@@ -98,6 +98,7 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
     private TextView favorite_title,history_title;
     private ImageView first_line_image,second_line_image;
     private ImageView edit_shadow;
+    private View empty;
     private Button history_left_arrow,history_right_arrow,favorite_left_arrow,favorite_right_arrow;
     private HashMap<String, Object> mDataCollectionProperties;
     private Boolean isEdit=false;
@@ -115,6 +116,8 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
         favorite_left_arrow= (Button) findViewById(R.id.favorite_left_arrow);
         favorite_right_arrow= (Button) findViewById(R.id.favorite_right_arrow);
 
+        empty=findViewById(R.id.empty);
+        empty.setOnHoverListener(this);
         historyRecycler= (RecyclerViewTV) findViewById(R.id.history_list);
         favoriteRecycler= (RecyclerViewTV) findViewById(R.id.favorite_list);
         favorite_layout= (LinearLayout) findViewById(R.id.favorite_layout);
@@ -782,6 +785,7 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
         history_right_arrow.setFocusable(false);
         favorite_right_arrow.setFocusable(false);
         favorite_left_arrow.setFocusable(false);
+        empty.setFocusable(false);
     }
 
 
