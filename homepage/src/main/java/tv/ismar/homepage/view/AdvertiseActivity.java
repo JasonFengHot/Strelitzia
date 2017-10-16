@@ -186,7 +186,7 @@ public class AdvertiseActivity extends BaseActivity implements MediaPlayer.OnPre
             if (mPicImg.getVisibility() != View.VISIBLE) {
                 mVideoView.setVisibility(View.GONE);
                 mPicImg.setVisibility(View.VISIBLE);
-                mSeekBar.setVisibility(View.VISIBLE);
+              //  mSeekBar.setVisibility(View.VISIBLE);
             }
             Picasso.with(this)
                     .load(mAdsList.get(index).location)
