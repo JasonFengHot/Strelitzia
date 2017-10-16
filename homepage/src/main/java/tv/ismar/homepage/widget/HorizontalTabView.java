@@ -5,7 +5,6 @@ import android.animation.AnimatorInflater;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
-import android.graphics.Rect;
 import android.os.Handler;
 import android.os.Message;
 import android.util.AttributeSet;
@@ -147,10 +146,14 @@ public class HorizontalTabView extends HorizontalScrollView
             }
         });
 
+        TextView firstItemView = (TextView) linearContainer.getChildAt(0);
+        firstItemView.setNextFocusLeftId(firstItemView.getId());
+
 
         TextView initFocus = (TextView) linearContainer.getChildAt(initSelected);
         if (initFocus != null) {
             mSelectedIndex = initSelected;
+            mFocusedIndex = initSelected;
             changeViewStatus(initFocus, ViewStatus.Focused);
         }
     }
@@ -286,6 +289,7 @@ public class HorizontalTabView extends HorizontalScrollView
 
     @Override
     public boolean onKey(View v, int keyCode, KeyEvent event) {
+        Log.d(TAG, "onkey: " + "view: " + v + " event: " + event);
         switch (event.getAction()) {
             case KeyEvent.ACTION_DOWN:
                 isOnKeyDown = true;
@@ -373,6 +377,10 @@ public class HorizontalTabView extends HorizontalScrollView
 
         if (isFocus) {
             // 获取焦点
+            if (!view.hasFocus()){
+                view.requestFocus();
+                return;
+            }
             zoomIn(view);
             view.setTextColor(textFocusColor);
             view.setBackgroundResource(R.drawable.channel_indicator_focus);
@@ -416,6 +424,7 @@ public class HorizontalTabView extends HorizontalScrollView
 
         } else {
 
+            Logger.t(TAG).d("changeViewDPadFocusStatus: 丢失焦点" + " isOnKeyDown: " + isOnKeyDown + " isDpad:" + isDpad + " isOnViewClick:" + isOnViewClick);
             //处理选中态
             //无向键
             if ((isOnKeyDown && isDpad)|| isOnViewClick){
@@ -571,21 +580,9 @@ public class HorizontalTabView extends HorizontalScrollView
         }
     }
 
-    @Override
-    public boolean requestChildRectangleOnScreen(View child, Rect rectangle, boolean immediate) {
-        Log.d(TAG, "requestChildRectangleOnScreen");
-        return super.requestChildRectangleOnScreen(child, rectangle, immediate);
-    }
-
+    //空鼠获取焦点时，禁止滑动
 //    @Override
 //    public void requestChildFocus(View child, View focused) {
-//        Log.d(TAG, "requestChildFocus child hovered: "  + focused);
-//        Log.d(TAG, "requestChildFocus child hovered: "  + focused.isHovered());
-////        super.requestChildFocus(child, focused);
-//        if (isOnKeyDown){
-//            super.requestChildFocus(child, focused);
-//        }else {
-//
-//        }
+//        super.requestChildFocus(child, linearContainer);
 //    }
 }
