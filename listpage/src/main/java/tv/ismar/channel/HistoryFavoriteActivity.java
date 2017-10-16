@@ -160,6 +160,12 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
         history_left_arrow.setOnHoverListener(this);
         favorite_right_arrow.setOnHoverListener(this);
         favorite_left_arrow.setOnHoverListener(this);
+
+        history_right_arrow.setOnClickListener(this);
+        history_left_arrow.setOnClickListener(this);
+        favorite_right_arrow.setOnClickListener(this);
+        favorite_left_arrow.setOnClickListener(this);
+
         historyRecycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
@@ -441,6 +447,9 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
                     edit_history.setFocusableInTouchMode(true);
                 }
             },600);
+            if(isEdit){
+                delet_history.requestFocusFromTouch();
+            }
         }else{
             if(favoriteLists.size()>0){
                 no_data.setVisibility(View.GONE);
@@ -472,6 +481,9 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
                         edit_history.setFocusableInTouchMode(true);
                     }
                 },500);
+                if(isEdit){
+                    delet_history.requestFocusFromTouch();
+                }
             }else{
                 if(isEdit)
                     editRestore();
@@ -481,6 +493,7 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
         }
         edit_history.setFocusable(true);
         edit_history.setFocusableInTouchMode(true);
+
     }
     private void setHistoryListen(){
         historyAdapter.setItemFocusedListener(HistoryFavoriteActivity.this);
@@ -538,6 +551,14 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
                 intent.putExtra("List",(Serializable) allfavoriteLists);
             }
             startActivity(intent);
+        }else if(id==R.id.favorite_right_arrow){
+            favoriteRecycler.smoothScrollBy(getResources().getDimensionPixelOffset(R.dimen.history_250),0);
+        }else if(id==R.id.favorite_left_arrow){
+            favoriteRecycler.smoothScrollBy(-getResources().getDimensionPixelOffset(R.dimen.history_250),0);
+        }else if(id==R.id.history_left_arrow){
+            historyRecycler.smoothScrollBy(-getResources().getDimensionPixelOffset(R.dimen.history_250),0);
+        }else if(id==R.id.history_right_arrow){
+            historyRecycler.smoothScrollBy(getResources().getDimensionPixelOffset(R.dimen.history_250),0);
         }
     }
 
