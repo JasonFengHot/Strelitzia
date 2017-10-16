@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.orhanobut.logger.Logger;
 import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
 
@@ -109,6 +110,7 @@ public class DetailPageViewModel extends BaseObservable {
         notifyPropertyChanged(BR.bookmarkVisibility);
         notifyPropertyChanged(BR.subscribeTextVisibility);
         notifyPropertyChanged(BR.cpLogoVisibility);
+        notifyPropertyChanged(BR.cpLogoUrl);
 
         if (historyManager == null) {
             historyManager = VodApplication.getModuleAppContext().getModuleHistoryManager();
