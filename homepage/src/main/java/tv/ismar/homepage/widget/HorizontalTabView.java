@@ -580,9 +580,9 @@ public class HorizontalTabView extends HorizontalScrollView
         }
     }
 
-    //空鼠获取焦点时，禁止滑动
-//    @Override
-//    public void requestChildFocus(View child, View focused) {
-//        super.requestChildFocus(child, linearContainer);
-//    }
+//    空鼠获取焦点时，禁止滑动
+    @Override
+    public void requestChildFocus(View child, View focused) {
+        super.requestChildFocus(child, linearContainer);
+    }
 }
