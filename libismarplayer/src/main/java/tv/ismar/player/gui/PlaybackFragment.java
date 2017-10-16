@@ -1671,7 +1671,6 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
             }
         });
     }
-
     private void showBuffer(String msg) {
         LogUtils.d(TAG, "showBuffer:" + msg + " " + mPlaybackService);
         if (mIsExiting) {
@@ -1683,7 +1682,11 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
             mPlaybackService.addHistory(mCurrentPosition, false);
             hidePanel();
             timerStop();
-            ((BaseActivity) getActivity()).showNoNetConnectDialog(null);
+            try {
+                ((BaseActivity) getActivity()).showNoNetConnectDialog(null);
+            }catch (Exception e){
+                e.printStackTrace();
+            }
             return;
         }
         if ((mIsOnPaused && !isSeeking) || isPopWindowShow()) {

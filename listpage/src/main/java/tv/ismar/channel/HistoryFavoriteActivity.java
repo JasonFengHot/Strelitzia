@@ -384,9 +384,15 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
     }
 
     private void loadData(){
+        favorite_left_arrow.setVisibility(View.GONE);
+        history_left_arrow.setVisibility(View.GONE);
         if(historyLists.size()>0){
             no_data.setVisibility(View.GONE);
             history_relativelayout.setVisibility(View.VISIBLE);
+
+            if(historyLists.size()>4){
+                history_right_arrow.setVisibility(View.VISIBLE);
+            }
             Log.i("favoriteaci","isEdit: "+isEdit);
             if(!isEdit)
             edit_history.setVisibility(View.VISIBLE);
@@ -403,7 +409,9 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
                 favorite_title.setVisibility(View.VISIBLE);
                 if(isEdit)
                 delete_favorite.setVisibility(View.VISIBLE);
-
+                if(favoriteLists.size()>4){
+                    favorite_right_arrow.setVisibility(View.VISIBLE);
+                }
                 second_line_image.setBackgroundResource(R.drawable.favorite_delete_image);
                 favoritAdapter=new HistoryListAdapter(HistoryFavoriteActivity.this,favoriteLists,"favorite");
                 favoritAdapter.setItemFocusedListener(HistoryFavoriteActivity.this);
@@ -420,6 +428,7 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
                 historyRecycler.setAdapter(historyAdapter);
 
             }else{
+                favorite_right_arrow.setVisibility(View.GONE);
                 RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,getResources().getDimensionPixelSize(R.dimen.history_473));
                 lp.setMargins(0,getResources().getDimensionPixelSize(R.dimen.history_155),0,0);
                 history_relativelayout.setLayoutParams(lp);
@@ -465,6 +474,9 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
                 editLp.setMargins(getResources().getDimensionPixelSize(R.dimen.history_100),getResources().getDimensionPixelSize(R.dimen.history_299),0,0);
                 delet_history.setLayoutParams(editLp);
                 delete_favorite.setVisibility(View.GONE);
+                if(favoriteLists.size()>4){
+                    history_right_arrow.setVisibility(View.VISIBLE);
+                }
 
                 history_title.setText("收藏");
                 history_title.setVisibility(View.VISIBLE);
