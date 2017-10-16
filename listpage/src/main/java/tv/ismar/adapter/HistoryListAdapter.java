@@ -138,6 +138,10 @@ public class HistoryListAdapter extends RecyclerView.Adapter<HistoryListAdapter.
                         YoYo.with(Techniques.HorizontalShake).duration(1000).playOn(holder.item_detail);
                         return true;
                     }
+                    if(position==0&&keyCode==21){
+                        YoYo.with(Techniques.HorizontalShake).duration(1000).playOn(holder.item_detail);
+                        return true;
+                    }
                 }
                 return false;
             }
