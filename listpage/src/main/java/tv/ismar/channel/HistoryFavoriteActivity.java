@@ -530,7 +530,7 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
             intent.putExtra("List",(Serializable) favoriteLists);
             startActivity(intent);
         }else if(id==R.id.history_edit){
-            if(historyLists.size()>1) {
+            if(historyLists.size()>0) {
                 intent.putExtra("type", 1);
                 intent.putExtra("List", (Serializable) historyLists);
             }else{
@@ -761,6 +761,7 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
                         HistoryFavoriteEntity item = getItem(history);
                         allhistoryLists.add(item);
                     }
+                    Log.i("listSize","allhistoryLists: "+allhistoryLists.size()+"");
                     srotHistoryFavoriteList(allhistoryLists,historyLists);
                 }
             } catch (Exception e) {
