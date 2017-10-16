@@ -579,11 +579,6 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
                             //筛选条件popup焦点控制
                             String conditionsForLog = "";
                             for (int i = 0; i < filter_conditions.getChildCount(); i++) {
-                                FilterConditionGroupView filter = (FilterConditionGroupView) filter_conditions.getChildAt(i);
-                                if (filter_conditions.getChildAt(i - 1) != null)
-                                    filter.setNextUpView(filter_conditions.getChildAt(i - 1));
-                                if (filter_conditions.getChildAt(i + 1) != null)
-                                    filter.setNextDownView(filter_conditions.getChildAt(i + 1));
                                 conditionsForLog += ";";
                             }
                             AppConstant.purchase_entrance_keyword = conditionsForLog.substring(0, conditionsForLog.lastIndexOf(";"));
@@ -641,8 +636,6 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
         no_limit.add("");
         no_limit.add("全部");
         values.add(0,no_limit);
-        values.addAll(values);
-        values.addAll(values);
         final FilterConditionGroupView filterConditionGroupView=new FilterConditionGroupView(this,values,label);
         filterConditionGroupView.filter_condition_radio_group.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
