@@ -42,7 +42,7 @@ public class HorizontalTabView extends HorizontalScrollView
     private int tabSpace;
     private int startEndPadding;
     private int textSize;
-    private int defaultTextColor;
+    private int textDefaultColor;
     private int textSelectColor;
     private int textFocusColor;
 
@@ -89,7 +89,7 @@ public class HorizontalTabView extends HorizontalScrollView
                         R.styleable.HorizontalTabView_tvTabStartEndPadding, dp2px(16));
         textSize =
                 typedArray.getDimensionPixelSize(R.styleable.HorizontalTabView_tvTabTextSize, dp2px(18));
-        defaultTextColor =
+        textDefaultColor =
                 typedArray.getColor(R.styleable.HorizontalTabView_tvTabTextColor, Color.WHITE);
         textSelectColor =
                 typedArray.getColor(R.styleable.HorizontalTabView_tvTabSelectTextColor, Color.WHITE);
@@ -176,7 +176,7 @@ public class HorizontalTabView extends HorizontalScrollView
         item.setTag(i);
         item.setText(label);
         item.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
-        item.setTextColor(defaultTextColor);
+        item.setTextColor(textDefaultColor);
         item.setFocusable(true);
         item.setClickable(true);
         item.setOnClickListener(this);
@@ -250,7 +250,7 @@ public class HorizontalTabView extends HorizontalScrollView
     }
 
     public void setTextColor(int textColor) {
-        this.defaultTextColor = textColor;
+        this.textDefaultColor = textColor;
     }
 
     private int dp2px(float dp) {
@@ -268,6 +268,7 @@ public class HorizontalTabView extends HorizontalScrollView
 
     @Override
     public void onFocusChange(View v, boolean hasFocus) {
+        Log.d("onFocusChange","view: " + v + " hasFocus: " + hasFocus);
         TextView textView = (TextView) v;
         if (hasFocus) {
             //获取焦点的位置
@@ -347,7 +348,7 @@ public class HorizontalTabView extends HorizontalScrollView
 //            }else if (i == mFocusedIndex){
 //                ((TextView)linearContainer.getChildAt(i)).setTextColor(textFocusColor);
 //            }else {
-//                ((TextView)linearContainer.getChildAt(i)).setTextColor(defaultTextColor);
+//                ((TextView)linearContainer.getChildAt(i)).setTextColor(textDefaultColor);
 //            }
 //        }
     }
@@ -374,12 +375,17 @@ public class HorizontalTabView extends HorizontalScrollView
             // 获取焦点
             zoomIn(view);
             view.setTextColor(textFocusColor);
-            view.setBackgroundResource(android.R.color.transparent);
+            view.setBackgroundResource(R.drawable.channel_indicator_focus);
             if (!view.hasFocus()){
                 view.requestFocus();
             }
             //五向键操作
             if (onItemSelectedListener != null && ((isOnKeyDown && isDpad)|| isOnViewClick)) {
+                //清除上一次的选中效果
+                TextView textView = (TextView) linearContainer.getChildAt(mSelectedIndex);
+                if (textView != null){
+                    textView.setTextColor(textDefaultColor);
+                }
                 mSelectedIndex = (int) view.getTag();
                 Logger.t(TAG).d("onItemSelectedListener.onItemSelected(view, mSelectedIndex);");
                 //计算滑动位置
@@ -392,6 +398,14 @@ public class HorizontalTabView extends HorizontalScrollView
                     onItemSelectedListener.onItemSelected(view, mSelectedIndex);
                 }
             }else if (onItemSelectedListener != null &&!isOnKeyDown && !isDpad){
+                //处理选中态
+                if (mSelectedIndex != mFocusedIndex) {
+                    TextView textView = (TextView) linearContainer.getChildAt(mSelectedIndex);
+                    if (textView != null) {
+                        textView.setTextColor(textSelectColor);
+                    }
+                }
+
                 //空鼠获取焦点
                 if (!view.hasFocus()){
                     Logger.t(TAG).d("空鼠获取焦点");
@@ -401,10 +415,33 @@ public class HorizontalTabView extends HorizontalScrollView
             }
 
         } else {
+
+            //处理选中态
+            //无向键
+            if ((isOnKeyDown && isDpad)|| isOnViewClick){
+                view.setTextColor(textDefaultColor);
+//                TextView textView = (TextView) linearContainer.getChildAt(mSelectedIndex);
+//                if (textView != null){
+//                    textView.setTextColor(textDefaultColor);
+//                }
+            }else if (!isOnKeyDown && !isDpad){
+                Log.d(TAG,  "changeViewDPadFocusStatus: " + "空鼠丢失焦点");
+
+                //空鼠
+                int viewIndex = (int) view.getTag();
+                Log.d(TAG,  "changeViewDPadFocusStatus: " + "viewIndex: " + viewIndex);
+                Log.d(TAG,  "changeViewDPadFocusStatus: " + "mSelectedIndex: " + mSelectedIndex);
+                if (viewIndex == mSelectedIndex){
+                    view.setTextColor(textSelectColor);
+                }else {
+                    view.setTextColor(textDefaultColor);
+                }
+            }
+
+
             // 失去焦点
             view.setHovered(false);
             zoomOut(view);
-            view.setTextColor(defaultTextColor);
             view.setBackgroundResource(android.R.color.transparent);
 
             // 隐藏view获取焦点
@@ -421,7 +458,7 @@ public class HorizontalTabView extends HorizontalScrollView
 //            for (int i = 0; i < linearContainer.getChildCount(); i++) {
 //                if (i != mSelectedIndex && i != mFocusedIndex) {
 //                    TextView textView = (TextView) linearContainer.getChildAt(i);
-//                    textView.setTextColor(defaultTextColor);
+//                    textView.setTextColor(textDefaultColor);
 //                }
 //            }
 //        }
@@ -433,7 +470,7 @@ public class HorizontalTabView extends HorizontalScrollView
 //            view.setTextColor(textSelectColor);
 //        } else {
 //            view.setSelected(false);
-//            view.setTextColor(defaultTextColor);
+//            view.setTextColor(textDefaultColor);
 //        }
 //    }
 
