@@ -154,6 +154,8 @@ public class HorizontalTabView extends HorizontalScrollView
         if (initFocus != null) {
             mSelectedIndex = initSelected;
             mFocusedIndex = initSelected;
+            initFocus.requestFocus();
+            initFocus.requestFocusFromTouch();
             changeViewStatus(initFocus, ViewStatus.Focused);
         }
     }
@@ -187,12 +189,6 @@ public class HorizontalTabView extends HorizontalScrollView
         item.setOnKeyListener(this);
         item.setOnHoverListener(this);
         item.setOnTouchListener(this);
-
-//        if (i == 0) {
-//            item.setNextFocusLeftId(R.id.libbeaver_tab_item);
-//        } else if (i == dataSize - 1) {
-//            item.setNextFocusRightId(R.id.libbeaver_tab_item + dataSize - 1);
-//        }
 
         int[] size = getTextSize(item);
         mTabMargin = startEndPadding;
@@ -307,6 +303,7 @@ public class HorizontalTabView extends HorizontalScrollView
                     TextView lastSelectedView = (TextView) linearContainer.getChildAt(mSelectedIndex);
                     Log.d(TAG, "onKey ACTION_UP: " + mSelectedIndex);
                     lastSelectedView.requestFocus();
+                    lastSelectedView.requestFocusFromTouch();
                     return true;
                 }
                 break;
@@ -346,15 +343,6 @@ public class HorizontalTabView extends HorizontalScrollView
                 changeViewDPadFocusStatus(view, false, true);
                 break;
         }
-//        for (int i = 0; i < linearContainer.getChildCount(); i++){
-//            if (i == mSelectedIndex){
-//                ((TextView)linearContainer.getChildAt(i)).setTextColor(textSelectColor);
-//            }else if (i == mFocusedIndex){
-//                ((TextView)linearContainer.getChildAt(i)).setTextColor(textFocusColor);
-//            }else {
-//                ((TextView)linearContainer.getChildAt(i)).setTextColor(textDefaultColor);
-//            }
-//        }
     }
 
 
@@ -379,14 +367,11 @@ public class HorizontalTabView extends HorizontalScrollView
             // 获取焦点
             if (!view.hasFocus()){
                 view.requestFocus();
-//                return;
+                view.requestFocusFromTouch();
             }
             zoomIn(view);
             view.setTextColor(textFocusColor);
             view.setBackgroundResource(R.drawable.channel_indicator_focus);
-            if (!view.hasFocus()){
-                view.requestFocus();
-            }
             //五向键操作
             if (onItemSelectedListener != null && ((isOnKeyDown && isDpad)|| isOnViewClick)) {
                 //清除上一次的选中效果
@@ -419,6 +404,7 @@ public class HorizontalTabView extends HorizontalScrollView
                     Logger.t(TAG).d("空鼠获取焦点");
                     view.setHovered(true);
                     view.requestFocus();
+                    view.requestFocusFromTouch();
                 }
             }
 
@@ -433,7 +419,7 @@ public class HorizontalTabView extends HorizontalScrollView
 //                if (textView != null){
 //                    textView.setTextColor(textDefaultColor);
 //                }
-            }else if (!isOnKeyDown && !isDpad){
+            }else if (!isOnKeyDown){
                 Log.d(TAG,  "changeViewDPadFocusStatus: " + "空鼠丢失焦点");
 
                 //空鼠
@@ -456,32 +442,11 @@ public class HorizontalTabView extends HorizontalScrollView
             // 隐藏view获取焦点
             if (HomeActivity.mHoverView != null) {
                 HomeActivity.mHoverView.requestFocus();
+                HomeActivity.mHoverView.requestFocusFromTouch();
             }
         }
-
-
-//        if (!isDpad){
-//            if (mSelectedIndex != mFocusedIndex) {
-//                view.setTextColor(textSelectColor);
-//            }
-//            for (int i = 0; i < linearContainer.getChildCount(); i++) {
-//                if (i != mSelectedIndex && i != mFocusedIndex) {
-//                    TextView textView = (TextView) linearContainer.getChildAt(i);
-//                    textView.setTextColor(textDefaultColor);
-//                }
-//            }
-//        }
     }
 
-//    private void changeViewSelectedStatus(TextView view, boolean isSelected) {
-//        if (isSelected) {
-//            view.setSelected(true);
-//            view.setTextColor(textSelectColor);
-//        } else {
-//            view.setSelected(false);
-//            view.setTextColor(textDefaultColor);
-//        }
-//    }
 
     // 缩小
     private void zoomOut(View view) {
@@ -576,6 +541,8 @@ public class HorizontalTabView extends HorizontalScrollView
         if (initFocus != null) {
             mSelectedIndex = position;
             mFocusedIndex = position;
+            initFocus.requestFocus();
+            initFocus.requestFocusFromTouch();
             changeViewStatus(initFocus, ViewStatus.Focused);
         }
     }
