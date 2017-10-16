@@ -156,6 +156,15 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
                 delet_history.requestFocusFromTouch();
             }
         });
+        edit_shadow.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if(event.getAction()==KeyEvent.ACTION_DOWN){
+                    delet_history.requestFocusFromTouch();
+                }
+                return false;
+            }
+        });
         history_right_arrow.setOnHoverListener(this);
         history_left_arrow.setOnHoverListener(this);
         favorite_right_arrow.setOnHoverListener(this);
