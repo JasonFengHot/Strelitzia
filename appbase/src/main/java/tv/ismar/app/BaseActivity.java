@@ -339,6 +339,8 @@ public class BaseActivity extends AppCompatActivity {
                     ToastTip.showToast(BaseActivity.this,"网络连接超时，请重试");
                 }else if(httpException.code() == 504){
                     ToastTip.showToast(BaseActivity.this,"服务器繁忙，请稍后再试");
+                }else{
+                    ToastTip.showToast(BaseActivity.this,"网络连接失败，请重试");
                 }
             } else {
                 ToastTip.showToast(BaseActivity.this,"网络连接失败，请重试");
