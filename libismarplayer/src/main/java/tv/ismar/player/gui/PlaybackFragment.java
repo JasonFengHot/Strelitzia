@@ -1914,6 +1914,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
                         // 更新进度条
                         fragment.mCurrentPosition = mediaPosition;
                         fragment.player_seekBar.setProgress(fragment.mCurrentPosition);
+                        fragment.updatePlayerPause();
                     }
                     sendEmptyMessageDelayed(MSG_UPDATE_PROGRESS, 1000);// 部分机型在500ms内获取当前播放进度，与上一次相同，此处每1s更新一次进度条
                     break;
