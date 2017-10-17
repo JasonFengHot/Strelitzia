@@ -13,6 +13,7 @@ import java.util.regex.Pattern;
 import tv.ismar.app.BaseActivity;
 import tv.ismar.app.core.PageIntent;
 import tv.ismar.app.core.Source;
+import tv.ismar.app.entity.banner.BannerCarousels;
 import tv.ismar.app.entity.banner.BannerEntity;
 
 /**
@@ -81,6 +82,12 @@ public abstract class Template {
         }else {
             if (tag instanceof BannerEntity.PosterBean){
                 BannerEntity.PosterBean bean = (BannerEntity.PosterBean) tag;
+                contentModel = bean.getContent_model();
+                url = bean.getUrl();
+                itemPk = bean.getPk();
+                title = bean.getTitle();
+            }else if (tag instanceof BannerCarousels){
+                BannerCarousels bean = (BannerCarousels) tag;
                 contentModel = bean.getContent_model();
                 url = bean.getUrl();
                 itemPk = bean.getPk();

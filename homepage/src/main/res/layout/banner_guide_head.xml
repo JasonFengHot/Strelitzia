@@ -30,6 +30,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:focusableInTouchMode="false"
+                android:visibility="gone"
                 android:focusable="false"/>
 
             <ImageView
@@ -37,7 +38,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:focusable="false"
-                android:visibility="gone" />
+                android:scaleType="fitXY"
+                />
 
             <View
                 android:layout_width="match_parent"
@@ -50,7 +52,6 @@
                 android:layout_width="@dimen/guide_video_title_width"
                 android:layout_height="@dimen/guide_video_title_height"
                 android:layout_gravity="left|bottom"
-                android:text="变形金刚5:最后的骑士"
                 android:textColor="#ffffff"
                 android:singleLine="true"
                 android:textSize="@dimen/guide_video_title_size" />
