@@ -64,7 +64,17 @@
                 <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
             </activity>
+        <activity android:name="tv.ismar.channel.TransferActivity"
+            android:excludeFromRecents="true"
+            android:noHistory="true"
+            android:theme="@style/IsmartvAppUnifyBgTheme"
+            >
+            <intent-filter>
+                <action android:name="tv.ismar.daisy.Channel"/>
 
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

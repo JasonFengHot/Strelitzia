@@ -76,6 +76,8 @@ public class HistoryFavoriteListAdapter extends RecyclerView.Adapter<HistoryFavo
                 holder.title.setText(item.getTitle());
             if (!TextUtils.isEmpty(item.getAdlet_url())) {
                 Picasso.with(mContext).load(item.getAdlet_url()).into(holder.item_detail_image);
+            }else{
+                Picasso.with(mContext).load(R.drawable.list_item_preview_bg).into(holder.item_detail_image);
             }
             if (item.getExpense() != null) {
                 Picasso.with(mContext).load(VipMark.getInstance().getImage((Activity) mContext, item.getExpense().pay_type, item.getExpense().cpid)).memoryPolicy(MemoryPolicy.NO_STORE).memoryPolicy(MemoryPolicy.NO_CACHE).into(holder.vip_image);

@@ -12,6 +12,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.Button;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -61,6 +62,7 @@ public class HistoryFavoritrListActivity extends BaseActivity implements OnItemC
     private HistorySpaceItemDecoration mSpaceItemDecoration;
     private Button arrow_up,arrow_down;
     private ModuleMessagePopWindow pop;
+    private RelativeLayout parent;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -82,6 +84,8 @@ public class HistoryFavoritrListActivity extends BaseActivity implements OnItemC
     private void initView(){
         title= (TextView) findViewById(R.id.title);
         clearAll= (TextView) findViewById(R.id.clear_all);
+        parent= (RelativeLayout) findViewById(R.id.parent_view);
+        parent.setOnHoverListener(this);
         arrow_down= (Button) findViewById(R.id.poster_arrow_down);
         arrow_up= (Button) findViewById(R.id.poster_arrow_up);
         mSpaceItemDecoration=new HistorySpaceItemDecoration(getResources().getDimensionPixelSize(R.dimen.history_30),0,getResources().getDimensionPixelSize(R.dimen.history_16),getResources().getDimensionPixelOffset(R.dimen.history_44));
@@ -137,7 +141,6 @@ public class HistoryFavoritrListActivity extends BaseActivity implements OnItemC
                 }else{
                     emptyFavorite();
                 }
-                clearAll.setVisibility(View.GONE);
             }
         }, new ModuleMessagePopWindow.CancelListener() {
             @Override
@@ -314,6 +317,7 @@ public class HistoryFavoritrListActivity extends BaseActivity implements OnItemC
             DaisyUtils.getHistoryManager(this).deleteAll("no");
             mlists.clear();
             adapter.notifyDataSetChanged();
+            clearAll.setVisibility(View.GONE);
             if(pop!=null)
                 pop.dismiss();
             ToastTip.showToast(this,"您已清空所有历史记录");
@@ -331,6 +335,7 @@ public class HistoryFavoritrListActivity extends BaseActivity implements OnItemC
                         public void onNext(ResponseBody responseBody) {
                             mlists.clear();
                             adapter.notifyDataSetChanged();
+                            clearAll.setVisibility(View.GONE);
                             if(pop!=null)
                                 pop.dismiss();
                             ToastTip.showToast(HistoryFavoritrListActivity.this,"您已清空所有历史记录");
@@ -341,6 +346,7 @@ public class HistoryFavoritrListActivity extends BaseActivity implements OnItemC
     private void emptyFavorite(){
         if(!IsmartvActivator.getInstance().isLogin()){
             DaisyUtils.getFavoriteManager(this).deleteAll("no");
+            clearAll.setVisibility(View.GONE);
             mlists.clear();
             adapter.notifyDataSetChanged();
             if(pop!=null)
@@ -361,6 +367,7 @@ public class HistoryFavoritrListActivity extends BaseActivity implements OnItemC
                         public void onNext(ResponseBody responseBody) {
                             mlists.clear();
                             adapter.notifyDataSetChanged();
+                            clearAll.setVisibility(View.GONE);
                             if(pop!=null)
                                 pop.dismiss();
                             ToastTip.showToast(HistoryFavoritrListActivity.this,"您已清空所有收藏记录");
@@ -398,6 +405,8 @@ public class HistoryFavoritrListActivity extends BaseActivity implements OnItemC
         arrow_up.setFocusable(false);
         arrow_down.setFocusable(false);
         arrow_down.setFocusableInTouchMode(false);
+        parent.setFocusable(false);
+        parent.setFocusableInTouchMode(false);
         if (keyCode == 20) {
             long downTime =System.currentTimeMillis();
             if(mDownTime==0){

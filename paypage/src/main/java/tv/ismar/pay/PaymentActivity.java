@@ -293,10 +293,11 @@ public class PaymentActivity extends BaseActivity implements View.OnClickListene
                     @Override
                     public void onNext(AccountBalanceEntity entity) {
                         if (entity.getBalance().floatValue() <mItemEntity.getExpense().getPrice()) {
-                            payTypeLayout.getChildAt(0).requestFocusFromTouch();
+                            aliPayBtn.requestFocusFromTouch();
                         } else {
-                            payTypeLayout.getChildAt(1).requestFocusFromTouch();
+                            balancePayBtn.requestFocusFromTouch();
                         }
+                        tmp.setFocusable(false);
                         ishover=false;
                     }
                 });
