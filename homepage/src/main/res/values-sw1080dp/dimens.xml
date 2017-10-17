@@ -796,13 +796,13 @@
     <dimen name="child_more_mt">61dp</dimen>
     <dimen name="child_more_ml">52dp</dimen>
     <dimen name="channel_tab_width">1720dp</dimen>
-    <dimen name="channel_tab_ml">84dp</dimen>
+    <dimen name="channel_tab_ml">74dp</dimen>
     <dimen name="channel_tab_mt">29dp</dimen>
     <dimen name="channel_tab_height">52dp</dimen>
-    <dimen name="channel_tab_space">88dp</dimen>
+    <dimen name="channel_tab_space">69dp</dimen>
     <dimen name="channel_tab_height_">98dp</dimen>
     <dimen name="channel_tab_tvTab_h">52dp</dimen>
-    <dimen name="channel_tab_tvTab_space">16dp</dimen>
+    <dimen name="channel_tab_tvTab_space">26dp</dimen>
     <dimen name="banner_item_line_h">2dp</dimen>
     <dimen name="banner_item_line_ml">-50dp</dimen>
     <dimen name="banner_item_line_mr">-50dp</dimen>
