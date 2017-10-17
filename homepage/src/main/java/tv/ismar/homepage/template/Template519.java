@@ -214,7 +214,7 @@ public class Template519 extends Template implements View.OnClickListener, View.
                     goToNextPage(view);
                 }else {
                     Logger.t(TAG).d("more click: title -> %s, channel -> %s", nameKey, channelName);
-                    new PageIntent().toListPage(mContext, nameKey, channelName, 0);
+                    new PageIntent().toListPage(mContext, bannerEntity.getChannel_title(), bannerEntity.getChannel(), bannerEntity.getStyle());
                 }
             }
         });

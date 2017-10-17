@@ -288,7 +288,7 @@ public class TemplateGuide extends Template implements BaseControl.ControlCallBa
         if(position == 0){//第一张大图
             mControl.go2Detail(mFetchDataControl.mHomeEntity.bg_image);
         } else if(position == mFetchDataControl.mHomeEntity.count-1){
-            new PageIntent().toListPage(mContext, mName, mChannel, 0);
+            new PageIntent().toListPage(mContext, mFetchDataControl.mHomeEntity.channel_title, mFetchDataControl.mHomeEntity.channel, mFetchDataControl.mHomeEntity.style);
         }else {
             mControl.go2Detail(mFetchDataControl.mHomeEntity.posters.get(position));
         }

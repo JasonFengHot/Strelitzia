@@ -137,7 +137,7 @@ public class TemplateConlumn extends Template implements BaseControl.ControlCall
     @Override
     public void onItemClick(View view, int position) {
         if(position == mFetchDataControl.mHomeEntity.count-1){
-            new PageIntent().toListPage(mContext, mName, mChannel, 0);
+            new PageIntent().toListPage(mContext, mFetchDataControl.mHomeEntity.channel_title, mFetchDataControl.mHomeEntity.channel, mFetchDataControl.mHomeEntity.style);
         }else {
             mFetchDataControl.go2Detail(mFetchDataControl.mHomeEntity.posters.get(position));
         }

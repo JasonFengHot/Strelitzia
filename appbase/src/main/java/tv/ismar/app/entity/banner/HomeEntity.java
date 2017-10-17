@@ -17,4 +17,8 @@ public class HomeEntity {
     public BigImage bg_image;
     public List<BannerCarousels> carousels;//轮播列表
     public List<BannerPoster> posters;//海报列表
+    public String section_slug;  //更多跳转栏目名称
+    public int style; //跳转的列表页的横竖版标记
+    public String channel_title; //section名字
+    public String channel; //跳转列表页title
 }

@@ -197,7 +197,7 @@ public class TemplateBigSmallLd extends Template implements View.OnHoverListener
                     goToNextPage(view);
                 }else {
                     Logger.t(TAG).d("more click: title -> %s, channel -> %s", nameKey, channelName);
-                    new PageIntent().toListPage(mContext, nameKey, channelName, 1);
+                    new PageIntent().toListPage(mContext, bannerEntity.getChannel_title(), bannerEntity.getChannel(), bannerEntity.getStyle());
                 }
             }
         });
