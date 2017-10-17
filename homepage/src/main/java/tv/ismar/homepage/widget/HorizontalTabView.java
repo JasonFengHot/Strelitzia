@@ -52,6 +52,8 @@ public class HorizontalTabView extends HorizontalScrollView
     private int mTabMargin;
     private OnItemSelectedListener onItemSelectedListener;
     private OnItemClickedListener onItemClickedListener;
+    public View leftbtn;
+    public View rightbtn;
 
     public void setOnItemClickedListener(OnItemClickedListener onItemClickedListener) {
         this.onItemClickedListener = onItemClickedListener;
@@ -417,6 +419,14 @@ public class HorizontalTabView extends HorizontalScrollView
                 }
             }
             view.setTextColor(textFocusColor);
+            if(rightbtn!=null){
+                if(mFocusedIndex==linearContainer.getChildCount()-1){
+                    rightbtn.setVisibility(GONE);
+                }else{
+                    if(linearContainer.getChildCount()>10)
+                        rightbtn.setVisibility(VISIBLE);
+                }
+            }
         } else {
 
             Logger.t(TAG).d("changeViewDPadFocusStatus: 丢失焦点" + " isOnKeyDown: " + isOnKeyDown + " isDpad:" + isDpad + " isOnViewClick:" + isOnViewClick);
