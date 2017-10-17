@@ -146,7 +146,6 @@ public class TemplateGuide extends Template implements BaseControl.ControlCallBa
     private String mChannel;//频道名称（英文）
     @Override
     public void initData(Bundle bundle) {
-        checkExternalIsEnable();
         mBannerPk = bundle.getInt(BANNER_KEY);
         mName = bundle.getString(NAME_KEY);
         mChannel = bundle.getString(CHANNEL_KEY);
@@ -444,12 +443,11 @@ public class TemplateGuide extends Template implements BaseControl.ControlCallBa
                 .map(new Func1<String, Boolean>() {
                     @Override
                     public Boolean call(String s) {
-                        Log.i(TAG, "map thread: " + Thread.currentThread().getName());
                         HttpUrl parsed = HttpUrl.parse(s);
                         if (TextUtils.isEmpty(s) || parsed == null) {
                             return false;
                         }
-                        return externalStorageIsEnable;
+                        return externalStorageIsEnable();
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread())
@@ -571,46 +569,46 @@ public class TemplateGuide extends Template implements BaseControl.ControlCallBa
         mHandler.sendEmptyMessageDelayed(START_PLAYBACK, delay);
     }
 
-    private void checkExternalIsEnable() {
-        if (checkSubscription != null && !checkSubscription.isUnsubscribed()) {
-            checkSubscription.unsubscribe();
-        }
-        checkSubscription = Observable
-                .create(new Observable.OnSubscribe<String>() {
-                    @Override
-                    public void call(Subscriber<? super String> subscriber) {
-                        subscriber.onNext("check external storage");
-                        subscriber.onCompleted();
-                    }
-                })
-                .subscribeOn(Schedulers.io())
-                .observeOn(Schedulers.io())
-                .map(new Func1<String, Boolean>() {
-                    @Override
-                    public Boolean call(String aBoolean) {
-                        return externalStorageIsEnable();
-
-                    }
-                })
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<Boolean>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable throwable) {
-                        throwable.printStackTrace();
-                        externalStorageIsEnable = false;
-                    }
-
-                    @Override
-                    public void onNext(Boolean aBoolean) {
-                        externalStorageIsEnable = aBoolean;
-                    }
-                });
-    }
+//    private void checkExternalIsEnable() {
+//        if (checkSubscription != null && !checkSubscription.isUnsubscribed()) {
+//            checkSubscription.unsubscribe();
+//        }
+//        checkSubscription = Observable
+//                .create(new Observable.OnSubscribe<String>() {
+//                    @Override
+//                    public void call(Subscriber<? super String> subscriber) {
+//                        subscriber.onNext("check external storage");
+//                        subscriber.onCompleted();
+//                    }
+//                })
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(Schedulers.io())
+//                .map(new Func1<String, Boolean>() {
+//                    @Override
+//                    public Boolean call(String aBoolean) {
+//                        return externalStorageIsEnable();
+//
+//                    }
+//                })
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(new Observer<Boolean>() {
+//                    @Override
+//                    public void onCompleted() {
+//
+//                    }
+//
+//                    @Override
+//                    public void onError(Throwable throwable) {
+//                        throwable.printStackTrace();
+//                        externalStorageIsEnable = false;
+//                    }
+//
+//                    @Override
+//                    public void onNext(Boolean aBoolean) {
+//                        externalStorageIsEnable = aBoolean;
+//                    }
+//                });
+//    }
 
     //视频播放
     private boolean startPlayback() {
