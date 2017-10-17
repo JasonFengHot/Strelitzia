@@ -58,7 +58,7 @@ import static tv.ismar.homepage.control.FetchDataControl.FETCH_CHANNEL_TAB_FLAG;
  */
 
 public class HomeActivity extends BaseActivity implements View.OnClickListener, BaseControl.ControlCallBack,
-        View.OnFocusChangeListener, View.OnKeyListener, View.OnHoverListener {
+        View.OnFocusChangeListener,  View.OnHoverListener {
 
     public static final String HOME_PAGE_CHANNEL_TAG = "homepage";
     private final FetchDataControl mFetchDataControl = new FetchDataControl(this, this);//业务类引用
@@ -154,9 +154,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
 
     private void initListener(){
         mCenterRect.setOnFocusChangeListener(this);
-        mCenterRect.setOnKeyListener(this);
         mCenterRect.setOnClickListener(this);
-        mCollectionRect.setOnKeyListener(this);
         mCollectionRect.setOnFocusChangeListener(this);
         mCollectionRect.setOnClickListener(this);
         mHomeControl.setChannelChange(mChannelTab);
@@ -302,27 +300,6 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                 mLastSelectedIndex = position;
             }
         }
-    }
-
-    @Override
-    public boolean onKey(View v, int keyCode, KeyEvent event) {
-        if(v==mCollectionRect && keyCode==KeyEvent.KEYCODE_DPAD_LEFT){
-            return true;
-        }
-        if(v==mCenterRect && keyCode==KeyEvent.KEYCODE_DPAD_RIGHT){
-            return true;
-        }
-        if(v==mCollectionRect && keyCode==KeyEvent.KEYCODE_DPAD_RIGHT){
-            mCenterRect.setFocusable(true);
-            mCenterRect.requestFocus();
-            return true;
-        }
-        if(v==mCenterRect && keyCode==KeyEvent.KEYCODE_DPAD_LEFT){
-            mCollectionRect.setFocusable(true);
-            mCollectionRect.requestFocus();
-            return true;
-        }
-        return false;
     }
 
     /*时间跳动广播*/
