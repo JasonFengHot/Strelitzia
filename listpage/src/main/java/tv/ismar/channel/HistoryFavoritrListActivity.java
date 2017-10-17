@@ -141,7 +141,6 @@ public class HistoryFavoritrListActivity extends BaseActivity implements OnItemC
                 }else{
                     emptyFavorite();
                 }
-                clearAll.setVisibility(View.GONE);
             }
         }, new ModuleMessagePopWindow.CancelListener() {
             @Override
@@ -318,6 +317,7 @@ public class HistoryFavoritrListActivity extends BaseActivity implements OnItemC
             DaisyUtils.getHistoryManager(this).deleteAll("no");
             mlists.clear();
             adapter.notifyDataSetChanged();
+            clearAll.setVisibility(View.GONE);
             if(pop!=null)
                 pop.dismiss();
             ToastTip.showToast(this,"您已清空所有历史记录");
@@ -335,6 +335,7 @@ public class HistoryFavoritrListActivity extends BaseActivity implements OnItemC
                         public void onNext(ResponseBody responseBody) {
                             mlists.clear();
                             adapter.notifyDataSetChanged();
+                            clearAll.setVisibility(View.GONE);
                             if(pop!=null)
                                 pop.dismiss();
                             ToastTip.showToast(HistoryFavoritrListActivity.this,"您已清空所有历史记录");
@@ -345,6 +346,7 @@ public class HistoryFavoritrListActivity extends BaseActivity implements OnItemC
     private void emptyFavorite(){
         if(!IsmartvActivator.getInstance().isLogin()){
             DaisyUtils.getFavoriteManager(this).deleteAll("no");
+            clearAll.setVisibility(View.GONE);
             mlists.clear();
             adapter.notifyDataSetChanged();
             if(pop!=null)
@@ -365,6 +367,7 @@ public class HistoryFavoritrListActivity extends BaseActivity implements OnItemC
                         public void onNext(ResponseBody responseBody) {
                             mlists.clear();
                             adapter.notifyDataSetChanged();
+                            clearAll.setVisibility(View.GONE);
                             if(pop!=null)
                                 pop.dismiss();
                             ToastTip.showToast(HistoryFavoritrListActivity.this,"您已清空所有收藏记录");
