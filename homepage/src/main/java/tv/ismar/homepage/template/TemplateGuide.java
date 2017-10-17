@@ -613,6 +613,7 @@ public class TemplateGuide extends Template implements BaseControl.ControlCallBa
             public boolean onError(MediaPlayer mp, int what, int extra) {
 
                 Log.e(TAG, "play video error!!!");
+                playCarousel();
 
                 return true;
             }

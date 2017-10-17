@@ -31,6 +31,7 @@
             android:focusable="false"
             />
         <ImageView
+            android:id="@+id/guide_tab_left"
             android:layout_width="@dimen/banner_navigation_width"
             android:layout_height="@dimen/item_detail_detailquality_width"
             android:background="@drawable/guide_left_arrow"
@@ -38,6 +39,7 @@
             android:layout_marginBottom="@dimen/location_divider_margin_left"
             />
         <ImageView
+            android:id="@+id/guide_tab_right"
             android:layout_width="@dimen/banner_navigation_width"
             android:layout_height="@dimen/item_detail_detailquality_width"
             android:background="@drawable/guide_right_arrow"

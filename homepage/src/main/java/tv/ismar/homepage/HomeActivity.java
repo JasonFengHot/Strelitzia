@@ -16,6 +16,7 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -83,6 +84,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     public static View mHoverView;
     public static View mLastFocusView;
 
+    private ImageView left_image,right_image; // 导航左右遮罩
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate((savedInstanceState!=null)?null:savedInstanceState);
@@ -139,6 +141,12 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         mHoverView.setFocusable(true);
         mHoverView.requestFocus();
         setBackground(R.drawable.homepage_background);
+
+        right_image= (ImageView) findViewById(R.id.guide_tab_right);
+        left_image= (ImageView) findViewById(R.id.guide_tab_left);
+        mChannelTab.leftbtn=left_image;
+        mChannelTab.rightbtn=right_image;
+
     }
 
     private void setBackground(int id){
