@@ -263,8 +263,6 @@ public class HorizontalTabView extends HorizontalScrollView
         Log.d("onClick", "position:" + (int)v.getTag());
         isOnViewClick = true;
         changeViewDPadFocusStatus((TextView) v, true, true);
-        v.requestFocus();
-        v.requestFocusFromTouch();
     }
 
     @Override

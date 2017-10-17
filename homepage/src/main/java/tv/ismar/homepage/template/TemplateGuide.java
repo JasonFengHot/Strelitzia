@@ -4,25 +4,51 @@ import android.content.Context;
 import android.graphics.drawable.BitmapDrawable;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.Environment;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.blankj.utilcode.util.StringUtils;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 import com.open.androidtvwidget.leanback.recycle.LinearLayoutManagerTV;
 import com.open.androidtvwidget.leanback.recycle.RecyclerViewTV;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.MemoryPolicy;
+import com.squareup.picasso.Picasso;
 
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+
+import okhttp3.HttpUrl;
+import rx.Observable;
+import rx.Observer;
+import rx.Subscriber;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 import tv.ismar.app.BaseControl;
 import tv.ismar.app.core.PageIntent;
 import tv.ismar.app.core.SimpleRestClient;
+import tv.ismar.app.core.cache.CacheManager;
+import tv.ismar.app.core.cache.DownloadClient;
+import tv.ismar.app.entity.HomePagerEntity;
+import tv.ismar.app.entity.banner.BannerCarousels;
 import tv.ismar.app.entity.banner.HomeEntity;
 import tv.ismar.app.player.CallaPlay;
 import tv.ismar.app.util.BitmapDecoder;
+import tv.ismar.app.util.HardwareUtils;
 import tv.ismar.homepage.HomeActivity;
 import tv.ismar.homepage.OnItemClickListener;
 import tv.ismar.homepage.OnItemSelectedListener;
@@ -32,6 +58,7 @@ import tv.ismar.homepage.control.FetchDataControl;
 import tv.ismar.homepage.control.GuideControl;
 import tv.ismar.homepage.view.BannerLinearLayout;
 import tv.ismar.homepage.widget.DaisyVideoView;
+import tv.ismar.library.exception.ExceptionUtils;
 
 import static android.view.MotionEvent.BUTTON_PRIMARY;
 import static tv.ismar.homepage.fragment.ChannelFragment.BANNER_KEY;
@@ -45,12 +72,13 @@ import static tv.ismar.homepage.fragment.ChannelFragment.NAME_KEY;
  */
 
 public class TemplateGuide extends Template implements BaseControl.ControlCallBack,
-        MediaPlayer.OnCompletionListener, MediaPlayer.OnErrorListener,
-        MediaPlayer.OnPreparedListener, OnItemClickListener,
+         OnItemClickListener,
         RecyclerViewTV.PagingableListener,
         View.OnFocusChangeListener, View.OnHoverListener,
         LinearLayoutManagerTV.FocusSearchFailedListener,
         OnItemSelectedListener,View.OnClickListener {
+    private static final int CAROUSEL_NEXT = 0x0001;
+    private static final int START_PLAYBACK = 0x0002;
     private DaisyVideoView mVideoView;//导视view
     private ImageView mLoadingIg;//加载提示logo
     private TextView mVideoTitleTv;//导视标题
@@ -71,6 +99,12 @@ public class TemplateGuide extends Template implements BaseControl.ControlCallBa
     private BannerLinearLayout mBannerLinearLayout;
     private View navigationLeft;
     private View navigationRight;
+
+    private CarouselStatus mCarouselStatus = CarouselStatus.Pause;
+    private int mCurrentCarouselIndex = -1;
+    private Subscription playSubscription;
+    private boolean externalStorageIsEnable = false;
+    private Subscription checkSubscription;
 
     public TemplateGuide(Context context) {
         super(context);
@@ -112,18 +146,11 @@ public class TemplateGuide extends Template implements BaseControl.ControlCallBa
     private String mChannel;//频道名称（英文）
     @Override
     public void initData(Bundle bundle) {
+        checkExternalIsEnable();
         mBannerPk = bundle.getInt(BANNER_KEY);
         mName = bundle.getString(NAME_KEY);
         mChannel = bundle.getString(CHANNEL_KEY);
         mFetchDataControl.fetchBanners(mBannerPk, 1, false);
-        mVideoView.setTag(0);
-        mBitmapDecoder = new BitmapDecoder();
-        mBitmapDecoder.decode(mContext, R.drawable.guide_video_loading, new BitmapDecoder.Callback() {
-            @Override
-            public void onSuccess(BitmapDrawable bitmapDrawable) {
-                mLoadingIg.setBackgroundDrawable(bitmapDrawable);
-            }
-        });
     }
 
     @Override
@@ -133,13 +160,15 @@ public class TemplateGuide extends Template implements BaseControl.ControlCallBa
         navigationRight.setOnHoverListener(this);
         navigationLeft.setOnHoverListener(this);
         mHoverView.setOnHoverListener(this);
-        mVideoView.setOnCompletionListener(this);
-        mVideoView.setOnErrorListener(this);
-        mVideoView.setOnPreparedListener(this);
+//        mVideoView.setOnCompletionListener(this);
+//        mVideoView.setOnErrorListener(this);
+//        mVideoView.setOnPreparedListener(this);
         mRecycleView.setPagingableListener(this);
         mVideoView.setOnFocusChangeListener(this);
         mGuideLayoutManager.setFocusSearchFailedListener(this);
         mHeadView.findViewById(R.id.guide_head_ismartv_linearlayout).setOnHoverListener(this);
+        mVideoView.setOnClickListener(this);
+        mLoadingIg.setOnClickListener(this);
     }
 
     /*更改图标背景*/
@@ -211,7 +240,8 @@ public class TemplateGuide extends Template implements BaseControl.ControlCallBa
         if(flags == FetchDataControl.FETCH_BANNERS_LIST_FLAG){//获取单个banner业务
             HomeEntity homeEntity = (HomeEntity) args[0];
             initRecycleView(homeEntity);
-            playGuideVideo((int)mVideoView.getTag());
+//            playGuideVideo((int)mVideoView.getTag());
+            playCarousel();
             initCarousel();
         }
     }
@@ -245,31 +275,31 @@ public class TemplateGuide extends Template implements BaseControl.ControlCallBa
         }
     }
 
-    @Override
-    public void onCompletion(MediaPlayer mp) {//播放结束
-        int index = (int) mVideoView.getTag();
-        index++;
-        if(index >= mFetchDataControl.mCarousels.size()){
-            index = 0;
-        }
-        mVideoView.setTag(index);
-        playGuideVideo(index);
-        changeCarouselIcon(index);
-    }
-
-    @Override
-    public boolean onError(MediaPlayer mp, int what, int extra) {//播放出错
-        mLoadingIg.setVisibility(View.VISIBLE);
-        return false;
-    }
-
-    @Override
-    public void onPrepared(MediaPlayer mp) {//准备播放
-        mLoadingIg.setVisibility(View.GONE);
-        if (mBitmapDecoder != null && mBitmapDecoder.isAlive()) {
-            mBitmapDecoder.interrupt();
-        }
-    }
+//    @Override
+//    public void onCompletion(MediaPlayer mp) {//播放结束
+//        int index = (int) mVideoView.getTag();
+//        index++;
+//        if(index >= mFetchDataControl.mCarousels.size()){
+//            index = 0;
+//        }
+//        mVideoView.setTag(index);
+//        playGuideVideo(index);
+//        changeCarouselIcon(index);
+//    }
+//
+//    @Override
+//    public boolean onError(MediaPlayer mp, int what, int extra) {//播放出错
+//        mLoadingIg.setVisibility(View.VISIBLE);
+//        return false;
+//    }
+//
+//    @Override
+//    public void onPrepared(MediaPlayer mp) {//准备播放
+//        mLoadingIg.setVisibility(View.GONE);
+//        if (mBitmapDecoder != null && mBitmapDecoder.isAlive()) {
+//            mBitmapDecoder.interrupt();
+//        }
+//    }
 
     @Override
     public void onLoadMoreItems() {
@@ -346,6 +376,9 @@ public class TemplateGuide extends Template implements BaseControl.ControlCallBa
                 if(targetPosition==mFetchDataControl.mHomeEntity.count)
                     YoYo.with(Techniques.HorizontalShake).duration(1000).playOn(mRecycleView.getChildAt(mRecycleView.getChildCount() - 1).findViewById(R.id.tv_player_ismartv_linear_layout));
             }
+        }else if (i == R.id.guide_daisy_video_view||i == R.id.guide_video_loading_image){
+            Log.d(TAG, "onClick goToNextPage");
+            goToNextPage(v);
         }
     }
 
@@ -369,5 +402,283 @@ public class TemplateGuide extends Template implements BaseControl.ControlCallBa
                 break;
         }
         return false;
+    }
+
+    private MediaPlayer.OnCompletionListener mOnCompletionListener;
+    private MediaPlayer.OnErrorListener mVideoOnErrorListener;
+    private MediaPlayer.OnPreparedListener mOnPreparedListener;
+    private Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case START_PLAYBACK:
+                    //如果视频没有下载完，播放图片
+                    if (!startPlayback()){
+                       playImage();
+                    }
+                    break;
+                case CAROUSEL_NEXT:
+                    playCarousel();
+                    break;
+            }
+
+        }
+    };
+
+    private void playCarousel() {
+        Log.d(TAG, "Carousel Size: " + mFetchDataControl.mCarousels.size());
+        if (mCurrentCarouselIndex == mFetchDataControl.mCarousels.size() - 1) {
+            mCurrentCarouselIndex = 0;
+        } else {
+            mCurrentCarouselIndex = mCurrentCarouselIndex + 1;
+        }
+
+        changeCarouselIcon(mCurrentCarouselIndex);
+
+        Log.d(TAG, "play carousel position: " + mCurrentCarouselIndex);
+        String videoUrl = mFetchDataControl.mCarousels.get(mCurrentCarouselIndex).getVideo_url();
+
+        playSubscription = Observable.just(videoUrl)
+                .subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.io())
+                .map(new Func1<String, Boolean>() {
+                    @Override
+                    public Boolean call(String s) {
+                        Log.i(TAG, "map thread: " + Thread.currentThread().getName());
+                        HttpUrl parsed = HttpUrl.parse(s);
+                        if (TextUtils.isEmpty(s) || parsed == null) {
+                            return false;
+                        }
+                        return externalStorageIsEnable;
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<Boolean>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        playImage();
+                    }
+
+                    @Override
+                    public void onNext(Boolean enable) {
+                        if (enable) {
+                            playVideo(0);
+                        } else {
+                            playImage();
+                        }
+                    }
+                });
+    }
+
+    private boolean externalStorageIsEnable() {
+        if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+            try {
+                final File file = new File(HardwareUtils.getSDCardCachePath(), "/text/test" + ".mp4");
+                if (!file.getParentFile().exists()) {
+                    boolean result = file.getParentFile().mkdirs();
+                    if (!result) {
+                        Log.i(TAG, "externalStorageIsEnable file.getParentFile().mkdirs()");
+                        return false;
+                    }
+
+                }
+                if (!file.exists()) {
+                    boolean result = file.createNewFile();
+                    if (!result) {
+                        Log.i(TAG, "file.createNewFile()");
+                        return false;
+                    }
+                }
+
+                FileWriter fileWriter = new FileWriter(file);
+                fileWriter.write("hello world!!!");
+                fileWriter.flush();
+                fileWriter.close();
+
+                FileReader fileReader = new FileReader(file);
+                fileReader.read();
+                fileReader.close();
+                return true;
+            } catch (IOException e) {
+                ExceptionUtils.sendProgramError(e);
+                Log.i(TAG, "externalStorageIsEnable IOException: " + e.getMessage());
+                return false;
+            }
+        } else {
+            Log.i(TAG, "externalStorageIsEnable not MEDIA_MOUNTED");
+            return false;
+        }
+    }
+
+    private void playImage() {
+        if (mVideoView.getVisibility() == View.VISIBLE) {
+            mVideoView.setVisibility(View.GONE);
+        }
+
+        if (mLoadingIg.getVisibility() == View.GONE) {
+            mLoadingIg.setVisibility(View.VISIBLE);
+        }
+
+        mLoadingIg.setTag(mFetchDataControl.mCarousels.get(mCurrentCarouselIndex));
+
+        final String url = mFetchDataControl.mCarousels.get(mCurrentCarouselIndex).getVideo_image();
+        String intro = mFetchDataControl.mCarousels.get(mCurrentCarouselIndex).getIntroduction();
+        if (!StringUtils.isEmpty(intro)) {
+            mVideoTitleTv.setVisibility(View.VISIBLE);
+            mVideoTitleTv.setText(intro);
+        } else {
+            mVideoTitleTv.setVisibility(View.GONE);
+        }
+        final int pauseTime = mFetchDataControl.mCarousels.get(mCurrentCarouselIndex).getPause_time();
+        Picasso.with(mContext).load(url).error(R.drawable.list_item_preview_bg).memoryPolicy(MemoryPolicy.NO_STORE).into(mLoadingIg, new Callback() {
+
+            @Override
+            public void onSuccess() {
+                mHandler.sendEmptyMessageDelayed(CAROUSEL_NEXT, pauseTime * 1000);
+            }
+
+            @Override
+            public void onError(Exception e) {
+                mHandler.sendEmptyMessageDelayed(CAROUSEL_NEXT, pauseTime * 1000);
+            }
+        });
+    }
+
+    private void playVideo(int delay) {
+        if (mVideoView.getVisibility() == View.GONE) {
+            mVideoView.setVisibility(View.VISIBLE);
+        }
+
+        if (mLoadingIg.getVisibility() == View.VISIBLE) {
+            mLoadingIg.setVisibility(View.GONE);
+        }
+
+        mVideoView.setTag(mFetchDataControl.mCarousels.get(mCurrentCarouselIndex));
+
+        String intro = mFetchDataControl.mCarousels.get(mCurrentCarouselIndex).getIntroduction();
+        if (!StringUtils.isEmpty(intro)) {
+            mVideoTitleTv.setVisibility(View.VISIBLE);
+            mVideoTitleTv.setText(intro);
+        } else {
+            mVideoTitleTv.setVisibility(View.GONE);
+        }
+        mHandler.removeMessages(START_PLAYBACK);
+        mHandler.sendEmptyMessageDelayed(START_PLAYBACK, delay);
+    }
+
+    private void checkExternalIsEnable() {
+        if (checkSubscription != null && !checkSubscription.isUnsubscribed()) {
+            checkSubscription.unsubscribe();
+        }
+        checkSubscription = Observable
+                .create(new Observable.OnSubscribe<String>() {
+                    @Override
+                    public void call(Subscriber<? super String> subscriber) {
+                        subscriber.onNext("check external storage");
+                        subscriber.onCompleted();
+                    }
+                })
+                .subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.io())
+                .map(new Func1<String, Boolean>() {
+                    @Override
+                    public Boolean call(String aBoolean) {
+                        return externalStorageIsEnable();
+
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<Boolean>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable throwable) {
+                        throwable.printStackTrace();
+                        externalStorageIsEnable = false;
+                    }
+
+                    @Override
+                    public void onNext(Boolean aBoolean) {
+                        externalStorageIsEnable = aBoolean;
+                    }
+                });
+    }
+
+    //视频播放
+    private boolean startPlayback() {
+        Log.d(TAG, "startPlayback is invoke...");
+
+        mVideoView.setFocusable(false);
+        mVideoView.setFocusableInTouchMode(false);
+        String videoName = mChannel + "_" + mCurrentCarouselIndex + ".mp4";
+        String videoPath = CacheManager.getInstance().doRequest(mFetchDataControl.mCarousels.get(mCurrentCarouselIndex).getVideo_url(), videoName, DownloadClient.StoreType.External);
+
+        if (videoPath.startsWith("http://")){
+            return false;
+        }
+
+
+        Log.d(TAG, "current video path ====> " + videoPath);
+        CallaPlay play = new CallaPlay();
+        play.homepage_vod_trailer_play(videoPath, mChannel);
+        mLoadingIg.setImageResource(R.drawable.guide_video_loading);
+        mLoadingIg.setVisibility(View.VISIBLE);
+        stopPlayback();
+        initCallback();
+        mVideoView.setVideoPath(videoPath);
+        mVideoView.start();
+        mVideoView.setFocusable(true);
+        mVideoView.setFocusableInTouchMode(true);
+
+        return true;
+    }
+
+    private void initCallback() {
+        mOnCompletionListener = new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+                stopPlayback();
+                mHandler.sendEmptyMessage(CAROUSEL_NEXT);
+            }
+        };
+        mVideoOnErrorListener = new MediaPlayer.OnErrorListener() {
+            @Override
+            public boolean onError(MediaPlayer mp, int what, int extra) {
+
+                Log.e(TAG, "play video error!!!");
+
+                return true;
+            }
+        };
+        mOnPreparedListener = new MediaPlayer.OnPreparedListener() {
+            @Override
+            public void onPrepared(MediaPlayer mp) {
+                if (mp != null && !mp.isPlaying()) {
+                    mp.start();
+                }
+                mLoadingIg.setVisibility(View.GONE);
+            }
+        };
+
+        mVideoView.setOnCompletionListener(mOnCompletionListener);
+        mVideoView.setOnErrorListener(mVideoOnErrorListener);
+        mVideoView.setOnPreparedListener(mOnPreparedListener);
+    }
+
+    private void stopPlayback() {
+        mVideoView.stopPlayback();
+    }
+
+    private enum CarouselStatus {
+        Start,
+        Pause
     }
 }
