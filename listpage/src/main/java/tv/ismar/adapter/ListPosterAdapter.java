@@ -180,12 +180,14 @@ public class ListPosterAdapter extends RecyclerView.Adapter<ListPosterAdapter.Fi
                     }
                     if (!TextUtils.isEmpty(item.getTitle())) {
                         holder.item_horizontal_poster_title.setText(item.getTitle());
+                        holder.item_horizontal_title_bg.setVisibility(View.VISIBLE);
                     } else {
                         holder.item_horizontal_poster_title.setText("");
                         holder.item_horizontal_title_bg.setVisibility(View.INVISIBLE);
                     }
                     if (!TextUtils.isEmpty(item.getFocus())) {
                         holder.item_horizontal_poster_des.setText(item.getFocus());
+                        holder.item_horizontal_poster_des.setVisibility(View.VISIBLE);
                     }else {
                         holder.item_horizontal_poster_des.setVisibility(View.INVISIBLE);
                     }

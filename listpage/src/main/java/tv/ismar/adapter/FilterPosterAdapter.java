@@ -146,12 +146,14 @@ public class FilterPosterAdapter extends RecyclerView.Adapter<FilterPosterAdapte
                     }
                     if (!TextUtils.isEmpty(item.title)) {
                         holder.item_horizontal_poster_title.setText(item.title);
+                        holder.item_horizontal_title_bg.setVisibility(View.VISIBLE);
                     } else {
                         holder.item_horizontal_poster_title.setText("");
                         holder.item_horizontal_title_bg.setVisibility(View.INVISIBLE);
                     }
                     if (!TextUtils.isEmpty(item.focus)) {
                         holder.item_horizontal_poster_des.setText(item.focus);
+                        holder.item_horizontal_poster_des.setVisibility(View.VISIBLE);
                     }else {
                         holder.item_horizontal_poster_des.setVisibility(View.INVISIBLE);
                     }
