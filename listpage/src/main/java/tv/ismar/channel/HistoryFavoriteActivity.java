@@ -103,11 +103,16 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
     private HashMap<String, Object> mDataCollectionProperties;
     private Boolean isEdit=false;
     private boolean isMore=false;
+    private String fromPage="homePage";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.history_favorite_layout);
         skyService=SkyService.ServiceManager.getService();
+        Intent intent=getIntent();
+        if(intent!=null){
+            fromPage=intent.getStringExtra("fromPage");
+        }
         initView();
     }
     private void initView(){

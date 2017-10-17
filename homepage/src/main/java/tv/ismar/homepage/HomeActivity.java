@@ -218,7 +218,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     public void onClick(View v) {
         PageIntent pageIntent = new PageIntent();
         if(v == mCollectionRect){
-            pageIntent.toHistory(this);
+            pageIntent.toHistory(this,"homePage");
         } else if(v == mCenterRect){
             pageIntent.toUserCenter(this);
         }
