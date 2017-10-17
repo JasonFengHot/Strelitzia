@@ -1,7 +1,7 @@
 package tv.ismar.homepage.template;
 
 import android.content.Context;
-import android.graphics.drawable.BitmapDrawable;
+import android.graphics.Rect;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Environment;
@@ -29,25 +29,21 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.HttpUrl;
 import rx.Observable;
 import rx.Observer;
-import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import tv.ismar.app.BaseControl;
 import tv.ismar.app.core.PageIntent;
-import tv.ismar.app.core.SimpleRestClient;
 import tv.ismar.app.core.cache.CacheManager;
 import tv.ismar.app.core.cache.DownloadClient;
-import tv.ismar.app.entity.HomePagerEntity;
-import tv.ismar.app.entity.banner.BannerCarousels;
 import tv.ismar.app.entity.banner.HomeEntity;
 import tv.ismar.app.player.CallaPlay;
-import tv.ismar.app.util.BitmapDecoder;
 import tv.ismar.app.util.HardwareUtils;
 import tv.ismar.homepage.HomeActivity;
 import tv.ismar.homepage.OnItemClickListener;
@@ -95,16 +91,15 @@ public class TemplateGuide extends Template implements BaseControl.ControlCallBa
     public GuideControl mControl;
     private GuideAdapter mAdapter;
 
-    private BitmapDecoder mBitmapDecoder;//视频加载图片decoder
     private BannerLinearLayout mBannerLinearLayout;
     private View navigationLeft;
     private View navigationRight;
 
-    private CarouselStatus mCarouselStatus = CarouselStatus.Pause;
     private int mCurrentCarouselIndex = -1;
     private Subscription playSubscription;
-    private boolean externalStorageIsEnable = false;
     private Subscription checkSubscription;
+    private boolean videoViewVisibility = true;
+    private Subscription checkVideoViewFullVisibilitySubsc;
 
     public TemplateGuide(Context context) {
         super(context);
@@ -168,6 +163,7 @@ public class TemplateGuide extends Template implements BaseControl.ControlCallBa
         mHeadView.findViewById(R.id.guide_head_ismartv_linearlayout).setOnHoverListener(this);
         mVideoView.setOnClickListener(this);
         mLoadingIg.setOnClickListener(this);
+
     }
 
     /*更改图标背景*/
@@ -245,34 +241,34 @@ public class TemplateGuide extends Template implements BaseControl.ControlCallBa
         }
     }
 
-    /*播放导视*/
-    private void playGuideVideo(int index){
-        try {
-            mVideoTitleTv.setText(mFetchDataControl.mCarousels.get(index).title);
-            mVideoView.setFocusable(false);
-            mVideoView.setFocusableInTouchMode(false);
-            String videoPath = mControl.getGuideVideoPath(index, mFetchDataControl.mCarousels);
-            if(videoPath == null){
-                return;
-            }
-            CallaPlay play = new CallaPlay();
-            play.homepage_vod_trailer_play(videoPath, "homepage");
-            if (mVideoView.isPlaying() && mVideoView.getDataSource().equals(videoPath)) {
-                return;
-            }
-            mVideoView.stopPlayback();
-            mVideoView.setVideoPath(videoPath);
-            mVideoView.setTag(index);
-            mVideoView.setFocusable(true);
-            mVideoView.setFocusableInTouchMode(true);
-            mVideoView.start();
-        } catch (Exception e) {
-            e.printStackTrace();
-            new CallaPlay().exception_except("launcher", "launcher", "homepage",
-                    "", 0, "",
-                    SimpleRestClient.appVersion, "client", "");
-        }
-    }
+//    /*播放导视*/
+//    private void playGuideVideo(int index){
+//        try {
+//            mVideoTitleTv.setText(mFetchDataControl.mCarousels.get(index).title);
+//            mVideoView.setFocusable(false);
+//            mVideoView.setFocusableInTouchMode(false);
+//            String videoPath = mControl.getGuideVideoPath(index, mFetchDataControl.mCarousels);
+//            if(videoPath == null){
+//                return;
+//            }
+//            CallaPlay play = new CallaPlay();
+//            play.homepage_vod_trailer_play(videoPath, "homepage");
+//            if (mVideoView.isPlaying() && mVideoView.getDataSource().equals(videoPath)) {
+//                return;
+//            }
+//            mVideoView.stopPlayback();
+//            mVideoView.setVideoPath(videoPath);
+//            mVideoView.setTag(index);
+//            mVideoView.setFocusable(true);
+//            mVideoView.setFocusableInTouchMode(true);
+//            mVideoView.start();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            new CallaPlay().exception_except("launcher", "launcher", "homepage",
+//                    "", 0, "",
+//                    SimpleRestClient.appVersion, "client", "");
+//        }
+//    }
 
 //    @Override
 //    public void onCompletion(MediaPlayer mp) {//播放结束
@@ -349,8 +345,10 @@ public class TemplateGuide extends Template implements BaseControl.ControlCallBa
     public void onItemSelect(View view, int position) {
         if(position < 1){
             mHeadView.setVisibility(View.VISIBLE);
+            videoViewVisibility = true;
         } else {
             mHeadView.setVisibility(View.GONE);
+            videoViewVisibility = false;
         }
     }
 
@@ -569,46 +567,6 @@ public class TemplateGuide extends Template implements BaseControl.ControlCallBa
         mHandler.sendEmptyMessageDelayed(START_PLAYBACK, delay);
     }
 
-//    private void checkExternalIsEnable() {
-//        if (checkSubscription != null && !checkSubscription.isUnsubscribed()) {
-//            checkSubscription.unsubscribe();
-//        }
-//        checkSubscription = Observable
-//                .create(new Observable.OnSubscribe<String>() {
-//                    @Override
-//                    public void call(Subscriber<? super String> subscriber) {
-//                        subscriber.onNext("check external storage");
-//                        subscriber.onCompleted();
-//                    }
-//                })
-//                .subscribeOn(Schedulers.io())
-//                .observeOn(Schedulers.io())
-//                .map(new Func1<String, Boolean>() {
-//                    @Override
-//                    public Boolean call(String aBoolean) {
-//                        return externalStorageIsEnable();
-//
-//                    }
-//                })
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe(new Observer<Boolean>() {
-//                    @Override
-//                    public void onCompleted() {
-//
-//                    }
-//
-//                    @Override
-//                    public void onError(Throwable throwable) {
-//                        throwable.printStackTrace();
-//                        externalStorageIsEnable = false;
-//                    }
-//
-//                    @Override
-//                    public void onNext(Boolean aBoolean) {
-//                        externalStorageIsEnable = aBoolean;
-//                    }
-//                });
-//    }
 
     //视频播放
     private boolean startPlayback() {
@@ -635,7 +593,7 @@ public class TemplateGuide extends Template implements BaseControl.ControlCallBa
         mVideoView.start();
         mVideoView.setFocusable(true);
         mVideoView.setFocusableInTouchMode(true);
-
+        checkVideoViewFullVisibility();
         return true;
     }
 
@@ -643,6 +601,9 @@ public class TemplateGuide extends Template implements BaseControl.ControlCallBa
         mOnCompletionListener = new MediaPlayer.OnCompletionListener() {
             @Override
             public void onCompletion(MediaPlayer mp) {
+                if (checkVideoViewFullVisibilitySubsc != null && checkVideoViewFullVisibilitySubsc.isUnsubscribed()){
+                    checkVideoViewFullVisibilitySubsc.unsubscribe();
+                }
                 stopPlayback();
                 mHandler.sendEmptyMessage(CAROUSEL_NEXT);
             }
@@ -678,5 +639,66 @@ public class TemplateGuide extends Template implements BaseControl.ControlCallBa
     private enum CarouselStatus {
         Start,
         Pause
+    }
+
+    private void onVideoViewFullVisibility(boolean isFullVisibility){
+        if (isFullVisibility){
+            if (!mVideoView.isPlaying()){
+                mVideoView.start();
+            }
+        }else {
+            if (mVideoView.isPlaying()){
+                mVideoView.pause();
+            }
+        }
+    }
+
+    private void checkVideoViewFullVisibility(){
+        checkVideoViewFullVisibilitySubsc = Observable.interval(1, TimeUnit.SECONDS)
+                .takeUntil(new Func1<Long, Boolean>() {
+                    @Override
+                    public Boolean call(Long aLong) {
+                        return false;
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<Long>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(Long aLong) {
+                        Rect rect = new Rect();
+                        mVideoView.getGlobalVisibleRect(rect);
+                        Log.d(TAG, "mVideoView getGlobalVisibleRect: " + rect);
+                        Rect rect2 = new Rect();
+                        mVideoView.getDrawingRect(rect2);
+                        Log.d(TAG, "mVideoView getDrawingRect: " + rect2);
+
+                        Rect rect3 = new Rect();
+                        mVideoView.getLocalVisibleRect(rect3);
+                        Log.d(TAG, "mVideoView getLocalVisibleRect: " + rect3);
+                        Log.d(TAG, "mVideoView ======================================================");
+                        if (videoViewVisibility){
+                            if ((Math.abs(rect3.top - rect2.top)) > 10
+                                    || Math.abs(rect3.bottom - rect2.bottom) > 10
+                                    || Math.abs(rect3.left - rect2.left) >10
+                                    || Math.abs(rect3.right - rect2.right) > 10){
+                                onVideoViewFullVisibility(false);
+                            }else {
+                                onVideoViewFullVisibility(true);
+                            }
+                        }else {
+                            onVideoViewFullVisibility(false);
+                        }
+                    }
+                });
     }
 }
