@@ -227,7 +227,7 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
                         }else{
                             favorite_left_arrow.setVisibility(View.GONE);
                         }
-                        if (endPos != historyLists.size() - 1) {
+                        if (endPos != favoriteLists.size() - 1) {
                             favorite_right_arrow.setVisibility(View.VISIBLE);
                         } else {
                             favorite_right_arrow.setVisibility(View.GONE);
@@ -417,7 +417,7 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
             no_data.setVisibility(View.GONE);
             history_relativelayout.setVisibility(View.VISIBLE);
 
-            if(historyLists.size()>4){
+            if(historyLists.size()>=4){
                 history_right_arrow.setVisibility(View.VISIBLE);
             }
             Log.i("favoriteaci","isEdit: "+isEdit);
@@ -436,7 +436,7 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
                 favorite_title.setVisibility(View.VISIBLE);
                 if(isEdit)
                 delete_favorite.setVisibility(View.VISIBLE);
-                if(favoriteLists.size()>4){
+                if(favoriteLists.size()>=4){
                     favorite_right_arrow.setVisibility(View.VISIBLE);
                 }
                 second_line_image.setBackgroundResource(R.drawable.favorite_delete_image);
@@ -501,7 +501,7 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
                 editLp.setMargins(getResources().getDimensionPixelSize(R.dimen.history_100),getResources().getDimensionPixelSize(R.dimen.history_299),0,0);
                 delet_history.setLayoutParams(editLp);
                 delete_favorite.setVisibility(View.GONE);
-                if(favoriteLists.size()>4){
+                if(favoriteLists.size()>=4){
                     history_right_arrow.setVisibility(View.VISIBLE);
                 }
 
