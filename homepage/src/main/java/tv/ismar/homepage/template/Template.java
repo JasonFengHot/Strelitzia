@@ -3,6 +3,7 @@ package tv.ismar.homepage.template;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
@@ -90,7 +91,7 @@ public abstract class Template {
 
         Intent intent = new Intent();
         if (modelName.contains("item")) {
-            if (contentModel.contains("gather")) {
+            if (!TextUtils.isEmpty(contentModel)&&contentModel.contains("gather")) {
                 PageIntent subjectIntent = new PageIntent();
                 subjectIntent.toSubject(mContext, contentModel, itemPk, title, BaseActivity.baseChannel, "");
             } else {

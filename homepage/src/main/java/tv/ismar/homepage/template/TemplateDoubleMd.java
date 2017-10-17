@@ -172,7 +172,6 @@ public class TemplateDoubleMd extends Template implements BaseControl.ControlCal
 
     @Override
     public void onItemClick(View view, int position) {
-        position=mRecyclerView.getChildLayoutPosition((View) view.getParent());
         if(position == 0){//第一张大图
             mFetchDataControl.go2Detail(mFetchDataControl.mHomeEntity.bg_image);
         } else if(position == mFetchDataControl.mHomeEntity.count-1){
