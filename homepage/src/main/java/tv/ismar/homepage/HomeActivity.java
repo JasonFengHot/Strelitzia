@@ -361,8 +361,6 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
             BaseActivity.baseSection = "";
             stopService(new Intent(HomeActivity.this, PlaybackService.class));
             HomeActivity.super.onBackPressed();
-            android.os.Process.killProcess(android.os.Process.myPid());
-            System.exit(0);
         }
     }
 
