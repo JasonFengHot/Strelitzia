@@ -253,6 +253,7 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
                     list_poster_recyclerview.setVisibility(View.GONE);
                     if(mFilterItemList==null){
                         full_view.setVisibility(View.VISIBLE);
+                        filter_tab.setBackgroundResource(R.drawable.section_checked_tab_selector);
                         full_view.requestFocus();
                         mFilterItemList=new ItemList();
                         mFilterItemList.objects=new ArrayList<>();
@@ -556,6 +557,7 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
                     @Override
                     public void onError(Throwable e) {
                         full_view.setVisibility(View.GONE);
+                        filter_tab.setBackgroundResource(R.drawable.section_tab_selector);
                         super.onError(e);
                     }
 
@@ -583,6 +585,7 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
                             }
                             AppConstant.purchase_entrance_keyword = conditionsForLog.substring(0, conditionsForLog.lastIndexOf(";"));
                             full_view.setVisibility(View.VISIBLE);
+                            filter_tab.setBackgroundResource(R.drawable.section_checked_tab_selector);
                             full_view.requestFocus();
                             showFilterPopup();
                         }
@@ -603,7 +606,7 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
                 return false;
             }
         });
-        filterPopup.setBackgroundDrawable(getResources().getDrawable(R.drawable.transparent));
+        filterPopup.setBackgroundDrawable(getResources().getDrawable(R.drawable.section_checked_tab_selector));
         filterPopup.showAtLocation(getRootView(), Gravity.BOTTOM, 0, 0);
         Message msg = new Message();
         msg.arg1 = -1;
@@ -621,6 +624,7 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
                     }
                 }
                 full_view.setVisibility(View.GONE);
+                filter_tab.setBackgroundResource(R.drawable.section_tab_selector);
             }
         });
     }
@@ -962,6 +966,7 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
             }
             if(filterPopup!=null&&!filterPopup.isShowing()) {
                 full_view.setVisibility(View.VISIBLE);
+                v.setBackgroundResource(R.drawable.section_checked_tab_selector);
                 full_view.requestFocus();
                 showFilterPopup();
             }
