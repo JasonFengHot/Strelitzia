@@ -155,8 +155,8 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
                 new TemplateConlumn(getContext()).setView(bannerView, bundle);
             }else if(template.equals("template_recommend")){//推荐模版
                 canScroll = false;
-                layoutId = R.layout.banner_conlumn;
-                bannerView = createView(R.layout.banner_conlumn);
+                layoutId = R.layout.banner_recommend;
+                bannerView = createView(R.layout.banner_recommend);
                 new TemplateRecommend(getContext()).setView(bannerView, bundle);
             } else if(template.equals("template_big_small_ld")){//大横小竖模版
                 layoutId = R.layout.banner_big_small_ld;

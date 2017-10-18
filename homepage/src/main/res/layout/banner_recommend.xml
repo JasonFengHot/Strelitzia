@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<tv.ismar.homepage.view.BannerLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/banner_layout"
+    android:orientation="vertical"
+    android:focusable="false"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clipToPadding="false"
+    android:clipChildren="false">
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/double_ld_margin_left"
+        android:focusable="false"
+        android:clipChildren="false"
+        android:clipToPadding="false">
+        <com.open.androidtvwidget.leanback.recycle.RecyclerViewTV
+            android:id="@+id/recommend_recyclerview"
+            android:layout_width="wrap_content"
+            android:layout_marginLeft="@dimen/tv_player_recycleview_margin_left"
+            android:focusable="false"
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            android:layout_centerVertical="true"
+            android:layout_height="@dimen/tv_play_poster_height"  />
+        <Button
+            android:visibility="invisible"
+            android:id="@+id/navigation_left"
+            android:layout_width="@dimen/guide_switch_container_margin_left"
+            android:layout_height="@dimen/column_recyleview_height"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:background="@drawable/selector_recommend_left_arrow"
+            android:focusable="true"
+            android:focusableInTouchMode="true" />
+
+        <Button
+            android:visibility="invisible"
+            android:id="@+id/navigation_right"
+            android:layout_width="@dimen/guide_switch_container_margin_left"
+            android:layout_height="@dimen/column_recyleview_height"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:background="@drawable/selector_recommend_right_arrow"
+            android:focusable="true"
+            android:focusableInTouchMode="true" />
+    </RelativeLayout>
+
+</tv.ismar.homepage.view.BannerLinearLayout>
