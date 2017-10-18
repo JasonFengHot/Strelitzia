@@ -362,13 +362,13 @@ public class TemplateGuide extends Template implements BaseControl.ControlCallBa
         } else if (i == R.id.navigation_right) {//向右滑动
             mRecycleView.loadMore();
             mHeadView.setVisibility(View.GONE);
-            if (mGuideLayoutManager.findLastCompletelyVisibleItemPosition()  <= mFetchDataControl.mHomeEntity.count) {
-                int targetPosition = mGuideLayoutManager.findLastCompletelyVisibleItemPosition() + 5;
-                if (targetPosition >= mFetchDataControl.mHomeEntity.count) {
-                    targetPosition = mFetchDataControl.mHomeEntity.count;
+            if (mGuideLayoutManager.findLastCompletelyVisibleItemPosition()  <= mFetchDataControl.mPoster.size()) {
+                int targetPosition = mGuideLayoutManager.findLastCompletelyVisibleItemPosition() + 10;
+                if (targetPosition >= mFetchDataControl.mPoster.size()) {
+                    targetPosition = mFetchDataControl.mPoster.size();
                 }
                 mGuideLayoutManager.smoothScrollToPosition(mRecycleView, null, targetPosition);
-                if(targetPosition==mFetchDataControl.mHomeEntity.count)
+                if(targetPosition==mFetchDataControl.mPoster.size())
                     YoYo.with(Techniques.HorizontalShake).duration(1000).playOn(mRecycleView.getChildAt(mRecycleView.getChildCount() - 1).findViewById(R.id.guide_ismartv_linear_layout));
             }
         }else if (i == R.id.guide_daisy_video_view||i == R.id.guide_video_loading_image){
