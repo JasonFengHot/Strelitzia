@@ -21,6 +21,7 @@ import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 import com.open.androidtvwidget.leanback.recycle.LinearLayoutManagerTV;
 import com.open.androidtvwidget.leanback.recycle.RecyclerViewTV;
+import com.orhanobut.logger.Logger;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
@@ -421,7 +422,7 @@ public class TemplateGuide extends Template implements BaseControl.ControlCallBa
     };
 
     private void playCarousel() {
-        Log.d(TAG, "Carousel Size: " + mFetchDataControl.mCarousels.size());
+        Log.d(TAG, "carousel size: " + mFetchDataControl.mCarousels.size());
         if (mCurrentCarouselIndex == mFetchDataControl.mCarousels.size() - 1) {
             mCurrentCarouselIndex = 0;
         } else {
@@ -430,7 +431,7 @@ public class TemplateGuide extends Template implements BaseControl.ControlCallBa
 
         changeCarouselIcon(mCurrentCarouselIndex);
 
-        Log.d(TAG, "play carousel position: " + mCurrentCarouselIndex);
+        Logger.t(TAG).d("play carousel position: " + mCurrentCarouselIndex);
         String videoUrl = mFetchDataControl.mCarousels.get(mCurrentCarouselIndex).getVideo_url();
 
         playSubscription = Observable.just(videoUrl)
@@ -470,6 +471,10 @@ public class TemplateGuide extends Template implements BaseControl.ControlCallBa
     }
 
     private boolean externalStorageIsEnable() {
+        if (mChannel.equals("homepage")) {
+            return true;
+        }
+
         if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
             try {
                 final File file = new File(HardwareUtils.getSDCardCachePath(), "/text/test" + ".mp4");
@@ -573,12 +578,16 @@ public class TemplateGuide extends Template implements BaseControl.ControlCallBa
         mVideoView.setFocusable(false);
         mVideoView.setFocusableInTouchMode(false);
         String videoName = mChannel + "_" + mCurrentCarouselIndex + ".mp4";
-        String videoPath = CacheManager.getInstance().doRequest(mFetchDataControl.mCarousels.get(mCurrentCarouselIndex).getVideo_url(), videoName, DownloadClient.StoreType.External);
-
-        if (videoPath.startsWith("http://")){
-            return false;
+        String videoPath;
+        if (mChannel.equals("homepage")) {
+            videoPath = CacheManager.getInstance().doRequest(mFetchDataControl.mCarousels.get(mCurrentCarouselIndex).getVideo_url(), videoName, DownloadClient.StoreType.Internal);
+        } else {
+            videoPath = CacheManager.getInstance().doRequest(mFetchDataControl.mCarousels.get(mCurrentCarouselIndex).getVideo_url(), videoName, DownloadClient.StoreType.External);
         }
 
+        if (videoPath.startsWith("http://")) {
+            return false;
+        }
 
         Log.d(TAG, "current video path ====> " + videoPath);
         CallaPlay play = new CallaPlay();
