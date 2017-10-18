@@ -8,13 +8,18 @@ import android.graphics.PixelFormat;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -35,101 +40,94 @@ import tv.ismar.app.network.SkyService;
 import tv.ismar.app.player.CallaPlay;
 import tv.ismar.app.ui.ToastTip;
 import tv.ismar.app.util.BitmapDecoder;
+import tv.ismar.app.widget.ModuleMessagePopWindow;
 import tv.ismar.app.widget.TelescopicWrap;
+import tv.ismar.homepage.adapter.HomeAdapter;
 import tv.ismar.homepage.control.FetchDataControl;
 import tv.ismar.homepage.control.HomeControl;
 import tv.ismar.homepage.fragment.ChannelFragment;
-import tv.ismar.homepage.view.IntentActivity;
+import tv.ismar.homepage.view.HomePageActivity;
 import tv.ismar.homepage.widget.HorizontalTabView;
+import tv.ismar.library.exception.ExceptionUtils;
 import tv.ismar.player.gui.PlaybackService;
 
+import static android.view.MotionEvent.BUTTON_PRIMARY;
 import static tv.ismar.app.BaseControl.TAB_CHANGE_FALG;
 import static tv.ismar.homepage.control.FetchDataControl.FETCH_CHANNEL_TAB_FLAG;
 
+
 /**
- * @AUTHOR: xi @DATE: 2017/8/29 @DESC: home页
+ * @AUTHOR: xi
+ * @DATE: 2017/8/29
+ * @DESC: home页
  */
-public class HomeActivity extends BaseActivity
-        implements View.OnClickListener,
-        BaseControl.ControlCallBack,
-        View.OnFocusChangeListener,
-        View.OnHoverListener {
+
+public class HomeActivity extends BaseActivity implements View.OnClickListener, BaseControl.ControlCallBack,
+        View.OnFocusChangeListener,  View.OnHoverListener {
 
     public static final String HOME_PAGE_CHANNEL_TAG = "homepage";
-    public static View mHoverView;
-    public static View mLastFocusView;
-    private final FetchDataControl mFetchDataControl = new FetchDataControl(this, this); // 业务类引用
+    private final FetchDataControl mFetchDataControl = new FetchDataControl(this, this);//业务类引用
     private final HomeControl mHomeControl = new HomeControl(this, this);
     private HorizontalTabView mChannelTab;
+
     private ViewGroup mViewGroup;
-    private TextView mTimeTv; // 时间
-    private TextView mCollectionTv; // 收藏tv
-    private TextView mPersonCenterTv; // 个人中心tv
+    private TextView mTimeTv;//时间
+    private TextView mCollectionTv;//收藏tv
+    private TextView mPersonCenterTv;//个人中心tv
     private ViewGroup mCollectionRect;
     private ViewGroup mCenterRect;
-    private ViewGroup mCollectionLayout; // 历史收藏layout
-    private ViewGroup mPersonCenterLayout; // 个人中心
-    private TelescopicWrap mCollectionTel; // 历史收藏伸缩包装类
-    private TelescopicWrap mPersonCenterTel; // 个人中心包装类
-    private BitmapDecoder mBitmapDecoder;
-    private int mLastSelectedIndex = 1; // 记录上一次选中的位置
-    private TimeTickBroadcast mTimeTickBroadcast = null;
-    private ImageView left_image, right_image; // 导航左右遮罩
-    private Runnable mRunnable =
-            new Runnable() {
-                @Override
-                public void run() {
-                    showLoginHint();
-                }
-            };
-    private long currentTime = 0;
+    private ViewGroup mCollectionLayout;//历史收藏layout
+    private ViewGroup mPersonCenterLayout;//个人中心
+    private TelescopicWrap mCollectionTel;//历史收藏伸缩包装类
+    private TelescopicWrap mPersonCenterTel;//个人中心包装类
 
+    private BitmapDecoder mBitmapDecoder;
+    private int mLastSelectedIndex = 1;//记录上一次选中的位置
+    private TimeTickBroadcast mTimeTickBroadcast = null;
+
+    public static View mHoverView;
+    public static View mLastFocusView;
+    private View headHoverd;
+
+    private ImageView left_image,right_image; // 导航左右遮罩
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate((savedInstanceState != null) ? null : savedInstanceState);
+        super.onCreate((savedInstanceState!=null)?null:savedInstanceState);
         getWindow().setFormat(PixelFormat.TRANSLUCENT);
-        setContentView(R.layout.home_activity_layout);
+        View contentview= LayoutInflater.from(this).inflate(R.layout.home_activity_layout,null);
+        setContentView(contentview);
         systemInit();
         findViews();
         initListener();
         initData();
-        new Handler().postDelayed(mRunnable, 1000);
+        new Handler().postDelayed(mRunnable,1000);
+//        contentview.getViewTreeObserver().addOnGlobalFocusChangeListener(new ViewTreeObserver.OnGlobalFocusChangeListener() {
+//            @Override
+//            public void onGlobalFocusChanged(View oldFocus, View newFocus) {
+//                if(newFocus!=null){
+//                    Log.i("collection",newFocus.toString());
+//                }
+//            }
+//        });
     }
+    private Runnable mRunnable=new Runnable() {
+        @Override
+        public void run() {
+            showLoginHint();
+        }
+    };
 
     @Override
     protected void onResume() {
         super.onResume();
         mTimeTv.setText(mHomeControl.getNowTime());
-        if (mLastSelectedIndex == 0) {
+        if (mLastSelectedIndex == 0){
             mChannelTab.setDefaultSelection(1);
         }
     }
 
-    @Override
-    protected void onPause() {
-        if (mFetchDataControl != null){
-            mFetchDataControl.stop();
-        }
-        super.onPause();
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        //        HomeActivity.super.onBackPressed();
-        //        android.os.Process.killProcess(android.os.Process.myPid());
-        //        System.exit(0);
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        unregisterReceiver(mTimeTickBroadcast);
-        mTimeTickBroadcast = null;
-    }
-
     /*初始化一些系统参数*/
-    private void systemInit() {
+    private void systemInit(){
         try {
             System.setProperty("http.keepAlive", "false");
         } catch (Exception e) {
@@ -139,8 +137,11 @@ public class HomeActivity extends BaseActivity
     }
 
     /*获取控件实例*/
-    private void findViews() {
+    private void findViews(){
         mHoverView = findViewById(R.id.home_view_layout);
+        headHoverd=findViewById(R.id.hover_view);
+        headHoverd.setOnHoverListener(this);
+        mHoverView.setOnHoverListener(this);
         mViewGroup = (ViewGroup) findViewById(R.id.home_view_layout);
         mChannelTab = (HorizontalTabView) findViewById(R.id.channel_tab);
         mTimeTv = (TextView) findViewById(R.id.guide_title_time_tv);
@@ -154,31 +155,29 @@ public class HomeActivity extends BaseActivity
         mCollectionTel.setTextView(mCollectionTv);
         mPersonCenterTel = new TelescopicWrap(this, mPersonCenterLayout);
         mPersonCenterTel.setTextView(mPersonCenterTv);
+        mHoverView.setFocusableInTouchMode(true);
         mHoverView.setFocusable(true);
-        mHoverView.requestFocus();
         setBackground(R.drawable.homepage_background);
 
-        right_image = (ImageView) findViewById(R.id.guide_tab_right);
-        left_image = (ImageView) findViewById(R.id.guide_tab_left);
-        mChannelTab.leftbtn = left_image;
-        mChannelTab.rightbtn = right_image;
+        right_image= (ImageView) findViewById(R.id.guide_tab_right);
+        left_image= (ImageView) findViewById(R.id.guide_tab_left);
+        mChannelTab.leftbtn=left_image;
+        mChannelTab.rightbtn=right_image;
+
     }
 
-    private void setBackground(int id) {
+    private void setBackground(int id){
         mBitmapDecoder = new BitmapDecoder();
-        mBitmapDecoder.decode(
-                this,
-                id,
-                new BitmapDecoder.Callback() {
-                    @Override
-                    public void onSuccess(BitmapDrawable bitmapDrawable) {
-                        mViewGroup.setBackground(bitmapDrawable);
-                        mBitmapDecoder = null;
-                    }
-                });
+        mBitmapDecoder.decode(this, id, new BitmapDecoder.Callback() {
+            @Override
+            public void onSuccess(BitmapDrawable bitmapDrawable) {
+                mViewGroup.setBackground(bitmapDrawable);
+                mBitmapDecoder = null;
+            }
+        });
     }
 
-    private void initListener() {
+    private void initListener(){
         mCenterRect.setOnFocusChangeListener(this);
         mCenterRect.setOnClickListener(this);
         mCollectionRect.setOnFocusChangeListener(this);
@@ -190,18 +189,9 @@ public class HomeActivity extends BaseActivity
         filter.addAction(Intent.ACTION_TIME_TICK);
         mTimeTickBroadcast = new TimeTickBroadcast();
         registerReceiver(mTimeTickBroadcast, filter);
-        mTimeTv.setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent intent = new Intent();
-                        intent.setAction("tv.ismar.daisy.listtest");
-                        startActivity(intent);
-                    }
-                });
     }
 
-    private void initData() {
+    private void initData(){
         mFetchDataControl.fetchChannels();
         ChannelFragment channelFragment = new ChannelFragment();
         channelFragment.setChannel("首页", HOME_PAGE_CHANNEL_TAG, "首页", 0);
@@ -212,10 +202,14 @@ public class HomeActivity extends BaseActivity
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         switch (scrollType) {
             case "left":
-                transaction.setCustomAnimations(R.anim.push_right_in, R.anim.push_right_out);
+                transaction.setCustomAnimations(
+                        R.anim.push_right_in,
+                        R.anim.push_right_out);
                 break;
             case "right":
-                transaction.setCustomAnimations(R.anim.push_left_in, R.anim.push_left_out);
+                transaction.setCustomAnimations(
+                        R.anim.push_left_in,
+                        R.anim.push_left_out);
                 break;
         }
 
@@ -226,7 +220,7 @@ public class HomeActivity extends BaseActivity
         List<HorizontalTabView.Tab> tabs = new ArrayList<>();
         HorizontalTabView.Tab searchTab = new HorizontalTabView.Tab("", "搜索");
         tabs.add(searchTab);
-        HorizontalTabView.Tab homepageTab = new HorizontalTabView.Tab("", "首页");
+        HorizontalTabView.Tab homepageTab=new HorizontalTabView.Tab("","首页");
         tabs.add(homepageTab);
         for (ChannelEntity entity : channelEntities) {
             HorizontalTabView.Tab tab = new HorizontalTabView.Tab("", entity.getName());
@@ -238,44 +232,59 @@ public class HomeActivity extends BaseActivity
     @Override
     public void onClick(View v) {
         PageIntent pageIntent = new PageIntent();
-        if (v == mCollectionRect) {
-            pageIntent.toHistory(this, "homePage");
-        } else if (v == mCenterRect) {
+        if(v == mCollectionRect){
+            pageIntent.toHistory(this,"homePage");
+        } else if(v == mCenterRect){
             pageIntent.toUserCenter(this);
         }
     }
 
     @Override
-    public boolean onHover(View v, MotionEvent event) {
-        //        if(mCenterRect == v){
-        //            mPersonCenterLayout.setFocusable(true);
-        //            mPersonCenterLayout.requestFocus();
-        //        }
-        //        if(mCollectionRect == v){
-        //            mCollectionLayout.setFocusable(true);
-        //            mCollectionLayout.requestFocus();
-        //        }
+    public boolean onHover(final View v, MotionEvent event) {
+//        if(mCenterRect == v){
+//            mPersonCenterLayout.setFocusable(true);
+//            mPersonCenterLayout.requestFocus();
+//        }
+//        if(mCollectionRect == v){
+//            mCollectionLayout.setFocusable(true);
+//            mCollectionLayout.requestFocus();
+//        }
         switch (event.getAction()) {
             case MotionEvent.ACTION_HOVER_ENTER:
-                if (!v.hasFocus()) {
+                if(v.getId()!=R.id.hover_view) {
+                    if (!v.hasFocus()) {
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                v.setFocusable(true);
+                                v.setFocusableInTouchMode(true);
+                                v.requestFocusFromTouch();
+                                v.requestFocus();
+                            }
+                        }, 200);
+                    }
+                }else{
                     v.setFocusable(true);
+                    v.setFocusableInTouchMode(true);
+                    v.requestFocusFromTouch();
                     v.requestFocus();
                 }
                 break;
             case MotionEvent.ACTION_HOVER_EXIT:
-                //                onFocusChange(v,  false);
+//                onFocusChange(v,  false);
                 break;
         }
         return false;
     }
-
     @Override
     public void onFocusChange(View v, boolean hasFocus) {
-        if (v == mCollectionRect) { // 历史收藏伸缩处理
+        Log.i("favorite","focus : "+hasFocus);
+        if(v == mCollectionRect){//历史收藏伸缩处理
+
             mCollectionTel.openOrClose(hasFocus);
             return;
         }
-        if (v == mCenterRect) { // 个人中心伸缩处理
+        if(v == mCenterRect){//个人中心伸缩处理
             mPersonCenterTel.openOrClose(hasFocus);
             return;
         }
@@ -283,91 +292,46 @@ public class HomeActivity extends BaseActivity
 
     @Override
     public void callBack(int flags, Object... args) {
-        if (flags == FETCH_CHANNEL_TAB_FLAG) {
+        if (flags == FETCH_CHANNEL_TAB_FLAG){
             ChannelEntity[] channelEntities = (ChannelEntity[]) args;
             fillChannelTab(channelEntities);
         }
-        if (flags == TAB_CHANGE_FALG) { // 频道切换
+        if(flags == TAB_CHANGE_FALG){//频道切换
             int position = (int) args[0];
-            if (mFetchDataControl.mChannels != null && mFetchDataControl.mChannels.length > position) {
+            if(mFetchDataControl.mChannels!=null && mFetchDataControl.mChannels.length>position){
                 ChannelFragment channelFragment = new ChannelFragment();
-                switch (position) {
-                    case 0: // 搜索
+                switch(position){
+                    case 0://搜索
                         mLastSelectedIndex = position;
                         setBackground(R.drawable.homepage_background);
-                        //                        PageIntent intent = new PageIntent();
-                        //                        intent.toSearch(this);
-                        Intent intent = new Intent();
-                        intent.setClass(this, IntentActivity.class);
-                        startActivity(intent);
+                        PageIntent intent = new PageIntent();
+                        intent.toSearch(this);
                         return;
-                    case 1: // 首页
+                    case 1://首页
                         setBackground(R.drawable.homepage_background);
                         channelFragment.setChannel("首页", HOME_PAGE_CHANNEL_TAG, "首页", 0);
                         break;
-                    default: // 其他频道
-                        if (position - 2 < 0) return;
-                        if (mFetchDataControl.mChannels[position - 2].getChannel().equals("comic")) {
+                    default://其他频道
+                        if(position-2<0) return;
+                        if(mFetchDataControl.mChannels[position-2].getChannel().equals("comic")) {
                             setBackground(R.drawable.juvenile_bg);
                         } else {
                             setBackground(R.drawable.homepage_background);
                         }
-                        channelFragment.setChannel(
-                                mFetchDataControl.mChannels[position - 2].getName(),
-                                mFetchDataControl.mChannels[position - 2].getChannel(),
-                                mFetchDataControl.mChannels[position - 2].getName(),
-                                mFetchDataControl.mChannels[position - 2].getStyle());
+                        channelFragment.setChannel( mFetchDataControl.mChannels[position-2].getName(),
+                                mFetchDataControl.mChannels[position-2].getChannel(),
+                                mFetchDataControl.mChannels[position-2].getName(),
+                                mFetchDataControl.mChannels[position-2].getStyle());
                         break;
                 }
-                if (position > mLastSelectedIndex) { // 右切
+                if(position > mLastSelectedIndex){//右切
                     replaceFragment(channelFragment, "right");
-                }
-                if (position < mLastSelectedIndex) { // 左切
+                }if(position < mLastSelectedIndex){//左切
                     replaceFragment(channelFragment, "left");
                 }
                 mLastSelectedIndex = position;
             }
         }
-    }
-
-    @Override
-    public void onBackPressed() {
-        if (currentTime == 0 || System.currentTimeMillis() - currentTime > 4000) {
-            currentTime = System.currentTimeMillis();
-            ToastTip.showToast(this, "再次点击返回按键，退出应用");
-        } else {
-            isCheckoutUpdate = true;
-            SkyService.ServiceManager.executeActive = true;
-            CallaPlay callaPlay = new CallaPlay();
-            callaPlay.app_exit(TrueTime.now().getTime() - app_start_time, SimpleRestClient.appVersion);
-            ArrayList<String> cache_log = MessageQueue.getQueueList();
-            HashSet<String> hasset_log = new HashSet<String>();
-            for (int i = 0; i < cache_log.size(); i++) {
-                hasset_log.add(cache_log.get(i));
-            }
-            DaisyUtils.getVodApplication(HomeActivity.this)
-                    .getEditor()
-                    .putStringSet(VodApplication.CACHED_LOG, hasset_log);
-            DaisyUtils.getVodApplication(getApplicationContext()).save();
-            BaseActivity.baseChannel = "";
-            BaseActivity.baseSection = "";
-            stopService(new Intent(HomeActivity.this, PlaybackService.class));
-            HomeActivity.super.onBackPressed();
-        }
-    }
-
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (mLastFocusView != null && mHoverView != null && mHoverView.hasFocus()) {
-            mLastFocusView.requestFocus();
-            mLastFocusView.requestFocusFromTouch();
-            mHoverView.setFocusable(false);
-            mHoverView.setFocusableInTouchMode(false);
-            return true;
-        }
-        mHoverView.setFocusable(false);
-        mHoverView.setFocusableInTouchMode(false);
-        return super.onKeyDown(keyCode, event);
     }
 
     /*时间跳动广播*/
@@ -378,4 +342,67 @@ public class HomeActivity extends BaseActivity
             mTimeTv.setText(mHomeControl.getNowTime());
         }
     }
+
+    private long currentTime =0;
+    @Override
+    public void onBackPressed() {
+        if(currentTime==0||System.currentTimeMillis()-currentTime>4000) {
+            currentTime = System.currentTimeMillis();
+            ToastTip.showToast(this, "再次点击返回按键，退出应用");
+        }else {
+            isCheckoutUpdate = true;
+            SkyService.ServiceManager.executeActive = true;
+            CallaPlay callaPlay = new CallaPlay();
+            callaPlay.app_exit(TrueTime.now().getTime() - app_start_time, SimpleRestClient.appVersion);
+            ArrayList<String> cache_log = MessageQueue.getQueueList();
+            HashSet<String> hasset_log = new HashSet<String>();
+            for (int i = 0; i < cache_log.size(); i++) {
+                hasset_log.add(cache_log.get(i));
+            }
+            DaisyUtils
+                    .getVodApplication(HomeActivity.this)
+                    .getEditor()
+                    .putStringSet(VodApplication.CACHED_LOG,
+                            hasset_log);
+            DaisyUtils.getVodApplication(getApplicationContext())
+                    .save();
+            BaseActivity.baseChannel = "";
+            BaseActivity.baseSection = "";
+            stopService(new Intent(HomeActivity.this, PlaybackService.class));
+            HomeActivity.super.onBackPressed();
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+//        HomeActivity.super.onBackPressed();
+//        android.os.Process.killProcess(android.os.Process.myPid());
+//        System.exit(0);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(mTimeTickBroadcast);
+        mTimeTickBroadcast = null;
+
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (mLastFocusView != null && mHoverView != null && mHoverView.hasFocus()){
+            mLastFocusView.requestFocus();
+            mLastFocusView.requestFocusFromTouch();
+//            mHoverView.setFocusable(false);
+//            mHoverView.setFocusableInTouchMode(false);
+            return true;
+        }
+        mHoverView.setFocusable(false);
+        mHoverView.setFocusableInTouchMode(false);
+        headHoverd.setFocusableInTouchMode(false);
+        headHoverd.setFocusable(false);
+        return super.onKeyDown(keyCode, event);
+    }
+
 }

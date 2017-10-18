@@ -8,12 +8,12 @@
     <ImageView
         android:id="@+id/hover_view"
         android:visibility="visible"
-        android:layout_width="100px"
-        android:layout_height="100px"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:background="@android:color/transparent"
         android:focusable="true"
         android:focusableInTouchMode="true"
-        android:foregroundGravity="left|top"/>
+        />
 
     <ImageView
         android:layout_width="@dimen/guide_title_logo_width"
@@ -29,6 +29,7 @@
         android:layout_height="@dimen/guide_title_react_height"
         android:layout_toLeftOf="@+id/center_rect_layout"
         android:focusable="true"
+        android:focusableInTouchMode="true"
         android:nextFocusLeft="@id/collection_rect_layout"
         android:nextFocusRight="@id/center_rect_layout"
         android:clipChildren="false"
