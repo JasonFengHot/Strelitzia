@@ -118,6 +118,24 @@ public class BaseControl {
             PageIntent pageIntent = new PageIntent();
             pageIntent.toPlayPage(mContext, pk, -1, Source.HOMEPAGE);
         } else if (modelName.contains("ismartv")) {
+            Intent appIntent=new Intent();
+            try {
+                if (modelName.equals("ismartvgatherapp")) {
+                    appIntent.setAction("com.boxmate.tv.subjectdetail");
+                            appIntent.putExtra("title", title);
+                    appIntent.putExtra("nameId", pk);
+                    appIntent.putExtra("backgroundUrl", "");
+                } else if (modelName.equals("ismartvhomepageapp")) {
+                    appIntent.setAction("android.intent.action.mainAty");
+                    appIntent.putExtra("type", 3);
+                } else if (modelName.equals("ismartvdetailapp")) {
+                    appIntent.setAction("com.boxmate.tv .detail");
+                            appIntent.putExtra("app_id", pk);
+                }
+                mContext.startActivity(appIntent);
+            }catch (Exception e){
+
+            }
         }else {
             if (contentModel.contains("gather")) {
                 PageIntent intent1 = new PageIntent();

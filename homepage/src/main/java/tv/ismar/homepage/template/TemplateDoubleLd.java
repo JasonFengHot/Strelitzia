@@ -168,10 +168,10 @@ public class TemplateDoubleLd extends Template implements BaseControl.ControlCal
     public void onItemClick(View view, int position) {
         if(position == 0){//第一张大图
             mFetchDataControl.go2Detail(mFetchDataControl.mHomeEntity.bg_image);
-        } else if(position == mFetchDataControl.mHomeEntity.count-1){
+        } else if(mFetchDataControl.mHomeEntity.is_more&&position == mAdapter.getItemCount()-1){
             new PageIntent().toListPage(mContext, mFetchDataControl.mHomeEntity.channel_title, mFetchDataControl.mHomeEntity.channel, mFetchDataControl.mHomeEntity.style);
         }else {
-            mFetchDataControl.go2Detail(mFetchDataControl.mHomeEntity.posters.get(position));
+            mFetchDataControl.go2Detail(mAdapter.getmData().get(position-1));
         }
     }
 

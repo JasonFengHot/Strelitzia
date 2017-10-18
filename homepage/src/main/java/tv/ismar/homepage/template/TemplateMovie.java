@@ -186,7 +186,7 @@ public class TemplateMovie extends Template implements View.OnClickListener, Vie
         mMovieAdapter.setSubscribeClickListener(new BannerMovieAdapter.OnBannerClickListener() {
             @Override
             public void onBannerClick(View view, int position) {
-                if (position < bannerEntity.getCount()-1){
+                if (position < bannerEntity.getCount()){
                     goToNextPage(view);
                 }else {
                     Logger.t(TAG).d("more click: title -> %s, channel -> %s", nameKey, channelKey);

@@ -156,10 +156,10 @@ public class TemplateTvPlay extends Template implements BaseControl.ControlCallB
 
     @Override
     public void onItemClick(View view, int position) {
-        if(position == mFetchDataControl.mHomeEntity.count-1){
+        if(mFetchDataControl.mHomeEntity.is_more&&position == mAdapter.getItemCount()-1){
             new PageIntent().toListPage(mContext, mFetchDataControl.mHomeEntity.channel_title, mFetchDataControl.mHomeEntity.channel, mFetchDataControl.mHomeEntity.style);
         } else {
-            mFetchDataControl.go2Detail(mFetchDataControl.mHomeEntity.posters.get(position));
+            mFetchDataControl.go2Detail(mAdapter.getmData().get(position-1));
         }
     }
 

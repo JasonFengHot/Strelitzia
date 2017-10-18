@@ -43,6 +43,10 @@ public class DoubleMdAdapter extends BaseRecycleAdapter<DoubleMdAdapter.DoubleMd
         notifyItemInserted(0);
     }
 
+    public List<BannerPoster> getmData() {
+        return mData;
+    }
+
     @Override
     public int getItemViewType(int position) {
         if (mHeaderView == null) return TYPE_NORMAL;
