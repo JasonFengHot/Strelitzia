@@ -50,7 +50,7 @@ public class TemplateRecommend extends Template implements BaseControl.ControlCa
 
     @Override
     public void getView(View view) {
-        mRecyclerView = (RecyclerViewTV) view.findViewById(R.id.conlumn_recyclerview);
+        mRecyclerView = (RecyclerViewTV) view.findViewById(R.id.recommend_recyclerview);
         mRecommendLayoutManager = new LinearLayoutManagerTV(mContext, LinearLayoutManager.HORIZONTAL, false);
         mRecyclerView.setLayoutManager(mRecommendLayoutManager);
         mRecyclerView.setSelectedItemAtCentered(false);

@@ -33,7 +33,7 @@ public class RecommendAdapter extends BaseRecycleAdapter<RecommendAdapter.Recomm
 
     @Override
     public RecommendViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.banner_conlumn_item,parent,false);
+        View view = LayoutInflater.from(mContext).inflate(R.layout.banner_recommend_item,parent,false);
         return new RecommendViewHolder(view);
     }
 
@@ -60,13 +60,13 @@ public class RecommendAdapter extends BaseRecycleAdapter<RecommendAdapter.Recomm
 
         public RecommendViewHolder(View itemView) {
             super(itemView, RecommendAdapter.this);
-            mTitle = (TextView) itemView.findViewById(R.id.conlumn_item_tv);
-            mPoster = (ImageView) itemView.findViewById(R.id.conlumn_item_poster);
+            mTitle = (TextView) itemView.findViewById(R.id.recommend_item_tv);
+            mPoster = (ImageView) itemView.findViewById(R.id.recommend_item_poster);
         }
 
         @Override
         protected int getScaleLayoutId() {
-            return R.id.conlumn_ismartv_linear_layout;
+            return R.id.recommend_ismartv_linear_layout;
         }
     }
 }
