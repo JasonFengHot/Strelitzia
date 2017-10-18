@@ -41,11 +41,28 @@ public class TemplateMore extends Template implements View.OnClickListener{
         mChannel = bundle.getString(ChannelFragment.MORE_CHANNEL_FLAG);
         mTitle = bundle.getString(ChannelFragment.MORE_TITLE_FLAG);
         mStyle = bundle.getInt(ChannelFragment.MORE_STYLE_FLAG);
+
+        switch (mChannel){
+            case "homepage":
+                setTemplateVisibility(false);
+                break;
+            default:
+                setTemplateVisibility(true);
+                break;
+        }
     }
 
     @Override
     public void onClick(View v) {
         PageIntent intent = new PageIntent();
         intent.toListPage(mContext, mTitle, mChannel, mStyle);
+    }
+
+    private void setTemplateVisibility(boolean visibility){
+        if (visibility){
+            mButton.setVisibility(View.VISIBLE);
+        }else {
+            mButton.setVisibility(View.INVISIBLE);
+        }
     }
 }
