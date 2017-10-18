@@ -94,7 +94,6 @@ public class DoubleLdAdapter extends BaseRecycleAdapter<DoubleLdAdapter.DoubleLd
         public ImageView mLtIconTv;//左上icon
         public TextView mRbIconTv;//右下icon
         public TextView mTitleTv;//标题
-        public int mPosition;//item位置
 
         public DoubleLdViewHolder(View itemView) {
             super(itemView, DoubleLdAdapter.this);

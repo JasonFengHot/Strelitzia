@@ -42,6 +42,7 @@ public class TvPlayAdapter extends BaseRecycleAdapter<TvPlayAdapter.TvPlayerView
 
     @Override
     public void onBindViewHolder(TvPlayerViewHolder holder, int position) {
+        holder.mPosition = position;
         holder.mMarginLeftView.setVisibility(mMarginLeftEnable? View.VISIBLE:View.GONE);
         BannerPoster poster = mData.get(position);
         if (!TextUtils.isEmpty(poster.poster_url)) {

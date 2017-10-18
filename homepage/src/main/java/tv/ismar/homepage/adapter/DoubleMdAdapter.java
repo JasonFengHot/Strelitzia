@@ -96,7 +96,6 @@ public class DoubleMdAdapter extends BaseRecycleAdapter<DoubleMdAdapter.DoubleMd
         public ImageView mLtIconTv;//左上icon
         public TextView mRbIconTv;//右下icon
         public TextView mTitleTv;//标题
-        public int mPosition;
 
         public DoubleMdViewHolder(View itemView) {
             super(itemView, DoubleMdAdapter.this);
