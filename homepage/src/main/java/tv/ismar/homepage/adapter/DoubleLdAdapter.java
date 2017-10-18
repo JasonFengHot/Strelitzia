@@ -79,6 +79,10 @@ public class DoubleLdAdapter extends BaseRecycleAdapter<DoubleLdAdapter.DoubleLd
         return (mHeaderView==null) ? mData.size() : mData.size() + 1;
     }
 
+    public List<BannerPoster> getmData() {
+        return mData;
+    }
+
     public static final int TYPE_HEADER = 0;//头部
     public static final int TYPE_NORMAL = 1;//一般item
 

@@ -34,6 +34,10 @@ public class TvPlayAdapter extends BaseRecycleAdapter<TvPlayAdapter.TvPlayerView
         this.mData = data;
     }
 
+    public List<BannerPoster> getmData() {
+        return mData;
+    }
+
     @Override
     public TvPlayAdapter.TvPlayerViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(mContext).inflate(R.layout.banner_tv_player_item,parent,false);
