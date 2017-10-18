@@ -21,6 +21,7 @@ import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 import com.open.androidtvwidget.leanback.recycle.LinearLayoutManagerTV;
 import com.open.androidtvwidget.leanback.recycle.RecyclerViewTV;
+import com.orhanobut.logger.Logger;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
@@ -101,6 +102,8 @@ public class TemplateGuide extends Template implements BaseControl.ControlCallBa
     private boolean videoViewVisibility = true;
     private Subscription checkVideoViewFullVisibilitySubsc;
 
+    private View mVideoViewLayout;
+
     public TemplateGuide(Context context) {
         super(context);
         mFetchDataControl = new FetchDataControl(context, this);
@@ -123,6 +126,7 @@ public class TemplateGuide extends Template implements BaseControl.ControlCallBa
         mThirdIcon = (TextView) view.findViewById(R.id.third_video_icon);
         mFourIcon = (TextView) view.findViewById(R.id.four_video_icon);
         mFiveIcon = (TextView) view.findViewById(R.id.five_video_icon);
+        mVideoViewLayout = view.findViewById(R.id.guide_head_ismartv_linearlayout);
 
         mRecycleView = (RecyclerViewTV) view.findViewById(R.id.guide_recyclerview);
         mGuideLayoutManager = new LinearLayoutManagerTV(mContext, LinearLayoutManager.HORIZONTAL, false);
@@ -161,7 +165,7 @@ public class TemplateGuide extends Template implements BaseControl.ControlCallBa
         mVideoView.setOnFocusChangeListener(this);
         mGuideLayoutManager.setFocusSearchFailedListener(this);
         mHeadView.findViewById(R.id.guide_head_ismartv_linearlayout).setOnHoverListener(this);
-        mVideoView.setOnClickListener(this);
+        mVideoViewLayout.setOnClickListener(this);
         mLoadingIg.setOnClickListener(this);
 
     }
@@ -371,7 +375,7 @@ public class TemplateGuide extends Template implements BaseControl.ControlCallBa
                 if(targetPosition==mFetchDataControl.mPoster.size())
                     YoYo.with(Techniques.HorizontalShake).duration(1000).playOn(mRecycleView.getChildAt(mRecycleView.getChildCount() - 1).findViewById(R.id.guide_ismartv_linear_layout));
             }
-        }else if (i == R.id.guide_daisy_video_view||i == R.id.guide_video_loading_image){
+        }else if (i == R.id.guide_head_ismartv_linearlayout){
             Log.d(TAG, "onClick goToNextPage");
             goToNextPage(v);
         }
@@ -421,7 +425,7 @@ public class TemplateGuide extends Template implements BaseControl.ControlCallBa
     };
 
     private void playCarousel() {
-        Log.d(TAG, "Carousel Size: " + mFetchDataControl.mCarousels.size());
+        Log.d(TAG, "carousel size: " + mFetchDataControl.mCarousels.size());
         if (mCurrentCarouselIndex == mFetchDataControl.mCarousels.size() - 1) {
             mCurrentCarouselIndex = 0;
         } else {
@@ -430,7 +434,7 @@ public class TemplateGuide extends Template implements BaseControl.ControlCallBa
 
         changeCarouselIcon(mCurrentCarouselIndex);
 
-        Log.d(TAG, "play carousel position: " + mCurrentCarouselIndex);
+        Logger.t(TAG).d("play carousel position: " + mCurrentCarouselIndex);
         String videoUrl = mFetchDataControl.mCarousels.get(mCurrentCarouselIndex).getVideo_url();
 
         playSubscription = Observable.just(videoUrl)
@@ -470,6 +474,10 @@ public class TemplateGuide extends Template implements BaseControl.ControlCallBa
     }
 
     private boolean externalStorageIsEnable() {
+        if (mChannel.equals("homepage")) {
+            return true;
+        }
+
         if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
             try {
                 final File file = new File(HardwareUtils.getSDCardCachePath(), "/text/test" + ".mp4");
@@ -518,7 +526,7 @@ public class TemplateGuide extends Template implements BaseControl.ControlCallBa
             mLoadingIg.setVisibility(View.VISIBLE);
         }
 
-        mLoadingIg.setTag(mFetchDataControl.mCarousels.get(mCurrentCarouselIndex));
+        mVideoViewLayout.setTag(mFetchDataControl.mCarousels.get(mCurrentCarouselIndex));
 
         final String url = mFetchDataControl.mCarousels.get(mCurrentCarouselIndex).getVideo_image();
         String intro = mFetchDataControl.mCarousels.get(mCurrentCarouselIndex).getIntroduction();
@@ -552,7 +560,7 @@ public class TemplateGuide extends Template implements BaseControl.ControlCallBa
             mLoadingIg.setVisibility(View.GONE);
         }
 
-        mVideoView.setTag(mFetchDataControl.mCarousels.get(mCurrentCarouselIndex));
+        mVideoViewLayout.setTag(mFetchDataControl.mCarousels.get(mCurrentCarouselIndex));
 
         String intro = mFetchDataControl.mCarousels.get(mCurrentCarouselIndex).getIntroduction();
         if (!StringUtils.isEmpty(intro)) {
@@ -573,12 +581,16 @@ public class TemplateGuide extends Template implements BaseControl.ControlCallBa
         mVideoView.setFocusable(false);
         mVideoView.setFocusableInTouchMode(false);
         String videoName = mChannel + "_" + mCurrentCarouselIndex + ".mp4";
-        String videoPath = CacheManager.getInstance().doRequest(mFetchDataControl.mCarousels.get(mCurrentCarouselIndex).getVideo_url(), videoName, DownloadClient.StoreType.External);
-
-        if (videoPath.startsWith("http://")){
-            return false;
+        String videoPath;
+        if (mChannel.equals("homepage")) {
+            videoPath = CacheManager.getInstance().doRequest(mFetchDataControl.mCarousels.get(mCurrentCarouselIndex).getVideo_url(), videoName, DownloadClient.StoreType.Internal);
+        } else {
+            videoPath = CacheManager.getInstance().doRequest(mFetchDataControl.mCarousels.get(mCurrentCarouselIndex).getVideo_url(), videoName, DownloadClient.StoreType.External);
         }
 
+        if (videoPath.startsWith("http://")) {
+            return false;
+        }
 
         Log.d(TAG, "current video path ====> " + videoPath);
         CallaPlay play = new CallaPlay();
@@ -676,15 +688,15 @@ public class TemplateGuide extends Template implements BaseControl.ControlCallBa
                     public void onNext(Long aLong) {
                         Rect rect = new Rect();
                         mVideoView.getGlobalVisibleRect(rect);
-                        Log.d(TAG, "mVideoView getGlobalVisibleRect: " + rect);
+//                        Log.d(TAG, "mVideoView getGlobalVisibleRect: " + rect);
                         Rect rect2 = new Rect();
                         mVideoView.getDrawingRect(rect2);
-                        Log.d(TAG, "mVideoView getDrawingRect: " + rect2);
+//                        Log.d(TAG, "mVideoView getDrawingRect: " + rect2);
 
                         Rect rect3 = new Rect();
                         mVideoView.getLocalVisibleRect(rect3);
-                        Log.d(TAG, "mVideoView getLocalVisibleRect: " + rect3);
-                        Log.d(TAG, "mVideoView ======================================================");
+//                        Log.d(TAG, "mVideoView getLocalVisibleRect: " + rect3);
+//                        Log.d(TAG, "mVideoView ======================================================");
                         if (videoViewVisibility){
                             if ((Math.abs(rect3.top - rect2.top)) > 10
                                     || Math.abs(rect3.bottom - rect2.bottom) > 10

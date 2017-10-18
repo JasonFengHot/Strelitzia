@@ -837,13 +837,13 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
                     PageIntent intent = new PageIntent();
                     Item item=itemList.objects.get(position);
                     if(item.content_model!=null&&item.content_model.contains("gather")){
-                        intent.toSubject(FilterListActivity.this,item.content_model,item.pk,item.title,Source.FILTER.getValue(),baseChannel);
+                        intent.toSubject(FilterListActivity.this,item.content_model,item.pk,item.title,Source.RETRIEVAL.getValue(),baseChannel);
                     }else if(item.model_name!=null&&item.model_name.equals("package")){
-                        intent.toPackageDetail(FilterListActivity.this,Source.FILTER.getValue(),item.pk);
+                        intent.toPackageDetail(FilterListActivity.this,Source.RETRIEVAL.getValue(),item.pk);
                     }else if(item.is_complex) {
-                        intent.toDetailPage(FilterListActivity.this,Source.FILTER.getValue(),item.pk);
+                        intent.toDetailPage(FilterListActivity.this,Source.RETRIEVAL.getValue(),item.pk);
                     }else{
-                        intent.toPlayPage(FilterListActivity.this,item.pk,0, Source.FILTER);
+                        intent.toPlayPage(FilterListActivity.this,item.pk,0, Source.RETRIEVAL);
                     }
                 }
             });

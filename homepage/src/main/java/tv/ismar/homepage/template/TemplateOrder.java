@@ -320,7 +320,7 @@ public class TemplateOrder extends Template implements BaseControl.ControlCallBa
             @Override
             public void onBannerHover(View view, int position, boolean hovered) {
                 if (hovered) {
-                    mLastFocusView = view;
+//                    mLastFocusView = view;
                     mHoverView.setFocusable(true);
                     subscribeBanner.setHovered(true);
                     mTitleCountTv.setText(String.format(mContext.getString(R.string.home_item_title_count), (position + 1) + "", subscribeAdapter.getTatalItemCount() + ""));

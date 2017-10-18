@@ -193,7 +193,7 @@ public class TemplateBigSmallLd extends Template implements View.OnHoverListener
         adapter.setSubscribeClickListener(new BannerMovieMixAdapter.OnBannerClickListener() {
             @Override
             public void onBannerClick(View view, int position) {
-                if (position < bannerEntity.getCount()-1){
+                if (bannerEntity.is_more()&&position < bannerEntity.getCount()-1){
                     goToNextPage(view);
                 }else {
                     Logger.t(TAG).d("more click: title -> %s, channel -> %s", nameKey, channelName);
