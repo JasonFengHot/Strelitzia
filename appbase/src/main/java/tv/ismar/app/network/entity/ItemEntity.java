@@ -67,6 +67,33 @@ public class ItemEntity {
     @SerializedName("start_time")
     private String startTime;
     private boolean is_order;
+    private String logo_solid;
+    private String detail_url_old;
+    private String poster_url_old;
+
+    public String getLogo_solid() {
+        return logo_solid;
+    }
+
+    public void setLogo_solid(String logo_solid) {
+        this.logo_solid = logo_solid;
+    }
+
+    public String getDetail_url_old() {
+        return detail_url_old;
+    }
+
+    public void setDetail_url_old(String detail_url_old) {
+        this.detail_url_old = detail_url_old;
+    }
+
+    public String getPoster_url_old() {
+        return poster_url_old;
+    }
+
+    public void setPoster_url_old(String poster_url_old) {
+        this.poster_url_old = poster_url_old;
+    }
 
     public boolean is_order() {
         return is_order;

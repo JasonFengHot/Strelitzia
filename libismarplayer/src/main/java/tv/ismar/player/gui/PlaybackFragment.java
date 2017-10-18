@@ -264,6 +264,11 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
     public void onPause() {
         super.onPause();
         LogUtils.i(TAG, "onPause > setup : " + sharpSetupKeyClick + " sdcard : " + mounted);
+        if (mPlaybackService != null) {
+            if (!mPlaybackService.isPlayingAd() && !isPlayExitLayerShow && mCurrentPosition > 0) {
+                mPlaybackService.addHistory(mCurrentPosition, false);// 在非按返回键退出应用时需添加历史记录，此时无需发送至服务器，addHistory不能统一写到此处
+            }
+        }
 //        if (sharpSetupKeyClick || mounted) {
 //            sharpSetupKeyClick = false;
 //            mounted = false;
@@ -1666,7 +1671,6 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
             }
         });
     }
-
     private void showBuffer(String msg) {
         LogUtils.d(TAG, "showBuffer:" + msg + " " + mPlaybackService);
         if (mIsExiting) {
@@ -1678,7 +1682,11 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
             mPlaybackService.addHistory(mCurrentPosition, false);
             hidePanel();
             timerStop();
-            ((BaseActivity) getActivity()).showNoNetConnectDialog(null);
+            try {
+                ((BaseActivity) getActivity()).showNoNetConnectDialog(null);
+            }catch (Exception e){
+                e.printStackTrace();
+            }
             return;
         }
         if ((mIsOnPaused && !isSeeking) || isPopWindowShow()) {
@@ -1707,14 +1715,18 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
     private void hideBuffer() {
         // buffer消失，就需要remove50秒延时消息
         removeBufferingLongTime();
-
-        if (player_buffer_layout != null && player_buffer_layout.getVisibility() == View.VISIBLE) {
-            player_buffer_layout.setVisibility(View.GONE);
-            player_buffer_text.setText(getString(R.string.loading_text));
-            if (animationDrawable != null && animationDrawable.isRunning()) {
-                animationDrawable.stop();
+        try {
+            if (player_buffer_layout != null && player_buffer_layout.getVisibility() == View.VISIBLE) {
+                player_buffer_layout.setVisibility(View.GONE);
+                player_buffer_text.setText(getString(R.string.loading_text));
+                if (animationDrawable != null && animationDrawable.isRunning()) {
+                    animationDrawable.stop();
+                }
             }
+        }catch (Exception e){
+            e.printStackTrace();
         }
+
 
     }
 
@@ -1902,6 +1914,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
                         // 更新进度条
                         fragment.mCurrentPosition = mediaPosition;
                         fragment.player_seekBar.setProgress(fragment.mCurrentPosition);
+                        fragment.updatePlayerPause();
                     }
                     sendEmptyMessageDelayed(MSG_UPDATE_PROGRESS, 1000);// 部分机型在500ms内获取当前播放进度，与上一次相同，此处每1s更新一次进度条
                     break;

@@ -53,7 +53,6 @@ public class UpdatePopupWindow extends PopupWindow implements View.OnHoverListen
         tmp = contentView.findViewById(R.id.tmp);
         update_now_btn.setOnHoverListener(this);
         update_later_btn.setOnHoverListener(this);
-        setBackgroundDrawable(context.getResources().getDrawable(R.drawable.transparent));
 
         final String path = bundle.getString("path");
         final ArrayList<String> msgs = bundle.getStringArrayList("msgs");
@@ -76,10 +75,12 @@ public class UpdatePopupWindow extends PopupWindow implements View.OnHoverListen
         if (force_upgrade){
             update_later_btn.setVisibility(View.GONE);
             update_now_btn.setNextFocusRightId(update_later_btn.getId());
+        }else{
+            setBackgroundDrawable(context.getResources().getDrawable(R.drawable.transparent));
         }
 
         setContentView(contentView);
-
+        setOutsideTouchable(true);
         setFocusable(true);
 
         update_now_btn.setOnClickListener(new View.OnClickListener() {
@@ -96,11 +97,11 @@ public class UpdatePopupWindow extends PopupWindow implements View.OnHoverListen
                 }
                 AppUtils.installApp(path, "tv.ismar.daisy.provider");
 
-                SharedPreferences sp=context.getSharedPreferences("Daisy",0);
-                if(sp!=null&&!IsmartvActivator.getInstance().isLogin()) {
-                    SharedPreferences.Editor editor = sp.edit();
-                    editor.putBoolean("fristopne", true).commit();
-                }
+//                SharedPreferences sp=context.getSharedPreferences("Daisy",0);
+//                if(sp!=null&&!IsmartvActivator.getInstance().isLogin()) {
+//                    SharedPreferences.Editor editor = sp.edit();
+//                    editor.putBoolean("fristopne", true).commit();
+//                }
             }
         });
         update_later_btn.setOnClickListener(new View.OnClickListener() {

@@ -14,6 +14,42 @@ public class BannerEntity {
     private int page;
     private int num_pages;
     private boolean is_more;
+    private String section_slug;  //更多跳转栏目名称
+    private int style; //跳转的列表页的横竖版标记
+    private String channel_title; //section名字
+    private String channel; //跳转列表页title
+
+    public String getSection_slug() {
+        return section_slug;
+    }
+
+    public void setSection_slug(String section_slug) {
+        this.section_slug = section_slug;
+    }
+
+    public int getStyle() {
+        return style;
+    }
+
+    public void setStyle(int style) {
+        this.style = style;
+    }
+
+    public String getChannel_title() {
+        return channel_title;
+    }
+
+    public void setChannel_title(String channel_title) {
+        this.channel_title = channel_title;
+    }
+
+    public String getChannel() {
+        return channel;
+    }
+
+    public void setChannel(String channel) {
+        this.channel = channel;
+    }
 
     public boolean is_more() {
         return is_more;

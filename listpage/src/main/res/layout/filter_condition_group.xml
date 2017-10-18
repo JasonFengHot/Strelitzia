@@ -52,7 +52,7 @@
         android:layout_height="@dimen/filter_condition_group_arrow_w"
         android:focusable="false"
         android:background="@drawable/filter_arrow_right_selector"
-        android:visibility="invisible"/>
+        />
 </LinearLayout>
 
     <View

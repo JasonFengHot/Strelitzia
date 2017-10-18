@@ -70,16 +70,18 @@ public class HistoryListAdapter extends RecyclerView.Adapter<HistoryListAdapter.
     @Override
     public void onBindViewHolder(final HistoryViewholder holder, final int position) {
         HistoryFavoriteEntity item = items.get(position);
-        if(item.getType()!=2){
-            if(item.getAdlet_url()!=null&&!item.getAdlet_url().isEmpty()) {
-                Picasso.with(mContext).load(item.getAdlet_url()).error(R.drawable.list_item_preview_bg).into(holder.item_detail_image);
-            }
-                holder.item_title.setText(item.getTitle());
-                holder.item_title.setVisibility(View.VISIBLE);
-                holder.item_title_layout.setVisibility(View.VISIBLE);
-                holder.item_detail_image.setVisibility(View.VISIBLE);
-                holder.more.setVisibility(View.GONE);
-                holder.item_time_node.setVisibility(View.VISIBLE);
+         if(item.getType()!=2){
+                if(item.getAdlet_url()!=null&&!item.getAdlet_url().isEmpty()) {
+                    Picasso.with(mContext).load(item.getAdlet_url()).error(R.drawable.list_item_preview_bg).into(holder.item_detail_image);
+                }else{
+                    Picasso.with(mContext).load(R.drawable.list_item_preview_bg).into(holder.item_detail_image);
+                }
+                 holder.item_title.setText(item.getTitle());
+                 holder.item_title.setVisibility(View.VISIBLE);
+                 holder.item_title_layout.setVisibility(View.VISIBLE);
+                 holder.item_detail_image.setVisibility(View.VISIBLE);
+                 holder.more.setVisibility(View.GONE);
+                 holder.item_time_node.setVisibility(View.VISIBLE);
             if(item.getDate()!=null&&item.getDate().contains("-")){
                 String[] date=item.getDate().split("-");
                 if(item.isShowDate()){
@@ -135,6 +137,10 @@ public class HistoryListAdapter extends RecyclerView.Adapter<HistoryListAdapter.
                 if(event.getAction()==KeyEvent.ACTION_DOWN){
                     itemKeyListener.onItemKeyListener(v,keyCode,event);
                     if(position==items.size()-1&&keyCode==22){
+                        YoYo.with(Techniques.HorizontalShake).duration(1000).playOn(holder.item_detail);
+                        return true;
+                    }
+                    if(position==0&&keyCode==21){
                         YoYo.with(Techniques.HorizontalShake).duration(1000).playOn(holder.item_detail);
                         return true;
                     }

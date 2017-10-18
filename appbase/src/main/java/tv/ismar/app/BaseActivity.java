@@ -8,6 +8,8 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
@@ -339,6 +341,8 @@ public class BaseActivity extends AppCompatActivity {
                     ToastTip.showToast(BaseActivity.this,"网络连接超时，请重试");
                 }else if(httpException.code() == 504){
                     ToastTip.showToast(BaseActivity.this,"服务器繁忙，请稍后再试");
+                }else{
+                    ToastTip.showToast(BaseActivity.this,"网络连接失败，请重试");
                 }
             } else {
                 ToastTip.showToast(BaseActivity.this,"网络连接失败，请重试");
@@ -458,7 +462,6 @@ public class BaseActivity extends AppCompatActivity {
                 && !currentActivityName.equals("tv.ismar.daisy.PlayFinishedActivity")) {
             updateBundle = stack.pop();
             updatePopupWindow = new UpdatePopupWindow(this, updateBundle);
-            updatePopupWindow.setBackgroundDrawable(getResources().getDrawable(R.drawable.transparent));
             updatePopupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
             updatePopupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
                 @Override
@@ -531,14 +534,25 @@ public class BaseActivity extends AppCompatActivity {
     }
     public void showLoginHint(){
         SharedPreferences sp=getSharedPreferences("Daisy",0);
-        if(sp!=null&&sp.getBoolean("fristopne",true)){
+        int code=fetchInstallVersionCode();
+        if(sp!=null&&sp.getInt("installCode",-1)!=code){
             SharedPreferences.Editor editor=sp.edit();
-            editor.putBoolean("fristopne",false);
+            editor.putInt("installCode",code);
             editor.commit();
             login_hint_dialog=new Login_hint_dialog(this);
             if(login_hint_dialog!=null&&!login_hint_dialog.isShowing()){
                 login_hint_dialog.showAtLocation(getRootView(),Gravity.CENTER,0,0);
             }
         }
+    }
+    private int fetchInstallVersionCode() {
+        int versionCode = 0;
+        try {
+            PackageInfo packageInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+            versionCode = packageInfo.versionCode;
+        } catch (PackageManager.NameNotFoundException e) {
+            Log.e(TAG, "can't find this application!!!");
+        }
+        return versionCode;
     }
 }

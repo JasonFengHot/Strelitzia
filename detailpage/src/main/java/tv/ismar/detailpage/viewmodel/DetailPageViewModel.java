@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.orhanobut.logger.Logger;
 import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
 
@@ -108,6 +109,8 @@ public class DetailPageViewModel extends BaseObservable {
         notifyPropertyChanged(BR.enabled);
         notifyPropertyChanged(BR.bookmarkVisibility);
         notifyPropertyChanged(BR.subscribeTextVisibility);
+        notifyPropertyChanged(BR.cpLogoVisibility);
+        notifyPropertyChanged(BR.cpLogoUrl);
 
         if (historyManager == null) {
             historyManager = VodApplication.getModuleAppContext().getModuleHistoryManager();
@@ -146,12 +149,12 @@ public class DetailPageViewModel extends BaseObservable {
 
     @Bindable
     public String getItemPostUrl() {
-        return mItemEntity.getDetailUrl();
+        return mItemEntity.getDetail_url_old();
     }
 
     @Bindable
     public String getItemHorizontalUrl() {
-        return mItemEntity.getPosterUrl();
+        return mItemEntity.getPoster_url_old();
     }
 
     @Bindable
@@ -662,8 +665,15 @@ public class DetailPageViewModel extends BaseObservable {
     @Bindable
     public String getCpLogoUrl() {
         try {
-            return mItemEntity.getExpense().getCplogo();
+            if(mItemEntity.getLogo_solid()!=null) {
+                Log.i("Logo_solid",mItemEntity.getLogo_solid());
+                return mItemEntity.getLogo_solid();
+            }else{
+                Log.i("Logo_solid","null");
+                return "error";
+            }
         } catch (NullPointerException e) {
+            Log.i("Logo_solid","error"+e.toString());
             return "error";
         }
     }

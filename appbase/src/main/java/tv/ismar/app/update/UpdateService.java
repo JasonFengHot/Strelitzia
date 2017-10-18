@@ -298,6 +298,8 @@ public class UpdateService extends Service implements Loader.OnLoadCompleteListe
     }
 
     private int fetchInstallVersionCode() {
+        SharedPreferences sp=getSharedPreferences("Daisy",0);
+        SharedPreferences.Editor editor=sp.edit();
         int versionCode = 0;
         try {
             PackageInfo packageInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
@@ -305,6 +307,8 @@ public class UpdateService extends Service implements Loader.OnLoadCompleteListe
         } catch (PackageManager.NameNotFoundException e) {
             Log.e(TAG, "can't find this application!!!");
         }
+        editor.putInt("installCode",versionCode);
+        editor.commit();
         return versionCode;
     }
 

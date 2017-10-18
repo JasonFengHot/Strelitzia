@@ -253,6 +253,7 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
                     list_poster_recyclerview.setVisibility(View.GONE);
                     if(mFilterItemList==null){
                         full_view.setVisibility(View.VISIBLE);
+                        filter_tab.setBackgroundResource(R.drawable.section_checked_tab_selector);
                         full_view.requestFocus();
                         mFilterItemList=new ItemList();
                         mFilterItemList.objects=new ArrayList<>();
@@ -556,6 +557,7 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
                     @Override
                     public void onError(Throwable e) {
                         full_view.setVisibility(View.GONE);
+                        filter_tab.setBackgroundResource(R.drawable.section_tab_selector);
                         super.onError(e);
                     }
 
@@ -579,15 +581,11 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
                             //筛选条件popup焦点控制
                             String conditionsForLog = "";
                             for (int i = 0; i < filter_conditions.getChildCount(); i++) {
-                                FilterConditionGroupView filter = (FilterConditionGroupView) filter_conditions.getChildAt(i);
-                                if (filter_conditions.getChildAt(i - 1) != null)
-                                    filter.setNextUpView(filter_conditions.getChildAt(i - 1));
-                                if (filter_conditions.getChildAt(i + 1) != null)
-                                    filter.setNextDownView(filter_conditions.getChildAt(i + 1));
                                 conditionsForLog += ";";
                             }
                             AppConstant.purchase_entrance_keyword = conditionsForLog.substring(0, conditionsForLog.lastIndexOf(";"));
                             full_view.setVisibility(View.VISIBLE);
+                            filter_tab.setBackgroundResource(R.drawable.section_checked_tab_selector);
                             full_view.requestFocus();
                             showFilterPopup();
                         }
@@ -608,7 +606,7 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
                 return false;
             }
         });
-        filterPopup.setBackgroundDrawable(getResources().getDrawable(R.drawable.transparent));
+        filterPopup.setBackgroundDrawable(getResources().getDrawable(R.drawable.section_checked_tab_selector));
         filterPopup.showAtLocation(getRootView(), Gravity.BOTTOM, 0, 0);
         Message msg = new Message();
         msg.arg1 = -1;
@@ -626,6 +624,7 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
                     }
                 }
                 full_view.setVisibility(View.GONE);
+                filter_tab.setBackgroundResource(R.drawable.section_tab_selector);
             }
         });
     }
@@ -641,8 +640,6 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
         no_limit.add("");
         no_limit.add("全部");
         values.add(0,no_limit);
-        values.addAll(values);
-        values.addAll(values);
         final FilterConditionGroupView filterConditionGroupView=new FilterConditionGroupView(this,values,label);
         filterConditionGroupView.filter_condition_radio_group.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
@@ -969,6 +966,7 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
             }
             if(filterPopup!=null&&!filterPopup.isShowing()) {
                 full_view.setVisibility(View.VISIBLE);
+                v.setBackgroundResource(R.drawable.section_checked_tab_selector);
                 full_view.requestFocus();
                 showFilterPopup();
             }

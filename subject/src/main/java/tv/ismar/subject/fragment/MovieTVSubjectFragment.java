@@ -19,10 +19,15 @@ import android.widget.Toast;
 import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.TimeZone;
 
+import cn.ismartv.truetime.TrueTime;
 import okhttp3.ResponseBody;
 import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
@@ -365,7 +370,13 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnClickList
             try {
                 if (!isFavorite()) {
                     String url = IsmartvActivator.getInstance().getApiDomain() + "/api/item/" + id + "/";
+                    DateFormat format=new SimpleDateFormat("MM-dd");
+                    format.setTimeZone(TimeZone.getTimeZone("Asia/Shanghai"));
+                    long time= TrueTime.now().getTime();
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.setTimeInMillis(time);
                     Favorite favorite = new Favorite();
+                    favorite.time=format.format(calendar.getTime());
                     favorite.title = mSubjectEntity.getTitle();
                     String adlet_url = mSubjectEntity.getAdlet_url();
                     if (adlet_url != null) {

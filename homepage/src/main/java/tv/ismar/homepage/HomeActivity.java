@@ -7,6 +7,7 @@ import android.content.IntentFilter;
 import android.graphics.PixelFormat;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -15,6 +16,7 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -57,7 +59,7 @@ import static tv.ismar.homepage.control.FetchDataControl.FETCH_CHANNEL_TAB_FLAG;
  */
 
 public class HomeActivity extends BaseActivity implements View.OnClickListener, BaseControl.ControlCallBack,
-        View.OnFocusChangeListener, View.OnKeyListener, View.OnHoverListener {
+        View.OnFocusChangeListener,  View.OnHoverListener {
 
     public static final String HOME_PAGE_CHANNEL_TAG = "homepage";
     private final FetchDataControl mFetchDataControl = new FetchDataControl(this, this);//业务类引用
@@ -76,12 +78,13 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     private TelescopicWrap mPersonCenterTel;//个人中心包装类
 
     private BitmapDecoder mBitmapDecoder;
-    private int mLastSelectedIndex = 0;//记录上一次选中的位置
+    private int mLastSelectedIndex = 1;//记录上一次选中的位置
     private TimeTickBroadcast mTimeTickBroadcast = null;
 
     public static View mHoverView;
     public static View mLastFocusView;
 
+    private ImageView left_image,right_image; // 导航左右遮罩
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate((savedInstanceState!=null)?null:savedInstanceState);
@@ -91,12 +94,22 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         findViews();
         initListener();
         initData();
+        new Handler().postDelayed(mRunnable,1000);
     }
+    private Runnable mRunnable=new Runnable() {
+        @Override
+        public void run() {
+            showLoginHint();
+        }
+    };
 
     @Override
     protected void onResume() {
         super.onResume();
         mTimeTv.setText(mHomeControl.getNowTime());
+        if (mLastSelectedIndex == 0){
+            mChannelTab.setDefaultSelection(1);
+        }
     }
 
     /*初始化一些系统参数*/
@@ -111,7 +124,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
 
     /*获取控件实例*/
     private void findViews(){
-        mHoverView = findViewById(R.id.hover_view);
+        mHoverView = findViewById(R.id.home_view_layout);
         mViewGroup = (ViewGroup) findViewById(R.id.home_view_layout);
         mChannelTab = (HorizontalTabView) findViewById(R.id.channel_tab);
         mTimeTv = (TextView) findViewById(R.id.guide_title_time_tv);
@@ -128,6 +141,12 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         mHoverView.setFocusable(true);
         mHoverView.requestFocus();
         setBackground(R.drawable.homepage_background);
+
+        right_image= (ImageView) findViewById(R.id.guide_tab_right);
+        left_image= (ImageView) findViewById(R.id.guide_tab_left);
+        mChannelTab.leftbtn=left_image;
+        mChannelTab.rightbtn=right_image;
+
     }
 
     private void setBackground(int id){
@@ -143,9 +162,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
 
     private void initListener(){
         mCenterRect.setOnFocusChangeListener(this);
-        mCenterRect.setOnKeyListener(this);
         mCenterRect.setOnClickListener(this);
-        mCollectionRect.setOnKeyListener(this);
         mCollectionRect.setOnFocusChangeListener(this);
         mCollectionRect.setOnClickListener(this);
         mHomeControl.setChannelChange(mChannelTab);
@@ -207,7 +224,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     public void onClick(View v) {
         PageIntent pageIntent = new PageIntent();
         if(v == mCollectionRect){
-            pageIntent.toHistory(this);
+            pageIntent.toHistory(this,"homePage");
         } else if(v == mCenterRect){
             pageIntent.toUserCenter(this);
         }
@@ -261,10 +278,11 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                 ChannelFragment channelFragment = new ChannelFragment();
                 switch(position){
                     case 0://搜索
+                        mLastSelectedIndex = position;
                         setBackground(R.drawable.homepage_background);
                         PageIntent intent = new PageIntent();
                         intent.toSearch(this);
-                        break;
+                        return;
                     case 1://首页
                         setBackground(R.drawable.homepage_background);
                         channelFragment.setChannel("首页", HOME_PAGE_CHANNEL_TAG, "首页", 0);
@@ -290,27 +308,6 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                 mLastSelectedIndex = position;
             }
         }
-    }
-
-    @Override
-    public boolean onKey(View v, int keyCode, KeyEvent event) {
-        if(v==mCollectionRect && keyCode==KeyEvent.KEYCODE_DPAD_LEFT){
-            return true;
-        }
-        if(v==mCenterRect && keyCode==KeyEvent.KEYCODE_DPAD_RIGHT){
-            return true;
-        }
-        if(v==mCollectionRect && keyCode==KeyEvent.KEYCODE_DPAD_RIGHT){
-            mCenterRect.setFocusable(true);
-            mCenterRect.requestFocus();
-            return true;
-        }
-        if(v==mCenterRect && keyCode==KeyEvent.KEYCODE_DPAD_LEFT){
-            mCollectionRect.setFocusable(true);
-            mCollectionRect.requestFocus();
-            return true;
-        }
-        return false;
     }
 
     /*时间跳动广播*/
@@ -349,8 +346,6 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
             BaseActivity.baseSection = "";
             stopService(new Intent(HomeActivity.this, PlaybackService.class));
             HomeActivity.super.onBackPressed();
-            android.os.Process.killProcess(android.os.Process.myPid());
-            System.exit(0);
         }
     }
 
@@ -367,6 +362,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         super.onDestroy();
         unregisterReceiver(mTimeTickBroadcast);
         mTimeTickBroadcast = null;
+
     }
 
     @Override

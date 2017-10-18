@@ -3,6 +3,7 @@ package tv.ismar.homepage.template;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
@@ -12,6 +13,7 @@ import java.util.regex.Pattern;
 import tv.ismar.app.BaseActivity;
 import tv.ismar.app.core.PageIntent;
 import tv.ismar.app.core.Source;
+import tv.ismar.app.entity.banner.BannerCarousels;
 import tv.ismar.app.entity.banner.BannerEntity;
 
 /**
@@ -84,13 +86,19 @@ public abstract class Template {
                 url = bean.getUrl();
                 itemPk = bean.getPk();
                 title = bean.getTitle();
+            }else if (tag instanceof BannerCarousels){
+                BannerCarousels bean = (BannerCarousels) tag;
+                contentModel = bean.getContent_model();
+                url = bean.getUrl();
+                itemPk = bean.getPk();
+                title = bean.getTitle();
             }
         }
 
 
         Intent intent = new Intent();
         if (modelName.contains("item")) {
-            if (contentModel.contains("gather")) {
+            if (!TextUtils.isEmpty(contentModel)&&contentModel.contains("gather")) {
                 PageIntent subjectIntent = new PageIntent();
                 subjectIntent.toSubject(mContext, contentModel, itemPk, title, BaseActivity.baseChannel, "");
             } else {

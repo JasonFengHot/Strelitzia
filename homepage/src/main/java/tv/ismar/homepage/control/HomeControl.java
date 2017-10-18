@@ -2,6 +2,7 @@ package tv.ismar.homepage.control;
 
 import android.content.Context;
 import android.content.Intent;
+import android.view.View;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -47,6 +48,13 @@ public class HomeControl extends BaseControl{
                         mCallBack.callBack(TAB_CHANGE_FALG, position);//0-搜索，1-首页
                     }
                 });
+
+        view.setOnItemClickedListener(new HorizontalTabView.OnItemClickedListener() {
+            @Override
+            public void onItemClicked(View v, int position) {
+                mCallBack.callBack(TAB_CHANGE_FALG, position);//0-搜索，1-首页
+            }
+        });
 
     }
 

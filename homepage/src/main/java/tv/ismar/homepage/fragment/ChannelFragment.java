@@ -2,13 +2,12 @@ package tv.ismar.homepage.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ScrollView;
 
 import tv.ismar.app.BaseControl;
-import tv.ismar.app.core.PageIntent;
 import tv.ismar.app.entity.GuideBanner;
 import tv.ismar.homepage.HomeActivity;
 import tv.ismar.homepage.R;
@@ -52,6 +51,29 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
         return view;
     }
 
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        initData();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+//        mLinearContainer.removeAllViews();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+//        mLinearContainer.clearView();
+    }
+
     private void findView(View view){
         mLinearContainer = (RecycleLinearLayout) view.findViewById(R.id.scroll_linear_container);
     }
@@ -75,18 +97,6 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
                 mControl.fetchChannelBanners(mChannel);
             }
         }
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        initData();
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        mLinearContainer.removeAllViews();
     }
 
     @Override
@@ -202,9 +212,4 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
         return LayoutInflater.from(getContext()).inflate(layoutId, null);
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        mLinearContainer.clearView();
-    }
 }

@@ -189,11 +189,12 @@ public class PageIntent implements PageIntentInterface {
         context.startActivity(intent);
     }
 
-    public void toHistory(Context context) {
+    public void toHistory(Context context,String frompage) {
         Intent intent = new Intent();
 //        intent.setAction("tv.ismar.daisy.Channel");
 //        intent.putExtra("channel", "histories");
         intent.setAction("tv.ismar.daisy.historyfavorite");
+        intent.putExtra("fromPage",frompage);
         context.startActivity(intent);
     }
 

@@ -98,15 +98,21 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
     private TextView favorite_title,history_title;
     private ImageView first_line_image,second_line_image;
     private ImageView edit_shadow;
+    private RelativeLayout empty;
     private Button history_left_arrow,history_right_arrow,favorite_left_arrow,favorite_right_arrow;
     private HashMap<String, Object> mDataCollectionProperties;
     private Boolean isEdit=false;
     private boolean isMore=false;
+    private String fromPage="homePage";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.history_favorite_layout);
         skyService=SkyService.ServiceManager.getService();
+        Intent intent=getIntent();
+        if(intent!=null){
+            fromPage=intent.getStringExtra("fromPage");
+        }
         initView();
     }
     private void initView(){
@@ -115,6 +121,8 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
         favorite_left_arrow= (Button) findViewById(R.id.favorite_left_arrow);
         favorite_right_arrow= (Button) findViewById(R.id.favorite_right_arrow);
 
+        empty= (RelativeLayout) findViewById(R.id.empty);
+        empty.setOnHoverListener(this);
         historyRecycler= (RecyclerViewTV) findViewById(R.id.history_list);
         favoriteRecycler= (RecyclerViewTV) findViewById(R.id.favorite_list);
         favorite_layout= (LinearLayout) findViewById(R.id.favorite_layout);
@@ -156,10 +164,25 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
                 delet_history.requestFocusFromTouch();
             }
         });
+        edit_shadow.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if(event.getAction()==KeyEvent.ACTION_DOWN){
+                    delet_history.requestFocusFromTouch();
+                }
+                return false;
+            }
+        });
         history_right_arrow.setOnHoverListener(this);
         history_left_arrow.setOnHoverListener(this);
         favorite_right_arrow.setOnHoverListener(this);
         favorite_left_arrow.setOnHoverListener(this);
+
+        history_right_arrow.setOnClickListener(this);
+        history_left_arrow.setOnClickListener(this);
+        favorite_right_arrow.setOnClickListener(this);
+        favorite_left_arrow.setOnClickListener(this);
+
         historyRecycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
@@ -204,7 +227,7 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
                         }else{
                             favorite_left_arrow.setVisibility(View.GONE);
                         }
-                        if (endPos != historyLists.size() - 1) {
+                        if (endPos != favoriteLists.size() - 1) {
                             favorite_right_arrow.setVisibility(View.VISIBLE);
                         } else {
                             favorite_right_arrow.setVisibility(View.GONE);
@@ -213,6 +236,16 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
 
                 }
                 super.onScrollStateChanged(recyclerView, newState);
+            }
+        });
+        empty.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if(event.getAction()==KeyEvent.ACTION_DOWN){
+                    empty.setFocusable(false);
+
+                }
+                return false;
             }
         });
 
@@ -378,9 +411,15 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
     }
 
     private void loadData(){
+        favorite_left_arrow.setVisibility(View.GONE);
+        history_left_arrow.setVisibility(View.GONE);
         if(historyLists.size()>0){
             no_data.setVisibility(View.GONE);
             history_relativelayout.setVisibility(View.VISIBLE);
+
+            if(historyLists.size()>=4){
+                history_right_arrow.setVisibility(View.VISIBLE);
+            }
             Log.i("favoriteaci","isEdit: "+isEdit);
             if(!isEdit)
             edit_history.setVisibility(View.VISIBLE);
@@ -397,7 +436,9 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
                 favorite_title.setVisibility(View.VISIBLE);
                 if(isEdit)
                 delete_favorite.setVisibility(View.VISIBLE);
-
+                if(favoriteLists.size()>=4){
+                    favorite_right_arrow.setVisibility(View.VISIBLE);
+                }
                 second_line_image.setBackgroundResource(R.drawable.favorite_delete_image);
                 favoritAdapter=new HistoryListAdapter(HistoryFavoriteActivity.this,favoriteLists,"favorite");
                 favoritAdapter.setItemFocusedListener(HistoryFavoriteActivity.this);
@@ -414,6 +455,7 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
                 historyRecycler.setAdapter(historyAdapter);
 
             }else{
+                favorite_right_arrow.setVisibility(View.GONE);
                 RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,getResources().getDimensionPixelSize(R.dimen.history_473));
                 lp.setMargins(0,getResources().getDimensionPixelSize(R.dimen.history_155),0,0);
                 history_relativelayout.setLayoutParams(lp);
@@ -441,6 +483,9 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
                     edit_history.setFocusableInTouchMode(true);
                 }
             },600);
+            if(isEdit){
+                delet_history.requestFocusFromTouch();
+            }
         }else{
             if(favoriteLists.size()>0){
                 no_data.setVisibility(View.GONE);
@@ -456,6 +501,9 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
                 editLp.setMargins(getResources().getDimensionPixelSize(R.dimen.history_100),getResources().getDimensionPixelSize(R.dimen.history_299),0,0);
                 delet_history.setLayoutParams(editLp);
                 delete_favorite.setVisibility(View.GONE);
+                if(favoriteLists.size()>=4){
+                    history_right_arrow.setVisibility(View.VISIBLE);
+                }
 
                 history_title.setText("收藏");
                 history_title.setVisibility(View.VISIBLE);
@@ -472,6 +520,9 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
                         edit_history.setFocusableInTouchMode(true);
                     }
                 },500);
+                if(isEdit){
+                    delet_history.requestFocusFromTouch();
+                }
             }else{
                 if(isEdit)
                     editRestore();
@@ -481,6 +532,7 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
         }
         edit_history.setFocusable(true);
         edit_history.setFocusableInTouchMode(true);
+
     }
     private void setHistoryListen(){
         historyAdapter.setItemFocusedListener(HistoryFavoriteActivity.this);
@@ -527,17 +579,25 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
             favoriteManager.setScrollEnabled(false);
         }else if(id==R.id.favorite_edit){
             intent.putExtra("type",2);
-            intent.putExtra("List",(Serializable) favoriteLists);
+            intent.putExtra("List",(Serializable) allfavoriteLists);
             startActivity(intent);
         }else if(id==R.id.history_edit){
-            if(historyLists.size()>1) {
+            if(historyLists.size()>0) {
                 intent.putExtra("type", 1);
-                intent.putExtra("List", (Serializable) historyLists);
+                intent.putExtra("List", (Serializable) allhistoryLists);
             }else{
                 intent.putExtra("type",2);
-                intent.putExtra("List",(Serializable) favoriteLists);
+                intent.putExtra("List",(Serializable) allfavoriteLists);
             }
             startActivity(intent);
+        }else if(id==R.id.favorite_right_arrow){
+            favoriteRecycler.smoothScrollBy(getResources().getDimensionPixelOffset(R.dimen.history_250),0);
+        }else if(id==R.id.favorite_left_arrow){
+            favoriteRecycler.smoothScrollBy(-getResources().getDimensionPixelOffset(R.dimen.history_250),0);
+        }else if(id==R.id.history_left_arrow){
+            historyRecycler.smoothScrollBy(-getResources().getDimensionPixelOffset(R.dimen.history_250),0);
+        }else if(id==R.id.history_right_arrow){
+            historyRecycler.smoothScrollBy(getResources().getDimensionPixelOffset(R.dimen.history_250),0);
         }
     }
 
@@ -740,6 +800,7 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
         history_right_arrow.setFocusable(false);
         favorite_right_arrow.setFocusable(false);
         favorite_left_arrow.setFocusable(false);
+        empty.setFocusable(false);
     }
 
 
@@ -761,6 +822,7 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
                         HistoryFavoriteEntity item = getItem(history);
                         allhistoryLists.add(item);
                     }
+                    Log.i("listSize","allhistoryLists: "+allhistoryLists.size()+"");
                     srotHistoryFavoriteList(allhistoryLists,historyLists);
                 }
             } catch (Exception e) {
@@ -799,24 +861,27 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
         int count=0;
         if(list.size()>0){
             for(int i=0;i<list.size();i++){
-                if(count>=3){
+                if(count==3){
                     HistoryFavoriteEntity more=new HistoryFavoriteEntity();
                     more.setType(2);
                     list2.add(more);
                     return;
                 }
-                HistoryFavoriteEntity item=list.get(i);
-                if(i==0){
-                    item.setShowDate(true);
-                }else{
-                    if(item.getDate().equals(list.get(i-1).getDate())){
-                        item.setShowDate(false);
-                    }else{
+                if(count<3) {
+                    HistoryFavoriteEntity item = list.get(i);
+                    if (i == 0) {
                         item.setShowDate(true);
-                        count++;
+                    } else {
+                        if (item.getDate().equals(list.get(i - 1).getDate())) {
+                            item.setShowDate(false);
+                        } else {
+                            item.setShowDate(true);
+                            count++;
+                        }
                     }
+                    if(count!=3)
+                    list2.add(item);
                 }
-                list2.add(item);
             }
         }
     }

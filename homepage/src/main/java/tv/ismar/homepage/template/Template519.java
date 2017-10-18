@@ -210,11 +210,11 @@ public class Template519 extends Template implements View.OnClickListener, View.
         mHorizontal519Adapter.setBannerClickListener(new BannerHorizontal519Adapter.OnBannerClickListener() {
             @Override
             public void onBannerClick(View view, int position) {
-                if (position < bannerEntity.getCount()){
+                if (position < bannerEntity.getCount()-1){
                     goToNextPage(view);
                 }else {
                     Logger.t(TAG).d("more click: title -> %s, channel -> %s", nameKey, channelName);
-                    new PageIntent().toListPage(mContext, nameKey, channelName, 0);
+                    new PageIntent().toListPage(mContext, bannerEntity.getChannel_title(), bannerEntity.getChannel(), bannerEntity.getStyle());
                 }
             }
         });
