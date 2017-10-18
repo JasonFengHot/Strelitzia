@@ -310,9 +310,7 @@ public class TemplateGuide extends Template implements BaseControl.ControlCallBa
 
     @Override
     public void onItemClick(View view, int position) {//item点击事件
-        if(position == 0){//第一张大图
-            mControl.go2Detail(mFetchDataControl.mHomeEntity.bg_image);
-        } else if(position == mFetchDataControl.mHomeEntity.count-1){
+       if(position == mFetchDataControl.mHomeEntity.count-1){
             new PageIntent().toListPage(mContext, mFetchDataControl.mHomeEntity.channel_title, mFetchDataControl.mHomeEntity.channel, mFetchDataControl.mHomeEntity.style);
         }else {
             mControl.go2Detail(mFetchDataControl.mHomeEntity.posters.get(position));
@@ -371,7 +369,7 @@ public class TemplateGuide extends Template implements BaseControl.ControlCallBa
                 }
                 mGuideLayoutManager.smoothScrollToPosition(mRecycleView, null, targetPosition);
                 if(targetPosition==mFetchDataControl.mHomeEntity.count)
-                    YoYo.with(Techniques.HorizontalShake).duration(1000).playOn(mRecycleView.getChildAt(mRecycleView.getChildCount() - 1).findViewById(R.id.tv_player_ismartv_linear_layout));
+                    YoYo.with(Techniques.HorizontalShake).duration(1000).playOn(mRecycleView.getChildAt(mRecycleView.getChildCount() - 1).findViewById(R.id.guide_ismartv_linear_layout));
             }
         }else if (i == R.id.guide_daisy_video_view||i == R.id.guide_video_loading_image){
             Log.d(TAG, "onClick goToNextPage");

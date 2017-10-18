@@ -49,8 +49,8 @@ public class DoubleLdAdapter extends BaseRecycleAdapter<DoubleLdAdapter.DoubleLd
 
     @Override
     public void onBindViewHolder(DoubleLdViewHolder holder, int position) {
+        holder.mPosition = position;
         if(position != 0){
-            holder.mPosition = position;
             BannerPoster poster = mData.get(position-1);
             if (!TextUtils.isEmpty(poster.poster_url)) {
                 if(poster.poster_url.equals("更多")){

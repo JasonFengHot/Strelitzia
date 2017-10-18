@@ -212,9 +212,10 @@ public class TemplateDoubleLd extends Template implements BaseControl.ControlCal
         int i = v.getId();
         int[] positions = new int[]{0, 0};
         mDoubleLayoutManager.findFirstCompletelyVisibleItemPositions(positions);
+        Log.i("onClick", "positions[0]:"+positions[0]+"positions[1]:"+positions[1]);
         if (i == R.id.navigation_left) {
             if (positions[1] - 1 >= 0) {//向左滑动
-                int targetPosition = positions[1] - 8;
+                int targetPosition = positions[1] - 14;
                 if (targetPosition <= 0) targetPosition = 0;
                 mSelectItemPosition = targetPosition;
                 mDoubleLayoutManager.smoothScrollToPosition(mRecyclerView, null, targetPosition);
@@ -222,7 +223,7 @@ public class TemplateDoubleLd extends Template implements BaseControl.ControlCal
         } else if (i == R.id.navigation_right) {//向右滑动
             mRecyclerView.loadMore();
             if (positions[1]  <= mFetchDataControl.mHomeEntity.count) {
-                int targetPosition = positions[1] + 8;
+                int targetPosition = positions[1] + 28;
                 if (targetPosition >= mFetchDataControl.mHomeEntity.count) {
                     targetPosition = mFetchDataControl.mHomeEntity.count;
                 }
