@@ -458,11 +458,11 @@ public class HorizontalTabView extends HorizontalScrollView
             zoomOut(view);
             view.setBackgroundResource(android.R.color.transparent);
 
-            // 隐藏view获取焦点
-            if (HomeActivity.mHoverView != null) {
-                HomeActivity.mHoverView.requestFocus();
-                HomeActivity.mHoverView.requestFocusFromTouch();
-            }
+//            // 隐藏view获取焦点
+//            if (HomeActivity.mHoverView != null) {
+//                HomeActivity.mHoverView.requestFocus();
+//                HomeActivity.mHoverView.requestFocusFromTouch();
+//            }
         }
     }
 

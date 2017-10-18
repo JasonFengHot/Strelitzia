@@ -591,13 +591,13 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
             }
             startActivity(intent);
         }else if(id==R.id.favorite_right_arrow){
-            favoriteRecycler.smoothScrollBy(getResources().getDimensionPixelOffset(R.dimen.history_250),0);
+            favoriteRecycler.smoothScrollBy(getResources().getDimensionPixelOffset(R.dimen.history_1820),0);
         }else if(id==R.id.favorite_left_arrow){
-            favoriteRecycler.smoothScrollBy(-getResources().getDimensionPixelOffset(R.dimen.history_250),0);
+            favoriteRecycler.smoothScrollBy(-getResources().getDimensionPixelOffset(R.dimen.history_1820),0);
         }else if(id==R.id.history_left_arrow){
-            historyRecycler.smoothScrollBy(-getResources().getDimensionPixelOffset(R.dimen.history_250),0);
+            historyRecycler.smoothScrollBy(-getResources().getDimensionPixelOffset(R.dimen.history_1820),0);
         }else if(id==R.id.history_right_arrow){
-            historyRecycler.smoothScrollBy(getResources().getDimensionPixelOffset(R.dimen.history_250),0);
+            historyRecycler.smoothScrollBy(getResources().getDimensionPixelOffset(R.dimen.history_1820),0);
         }
     }
 

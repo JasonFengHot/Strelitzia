@@ -8,14 +8,18 @@ import android.graphics.PixelFormat;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -83,18 +87,28 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
 
     public static View mHoverView;
     public static View mLastFocusView;
+    private View headHoverd;
 
     private ImageView left_image,right_image; // 导航左右遮罩
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate((savedInstanceState!=null)?null:savedInstanceState);
         getWindow().setFormat(PixelFormat.TRANSLUCENT);
-        setContentView(R.layout.home_activity_layout);
+        View contentview= LayoutInflater.from(this).inflate(R.layout.home_activity_layout,null);
+        setContentView(contentview);
         systemInit();
         findViews();
         initListener();
         initData();
         new Handler().postDelayed(mRunnable,1000);
+//        contentview.getViewTreeObserver().addOnGlobalFocusChangeListener(new ViewTreeObserver.OnGlobalFocusChangeListener() {
+//            @Override
+//            public void onGlobalFocusChanged(View oldFocus, View newFocus) {
+//                if(newFocus!=null){
+//                    Log.i("collection",newFocus.toString());
+//                }
+//            }
+//        });
     }
     private Runnable mRunnable=new Runnable() {
         @Override
@@ -125,6 +139,9 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     /*获取控件实例*/
     private void findViews(){
         mHoverView = findViewById(R.id.home_view_layout);
+        headHoverd=findViewById(R.id.hover_view);
+        headHoverd.setOnHoverListener(this);
+        mHoverView.setOnHoverListener(this);
         mViewGroup = (ViewGroup) findViewById(R.id.home_view_layout);
         mChannelTab = (HorizontalTabView) findViewById(R.id.channel_tab);
         mTimeTv = (TextView) findViewById(R.id.guide_title_time_tv);
@@ -138,8 +155,8 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         mCollectionTel.setTextView(mCollectionTv);
         mPersonCenterTel = new TelescopicWrap(this, mPersonCenterLayout);
         mPersonCenterTel.setTextView(mPersonCenterTv);
+        mHoverView.setFocusableInTouchMode(true);
         mHoverView.setFocusable(true);
-        mHoverView.requestFocus();
         setBackground(R.drawable.homepage_background);
 
         right_image= (ImageView) findViewById(R.id.guide_tab_right);
@@ -223,7 +240,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     }
 
     @Override
-    public boolean onHover(View v, MotionEvent event) {
+    public boolean onHover(final View v, MotionEvent event) {
 //        if(mCenterRect == v){
 //            mPersonCenterLayout.setFocusable(true);
 //            mPersonCenterLayout.requestFocus();
@@ -234,8 +251,22 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
 //        }
         switch (event.getAction()) {
             case MotionEvent.ACTION_HOVER_ENTER:
-                if(!v.hasFocus()){
+                if(v.getId()!=R.id.hover_view) {
+                    if (!v.hasFocus()) {
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                v.setFocusable(true);
+                                v.setFocusableInTouchMode(true);
+                                v.requestFocusFromTouch();
+                                v.requestFocus();
+                            }
+                        }, 200);
+                    }
+                }else{
                     v.setFocusable(true);
+                    v.setFocusableInTouchMode(true);
+                    v.requestFocusFromTouch();
                     v.requestFocus();
                 }
                 break;
@@ -245,10 +276,11 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         }
         return false;
     }
-
     @Override
     public void onFocusChange(View v, boolean hasFocus) {
+        Log.i("favorite","focus : "+hasFocus);
         if(v == mCollectionRect){//历史收藏伸缩处理
+
             mCollectionTel.openOrClose(hasFocus);
             return;
         }
@@ -362,12 +394,14 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         if (mLastFocusView != null && mHoverView != null && mHoverView.hasFocus()){
             mLastFocusView.requestFocus();
             mLastFocusView.requestFocusFromTouch();
-            mHoverView.setFocusable(false);
-            mHoverView.setFocusableInTouchMode(false);
+//            mHoverView.setFocusable(false);
+//            mHoverView.setFocusableInTouchMode(false);
             return true;
         }
         mHoverView.setFocusable(false);
         mHoverView.setFocusableInTouchMode(false);
+        headHoverd.setFocusableInTouchMode(false);
+        headHoverd.setFocusable(false);
         return super.onKeyDown(keyCode, event);
     }
 
