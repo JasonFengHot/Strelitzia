@@ -17,15 +17,12 @@ import tv.ismar.app.entity.banner.BannerCarousels;
 import tv.ismar.app.entity.banner.BannerEntity;
 
 /**
- * @AUTHOR: xi
- * @DATE: 2017/8/29
- * @DESC: 模版基类(只负责模版约束，其他的一律不能加，不能参杂任何业务)
+ * @AUTHOR: xi @DATE: 2017/8/29 @DESC: 模版基类(只负责模版约束，其他的一律不能加，不能参杂任何业务)
  */
-
 public abstract class Template {
     protected final String TAG = this.getClass().getSimpleName();
     protected Context mContext;
-    protected TextView mTitleCountTv;//标题数量view
+    protected TextView mTitleCountTv; // 标题数量view
 
     public Template(Context context) {
         this.mContext = context;
@@ -38,12 +35,6 @@ public abstract class Template {
         initData(bundle);
         return this;
     }
-
-    public void onPause(){}
-
-    public void onStop(){}
-
-    public void onDestroy(){}
 
     /*设置数量view*/
     public Template setTitleCountView(TextView view) {
@@ -68,7 +59,6 @@ public abstract class Template {
     protected void initListener(View view) {
     }
 
-
     public void goToNextPage(View view) {
         String modelName = "item";
         String contentModel = null;
@@ -77,16 +67,16 @@ public abstract class Template {
         String title = null;
 
         Object tag = view.getTag();
-        if (tag == null){
+        if (tag == null) {
             return;
-        }else {
-            if (tag instanceof BannerEntity.PosterBean){
+        } else {
+            if (tag instanceof BannerEntity.PosterBean) {
                 BannerEntity.PosterBean bean = (BannerEntity.PosterBean) tag;
                 contentModel = bean.getContent_model();
                 url = bean.getUrl();
                 itemPk = bean.getPk();
                 title = bean.getTitle();
-            }else if (tag instanceof BannerCarousels){
+            } else if (tag instanceof BannerCarousels) {
                 BannerCarousels bean = (BannerCarousels) tag;
                 contentModel = bean.getContent_model();
                 url = bean.getUrl();
@@ -95,12 +85,12 @@ public abstract class Template {
             }
         }
 
-
         Intent intent = new Intent();
         if (modelName.contains("item")) {
-            if (!TextUtils.isEmpty(contentModel)&&contentModel.contains("gather")) {
+            if (!TextUtils.isEmpty(contentModel) && contentModel.contains("gather")) {
                 PageIntent subjectIntent = new PageIntent();
-                subjectIntent.toSubject(mContext, contentModel, itemPk, title, BaseActivity.baseChannel, "");
+                subjectIntent.toSubject(
+                        mContext, contentModel, itemPk, title, BaseActivity.baseChannel, "");
             } else {
                 PageIntent pageIntent = new PageIntent();
                 pageIntent.toDetailPage(mContext, "homepage", itemPk);
@@ -123,8 +113,8 @@ public abstract class Template {
             PageIntent pageIntent = new PageIntent();
             pageIntent.toPlayPage(mContext, itemPk, -1, Source.HOMEPAGE);
         } else if (modelName.contains("ismartv")) {
-//            toIsmartvShop(mode_name, app_id, backgroundUrl, nameId, title);
-        }else {
+            //            toIsmartvShop(mode_name, app_id, backgroundUrl, nameId, title);
+        } else {
             if (contentModel.contains("gather")) {
                 PageIntent intent1 = new PageIntent();
                 intent1.toSubject(mContext, contentModel, itemPk, title, BaseActivity.baseChannel, "");
@@ -152,7 +142,8 @@ public abstract class Template {
         return id;
     }
 
-    private void toIsmartvShop(String modename, String app_id, String backgroudUrl, String nameId, String title) {
+    private void toIsmartvShop(
+            String modename, String app_id, String backgroudUrl, String nameId, String title) {
         Intent appIntent = new Intent();
         try {
             if (modename.equals("ismartvgatherapp")) {
@@ -172,4 +163,14 @@ public abstract class Template {
 
         }
     }
+
+    public abstract void onCreate();
+
+    public abstract void onResume();
+
+    public abstract void onPause();
+
+    public abstract void onStop();
+
+    public abstract void onDestroy();
 }

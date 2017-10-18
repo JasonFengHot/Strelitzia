@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import rx.Observer;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import tv.ismar.app.core.PageIntent;
@@ -33,12 +34,9 @@ import tv.ismar.homepage.view.BannerLinearLayout;
 import static android.view.MotionEvent.BUTTON_PRIMARY;
 
 /**
- * @AUTHOR: xi
- * @DATE: 2017/8/29
- * @DESC: 电影模版
+ * @AUTHOR: xi @DATE: 2017/8/29 @DESC: 电影模版
  */
-
-public class TemplateMovie extends Template implements View.OnClickListener, View.OnHoverListener{
+public class TemplateMovie extends Template implements View.OnClickListener, View.OnHoverListener {
     private static final String TAG = "TemplateMovie";
 
     private RecyclerViewTV movieBanner;
@@ -54,9 +52,34 @@ public class TemplateMovie extends Template implements View.OnClickListener, Vie
     private String channelKey;
     private String nameKey;
     private boolean isMore;
+    private Subscription fetchMovieBanner;
 
     public TemplateMovie(Context context) {
         super(context);
+    }
+
+    @Override
+    public void onCreate() {
+    }
+
+    @Override
+    public void onResume() {
+    }
+
+    @Override
+    public void onPause() {
+        if (fetchMovieBanner != null && fetchMovieBanner.isUnsubscribed()) {
+            fetchMovieBanner.unsubscribe();
+        }
+
+    }
+
+    @Override
+    public void onStop() {
+    }
+
+    @Override
+    public void onDestroy() {
     }
 
     @Override
@@ -75,49 +98,70 @@ public class TemplateMovie extends Template implements View.OnClickListener, Vie
         mTitleCountTv = (TextView) view.findViewById(R.id.banner_title_count);
         mTitleTv = (TextView) view.findViewById(R.id.banner_title_tv);
         movieBanner = (RecyclerViewTV) view.findViewById(R.id.movie_banner);
-         movieLayoutManager = new LinearLayoutManagerTV(mContext, LinearLayoutManager.HORIZONTAL, false);
-        int selectedItemSpace = mContext.getResources().getDimensionPixelSize(R.dimen.banner_item_SelectedItemSpace);
-//        movieBanner.addItemDecoration(new BannerMovieAdapter.SpacesItemDecoration(selectedItemSpace));
+        movieLayoutManager = new LinearLayoutManagerTV(mContext, LinearLayoutManager.HORIZONTAL, false);
+        int selectedItemSpace =
+                mContext.getResources().getDimensionPixelSize(R.dimen.banner_item_SelectedItemSpace);
+        //        movieBanner.addItemDecoration(new
+        // BannerMovieAdapter.SpacesItemDecoration(selectedItemSpace));
         movieBanner.setLayoutManager(movieLayoutManager);
         movieBanner.setSelectedItemAtCentered(false);
-        int selectedItemOffset = mContext.getResources().getDimensionPixelSize(R.dimen.banner_item_setSelectedItemOffset);
+        int selectedItemOffset =
+                mContext.getResources().getDimensionPixelSize(R.dimen.banner_item_setSelectedItemOffset);
         movieBanner.setSelectedItemOffset(selectedItemOffset, selectedItemOffset);
 
-        movieBanner.setPagingableListener(new RecyclerViewTV.PagingableListener() {
-            @Override
-            public void onLoadMoreItems() {
-                Log.d("PagingableListener", "onLoadMoreItems");
-                if (mMovieAdapter != null) {
-                    int currentPageNumber = mMovieAdapter.getCurrentPageNumber();
-                    if (currentPageNumber < mMovieAdapter.getTotalPageCount()) {
-                        fetchMovieBanner(mBannerName, currentPageNumber + 1);
+        movieBanner.setPagingableListener(
+                new RecyclerViewTV.PagingableListener() {
+                    @Override
+                    public void onLoadMoreItems() {
+                        Log.d("PagingableListener", "onLoadMoreItems");
+                        if (mMovieAdapter != null) {
+                            int currentPageNumber = mMovieAdapter.getCurrentPageNumber();
+                            if (currentPageNumber < mMovieAdapter.getTotalPageCount()) {
+                                fetchMovieBanner(mBannerName, currentPageNumber + 1);
+                            }
+                        }
                     }
-                }
-            }
-        });
+                });
 
-        movieLayoutManager.setFocusSearchFailedListener(new LinearLayoutManagerTV.FocusSearchFailedListener() {
-            @Override
-            public View onFocusSearchFailed(View view, int focusDirection, RecyclerView.Recycler recycler, RecyclerView.State state) {
-                if (focusDirection == View.FOCUS_RIGHT || focusDirection == View.FOCUS_LEFT) {
-                    if (movieBanner.getChildAt(0).findViewById(R.id.item_layout) == view ||
-                            movieBanner.getChildAt(movieBanner.getChildCount() - 1).findViewById(R.id.item_layout) == view) {
-                        YoYo.with(Techniques.HorizontalShake).duration(1000).playOn(view);
+        movieLayoutManager.setFocusSearchFailedListener(
+                new LinearLayoutManagerTV.FocusSearchFailedListener() {
+                    @Override
+                    public View onFocusSearchFailed(
+                            View view,
+                            int focusDirection,
+                            RecyclerView.Recycler recycler,
+                            RecyclerView.State state) {
+                        if (focusDirection == View.FOCUS_RIGHT || focusDirection == View.FOCUS_LEFT) {
+                            if (movieBanner.getChildAt(0).findViewById(R.id.item_layout) == view
+                                    || movieBanner
+                                    .getChildAt(movieBanner.getChildCount() - 1)
+                                    .findViewById(R.id.item_layout)
+                                    == view) {
+                                YoYo.with(Techniques.HorizontalShake).duration(1000).playOn(view);
+                            }
+                            return view;
+                        }
+                        return null;
                     }
-                    return view;
-                }
-                return null;
-            }
-        });
+                });
 
-        movieBanner.setOnItemFocusChangeListener(new RecyclerViewTV.OnItemFocusChangeListener() {
-            @Override
-            public void onItemFocusGain(View itemView, int position) {
-                if (itemView != null && mContext != null && mTitleCountTv != null && mMovieAdapter != null
-                        && position < mMovieAdapter.getTatalItemCount()) {
-                    mTitleCountTv.setText(String.format(mContext.getString(R.string.home_item_title_count), (1 + position) + "", mMovieAdapter.getTatalItemCount() + ""));                }
-            }
-        });
+        movieBanner.setOnItemFocusChangeListener(
+                new RecyclerViewTV.OnItemFocusChangeListener() {
+                    @Override
+                    public void onItemFocusGain(View itemView, int position) {
+                        if (itemView != null
+                                && mContext != null
+                                && mTitleCountTv != null
+                                && mMovieAdapter != null
+                                && position < mMovieAdapter.getTatalItemCount()) {
+                            mTitleCountTv.setText(
+                                    String.format(
+                                            mContext.getString(R.string.home_item_title_count),
+                                            (1 + position) + "",
+                                            mMovieAdapter.getTatalItemCount() + ""));
+                        }
+                    }
+                });
     }
 
     @Override
@@ -131,7 +175,7 @@ public class TemplateMovie extends Template implements View.OnClickListener, Vie
     }
 
     private void fetchMovieBanner(int bannerName, final int pageNumber) {
-        if (pageNumber != 1){
+        if (pageNumber != 1) {
             int startIndex = (pageNumber - 1) * 33;
             int endIndex;
             if (pageNumber == mMovieAdapter.getTotalPageCount()) {
@@ -149,107 +193,132 @@ public class TemplateMovie extends Template implements View.OnClickListener, Vie
             int mSavePos = movieBanner.getSelectPostion();
             mMovieAdapter.notifyItemRangeInserted(startIndex, endIndex - startIndex);
             movieBanner.setOnLoadMoreComplete();
-//            mMovieAdapter.setCurrentPageNumber(pageNumber);
-//            mFocusHandler.sendEmptyMessageDelayed(mSavePos, 10);
+            //            mMovieAdapter.setCurrentPageNumber(pageNumber);
+            //            mFocusHandler.sendEmptyMessageDelayed(mSavePos, 10);
         }
 
-        SkyService.ServiceManager.getService().apiTvBanner(bannerName, pageNumber)
+        fetchMovieBanner = SkyService.ServiceManager.getService()
+                .apiTvBanner(bannerName, pageNumber)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<BannerEntity>() {
-                    @Override
-                    public void onCompleted() {
+                .subscribe(
+                        new Observer<BannerEntity>() {
+                            @Override
+                            public void onCompleted() {
+                            }
 
-                    }
+                            @Override
+                            public void onError(Throwable e) {
+                                e.printStackTrace();
+                            }
 
-                    @Override
-                    public void onError(Throwable e) {
-                        e.printStackTrace();
-                    }
-
-                    @Override
-                    public void onNext(BannerEntity bannerEntity) {
-                        isMore = bannerEntity.is_more();
-                        if (pageNumber == 1){
-                            fillMovieBanner(bannerEntity);
-                        }else {
-                            int mSavePos = movieBanner.getSelectPostion();
-                            mMovieAdapter.addDatas(bannerEntity);
-//                            mFocusHandler.sendEmptyMessageDelayed(mSavePos, 10);
-                        }
-                    }
-                });
+                            @Override
+                            public void onNext(BannerEntity bannerEntity) {
+                                isMore = bannerEntity.is_more();
+                                if (pageNumber == 1) {
+                                    fillMovieBanner(bannerEntity);
+                                } else {
+                                    int mSavePos = movieBanner.getSelectPostion();
+                                    mMovieAdapter.addDatas(bannerEntity);
+                                    //                            mFocusHandler.sendEmptyMessageDelayed(mSavePos, 10);
+                                }
+                            }
+                        });
     }
 
     private void fillMovieBanner(final BannerEntity bannerEntity) {
         mMovieAdapter = new BannerMovieAdapter(mContext, bannerEntity);
-        mMovieAdapter.setSubscribeClickListener(new BannerMovieAdapter.OnBannerClickListener() {
-            @Override
-            public void onBannerClick(View view, int position) {
-                if (position < bannerEntity.getCount()){
-                    goToNextPage(view);
-                }else {
-                    Logger.t(TAG).d("more click: title -> %s, channel -> %s", nameKey, channelKey);
-                    new PageIntent().toListPage(mContext, bannerEntity.getChannel_title(), bannerEntity.getChannel(), bannerEntity.getStyle());
-                }
-            }
-        });
-        mMovieAdapter.setHoverListener(new BannerMovieAdapter.OnBannerHoverListener() {
-            @Override
-            public void onBannerHover(View view, int position, boolean hovered) {
-                Log.d(TAG, view + " : " + hovered);
-                if (hovered){
-                    movieBanner.setHovered(true);
-                    mTitleCountTv.setText(String.format(mContext.getString(R.string.home_item_title_count), (1 + position) + "", mMovieAdapter.getTatalItemCount() + ""));
-                }else {
-                    movieBanner.setHovered(false);
-                    HomeActivity.mHoverView.requestFocus();
-                }
-            }
-        });
+        mMovieAdapter.setSubscribeClickListener(
+                new BannerMovieAdapter.OnBannerClickListener() {
+                    @Override
+                    public void onBannerClick(View view, int position) {
+                        if (position < bannerEntity.getCount()) {
+                            goToNextPage(view);
+                        } else {
+                            Logger.t(TAG).d("more click: title -> %s, channel -> %s", nameKey, channelKey);
+                            new PageIntent()
+                                    .toListPage(
+                                            mContext,
+                                            bannerEntity.getChannel_title(),
+                                            bannerEntity.getChannel(),
+                                            bannerEntity.getStyle());
+                        }
+                    }
+                });
+        mMovieAdapter.setHoverListener(
+                new BannerMovieAdapter.OnBannerHoverListener() {
+                    @Override
+                    public void onBannerHover(View view, int position, boolean hovered) {
+                        Log.d(TAG, view + " : " + hovered);
+                        if (hovered) {
+                            movieBanner.setHovered(true);
+                            mTitleCountTv.setText(
+                                    String.format(
+                                            mContext.getString(R.string.home_item_title_count),
+                                            (1 + position) + "",
+                                            mMovieAdapter.getTatalItemCount() + ""));
+                        } else {
+                            movieBanner.setHovered(false);
+                            HomeActivity.mHoverView.requestFocus();
+                        }
+                    }
+                });
         movieBanner.setAdapter(mMovieAdapter);
-        mTitleCountTv.setText(String.format(mContext.getString(R.string.home_item_title_count), (1) + "", mMovieAdapter.getTatalItemCount() + ""));
-
+        mTitleCountTv.setText(
+                String.format(
+                        mContext.getString(R.string.home_item_title_count),
+                        (1) + "",
+                        mMovieAdapter.getTatalItemCount() + ""));
     }
 
     @Override
     public void onClick(View v) {
-        int totalItemCount = isMore ? mMovieAdapter.getTatalItemCount() + 1:mMovieAdapter.getTatalItemCount();
+        int totalItemCount =
+                isMore ? mMovieAdapter.getTatalItemCount() + 1 : mMovieAdapter.getTatalItemCount();
         int i = v.getId();
         if (i == R.id.navigation_left) {
             if (movieLayoutManager.findFirstCompletelyVisibleItemPosition() - 1 >= 0) {
                 int targetPosition = movieLayoutManager.findFirstCompletelyVisibleItemPosition() - 6;
                 if (targetPosition >= 0) {
-                    //表示可以滑动
+                    // 表示可以滑动
                 } else {
                     targetPosition = 0;
                 }
                 setBannerItemCount(targetPosition);
                 movieLayoutManager.smoothScrollToPosition(movieBanner, null, targetPosition);
-            }else {
-//                View firstView = movieBanner.getChildAt(0).findViewById(R.id.item_layout) ;
-//                YoYo.with(Techniques.HorizontalShake).duration(1000).playOn(firstView);
+            } else {
+                //                View firstView = movieBanner.getChildAt(0).findViewById(R.id.item_layout)
+                // ;
+                //                YoYo.with(Techniques.HorizontalShake).duration(1000).playOn(firstView);
             }
         } else if (i == R.id.navigation_right) {
             movieBanner.loadMore();
             if (movieLayoutManager.findLastCompletelyVisibleItemPosition() + 1 <= totalItemCount) {
                 int targetPosition = movieLayoutManager.findLastCompletelyVisibleItemPosition() + 6;
                 if (targetPosition < totalItemCount) {
-                    //表示可以滑动
+                    // 表示可以滑动
                 } else {
                     targetPosition = totalItemCount - 1;
                 }
-                setBannerItemCount(targetPosition >= mMovieAdapter.getTatalItemCount() ? mMovieAdapter.getTatalItemCount() - 1 : targetPosition);
+                setBannerItemCount(
+                        targetPosition >= mMovieAdapter.getTatalItemCount()
+                                ? mMovieAdapter.getTatalItemCount() - 1
+                                : targetPosition);
                 movieLayoutManager.smoothScrollToPosition(movieBanner, null, targetPosition);
-            }else {
-//                View lastView = movieBanner.getChildAt(totalItemCount - 1).findViewById(R.id.item_layout) ;
-//                YoYo.with(Techniques.HorizontalShake).duration(1000).playOn(lastView);
+            } else {
+                //                View lastView = movieBanner.getChildAt(totalItemCount -
+                // 1).findViewById(R.id.item_layout) ;
+                //                YoYo.with(Techniques.HorizontalShake).duration(1000).playOn(lastView);
             }
         }
     }
 
-    private void setBannerItemCount(int position){
-        mTitleCountTv.setText(String.format(mContext.getString(R.string.home_item_title_count), (position + 1) + "", mMovieAdapter.getTatalItemCount() + ""));
+    private void setBannerItemCount(int position) {
+        mTitleCountTv.setText(
+                String.format(
+                        mContext.getString(R.string.home_item_title_count),
+                        (position + 1) + "",
+                        mMovieAdapter.getTatalItemCount() + ""));
     }
 
     @Override

@@ -34,7 +34,7 @@ public class HomeControl extends BaseControl{
     /*监听频道tab变化*/
     public void setChannelChange(HorizontalTabView view){
         Observable.create(new ChannelChangeObservable(view))
-                .throttleWithTimeout(1, TimeUnit.SECONDS)
+                .throttleWithTimeout(200, TimeUnit.MILLISECONDS)
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<Integer>() {
                     @Override

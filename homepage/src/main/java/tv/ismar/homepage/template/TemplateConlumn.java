@@ -33,14 +33,15 @@ import static tv.ismar.homepage.fragment.ChannelFragment.CHANNEL_KEY;
 import static tv.ismar.homepage.fragment.ChannelFragment.NAME_KEY;
 
 /**
- * @AUTHOR: xi
- * @DATE: 2017/8/29
- * @DESC: 栏目模版
+ * @AUTHOR: xi @DATE: 2017/8/29 @DESC: 栏目模版
  */
-
-public class TemplateConlumn extends Template implements BaseControl.ControlCallBack,
-        RecyclerViewTV.PagingableListener, LinearLayoutManagerTV.FocusSearchFailedListener ,
-        OnItemClickListener, View.OnHoverListener, View.OnClickListener {
+public class TemplateConlumn extends Template
+        implements BaseControl.ControlCallBack,
+        RecyclerViewTV.PagingableListener,
+        LinearLayoutManagerTV.FocusSearchFailedListener,
+        OnItemClickListener,
+        View.OnHoverListener,
+        View.OnClickListener {
     private RecyclerViewTV mRecyclerView;
     private LinearLayoutManagerTV mConlumnLayoutManager;
     private ConlumnAdapter mAdapter;
@@ -48,6 +49,9 @@ public class TemplateConlumn extends Template implements BaseControl.ControlCall
     private BannerLinearLayout mBannerLinearLayout;
     private View navigationLeft;
     private View navigationRight;
+    private int mBannerPk;
+    private String mName; // 频道名称（中文）
+    private String mChannel; // 频道名称（英文）
 
     public TemplateConlumn(Context context) {
         super(context);
@@ -55,13 +59,38 @@ public class TemplateConlumn extends Template implements BaseControl.ControlCall
     }
 
     @Override
+    public void onCreate() {
+    }
+
+    @Override
+    public void onResume() {
+    }
+
+    @Override
+    public void onPause() {
+        if (mFetchDataControl != null){
+            mFetchDataControl.stop();
+        }
+    }
+
+    @Override
+    public void onStop() {
+    }
+
+    @Override
+    public void onDestroy() {
+    }
+
+    @Override
     public void getView(View view) {
         mTitleCountTv = (TextView) view.findViewById(R.id.banner_title_count);
         mRecyclerView = (RecyclerViewTV) view.findViewById(R.id.conlumn_recyclerview);
-        mConlumnLayoutManager = new LinearLayoutManagerTV(mContext, LinearLayoutManager.HORIZONTAL, false);
+        mConlumnLayoutManager =
+                new LinearLayoutManagerTV(mContext, LinearLayoutManager.HORIZONTAL, false);
         mRecyclerView.setLayoutManager(mConlumnLayoutManager);
         mRecyclerView.setSelectedItemAtCentered(false);
-        int selectedItemOffset = mContext.getResources().getDimensionPixelSize(R.dimen.banner_item_setSelectedItemOffset);
+        int selectedItemOffset =
+                mContext.getResources().getDimensionPixelSize(R.dimen.banner_item_setSelectedItemOffset);
         mRecyclerView.setSelectedItemOffset(selectedItemOffset, selectedItemOffset);
         navigationLeft = view.findViewById(R.id.navigation_left);
         navigationRight = view.findViewById(R.id.navigation_right);
@@ -70,9 +99,6 @@ public class TemplateConlumn extends Template implements BaseControl.ControlCall
         mBannerLinearLayout.setNavigationRight(navigationRight);
     }
 
-    private int mBannerPk;
-    private String mName;//频道名称（中文）
-    private String mChannel;//频道名称（英文）
     @Override
     public void initData(Bundle bundle) {
         mBannerPk = bundle.getInt(ChannelFragment.BANNER_KEY);
@@ -93,17 +119,17 @@ public class TemplateConlumn extends Template implements BaseControl.ControlCall
 
     @Override
     public void callBack(int flags, Object... args) {
-        if(flags == FetchDataControl.FETCH_BANNERS_LIST_FLAG){//获取单个banner业务
+        if (flags == FetchDataControl.FETCH_BANNERS_LIST_FLAG) { // 获取单个banner业务
             initRecycleView(mFetchDataControl.mPoster);
         }
     }
 
-    private void initRecycleView(List<BannerPoster> posters){
-        if(mAdapter == null){
+    private void initRecycleView(List<BannerPoster> posters) {
+        if (mAdapter == null) {
             mAdapter = new ConlumnAdapter(mContext, posters);
             mRecyclerView.setAdapter(mAdapter);
             mAdapter.setOnItemClickListener(this);
-        }else {
+        } else {
             int start = mFetchDataControl.mPoster.size() - mFetchDataControl.mHomeEntity.posters.size();
             int end = mFetchDataControl.mPoster.size();
             mAdapter.notifyItemRangeChanged(start, end);
@@ -114,8 +140,8 @@ public class TemplateConlumn extends Template implements BaseControl.ControlCall
     public void onLoadMoreItems() {
         Log.i(TAG, "onLoadMoreItems");
         HomeEntity homeEntity = mFetchDataControl.mHomeEntity;
-        if(homeEntity != null){
-            if(homeEntity.page < homeEntity.num_pages){
+        if (homeEntity != null) {
+            if (homeEntity.page < homeEntity.num_pages) {
                 mRecyclerView.setOnLoadMoreComplete();
                 mFetchDataControl.fetchBanners(mBannerPk, ++homeEntity.page, true);
             }
@@ -123,10 +149,14 @@ public class TemplateConlumn extends Template implements BaseControl.ControlCall
     }
 
     @Override
-    public View onFocusSearchFailed(View focused, int focusDirection, RecyclerView.Recycler recycler, RecyclerView.State state) {
-        if (focusDirection == View.FOCUS_RIGHT || focusDirection == View.FOCUS_LEFT){
-            if (mRecyclerView.getChildAt(0).findViewById(R.id.conlumn_ismartv_linear_layout) == focused ||
-                    mRecyclerView.getChildAt(mRecyclerView.getChildCount() - 1).findViewById(R.id.conlumn_ismartv_linear_layout) == focused){
+    public View onFocusSearchFailed(
+            View focused, int focusDirection, RecyclerView.Recycler recycler, RecyclerView.State state) {
+        if (focusDirection == View.FOCUS_RIGHT || focusDirection == View.FOCUS_LEFT) {
+            if (mRecyclerView.getChildAt(0).findViewById(R.id.conlumn_ismartv_linear_layout) == focused
+                    || mRecyclerView
+                    .getChildAt(mRecyclerView.getChildCount() - 1)
+                    .findViewById(R.id.conlumn_ismartv_linear_layout)
+                    == focused) {
                 YoYo.with(Techniques.HorizontalShake).duration(1000).playOn(focused);
             }
             return focused;
@@ -136,9 +166,14 @@ public class TemplateConlumn extends Template implements BaseControl.ControlCall
 
     @Override
     public void onItemClick(View view, int position) {
-        if(position == mFetchDataControl.mHomeEntity.count-1){
-            new PageIntent().toListPage(mContext, mFetchDataControl.mHomeEntity.channel_title, mFetchDataControl.mHomeEntity.channel, mFetchDataControl.mHomeEntity.style);
-        }else {
+        if (position == mFetchDataControl.mHomeEntity.count - 1) {
+            new PageIntent()
+                    .toListPage(
+                            mContext,
+                            mFetchDataControl.mHomeEntity.channel_title,
+                            mFetchDataControl.mHomeEntity.channel,
+                            mFetchDataControl.mHomeEntity.style);
+        } else {
             mFetchDataControl.go2Detail(mFetchDataControl.mHomeEntity.posters.get(position));
         }
     }
@@ -147,21 +182,27 @@ public class TemplateConlumn extends Template implements BaseControl.ControlCall
     public void onClick(View v) {
         int i = v.getId();
         if (i == R.id.navigation_left) {
-            if (mConlumnLayoutManager.findFirstCompletelyVisibleItemPosition() - 1 >= 0) {//向左滑动
+            if (mConlumnLayoutManager.findFirstCompletelyVisibleItemPosition() - 1 >= 0) { // 向左滑动
                 int targetPosition = mConlumnLayoutManager.findFirstCompletelyVisibleItemPosition() - 5;
                 if (targetPosition <= 0) targetPosition = 0;
                 mConlumnLayoutManager.smoothScrollToPosition(mRecyclerView, null, targetPosition);
             }
-        } else if (i == R.id.navigation_right) {//向右滑动
+        } else if (i == R.id.navigation_right) { // 向右滑动
             mRecyclerView.loadMore();
-            if (mConlumnLayoutManager.findLastCompletelyVisibleItemPosition() <= mFetchDataControl.mHomeEntity.count) {
+            if (mConlumnLayoutManager.findLastCompletelyVisibleItemPosition()
+                    <= mFetchDataControl.mHomeEntity.count) {
                 int targetPosition = mConlumnLayoutManager.findLastCompletelyVisibleItemPosition() + 5;
                 if (targetPosition >= mFetchDataControl.mHomeEntity.count) {
                     targetPosition = mFetchDataControl.mHomeEntity.count;
                 }
                 mConlumnLayoutManager.smoothScrollToPosition(mRecyclerView, null, targetPosition);
                 if (targetPosition == mFetchDataControl.mHomeEntity.count)
-                    YoYo.with(Techniques.HorizontalShake).duration(1000).playOn(mRecyclerView.getChildAt(mRecyclerView.getChildCount() - 1).findViewById(R.id.conlumn_ismartv_linear_layout));
+                    YoYo.with(Techniques.HorizontalShake)
+                            .duration(1000)
+                            .playOn(
+                                    mRecyclerView
+                                            .getChildAt(mRecyclerView.getChildCount() - 1)
+                                            .findViewById(R.id.conlumn_ismartv_linear_layout));
             }
         }
     }
@@ -180,7 +221,7 @@ public class TemplateConlumn extends Template implements BaseControl.ControlCall
                 if (event.getButtonState() != BUTTON_PRIMARY) {
                     navigationLeft.setVisibility(View.INVISIBLE);
                     navigationRight.setVisibility(View.INVISIBLE);
-                    HomeActivity.mHoverView.requestFocus();//将焦点放置到一块隐藏view中
+                    HomeActivity.mHoverView.requestFocus(); // 将焦点放置到一块隐藏view中
                 }
                 break;
         }

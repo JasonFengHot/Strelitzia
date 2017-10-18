@@ -33,6 +33,12 @@ public class FetchDataControl extends BaseControl{
     public List<BannerRecommend> mRecommends = new ArrayList<>();//首页推荐列表
     public GuideBanner[] mGuideBanners = null;//首页banner列表
     public ChannelEntity[] mChannels = null;//频道列表
+    private Subscription fetchHomeBanners;
+    private Subscription fetchChannelBanners;
+    private Subscription fetchChannels;
+    private Subscription fetchMBanners;
+    private Subscription fetchHomeRecommend;
+    private Subscription fetchBanners;
 
     public FetchDataControl(Context context, ControlCallBack callBack) {
         super(context, callBack);
@@ -41,7 +47,7 @@ public class FetchDataControl extends BaseControl{
     /*获取首页下banner列表*/
     public void fetchHomeBanners(){
         try {
-            SkyService.ServiceManager.getService().getGuideBanners()
+            fetchHomeBanners = SkyService.ServiceManager.getService().getGuideBanners()
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Observer<GuideBanner[]>() {
@@ -70,7 +76,7 @@ public class FetchDataControl extends BaseControl{
 
     /*获取指定频道下的banner*/
     public void fetchChannelBanners(String channel){
-        SkyService.ServiceManager.getService().getChannelBanners(channel)
+        fetchChannelBanners = SkyService.ServiceManager.getService().getChannelBanners(channel)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<GuideBanner[]>() {
@@ -96,7 +102,7 @@ public class FetchDataControl extends BaseControl{
 
     /*获取频道列表*/
     public void fetchChannels() {
-        SkyService.ServiceManager.getService().apiTvChannels()
+        fetchChannels = SkyService.ServiceManager.getService().apiTvChannels()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<ChannelEntity[]>() {
@@ -126,7 +132,7 @@ public class FetchDataControl extends BaseControl{
      * @param page
      */
     public synchronized void fetchMBanners(String banner, int page){
-        SkyService.ServiceManager.getService().getMBanners(banner, page)
+        fetchMBanners = SkyService.ServiceManager.getService().getMBanners(banner, page)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<HomeEntity[]>() {
@@ -153,7 +159,7 @@ public class FetchDataControl extends BaseControl{
      * @param isMore 是否加载更多
      */
     public void fetchHomeRecommend(final boolean isMore){
-        SkyService.ServiceManager.getService().getHomeRecommend()
+        fetchHomeRecommend = SkyService.ServiceManager.getService().getHomeRecommend()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<List<BannerRecommend>>() {
@@ -183,7 +189,7 @@ public class FetchDataControl extends BaseControl{
      * @param loadMore 是否增量加载
      */
     public synchronized void fetchBanners(int banner, int page, final boolean loadMore){
-        SkyService.ServiceManager.getService().getBanners(banner, page)
+        fetchBanners = SkyService.ServiceManager.getService().getBanners(banner, page)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<HomeEntity>() {
@@ -226,5 +232,28 @@ public class FetchDataControl extends BaseControl{
                             }
                         }
                 });
+    }
+
+    public void stop() {
+        if (fetchHomeBanners != null && fetchHomeBanners.isUnsubscribed()) {
+            fetchHomeBanners.unsubscribe();
+        }
+
+        if (fetchChannelBanners != null && fetchChannelBanners.isUnsubscribed()) {
+            fetchChannelBanners.unsubscribe();
+        }
+        if (fetchChannels != null && fetchChannels.isUnsubscribed()) {
+            fetchChannels.unsubscribe();
+        }
+        if (fetchMBanners != null && fetchMBanners.isUnsubscribed()) {
+            fetchMBanners.unsubscribe();
+        }
+
+        if (fetchHomeRecommend != null && fetchHomeRecommend.isUnsubscribed()) {
+            fetchHomeRecommend.unsubscribe();
+        }
+        if (fetchBanners != null && fetchBanners.isUnsubscribed()) {
+            fetchBanners.unsubscribe();
+        }
     }
 }
