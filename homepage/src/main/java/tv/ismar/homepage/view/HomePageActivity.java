@@ -1714,7 +1714,7 @@ public class HomePageActivity extends BaseActivity implements LinearLayoutManage
             }
             Picasso.with(this)
                     .load(launchAds.get(index).location)
-                    .memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE)
+
                     .networkPolicy(NetworkPolicy.NO_CACHE, NetworkPolicy.NO_CACHE)
                     .into(home_ad_pic, new Callback() {
                         @Override
@@ -1732,7 +1732,7 @@ public class HomePageActivity extends BaseActivity implements LinearLayoutManage
                         public void onError(Exception e) {
                             Picasso.with(HomePageActivity.this)
                                     .load("file:///android_asset/posters.png")
-                                    .memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE)
+
                                     .networkPolicy(NetworkPolicy.NO_CACHE, NetworkPolicy.NO_CACHE)
                                     .into(home_ad_pic);
                             if (playIndex == 0) {

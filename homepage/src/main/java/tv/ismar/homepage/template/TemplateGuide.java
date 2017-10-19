@@ -544,7 +544,7 @@ public class TemplateGuide extends Template
         Picasso.with(mContext)
                 .load(url)
                 .error(R.drawable.list_item_preview_bg)
-                .memoryPolicy(MemoryPolicy.NO_STORE)
+
                 .into(
                         mLoadingIg,
                         new Callback() {

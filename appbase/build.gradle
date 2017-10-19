@@ -36,6 +36,7 @@ dependencies {
     compile project(':animation')
     compile dependencies.appCompat
     compile dependencies.recyclerView
+    compile 'com.squareup.leakcanary:leakcanary-android:1.5.4'
 }
 
 tasks.withType(JavaCompile) {

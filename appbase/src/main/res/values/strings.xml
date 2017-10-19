@@ -58,4 +58,6 @@
     <item name="view_position_tag" type="id"/>
 
     <string name="home_item_title_count">%1$s&#047;%2$s</string>
+
+    <integer name="__leak_canary_max_stored_leaks">100</integer>
 </resources>

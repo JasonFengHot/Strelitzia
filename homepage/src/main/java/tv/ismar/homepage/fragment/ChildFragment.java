@@ -264,7 +264,7 @@ public class ChildFragment extends ChannelBaseFragment implements Flag.ChangeCal
                 if(StringUtils.isEmpty(imageUrl))
                     imageUrl = "error";
             }
-            Picasso.with(mContext).load(imageUrl).memoryPolicy(MemoryPolicy.NO_STORE).into(itemImg);
+            Picasso.with(mContext).load(imageUrl).into(itemImg);
             itemText.setText(posters.get(i).getTitle());
 
             /**
@@ -389,7 +389,7 @@ public class ChildFragment extends ChannelBaseFragment implements Flag.ChangeCal
             indicatorImgs[i].setTag(R.drawable.launcher_selector, carousels.get(i));
             if(StringUtils.isEmpty(carousels.get(i).getThumb_image()))
                 carousels.get(i).setThumb_image("error");
-            Picasso.with(mContext).load(carousels.get(i).getThumb_image()).memoryPolicy(MemoryPolicy.NO_STORE).into(indicatorImgs[i]);
+            Picasso.with(mContext).load(carousels.get(i).getThumb_image()).into(indicatorImgs[i]);
         }
 
         flag.setPosition(0);
@@ -432,7 +432,7 @@ public class ChildFragment extends ChannelBaseFragment implements Flag.ChangeCal
         if(StringUtils.isEmpty(carousels.get(flag.getPosition()).getVideo_image()))
         carousels.get(flag.getPosition()).setVideo_image("error");
         if(mContext!=null) {
-            Picasso.with(mContext).load(carousels.get(flag.getPosition()).getVideo_image()).memoryPolicy(MemoryPolicy.NO_STORE)
+            Picasso.with(mContext).load(carousels.get(flag.getPosition()).getVideo_image())
                     .error(R.drawable.list_item_preview_bg)
                     .placeholder(R.drawable.list_item_preview_bg)
                     .into(imageSwitcher, new Callback() {

@@ -6,7 +6,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.os.Build;
+import android.graphics.Bitmap;
+import android.os.StrictMode;
 import android.preference.PreferenceManager;
 import android.support.multidex.MultiDex;
 import android.util.DisplayMetrics;
@@ -17,6 +18,8 @@ import com.ismartv.lion.custom.ICallLog;
 import com.ismartv.lion.custom.Parse;
 import com.orhanobut.logger.LogLevel;
 import com.orhanobut.logger.Logger;
+import com.squareup.leakcanary.LeakCanary;
+import com.squareup.leakcanary.RefWatcher;
 import com.squareup.picasso.OkHttp3Downloader;
 import com.squareup.picasso.Picasso;
 
@@ -25,16 +28,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Method;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
-import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -45,14 +42,9 @@ import cn.ismartv.injectdb.library.ActiveAndroid;
 import cn.ismartv.injectdb.library.app.Application;
 import cn.ismartv.truetime.TrueTime;
 import okhttp3.Cache;
-import okhttp3.Dns;
 import okhttp3.OkHttpClient;
-import okhttp3.ResponseBody;
-import rx.Observer;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
-import tv.ismar.account.IsmartvHttpParamsInterceptor;
 import tv.ismar.account.IsmartvActivator;
+import tv.ismar.account.IsmartvHttpParamsInterceptor;
 import tv.ismar.account.IsmartvPlatform;
 import tv.ismar.account.statistics.LogEntity;
 import tv.ismar.account.statistics.LogQueue;
@@ -70,14 +62,12 @@ import tv.ismar.app.db.LocalHistoryManager;
 import tv.ismar.app.entity.ContentModel;
 import tv.ismar.app.exception.CrashHandler;
 import tv.ismar.app.network.HttpCacheInterceptor;
-import tv.ismar.app.network.SkyService;
 import tv.ismar.app.service.HttpProxyService;
 import tv.ismar.app.util.SPUtils;
 import tv.ismar.library.exception.ExceptionUtils;
 import tv.ismar.library.network.HttpManager;
 import tv.ismar.library.network.UserAgentInterceptor;
 import tv.ismar.library.util.C;
-import tv.ismar.library.util.DeviceUtils;
 import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 
 /**
@@ -108,6 +98,9 @@ public class VodApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+
+        setupLeakCanary();
+
         CrashHandler crashHandler = CrashHandler.getInstance();
         crashHandler.init();
         IsmartvPlatform.initPlatform(getApplicationContext());
@@ -207,6 +200,7 @@ public class VodApplication extends Application {
         Picasso picasso = new Picasso.Builder(this)
                 .executor(executorService)
                 .downloader(new OkHttp3Downloader(client))
+                .defaultBitmapConfig(Bitmap.Config.RGB_565)
                 .build();
         Picasso.setSingletonInstance(picasso);
 
@@ -229,6 +223,7 @@ public class VodApplication extends Application {
         Picasso homepagePicasso = new Picasso.Builder(this)
                 .executor(executorService)
                 .downloader(new OkHttp3Downloader(homepageClient))
+                .defaultBitmapConfig(Bitmap.Config.RGB_565)
                 .build();
         Picasso.setSingletonInstanceHomepage(homepagePicasso);
     }
@@ -465,4 +460,28 @@ public class VodApplication extends Application {
         }
     }
 
+    protected void setupLeakCanary() {
+//        if (LeakCanary.isInAnalyzerProcess(this)) {
+//            // This process is dedicated to LeakCanary for heap analysis.
+//            // You should not init your app in this process.
+//            return;
+//        }
+//        enabledStrictMode();
+        refWatcher = LeakCanary.install(this);
+    }
+
+    private static void enabledStrictMode() {
+        StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder() //
+                .detectAll() //
+                .penaltyLog() //
+                .penaltyDeath() //
+                .build());
+    }
+
+    public static RefWatcher getRefWatcher(Context context) {
+        VodApplication application = (VodApplication) context.getApplicationContext();
+        return application.refWatcher;
+    }
+
+    private RefWatcher refWatcher;
 }

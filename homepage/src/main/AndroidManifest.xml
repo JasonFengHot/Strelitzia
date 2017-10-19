@@ -8,10 +8,6 @@
             android:screenOrientation="sensorLandscape"
             android:theme="@style/IsmartvAppAdvertisTheme">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER"/>
-            </intent-filter>
-            <intent-filter>
                 <action android:name="tv.ismar.daisy.tvguide"/>
                 <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
@@ -19,7 +15,12 @@
 
         <activity android:name=".HomeActivity"
             android:screenOrientation="sensorLandscape"
-            android:theme="@style/IsmartvAppUnifyBgTheme"/>
+            android:theme="@style/IsmartvAppUnifyBgTheme">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
 
         <activity
             android:name=".view.HomePageActivity"

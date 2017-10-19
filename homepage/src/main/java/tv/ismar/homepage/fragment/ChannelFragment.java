@@ -8,10 +8,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.orhanobut.logger.Logger;
+import com.squareup.leakcanary.RefWatcher;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import tv.ismar.app.BaseControl;
+import tv.ismar.app.VodApplication;
 import tv.ismar.app.entity.GuideBanner;
 import tv.ismar.homepage.HomeActivity;
 import tv.ismar.homepage.R;
@@ -65,6 +69,7 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
             LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = LayoutInflater.from(getActivity()).inflate(R.layout.channel_fragment_layout, null);
         findView(view);
+        Logger.t(TAG).d("ChannelFragment onCreateView");
         return view;
     }
 
@@ -119,7 +124,13 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
                 template.onDestroy();
             }
         }
+        if (mTemplates != null){
+            mTemplates.clear();
+        }
         super.onDestroy();
+        RefWatcher refWatcher = VodApplication.getRefWatcher(getActivity());
+        refWatcher.watch(this);
+
     }
 
     private void findView(View view) {

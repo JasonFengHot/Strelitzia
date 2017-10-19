@@ -350,7 +350,7 @@ public class FilmFragment extends ChannelBaseFragment {
             imageUrl0 = posters.get(0).getVertical_url();
         }
 //        film_lefttop_image.setUrl(imageUrl0);
-        Picasso.with(mContext).load(imageUrl0).memoryPolicy(MemoryPolicy.NO_STORE).into(film_lefttop_image);
+        Picasso.with(mContext).load(imageUrl0).into(film_lefttop_image);
         film_lefttop_image.setTitle(posters.get(0).getIntroduction());
         film_lefttop_image.setOnClickListener(ItemClickListener);
         film_lefttop_image.setTag(posters.get(0));
@@ -419,7 +419,7 @@ public class FilmFragment extends ChannelBaseFragment {
                 if (TextUtils.isEmpty(imageUrl)) {
                     imageUrl = posters.get(i).getVertical_url();
                 }
-                Picasso.with(mContext).load(imageUrl).memoryPolicy(MemoryPolicy.NO_STORE).into(postitemView);
+                Picasso.with(mContext).load(imageUrl).into(postitemView);
                 frameLayout.setTag(posters.get(i));
                 frameLayout.setLayoutParams(params);
                 if (i == 1) {
@@ -480,7 +480,7 @@ public class FilmFragment extends ChannelBaseFragment {
 
         try {
             if(mCarousels.size()>0) {
-                Picasso.with(mContext).load(carousels.get(0).getThumb_image()).memoryPolicy(MemoryPolicy.NO_STORE).into(film_carous_imageView1);
+                Picasso.with(mContext).load(carousels.get(0).getThumb_image()).into(film_carous_imageView1);
                 film_carous_imageView1.setTag(0);
                 film_carous_imageView1.setTag(R.drawable.launcher_selector, carousels.get(0));
                 film_carous_imageView1.setOnClickListener(ItemClickListener);
@@ -488,7 +488,7 @@ public class FilmFragment extends ChannelBaseFragment {
                 carousels.get(0).setPosition(0);
             }
             if(mCarousels.size()>1) {
-                Picasso.with(mContext).load(carousels.get(1).getThumb_image()).memoryPolicy(MemoryPolicy.NO_STORE).into(film_carous_imageView2);
+                Picasso.with(mContext).load(carousels.get(1).getThumb_image()).into(film_carous_imageView2);
                 film_carous_imageView2.setTag(1);
                 film_carous_imageView2.setTag(R.drawable.launcher_selector, carousels.get(1));
                 film_carous_imageView2.setOnClickListener(ItemClickListener);
@@ -496,7 +496,7 @@ public class FilmFragment extends ChannelBaseFragment {
                 carousels.get(1).setPosition(1);
             }
             if(mCarousels.size()>2) {
-                Picasso.with(mContext).load(carousels.get(2).getThumb_image()).memoryPolicy(MemoryPolicy.NO_STORE).into(film_carous_imageView3);
+                Picasso.with(mContext).load(carousels.get(2).getThumb_image()).into(film_carous_imageView3);
                 film_carous_imageView3.setTag(2);
                 film_carous_imageView3.setTag(R.drawable.launcher_selector, carousels.get(2));
                 film_carous_imageView3.setOnClickListener(ItemClickListener);
@@ -504,7 +504,7 @@ public class FilmFragment extends ChannelBaseFragment {
                 carousels.get(2).setPosition(2);
             }
             if(mCarousels.size()>3) {
-                Picasso.with(mContext).load(carousels.get(3).getThumb_image()).memoryPolicy(MemoryPolicy.NO_STORE).into(film_carous_imageView4);
+                Picasso.with(mContext).load(carousels.get(3).getThumb_image()).into(film_carous_imageView4);
                 film_carous_imageView4.setTag(3);
                 film_carous_imageView4.setTag(R.drawable.launcher_selector, carousels.get(3));
                 film_carous_imageView4.setOnClickListener(ItemClickListener);
@@ -512,7 +512,7 @@ public class FilmFragment extends ChannelBaseFragment {
                 carousels.get(3).setPosition(3);
             }
             if(mCarousels.size()>4) {
-                Picasso.with(mContext).load(carousels.get(4).getThumb_image()).memoryPolicy(MemoryPolicy.NO_STORE).into(film_carous_imageView5);
+                Picasso.with(mContext).load(carousels.get(4).getThumb_image()).into(film_carous_imageView5);
                 film_carous_imageView5.setTag(4);
                 film_carous_imageView5.setTag(R.drawable.launcher_selector, carousels.get(4));
                 film_carous_imageView5.setOnClickListener(ItemClickListener);
@@ -755,7 +755,7 @@ public class FilmFragment extends ChannelBaseFragment {
                 mHandler.sendEmptyMessageDelayed(CAROUSEL_NEXT, pauseTime * 1000);
                 return;
             }
-            Picasso.with(mContext).load(url).memoryPolicy(MemoryPolicy.NO_STORE).into(linkedVideoImage, new Callback() {
+            Picasso.with(mContext).load(url).into(linkedVideoImage, new Callback() {
 
                 @Override
                 public void onSuccess() {

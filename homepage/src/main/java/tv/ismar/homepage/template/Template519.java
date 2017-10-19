@@ -14,6 +14,7 @@ import com.daimajia.androidanimations.library.YoYo;
 import com.open.androidtvwidget.leanback.recycle.LinearLayoutManagerTV;
 import com.open.androidtvwidget.leanback.recycle.RecyclerViewTV;
 import com.orhanobut.logger.Logger;
+import com.squareup.leakcanary.RefWatcher;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +23,7 @@ import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+import tv.ismar.app.VodApplication;
 import tv.ismar.app.core.PageIntent;
 import tv.ismar.app.entity.banner.BannerEntity;
 import tv.ismar.app.network.SkyService;
@@ -56,6 +58,7 @@ public class Template519 extends Template implements View.OnClickListener, View.
 
     public Template519(Context context) {
         super(context);
+        Logger.t(TAG).d("Template519 construct");
     }
 
     @Override
@@ -79,6 +82,8 @@ public class Template519 extends Template implements View.OnClickListener, View.
 
     @Override
     public void onDestroy() {
+        RefWatcher refWatcher = VodApplication.getRefWatcher(mContext);
+        refWatcher.watch(this);
     }
 
     @Override

@@ -3,6 +3,8 @@ package tv.ismar.homepage.control;
 import android.content.Context;
 import android.util.Log;
 
+import com.orhanobut.logger.Logger;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,6 +48,7 @@ public class FetchDataControl extends BaseControl{
 
     /*获取首页下banner列表*/
     public void fetchHomeBanners(){
+        Logger.t(TAG).d("FetchDataControl fetchHomeBanners");
         try {
             fetchHomeBanners = SkyService.ServiceManager.getService().getGuideBanners()
                     .subscribeOn(Schedulers.io())
@@ -63,6 +66,7 @@ public class FetchDataControl extends BaseControl{
 
                         @Override
                         public void onNext(GuideBanner[] guideBanners) {
+                            Logger.t(TAG).d("FetchDataControl fetchHomeBanners onNext");
                             if (mCallBack != null && guideBanners != null && guideBanners.length > 0) {
                                 mGuideBanners = guideBanners;
                                 mCallBack.callBack(FETCH_HOME_BANNERS_FLAG, guideBanners);

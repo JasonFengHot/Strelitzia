@@ -225,7 +225,7 @@ public class EntertainmentFragment extends ChannelBaseFragment {
                     vaiety_thumb2.setPadding(0, PADDING, 0, -PADDING);
                     vaiety_thumb3.setPadding(0, PADDING, 0, -PADDING);
                     if (v.getTag() != null) {
-                        Picasso.with(mContext).load(v.getTag().toString()).memoryPolicy(MemoryPolicy.NO_STORE)
+                        Picasso.with(mContext).load(v.getTag().toString())
                                 .into(vaiety_post);
                         vaiety_fouce_label.setText(v.getTag(R.id.vaiety_post)
                                 .toString());
@@ -245,7 +245,7 @@ public class EntertainmentFragment extends ChannelBaseFragment {
                     v.setPadding(0, 0, 0, 0);
                     vaiety_thumb1.setPadding(0, PADDING, 0, -PADDING);
                     vaiety_thumb3.setPadding(0, PADDING, 0, -PADDING);
-                    Picasso.with(mContext).load(v.getTag().toString()).memoryPolicy(MemoryPolicy.NO_STORE).memoryPolicy(MemoryPolicy.NO_STORE)
+                    Picasso.with(mContext).load(v.getTag().toString())
                             .into(vaiety_post);
                     vaiety_fouce_label.setText(v.getTag(R.id.vaiety_post)
                             .toString());
@@ -264,7 +264,7 @@ public class EntertainmentFragment extends ChannelBaseFragment {
                     v.setPadding(0, 0, 0, 0);
                     vaiety_thumb2.setPadding(0, PADDING, 0, -PADDING);
                     vaiety_thumb1.setPadding(0, PADDING, 0, -PADDING);
-                    Picasso.with(mContext).load(v.getTag().toString()).memoryPolicy(MemoryPolicy.NO_STORE)
+                    Picasso.with(mContext).load(v.getTag().toString())
                             .into(vaiety_post);
                     vaiety_fouce_label.setText(v.getTag(R.id.vaiety_post)
                             .toString());
@@ -292,7 +292,7 @@ public class EntertainmentFragment extends ChannelBaseFragment {
         looppost.clear();
         for (int i = 0; i < Math.min(carousellist.size(),3); i++) {
             carousellist.get(i).setPosition(i);
-            Picasso.with(mContext).load(carousellist.get(i).getThumb_image()).memoryPolicy(MemoryPolicy.NO_STORE).into(vaietys[i]);
+            Picasso.with(mContext).load(carousellist.get(i).getThumb_image()).into(vaietys[i]);
             vaietys[i].setTag(carousellist.get(i).getVideo_image());
             vaietys[i].setTag(R.id.vaiety_post, carousellist.get(i).getTitle());
             vaietys[i].setTag(R.drawable.launcher_selector, carousellist.get(i));
@@ -311,7 +311,7 @@ public class EntertainmentFragment extends ChannelBaseFragment {
             if (TextUtils.isEmpty(imageUrl0)) {
                 imageUrl0 = "error";
             }
-            Picasso.with(mContext).load(imageUrl0).memoryPolicy(MemoryPolicy.NO_STORE).into(vaiety_card1_image);
+            Picasso.with(mContext).load(imageUrl0).into(vaiety_card1_image);
             vaiety_card1_image.setTitle(postlist.get(0).getIntroduction());
             vaiety_card1_image.setTag(postlist.get(0));
             vaiety_card1_subtitle.setText(postlist.get(0).getTitle());
@@ -331,7 +331,7 @@ public class EntertainmentFragment extends ChannelBaseFragment {
             if (TextUtils.isEmpty(imageUrl1)) {
                 imageUrl1 = "error";
             }
-            Picasso.with(mContext).load(imageUrl1).memoryPolicy(MemoryPolicy.NO_STORE).into(vaiety_card2_image);
+            Picasso.with(mContext).load(imageUrl1).into(vaiety_card2_image);
 
             vaiety_card2_image.setTitle(postlist.get(1).getIntroduction());
             vaiety_card2_image.setTag(postlist.get(1));
@@ -353,7 +353,7 @@ public class EntertainmentFragment extends ChannelBaseFragment {
             if (TextUtils.isEmpty(imageUrl2)) {
                 imageUrl2 = "error";
             }
-            Picasso.with(mContext).load(imageUrl2).memoryPolicy(MemoryPolicy.NO_STORE).into(vaiety_card3_image);
+            Picasso.with(mContext).load(imageUrl2).into(vaiety_card3_image);
             vaiety_card3_image.setTitle(postlist.get(2).getIntroduction());
             vaiety_card3_subtitle.setText(postlist.get(2).getTitle());
             vaiety_card3_image.setTag(postlist.get(2));
@@ -374,7 +374,7 @@ public class EntertainmentFragment extends ChannelBaseFragment {
             if (TextUtils.isEmpty(imageUrl3)) {
                 imageUrl3 = "error";
             }
-            Picasso.with(mContext).load(imageUrl3).memoryPolicy(MemoryPolicy.NO_STORE).into(vaiety_card4_image);
+            Picasso.with(mContext).load(imageUrl3).into(vaiety_card4_image);
             vaiety_card4_image.setTitle(postlist.get(3).getIntroduction());
             vaiety_card4_subtitle.setText(postlist.get(3).getTitle());
             vaiety_card4_image.setTag(postlist.get(3));
@@ -394,7 +394,7 @@ public class EntertainmentFragment extends ChannelBaseFragment {
             if (TextUtils.isEmpty(imageUrl4)) {
                 imageUrl4 = "error";
             }
-            Picasso.with(mContext).load(imageUrl4).memoryPolicy(MemoryPolicy.NO_STORE).into(vaiety_channel1_image);
+            Picasso.with(mContext).load(imageUrl4).into(vaiety_channel1_image);
             vaiety_channel1_image.setTitle(postlist.get(4).getIntroduction());
             vaiety_channel1_subtitle.setText(postlist.get(4).getTitle());
             vaiety_channel1_image.setTag(postlist.get(4));
@@ -414,7 +414,7 @@ public class EntertainmentFragment extends ChannelBaseFragment {
             if (TextUtils.isEmpty(imageUrl5)) {
                 imageUrl5 = "error";
             }
-            Picasso.with(mContext).load(imageUrl5).memoryPolicy(MemoryPolicy.NO_STORE).into(vaiety_channel2_image);
+            Picasso.with(mContext).load(imageUrl5).into(vaiety_channel2_image);
             vaiety_channel2_image.setTitle(postlist.get(5).getIntroduction());
             vaiety_channel2_subtitle.setText(postlist.get(5).getTitle());
             vaiety_channel2_image.setTag(postlist.get(5));
@@ -435,7 +435,7 @@ public class EntertainmentFragment extends ChannelBaseFragment {
             if (TextUtils.isEmpty(imageUrl6)) {
                 imageUrl6 = "error";
             }
-            Picasso.with(mContext).load(imageUrl6).memoryPolicy(MemoryPolicy.NO_STORE).into(vaiety_channel3_image);
+            Picasso.with(mContext).load(imageUrl6).into(vaiety_channel3_image);
             vaiety_channel3_image.setTitle(postlist.get(6).getIntroduction());
             vaiety_channel3_subtitle.setText(postlist.get(6).getTitle());
             vaiety_channel3_image.setTag(postlist.get(6));
@@ -456,7 +456,7 @@ public class EntertainmentFragment extends ChannelBaseFragment {
             if (TextUtils.isEmpty(imageUrl7)) {
                 imageUrl7 = "error";
             }
-            Picasso.with(mContext).load(imageUrl7).memoryPolicy(MemoryPolicy.NO_STORE).into(vaiety_channel4_image);
+            Picasso.with(mContext).load(imageUrl7).into(vaiety_channel4_image);
             vaiety_channel4_image.setTitle(postlist.get(7).getIntroduction());
             vaiety_channel4_subtitle.setText(postlist.get(7).getTitle());
             vaiety_channel4_image.setTag(postlist.get(7));
@@ -495,7 +495,7 @@ public class EntertainmentFragment extends ChannelBaseFragment {
 //            if (looppost.size() < 3)
 //                return;
             try {
-                Picasso.with(mContext).load(looppost.get(++loopindex)).memoryPolicy(MemoryPolicy.NO_STORE)
+                Picasso.with(mContext).load(looppost.get(++loopindex))
                         .placeholder(R.drawable.list_item_preview_bg)
                         .error(R.drawable.list_item_preview_bg)
                         .into(vaiety_post);

@@ -18,6 +18,8 @@
         <service android:name=".service.TrueTimeService" />
         <service android:name=".service.HttpProxyService"/>
 
+        <service android:name="com.squareup.leakcanary.DisplayLeakService" />
+
         <receiver android:name=".receiver.ConnectivityChangeReceiver">
             <intent-filter>
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
