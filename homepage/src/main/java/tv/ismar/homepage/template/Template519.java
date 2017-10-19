@@ -68,7 +68,7 @@ public class Template519 extends Template implements View.OnClickListener, View.
 
     @Override
     public void onPause() {
-        if (fetchHorizontal519Banner != null && fetchHorizontal519Banner.isUnsubscribed()) {
+        if (fetchHorizontal519Banner != null && !fetchHorizontal519Banner.isUnsubscribed()) {
             fetchHorizontal519Banner.unsubscribe();
         }
     }

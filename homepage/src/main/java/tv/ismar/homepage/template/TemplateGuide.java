@@ -143,7 +143,7 @@ public class TemplateGuide extends Template
     @Override
     public void onPause() {
         Log.d(TAG, "onPause");
-        if (playSubscription != null && playSubscription.isUnsubscribed()) {
+        if (playSubscription != null && !playSubscription.isUnsubscribed()) {
             playSubscription.unsubscribe();
         }
 
@@ -163,7 +163,7 @@ public class TemplateGuide extends Template
         }
 
         if (checkVideoViewFullVisibilitySubsc != null
-                && checkVideoViewFullVisibilitySubsc.isUnsubscribed()) {
+                && !checkVideoViewFullVisibilitySubsc.isUnsubscribed()) {
             checkVideoViewFullVisibilitySubsc.unsubscribe();
         }
     }

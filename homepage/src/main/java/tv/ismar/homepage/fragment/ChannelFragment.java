@@ -102,6 +102,7 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
 
     @Override
     public void onStop() {
+        Log.d(TAG, "onStop");
         if (mTemplates != null) {
             for (Template template : mTemplates) {
                 template.onStop();
@@ -112,6 +113,7 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
 
     @Override
     public void onDestroy() {
+        Log.d(TAG, "onDestroy");
         if (mTemplates != null) {
             for (Template template : mTemplates) {
                 template.onDestroy();

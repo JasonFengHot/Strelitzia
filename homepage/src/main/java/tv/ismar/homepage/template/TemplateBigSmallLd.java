@@ -70,7 +70,7 @@ public class TemplateBigSmallLd extends Template
 
     @Override
     public void onPause() {
-        if (fetchMovieMixBanner != null && fetchMovieMixBanner.isUnsubscribed()){
+        if (fetchMovieMixBanner != null && !fetchMovieMixBanner.isUnsubscribed()){
             fetchMovieMixBanner.unsubscribe();
         }
     }

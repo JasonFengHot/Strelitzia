@@ -68,7 +68,7 @@ public class TemplateMovie extends Template implements View.OnClickListener, Vie
 
     @Override
     public void onPause() {
-        if (fetchMovieBanner != null && fetchMovieBanner.isUnsubscribed()) {
+        if (fetchMovieBanner != null && !fetchMovieBanner.isUnsubscribed()) {
             fetchMovieBanner.unsubscribe();
         }
 

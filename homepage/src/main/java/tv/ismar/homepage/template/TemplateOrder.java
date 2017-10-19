@@ -85,7 +85,7 @@ public class TemplateOrder extends Template
 
     @Override
     public void onPause() {
-        if (fetchSubscribeBanner != null && fetchSubscribeBanner.isUnsubscribed()) {
+        if (fetchSubscribeBanner != null && !fetchSubscribeBanner.isUnsubscribed()) {
             fetchSubscribeBanner.unsubscribe();
         }
     }

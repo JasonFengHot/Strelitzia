@@ -235,24 +235,24 @@ public class FetchDataControl extends BaseControl{
     }
 
     public void stop() {
-        if (fetchHomeBanners != null && fetchHomeBanners.isUnsubscribed()) {
+        if (fetchHomeBanners != null && !fetchHomeBanners.isUnsubscribed()) {
             fetchHomeBanners.unsubscribe();
         }
 
-        if (fetchChannelBanners != null && fetchChannelBanners.isUnsubscribed()) {
+        if (fetchChannelBanners != null && !fetchChannelBanners.isUnsubscribed()) {
             fetchChannelBanners.unsubscribe();
         }
-        if (fetchChannels != null && fetchChannels.isUnsubscribed()) {
+        if (fetchChannels != null && !fetchChannels.isUnsubscribed()) {
             fetchChannels.unsubscribe();
         }
-        if (fetchMBanners != null && fetchMBanners.isUnsubscribed()) {
+        if (fetchMBanners != null && !fetchMBanners.isUnsubscribed()) {
             fetchMBanners.unsubscribe();
         }
 
-        if (fetchHomeRecommend != null && fetchHomeRecommend.isUnsubscribed()) {
+        if (fetchHomeRecommend != null && !fetchHomeRecommend.isUnsubscribed()) {
             fetchHomeRecommend.unsubscribe();
         }
-        if (fetchBanners != null && fetchBanners.isUnsubscribed()) {
+        if (fetchBanners != null && !fetchBanners.isUnsubscribed()) {
             fetchBanners.unsubscribe();
         }
     }
