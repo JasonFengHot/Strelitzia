@@ -20,13 +20,13 @@ import static android.view.MotionEvent.BUTTON_PRIMARY;
 public class BannerLinearLayout extends LinearLayout {
     private static final String TAG = BannerLinearLayout.class.getSimpleName();
 
-//    private View navigationLeft;
-//    private View navigationRight;
+    private View navigationLeft;
+    private View navigationRight;
 
     private boolean isDpadCenterClick = false;
 
     public void setNavigationLeft(View navigationLeft) {
-//        this.navigationLeft = navigationLeft;
+        this.navigationLeft = navigationLeft;
 //        this.navigationLeft.setOnTouchListener(new OnTouchListener() {
 //            @Override
 //            public boolean onTouch(View v, MotionEvent event) {
@@ -41,7 +41,7 @@ public class BannerLinearLayout extends LinearLayout {
     }
 
     public void setNavigationRight(View navigationRight) {
-//        this.navigationRight = navigationRight;
+        this.navigationRight = navigationRight;
     }
 
     public BannerLinearLayout(Context context) {
@@ -58,16 +58,16 @@ public class BannerLinearLayout extends LinearLayout {
         switch (event.getAction()){
             case MotionEvent.ACTION_HOVER_ENTER:
             case MotionEvent.ACTION_HOVER_MOVE:
-//                if (navigationLeft.getVisibility() == INVISIBLE){
-//                    navigationLeft.setVisibility(VISIBLE);
-//                    navigationRight.setVisibility(VISIBLE);
-//                }
+                if (navigationLeft.getVisibility() == INVISIBLE){
+                    navigationLeft.setVisibility(VISIBLE);
+                    navigationRight.setVisibility(VISIBLE);
+                }
                 break;
             case MotionEvent.ACTION_HOVER_EXIT:
-//                if (event.getButtonState() != BUTTON_PRIMARY){
-//                    navigationLeft.setVisibility(INVISIBLE);
-//                    navigationRight.setVisibility(INVISIBLE);
-//                }
+                if (event.getButtonState() != BUTTON_PRIMARY){
+                    navigationLeft.setVisibility(INVISIBLE);
+                    navigationRight.setVisibility(INVISIBLE);
+                }
                 break;
         }
         return super.dispatchHoverEvent(event);
@@ -75,10 +75,10 @@ public class BannerLinearLayout extends LinearLayout {
 
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
-//            if (navigationLeft.getVisibility() == VISIBLE){
-//                navigationLeft.setVisibility(INVISIBLE);
-//                navigationRight.setVisibility(INVISIBLE);
-//            }
+            if (navigationLeft.getVisibility() == VISIBLE){
+                navigationLeft.setVisibility(INVISIBLE);
+                navigationRight.setVisibility(INVISIBLE);
+            }
         return super.dispatchKeyEvent(event);
     }
 }
