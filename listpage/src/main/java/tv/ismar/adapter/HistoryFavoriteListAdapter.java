@@ -70,7 +70,7 @@ public class HistoryFavoriteListAdapter extends RecyclerView.Adapter<HistoryFavo
                 holder.marking.setVisibility(View.GONE);
             }
             if (!TextUtils.isEmpty(item.getFocus())) {
-                holder.intro.setText(item.getFocus());
+              //  holder.intro.setText(item.getFocus());
             }
             if (!TextUtils.isEmpty(item.getTitle()))
                 holder.title.setText(item.getTitle());
