@@ -76,7 +76,8 @@ public interface PageIntentInterface {
 
     void toPlayFinish(Fragment fragment, String channel, int id, int playScale, boolean hasHistory, String frompage, String root);
 
-    void toListPage(Context context, String title, String channel, int style);
+
+    void toListPage(Context context, String title, String channel, int style, String slug);
 
     class PaymentInfo {
         private ProductCategory category;

@@ -242,7 +242,8 @@ public class TemplateMovie extends Template implements View.OnClickListener, Vie
                                             mContext,
                                             bannerEntity.getChannel_title(),
                                             bannerEntity.getChannel(),
-                                            bannerEntity.getStyle());
+                                            bannerEntity.getStyle(),
+                                            bannerEntity.getSection_slug());
                         }
                     }
                 });

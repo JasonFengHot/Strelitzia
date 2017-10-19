@@ -275,7 +275,8 @@ public class Template519 extends Template implements View.OnClickListener, View.
                                             mContext,
                                             bannerEntity.getChannel_title(),
                                             bannerEntity.getChannel(),
-                                            bannerEntity.getStyle());
+                                            bannerEntity.getStyle(),
+                                            bannerEntity.getSection_slug());
                         }
                     }
                 });

@@ -66,7 +66,7 @@ public class TemplateMore extends Template implements View.OnClickListener {
   @Override
   public void onClick(View v) {
     PageIntent intent = new PageIntent();
-    intent.toListPage(mContext, mTitle, mChannel, mStyle);
+    intent.toListPage(mContext, mTitle, mChannel, mStyle,"");
   }
 
   private void setTemplateVisibility(boolean visibility) {

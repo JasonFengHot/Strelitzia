@@ -326,7 +326,8 @@ public class TemplateGuide extends Template
                             mContext,
                             mFetchDataControl.mHomeEntity.channel_title,
                             mFetchDataControl.mHomeEntity.channel,
-                            mFetchDataControl.mHomeEntity.style);
+                            mFetchDataControl.mHomeEntity.style,
+                            mFetchDataControl.mHomeEntity.section_slug);
         } else {
             mControl.go2Detail(mFetchDataControl.mHomeEntity.posters.get(position));
         }

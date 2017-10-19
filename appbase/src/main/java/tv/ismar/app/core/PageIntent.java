@@ -281,12 +281,13 @@ public class PageIntent implements PageIntentInterface {
 
 
     @Override
-    public void toListPage(Context context,String title, String channel, int style) {
+    public void toListPage(Context context,String title, String channel, int style,String slug) {
         Intent intent = new Intent();
         intent.setAction("tv.ismar.daisy.Filter");
         intent.putExtra("title",title);
         intent.putExtra("channel",channel);
         intent.putExtra("style",style);
+        intent.putExtra("section",slug);
         context.startActivity(intent);
     }
 }

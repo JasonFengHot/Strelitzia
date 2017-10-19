@@ -248,7 +248,8 @@ public class TemplateBigSmallLd extends Template
                                             mContext,
                                             bannerEntity.getChannel_title(),
                                             bannerEntity.getChannel(),
-                                            bannerEntity.getStyle());
+                                            bannerEntity.getStyle(),
+                                            bannerEntity.getSection_slug());
                         }
                     }
                 });

@@ -172,7 +172,8 @@ public class TemplateConlumn extends Template
                             mContext,
                             mFetchDataControl.mHomeEntity.channel_title,
                             mFetchDataControl.mHomeEntity.channel,
-                            mFetchDataControl.mHomeEntity.style);
+                            mFetchDataControl.mHomeEntity.style,
+                            mFetchDataControl.mHomeEntity.section_slug);
         } else {
             mFetchDataControl.go2Detail(mFetchDataControl.mHomeEntity.posters.get(position));
         }

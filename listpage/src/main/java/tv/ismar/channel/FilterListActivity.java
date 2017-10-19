@@ -130,6 +130,8 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
     private SpaceItemDecoration vSpaceItemDecoration;
     private SpaceItemDecoration hSpaceItemDecoration;
     private int checkedTab;
+    private String section="";
+    private int firstInSection=-1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -140,6 +142,7 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
         title = intent.getStringExtra("title");
         channel = intent.getStringExtra("channel");
         int style = intent.getIntExtra("style",0);
+        section=intent.getStringExtra("section");
         isVertical=style==1?false:true;
         //view和data、监听事件的初始化操作
         initView();
@@ -1245,10 +1248,22 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
                 }
             }
         });
-        if(section_group.getChildAt(1)!=null) {
+
+        if(!TextUtils.isEmpty(section)){
+            for (int i = 0; i <sections.size() ; i++) {
+                if(section.equals(sections.get(i).slug)&&section_group.getChildAt(i+1)!=null){
+                    section_group.getChildAt(i+1).callOnClick();
+                    ((RadioButton) section_group.getChildAt(i+1)).setChecked(true);
+                    firstInSection = i;
+                    break;
+                }
+            }
+        }
+        if (section_group.getChildAt(1) != null&&firstInSection==-1) {
             section_group.getChildAt(1).callOnClick();
             ((RadioButton) section_group.getChildAt(1)).setChecked(true);
         }
+
     }
 
 
@@ -1259,7 +1274,11 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
         if(listPosterAdapter==null) {
             listPosterAdapter = new ListPosterAdapter(FilterListActivity.this, listSectionEntity.getObjects(), isVertical, specialPos, sectionList);
             list_poster_recyclerview.swapAdapter(listPosterAdapter,false);
-            listPosterAdapter.setFocusedPosition(1);
+            if(firstInSection!=-1){
+                listPosterAdapter.setFocusedPosition(specialPos.get(firstInSection)+1);
+            }else {
+                listPosterAdapter.setFocusedPosition(1);
+            }
             //设置海报点击事件监听
             listPosterAdapter.setItemClickListener(new OnItemClickListener() {
                 @Override

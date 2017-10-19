@@ -58,7 +58,7 @@ public class TransferActivity extends BaseActivity {
                 pageIntent.toHistory(this,fromPage);
                 finish();
             }else{
-                pageIntent.toListPage(this,title,channel,portraitflag);
+                pageIntent.toListPage(this,title,channel,portraitflag,url.replace("/api/tv/section/","").replace("/","").trim());
                 finish();
             }
         }
