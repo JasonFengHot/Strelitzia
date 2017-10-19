@@ -119,6 +119,7 @@ public class TemplateTvPlay extends Template
         mName = bundle.getString(NAME_KEY);
         mChannel = bundle.getString(CHANNEL_KEY);
         mFetchDataControl.fetchBanners(mBannerPk, 1, false);
+        mTitleCountTv.setText("00/00");
     }
 
     private void initTitle() {

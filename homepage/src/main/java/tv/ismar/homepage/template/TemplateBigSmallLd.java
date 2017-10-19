@@ -177,6 +177,7 @@ public class TemplateBigSmallLd extends Template
         channelName = bundle.getString(ChannelFragment.CHANNEL_KEY);
         nameKey = bundle.getString(ChannelFragment.NAME_KEY);
         mTitleTv.setText(mBannerTitle);
+        mTitleCountTv.setText("00/00");
         fetchMovieMixBanner(mBannerName, 1);
     }
 

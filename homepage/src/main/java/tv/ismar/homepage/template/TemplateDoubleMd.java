@@ -135,6 +135,7 @@ public class TemplateDoubleMd extends Template
     mBannerPk = bundle.getInt(BANNER_KEY);
     mName = bundle.getString(NAME_KEY);
     mChannel = bundle.getString(CHANNEL_KEY);
+    mTitleCountTv.setText("00/00");
     mFetchDataControl.fetchBanners(mBannerPk, 1, false);
   }
 

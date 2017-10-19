@@ -171,6 +171,7 @@ public class TemplateMovie extends Template implements View.OnClickListener, Vie
         channelKey = bundle.getString(ChannelFragment.CHANNEL_KEY);
         nameKey = bundle.getString(ChannelFragment.NAME_KEY);
         mTitleTv.setText(mBannerTitle);
+        mTitleCountTv.setText("00/00");
         fetchMovieBanner(mBannerName, 1);
     }
 

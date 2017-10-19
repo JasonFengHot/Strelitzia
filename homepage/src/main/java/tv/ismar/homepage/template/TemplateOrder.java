@@ -288,6 +288,7 @@ public class TemplateOrder extends Template
         mBannerTitle = bundle.getString("title");
         channelName = bundle.getString(ChannelFragment.CHANNEL_KEY);
         mTitleTv.setText(mBannerTitle);
+        mTitleCountTv.setText("00/00");
         fetchSubscribeBanner(mBannerName, 1);
     }
 
