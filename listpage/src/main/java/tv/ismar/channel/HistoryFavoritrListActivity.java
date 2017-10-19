@@ -333,6 +333,7 @@ public class HistoryFavoritrListActivity extends BaseActivity implements OnItemC
 
                         @Override
                         public void onNext(ResponseBody responseBody) {
+                            DaisyUtils.getHistoryManager(HistoryFavoritrListActivity.this).deleteAll("no");
                             mlists.clear();
                             adapter.notifyDataSetChanged();
                             clearAll.setVisibility(View.GONE);
@@ -365,6 +366,7 @@ public class HistoryFavoritrListActivity extends BaseActivity implements OnItemC
 
                         @Override
                         public void onNext(ResponseBody responseBody) {
+                            DaisyUtils.getFavoriteManager(HistoryFavoritrListActivity.this).deleteAll("no");
                             mlists.clear();
                             adapter.notifyDataSetChanged();
                             clearAll.setVisibility(View.GONE);
