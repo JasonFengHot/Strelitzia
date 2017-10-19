@@ -86,7 +86,6 @@ public class TemplateGuide extends Template
     private TextView mThirdIcon;
     private TextView mFourIcon;
     private TextView mFiveIcon;
-    private View mHoverView;
     private RecyclerViewTV mRecycleView; // 海报recycleview
     private LinearLayoutManagerTV mGuideLayoutManager;
     private GuideAdapter mAdapter;
@@ -179,7 +178,6 @@ public class TemplateGuide extends Template
     @Override
     public void getView(View view) {
         mHeadView = view.findViewById(R.id.banner_guide_head);
-        mHoverView = view.findViewById(R.id.guide_shade);
         //        mHeadView.findViewById(R.id.guide_head_ismartv_linearlayout).setFocusable(true);
         //        mHeadView.findViewById(R.id.guide_head_ismartv_linearlayout).requestFocus();
         mVideoView = (DaisyVideoView) view.findViewById(R.id.guide_daisy_video_view);
@@ -218,7 +216,6 @@ public class TemplateGuide extends Template
         navigationRight.setOnClickListener(this);
         navigationRight.setOnHoverListener(this);
         navigationLeft.setOnHoverListener(this);
-        mHoverView.setOnHoverListener(this);
         //        mVideoView.setOnCompletionListener(this);
         //        mVideoView.setOnErrorListener(this);
         //        mVideoView.setOnPreparedListener(this);
@@ -363,12 +360,14 @@ public class TemplateGuide extends Template
 
     @Override
     public void onItemSelect(View view, int position) {
-        if (position < 1) {
-            mHeadView.setVisibility(View.VISIBLE);
-            videoViewVisibility = true;
-        } else {
-            mHeadView.setVisibility(View.GONE);
-            videoViewVisibility = false;
+        if(mGuideLayoutManager.canScrollHorizontally()) {
+            if (position < 1) {
+                mHeadView.setVisibility(View.VISIBLE);
+                videoViewVisibility = true;
+            } else {
+                mHeadView.setVisibility(View.GONE);
+                videoViewVisibility = false;
+            }
         }
     }
 
@@ -407,7 +406,6 @@ public class TemplateGuide extends Template
 
     @Override
     public boolean onHover(View v, MotionEvent event) {
-        if (mHoverView == v) return true;
         switch (event.getAction()) {
             case MotionEvent.ACTION_HOVER_MOVE:
             case MotionEvent.ACTION_HOVER_ENTER:
@@ -418,8 +416,8 @@ public class TemplateGuide extends Template
                 return false;
             case MotionEvent.ACTION_HOVER_EXIT:
                 if (event.getButtonState() != BUTTON_PRIMARY) {
-                    navigationLeft.setVisibility(View.INVISIBLE);
-                    navigationRight.setVisibility(View.INVISIBLE);
+//                    navigationLeft.setVisibility(View.INVISIBLE);
+//                    navigationRight.setVisibility(View.INVISIBLE);
                     HomeActivity.mHoverView.requestFocus(); // 将焦点放置到一块隐藏view中
                 }
                 break;

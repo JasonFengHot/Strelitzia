@@ -65,8 +65,8 @@ public class BannerLinearLayout extends LinearLayout {
                 break;
             case MotionEvent.ACTION_HOVER_EXIT:
                 if (event.getButtonState() != BUTTON_PRIMARY){
-                    navigationLeft.setVisibility(INVISIBLE);
-                    navigationRight.setVisibility(INVISIBLE);
+//                    navigationLeft.setVisibility(INVISIBLE);
+//                    navigationRight.setVisibility(INVISIBLE);
                 }
                 break;
         }
