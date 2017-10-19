@@ -57,6 +57,7 @@ public class BaseActivity extends AppCompatActivity {
     public SkyService mIrisService;
     public SkyService mSpeedCallaService;
     public SkyService mLilyHostService;
+    public SkyService mCarnationService;
     public long app_start_time;
     public long start_time;
     private Login_hint_dialog login_hint_dialog;
@@ -104,6 +105,7 @@ public class BaseActivity extends AppCompatActivity {
         mIrisService = SkyService.ServiceManager.getIrisService();
         mSpeedCallaService = SkyService.ServiceManager.getSpeedCallaService();
         mLilyHostService = SkyService.ServiceManager.getLilyHostService();
+        mCarnationService = SkyService.ServiceManager.getCarnationService();
         app_start_time = TrueTime.now().getTime();
         registerNoNetReceiver();
     }
