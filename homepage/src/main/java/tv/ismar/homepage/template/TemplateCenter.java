@@ -32,7 +32,7 @@ public class TemplateCenter extends Template
         RecyclerViewTV.PagingableListener,
         LinearLayoutManagerTV.FocusSearchFailedListener,
         OnItemClickListener,
-        View.OnHoverListener {
+        View.OnHoverListener, View.OnClickListener {
     public FetchDataControl mFetchDataControl = null;
     private RecyclerViewTV mRecycleView; // 海报recycleview
     private LinearLayoutManagerTV mCenterLayoutManager;
@@ -95,6 +95,8 @@ public class TemplateCenter extends Template
         super.initListener(view);
         navigationRight.setOnHoverListener(this);
         navigationLeft.setOnHoverListener(this);
+        navigationLeft.setOnClickListener(this);
+        navigationRight.setOnClickListener(this);
         mRecycleView.setPagingableListener(this);
         mCenterLayoutManager.setFocusSearchFailedListener(this);
     }
@@ -174,5 +176,17 @@ public class TemplateCenter extends Template
                 break;
         }
         return false;
+    }
+
+    @Override
+    public void onClick(View v) {
+        if(v.getId()==R.id.navigation_left){
+            mCenterLayoutManager.setCanScroll(true);
+            mCenterLayoutManager.scrollToPositionWithOffset(mRecycleView.findFirstVisibleItemPosition(),mContext.getResources().getDimensionPixelOffset(R.dimen.center_padding_offset));
+        }else if(v.getId()==R.id.navigation_right){
+            mCenterLayoutManager.setCanScroll(true);
+            mCenterLayoutManager.scrollToPositionWithOffset(mRecycleView.findLastVisibleItemPosition(),mContext.getResources().getDimensionPixelOffset(R.dimen.center_padding_offset));
+
+        }
     }
 }

@@ -471,6 +471,8 @@ public class RecyclerViewTV extends RecyclerView implements PrvInterface {
         setHovered(false);
         if(getLayoutManager() instanceof LinearLayoutManagerTV){
             ((LinearLayoutManagerTV) getLayoutManager()).setCanScroll(true);
+        }else if(getLayoutManager() instanceof StaggeredGridLayoutManagerTV){
+            ((StaggeredGridLayoutManagerTV) getLayoutManager()).setCanScroll(true);
         }
         int action = event.getAction();
         if (action == KeyEvent.ACTION_UP) {
@@ -673,6 +675,8 @@ public class RecyclerViewTV extends RecyclerView implements PrvInterface {
         if(event.getAction()== MotionEvent.ACTION_HOVER_ENTER||event.getAction()==MotionEvent.ACTION_HOVER_MOVE){
             if(getLayoutManager() instanceof LinearLayoutManagerTV){
                 ((LinearLayoutManagerTV) getLayoutManager()).setCanScroll(false);
+            }else if(getLayoutManager() instanceof StaggeredGridLayoutManagerTV){
+                ((StaggeredGridLayoutManagerTV) getLayoutManager()).setCanScroll(false);
             }
         }
         return super.dispatchHoverEvent(event);

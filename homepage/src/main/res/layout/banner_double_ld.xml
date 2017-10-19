@@ -34,12 +34,6 @@
             android:focusable="true"
             android:focusableInTouchMode="true" />
 
-        <View
-            android:id="@+id/double_ld_shade"
-            android:layout_width="@dimen/double_shade_width"
-            android:layout_height="@dimen/double_ld_img_height"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true" />
 
         <Button
             android:visibility="invisible"

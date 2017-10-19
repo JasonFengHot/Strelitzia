@@ -52,7 +52,6 @@ public class TemplateDoubleMd extends Template
   private ImageView mRbImage; // 右下角图标
   private TextView mImgeTitleTv; // 大图标题
   private RecyclerViewTV mRecyclerView;
-  private View mHoverView;
   private DoubleMdAdapter mAdapter;
   private FetchDataControl mFetchDataControl = null;
   private int mSelectItemPosition = 1; // 标题--选中海报位置
@@ -95,7 +94,6 @@ public class TemplateDoubleMd extends Template
     mTitleTv = (TextView) view.findViewById(R.id.banner_title_tv);
     mTitleCountTv = (TextView) view.findViewById(R.id.banner_title_count);
     mRecyclerView = (RecyclerViewTV) view.findViewById(R.id.double_md_recyclerview);
-    mHoverView = view.findViewById(R.id.double_md_shade);
 
     mHeadView = LayoutInflater.from(mContext).inflate(R.layout.banner_double_md_head, null);
     mVerticalImg = (ImageView) mHeadView.findViewById(R.id.double_md_image_poster);
@@ -124,7 +122,6 @@ public class TemplateDoubleMd extends Template
     navigationRight.setOnClickListener(this);
     navigationRight.setOnHoverListener(this);
     navigationLeft.setOnHoverListener(this);
-    mHoverView.setOnHoverListener(this);
     mRecyclerView.setPagingableListener(this);
     mRecyclerView.setOnItemFocusChangeListener(this);
     mDoubleLayoutManager.setFocusSearchFailedListener(this);
@@ -251,6 +248,7 @@ public class TemplateDoubleMd extends Template
     mDoubleLayoutManager.findFirstCompletelyVisibleItemPositions(positions);
     Log.i("onClick", "positions[0]:" + positions[0] + "positions[1]:" + positions[1]);
     if (i == R.id.navigation_left) {
+      mDoubleLayoutManager.setCanScroll(true);
       if (positions[1] - 1 >= 0) { // 向左滑动
         int targetPosition = positions[1] - 8;
         if (targetPosition <= 0) targetPosition = 0;
@@ -258,6 +256,7 @@ public class TemplateDoubleMd extends Template
         mDoubleLayoutManager.smoothScrollToPosition(mRecyclerView, null, targetPosition);
       }
     } else if (i == R.id.navigation_right) { // 向右滑动
+      mDoubleLayoutManager.setCanScroll(true);
       mRecyclerView.loadMore();
       if (positions[1] <= mFetchDataControl.mHomeEntity.count) {
         int targetPosition = positions[1] + 22;
@@ -280,8 +279,7 @@ public class TemplateDoubleMd extends Template
 
   @Override
   public boolean onHover(View v, MotionEvent event) {
-    if (mHoverView == v) return true;
-    switch (event.getAction()) {
+        switch (event.getAction()) {
       case MotionEvent.ACTION_HOVER_MOVE:
       case MotionEvent.ACTION_HOVER_ENTER:
         if (!v.hasFocus()) {

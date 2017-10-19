@@ -14,6 +14,8 @@ import android.view.View;
  */
 
 public class StaggeredGridLayoutManagerTV extends StaggeredGridLayoutManager {
+
+    private boolean canScroll=true;
     public StaggeredGridLayoutManagerTV(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
     }
@@ -37,5 +39,14 @@ public class StaggeredGridLayoutManagerTV extends StaggeredGridLayoutManager {
 
     public void setFocusSearchFailedListener(FocusSearchFailedListener focusSearchFailedListener) {
         this.focusSearchFailedListener = focusSearchFailedListener;
+    }
+
+    @Override
+    public boolean canScrollHorizontally() {
+        return canScroll;
+    }
+
+    public void setCanScroll(boolean canScroll) {
+        this.canScroll = canScroll;
     }
 }

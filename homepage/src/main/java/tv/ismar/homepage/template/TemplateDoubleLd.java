@@ -64,7 +64,6 @@ public class TemplateDoubleLd extends Template
     private BannerLinearLayout mBannerLinearLayout;
     private View navigationLeft;
     private View navigationRight;
-    private View mHoverView;
     private View mHeadView; // recylview头view
     private StaggeredGridLayoutManagerTV mDoubleLayoutManager;
     private int mBannerPk; // banner标记
@@ -115,7 +114,6 @@ public class TemplateDoubleLd extends Template
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         mRecyclerView.setLayoutManager(mDoubleLayoutManager);
         mRecyclerView.setSelectedItemAtCentered(false);
-        mHoverView = view.findViewById(R.id.double_ld_shade);
         mRecyclerView.setSelectedItemOffset(100, 100);
         navigationLeft = view.findViewById(R.id.navigation_left);
         navigationRight = view.findViewById(R.id.navigation_right);
@@ -141,7 +139,6 @@ public class TemplateDoubleLd extends Template
         navigationRight.setOnClickListener(this);
         navigationRight.setOnHoverListener(this);
         navigationLeft.setOnHoverListener(this);
-        mHoverView.setOnHoverListener(this);
         mRecyclerView.setPagingableListener(this);
         mRecyclerView.setOnItemFocusChangeListener(this);
         mDoubleLayoutManager.setFocusSearchFailedListener(this);
@@ -255,6 +252,7 @@ public class TemplateDoubleLd extends Template
         mDoubleLayoutManager.findFirstCompletelyVisibleItemPositions(positions);
         Log.i("onClick", "positions[0]:" + positions[0] + "positions[1]:" + positions[1]);
         if (i == R.id.navigation_left) {
+            mDoubleLayoutManager.setCanScroll(true);
             if (positions[1] - 1 >= 0) { // 向左滑动
                 int targetPosition = positions[1] - 14;
                 if (targetPosition <= 0) targetPosition = 0;
@@ -262,6 +260,7 @@ public class TemplateDoubleLd extends Template
                 mDoubleLayoutManager.smoothScrollToPosition(mRecyclerView, null, targetPosition);
             }
         } else if (i == R.id.navigation_right) { // 向右滑动
+            mDoubleLayoutManager.setCanScroll(true);
             mRecyclerView.loadMore();
             if (positions[1] <= mFetchDataControl.mHomeEntity.count) {
                 int targetPosition = positions[1] + 28;
@@ -284,7 +283,6 @@ public class TemplateDoubleLd extends Template
 
     @Override
     public boolean onHover(View v, MotionEvent event) {
-        if (mHoverView == v) return true;
         switch (event.getAction()) {
             case MotionEvent.ACTION_HOVER_MOVE:
             case MotionEvent.ACTION_HOVER_ENTER:
