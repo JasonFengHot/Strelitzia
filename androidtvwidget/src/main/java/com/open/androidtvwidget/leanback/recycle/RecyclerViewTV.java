@@ -20,6 +20,7 @@ import com.open.androidtvwidget.leanback.recycle.impl.PrvInterface;
 import com.open.androidtvwidget.utils.OPENLOG;
 
 import java.util.ArrayList;
+import java.util.EventListener;
 
 /**
  * RecyclerView TV适配版本.
@@ -468,6 +469,9 @@ public class RecyclerViewTV extends RecyclerView implements PrvInterface {
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
         setHovered(false);
+        if(getLayoutManager() instanceof LinearLayoutManagerTV){
+            ((LinearLayoutManagerTV) getLayoutManager()).setCanScroll(true);
+        }
         int action = event.getAction();
         if (action == KeyEvent.ACTION_UP) {
             isDispatch = true;
@@ -664,4 +668,13 @@ public class RecyclerViewTV extends RecyclerView implements PrvInterface {
         }
     }
 
+    @Override
+    protected boolean dispatchHoverEvent(MotionEvent event) {
+        if(event.getAction()== MotionEvent.ACTION_HOVER_ENTER||event.getAction()==MotionEvent.ACTION_HOVER_MOVE){
+            if(getLayoutManager() instanceof LinearLayoutManagerTV){
+                ((LinearLayoutManagerTV) getLayoutManager()).setCanScroll(false);
+            }
+        }
+        return super.dispatchHoverEvent(event);
+    }
 }

@@ -17,6 +17,7 @@ public class LinearLayoutManagerTV extends LinearLayoutManager {
 
     private int[] mMeasuredDimension = new int[2];
     private boolean mIsAutoMeaure = false;
+    private boolean canScroll=true;
 
     public LinearLayoutManagerTV(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
@@ -140,4 +141,12 @@ public class LinearLayoutManagerTV extends LinearLayoutManager {
         this.focusSearchFailedListener = focusSearchFailedListener;
     }
 
+    @Override
+    public boolean canScrollHorizontally() {
+        return canScroll;
+    }
+
+    public void setCanScroll(boolean canScroll) {
+        this.canScroll = canScroll;
+    }
 }
