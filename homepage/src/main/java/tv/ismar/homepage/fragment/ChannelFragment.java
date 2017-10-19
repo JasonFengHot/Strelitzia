@@ -236,7 +236,7 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
                 mLinearContainer.addView(bannerView);
             }
         }
-
+        if(!mChannel.equals("homepage"))
         addMoreView(data.length);
         //        mLinearContainer.initView();
     }
