@@ -74,7 +74,7 @@ public class TelescopicWrap {
 
     private void animateClose() {
         if(mLayout != null){
-            ValueAnimator animator = createDropAnimator(mLayout, mTextWidth, 0, false);
+            ValueAnimator animator = createDropAnimator(mLayout, mTextWidth, mTextWidth/2, false);
             animator.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
