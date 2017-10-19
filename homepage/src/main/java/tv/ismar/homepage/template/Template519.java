@@ -295,6 +295,7 @@ public class Template519 extends Template implements View.OnClickListener, View.
                         : mHorizontal519Adapter.getTatalItemCount();
         int i = v.getId();
         if (i == R.id.navigation_left) {
+            horizontal519LayoutManager.setCanScroll(true);
             //
             // horizontal519LayoutManager.scrollToPositionWithOffset(horizontal519Banner.findFirstVisibleItemPosition() - 1, 0);
 
@@ -311,6 +312,7 @@ public class Template519 extends Template implements View.OnClickListener, View.
                         horizontal519Banner, null, targetPosition);
             }
         } else if (i == R.id.navigation_right) {
+            horizontal519LayoutManager.setCanScroll(true);
             horizontal519Banner.loadMore();
 
             if (horizontal519LayoutManager.findLastCompletelyVisibleItemPosition() + 1

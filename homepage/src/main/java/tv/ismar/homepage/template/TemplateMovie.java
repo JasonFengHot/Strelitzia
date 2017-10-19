@@ -278,6 +278,7 @@ public class TemplateMovie extends Template implements View.OnClickListener, Vie
                 isMore ? mMovieAdapter.getTatalItemCount() + 1 : mMovieAdapter.getTatalItemCount();
         int i = v.getId();
         if (i == R.id.navigation_left) {
+            movieLayoutManager.setCanScroll(true);
             if (movieLayoutManager.findFirstCompletelyVisibleItemPosition() - 1 >= 0) {
                 int targetPosition = movieLayoutManager.findFirstCompletelyVisibleItemPosition() - 6;
                 if (targetPosition >= 0) {
@@ -293,6 +294,7 @@ public class TemplateMovie extends Template implements View.OnClickListener, Vie
                 //                YoYo.with(Techniques.HorizontalShake).duration(1000).playOn(firstView);
             }
         } else if (i == R.id.navigation_right) {
+            movieLayoutManager.setCanScroll(true);
             movieBanner.loadMore();
             if (movieLayoutManager.findLastCompletelyVisibleItemPosition() + 1 <= totalItemCount) {
                 int targetPosition = movieLayoutManager.findLastCompletelyVisibleItemPosition() + 6;

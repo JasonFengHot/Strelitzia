@@ -375,12 +375,15 @@ public class TemplateGuide extends Template
     public void onClick(View v) {
         int i = v.getId();
         if (i == R.id.navigation_left) {
+            mGuideLayoutManager.setCanScroll(true);
             if (mGuideLayoutManager.findFirstCompletelyVisibleItemPosition() - 1 >= 0) { // 向左滑动
                 int targetPosition = mGuideLayoutManager.findFirstCompletelyVisibleItemPosition() - 5;
                 if (targetPosition <= 0) targetPosition = 0;
                 mGuideLayoutManager.smoothScrollToPosition(mRecycleView, null, targetPosition);
             }
-        } else if (i == R.id.navigation_right) { // 向右滑动
+        } else if (i == R.id.navigation_right) {
+            mGuideLayoutManager.setCanScroll(true);
+            // 向右滑动
             mRecycleView.loadMore();
             mHeadView.setVisibility(View.GONE);
             if (mGuideLayoutManager.findLastCompletelyVisibleItemPosition()

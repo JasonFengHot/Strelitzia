@@ -233,6 +233,7 @@ public class TemplateTvPlay extends Template
     public void onClick(View v) {
         int i = v.getId();
         if (i == R.id.navigation_left) {
+            mTvPlayerLayoutManager.setCanScroll(true);
             if (mTvPlayerLayoutManager.findFirstCompletelyVisibleItemPosition() - 1 >= 0) { // 向左滑动
                 int targetPosition = mTvPlayerLayoutManager.findFirstCompletelyVisibleItemPosition() - 5;
                 if (targetPosition <= 0) targetPosition = 0;
@@ -240,6 +241,7 @@ public class TemplateTvPlay extends Template
                 mTvPlayerLayoutManager.smoothScrollToPosition(mRecycleView, null, targetPosition);
             }
         } else if (i == R.id.navigation_right) { // 向右滑动
+            mTvPlayerLayoutManager.setCanScroll(true);
             mRecycleView.loadMore();
             if (mTvPlayerLayoutManager.findLastCompletelyVisibleItemPosition()
                     <= mFetchDataControl.mHomeEntity.count) {

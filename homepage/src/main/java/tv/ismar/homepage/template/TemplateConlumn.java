@@ -182,12 +182,14 @@ public class TemplateConlumn extends Template
     public void onClick(View v) {
         int i = v.getId();
         if (i == R.id.navigation_left) {
+            mConlumnLayoutManager.setCanScroll(true);
             if (mConlumnLayoutManager.findFirstCompletelyVisibleItemPosition() - 1 >= 0) { // 向左滑动
                 int targetPosition = mConlumnLayoutManager.findFirstCompletelyVisibleItemPosition() - 5;
                 if (targetPosition <= 0) targetPosition = 0;
                 mConlumnLayoutManager.smoothScrollToPosition(mRecyclerView, null, targetPosition);
             }
         } else if (i == R.id.navigation_right) { // 向右滑动
+            mConlumnLayoutManager.setCanScroll(true);
             mRecyclerView.loadMore();
             if (mConlumnLayoutManager.findLastCompletelyVisibleItemPosition()
                     <= mFetchDataControl.mHomeEntity.count) {

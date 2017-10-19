@@ -144,12 +144,14 @@ public class TemplateRecommend extends Template
   public void onClick(View v) {
     int i = v.getId();
     if (i == R.id.navigation_left) {
+      mRecommendLayoutManager.setCanScroll(true);
       if (mRecommendLayoutManager.findFirstCompletelyVisibleItemPosition() - 1 >= 0) { // 向左滑动
         int targetPosition = mRecommendLayoutManager.findFirstCompletelyVisibleItemPosition() - 5;
         if (targetPosition <= 0) targetPosition = 0;
         mRecommendLayoutManager.smoothScrollToPosition(mRecyclerView, null, targetPosition);
       }
     } else if (i == R.id.navigation_right) { // 向右滑动
+      mRecommendLayoutManager.setCanScroll(true);
       mRecyclerView.loadMore();
       if (mRecommendLayoutManager.findLastCompletelyVisibleItemPosition()
           <= mFetchDataControl.mHomeEntity.count) {

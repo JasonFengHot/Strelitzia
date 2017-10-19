@@ -283,6 +283,7 @@ public class TemplateBigSmallLd extends Template
         int totalItemCount = isMore ? adapter.getTatalItemCount() + 1 : adapter.getTatalItemCount();
         int i = v.getId();
         if (i == R.id.navigation_left) {
+            movieMixLayoutManager.setCanScroll(true);
             if (movieMixLayoutManager.findFirstCompletelyVisibleItemPosition() - 1 >= 0) {
                 int targetPosition = movieMixLayoutManager.findFirstCompletelyVisibleItemPosition() - 6;
                 if (targetPosition >= 0) {
@@ -298,6 +299,7 @@ public class TemplateBigSmallLd extends Template
                 //                YoYo.with(Techniques.HorizontalShake).duration(1000).playOn(firstView);
             }
         } else if (i == R.id.navigation_right) {
+            movieMixLayoutManager.setCanScroll(true);
             movieMixBanner.loadMore();
 
             if (movieMixLayoutManager.findLastCompletelyVisibleItemPosition() + 1 <= totalItemCount) {

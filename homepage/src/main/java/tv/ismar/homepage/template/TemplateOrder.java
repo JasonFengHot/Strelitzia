@@ -443,6 +443,7 @@ public class TemplateOrder extends Template
     public void onClick(View v) {
         int i = v.getId();
         if (i == R.id.navigation_left) {
+            subscribeLayoutManager.setCanScroll(true);
             if (subscribeLayoutManager.findFirstCompletelyVisibleItemPosition() - 1 >= 0) {
                 int targetPosition = subscribeLayoutManager.findFirstCompletelyVisibleItemPosition() - 4;
                 if (targetPosition >= 0) {
@@ -454,6 +455,7 @@ public class TemplateOrder extends Template
                 subscribeLayoutManager.smoothScrollToPosition(subscribeBanner, null, targetPosition);
             }
         } else if (i == R.id.navigation_right) {
+            subscribeLayoutManager.setCanScroll(true);
             subscribeBanner.loadMore();
             if (subscribeLayoutManager.findFirstCompletelyVisibleItemPosition() + 1
                     <= subscribeAdapter.getTatalItemCount()) {
