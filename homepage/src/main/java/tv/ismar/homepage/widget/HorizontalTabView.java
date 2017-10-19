@@ -278,22 +278,31 @@ public class HorizontalTabView extends HorizontalScrollView
                 //空鼠标获取焦点
                 changeViewStatus(textView, ViewStatus.Hovered);
             }else {
-                changeViewStatus(textView, ViewStatus.Focused);
+                if(tag&&linearContainer.indexOfChild(v)!=mSelectedIndex){
+                    changeViewStatus((TextView) linearContainer.getChildAt(mSelectedIndex), ViewStatus.Focused);
+                }else {
+                    changeViewStatus(textView, ViewStatus.Focused);
+                }
             }
         } else {
             changeViewStatus(textView, ViewStatus.UnFocused);
         }
     }
 
+    boolean tag=true;
     @Override
     public boolean onKey(final View v, int keyCode, KeyEvent event) {
         Log.d(TAG, "onkey: " + "view: " + v + " event: " + event);
         switch (event.getAction()) {
             case KeyEvent.ACTION_DOWN:
+                if(keyCode==KeyEvent.KEYCODE_DPAD_LEFT||keyCode==KeyEvent.KEYCODE_DPAD_RIGHT){
+                    tag=false;
+                }
                 isOnKeyDown = true;
                 isOnViewClick = false;
                 Log.d(TAG, "onKey ACTION_DOWN");
                 if (keyCode == KeyEvent.KEYCODE_DPAD_DOWN || keyCode == KeyEvent.KEYCODE_DPAD_UP) {
+                    tag=true;
                     Log.d(TAG, "KeyEvent.KEYCODE_DPAD_DOWN || keyCode == KeyEvent.KEYCODE_DPAD_UP");
                     new Handler().postDelayed(new Runnable() {
                         @Override
