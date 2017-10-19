@@ -39,6 +39,9 @@ public class TemplateMore extends Template implements View.OnClickListener {
 
   @Override
   public void onPause() {
+	/*add by dragontec for bug 4077 start*/
+	  super.onPause();
+	/*add by dragontec for bug 4077 end*/
   }
 
   @Override

@@ -29,9 +29,14 @@ import tv.ismar.homepage.banner.adapter.BannerSubscribeAdapter;
 import tv.ismar.homepage.control.OrderControl;
 import tv.ismar.homepage.fragment.ChannelFragment;
 import tv.ismar.homepage.view.BannerLinearLayout;
+	/*add by dragontec for bug 4077 start*/
+import tv.ismar.homepage.widget.RecycleLinearLayout;
+	/*add by dragontec for bug 4077 end*/
 
 import static android.view.MotionEvent.BUTTON_PRIMARY;
-import static tv.ismar.homepage.HomeActivity.mHoverView;
+/*delete by dragontec for bug 4057 start*/
+//import static tv.ismar.homepage.HomeActivity.mHoverView;
+/*delete by dragontec for bug 4057 end*/
 import static tv.ismar.homepage.control.FetchDataControl.FETCH_BANNERS_LIST_FLAG;
 import static tv.ismar.homepage.control.FetchDataControl.FETCH_M_BANNERS_LIST_NEXTPAGE_FLAG;
 
@@ -88,6 +93,9 @@ public class TemplateOrder extends Template
         if (fetchSubscribeBanner != null && !fetchSubscribeBanner.isUnsubscribed()) {
             fetchSubscribeBanner.unsubscribe();
         }
+	/*add by dragontec for bug 4077 start*/
+		super.onPause();
+	/*add by dragontec for bug 4077 end*/
     }
 
     @Override
@@ -369,10 +377,15 @@ public class TemplateOrder extends Template
         subscribeAdapter.setSubscribeHoverListener(
                 new BannerSubscribeAdapter.OnBannerHoverListener() {
                     @Override
-                    public void onBannerHover(View view, int position, boolean hovered) {
+/*modify by dragontec for bug 4057 start*/
+//                    public void onBannerHover(View view, int position, boolean hovered) {
+                    public void onBannerHover(View view, int position, boolean hovered, boolean isPrimary) {
+/*modify by dragontec for bug 4057 end*/
                         if (hovered) {
                             //                    mLastFocusView = view;
-                            mHoverView.setFocusable(true);
+/*delete by dragontec for bug 4057 start*/
+//                            mHoverView.setFocusable(true);
+/*delete by dragontec for bug 4057 end*/
                             subscribeBanner.setHovered(true);
                             mTitleCountTv.setText(
                                     String.format(
@@ -381,7 +394,12 @@ public class TemplateOrder extends Template
                                             subscribeAdapter.getTatalItemCount() + ""));
                         } else {
                             subscribeBanner.setHovered(false);
-                            mHoverView.requestFocus();
+/*modify by dragontec for bug 4057 start*/
+//                            mHoverView.requestFocus();
+                            if (!isPrimary) {
+                                view.clearFocus();
+                            }
+/*modify by dragontec for bug 4057 end*/
                         }
                     }
                 });
@@ -391,6 +409,9 @@ public class TemplateOrder extends Template
                         mContext.getString(R.string.home_item_title_count),
                         (1) + "",
                         subscribeAdapter.getTatalItemCount() + ""));
+	/*add by dragontec for bug 4077 start*/
+		checkFocus(subscribeBanner);
+	/*add by dragontec for bug 4077 end*/
     }
 
     private void showNavigation(boolean isHovered) {
@@ -417,6 +438,9 @@ public class TemplateOrder extends Template
                 if (event.getButtonState() != BUTTON_PRIMARY) {
                     navigationLeft.setVisibility(View.INVISIBLE);
                     navigationRight.setVisibility(View.INVISIBLE);
+/*add by dragontec for bug 4057 start*/
+                    v.clearFocus();
+/*add by dragontec for bug 4057 end*/
                 }
                 //                Log.d(TAG, "NAVIGATION ACTION_HOVER_EXIT");
                 //                if (hoverEventRunnable!= null){

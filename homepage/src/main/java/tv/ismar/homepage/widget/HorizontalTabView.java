@@ -28,6 +28,10 @@ import java.util.List;
 import tv.ismar.homepage.HomeActivity;
 import tv.ismar.homepage.R;
 
+/*add by dragontec for bug 4057 start*/
+import static android.view.MotionEvent.BUTTON_PRIMARY;
+/*add by dragontec for bug 4057 end*/
+
 public class HorizontalTabView extends HorizontalScrollView
         implements View.OnClickListener,
         View.OnFocusChangeListener,
@@ -511,6 +515,11 @@ public class HorizontalTabView extends HorizontalScrollView
                 break;
             case MotionEvent.ACTION_HOVER_EXIT:
                 changeViewStatus(textView, ViewStatus.UnHovered);
+/*add by dragontec for bug 4057 start*/
+                if (event.getButtonState() != BUTTON_PRIMARY) {
+                    v.clearFocus();
+                }
+/*add by dragontec for bug 4057 end*/
                 break;
         }
         return false;

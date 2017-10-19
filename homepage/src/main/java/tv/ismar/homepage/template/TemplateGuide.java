@@ -55,6 +55,9 @@ import tv.ismar.homepage.control.FetchDataControl;
 import tv.ismar.homepage.control.GuideControl;
 import tv.ismar.homepage.view.BannerLinearLayout;
 import tv.ismar.homepage.widget.DaisyVideoView;
+	/*add by dragontec for bug 4077 start*/
+import tv.ismar.homepage.widget.RecycleLinearLayout;
+	/*add by dragontec for bug 4077 end*/
 import tv.ismar.library.exception.ExceptionUtils;
 
 import static android.view.MotionEvent.BUTTON_PRIMARY;
@@ -165,6 +168,9 @@ public class TemplateGuide extends Template
                 && !checkVideoViewFullVisibilitySubsc.isUnsubscribed()) {
             checkVideoViewFullVisibilitySubsc.unsubscribe();
         }
+	/*add by dragontec for bug 4077 start*/
+        super.onPause();
+	/*add by dragontec for bug 4077 end*/
     }
 
     @Override
@@ -287,6 +293,9 @@ public class TemplateGuide extends Template
                 mAdapter.setOnItemClickListener(this);
                 mAdapter.setOnItemSelectedListener(this);
                 mRecycleView.setAdapter(mAdapter);
+	/*add by dragontec for bug 4077 start*/
+				checkFocus(mRecycleView);
+	/*add by dragontec for bug 4077 end*/
             } else {
                 int start = mFetchDataControl.mPoster.size() - mFetchDataControl.mHomeEntity.posters.size();
                 int end = mFetchDataControl.mPoster.size();
@@ -422,7 +431,10 @@ public class TemplateGuide extends Template
                 if (event.getButtonState() != BUTTON_PRIMARY) {
 //                    navigationLeft.setVisibility(View.INVISIBLE);
 //                    navigationRight.setVisibility(View.INVISIBLE);
-                    HomeActivity.mHoverView.requestFocus(); // 将焦点放置到一块隐藏view中
+/*modify by dragontec for bug 4057 start*/
+//                    HomeActivity.mHoverView.requestFocus(); // 将焦点放置到一块隐藏view中
+                    v.clearFocus();
+/*modify by dragontec for bug 4057 end*/
                 }
                 break;
         }

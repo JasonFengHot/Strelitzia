@@ -864,4 +864,8 @@
 <dimen name="banner_horizontal519_navigation_height">146.00dp</dimen>
 <dimen name="banner_movie_navigation_height">175.00dp</dimen>
 <dimen name="banner_margin_top">100.00dp</dimen>
+
+    <!-- add by dragontec start-->
+    <dimen name="over_screen_height">640dp</dimen>
+    <!-- add by dragontec end-->
 </resources>

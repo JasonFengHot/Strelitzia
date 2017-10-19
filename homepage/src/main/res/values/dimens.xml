@@ -688,4 +688,8 @@
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
+
+    <!-- add by dragontec start-->
+    <dimen name="over_screen_height">1280dp</dimen>
+    <!-- add by dragontec end-->
 </resources>

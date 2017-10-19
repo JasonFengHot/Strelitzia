@@ -2,6 +2,9 @@ package tv.ismar.homepage.template;
 
 import android.content.Context;
 import android.os.Bundle;
+	/*add by dragontec for bug 4077 start*/
+import android.os.Handler;
+	/*add by dragontec for bug 4077 end*/
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.MotionEvent;
@@ -22,6 +25,9 @@ import tv.ismar.homepage.R;
 import tv.ismar.homepage.adapter.RecommendAdapter;
 import tv.ismar.homepage.control.FetchDataControl;
 import tv.ismar.homepage.view.BannerLinearLayout;
+	/*add by dragontec for bug 4077 start*/
+import tv.ismar.homepage.widget.RecycleLinearLayout;
+	/*add by dragontec for bug 4077 end*/
 
 import static android.view.MotionEvent.BUTTON_PRIMARY;
 
@@ -57,6 +63,9 @@ public class TemplateRecommend extends Template
     if (mFetchDataControl != null){
       mFetchDataControl.stop();
     }
+	/*add by dragontec for bug 4077 start*/
+	  super.onPause();
+	/*add by dragontec for bug 4077 end*/
   }
 
   @Override
@@ -109,6 +118,9 @@ public class TemplateRecommend extends Template
       mAdapter = new RecommendAdapter(mContext, recommends);
       mRecyclerView.setAdapter(mAdapter);
       mAdapter.setOnItemClickListener(this);
+	/*add by dragontec for bug 4077 start*/
+		checkFocus(mRecyclerView);
+	/*add by dragontec for bug 4077 end*/
     } else {
       int start = mFetchDataControl.mPoster.size() - mFetchDataControl.mHomeEntity.posters.size();
       int end = mFetchDataControl.mPoster.size();
@@ -185,7 +197,10 @@ public class TemplateRecommend extends Template
         if (event.getButtonState() != BUTTON_PRIMARY) {
           navigationLeft.setVisibility(View.INVISIBLE);
           navigationRight.setVisibility(View.INVISIBLE);
-          HomeActivity.mHoverView.requestFocus(); // 将焦点放置到一块隐藏view中
+/*modify by dragontec for bug 4057 start*/
+//          HomeActivity.mHoverView.requestFocus(); // 将焦点放置到一块隐藏view中
+          v.clearFocus();
+/*modify by dragontec for bug 4057 end*/
         }
         break;
     }

@@ -1,5 +1,6 @@
 package tv.ismar.homepage;
 
+import android.animation.ValueAnimator;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -57,7 +58,10 @@ public class HomeActivity extends BaseActivity
         View.OnHoverListener {
 
     public static final String HOME_PAGE_CHANNEL_TAG = "homepage";
-    public static View mHoverView;
+/*modify by dragontec for bug 4057 start*/
+//    public static View mHoverView;
+    private static View mHoverView;
+/*modify by dragontec for bug 4057 end*/
     public static View mLastFocusView;
     private final FetchDataControl mFetchDataControl = new FetchDataControl(this, this); // 业务类引用
     private final HomeControl mHomeControl = new HomeControl(this, this);
@@ -86,6 +90,11 @@ public class HomeActivity extends BaseActivity
                 }
             };
     private long currentTime = 0;
+    /*add by dragontec for bug 3983 start*/
+    public static boolean isTitleHidden = false;
+    private ViewGroup mViewLayout;
+    private Object mTitleAnimLock = new Object();
+    /*add by dragontec for bug 3983 end*/
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -155,9 +164,14 @@ public class HomeActivity extends BaseActivity
     private void findViews() {
         mHoverView = findViewById(R.id.home_view_layout);
         headHoverd = findViewById(R.id.hover_view);
-        headHoverd.setOnHoverListener(this);
-        mHoverView.setOnHoverListener(this);
+/*delete by dragontec for bug 4057 start*/
+//        headHoverd.setOnHoverListener(this);
+//        mHoverView.setOnHoverListener(this);
+/*delete by dragontec for bug 4057 end*/
         mViewGroup = (ViewGroup) findViewById(R.id.home_view_layout);
+	    /*add by dragontec for bug 3983 start*/
+        mViewLayout = (ViewGroup) findViewById(R.id.view_layout);
+	    /*add by dragontec for bug 3983 end*/
         mChannelTab = (HorizontalTabView) findViewById(R.id.channel_tab);
         mTimeTv = (TextView) findViewById(R.id.guide_title_time_tv);
         mCollectionTv = (TextView) findViewById(R.id.collection_tv);
@@ -195,6 +209,12 @@ public class HomeActivity extends BaseActivity
     }
 
     private void initListener() {
+/*add by dragontec for bug 4057 start*/
+        mCollectionRect.setFocusableInTouchMode(true);
+        mCollectionRect.setFocusable(true);
+        mCenterRect.setFocusableInTouchMode(true);
+        mCenterRect.setFocusable(true);
+/*add by dragontec for bug 4057 end*/
         mCenterRect.setOnFocusChangeListener(this);
         mCenterRect.setOnClickListener(this);
         mCollectionRect.setOnFocusChangeListener(this);
@@ -264,30 +284,39 @@ public class HomeActivity extends BaseActivity
         //        }
         switch (event.getAction()) {
             case MotionEvent.ACTION_HOVER_ENTER:
-                if (v.getId() != R.id.hover_view) {
-                    if (!v.hasFocus()) {
-                        new Handler()
-                                .postDelayed(
-                                        new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                v.setFocusable(true);
-                                                v.setFocusableInTouchMode(true);
-                                                v.requestFocusFromTouch();
-                                                v.requestFocus();
-                                            }
-                                        },
-                                        200);
-                    }
-                } else {
-                    v.setFocusable(true);
-                    v.setFocusableInTouchMode(true);
-                    v.requestFocusFromTouch();
-                    v.requestFocus();
-                }
+/*modify by dragontec for bug 4057 start*/
+//                if (v.getId() != R.id.hover_view) {
+//                    if (!v.hasFocus()) {
+//                        new Handler()
+//                                .postDelayed(
+//                                        new Runnable() {
+//                                            @Override
+//                                            public void run() {
+//                                                v.setFocusable(true);
+//                                                v.setFocusableInTouchMode(true);
+//                                                v.requestFocusFromTouch();
+//                                                v.requestFocus();
+//                                            }
+//                                        },
+//                                        200);
+//                    }
+//                } else {
+//                    v.setFocusable(true);
+//                    v.setFocusableInTouchMode(true);
+//                    v.requestFocusFromTouch();
+//                    v.requestFocus();
+//                }
+                v.requestFocusFromTouch();
+                v.requestFocus();
+/*modify by dragontec for bug 4057 end*/
                 break;
             case MotionEvent.ACTION_HOVER_EXIT:
                 //                onFocusChange(v,  false);
+/*add by dragontec for bug 4057 start*/
+                if (event.getButtonState() != MotionEvent.BUTTON_PRIMARY) {
+                    v.clearFocus();
+                }
+/*add by dragontec for bug 4057 end*/
                 break;
         }
         return false;
@@ -388,12 +417,60 @@ public class HomeActivity extends BaseActivity
             //            mHoverView.setFocusableInTouchMode(false);
             return true;
         }
-        mHoverView.setFocusable(false);
-        mHoverView.setFocusableInTouchMode(false);
-        headHoverd.setFocusableInTouchMode(false);
-        headHoverd.setFocusable(false);
+/*delete by dragontec for bug 4057 start*/
+//        mHoverView.setFocusable(false);
+//        mHoverView.setFocusableInTouchMode(false);
+//        headHoverd.setFocusableInTouchMode(false);
+//        headHoverd.setFocusable(false);
+/*delete by dragontec for bug 4057 end*/
         return super.onKeyDown(keyCode, event);
     }
+
+    /*add by dragontec for bug 3983 start*/
+    public void titleMoveOut() {
+        synchronized (mTitleAnimLock) {
+            if (isTitleHidden) {
+                return;
+            }
+            int height = getResources().getDimensionPixelSize(R.dimen.banner_margin_top);
+            ValueAnimator mAnimator = ValueAnimator.ofInt(0, -height);
+            mAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+
+                @Override
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    int animatorValue = (int) animation.getAnimatedValue();
+                    mViewLayout.setTranslationY(animatorValue);
+                }
+            });
+            mAnimator.setDuration(500);
+            mAnimator.setTarget(mViewLayout);
+            mAnimator.start();
+            isTitleHidden = true;
+        }
+    }
+
+    public void titleMoveIn() {
+        synchronized (mTitleAnimLock) {
+            if (!isTitleHidden) {
+                return;
+            }
+            int height = getResources().getDimensionPixelSize(R.dimen.banner_margin_top);
+            ValueAnimator mAnimator = ValueAnimator.ofInt(-height, 0);
+            mAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+
+                @Override
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    int animatorValue = (int) animation.getAnimatedValue();
+                    mViewLayout.setTranslationY(animatorValue);
+                }
+            });
+            mAnimator.setDuration(500);
+            mAnimator.setTarget(mViewLayout);
+            mAnimator.start();
+            isTitleHidden = false;
+        }
+    }
+    /*add by dragontec for bug 3983 end*/
 
     /*时间跳动广播*/
     private class TimeTickBroadcast extends BroadcastReceiver {

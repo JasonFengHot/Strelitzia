@@ -6,6 +6,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
+    <LinearLayout
+        android:id="@+id/view_layout"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/over_screen_height"
+        android:orientation="vertical"
+        >
+
     <include layout="@layout/home_head_layout"/>
     <RelativeLayout
         android:layout_width="match_parent"
@@ -55,4 +62,5 @@
         android:focusable="false"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
+    </LinearLayout>
 </LinearLayout>

@@ -195,7 +195,10 @@ public class BannerHorizontal519Adapter extends RecyclerView.Adapter<BannerHoriz
     }
 
     public interface OnBannerHoverListener {
-        void onBannerHover(View view, int position, boolean hovered);
+/*modify by dragontec for bug 4057 start*/
+//        void onBannerHover(View view, int position, boolean hovered);
+        void onBannerHover(View view, int position, boolean hovered, boolean isPrimary);
+/*modify by dragontec for bug 4057 end*/
     }
 
     public interface OnBannerClickListener {
@@ -280,7 +283,10 @@ public class BannerHorizontal519Adapter extends RecyclerView.Adapter<BannerHoriz
                 case MotionEvent.ACTION_HOVER_MOVE:
                     if (mHoverListener != null) {
                         int position = (int) v.getTag(R.id.banner_item_position);
-                        mHoverListener.onBannerHover(v, position, true);
+/*modify by dragontec for bug 4057 start*/
+//                        mHoverListener.onBannerHover(v, position, true);
+                        mHoverListener.onBannerHover(v, position, true, event.getButtonState() == MotionEvent.BUTTON_PRIMARY);
+/*modify by dragontec for bug 4057 end*/
                     }
                     v.requestFocusFromTouch();
                     v.requestFocus();
@@ -288,7 +294,10 @@ public class BannerHorizontal519Adapter extends RecyclerView.Adapter<BannerHoriz
                 case MotionEvent.ACTION_HOVER_EXIT:
                     if (mHoverListener != null) {
                         int position = (int) v.getTag(R.id.banner_item_position);
-                        mHoverListener.onBannerHover(v, position, false);
+/*modify by dragontec for bug 4057 start*/
+//                        mHoverListener.onBannerHover(v, position, false);
+                        mHoverListener.onBannerHover(v, position, false, event.getButtonState() == MotionEvent.BUTTON_PRIMARY);
+/*modify by dragontec for bug 4057 end*/
                     }
                     break;
             }

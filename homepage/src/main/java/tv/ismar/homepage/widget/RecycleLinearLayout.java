@@ -17,6 +17,7 @@ import com.daimajia.androidanimations.library.YoYo;
 
 import java.util.ArrayList;
 
+import tv.ismar.homepage.HomeActivity;
 import tv.ismar.homepage.R;
 
 /**
@@ -34,7 +35,11 @@ public class RecycleLinearLayout extends LinearLayout {
     private int mScreenHeight;
     private int mSelectedChildIndex = 0;
     private ArrayList<View> mAllViews = new ArrayList<>();
-
+	/*add by dragontec for bug 3983 start*/
+    private OnPositionChangedListener mPositionChangeListener;
+    private View lastScrollToTopView;
+    private boolean isScrollDuringTitleHiddenState;
+	/*add by dragontec for bug 3983 end*/
 
     public RecycleLinearLayout(Context context) {
         super(context);
@@ -96,7 +101,17 @@ public class RecycleLinearLayout extends LinearLayout {
 
     private void smoothScrollBy(int dx, int dy){
         Log.i(TAG, "dx:"+dx+"  dy:"+dy);
-        mOverScroller.startScroll(mOverScroller.getFinalX(), mOverScroller.getFinalY(), dx, dy, SCROLL_DURATION);
+		/*modify by dragontec for bug 3983 start*/
+        if(HomeActivity.isTitleHidden && isScrollDuringTitleHiddenState){
+            dy +=  getResources().getDimensionPixelSize(R.dimen.banner_margin_top);
+            mOverScroller.startScroll(mOverScroller.getFinalX(), mOverScroller.getFinalY(), dx, dy, SCROLL_DURATION);
+        }else{
+            if(mOverScroller.getFinalY() + dy < 0){
+                dy = -mOverScroller.getFinalY();
+            }
+            mOverScroller.startScroll(mOverScroller.getFinalX(), mOverScroller.getFinalY(), dx, dy, SCROLL_DURATION);
+        }
+		/*modify by dragontec for bug 3983 end*/
         invalidate();//保证computeScroll()执行
     }
 
@@ -194,6 +209,16 @@ public class RecycleLinearLayout extends LinearLayout {
                 int position = (tag<<2)>>2;
 //                mHolder.onCreateView(position, keyCode);
                 Log.i(TAG, "key:"+key+" canScroll:"+canScroll+" position:"+position);
+				/*add by dragontec for bug 3983 start*/
+                boolean startTitleState = HomeActivity.isTitleHidden;
+                if(keyCode==KeyEvent.KEYCODE_DPAD_DOWN || keyCode==KeyEvent.KEYCODE_DPAD_UP){
+                    if(mPositionChangeListener != null){
+                        mPositionChangeListener.onPositionChanged(position,keyCode,canScroll);
+                    }
+                }
+                boolean endTitleState = HomeActivity.isTitleHidden;
+                isScrollDuringTitleHiddenState =startTitleState && endTitleState;
+				/*add by dragontec for bug 3983 end*/
                 if(!canScroll){//限制滑动
                     Log.i(TAG, "canScroll");
                     if(position-1 < 0) return super.dispatchKeyEvent(event);//将不可滑动的banner和前一个banner绑定为一个banner
@@ -201,6 +226,13 @@ public class RecycleLinearLayout extends LinearLayout {
                     scrollToTop(getChildAt(position-1));
                     return super.dispatchKeyEvent(event);
                 }
+	/*add by dragontec for bug 4077 start*/
+				if (position > getChildCount() -2 && keyCode == KeyEvent.KEYCODE_DPAD_DOWN) {
+					if (mOnDataFinishedListener != null) {
+						mOnDataFinishedListener.onDataFinished(view);
+					}
+				}
+	/*add by dragontec for bug 4077 end*/
                 //滑动处理
                 if(position==getChildCount()-1){
                     Log.i(TAG, "scrollToVisiable");
@@ -226,4 +258,25 @@ public class RecycleLinearLayout extends LinearLayout {
     public interface ViewHolder {
         void onCreateView(int position, int orientation);
     }
+
+	/*add by dragontec for bug 4077 start*/
+	public interface OnDataFinishedListener {
+		void onDataFinished(View view);
+	}
+
+	private OnDataFinishedListener mOnDataFinishedListener;
+
+	public void setOnDataFinishedListener(OnDataFinishedListener onDataFinishedListener) {
+		mOnDataFinishedListener = onDataFinishedListener;
+	}
+	/*add by dragontec for bug 4077 end*/
+
+	/*add by dragontec for bug 3983 start*/
+    public void  setOnPositionChangedListener(OnPositionChangedListener mPositionChangeListener){
+        this.mPositionChangeListener = mPositionChangeListener;
+    }
+    public interface OnPositionChangedListener {
+        boolean onPositionChanged(int position, int direction, boolean canScroll);
+    }
+	/*add by dragontec for bug 3983 end*/
 }

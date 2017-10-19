@@ -2,6 +2,9 @@ package tv.ismar.homepage.template;
 
 import android.content.Context;
 import android.os.Bundle;
+	/*add by dragontec for bug 4077 start*/
+import android.os.Handler;
+	/*add by dragontec for bug 4077 end*/
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -32,6 +35,9 @@ import tv.ismar.homepage.R;
 import tv.ismar.homepage.banner.adapter.BannerHorizontal519Adapter;
 import tv.ismar.homepage.fragment.ChannelFragment;
 import tv.ismar.homepage.view.BannerLinearLayout;
+	/*add by dragontec for bug 4077 start*/
+import tv.ismar.homepage.widget.RecycleLinearLayout;
+	/*add by dragontec for bug 4077 end*/
 
 import static android.view.MotionEvent.BUTTON_PRIMARY;
 
@@ -74,6 +80,9 @@ public class Template519 extends Template implements View.OnClickListener, View.
         if (fetchHorizontal519Banner != null && !fetchHorizontal519Banner.isUnsubscribed()) {
             fetchHorizontal519Banner.unsubscribe();
         }
+	/*add by dragontec for bug 4077 start*/
+        super.onPause();
+	/*add by dragontec for bug 4077 end*/
     }
 
     @Override
@@ -241,7 +250,10 @@ public class Template519 extends Template implements View.OnClickListener, View.
         mHorizontal519Adapter.setHoverListener(
                 new BannerHorizontal519Adapter.OnBannerHoverListener() {
                     @Override
-                    public void onBannerHover(View view, int position, boolean hovered) {
+/*modify by dragontec for bug 4057 start*/
+//                    public void onBannerHover(View view, int position, boolean hovered) {
+                    public void onBannerHover(View view, int position, boolean hovered, boolean isPrimary) {
+/*modify by dragontec for bug 4057 end*/
                         //                Log.d(TAG, view + " : " + hovered);
                         if (hovered) {
                             horizontal519Banner.setHovered(true);
@@ -252,7 +264,12 @@ public class Template519 extends Template implements View.OnClickListener, View.
                                             mHorizontal519Adapter.getTatalItemCount() + ""));
                         } else {
                             horizontal519Banner.setHovered(false);
-                            HomeActivity.mHoverView.requestFocus();
+/*modify by dragontec for bug 4057 start*/
+//                            HomeActivity.mHoverView.requestFocus();
+                            if (!isPrimary) {
+                                view.clearFocus();
+                            }
+/*modify by dragontec for bug 4057 end*/
                             //                    Log.d(TAG, view + " : " + hovered);
                             //                    Log.d(TAG, "view id: " + view.getId());
                             //                    HomeActivity.mHoverView.setNextFocusUpId(view.getId());
@@ -286,6 +303,9 @@ public class Template519 extends Template implements View.OnClickListener, View.
                         mContext.getString(R.string.home_item_title_count),
                         (1) + "",
                         mHorizontal519Adapter.getTatalItemCount() + ""));
+	/*add by dragontec for bug 4077 start*/
+		checkFocus(horizontal519Banner);
+	/*add by dragontec for bug 4077 end*/
     }
 
     @Override
@@ -356,6 +376,9 @@ public class Template519 extends Template implements View.OnClickListener, View.
                 if (event.getButtonState() != BUTTON_PRIMARY) {
                     navigationLeft.setVisibility(View.INVISIBLE);
                     navigationRight.setVisibility(View.INVISIBLE);
+/*add by dragontec for bug 4057 start*/
+                    v.clearFocus();
+/*add by dragontec for bug 4057 end*/
                 }
                 break;
         }

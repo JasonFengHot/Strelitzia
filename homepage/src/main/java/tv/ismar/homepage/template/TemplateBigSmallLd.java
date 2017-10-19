@@ -2,6 +2,9 @@ package tv.ismar.homepage.template;
 
 import android.content.Context;
 import android.os.Bundle;
+	/*add by dragontec for bug 4077 start*/
+import android.os.Handler;
+	/*add by dragontec for bug 4077 end*/
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -30,6 +33,9 @@ import tv.ismar.homepage.R;
 import tv.ismar.homepage.banner.adapter.BannerMovieMixAdapter;
 import tv.ismar.homepage.fragment.ChannelFragment;
 import tv.ismar.homepage.view.BannerLinearLayout;
+	/*add by dragontec for bug 4077 start*/
+import tv.ismar.homepage.widget.RecycleLinearLayout;
+	/*add by dragontec for bug 4077 end*/
 
 import static android.view.MotionEvent.BUTTON_PRIMARY;
 
@@ -73,6 +79,9 @@ public class TemplateBigSmallLd extends Template
         if (fetchMovieMixBanner != null && !fetchMovieMixBanner.isUnsubscribed()){
             fetchMovieMixBanner.unsubscribe();
         }
+	/*add by dragontec for bug 4077 start*/
+		super.onPause();
+	/*add by dragontec for bug end start*/
     }
 
     @Override
@@ -256,7 +265,10 @@ public class TemplateBigSmallLd extends Template
         adapter.setHoverListener(
                 new BannerMovieMixAdapter.OnBannerHoverListener() {
                     @Override
-                    public void onBannerHover(View view, int position, boolean hovered) {
+/*modify by dragontec for bug 4057 start*/
+//                    public void onBannerHover(View view, int position, boolean hovered) {
+                    public void onBannerHover(View view, int position, boolean hovered, boolean isPrimary) {
+/*modify by dragontec for bug 4057 end*/
                         Log.d(TAG, view + " : " + hovered);
                         if (hovered) {
                             movieMixBanner.setHovered(true);
@@ -267,7 +279,12 @@ public class TemplateBigSmallLd extends Template
                                             adapter.getTatalItemCount() + ""));
                         } else {
                             movieMixBanner.setHovered(false);
-                            HomeActivity.mHoverView.requestFocus();
+/*modify by dragontec for bug 4057 start*/
+//                            HomeActivity.mHoverView.requestFocus();
+                            if (!isPrimary) {
+                                view.clearFocus();
+                            }
+/*modify by dragontec for bug 4057 end*/
                         }
                     }
                 });
@@ -277,6 +294,9 @@ public class TemplateBigSmallLd extends Template
                         mContext.getString(R.string.home_item_title_count),
                         (1) + "",
                         adapter.getTatalItemCount() + ""));
+	/*add by dragontec for bug 4077 start*/
+		checkFocus(movieMixBanner);
+	/*add by dragontec for bug 4077 end*/
     }
 
     @Override
@@ -345,6 +365,9 @@ public class TemplateBigSmallLd extends Template
                 if (event.getButtonState() != BUTTON_PRIMARY) {
                     navigationLeft.setVisibility(View.INVISIBLE);
                     navigationRight.setVisibility(View.INVISIBLE);
+/*add by dragontec for bug 4057 start*/
+                    v.clearFocus();
+/*add by dragontec for bug 4057 end*/
                 }
                 break;
         }
