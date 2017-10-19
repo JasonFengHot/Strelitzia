@@ -435,6 +435,17 @@ public final class IsmartvActivator {
         }
     }
 
+    protected String getInternalCarnationDomain() {
+        String carnationDomain = mSharedPreferences.getString("carnation_domain", "");
+        if (TextUtils.isEmpty(carnationDomain) || carnationDomain.equals("1.1.1.6")) {
+            ResultEntity resultEntity = execute();
+            saveAccountInfo(resultEntity);
+            return resultEntity.getLog_Domain();
+        } else {
+            return carnationDomain;
+        }
+    }
+
     public String getAuthToken() {
         return SPUtils.getInstance().getString("auth_token", "");
     }
@@ -498,6 +509,7 @@ public final class IsmartvActivator {
         spUtils.put("log_domain", resultEntity.getLog_Domain());
         spUtils.put("ad_domain", resultEntity.getAd_domain());
         spUtils.put("upgrade_domain", resultEntity.getUpgrade_domain());
+        spUtils.put("carnation_domain", resultEntity.getCarnation());
         spUtils.put("zdevice_token", resultEntity.getZdevice_token());
         spUtils.put("smart_post_next_request_time", resultEntity.getSmart_post_next_request_time());
         C.SMART_POST_NEXT_REQUEST_TIME = resultEntity.getSmart_post_next_request_time();

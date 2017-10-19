@@ -252,6 +252,9 @@ public class IsmartvHttpParamsInterceptor implements Interceptor {
             case "1.1.1.4":
                 domain = appendProtocol(IsmartvActivator.getInstance().getInternalLogDomain());
                 break;
+            case "1.1.1.6":
+                domain = appendProtocol(IsmartvActivator.getInstance().getInternalCarnationDomain());
+                break;
             default:
                 return;
         }

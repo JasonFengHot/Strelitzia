@@ -71,34 +71,7 @@ import tv.ismar.app.models.Sport;
 import tv.ismar.app.models.SubjectEntity;
 import tv.ismar.app.models.VodFacetEntity;
 import tv.ismar.app.models.VodSearchRequestEntity;
-import tv.ismar.app.network.entity.AccountBalanceEntity;
-import tv.ismar.app.network.entity.AccountPlayAuthEntity;
-import tv.ismar.app.network.entity.AccountsLoginEntity;
-import tv.ismar.app.network.entity.AccountsOrdersEntity;
-import tv.ismar.app.network.entity.ActiveEntity;
-import tv.ismar.app.network.entity.AgreementEntity;
-import tv.ismar.app.network.entity.BannerIconMarkEntity;
-import tv.ismar.app.network.entity.BindedCdnEntity;
-import tv.ismar.app.network.entity.ChatMsgEntity;
-import tv.ismar.app.network.entity.DpiEntity;
-import tv.ismar.app.network.entity.Empty;
-import tv.ismar.app.network.entity.ExplainEntity;
-import tv.ismar.app.network.entity.GoodsRenewStatusEntity;
-import tv.ismar.app.network.entity.IpLookUpEntity;
-import tv.ismar.app.network.entity.ItemEntity;
-import tv.ismar.app.network.entity.OpenRenewEntity;
-import tv.ismar.app.network.entity.PayLayerEntity;
-import tv.ismar.app.network.entity.PayLayerPackageEntity;
-import tv.ismar.app.network.entity.PayLayerVipEntity;
-import tv.ismar.app.network.entity.PayVerifyEntity;
-import tv.ismar.app.network.entity.PayWhStatusEntity;
-import tv.ismar.app.network.entity.ProblemEntity;
-import tv.ismar.app.network.entity.SubjectPayLayerEntity;
-import tv.ismar.app.network.entity.TeleEntity;
-import tv.ismar.app.network.entity.UpgradeRequestEntity;
-import tv.ismar.app.network.entity.VersionInfoV2Entity;
-import tv.ismar.app.network.entity.WeatherEntity;
-import tv.ismar.app.network.entity.YouHuiDingGouEntity;
+import tv.ismar.app.network.entity.*;
 import tv.ismar.library.exception.ExceptionUtils;
 import tv.ismar.library.network.UserAgentInterceptor;
 
@@ -299,6 +272,12 @@ public interface SkyService {
             @Field("item") String item,
             @Field("package") String pkg,
             @Field("subitem") String subItem
+    );
+
+    @FormUrlEncoded
+    @POST("api/check/")
+    Observable<QiyiCheckEntity> apiQiyiCheck(
+            @Field("verify_code") String qiyiCode
     );
 
     @FormUrlEncoded
@@ -771,6 +750,7 @@ public interface SkyService {
         private static final String IRIS_TVXIO_HOST = "http://iris.tvxio.com/";
         private static final String SPEED_CALLA_TVXIO_HOST = "http://speed.calla.tvxio.com/";
         private static final String LILY_TVXIO_HOST = "http://lily.tvxio.com/";
+        private final SkyService mCarnationService;
         private SkyService mSkyService;
         private SkyService adSkyService;
         private SkyService upgradeService;
@@ -787,7 +767,7 @@ public interface SkyService {
 
         public static boolean executeActive = true;
 
-        private static String[] domain = new String[]{"1.1.1.1", "1.1.1.2", "1.1.1.3", "1.1.1.4", "1.1.1.5"};
+        private static String[] domain = new String[]{"1.1.1.1", "1.1.1.2", "1.1.1.3", "1.1.1.4", "1.1.1.5", "1.1.1.6"};
 
         TrustManager[] trustAllCerts = new TrustManager[]{new X509TrustManager() {
 
@@ -950,6 +930,14 @@ public interface SkyService {
 //                    .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
 //                    .client(mLogClient)
 //                    .build();
+
+            Retrofit carnationRetrofit = new Retrofit.Builder()
+                    .baseUrl(appendProtocol(domain[5]))
+                    .addConverterFactory(GsonConverterFactory.create(gson))
+                    .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                    .client(mClient)
+                    .build();
+            mCarnationService = carnationRetrofit.create(SkyService.class);
         }
 
 
@@ -1027,6 +1015,10 @@ public interface SkyService {
 
         public static SkyService getCacheSkyService2() {
             return getInstance().mCacheSkyService2;
+        }
+
+        public static SkyService getCarnationService() {
+            return getInstance().mCarnationService;
         }
     }
 

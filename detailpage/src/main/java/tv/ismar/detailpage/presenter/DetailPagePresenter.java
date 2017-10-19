@@ -3,6 +3,7 @@ package tv.ismar.detailpage.presenter;
 import android.content.Intent;
 import android.text.TextUtils;
 
+import cn.ismartv.truetime.TrueTime;
 import com.google.gson.GsonBuilder;
 
 import java.io.IOException;
@@ -407,7 +408,7 @@ public class DetailPagePresenter implements DetailPageContract.Presenter {
         } else {
             DateFormat format=new SimpleDateFormat("MM-dd");
             format.setTimeZone(TimeZone.getTimeZone("Asia/Shanghai"));
-            long time=TrueTime.now().getTime();
+            long time= TrueTime.now().getTime();
             Calendar calendar = Calendar.getInstance();
             calendar.setTimeInMillis(time);
             Favorite favorite = new Favorite();
