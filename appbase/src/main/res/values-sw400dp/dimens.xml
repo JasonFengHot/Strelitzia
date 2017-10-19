@@ -691,7 +691,9 @@
 
 <!--电视剧尺�?-->
 <dimen name="tv_player_recycleview_margin_left">22.22dp</dimen>
+<dimen name="tv_player_recycleview_margin_right">37.04dp</dimen>
 <dimen name="tv_play_recycleview_item_padding">14.81dp</dimen>
+<dimen name="tv_play_recycleview_item_h">3.70dp</dimen>
 <dimen name="tv_play_item_margin_top">4.07dp</dimen>
 <dimen name="tv_play_poster_height">80.00dp</dimen>
 <dimen name="tv_play_poster_width">142.22dp</dimen>

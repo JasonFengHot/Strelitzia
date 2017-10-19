@@ -95,8 +95,8 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
             for (Template template : mTemplates) {
                 template.onPause();
             }
+            mTemplates.clear();
         }
-        mTemplates.clear();
         super.onPause();
     }
 

@@ -7,7 +7,7 @@
     android:orientation="horizontal">
     <View
         android:layout_width="@dimen/tv_play_recycleview_item_padding"
-        android:layout_height="10dp"
+        android:layout_height="@dimen/tv_play_recycleview_item_h"
         android:background="#00000000"/>
     <tv.ismar.homepage.banner.IsmartvLinearLayout
         android:id="@+id/recommend_ismartv_linear_layout"
