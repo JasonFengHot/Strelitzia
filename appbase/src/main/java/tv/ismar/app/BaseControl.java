@@ -89,7 +89,7 @@ public class BaseControl {
      * @param title
      */
     public void go2Detail(int pk, String modelName, String contentModel, String url, String title,String appId,String nameId,String backgroundUrl) {
-        if(StringUtils.isEmpty(modelName) || StringUtils.isEmpty(contentModel)
+        if(modelName==null || contentModel==null
                 /*|| StringUtils.isEmpty(url)*/) return;
         Intent intent = new Intent();
         if (modelName.contains("item")) {
@@ -129,7 +129,7 @@ public class BaseControl {
                     appIntent.setAction("android.intent.action.mainAty");
                     appIntent.putExtra("type", 3);
                 } else if (modelName.equals("ismartvdetailapp")) {
-                    appIntent.setAction("com.boxmate.tv .detail");
+                    appIntent.setAction("com.boxmate.tv.detail");
                             appIntent.putExtra("app_id", appId);
                 }
                 mContext.startActivity(appIntent);
