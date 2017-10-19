@@ -20,4 +20,7 @@ public class BannerPoster {
     public String model_name;//表格名称
     public String top_left_corner;//左上角角标
     public String top_right_corner;
+    public String nameId;
+    public String app_id;
+    public String backgroundUrl;
 }

@@ -67,17 +67,17 @@ public class BaseControl {
      */
     public void go2Detail(BigImage entity){
         if(entity == null) return;
-        go2Detail(entity.pk, entity.model_name, entity.content_model, entity.content_url, entity.title);
+        go2Detail(entity.pk, entity.model_name, entity.content_model, entity.content_url, entity.title,"","","");
     }
 
     public void go2Detail(BannerPoster entity){
         if(entity == null) return;
-        go2Detail(entity.pk, entity.model_name, entity.content_model, entity.content_url, entity.title);
+        go2Detail(entity.pk, entity.model_name, entity.content_model, entity.content_url, entity.title,entity.app_id,entity.nameId,entity.backgroundUrl);
     }
 
     public void go2Detail(BannerCarousels entity){
         if(entity == null) return;
-        go2Detail(entity.pk, entity.model_name, entity.content_model, entity.url, entity.title);
+        go2Detail(entity.pk, entity.model_name, entity.content_model, entity.url, entity.title,"","","");
     }
 
     /**
@@ -88,7 +88,7 @@ public class BaseControl {
      * @param url
      * @param title
      */
-    public void go2Detail(int pk, String modelName, String contentModel, String url, String title) {
+    public void go2Detail(int pk, String modelName, String contentModel, String url, String title,String appId,String nameId,String backgroundUrl) {
         if(StringUtils.isEmpty(modelName) || StringUtils.isEmpty(contentModel)
                 /*|| StringUtils.isEmpty(url)*/) return;
         Intent intent = new Intent();
@@ -123,14 +123,14 @@ public class BaseControl {
                 if (modelName.equals("ismartvgatherapp")) {
                     appIntent.setAction("com.boxmate.tv.subjectdetail");
                             appIntent.putExtra("title", title);
-                    appIntent.putExtra("nameId", pk);
-                    appIntent.putExtra("backgroundUrl", "");
+                    appIntent.putExtra("nameId", nameId);
+                    appIntent.putExtra("backgroundUrl", backgroundUrl);
                 } else if (modelName.equals("ismartvhomepageapp")) {
                     appIntent.setAction("android.intent.action.mainAty");
                     appIntent.putExtra("type", 3);
                 } else if (modelName.equals("ismartvdetailapp")) {
                     appIntent.setAction("com.boxmate.tv .detail");
-                            appIntent.putExtra("app_id", pk);
+                            appIntent.putExtra("app_id", appId);
                 }
                 mContext.startActivity(appIntent);
             }catch (Exception e){
