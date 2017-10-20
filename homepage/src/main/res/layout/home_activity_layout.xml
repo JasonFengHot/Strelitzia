@@ -1,58 +1,112 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/home_view_layout"
                 android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
-
-    <include layout="@layout/home_head_layout"/>
     <RelativeLayout
+        android:id="@+id/advertisement"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/channel_tab_height_"
-        android:clipChildren="false"
-        android:clipToPadding="false"
+        android:layout_height="match_parent"
+        android:visibility="visible"
         >
-        <tv.ismar.homepage.widget.HorizontalTabView
-            android:id="@+id/channel_tab"
+        <tv.ismar.homepage.widget.DaisyVideoView
+            android:id="@+id/home_ad_video"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            android:visibility="gone" />
+
+        <ImageView
+            android:id="@+id/home_ad_pic"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:visibility="gone" />
+        <Button
+            android:id="@+id/home_ad_timer"
+            android:layout_width="@dimen/ad_timer_wh"
+            android:layout_height="@dimen/ad_timer_wh"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginRight="@dimen/ad_timer_mr"
+            android:layout_marginTop="@dimen/ad_timer_mt"
+            android:background="@drawable/count_down_back"
+            android:enabled="false"
+            android:gravity="center"
+            android:textAllCaps="false"
+            android:textColor="@color/_ffffff"
+            android:textSize="@dimen/text_size_48sp"
+            android:visibility="gone"/>
+        <SeekBar
+            android:id="@+id/home_ad_seekbar"
+            android:layout_width="@dimen/launcher_ad_1031"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/launcher_ad_445"
+            android:layout_marginTop="@dimen/launcher_ad_549"
+            android:maxHeight="1dp"
+            android:paddingLeft="0dp"
+            android:paddingRight="0dp"
+            android:visibility="gone"
+            android:progressDrawable="@drawable/launcher_ad_seekbar_style"
+            android:splitTrack="false"
+            android:thumb="@drawable/launcher_thumb" />
+    </RelativeLayout>
+    <LinearLayout
+        android:id="@+id/home_page"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        >
+        <include layout="@layout/home_head_layout"/>
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="@dimen/channel_tab_height_"
-            android:layout_gravity="top"
-            android:layout_marginLeft="@dimen/channel_tab_ml"
-            app:tvTabFocusTextColor="#ff9c3c"
-            app:tvTabHeight="@dimen/channel_tab_tvTab_h"
-            app:tvTabSelectedDrawable="@drawable/channel_indicator_focus"
-            app:tvTabSpace="@dimen/channel_tab_space"
-            app:tvTabStartEndPadding="@dimen/channel_tab_tvTab_space"
-            app:tvTabTextColor="#999999"
-            app:tvTabTextSize="@dimen/text_size_36sp"
-            android:clipToPadding="false"
             android:clipChildren="false"
+            android:clipToPadding="false"
+            >
+            <tv.ismar.homepage.widget.HorizontalTabView
+                android:id="@+id/channel_tab"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/channel_tab_height_"
+                android:layout_gravity="top"
+                android:layout_marginLeft="@dimen/channel_tab_ml"
+                app:tvTabFocusTextColor="#ff9c3c"
+                app:tvTabHeight="@dimen/channel_tab_tvTab_h"
+                app:tvTabSelectedDrawable="@drawable/channel_indicator_focus"
+                app:tvTabSpace="@dimen/channel_tab_space"
+                app:tvTabStartEndPadding="@dimen/channel_tab_tvTab_space"
+                app:tvTabTextColor="#999999"
+                app:tvTabTextSize="@dimen/text_size_36sp"
+                android:clipToPadding="false"
+                android:clipChildren="false"
+                android:focusable="false"
+                />
+            <ImageView
+                android:id="@+id/guide_tab_left"
+                android:layout_width="@dimen/banner_navigation_width"
+                android:layout_height="@dimen/item_detail_detailquality_width"
+                android:background="@drawable/guide_left_arrow"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="@dimen/location_divider_margin_left"
+                />
+            <ImageView
+                android:id="@+id/guide_tab_right"
+                android:layout_width="@dimen/banner_navigation_width"
+                android:layout_height="@dimen/item_detail_detailquality_width"
+                android:background="@drawable/guide_right_arrow"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentRight="true"
+                android:layout_marginBottom="@dimen/location_divider_margin_left"
+                />
+        </RelativeLayout>
+        <FrameLayout
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            android:id="@+id/fragment_layout"
             android:focusable="false"
-            />
-        <ImageView
-            android:id="@+id/guide_tab_left"
-            android:layout_width="@dimen/banner_navigation_width"
-            android:layout_height="@dimen/item_detail_detailquality_width"
-            android:background="@drawable/guide_left_arrow"
-            android:layout_alignParentBottom="true"
-            android:layout_marginBottom="@dimen/location_divider_margin_left"
-            />
-        <ImageView
-            android:id="@+id/guide_tab_right"
-            android:layout_width="@dimen/banner_navigation_width"
-            android:layout_height="@dimen/item_detail_detailquality_width"
-            android:background="@drawable/guide_right_arrow"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentRight="true"
-            android:layout_marginBottom="@dimen/location_divider_margin_left"
-            />
-    </RelativeLayout>
-    <FrameLayout
-        android:clipChildren="false"
-        android:clipToPadding="false"
-        android:id="@+id/fragment_layout"
-        android:focusable="false"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
-</LinearLayout>
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+    </LinearLayout>
+</RelativeLayout>
