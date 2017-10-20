@@ -253,9 +253,10 @@ public class RecycleLinearLayout extends LinearLayout {
                     Log.i(TAG, "scrollToVisiable");
 //                    mScrollView.setBottom(mScrollHeight+mScreenHeight);
 					/*modify by dragontec for bug 4149 start*/
+					//最后一个banner不是更多按钮的时候banner不需要抖动
 					if (key != R.layout.banner_more) {
 						scrollToVisiable(view);
-						YoYo.with(Techniques.VerticalShake).duration(1000).playOn(view);
+//						YoYo.with(Techniques.VerticalShake).duration(1000).playOn(view);
 					}
 					/*modify by dragontec for bug 4149 end*/
                 } else {
