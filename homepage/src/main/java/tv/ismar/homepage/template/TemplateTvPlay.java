@@ -56,7 +56,7 @@ public class TemplateTvPlay extends Template
     private BannerLinearLayout mBannerLinearLayout;
     private View navigationLeft;
     private View navigationRight;
-    private int mBannerPk;
+    private String mBannerPk;
     private String mName; // 频道名称（中文）
     private String mChannel; // 频道名称（英文）
 
@@ -124,7 +124,7 @@ public class TemplateTvPlay extends Template
     @Override
     public void initData(Bundle bundle) {
         mTitleTv.setText(bundle.getString("title"));
-        mBannerPk = bundle.getInt("banner");
+        mBannerPk = bundle.getString("banner");
         mName = bundle.getString(NAME_KEY);
         mChannel = bundle.getString(CHANNEL_KEY);
         mFetchDataControl.fetchBanners(mBannerPk, 1, false);

@@ -104,7 +104,7 @@ public class TemplateGuide extends Template
 
     private View mVideoViewLayout;
     private View mHeadView; // recylview头view
-    private int mBannerPk; // banner标记
+    private String mBannerPk; // banner标记
     private String mName; // 频道名称（中文）
     private String mChannel; // 频道名称（英文）
     private MediaPlayer.OnCompletionListener mOnCompletionListener;
@@ -218,7 +218,7 @@ public class TemplateGuide extends Template
 
     @Override
     public void initData(Bundle bundle) {
-        mBannerPk = bundle.getInt(BANNER_KEY);
+        mBannerPk = bundle.getString(BANNER_KEY);
         mName = bundle.getString(NAME_KEY);
         mChannel = bundle.getString(CHANNEL_KEY);
         mFetchDataControl.fetchBanners(mBannerPk, 1, false);

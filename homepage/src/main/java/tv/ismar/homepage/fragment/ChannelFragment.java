@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -94,14 +95,6 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
 		/*add by dragontec for bug 4077 end*/
         return view;
     }
-	/*add by dragontec for bug 3983,4077 start*/
-    @Override
-    public void onDestroyView() {
-        mLinearContainer.setOnPositionChangedListener(null);
-		mLinearContainer.setOnDataFinishedListener(null);
-        super.onDestroyView();
-    }
-	/*add by dragontec for bug 3983,4077 end*/
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
@@ -150,6 +143,8 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
 
     @Override
     public void onDestroyView() {
+		mLinearContainer.setOnPositionChangedListener(null);
+		mLinearContainer.setOnDataFinishedListener(null);
         if (mLinearContainer != null){
             for (int i = 0; i < mLinearContainer.getChildCount(); i++){
                 mLinearContainer.removeViewAt(i);
