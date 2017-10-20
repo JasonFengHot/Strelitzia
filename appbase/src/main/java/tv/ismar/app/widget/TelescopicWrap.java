@@ -68,13 +68,14 @@ public class TelescopicWrap {
             mTv.setWidth(0);
             ValueAnimator animator = createDropAnimator(mLayout, 0,
                     mTextWidth, true);
+            animator.setDuration(200);
             animator.start();
         }
     }
 
     private void animateClose() {
         if(mLayout != null){
-            ValueAnimator animator = createDropAnimator(mLayout, mTextWidth, mTextWidth/2, false);
+            ValueAnimator animator = createDropAnimator(mLayout, mTextWidth, mTextWidth/3, false);
             animator.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
@@ -82,6 +83,7 @@ public class TelescopicWrap {
                     mTv.setVisibility(View.GONE);
                 }
             });
+            animator.setDuration(200);
             animator.start();
         }
     }
