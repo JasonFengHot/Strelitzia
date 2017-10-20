@@ -500,6 +500,7 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
                         }
                         //数据大小修正之后填充海报区内容
                         processResultData(mAllSectionItemList,index,removeCount,isFirstPos);
+                        mFocusGridLayoutManager.setmItemCount(mAllSectionItemList.getCount());
                     }
                 });
 
