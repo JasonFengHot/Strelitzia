@@ -217,7 +217,7 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
 			for (int position = 0; position < size; position++) {
 				addBannerView(position, data[position]);
 			}
-			if (lastLoadedPostion == data.length - 1) {//首页频道最后不添加更多banner
+			if (lastLoadedPostion == data.length - 1&&!mChannel.equals("homepage")) {//首页频道最后不添加更多banner
 				addMoreView(data.length);
 			}
 		}
@@ -235,7 +235,7 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
 					addBannerView(position, data[position]);
 				}
 				Log.d(TAG, "lastLoadedPostion = " + lastLoadedPostion + ", data.length = " + data.length);
-				if (lastLoadedPostion == data.length - 1) {
+				if (lastLoadedPostion == data.length - 1&&!mChannel.equals("homepage")) {
 					addMoreView(data.length);
 				}
 			}
