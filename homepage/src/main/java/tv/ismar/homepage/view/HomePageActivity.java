@@ -866,7 +866,7 @@ public class HomePageActivity extends BaseActivity implements LinearLayoutManage
 //            mFocusHandler.sendEmptyMessageDelayed(mSavePos, 10);
         }
 
-        bannerSubscribeSub = SkyService.ServiceManager.getLocalTestService().apiTvBanner(1, pageNumber)
+        bannerSubscribeSub = SkyService.ServiceManager.getLocalTestService().apiTvBanner("1", pageNumber)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<BannerEntity>() {
@@ -896,7 +896,7 @@ public class HomePageActivity extends BaseActivity implements LinearLayoutManage
 
 
     private void fetchMovieBanner() {
-        bannerSubscribeSub = SkyService.ServiceManager.getLocalTestService().apiTvBanner(1, 1)
+        bannerSubscribeSub = SkyService.ServiceManager.getLocalTestService().apiTvBanner("1", 1)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<BannerEntity>() {
@@ -919,7 +919,7 @@ public class HomePageActivity extends BaseActivity implements LinearLayoutManage
     }
 
     private void fetchHorizontal519Banner() {
-        bannerSubscribeSub = SkyService.ServiceManager.getLocalTestService().apiTvBanner(1, 1)
+        bannerSubscribeSub = SkyService.ServiceManager.getLocalTestService().apiTvBanner("1", 1)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<BannerEntity>() {
@@ -941,7 +941,7 @@ public class HomePageActivity extends BaseActivity implements LinearLayoutManage
     }
 
     private void fetchMovieMixBanner() {
-        bannerSubscribeSub = SkyService.ServiceManager.getLocalTestService().apiTvBanner(1, 1)
+        bannerSubscribeSub = SkyService.ServiceManager.getLocalTestService().apiTvBanner("1", 1)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<BannerEntity>() {
