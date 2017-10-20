@@ -215,6 +215,9 @@ public class FetchDataControl extends BaseControl{
                                         mCarousels.clear();
                                     }
                                     mCarousels.addAll(homeEntities.carousels);
+                                    if (!mCarousels.isEmpty() && mCarousels.size() > 5){
+                                        mCarousels = mCarousels.subList(0, 5);
+                                    }
                                 }
                                 if(homeEntities.posters != null){
                                     if(!loadMore){
