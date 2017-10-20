@@ -183,10 +183,7 @@ public class TemplateCenter extends Template
                 if (event.getButtonState() != BUTTON_PRIMARY) {
                     navigationLeft.setVisibility(View.INVISIBLE);
                     navigationRight.setVisibility(View.INVISIBLE);
-/*modify by dragontec for bug 4057 start*/
-//                    HomeActivity.mHoverView.requestFocus(); // 将焦点放置到一块隐藏view中
                     v.clearFocus();
-/*modify by dragontec for bug 4057 end*/
                 }
                 break;
         }
