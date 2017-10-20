@@ -29,6 +29,8 @@ import tv.ismar.homepage.R;
 
 public class RecycleLinearLayout extends LinearLayout {
 
+	public static final int BANNER_LOAD_AIMING_OFF = 3;
+
     private static final String TAG = RecycleLinearLayout.class.getSimpleName();
 
     private Context mContext;
@@ -213,15 +215,23 @@ public class RecycleLinearLayout extends LinearLayout {
 				/*modify by dragontec for bug 4149 start*/
 				int key = (int) view.getTag();
 				int tag = (int) view.getTag(key);
+				/*modify by dragontec for bug 4077 start*/
+				boolean canScroll = tag>>30==1;//1可滑动，0不可滑动
+				int position = (tag<<2)>>2;
                 if(view==mLastView && !longPress) {
 					if (key == R.layout.banner_more) {
 						YoYo.with(Techniques.VerticalShake).duration(1000).playOn(view);
 					}
+
+					if (position >= getChildCount() - BANNER_LOAD_AIMING_OFF && keyCode == KeyEvent.KEYCODE_DPAD_DOWN) {
+						if (mOnDataFinishedListener != null) {
+							mOnDataFinishedListener.onDataFinished(view);
+						}
+					}
 					return super.dispatchKeyEvent(event);//banner抖动问题
 				}
 				/*modify by dragontec for bug 4149 end*/
-                boolean canScroll = tag>>30==1;//1可滑动，0不可滑动
-                int position = (tag<<2)>>2;
+				/*modify by dragontec for bug 4077 end*/
 //                mHolder.onCreateView(position, keyCode);
                 Log.i(TAG, "key:"+key+" canScroll:"+canScroll+" position:"+position);
 				/*add by dragontec for bug 3983 start*/
@@ -242,7 +252,7 @@ public class RecycleLinearLayout extends LinearLayout {
                     return super.dispatchKeyEvent(event);
                 }
 	/*add by dragontec for bug 4077 start*/
-				if (position > getChildCount() -2 && keyCode == KeyEvent.KEYCODE_DPAD_DOWN) {
+				if (position >= getChildCount() - BANNER_LOAD_AIMING_OFF && keyCode == KeyEvent.KEYCODE_DPAD_DOWN) {
 					if (mOnDataFinishedListener != null) {
 						mOnDataFinishedListener.onDataFinished(view);
 					}

@@ -390,15 +390,11 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
 			last = lastLoadedPostion;
 		}
 		Log.d(TAG, "last = " + last);
-		if (position > last - 2) {
-			if (position + 2 == last + 1) {
-				appendBanner(last + 1);
-			} else {
-				int number = position + 2 - last;
+		if (position > last - RecycleLinearLayout.BANNER_LOAD_AIMING_OFF) {
+				int number = position + RecycleLinearLayout.BANNER_LOAD_AIMING_OFF - last;
 				for (int i = 0; i < number; i++) {
 					appendBanner(last + i + 1);
 				}
-			}
 		}
 	}
 	/*add by dragontec for bug 4077 end*/
