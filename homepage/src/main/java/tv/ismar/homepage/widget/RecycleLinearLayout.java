@@ -132,7 +132,11 @@ public class RecycleLinearLayout extends LinearLayout {
             view.getLocationOnScreen(location);
             Log.i(TAG, "top:"+location[1]);
             Log.i(TAG, "margin:"+mContext.getResources().getDimensionPixelOffset(R.dimen.banner_margin_top));
-            smoothScrollBy(0, location[1]-mContext.getResources().getDimensionPixelOffset(R.dimen.banner_margin_top));
+			/*modify by dragontec for bug 4149 start*/
+			if (location[1] != 0) {
+				smoothScrollBy(0, location[1] - mContext.getResources().getDimensionPixelOffset(R.dimen.banner_margin_top));
+			}
+			/*modify by dragontec for bug 4149 end*/
         }
     }
 
@@ -202,9 +206,16 @@ public class RecycleLinearLayout extends LinearLayout {
                 View view = getFocusedChild();
                 View view1 = findFocus();
                 Log.i(TAG, "debug1"+" view:"+view+" view1:"+view1);
-                if(view==mLastView && !longPress) return super.dispatchKeyEvent(event);//banner抖动问题
-                int key = (int) view.getTag();
-                int tag = (int) view.getTag(key);
+				/*modify by dragontec for bug 4149 start*/
+				int key = (int) view.getTag();
+				int tag = (int) view.getTag(key);
+                if(view==mLastView && !longPress) {
+					if (key == R.layout.banner_more) {
+						YoYo.with(Techniques.VerticalShake).duration(1000).playOn(view);
+					}
+					return super.dispatchKeyEvent(event);//banner抖动问题
+				}
+				/*modify by dragontec for bug 4149 end*/
                 boolean canScroll = tag>>30==1;//1可滑动，0不可滑动
                 int position = (tag<<2)>>2;
 //                mHolder.onCreateView(position, keyCode);
@@ -237,8 +248,12 @@ public class RecycleLinearLayout extends LinearLayout {
                 if(position==getChildCount()-1){
                     Log.i(TAG, "scrollToVisiable");
 //                    mScrollView.setBottom(mScrollHeight+mScreenHeight);
-                    scrollToVisiable(view);
-                    YoYo.with(Techniques.VerticalShake).duration(1000).playOn(view);
+					/*modify by dragontec for bug 4149 start*/
+					if (key != R.layout.banner_more) {
+						scrollToVisiable(view);
+						YoYo.with(Techniques.VerticalShake).duration(1000).playOn(view);
+					}
+					/*modify by dragontec for bug 4149 end*/
                 } else {
                     Log.i(TAG, "scrollToTop");
 //                    mScrollView.setBottom(mScreenHeight);

@@ -274,8 +274,6 @@ public class HomeActivity extends BaseActivity
 //        mHoverView.setOnHoverListener(this);
 /*delete by dragontec for bug 4057 end*/
         mViewGroup = (ViewGroup) findViewById(R.id.home_view_layout);
-	    /*add by dragontec for bug 3983 start*/
-	    /*add by dragontec for bug 3983 end*/
         mChannelTab = (HorizontalTabView) findViewById(R.id.channel_tab);
         mTimeTv = (TextView) findViewById(R.id.guide_title_time_tv);
         mCollectionTv = (TextView) findViewById(R.id.collection_tv);

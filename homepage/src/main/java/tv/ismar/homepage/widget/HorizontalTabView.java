@@ -282,11 +282,14 @@ public class HorizontalTabView extends HorizontalScrollView
                 //空鼠标获取焦点
                 changeViewStatus(textView, ViewStatus.Hovered);
             }else {
-                if(tag&&linearContainer.indexOfChild(v)!=mSelectedIndex){
-                    changeViewStatus((TextView) linearContainer.getChildAt(mSelectedIndex), ViewStatus.Focused);
-                }else {
-                    changeViewStatus(textView, ViewStatus.Focused);
-                }
+/*modify by dragontec for bug 4048 start*/
+//                if(tag&&linearContainer.indexOfChild(v)!=mSelectedIndex){
+//                    changeViewStatus((TextView) linearContainer.getChildAt(mSelectedIndex), ViewStatus.Focused);
+//                }else {
+//                    changeViewStatus(textView, ViewStatus.Focused);
+//                }
+                changeViewStatus(textView, ViewStatus.Focused);
+/*modify by dragontec for bug 4048 end*/
             }
         } else {
             changeViewStatus(textView, ViewStatus.UnFocused);
