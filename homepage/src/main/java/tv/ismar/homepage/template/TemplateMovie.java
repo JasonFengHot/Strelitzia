@@ -41,7 +41,7 @@ public class TemplateMovie extends Template implements View.OnClickListener, Vie
 
     private RecyclerViewTV movieBanner;
     private BannerMovieAdapter mMovieAdapter;
-    private int mBannerName;
+    private String mBannerName;
     private TextView mTitleTv;
     private String mBannerTitle;
 
@@ -166,7 +166,7 @@ public class TemplateMovie extends Template implements View.OnClickListener, Vie
 
     @Override
     public void initData(Bundle bundle) {
-        mBannerName = bundle.getInt("banner");
+        mBannerName = bundle.getString("banner");
         mBannerTitle = bundle.getString("title");
         channelKey = bundle.getString(ChannelFragment.CHANNEL_KEY);
         nameKey = bundle.getString(ChannelFragment.NAME_KEY);
@@ -175,7 +175,7 @@ public class TemplateMovie extends Template implements View.OnClickListener, Vie
         fetchMovieBanner(mBannerName, 1);
     }
 
-    private void fetchMovieBanner(int bannerName, final int pageNumber) {
+    private void fetchMovieBanner(String bannerName, final int pageNumber) {
         if (pageNumber != 1) {
             int startIndex = (pageNumber - 1) * 33;
             int endIndex;

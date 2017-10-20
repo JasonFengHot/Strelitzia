@@ -46,7 +46,7 @@ public class TemplateOrder extends Template
 
     private RecyclerViewTV subscribeBanner;
     private BannerSubscribeAdapter subscribeAdapter;
-    private int mBannerName;
+    private String mBannerName;
 
     private boolean isViewInit = false;
     private TextView mTitleTv;
@@ -284,7 +284,7 @@ public class TemplateOrder extends Template
 
     @Override
     public void initData(Bundle bundle) {
-        mBannerName = bundle.getInt("banner");
+        mBannerName = bundle.getString("banner");
         mBannerTitle = bundle.getString("title");
         channelName = bundle.getString(ChannelFragment.CHANNEL_KEY);
         mTitleTv.setText(mBannerTitle);
@@ -302,7 +302,7 @@ public class TemplateOrder extends Template
         }
     }
 
-    private void fetchSubscribeBanner(int bannerName, final int pageNumber) {
+    private void fetchSubscribeBanner(String bannerName, final int pageNumber) {
         if (pageNumber != 1) {
             int startIndex = (pageNumber - 1) * 33;
             int endIndex;

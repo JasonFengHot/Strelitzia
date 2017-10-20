@@ -40,7 +40,7 @@ public class TemplateCenter extends Template
     private BannerLinearLayout mBannerLinearLayout;
     private View navigationLeft;
     private View navigationRight;
-    private int mBannerPk;
+    private String mBannerPk;
 
     public TemplateCenter(Context context) {
         super(context);
@@ -86,7 +86,7 @@ public class TemplateCenter extends Template
 
     @Override
     public void initData(Bundle bundle) {
-        mBannerPk = bundle.getInt("banner");
+        mBannerPk = bundle.getString("banner");
         mFetchDataControl.fetchBanners(mBannerPk, 1, false);
     }
 
