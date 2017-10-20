@@ -92,17 +92,16 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
     @Override
     public void onPause() {
         Log.d(TAG, "onPause");
-        if (mControl != null) {
-            mControl.stop();
-        }
-
         if (mTemplates != null) {
             for (Template template : mTemplates) {
                 template.onPause();
             }
-            mTemplates.clear();
         }
-        super.onPause();
+
+        if (mControl != null) {
+            mControl.stop();
+        }
+       super.onPause();
     }
 
     @Override
@@ -117,6 +116,16 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
     }
 
     @Override
+    public void onDestroyView() {
+        if (mLinearContainer != null){
+            for (int i = 0; i < mLinearContainer.getChildCount(); i++){
+                mLinearContainer.removeViewAt(i);
+            }
+        }
+        super.onDestroyView();
+    }
+
+    @Override
     public void onDestroy() {
         Log.d(TAG, "onDestroy");
         if (mTemplates != null) {
@@ -127,6 +136,8 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
         if (mTemplates != null){
             mTemplates.clear();
         }
+
+        mControl = null;
         super.onDestroy();
         RefWatcher refWatcher = VodApplication.getRefWatcher(getActivity());
         refWatcher.watch(this);

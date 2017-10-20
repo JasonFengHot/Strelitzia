@@ -71,6 +71,7 @@ public class Template519 extends Template implements View.OnClickListener, View.
 
     @Override
     public void onPause() {
+        Log.d(TAG, "onPause()");
         if (fetchHorizontal519Banner != null && !fetchHorizontal519Banner.isUnsubscribed()) {
             fetchHorizontal519Banner.unsubscribe();
         }
@@ -78,12 +79,14 @@ public class Template519 extends Template implements View.OnClickListener, View.
 
     @Override
     public void onStop() {
+        Log.d(TAG, "onStop()");
     }
 
     @Override
     public void onDestroy() {
-        RefWatcher refWatcher = VodApplication.getRefWatcher(mContext);
-        refWatcher.watch(this);
+        Log.d(TAG, "onDestroy()");
+//        RefWatcher refWatcher = VodApplication.getRefWatcher(mContext);
+//        refWatcher.watch(this);
     }
 
     @Override

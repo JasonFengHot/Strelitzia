@@ -135,7 +135,7 @@ public class FetchDataControl extends BaseControl{
      * @param banner 组合方式{banner}|{banner}|{banner}
      * @param page
      */
-    public synchronized void fetchMBanners(String banner, int page){
+    public  void fetchMBanners(String banner, int page){
         fetchMBanners = SkyService.ServiceManager.getService().getMBanners(banner, page)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -192,7 +192,7 @@ public class FetchDataControl extends BaseControl{
      * @param page
      * @param loadMore 是否增量加载
      */
-    public synchronized void fetchBanners(String banner, int page, final boolean loadMore){
+    public  void fetchBanners(String banner, int page, final boolean loadMore){
         fetchBanners = SkyService.ServiceManager.getService().getBanners(banner, page)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

@@ -137,9 +137,6 @@ public class TemplateGuide extends Template
     @Override
     public void onPause() {
         Log.d(TAG, "onPause");
-        if (playSubscription != null && !playSubscription.isUnsubscribed()) {
-            playSubscription.unsubscribe();
-        }
 
         if (mHandler != null) {
             mHandler.removeMessages(CAROUSEL_NEXT);
@@ -156,6 +153,10 @@ public class TemplateGuide extends Template
             mFetchDataControl.stop();
         }
 
+        if (playSubscription != null && !playSubscription.isUnsubscribed()) {
+            playSubscription.unsubscribe();
+        }
+
         if (checkVideoViewFullVisibilitySubsc != null
                 && !checkVideoViewFullVisibilitySubsc.isUnsubscribed()) {
             checkVideoViewFullVisibilitySubsc.unsubscribe();
@@ -164,10 +165,17 @@ public class TemplateGuide extends Template
 
     @Override
     public void onStop() {
+
     }
 
     @Override
     public void onDestroy() {
+        mHandler = null;
+        playSubscription = null;
+        checkVideoViewFullVisibilitySubsc = null;
+        mVideoView = null;
+        mControl = null;
+
     }
 
     @Override
@@ -436,7 +444,9 @@ public class TemplateGuide extends Template
 
         Logger.t(TAG).d("play carousel position: " + mCurrentCarouselIndex);
         String videoUrl = mFetchDataControl.mCarousels.get(mCurrentCarouselIndex).getVideo_url();
-
+        if (playSubscription != null && !playSubscription.isUnsubscribed()){
+            playSubscription.unsubscribe();
+        }
         playSubscription =
                 Observable.just(videoUrl)
                         .subscribeOn(Schedulers.io())
@@ -680,6 +690,9 @@ public class TemplateGuide extends Template
     }
 
     private void checkVideoViewFullVisibility() {
+        if (checkVideoViewFullVisibilitySubsc!= null && !checkVideoViewFullVisibilitySubsc.isUnsubscribed()){
+            checkVideoViewFullVisibilitySubsc.unsubscribe();
+        }
         checkVideoViewFullVisibilitySubsc =
                 Observable.interval(1, TimeUnit.SECONDS)
                         .takeUntil(
