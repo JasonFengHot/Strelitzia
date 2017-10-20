@@ -15,6 +15,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import com.blankj.utilcode.util.StringUtils;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
@@ -22,7 +23,15 @@ import com.open.androidtvwidget.leanback.recycle.LinearLayoutManagerTV;
 import com.open.androidtvwidget.leanback.recycle.RecyclerViewTV;
 import com.orhanobut.logger.Logger;
 import com.squareup.picasso.Callback;
+import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
+
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.concurrent.TimeUnit;
+
 import okhttp3.HttpUrl;
 import rx.Observable;
 import rx.Observer;
@@ -46,16 +55,15 @@ import tv.ismar.homepage.control.FetchDataControl;
 import tv.ismar.homepage.control.GuideControl;
 import tv.ismar.homepage.view.BannerLinearLayout;
 import tv.ismar.homepage.widget.DaisyVideoView;
+	/*add by dragontec for bug 4077 start*/
+import tv.ismar.homepage.widget.RecycleLinearLayout;
+	/*add by dragontec for bug 4077 end*/
 import tv.ismar.library.exception.ExceptionUtils;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.concurrent.TimeUnit;
-
 import static android.view.MotionEvent.BUTTON_PRIMARY;
-import static tv.ismar.homepage.fragment.ChannelFragment.*;
+import static tv.ismar.homepage.fragment.ChannelFragment.BANNER_KEY;
+import static tv.ismar.homepage.fragment.ChannelFragment.CHANNEL_KEY;
+import static tv.ismar.homepage.fragment.ChannelFragment.NAME_KEY;
 
 /**
  * @AUTHOR: xi @DATE: 2017/8/29 @DESC: 导视模版
@@ -96,7 +104,7 @@ public class TemplateGuide extends Template
 
     private View mVideoViewLayout;
     private View mHeadView; // recylview头view
-    private String mBannerPk; // banner标记
+    private int mBannerPk; // banner标记
     private String mName; // 频道名称（中文）
     private String mChannel; // 频道名称（英文）
     private MediaPlayer.OnCompletionListener mOnCompletionListener;
@@ -161,6 +169,9 @@ public class TemplateGuide extends Template
                 && !checkVideoViewFullVisibilitySubsc.isUnsubscribed()) {
             checkVideoViewFullVisibilitySubsc.unsubscribe();
         }
+	/*add by dragontec for bug 4077 start*/
+        super.onPause();
+	/*add by dragontec for bug 4077 end*/
     }
 
     @Override
@@ -207,7 +218,7 @@ public class TemplateGuide extends Template
 
     @Override
     public void initData(Bundle bundle) {
-        mBannerPk = bundle.getString(BANNER_KEY);
+        mBannerPk = bundle.getInt(BANNER_KEY);
         mName = bundle.getString(NAME_KEY);
         mChannel = bundle.getString(CHANNEL_KEY);
         mFetchDataControl.fetchBanners(mBannerPk, 1, false);
@@ -290,6 +301,9 @@ public class TemplateGuide extends Template
                 mAdapter.setOnItemClickListener(this);
                 mAdapter.setOnItemSelectedListener(this);
                 mRecycleView.setAdapter(mAdapter);
+	/*add by dragontec for bug 4077 start*/
+				checkFocus(mRecycleView);
+	/*add by dragontec for bug 4077 end*/
             } else {
                 int start = mFetchDataControl.mPoster.size() - mFetchDataControl.mHomeEntity.posters.size();
                 int end = mFetchDataControl.mPoster.size();
@@ -425,7 +439,10 @@ public class TemplateGuide extends Template
                 if (event.getButtonState() != BUTTON_PRIMARY) {
 //                    navigationLeft.setVisibility(View.INVISIBLE);
 //                    navigationRight.setVisibility(View.INVISIBLE);
-                    HomeActivity.mHoverView.requestFocus(); // 将焦点放置到一块隐藏view中
+/*modify by dragontec for bug 4057 start*/
+//                    HomeActivity.mHoverView.requestFocus(); // 将焦点放置到一块隐藏view中
+                    v.clearFocus();
+/*modify by dragontec for bug 4057 end*/
                 }
                 break;
         }
@@ -540,10 +557,10 @@ public class TemplateGuide extends Template
         mVideoViewLayout.setTag(mFetchDataControl.mCarousels.get(mCurrentCarouselIndex));
 
         final String url = mFetchDataControl.mCarousels.get(mCurrentCarouselIndex).getVideo_image();
-        String tilte = mFetchDataControl.mCarousels.get(mCurrentCarouselIndex).getTitle();
-        if (!StringUtils.isEmpty(tilte)) {
+        String intro = mFetchDataControl.mCarousels.get(mCurrentCarouselIndex).getIntroduction();
+        if (!StringUtils.isEmpty(intro)) {
             mVideoTitleTv.setVisibility(View.VISIBLE);
-            mVideoTitleTv.setText(tilte);
+            mVideoTitleTv.setText(intro);
         } else {
             mVideoTitleTv.setVisibility(View.GONE);
         }

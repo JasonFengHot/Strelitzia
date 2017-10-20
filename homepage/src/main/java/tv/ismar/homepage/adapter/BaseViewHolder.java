@@ -83,7 +83,12 @@ public abstract class BaseViewHolder extends RecyclerView.ViewHolder implements
             case MotionEvent.ACTION_HOVER_EXIT://10
                 if (mHoverListener!= null){
                     mHoverListener.onHover(v, mPosition, false);
-                    HomeActivity.mHoverView.requestFocus();//将焦点放置到一块隐藏view中
+/*modify by dragontec for bug 4057 start*/
+//                    HomeActivity.mHoverView.requestFocus();//将焦点放置到一块隐藏view中
+                    if (event.getButtonState() != MotionEvent.BUTTON_PRIMARY) {
+                        v.clearFocus();
+                    }
+/*modify by dragontec for bug 4057 end*/
                 }
                 break;
         }

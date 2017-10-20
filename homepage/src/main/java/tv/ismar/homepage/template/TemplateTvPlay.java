@@ -2,6 +2,9 @@ package tv.ismar.homepage.template;
 
 import android.content.Context;
 import android.os.Bundle;
+	/*add by dragontec for bug 4077 start*/
+import android.os.Handler;
+	/*add by dragontec for bug 4077 end*/
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -24,6 +27,9 @@ import tv.ismar.homepage.R;
 import tv.ismar.homepage.adapter.TvPlayAdapter;
 import tv.ismar.homepage.control.FetchDataControl;
 import tv.ismar.homepage.view.BannerLinearLayout;
+	/*add by dragontec for bug 4077 start*/
+import tv.ismar.homepage.widget.RecycleLinearLayout;
+	/*add by dragontec for bug 4077 end*/
 
 import static android.view.MotionEvent.BUTTON_PRIMARY;
 import static tv.ismar.homepage.fragment.ChannelFragment.CHANNEL_KEY;
@@ -50,7 +56,7 @@ public class TemplateTvPlay extends Template
     private BannerLinearLayout mBannerLinearLayout;
     private View navigationLeft;
     private View navigationRight;
-    private String mBannerPk;
+    private int mBannerPk;
     private String mName; // 频道名称（中文）
     private String mChannel; // 频道名称（英文）
 
@@ -72,6 +78,9 @@ public class TemplateTvPlay extends Template
         if (mFetchDataControl != null) {
             mFetchDataControl.stop();
         }
+	/*add by dragontec for bug 4077 start*/
+		super.onPause();
+	/*add by dragontec for bug 4077 end*/
     }
 
     @Override
@@ -115,7 +124,7 @@ public class TemplateTvPlay extends Template
     @Override
     public void initData(Bundle bundle) {
         mTitleTv.setText(bundle.getString("title"));
-        mBannerPk = bundle.getString("banner");
+        mBannerPk = bundle.getInt("banner");
         mName = bundle.getString(NAME_KEY);
         mChannel = bundle.getString(CHANNEL_KEY);
         mFetchDataControl.fetchBanners(mBannerPk, 1, false);
@@ -138,6 +147,9 @@ public class TemplateTvPlay extends Template
             mAdapter.setMarginLeftEnable(true);
             mRecycleView.setAdapter(mAdapter);
             mAdapter.setOnItemClickListener(this);
+	/*add by dragontec for bug 4077 start*/
+			checkFocus(mRecycleView);
+	/*add by dragontec for bug 4077 end*/
         } else {
             int start = mFetchDataControl.mPoster.size() - mFetchDataControl.mHomeEntity.posters.size();
             int end = mFetchDataControl.mPoster.size();
@@ -223,7 +235,10 @@ public class TemplateTvPlay extends Template
                 if (event.getButtonState() != BUTTON_PRIMARY) {
                     navigationLeft.setVisibility(View.INVISIBLE);
                     navigationRight.setVisibility(View.INVISIBLE);
-                    HomeActivity.mHoverView.requestFocus(); // 将焦点放置到一块隐藏view中
+/*modify by dragontec for bug 4057 start*/
+//                    HomeActivity.mHoverView.requestFocus(); // 将焦点放置到一块隐藏view中
+                    v.clearFocus();
+/*modify by dragontec for bug 4057 end*/
                 }
                 break;
         }

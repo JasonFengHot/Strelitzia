@@ -2,6 +2,9 @@ package tv.ismar.homepage.template;
 
 import android.content.Context;
 import android.os.Bundle;
+	/*add by dragontec for bug 4077 start*/
+import android.os.Handler;
+	/*add by dragontec for bug 4077 end*/
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
@@ -30,6 +33,9 @@ import tv.ismar.homepage.R;
 import tv.ismar.homepage.adapter.DoubleMdAdapter;
 import tv.ismar.homepage.control.FetchDataControl;
 import tv.ismar.homepage.view.BannerLinearLayout;
+	/*add by dragontec for bug 4077 start*/
+import tv.ismar.homepage.widget.RecycleLinearLayout;
+	/*add by dragontec for bug 4077 end*/
 
 import static android.view.MotionEvent.BUTTON_PRIMARY;
 import static tv.ismar.homepage.fragment.ChannelFragment.BANNER_KEY;
@@ -60,7 +66,7 @@ public class TemplateDoubleMd extends Template
   private View navigationRight;
   private View mHeadView; // recylview头view
   private StaggeredGridLayoutManagerTV mDoubleLayoutManager;
-  private String mBannerPk; // banner标记
+  private int mBannerPk; // banner标记
   private String mName; // 频道名称（中文）
   private String mChannel; // 频道名称（英文）
 
@@ -80,6 +86,9 @@ public class TemplateDoubleMd extends Template
     if (mFetchDataControl != null){
       mFetchDataControl.stop();
     }
+	/*add by dragontec for bug 4077 start*/
+	  super.onPause();
+	/*add by dragontec for bug 4077 end*/
   }
 
   @Override
@@ -130,7 +139,7 @@ public class TemplateDoubleMd extends Template
   @Override
   public void initData(Bundle bundle) {
     mTitleTv.setText(bundle.getString(TITLE_KEY));
-    mBannerPk = bundle.getString(BANNER_KEY);
+    mBannerPk = bundle.getInt(BANNER_KEY);
     mName = bundle.getString(NAME_KEY);
     mChannel = bundle.getString(CHANNEL_KEY);
     mTitleCountTv.setText("00/00");
@@ -153,6 +162,9 @@ public class TemplateDoubleMd extends Template
       mAdapter.setOnItemClickListener(this);
       mAdapter.setHeaderView(mHeadView);
       mRecyclerView.setAdapter(mAdapter);
+	/*add by dragontec for bug 4077 start*/
+		checkFocus(mRecyclerView);
+	/*add by dragontec for bug 4077 end*/
     } else {
       Log.i(
           TAG,
@@ -246,21 +258,22 @@ public class TemplateDoubleMd extends Template
   public void onClick(View v) {
     int i = v.getId();
     int[] positions = new int[] {0, 0};
-    mDoubleLayoutManager.findFirstCompletelyVisibleItemPositions(positions);
     Log.i("onClick", "positions[0]:" + positions[0] + "positions[1]:" + positions[1]);
     if (i == R.id.navigation_left) {
+      mDoubleLayoutManager.findFirstCompletelyVisibleItemPositions(positions);
       mDoubleLayoutManager.setCanScroll(true);
       if (positions[1] - 1 >= 0) { // 向左滑动
-        int targetPosition = positions[1] - 8;
+        int targetPosition = positions[1] - 12;
         if (targetPosition <= 0) targetPosition = 0;
         mSelectItemPosition = targetPosition;
         mDoubleLayoutManager.smoothScrollToPosition(mRecyclerView, null, targetPosition);
       }
     } else if (i == R.id.navigation_right) { // 向右滑动
+      mDoubleLayoutManager.findLastCompletelyVisibleItemPositions(positions);
       mDoubleLayoutManager.setCanScroll(true);
       mRecyclerView.loadMore();
       if (positions[1] <= mFetchDataControl.mHomeEntity.count) {
-        int targetPosition = positions[1] + 22;
+        int targetPosition = positions[1] + 12;
         if (targetPosition >= mFetchDataControl.mHomeEntity.count) {
           targetPosition = mFetchDataControl.mHomeEntity.count;
         }
@@ -292,7 +305,10 @@ public class TemplateDoubleMd extends Template
         if (event.getButtonState() != BUTTON_PRIMARY) {
           navigationLeft.setVisibility(View.INVISIBLE);
           navigationRight.setVisibility(View.INVISIBLE);
-          HomeActivity.mHoverView.requestFocus(); // 将焦点放置到一块隐藏view中
+/*modify by dragontec for bug 4057 start*/
+//          HomeActivity.mHoverView.requestFocus(); // 将焦点放置到一块隐藏view中
+          v.clearFocus();
+/*modify by dragontec for bug 4057 end*/
         }
         break;
     }

@@ -2,6 +2,9 @@ package tv.ismar.homepage.template;
 
 import android.content.Context;
 import android.os.Bundle;
+	/*add by dragontec for bug 4077 start*/
+import android.os.Handler;
+	/*add by dragontec for bug 4077 end*/
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -21,6 +24,9 @@ import tv.ismar.homepage.R;
 import tv.ismar.homepage.adapter.CenterAdapter;
 import tv.ismar.homepage.control.FetchDataControl;
 import tv.ismar.homepage.view.BannerLinearLayout;
+	/*add by dragontec for bug 4077 start*/
+import tv.ismar.homepage.widget.RecycleLinearLayout;
+	/*add by dragontec for bug 4077 end*/
 
 import static android.view.MotionEvent.BUTTON_PRIMARY;
 
@@ -40,7 +46,7 @@ public class TemplateCenter extends Template
     private BannerLinearLayout mBannerLinearLayout;
     private View navigationLeft;
     private View navigationRight;
-    private String mBannerPk;
+    private int mBannerPk;
 
     public TemplateCenter(Context context) {
         super(context);
@@ -60,6 +66,9 @@ public class TemplateCenter extends Template
         if (mFetchDataControl != null){
             mFetchDataControl.stop();
         }
+	/*add by dragontec for bug 4077 start*/
+		super.onPause();
+	/*add by dragontec for bug 4077 end*/
     }
 
     @Override
@@ -86,7 +95,7 @@ public class TemplateCenter extends Template
 
     @Override
     public void initData(Bundle bundle) {
-        mBannerPk = bundle.getString("banner");
+        mBannerPk = bundle.getInt("banner");
         mFetchDataControl.fetchBanners(mBannerPk, 1, false);
     }
 
@@ -109,6 +118,9 @@ public class TemplateCenter extends Template
                     mFetchDataControl.mCarousels.size() * 100,
                     mContext.getResources().getDimensionPixelOffset(R.dimen.center_padding_offset));
             mAdapter.setOnItemClickListener(this);
+	/*add by dragontec for bug 4077 start*/
+			checkFocus(mRecycleView);
+	/*add by dragontec for bug 4077 end*/
         } else {
             int start =
                     mFetchDataControl.mCarousels.size() - mFetchDataControl.mHomeEntity.carousels.size();
@@ -171,7 +183,7 @@ public class TemplateCenter extends Template
                 if (event.getButtonState() != BUTTON_PRIMARY) {
                     navigationLeft.setVisibility(View.INVISIBLE);
                     navigationRight.setVisibility(View.INVISIBLE);
-                    HomeActivity.mHoverView.requestFocus(); // 将焦点放置到一块隐藏view中
+                    v.clearFocus();
                 }
                 break;
         }

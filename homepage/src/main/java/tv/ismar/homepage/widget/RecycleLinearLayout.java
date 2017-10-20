@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.FocusFinder;
 import android.view.KeyEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.OverScroller;
 import android.widget.ScrollView;
@@ -17,6 +18,7 @@ import com.daimajia.androidanimations.library.YoYo;
 
 import java.util.ArrayList;
 
+import tv.ismar.homepage.HomeActivity;
 import tv.ismar.homepage.R;
 
 /**
@@ -34,6 +36,13 @@ public class RecycleLinearLayout extends LinearLayout {
     private int mScreenHeight;
     private int mSelectedChildIndex = 0;
     private ArrayList<View> mAllViews = new ArrayList<>();
+	/*add by dragontec for bug 3983 start*/
+    private OnPositionChangedListener mPositionChangeListener;
+    private View lastScrollToTopView;
+    private boolean isScrollDuringTitleHiddenState;
+	/*add by dragontec for bug 3983 end*/
+    private Button arrow_up;
+    private Button arrow_down;
 
 
     public RecycleLinearLayout(Context context) {
@@ -96,7 +105,17 @@ public class RecycleLinearLayout extends LinearLayout {
 
     private void smoothScrollBy(int dx, int dy){
         Log.i(TAG, "dx:"+dx+"  dy:"+dy);
-        mOverScroller.startScroll(mOverScroller.getFinalX(), mOverScroller.getFinalY(), dx, dy, SCROLL_DURATION);
+		/*modify by dragontec for bug 3983 start*/
+        if(HomeActivity.isTitleHidden && isScrollDuringTitleHiddenState){
+            dy +=  getResources().getDimensionPixelSize(R.dimen.banner_margin_top);
+            mOverScroller.startScroll(mOverScroller.getFinalX(), mOverScroller.getFinalY(), dx, dy, SCROLL_DURATION);
+        }else{
+            if(mOverScroller.getFinalY() + dy < 0){
+                dy = -mOverScroller.getFinalY();
+            }
+            mOverScroller.startScroll(mOverScroller.getFinalX(), mOverScroller.getFinalY(), dx, dy, SCROLL_DURATION);
+        }
+		/*modify by dragontec for bug 3983 end*/
         invalidate();//保证computeScroll()执行
     }
 
@@ -117,7 +136,11 @@ public class RecycleLinearLayout extends LinearLayout {
             view.getLocationOnScreen(location);
             Log.i(TAG, "top:"+location[1]);
             Log.i(TAG, "margin:"+mContext.getResources().getDimensionPixelOffset(R.dimen.banner_margin_top));
-            smoothScrollBy(0, location[1]-mContext.getResources().getDimensionPixelOffset(R.dimen.banner_margin_top));
+			/*modify by dragontec for bug 4149 start*/
+			if (location[1] != 0) {
+				smoothScrollBy(0, location[1] - mContext.getResources().getDimensionPixelOffset(R.dimen.banner_margin_top));
+			}
+			/*modify by dragontec for bug 4149 end*/
         }
     }
 
@@ -187,13 +210,30 @@ public class RecycleLinearLayout extends LinearLayout {
                 View view = getFocusedChild();
                 View view1 = findFocus();
                 Log.i(TAG, "debug1"+" view:"+view+" view1:"+view1);
-                if(view==mLastView && !longPress) return super.dispatchKeyEvent(event);//banner抖动问题
-                int key = (int) view.getTag();
-                int tag = (int) view.getTag(key);
+				/*modify by dragontec for bug 4149 start*/
+				int key = (int) view.getTag();
+				int tag = (int) view.getTag(key);
+                if(view==mLastView && !longPress) {
+					if (key == R.layout.banner_more) {
+						YoYo.with(Techniques.VerticalShake).duration(1000).playOn(view);
+					}
+					return super.dispatchKeyEvent(event);//banner抖动问题
+				}
+				/*modify by dragontec for bug 4149 end*/
                 boolean canScroll = tag>>30==1;//1可滑动，0不可滑动
                 int position = (tag<<2)>>2;
 //                mHolder.onCreateView(position, keyCode);
                 Log.i(TAG, "key:"+key+" canScroll:"+canScroll+" position:"+position);
+				/*add by dragontec for bug 3983 start*/
+                boolean startTitleState = HomeActivity.isTitleHidden;
+                if(keyCode==KeyEvent.KEYCODE_DPAD_DOWN || keyCode==KeyEvent.KEYCODE_DPAD_UP){
+                    if(mPositionChangeListener != null){
+                        mPositionChangeListener.onPositionChanged(position,keyCode,canScroll);
+                    }
+                }
+                boolean endTitleState = HomeActivity.isTitleHidden;
+                isScrollDuringTitleHiddenState =startTitleState && endTitleState;
+				/*add by dragontec for bug 3983 end*/
                 if(!canScroll){//限制滑动
                     Log.i(TAG, "canScroll");
                     if(position-1 < 0) return super.dispatchKeyEvent(event);//将不可滑动的banner和前一个banner绑定为一个banner
@@ -201,12 +241,23 @@ public class RecycleLinearLayout extends LinearLayout {
                     scrollToTop(getChildAt(position-1));
                     return super.dispatchKeyEvent(event);
                 }
+	/*add by dragontec for bug 4077 start*/
+				if (position > getChildCount() -2 && keyCode == KeyEvent.KEYCODE_DPAD_DOWN) {
+					if (mOnDataFinishedListener != null) {
+						mOnDataFinishedListener.onDataFinished(view);
+					}
+				}
+	/*add by dragontec for bug 4077 end*/
                 //滑动处理
                 if(position==getChildCount()-1){
                     Log.i(TAG, "scrollToVisiable");
 //                    mScrollView.setBottom(mScrollHeight+mScreenHeight);
-                    scrollToVisiable(view);
-                    YoYo.with(Techniques.VerticalShake).duration(1000).playOn(view);
+					/*modify by dragontec for bug 4149 start*/
+					if (key != R.layout.banner_more) {
+						scrollToVisiable(view);
+						YoYo.with(Techniques.VerticalShake).duration(1000).playOn(view);
+					}
+					/*modify by dragontec for bug 4149 end*/
                 } else {
                     Log.i(TAG, "scrollToTop");
 //                    mScrollView.setBottom(mScreenHeight);
@@ -215,6 +266,26 @@ public class RecycleLinearLayout extends LinearLayout {
             }
         }
         return super.dispatchKeyEvent(event);
+    }
+
+    public void setArrow_up(Button arrow_up) {
+        this.arrow_up = arrow_up;
+        this.arrow_up.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+    }
+
+    public void setArrow_down(Button arrow_down) {
+        this.arrow_down = arrow_down;
+        this.arrow_down.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
     }
 
     private ViewHolder mHolder;
@@ -226,4 +297,25 @@ public class RecycleLinearLayout extends LinearLayout {
     public interface ViewHolder {
         void onCreateView(int position, int orientation);
     }
+
+	/*add by dragontec for bug 4077 start*/
+	public interface OnDataFinishedListener {
+		void onDataFinished(View view);
+	}
+
+	private OnDataFinishedListener mOnDataFinishedListener;
+
+	public void setOnDataFinishedListener(OnDataFinishedListener onDataFinishedListener) {
+		mOnDataFinishedListener = onDataFinishedListener;
+	}
+	/*add by dragontec for bug 4077 end*/
+
+	/*add by dragontec for bug 3983 start*/
+    public void  setOnPositionChangedListener(OnPositionChangedListener mPositionChangeListener){
+        this.mPositionChangeListener = mPositionChangeListener;
+    }
+    public interface OnPositionChangedListener {
+        boolean onPositionChanged(int position, int direction, boolean canScroll);
+    }
+	/*add by dragontec for bug 3983 end*/
 }

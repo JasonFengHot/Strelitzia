@@ -2,6 +2,9 @@ package tv.ismar.homepage.template;
 
 import android.content.Context;
 import android.os.Bundle;
+	/*add by dragontec for bug 4077 start*/
+import android.os.Handler;
+	/*add by dragontec for bug 4077 end*/
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -30,6 +33,9 @@ import tv.ismar.homepage.R;
 import tv.ismar.homepage.banner.adapter.BannerMovieAdapter;
 import tv.ismar.homepage.fragment.ChannelFragment;
 import tv.ismar.homepage.view.BannerLinearLayout;
+	/*add by dragontec for bug 4077 start*/
+import tv.ismar.homepage.widget.RecycleLinearLayout;
+	/*add by dragontec for bug 4077 end*/
 
 import static android.view.MotionEvent.BUTTON_PRIMARY;
 
@@ -41,7 +47,7 @@ public class TemplateMovie extends Template implements View.OnClickListener, Vie
 
     private RecyclerViewTV movieBanner;
     private BannerMovieAdapter mMovieAdapter;
-    private String mBannerName;
+    private int mBannerName;
     private TextView mTitleTv;
     private String mBannerTitle;
 
@@ -71,7 +77,9 @@ public class TemplateMovie extends Template implements View.OnClickListener, Vie
         if (fetchMovieBanner != null && !fetchMovieBanner.isUnsubscribed()) {
             fetchMovieBanner.unsubscribe();
         }
-
+	/*add by dragontec for bug 4077 start*/
+		super.onPause();
+	/*add by dragontec for bug 4077 end*/
     }
 
     @Override
@@ -166,7 +174,7 @@ public class TemplateMovie extends Template implements View.OnClickListener, Vie
 
     @Override
     public void initData(Bundle bundle) {
-        mBannerName = bundle.getString("banner");
+        mBannerName = bundle.getInt("banner");
         mBannerTitle = bundle.getString("title");
         channelKey = bundle.getString(ChannelFragment.CHANNEL_KEY);
         nameKey = bundle.getString(ChannelFragment.NAME_KEY);
@@ -175,7 +183,7 @@ public class TemplateMovie extends Template implements View.OnClickListener, Vie
         fetchMovieBanner(mBannerName, 1);
     }
 
-    private void fetchMovieBanner(String bannerName, final int pageNumber) {
+    private void fetchMovieBanner(int bannerName, final int pageNumber) {
         if (pageNumber != 1) {
             int startIndex = (pageNumber - 1) * 33;
             int endIndex;
@@ -250,7 +258,10 @@ public class TemplateMovie extends Template implements View.OnClickListener, Vie
         mMovieAdapter.setHoverListener(
                 new BannerMovieAdapter.OnBannerHoverListener() {
                     @Override
-                    public void onBannerHover(View view, int position, boolean hovered) {
+/*modify by dragontec for bug 4057 start*/
+//                    public void onBannerHover(View view, int position, boolean hovered) {
+                    public void onBannerHover(View view, int position, boolean hovered, boolean isPrimary) {
+/*modify by dragontec for bug 4057 end*/
                         Log.d(TAG, view + " : " + hovered);
                         if (hovered) {
                             movieBanner.setHovered(true);
@@ -261,7 +272,12 @@ public class TemplateMovie extends Template implements View.OnClickListener, Vie
                                             mMovieAdapter.getTatalItemCount() + ""));
                         } else {
                             movieBanner.setHovered(false);
-                            HomeActivity.mHoverView.requestFocus();
+/*modify by dragontec for bug 4057 start*/
+//                            HomeActivity.mHoverView.requestFocus();
+                            if (!isPrimary) {
+                                view.clearFocus();
+                            }
+/*modify by dragontec for bug 4057 end*/
                         }
                     }
                 });
@@ -271,6 +287,9 @@ public class TemplateMovie extends Template implements View.OnClickListener, Vie
                         mContext.getString(R.string.home_item_title_count),
                         (1) + "",
                         mMovieAdapter.getTatalItemCount() + ""));
+	/*add by dragontec for bug 4077 start*/
+		checkFocus(movieBanner);
+	/*add by dragontec for bug 4077 end*/
     }
 
     @Override
@@ -339,6 +358,9 @@ public class TemplateMovie extends Template implements View.OnClickListener, Vie
                 if (event.getButtonState() != BUTTON_PRIMARY) {
                     navigationLeft.setVisibility(View.INVISIBLE);
                     navigationRight.setVisibility(View.INVISIBLE);
+/*add by dragontec for bug 4057 start*/
+                    v.clearFocus();
+/*add by dragontec for bug 4057 end*/
                 }
                 break;
         }

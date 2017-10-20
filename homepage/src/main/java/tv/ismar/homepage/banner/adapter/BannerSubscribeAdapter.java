@@ -179,7 +179,10 @@ public class BannerSubscribeAdapter
     }
 
     public interface OnBannerHoverListener {
-        void onBannerHover(View view, int position, boolean hovered);
+/*modify by dragontec for bug 4057 start*/
+//        void onBannerHover(View view, int position, boolean hovered);
+        void onBannerHover(View view, int position, boolean hovered, boolean isPrimary);
+/*modify by dragontec for bug 4057 end*/
     }
 
 
@@ -292,7 +295,10 @@ public class BannerSubscribeAdapter
                 case MotionEvent.ACTION_HOVER_MOVE:
                     if (mSubscribeHoverListener!= null){
                         int position = (int) v.getTag(R.id.banner_item_position);
-                        mSubscribeHoverListener.onBannerHover(v, position, true);
+/*modify by dragontec for bug 4057 start*/
+//                        mSubscribeHoverListener.onBannerHover(v, position, true);
+                        mSubscribeHoverListener.onBannerHover(v, position, true, event.getButtonState() == MotionEvent.BUTTON_PRIMARY);
+/*modify by dragontec for bug 4057 end*/
                     }
                     v.requestFocus();
                     v.requestFocusFromTouch();
@@ -300,7 +306,10 @@ public class BannerSubscribeAdapter
                 case MotionEvent.ACTION_HOVER_EXIT:
                     if (mSubscribeHoverListener!= null){
                         int position = (int) v.getTag(R.id.banner_item_position);
-                        mSubscribeHoverListener.onBannerHover(v, position, false);
+/*modify by dragontec for bug 4057 start*/
+//                        mSubscribeHoverListener.onBannerHover(v, position, false);
+                        mSubscribeHoverListener.onBannerHover(v, position, false, event.getButtonState() == MotionEvent.BUTTON_PRIMARY);
+/*modify by dragontec for bug 4057 end*/
                     }
                     break;
             }
