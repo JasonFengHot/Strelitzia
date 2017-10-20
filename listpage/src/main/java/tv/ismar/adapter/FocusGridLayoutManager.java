@@ -25,6 +25,7 @@ import tv.ismar.listpage.R;
 public class FocusGridLayoutManager extends GridLayoutManager {
 
     private ArrayList<Integer> specialPos;
+    private int mItemCount=1;
     private View leftFocusView;
     private Context context;
     private boolean scroll=false;
@@ -53,6 +54,9 @@ public class FocusGridLayoutManager extends GridLayoutManager {
         return super.getChildCount();
     }
 
+    public void setmItemCount(int mItemCount) {
+        this.mItemCount = mItemCount;
+    }
 
     @Override
     public View getChildAt(int index) {
@@ -101,7 +105,12 @@ public class FocusGridLayoutManager extends GridLayoutManager {
             }
         }else if(direction==View.FOCUS_UP){
             if(!isFavorite) {
-                if (specialPos != null ? index <= getSpanCount() : index < getSpanCount()) {
+                if (specialPos != null){
+                    if(index<=getSpanCount()&&index<specialPos.get(1)){
+                        YoYo.with(Techniques.VerticalShake).duration(1000).playOn(focused);
+                        return focused;
+                    }
+                }else if(index<getSpanCount()){
                     YoYo.with(Techniques.VerticalShake).duration(1000).playOn(focused);
                     return focused;
                 }
@@ -152,7 +161,9 @@ public class FocusGridLayoutManager extends GridLayoutManager {
                         lastColumnCount=getSpanCount();
                     }
                     int currentLine=fromPos-specialPos.get(nextSpecialPos)+lastColumnCount+1;
-                    if(i+currentLine>=specialPos.get(nextSpecialPos+1)){
+                    if(i+currentLine>mItemCount-1){
+                        nextView = findViewByPosition(mItemCount-1);
+                    }else if(nextSpecialPos+1<specialPos.size()&&i+currentLine>=specialPos.get(nextSpecialPos+1)){
                         nextView = findViewByPosition(specialPos.get(nextSpecialPos+1)-1);
                     }else{
                         nextView = findViewByPosition(i+currentLine);

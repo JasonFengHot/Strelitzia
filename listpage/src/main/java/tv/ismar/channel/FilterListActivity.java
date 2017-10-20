@@ -500,6 +500,7 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
                         }
                         //数据大小修正之后填充海报区内容
                         processResultData(mAllSectionItemList,index,removeCount,isFirstPos);
+                        mFocusGridLayoutManager.setmItemCount(mAllSectionItemList.getCount());
                     }
                 });
 
@@ -976,17 +977,20 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
         }else if(i==R.id.tab_arrow_up){
             tab_scroll.scrollBy(0, getResources().getDimensionPixelOffset(R.dimen.list_scroll_arrow_up_lenth));
             firstPos = tab_scroll.getScrollY()/section_group.getChildAt(0).getHeight();
-            if(firstPos==0){
-                firstPos=1;
+            if(checkedTab<firstPos||checkedTab>firstPos+8) {
+                if (firstPos == 0) {
+                    firstPos = 1;
+                }
+                ((RadioButton) section_group.getChildAt(firstPos)).setChecked(true);
+                section_group.getChildAt(firstPos).callOnClick();
             }
-            ((RadioButton)section_group.getChildAt(firstPos)).setChecked(true);
-            section_group.getChildAt(firstPos).callOnClick();
         }else if(i==R.id.tab_arrow_dowm){
             tab_scroll.scrollBy(0, getResources().getDimensionPixelOffset(R.dimen.list_scroll_arrow_down_lenth));
             firstPos=tab_scroll.getScrollY()/section_group.getChildAt(0).getHeight();
-            ((RadioButton)section_group.getChildAt(firstPos)).setChecked(true);
-            section_group.getChildAt(firstPos).callOnClick();
-
+            if(checkedTab<firstPos||checkedTab>firstPos+8) {
+                ((RadioButton) section_group.getChildAt(firstPos)).setChecked(true);
+                section_group.getChildAt(firstPos).callOnClick();
+            }
         }else if(i==R.id.poster_arrow_up){
             if(filter_tab.isChecked()){
                 if (isVertical) {
