@@ -21,6 +21,7 @@ import tv.ismar.homepage.OnItemClickListener;
 import tv.ismar.homepage.R;
 import tv.ismar.homepage.adapter.RecommendAdapter;
 import tv.ismar.homepage.control.FetchDataControl;
+import tv.ismar.homepage.fragment.ChannelFragment;
 import tv.ismar.homepage.view.BannerLinearLayout;
 
 import static android.view.MotionEvent.BUTTON_PRIMARY;
@@ -40,6 +41,11 @@ public class TemplateRecommend extends Template
   private BannerLinearLayout mBannerLinearLayout;
   private View navigationLeft;
   private View navigationRight;
+  private String mBannerName;
+  private String mBannerTitle;
+  private String channelName;
+  private String nameKey;
+  private String mBannerPk;
 
   public TemplateRecommend(Context context) {
     super(context);
@@ -84,7 +90,12 @@ public class TemplateRecommend extends Template
 
   @Override
   public void initData(Bundle bundle) {
-    mFetchDataControl.fetchHomeRecommend(false);
+    mBannerName = bundle.getString("banner");
+    mBannerTitle = bundle.getString("title");
+    channelName = bundle.getString(ChannelFragment.CHANNEL_KEY);
+    nameKey = bundle.getString(ChannelFragment.NAME_KEY);
+    mBannerPk = bundle.getString(ChannelFragment.BANNER_KEY);
+    mFetchDataControl.fetchBanners(mBannerPk, 1, false);
   }
 
   @Override
