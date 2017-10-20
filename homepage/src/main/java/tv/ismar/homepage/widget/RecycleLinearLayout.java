@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.FocusFinder;
 import android.view.KeyEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.OverScroller;
 import android.widget.ScrollView;
@@ -40,6 +41,9 @@ public class RecycleLinearLayout extends LinearLayout {
     private View lastScrollToTopView;
     private boolean isScrollDuringTitleHiddenState;
 	/*add by dragontec for bug 3983 end*/
+    private Button arrow_up;
+    private Button arrow_down;
+
 
     public RecycleLinearLayout(Context context) {
         super(context);
@@ -262,6 +266,26 @@ public class RecycleLinearLayout extends LinearLayout {
             }
         }
         return super.dispatchKeyEvent(event);
+    }
+
+    public void setArrow_up(Button arrow_up) {
+        this.arrow_up = arrow_up;
+        this.arrow_up.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+    }
+
+    public void setArrow_down(Button arrow_down) {
+        this.arrow_down = arrow_down;
+        this.arrow_down.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
     }
 
     private ViewHolder mHolder;
