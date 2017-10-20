@@ -12,5 +12,5 @@ public class GuideBanner {
     public String banner_url;
     public String template;
     public String title;
-    public int page_banner_pk;
+    public String page_banner_pk;
 }

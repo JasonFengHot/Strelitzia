@@ -259,7 +259,7 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
 		Bundle bundle = new Bundle();
 		bundle.putString(TITLE_KEY, guideBanner.title);
 		bundle.putString(URL_KEY, guideBanner.banner_url);
-		bundle.putInt(BANNER_KEY, guideBanner.page_banner_pk);
+		bundle.putString(BANNER_KEY, guideBanner.page_banner_pk);
 		bundle.putString(TEMPLATE_KEY, template);
 		bundle.putString(CHANNEL_KEY, mChannel);
 		bundle.putString(NAME_KEY, mName);

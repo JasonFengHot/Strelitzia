@@ -48,7 +48,7 @@ public class TemplateBigSmallLd extends Template
     private RecyclerViewTV movieMixBanner;
 
     private BannerMovieMixAdapter adapter;
-    private int mBannerName;
+    private String mBannerName;
 
     private TextView mTitleTv;
     private String mBannerTitle;
@@ -181,7 +181,7 @@ public class TemplateBigSmallLd extends Template
 
     @Override
     public void initData(Bundle bundle) {
-        mBannerName = bundle.getInt("banner");
+        mBannerName = bundle.getString("banner");
         mBannerTitle = bundle.getString("title");
         channelName = bundle.getString(ChannelFragment.CHANNEL_KEY);
         nameKey = bundle.getString(ChannelFragment.NAME_KEY);
@@ -190,7 +190,7 @@ public class TemplateBigSmallLd extends Template
         fetchMovieMixBanner(mBannerName, 1);
     }
 
-    private void fetchMovieMixBanner(int bannerName, final int pageNumber) {
+    private void fetchMovieMixBanner(String bannerName, final int pageNumber) {
         if (pageNumber != 1) {
             int startIndex = (pageNumber - 1) * 33;
             int endIndex;
