@@ -167,9 +167,6 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
 
         mControl = null;
         super.onDestroy();
-        RefWatcher refWatcher = VodApplication.getRefWatcher(getActivity());
-        refWatcher.watch(this);
-
     }
 
     private void findView(View view) {
