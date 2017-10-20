@@ -185,6 +185,7 @@ public class TemplateGuide extends Template
         playSubscription = null;
         checkVideoViewFullVisibilitySubsc = null;
         mVideoView = null;
+        mLoadingIg = null;
         mControl = null;
 
     }
@@ -546,6 +547,9 @@ public class TemplateGuide extends Template
     }
 
     private void playImage() {
+        if (mVideoView == null || mLoadingIg == null){
+            return;
+        }
         if (mVideoView.getVisibility() == View.VISIBLE) {
             mVideoView.setVisibility(View.GONE);
         }
@@ -575,12 +579,16 @@ public class TemplateGuide extends Template
 
                             @Override
                             public void onSuccess() {
-                                mHandler.sendEmptyMessageDelayed(CAROUSEL_NEXT, pauseTime * 1000);
+                                if (mHandler!= null){
+                                    mHandler.sendEmptyMessageDelayed(CAROUSEL_NEXT, pauseTime * 1000);
+                                }
                             }
 
                             @Override
                             public void onError(Exception e) {
-                                mHandler.sendEmptyMessageDelayed(CAROUSEL_NEXT, pauseTime * 1000);
+                                if (mHandler != null){
+                                    mHandler.sendEmptyMessageDelayed(CAROUSEL_NEXT, pauseTime * 1000);
+                                }
                             }
                         });
     }
