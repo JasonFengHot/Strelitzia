@@ -243,12 +243,10 @@ public class AdvertiseActivity extends BaseActivity implements MediaPlayer.OnPre
     @Override
     public void onPrepared(MediaPlayer mp) {
         mVideoView.start();
-        Log.i("ADVer","onPrepared: ");
         if (!mHandler.hasMessages(MSG_AD_COUNTDOWN)) {//开始播放，启动倒计时
             mHandler.sendEmptyMessage(MSG_AD_COUNTDOWN);
         }
         if (mAdsList.get(mPlayIndex).media_id != null) {
-            Log.i("ADVer","media_id: "+mAdsList.get(mPlayIndex).media_id);
             int media_id = Integer.parseInt(mAdsList.get(mPlayIndex).media_id);
             mAdvertisement.getRepostAdUrl(media_id, "startAd");
         }
@@ -256,7 +254,6 @@ public class AdvertiseActivity extends BaseActivity implements MediaPlayer.OnPre
 
     @Override
     public void onCompletion(MediaPlayer mp) {//广告视频播放完成
-        Log.i("ADVer","onCompletion");
         if(!playNextVideo()){
             go2HomeActivity();
         }

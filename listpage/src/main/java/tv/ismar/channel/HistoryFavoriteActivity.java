@@ -729,7 +729,11 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
                 mDataCollectionProperties.put("to_subitem",pk);
                 mDataCollectionProperties.put("to_title", history.getTitle());
 //                mDataCollectionProperties.put("position", history.get/1000);
-                intent.toPlayPage(this, pk, 0, Source.HISTORY);
+                if(history.getModel_name()!=null&&history.getModel_name().equals("subitem")) {
+                    intent.toPlayPage(this, history.getItem_pk(),0 , Source.HISTORY);
+                }else{
+                    intent.toPlayPage(this, pk, 0, Source.HISTORY);
+                }
             }else{
                 Intent intent1=new Intent();
                 intent1.setAction("tv.ismar.daisy.historyfavoriteList");
