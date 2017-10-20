@@ -283,12 +283,13 @@ public class HorizontalTabView extends HorizontalScrollView
                 changeViewStatus(textView, ViewStatus.Hovered);
             }else {
 /*modify by dragontec for bug 4048 start*/
-//                if(tag&&linearContainer.indexOfChild(v)!=mSelectedIndex){
-//                    changeViewStatus((TextView) linearContainer.getChildAt(mSelectedIndex), ViewStatus.Focused);
-//                }else {
-//                    changeViewStatus(textView, ViewStatus.Focused);
-//                }
-                changeViewStatus(textView, ViewStatus.Focused);
+                //确保焦点上移时还是在当前tab上，不会切换频道
+                if(tag&&linearContainer.indexOfChild(v)!=mSelectedIndex){
+                    changeViewStatus((TextView) linearContainer.getChildAt(mSelectedIndex), ViewStatus.Focused);
+                }else {
+                    changeViewStatus(textView, ViewStatus.Focused);
+                }
+//                changeViewStatus(textView, ViewStatus.Focused);
 /*modify by dragontec for bug 4048 end*/
             }
         } else {
@@ -509,6 +510,7 @@ public class HorizontalTabView extends HorizontalScrollView
             case MotionEvent.ACTION_HOVER_MOVE:
                 isOnKeyDown = false;
                 isOnViewClick = false;
+                tag=false;
                 v.setHovered(true);
                 if (isCanScroll){
                     isCanScroll = false;
