@@ -30,6 +30,7 @@ public class FocusGridLayoutManager extends GridLayoutManager {
     private Context context;
     private boolean scroll=false;
     private boolean isFavorite=false;
+    private int nextPos;
 
 
     public FocusGridLayoutManager(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
@@ -93,10 +94,14 @@ public class FocusGridLayoutManager extends GridLayoutManager {
         int index=getPosition(focused);
         if(direction==View.FOCUS_RIGHT){
             if(specialPos!=null&&specialPos.contains(index+1)){
-                int nextPos = getNextViewPos(getPosition(focused), direction);
-                scrollToPositionWithOffset(nextPos,0);
-                scroll=true;
-                View nextView=findViewByPosition(nextPos+1);
+                nextPos = getNextViewPos(getPosition(focused), direction);
+                if(findLastVisibleItemPosition()==mItemCount-1||mItemCount- nextPos <getSpanCount()) {
+                    scroll=false;
+                }else{
+                    scroll=true;
+                }
+                scrollToPositionWithOffset(nextPos, 0);
+                View nextView=findViewByPosition(nextPos +1);
                 return nextView;
             }
             if(index==getItemCount()-1){
@@ -130,6 +135,11 @@ public class FocusGridLayoutManager extends GridLayoutManager {
         if(scroll){
             scroll=false;
             getChildAt(1).requestFocus();
+        }else if(mItemCount- nextPos <getSpanCount()&&specialPos!=null){
+            View view=findViewByPosition(specialPos.get(specialPos.size()-1)+1);
+            if(view!=null){
+                view.requestFocus();
+            }
         }
     }
 

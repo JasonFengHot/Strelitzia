@@ -293,8 +293,6 @@ public class HomeActivity extends BaseActivity
         mPersonCenterTel.setTextView(mPersonCenterTv);
         mHoverView.setFocusableInTouchMode(true);
         mHoverView.setFocusable(true);
-        setBackground(R.drawable.homepage_background);
-
         right_image = (ImageView) findViewById(R.id.guide_tab_right);
         left_image = (ImageView) findViewById(R.id.guide_tab_left);
         mChannelTab.leftbtn = left_image;

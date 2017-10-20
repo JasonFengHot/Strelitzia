@@ -863,7 +863,7 @@
 <dimen name="banner_subscribe_navigation_height">352.89dp</dimen>
 <dimen name="banner_horizontal519_navigation_height">259.56dp</dimen>
 <dimen name="banner_movie_navigation_height">311.11dp</dimen>
-<dimen name="banner_margin_top">142.22dp</dimen>
+<dimen name="banner_margin_top">177.78dp</dimen>
 <dimen name="channel_banner_mt">-35.56dp</dimen>
 
 <!-- add by dragontec start-->
