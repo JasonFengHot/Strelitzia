@@ -6,34 +6,54 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.graphics.drawable.BitmapDrawable;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.SeekBar;
 import android.widget.TextView;
+
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.MemoryPolicy;
+import com.squareup.picasso.NetworkPolicy;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
 import cn.ismartv.truetime.TrueTime;
+import tv.ismar.account.ActiveService;
 import tv.ismar.app.BaseActivity;
 import tv.ismar.app.BaseControl;
 import tv.ismar.app.VodApplication;
+import tv.ismar.app.ad.AdsUpdateService;
+import tv.ismar.app.ad.AdvertiseManager;
+import tv.ismar.app.ad.Advertisement;
 import tv.ismar.app.core.DaisyUtils;
 import tv.ismar.app.core.PageIntent;
 import tv.ismar.app.core.SimpleRestClient;
+import tv.ismar.app.core.VipMark;
 import tv.ismar.app.core.client.MessageQueue;
+import tv.ismar.app.db.AdvertiseTable;
 import tv.ismar.app.entity.ChannelEntity;
 import tv.ismar.app.network.SkyService;
 import tv.ismar.app.player.CallaPlay;
@@ -43,6 +63,8 @@ import tv.ismar.app.widget.TelescopicWrap;
 import tv.ismar.homepage.control.FetchDataControl;
 import tv.ismar.homepage.control.HomeControl;
 import tv.ismar.homepage.fragment.ChannelFragment;
+import tv.ismar.homepage.view.AdvertiseActivity;
+import tv.ismar.homepage.widget.DaisyVideoView;
 import tv.ismar.homepage.widget.HorizontalTabView;
 import tv.ismar.player.gui.PlaybackService;
 
@@ -56,7 +78,8 @@ public class HomeActivity extends BaseActivity
         implements View.OnClickListener,
         BaseControl.ControlCallBack,
         View.OnFocusChangeListener,
-        View.OnHoverListener {
+        View.OnHoverListener ,MediaPlayer.OnPreparedListener,
+        MediaPlayer.OnCompletionListener, MediaPlayer.OnErrorListener{
 
     public static final String HOME_PAGE_CHANNEL_TAG = "homepage";
 /*modify by dragontec for bug 4057 start*/
@@ -93,13 +116,76 @@ public class HomeActivity extends BaseActivity
     private long currentTime = 0;
     /*add by dragontec for bug 3983 start*/
     public static boolean isTitleHidden = false;
-    private ViewGroup mViewLayout;
     private Object mTitleAnimLock = new Object();
     private ValueAnimator mTitleMoveOutAnimator;
     private ValueAnimator mTitleMoveInAnimator;
     private boolean isAnimationPlaying;
     /*add by dragontec for bug 3983 end*/
 
+    //广告
+    private static final int MSG_AD_COUNTDOWN = 0x01;
+
+    private DaisyVideoView mVideoView;
+    private ImageView mPicImg;
+    private SeekBar mSeekBar;
+
+    private int currentImageAdCountDown = 0;
+    private boolean isStartImageCountDown = false;
+    private List<AdvertiseTable> mAdsList;
+    private AdvertiseManager mAdvertiseManager;
+    private Advertisement mAdvertisement;
+    private int mPlayIndex;
+    private boolean mIsPlayingVideo = false;
+    private int mCountAdTime = 0;
+    private int mTotleTime = 0;
+    private Button timeBtn;
+    private RelativeLayout ad_layout;
+    private LinearLayout home_layout;
+    private Handler mHandler = new Handler(Looper.getMainLooper()) {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case MSG_AD_COUNTDOWN:
+                    if (!mIsPlayingVideo && mCountAdTime == 0) {
+                        mHandler.removeMessages(MSG_AD_COUNTDOWN);
+                        mSeekBar.setProgress(mTotleTime);
+                        go2HomeActivity();
+                        return;
+                    }
+                    mSeekBar.setProgress(mTotleTime - mCountAdTime);
+                    if (timeBtn.getVisibility() != View.VISIBLE) {
+                        timeBtn.setVisibility(View.VISIBLE);
+                    }
+                    timeBtn.setTextColor(Color.WHITE);
+                    timeBtn.setText(mCountAdTime + "s");
+                    int refreshTime;
+                    if (!mIsPlayingVideo) {
+                        refreshTime = 1000;
+                        if (currentImageAdCountDown == 0 && !isStartImageCountDown) {
+                            currentImageAdCountDown = mAdsList.get(mPlayIndex).duration;
+                            isStartImageCountDown = true;
+                        } else {
+                            if (currentImageAdCountDown == 0) {
+                                mPlayIndex += 1;
+                                playLaunchAd(mPlayIndex);
+                                isStartImageCountDown = false;
+                            } else {
+                                currentImageAdCountDown--;
+                            }
+                        }
+                        mCountAdTime--;
+//                        if(mCountAdTime <= 0){
+//                            go2HomeActivity();
+//                        }
+                    } else {
+                        refreshTime = 500;
+                        mCountAdTime = getAdCountDownTime();
+                    }
+                    sendEmptyMessageDelayed(MSG_AD_COUNTDOWN, refreshTime);
+                    break;
+            }
+        }
+    };
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate((savedInstanceState != null) ? null : savedInstanceState);
@@ -109,6 +195,8 @@ public class HomeActivity extends BaseActivity
         systemInit();
         findViews();
         initListener();
+        initServer();
+        initAd();
         initData();
         new Handler().postDelayed(mRunnable, 1000);
         //        contentview.getViewTreeObserver().addOnGlobalFocusChangeListener(new
@@ -121,7 +209,10 @@ public class HomeActivity extends BaseActivity
         //            }
         //        });
     }
-
+    private void initServer(){
+        startAdsService();
+        startIntervalActive();
+    }
     @Override
     protected void onResume() {
         super.onResume();
@@ -145,6 +236,10 @@ public class HomeActivity extends BaseActivity
         //        HomeActivity.super.onBackPressed();
         //        android.os.Process.killProcess(android.os.Process.myPid());
         //        System.exit(0);
+        if(mHandler!=null && mHandler.hasMessages(MSG_AD_COUNTDOWN)){
+            mHandler.removeMessages(MSG_AD_COUNTDOWN);
+            mHandler = null;
+        }
     }
 
     @Override
@@ -169,6 +264,9 @@ public class HomeActivity extends BaseActivity
 
     /*获取控件实例*/
     private void findViews() {
+        ad_layout= (RelativeLayout) findViewById(R.id.advertisement);
+        home_layout= (LinearLayout) findViewById(R.id.home_page);
+        home_layout.setVisibility(View.GONE);
         mHoverView = findViewById(R.id.home_view_layout);
         headHoverd = findViewById(R.id.hover_view);
 /*delete by dragontec for bug 4057 start*/
@@ -177,7 +275,6 @@ public class HomeActivity extends BaseActivity
 /*delete by dragontec for bug 4057 end*/
         mViewGroup = (ViewGroup) findViewById(R.id.home_view_layout);
 	    /*add by dragontec for bug 3983 start*/
-        mViewLayout = (ViewGroup) findViewById(R.id.view_layout);
 	    /*add by dragontec for bug 3983 end*/
         mChannelTab = (HorizontalTabView) findViewById(R.id.channel_tab);
         mTimeTv = (TextView) findViewById(R.id.guide_title_time_tv);
@@ -193,12 +290,18 @@ public class HomeActivity extends BaseActivity
         mPersonCenterTel.setTextView(mPersonCenterTv);
         mHoverView.setFocusableInTouchMode(true);
         mHoverView.setFocusable(true);
-        setBackground(R.drawable.homepage_background);
 
         right_image = (ImageView) findViewById(R.id.guide_tab_right);
         left_image = (ImageView) findViewById(R.id.guide_tab_left);
         mChannelTab.leftbtn = left_image;
         mChannelTab.rightbtn = right_image;
+
+        //广告
+        mVideoView = (DaisyVideoView) findViewById(R.id.home_ad_video);
+        mPicImg = (ImageView) findViewById(R.id.home_ad_pic);
+        mSeekBar = (SeekBar) findViewById(R.id.home_ad_seekbar);
+        timeBtn= (Button) findViewById(R.id.home_ad_timer);
+
     }
 
     private void setBackground(int id) {
@@ -235,8 +338,23 @@ public class HomeActivity extends BaseActivity
         registerReceiver(mTimeTickBroadcast, filter);
         /*add by dragontec for bug 3983 start*/
         initTitleAnim();
-        /*add by dragontec for bug 3983 end*/
-    }
+        /*add by dragontec for bug 3983 end*/        
+		//广告部分
+        mVideoView.setOnPreparedListener(this);
+        mVideoView.setOnCompletionListener(this);
+        mVideoView.setOnErrorListener(this);
+        mSeekBar.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                return true;
+            }
+        });
+        mSeekBar.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                return true;
+            }
+        });    }
 
     private void initData() {
 		/*add by dragontec for bug 3983 start 画面退出后由于是静态变量，所以需要赋初值*/
@@ -246,6 +364,21 @@ public class HomeActivity extends BaseActivity
         ChannelFragment channelFragment = new ChannelFragment();
         channelFragment.setChannel("首页", HOME_PAGE_CHANNEL_TAG, "首页", 0);
         replaceFragment(channelFragment, "none");
+    }
+    private void initAd(){
+        mAdvertiseManager = new AdvertiseManager(this);
+        mAdsList = mAdvertiseManager.getAppLaunchAdvertisement();
+        mAdvertisement = new Advertisement(this);
+        for (AdvertiseTable tab : mAdsList) {
+            totalAdsMills = totalAdsMills + tab.duration * 1000;
+        }
+        for (AdvertiseTable adTable : mAdsList) {
+            int duration = adTable.duration;
+            mCountAdTime += duration;
+        }
+        mSeekBar.setMax(mCountAdTime);
+        mTotleTime=mCountAdTime;
+        playLaunchAd(0);
     }
 
     private void replaceFragment(Fragment fragment, String scrollType) {
@@ -455,13 +588,13 @@ public class HomeActivity extends BaseActivity
 
         mTitleMoveOutAnimator = ValueAnimator.ofInt(0, -height);
         mTitleMoveOutAnimator.setDuration(500);
-        mTitleMoveOutAnimator.setTarget(mViewLayout);
+        mTitleMoveOutAnimator.setTarget(home_layout);
         mTitleMoveOutAnimator.addUpdateListener(titleAnimUpdateListener);
         mTitleMoveOutAnimator.addListener(titleAnimStateListener);
 
         mTitleMoveInAnimator = ValueAnimator.ofInt(-height, 0);
         mTitleMoveInAnimator.setDuration(500);
-        mTitleMoveInAnimator.setTarget(mViewLayout);
+        mTitleMoveInAnimator.setTarget(home_layout);
         mTitleMoveInAnimator.addUpdateListener(titleAnimUpdateListener);
         mTitleMoveInAnimator.addListener(titleAnimStateListener);
     }
@@ -504,7 +637,7 @@ public class HomeActivity extends BaseActivity
         @Override
         public void onAnimationUpdate(ValueAnimator animation) {
             int animatorValue = (int) animation.getAnimatedValue();
-            mViewLayout.setTranslationY(animatorValue);
+            home_layout.setTranslationY(animatorValue);
         }
     }
 
@@ -539,5 +672,151 @@ public class HomeActivity extends BaseActivity
         public void onReceive(Context context, Intent intent) {
             mTimeTv.setText(mHomeControl.getNowTime());
         }
+    }
+
+    //广告
+    private void playLaunchAd(final int index) {
+        if(index >= mAdsList.size()){
+            return;
+        }
+        mPlayIndex = index;
+        if (!mAdsList.get(index).location.equals(AdvertiseManager.DEFAULT_ADV_PICTURE)) {
+            new CallaPlay().boot_ad_play(mAdsList.get(index).title, mAdsList.get(index).media_id,
+                    mAdsList.get(index).media_url, String.valueOf(mAdsList.get(index).duration));
+        }
+        if (mAdsList.get(index).media_type.equals(AdvertiseManager.TYPE_VIDEO)) {
+            mIsPlayingVideo = true;
+        }
+        if (mIsPlayingVideo) {
+            if (mVideoView.getVisibility() != View.VISIBLE) {
+                mPicImg.setVisibility(View.GONE);
+                mVideoView.setVisibility(View.VISIBLE);
+            }
+            mVideoView.setVideoPath(mAdsList.get(index).location);
+        } else {
+            if (mPicImg.getVisibility() != View.VISIBLE) {
+                mVideoView.setVisibility(View.GONE);
+                mPicImg.setVisibility(View.VISIBLE);
+                //  mSeekBar.setVisibility(View.VISIBLE);
+            }
+            Picasso.with(this)
+                    .load(mAdsList.get(index).location)
+                    .memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE)
+                    .networkPolicy(NetworkPolicy.NO_CACHE, NetworkPolicy.NO_CACHE)
+                    .into(mPicImg, new Callback() {
+                        @Override
+                        public void onSuccess() {//图片加载成功启动倒计时
+                            if (mPlayIndex == 0) {
+                                mHandler.sendEmptyMessage(MSG_AD_COUNTDOWN);
+                            }
+                            if (mAdsList.get(mPlayIndex).media_id != null) {
+                                int media_id = Integer.parseInt(mAdsList.get(mPlayIndex).media_id);
+                                mAdvertisement.getRepostAdUrl(media_id, "startAd");
+                            }
+                        }
+
+                        @Override
+                        public void onError(Exception e) {//图片加载失败启动倒计时
+                            Picasso.with(HomeActivity.this)
+                                    .load("file:///android_asset/posters.png")
+                                    .memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE)
+                                    .networkPolicy(NetworkPolicy.NO_CACHE, NetworkPolicy.NO_CACHE)
+                                    .into(mPicImg);
+                            if (mPlayIndex == 0) {
+                                mHandler.sendEmptyMessage(MSG_AD_COUNTDOWN);
+                            }
+                        }
+                    });
+        }
+    }
+
+    private int getAdCountDownTime() {
+        if (mAdsList == null || mAdsList.isEmpty() || !mIsPlayingVideo) {
+            return 0;
+        }
+        int totalAdTime = 0;
+        int currentAd = mPlayIndex;
+        if (currentAd == mAdsList.size() - 1) {
+            totalAdTime = mAdsList.get(mAdsList.size() - 1).duration;
+        } else {
+            for (int i = currentAd; i < mAdsList.size(); i++) {
+                totalAdTime += mAdsList.get(i).duration;
+            }
+        }
+        int countTime = totalAdTime - mVideoView.getCurrentPosition() / 1000 - 1;
+        if (countTime < 0) {
+            countTime = 0;
+        }
+        return countTime;
+    }
+
+    @Override
+    public void onPrepared(MediaPlayer mp) {
+        mVideoView.start();
+        if (!mHandler.hasMessages(MSG_AD_COUNTDOWN)) {//开始播放，启动倒计时
+            mHandler.sendEmptyMessage(MSG_AD_COUNTDOWN);
+        }
+        if (mAdsList.get(mPlayIndex).media_id != null) {
+            int media_id = Integer.parseInt(mAdsList.get(mPlayIndex).media_id);
+            mAdvertisement.getRepostAdUrl(media_id, "startAd");
+        }
+    }
+
+    @Override
+    public void onCompletion(MediaPlayer mp) {//广告视频播放完成
+        if(!playNextVideo()){
+            go2HomeActivity();
+        }
+    }
+
+    /**
+     * 播放下一个视频或跳转
+     * @return false跳转到首页
+     */
+    private boolean playNextVideo(){
+        if (mPlayIndex == mAdsList.size() - 1) {//所有广告播放完，就释放掉当前页
+            mHandler.removeMessages(MSG_AD_COUNTDOWN);
+            return false;
+        } else {
+            mPlayIndex += 1;
+            playLaunchAd(mPlayIndex);
+            return true;
+        }
+    }
+
+    private void go2HomeActivity(){
+        setBackground(R.drawable.homepage_background);
+        ad_layout.setVisibility(View.GONE);
+        home_layout.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public boolean onError(MediaPlayer mp, int what, int extra) {//播放出现错误
+        if(playNextVideo()){
+            go2HomeActivity();
+        }
+        return true;
+    }
+
+    private void startIntervalActive() {
+        Intent intent = new Intent();
+        intent.setClass(this, ActiveService.class);
+        startService(intent);
+    }
+
+    private void startAdsService() {
+        Intent intent = new Intent();
+        intent.setClass(this, AdsUpdateService.class);
+        startService(intent);
+    }
+
+    private void setDisplayMetrics(){
+        DisplayMetrics metric = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(metric);
+        int width = metric.widthPixels;  // 屏幕宽度（像素）
+        int height = metric.heightPixels;  // 屏幕高度（像素）
+        float density = metric.density;  // 屏幕密度（0.75 / 1.0 / 1.5）
+        int densityDpi = metric.densityDpi;  // 屏幕密度DPI（120 / 160 / 240）
+        VipMark.getInstance().setHeight(height);
     }
 }
