@@ -258,21 +258,22 @@ public class TemplateDoubleMd extends Template
   public void onClick(View v) {
     int i = v.getId();
     int[] positions = new int[] {0, 0};
-    mDoubleLayoutManager.findFirstCompletelyVisibleItemPositions(positions);
     Log.i("onClick", "positions[0]:" + positions[0] + "positions[1]:" + positions[1]);
     if (i == R.id.navigation_left) {
+      mDoubleLayoutManager.findFirstCompletelyVisibleItemPositions(positions);
       mDoubleLayoutManager.setCanScroll(true);
       if (positions[1] - 1 >= 0) { // 向左滑动
-        int targetPosition = positions[1] - 8;
+        int targetPosition = positions[1] - 12;
         if (targetPosition <= 0) targetPosition = 0;
         mSelectItemPosition = targetPosition;
         mDoubleLayoutManager.smoothScrollToPosition(mRecyclerView, null, targetPosition);
       }
     } else if (i == R.id.navigation_right) { // 向右滑动
+      mDoubleLayoutManager.findLastCompletelyVisibleItemPositions(positions);
       mDoubleLayoutManager.setCanScroll(true);
       mRecyclerView.loadMore();
       if (positions[1] <= mFetchDataControl.mHomeEntity.count) {
-        int targetPosition = positions[1] + 22;
+        int targetPosition = positions[1] + 12;
         if (targetPosition >= mFetchDataControl.mHomeEntity.count) {
           targetPosition = mFetchDataControl.mHomeEntity.count;
         }
