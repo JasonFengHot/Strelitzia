@@ -95,14 +95,6 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
 		/*add by dragontec for bug 4077 end*/
         return view;
     }
-	/*add by dragontec for bug 3983,4077 start*/
-    @Override
-    public void onDestroyView() {
-        mLinearContainer.setOnPositionChangedListener(null);
-		mLinearContainer.setOnDataFinishedListener(null);
-        super.onDestroyView();
-    }
-	/*add by dragontec for bug 3983,4077 end*/
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
@@ -123,15 +115,14 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
     @Override
     public void onPause() {
         Log.d(TAG, "onPause");
-        if (mControl != null) {
-            mControl.stop();
-        }
-
         if (mTemplates != null) {
             for (Template template : mTemplates) {
                 template.onPause();
             }
-            mTemplates.clear();
+        }
+
+        if (mControl != null) {
+            mControl.stop();
         }
 	/*add by dragontec for bug 4077 start*/
 		mLastFocus = null;
@@ -151,6 +142,18 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
     }
 
     @Override
+    public void onDestroyView() {
+		mLinearContainer.setOnPositionChangedListener(null);
+		mLinearContainer.setOnDataFinishedListener(null);
+        if (mLinearContainer != null){
+            for (int i = 0; i < mLinearContainer.getChildCount(); i++){
+                mLinearContainer.removeViewAt(i);
+            }
+        }
+        super.onDestroyView();
+    }
+
+    @Override
     public void onDestroy() {
         Log.d(TAG, "onDestroy");
         if (mTemplates != null) {
@@ -161,6 +164,8 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
         if (mTemplates != null){
             mTemplates.clear();
         }
+
+        mControl = null;
         super.onDestroy();
         RefWatcher refWatcher = VodApplication.getRefWatcher(getActivity());
         refWatcher.watch(this);
@@ -215,7 +220,7 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
 			for (int position = 0; position < size; position++) {
 				addBannerView(position, data[position]);
 			}
-			if (lastLoadedPostion == data.length - 1) {
+			if (lastLoadedPostion == data.length - 1&&!mChannel.equals("homepage")) {//首页频道最后不添加更多banner
 				addMoreView(data.length);
 			}
 		}
@@ -233,7 +238,7 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
 					addBannerView(position, data[position]);
 				}
 				Log.d(TAG, "lastLoadedPostion = " + lastLoadedPostion + ", data.length = " + data.length);
-				if (lastLoadedPostion == data.length - 1) {
+				if (lastLoadedPostion == data.length - 1&&!mChannel.equals("homepage")) {
 					addMoreView(data.length);
 				}
 			}
@@ -254,7 +259,7 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
 		Bundle bundle = new Bundle();
 		bundle.putString(TITLE_KEY, guideBanner.title);
 		bundle.putString(URL_KEY, guideBanner.banner_url);
-		bundle.putInt(BANNER_KEY, guideBanner.page_banner_pk);
+		bundle.putString(BANNER_KEY, guideBanner.page_banner_pk);
 		bundle.putString(TEMPLATE_KEY, template);
 		bundle.putString(CHANNEL_KEY, mChannel);
 		bundle.putString(NAME_KEY, mName);

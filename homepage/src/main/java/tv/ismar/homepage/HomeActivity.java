@@ -31,6 +31,7 @@ import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import com.squareup.leakcanary.RefWatcher;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.NetworkPolicy;
@@ -252,6 +253,8 @@ public class HomeActivity extends BaseActivity
         /*add by dragontec for bug 3983 end*/
         unregisterReceiver(mTimeTickBroadcast);
         mTimeTickBroadcast = null;
+        RefWatcher refWatcher = VodApplication.getRefWatcher(this);
+        refWatcher.watch(this);
     }
 
     /*初始化一些系统参数*/

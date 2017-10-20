@@ -104,7 +104,7 @@ public class TemplateGuide extends Template
 
     private View mVideoViewLayout;
     private View mHeadView; // recylview头view
-    private int mBannerPk; // banner标记
+    private String mBannerPk; // banner标记
     private String mName; // 频道名称（中文）
     private String mChannel; // 频道名称（英文）
     private MediaPlayer.OnCompletionListener mOnCompletionListener;
@@ -145,9 +145,6 @@ public class TemplateGuide extends Template
     @Override
     public void onPause() {
         Log.d(TAG, "onPause");
-        if (playSubscription != null && !playSubscription.isUnsubscribed()) {
-            playSubscription.unsubscribe();
-        }
 
         if (mHandler != null) {
             mHandler.removeMessages(CAROUSEL_NEXT);
@@ -164,6 +161,10 @@ public class TemplateGuide extends Template
             mFetchDataControl.stop();
         }
 
+        if (playSubscription != null && !playSubscription.isUnsubscribed()) {
+            playSubscription.unsubscribe();
+        }
+
         if (checkVideoViewFullVisibilitySubsc != null
                 && !checkVideoViewFullVisibilitySubsc.isUnsubscribed()) {
             checkVideoViewFullVisibilitySubsc.unsubscribe();
@@ -175,10 +176,17 @@ public class TemplateGuide extends Template
 
     @Override
     public void onStop() {
+
     }
 
     @Override
     public void onDestroy() {
+        mHandler = null;
+        playSubscription = null;
+        checkVideoViewFullVisibilitySubsc = null;
+        mVideoView = null;
+        mControl = null;
+
     }
 
     @Override
@@ -210,7 +218,7 @@ public class TemplateGuide extends Template
 
     @Override
     public void initData(Bundle bundle) {
-        mBannerPk = bundle.getInt(BANNER_KEY);
+        mBannerPk = bundle.getString(BANNER_KEY);
         mName = bundle.getString(NAME_KEY);
         mChannel = bundle.getString(CHANNEL_KEY);
         mFetchDataControl.fetchBanners(mBannerPk, 1, false);
@@ -453,7 +461,9 @@ public class TemplateGuide extends Template
 
         Logger.t(TAG).d("play carousel position: " + mCurrentCarouselIndex);
         String videoUrl = mFetchDataControl.mCarousels.get(mCurrentCarouselIndex).getVideo_url();
-
+        if (playSubscription != null && !playSubscription.isUnsubscribed()){
+            playSubscription.unsubscribe();
+        }
         playSubscription =
                 Observable.just(videoUrl)
                         .subscribeOn(Schedulers.io())
@@ -697,6 +707,9 @@ public class TemplateGuide extends Template
     }
 
     private void checkVideoViewFullVisibility() {
+        if (checkVideoViewFullVisibilitySubsc!= null && !checkVideoViewFullVisibilitySubsc.isUnsubscribed()){
+            checkVideoViewFullVisibilitySubsc.unsubscribe();
+        }
         checkVideoViewFullVisibilitySubsc =
                 Observable.interval(1, TimeUnit.SECONDS)
                         .takeUntil(

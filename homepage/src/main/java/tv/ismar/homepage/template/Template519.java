@@ -49,7 +49,7 @@ public class Template519 extends Template implements View.OnClickListener, View.
 
     private RecyclerViewTV horizontal519Banner;
     private BannerHorizontal519Adapter mHorizontal519Adapter;
-    private int mBannerName;
+    private String mBannerName;
     private String mBannerTitle;
     private TextView mTitleTv;
 
@@ -77,6 +77,7 @@ public class Template519 extends Template implements View.OnClickListener, View.
 
     @Override
     public void onPause() {
+        Log.d(TAG, "onPause()");
         if (fetchHorizontal519Banner != null && !fetchHorizontal519Banner.isUnsubscribed()) {
             fetchHorizontal519Banner.unsubscribe();
         }
@@ -87,12 +88,14 @@ public class Template519 extends Template implements View.OnClickListener, View.
 
     @Override
     public void onStop() {
+        Log.d(TAG, "onStop()");
     }
 
     @Override
     public void onDestroy() {
-        RefWatcher refWatcher = VodApplication.getRefWatcher(mContext);
-        refWatcher.watch(this);
+        Log.d(TAG, "onDestroy()");
+//        RefWatcher refWatcher = VodApplication.getRefWatcher(mContext);
+//        refWatcher.watch(this);
     }
 
     @Override
@@ -180,7 +183,7 @@ public class Template519 extends Template implements View.OnClickListener, View.
 
     @Override
     public void initData(Bundle bundle) {
-        mBannerName = bundle.getInt("banner");
+        mBannerName = bundle.getString("banner");
         mBannerTitle = bundle.getString("title");
         channelName = bundle.getString(ChannelFragment.CHANNEL_KEY);
         nameKey = bundle.getString(ChannelFragment.NAME_KEY);
@@ -189,7 +192,7 @@ public class Template519 extends Template implements View.OnClickListener, View.
         fetchHorizontal519Banner(mBannerName, 1);
     }
 
-    private void fetchHorizontal519Banner(int bannerName, final int pageNumber) {
+    private void fetchHorizontal519Banner(String bannerName, final int pageNumber) {
         if (pageNumber != 1) {
             int startIndex = (pageNumber - 1) * 33;
             int endIndex;
