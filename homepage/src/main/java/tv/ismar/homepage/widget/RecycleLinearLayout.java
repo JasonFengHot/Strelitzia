@@ -126,9 +126,12 @@ public class RecycleLinearLayout extends LinearLayout {
             int height = view.getHeight();
             int[] location = new int[]{0, 0};
             view.getLocationOnScreen(location);
-            smoothScrollBy(0, location[1]-(mScreenHeight-height));
+            /*modify by dragontec for bug 4178 start*/
+            int overScreenHeight = getResources().getDimensionPixelSize(R.dimen.over_screen_height);
+            smoothScrollBy(0, location[1]-(overScreenHeight-height));
             Log.i("scrollToVisiable", "height:"+height+"  location[1]:"+location[1]+
-            " location[1]-(mScreenHeight-height):"+(location[1]-(mScreenHeight-height)));
+            " location[1]-(mScreenHeight-height):"+(location[1]-(overScreenHeight-height)));
+            /*modify by dragontec for bug 4178 end*/
         }
     }
 

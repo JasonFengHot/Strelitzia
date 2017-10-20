@@ -282,15 +282,12 @@ public class HorizontalTabView extends HorizontalScrollView
                 //空鼠标获取焦点
                 changeViewStatus(textView, ViewStatus.Hovered);
             }else {
-/*modify by dragontec for bug 4048 start*/
                 //确保焦点上移时还是在当前tab上，不会切换频道
                 if(tag&&linearContainer.indexOfChild(v)!=mSelectedIndex){
                     changeViewStatus((TextView) linearContainer.getChildAt(mSelectedIndex), ViewStatus.Focused);
                 }else {
                     changeViewStatus(textView, ViewStatus.Focused);
                 }
-//                changeViewStatus(textView, ViewStatus.Focused);
-/*modify by dragontec for bug 4048 end*/
             }
         } else {
             changeViewStatus(textView, ViewStatus.UnFocused);
@@ -397,7 +394,16 @@ public class HorizontalTabView extends HorizontalScrollView
                 view.requestFocus();
                 view.requestFocusFromTouch();
             }
-            zoomIn(view);
+/*modify by dragontec for bug 4048 start*/
+//            zoomIn(view);
+            if (view.getTag(R.id.horizontal_text_view_zoom_in) == null) {
+                zoomIn(view);
+            } else {
+                if (!(Boolean) view.getTag(R.id.horizontal_text_view_zoom_in)) {
+                    zoomIn(view);
+                }
+            }
+/*modify by dragontec for bug 4048 end*/
             view.setTextColor(textFocusColor);
             view.setBackgroundResource(R.drawable.channel_indicator_focus);
             //五向键操作
@@ -406,6 +412,11 @@ public class HorizontalTabView extends HorizontalScrollView
                 TextView textView = (TextView) linearContainer.getChildAt(mSelectedIndex);
                 if (textView != null){
                     textView.setTextColor(textDefaultColor);
+/*add by dragontec for bug 4048 start*/
+                    if (mSelectedIndex!= (int)view.getTag() && textView.getTag(R.id.horizontal_text_view_zoom_in) != null && (Boolean) textView.getTag(R.id.horizontal_text_view_zoom_in)) {
+                        zoomOut(textView);
+                    }
+/*add by dragontec for bug 4048 end*/
                 }
                 mSelectedIndex = (int) view.getTag();
                 Logger.t(TAG).d("onItemSelectedListener.onItemSelected(view, mSelectedIndex);");
@@ -450,7 +461,14 @@ public class HorizontalTabView extends HorizontalScrollView
             //处理选中态
             //无向键
             if ((isOnKeyDown && isDpad)|| isOnViewClick){
-                view.setTextColor(textDefaultColor);
+/*modify by dragontec for bug 4048 start*/
+//                view.setTextColor(textDefaultColor);
+                if ((int) view.getTag() == mSelectedIndex){
+                    view.setTextColor(textSelectColor);
+                } else {
+                    view.setTextColor(textDefaultColor);
+                }
+/*modify by dragontec for bug 4048 end*/
 //                TextView textView = (TextView) linearContainer.getChildAt(mSelectedIndex);
 //                if (textView != null){
 //                    textView.setTextColor(textDefaultColor);
@@ -472,7 +490,12 @@ public class HorizontalTabView extends HorizontalScrollView
 
             // 失去焦点
             view.setHovered(false);
-            zoomOut(view);
+/*modify by dragontec for bug 4048 start*/
+//            zoomOut(view);
+            if ((int) view.getTag() != mSelectedIndex) {
+                zoomOut(view);
+            }
+/*modify by dragontec for bug 4048 end*/
             view.setBackgroundResource(android.R.color.transparent);
 
 //            // 隐藏view获取焦点
@@ -491,6 +514,9 @@ public class HorizontalTabView extends HorizontalScrollView
                         view.getContext(), tv.ismar.searchpage.R.animator.scalein_recomment_poster);
         animator.setTarget(view);
         animator.start();
+/*add by dragontec for bug 4048 start*/
+        view.setTag(R.id.horizontal_text_view_zoom_in, Boolean.valueOf(false));
+/*add by dragontec for bug 4048 end*/
     }
 
     // 放大
@@ -500,6 +526,9 @@ public class HorizontalTabView extends HorizontalScrollView
                         view.getContext(), tv.ismar.searchpage.R.animator.scaleout_recommend_poster);
         animator.setTarget(view);
         animator.start();
+/*add by dragontec for bug 4048 start*/
+        view.setTag(R.id.horizontal_text_view_zoom_in, Boolean.valueOf(true));
+/*add by dragontec for bug 4048 end*/
     }
 
     @Override

@@ -16,4 +16,8 @@
     <item type="id" name="libbeaver_tab_item"/>
 
     <item type="id" name="banner_item_position"/>
+    
+    <!-- add by dragontec for bug 4048 start -->
+    <item type="id" name="horizontal_text_view_zoom_in" />
+    <!-- add by dragontec for bug 4048 end -->
 </resources>
