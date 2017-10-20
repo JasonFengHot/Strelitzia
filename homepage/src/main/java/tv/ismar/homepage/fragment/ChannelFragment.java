@@ -346,7 +346,8 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
     public boolean onPositionChanged(int position, int direction, boolean canScroll) {
         boolean ret = false;
         if(direction == KeyEvent.KEYCODE_DPAD_DOWN){
-            if((position == 2 && canScroll) || (position == 1 && canScroll)){
+			/*modify by dragontec for bug 3983 修正了快速移动焦点时position直接从3开始，导致往下按title没有隐藏的bug*/
+            if((position >= 2 && canScroll) || (position == 1 && canScroll)){
                 ((HomeActivity)getActivity()).titleMoveOut();
                 ret = true;
             }
