@@ -121,6 +121,8 @@ public class HomeActivity extends BaseActivity
     private ValueAnimator mTitleMoveInAnimator;
     private boolean isAnimationPlaying;
     /*add by dragontec for bug 3983 end*/
+    public Button banner_arrow_up;
+    public Button banner_arrow_down;
 
     //广告
     private static final int MSG_AD_COUNTDOWN = 0x01;
@@ -290,6 +292,7 @@ public class HomeActivity extends BaseActivity
         mPersonCenterTel.setTextView(mPersonCenterTv);
         mHoverView.setFocusableInTouchMode(true);
         mHoverView.setFocusable(true);
+        setBackground(R.drawable.homepage_background);
 
         right_image = (ImageView) findViewById(R.id.guide_tab_right);
         left_image = (ImageView) findViewById(R.id.guide_tab_left);
@@ -302,6 +305,10 @@ public class HomeActivity extends BaseActivity
         mSeekBar = (SeekBar) findViewById(R.id.home_ad_seekbar);
         timeBtn= (Button) findViewById(R.id.home_ad_timer);
 
+//        banner_arrow_up = findView(R.id.banner_arrow_up);
+//        banner_arrow_down = findView(R.id.banner_arrow_down);
+//        banner_arrow_up.setOnHoverListener(this);
+//        banner_arrow_down.setOnHoverListener(this);
     }
 
     private void setBackground(int id) {
@@ -338,7 +345,7 @@ public class HomeActivity extends BaseActivity
         registerReceiver(mTimeTickBroadcast, filter);
         /*add by dragontec for bug 3983 start*/
         initTitleAnim();
-        /*add by dragontec for bug 3983 end*/        
+        /*add by dragontec for bug 3983 end*/
 		//广告部分
         mVideoView.setOnPreparedListener(this);
         mVideoView.setOnCompletionListener(this);

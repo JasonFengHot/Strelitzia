@@ -108,6 +108,7 @@
             android:clipToPadding="false"
             android:id="@+id/fragment_layout"
             android:focusable="false"
+            android:layout_marginTop="@dimen/channel_banner_mt"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
     </LinearLayout>

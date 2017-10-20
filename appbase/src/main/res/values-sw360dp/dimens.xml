@@ -659,6 +659,7 @@
 <dimen name="channel_title_margin_top">5.33dp</dimen>
 <dimen name="channel_title_margin_bottom">5.67dp</dimen>
 <dimen name="channel_title_height">22.33dp</dimen>
+<dimen name="channel_no_title_height">20.00dp</dimen>
 
 <!--导视尺寸-->
 <dimen name="guide_switch_shade_width">100.00dp</dimen>
