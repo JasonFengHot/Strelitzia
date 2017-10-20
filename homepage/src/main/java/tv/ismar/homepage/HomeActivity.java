@@ -1,5 +1,6 @@
 package tv.ismar.homepage;
 
+import android.animation.Animator;
 import android.animation.ValueAnimator;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -94,6 +95,9 @@ public class HomeActivity extends BaseActivity
     public static boolean isTitleHidden = false;
     private ViewGroup mViewLayout;
     private Object mTitleAnimLock = new Object();
+    private ValueAnimator mTitleMoveOutAnimator;
+    private ValueAnimator mTitleMoveInAnimator;
+    private boolean isAnimationPlaying;
     /*add by dragontec for bug 3983 end*/
 
     @Override
@@ -146,6 +150,9 @@ public class HomeActivity extends BaseActivity
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        /*add by dragontec for bug 3983 start*/
+        uninitTitleAnim();
+        /*add by dragontec for bug 3983 end*/
         unregisterReceiver(mTimeTickBroadcast);
         mTimeTickBroadcast = null;
     }
@@ -226,9 +233,15 @@ public class HomeActivity extends BaseActivity
         filter.addAction(Intent.ACTION_TIME_TICK);
         mTimeTickBroadcast = new TimeTickBroadcast();
         registerReceiver(mTimeTickBroadcast, filter);
+        /*add by dragontec for bug 3983 start*/
+        initTitleAnim();
+        /*add by dragontec for bug 3983 end*/
     }
 
     private void initData() {
+		/*add by dragontec for bug 3983 start 画面退出后由于是静态变量，所以需要赋初值*/
+        isTitleHidden = false;
+		/*add by dragontec for bug 3983 end*/
         mFetchDataControl.fetchChannels();
         ChannelFragment channelFragment = new ChannelFragment();
         channelFragment.setChannel("首页", HOME_PAGE_CHANNEL_TAG, "首页", 0);
@@ -261,7 +274,15 @@ public class HomeActivity extends BaseActivity
         }
         mChannelTab.addAllViews(tabs, 1);
     }
-
+	/*add by dragontec for bug 3983 start 当动画执行过程中不响应按键*/
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        if(isAnimationPlaying){
+            return true;
+        }
+        return super.dispatchKeyEvent(event);
+    }
+	/*add by dragontec for bug 3983 end*/
     @Override
     public void onClick(View v) {
         PageIntent pageIntent = new PageIntent();
@@ -427,24 +448,42 @@ public class HomeActivity extends BaseActivity
     }
 
     /*add by dragontec for bug 3983 start*/
+    private void initTitleAnim(){
+        int height = getResources().getDimensionPixelSize(R.dimen.banner_margin_top);
+        TitleAnimUpdateListener titleAnimUpdateListener = new TitleAnimUpdateListener();
+        TitleAnimStateListener titleAnimStateListener = new TitleAnimStateListener();
+
+        mTitleMoveOutAnimator = ValueAnimator.ofInt(0, -height);
+        mTitleMoveOutAnimator.setDuration(500);
+        mTitleMoveOutAnimator.setTarget(mViewLayout);
+        mTitleMoveOutAnimator.addUpdateListener(titleAnimUpdateListener);
+        mTitleMoveOutAnimator.addListener(titleAnimStateListener);
+
+        mTitleMoveInAnimator = ValueAnimator.ofInt(-height, 0);
+        mTitleMoveInAnimator.setDuration(500);
+        mTitleMoveInAnimator.setTarget(mViewLayout);
+        mTitleMoveInAnimator.addUpdateListener(titleAnimUpdateListener);
+        mTitleMoveInAnimator.addListener(titleAnimStateListener);
+    }
+
+    private void uninitTitleAnim(){
+        if(mTitleMoveOutAnimator != null){
+            mTitleMoveOutAnimator.removeAllListeners();
+            mTitleMoveOutAnimator.removeAllUpdateListeners();
+        }
+        if(mTitleMoveInAnimator != null){
+            mTitleMoveInAnimator.removeAllListeners();
+            mTitleMoveInAnimator.removeAllUpdateListeners();
+        }
+    }
     public void titleMoveOut() {
         synchronized (mTitleAnimLock) {
             if (isTitleHidden) {
                 return;
             }
-            int height = getResources().getDimensionPixelSize(R.dimen.banner_margin_top);
-            ValueAnimator mAnimator = ValueAnimator.ofInt(0, -height);
-            mAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-
-                @Override
-                public void onAnimationUpdate(ValueAnimator animation) {
-                    int animatorValue = (int) animation.getAnimatedValue();
-                    mViewLayout.setTranslationY(animatorValue);
-                }
-            });
-            mAnimator.setDuration(500);
-            mAnimator.setTarget(mViewLayout);
-            mAnimator.start();
+            if(mTitleMoveOutAnimator != null) {
+                mTitleMoveOutAnimator.start();
+            }
             isTitleHidden = true;
         }
     }
@@ -454,20 +493,41 @@ public class HomeActivity extends BaseActivity
             if (!isTitleHidden) {
                 return;
             }
-            int height = getResources().getDimensionPixelSize(R.dimen.banner_margin_top);
-            ValueAnimator mAnimator = ValueAnimator.ofInt(-height, 0);
-            mAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-
-                @Override
-                public void onAnimationUpdate(ValueAnimator animation) {
-                    int animatorValue = (int) animation.getAnimatedValue();
-                    mViewLayout.setTranslationY(animatorValue);
-                }
-            });
-            mAnimator.setDuration(500);
-            mAnimator.setTarget(mViewLayout);
-            mAnimator.start();
+            if(mTitleMoveInAnimator != null) {
+                mTitleMoveInAnimator.start();
+            }
             isTitleHidden = false;
+        }
+    }
+
+    private class TitleAnimUpdateListener implements ValueAnimator.AnimatorUpdateListener {
+        @Override
+        public void onAnimationUpdate(ValueAnimator animation) {
+            int animatorValue = (int) animation.getAnimatedValue();
+            mViewLayout.setTranslationY(animatorValue);
+        }
+    }
+
+    private class TitleAnimStateListener implements Animator.AnimatorListener {
+
+        @Override
+        public void onAnimationStart(Animator animation) {
+            isAnimationPlaying = true;
+        }
+
+        @Override
+        public void onAnimationEnd(Animator animation) {
+            isAnimationPlaying = false;
+        }
+
+        @Override
+        public void onAnimationCancel(Animator animation) {
+
+        }
+
+        @Override
+        public void onAnimationRepeat(Animator animation) {
+
         }
     }
     /*add by dragontec for bug 3983 end*/
