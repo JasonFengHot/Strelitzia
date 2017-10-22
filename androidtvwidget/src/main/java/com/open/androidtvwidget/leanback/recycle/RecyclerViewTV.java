@@ -28,6 +28,8 @@ import java.util.EventListener;
  */
 public class RecyclerViewTV extends RecyclerView implements PrvInterface {
 
+    private int firstCompletelyVisiblePosition;
+
     public RecyclerViewTV(Context context) {
         this(context, null);
     }
@@ -241,6 +243,23 @@ public class RecyclerViewTV extends RecyclerView implements PrvInterface {
         return false;
     }
 
+    public int getFirstCompletelyVisiblePosition() {
+        LayoutManager lm = getLayoutManager();
+        int[] positions = new int[] {0, 0};
+        if (lm != null) {
+            if (lm instanceof LinearLayoutManager) {
+                return ((LinearLayoutManager) lm).findFirstCompletelyVisibleItemPosition();
+            }
+            if (lm instanceof GridLayoutManager) {
+                return ((GridLayoutManager) lm).findFirstCompletelyVisibleItemPosition();
+            }
+            if(lm instanceof StaggeredGridLayoutManager){
+                return ((StaggeredGridLayoutManager) lm).findFirstCompletelyVisibleItemPositions(positions)[0];
+            }
+        }
+        return RecyclerView.NO_POSITION;
+    }
+
     public interface OnItemFocusChangeListener{
         void onItemFocusGain(View itemView, int position);
     }
@@ -261,7 +280,7 @@ public class RecyclerViewTV extends RecyclerView implements PrvInterface {
      * getStartWithPadding --> return (mIsVertical ? getPaddingTop() : getPaddingLeft());
      */
     public boolean cannotScrollBackward(int delta) {
-        return (getFirstVisiblePosition() == 0 && delta <= 0);
+        return (getFirstCompletelyVisiblePosition() == 0 && delta <= 0);
     }
 
     /**
@@ -270,7 +289,7 @@ public class RecyclerViewTV extends RecyclerView implements PrvInterface {
      * (getWidth() - getPaddingRight());
      */
     public boolean cannotScrollForward(int delta) {
-        return ((getFirstVisiblePosition() + getLayoutManager().getChildCount()) == getLayoutManager().getItemCount()) && (delta >= 0);
+        return (findLastCompletelyVisibleItemPosition()== getLayoutManager().getItemCount()-1) && (delta >= 0);
     }
 
     @Override

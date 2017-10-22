@@ -106,6 +106,7 @@ public class TemplateMovie extends Template implements View.OnClickListener, Vie
         mTitleCountTv = (TextView) view.findViewById(R.id.banner_title_count);
         mTitleTv = (TextView) view.findViewById(R.id.banner_title_tv);
         movieBanner = (RecyclerViewTV) view.findViewById(R.id.movie_banner);
+        mBannerLinearLayout.setRecyclerViewTV(movieBanner);
         movieLayoutManager = new LinearLayoutManagerTV(mContext, LinearLayoutManager.HORIZONTAL, false);
         int selectedItemSpace =
                 mContext.getResources().getDimensionPixelSize(R.dimen.banner_item_SelectedItemSpace);

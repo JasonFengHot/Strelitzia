@@ -717,12 +717,12 @@ public class HomeActivity extends BaseActivity
         if (mAdsList.get(index).media_type.equals(AdvertiseManager.TYPE_VIDEO)) {
             mIsPlayingVideo = true;
         }
+        String path="file://" + getFilesDir() + "/" + AdvertiseManager.AD_DIR + "/" +mAdsList.get(index).location;
         if (mIsPlayingVideo) {
             if (mVideoView.getVisibility() != View.VISIBLE) {
                 mPicImg.setVisibility(View.GONE);
                 mVideoView.setVisibility(View.VISIBLE);
             }
-            String path="file://" + getFilesDir() + "/" + AdvertiseManager.AD_DIR + "/" +mAdsList.get(index).location;
             mVideoView.setVideoPath(path);
             mVideoView.setOnPreparedListener(this);
             mVideoView.setOnCompletionListener(this);
@@ -733,8 +733,9 @@ public class HomeActivity extends BaseActivity
                 mPicImg.setVisibility(View.VISIBLE);
                 //  mSeekBar.setVisibility(View.VISIBLE);
             }
+
             Picasso.with(this)
-                    .load(mAdsList.get(index).location)
+                    .load(path)
                     .memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE)
                     .networkPolicy(NetworkPolicy.NO_CACHE, NetworkPolicy.NO_CACHE)
                     .into(mPicImg, new Callback() {

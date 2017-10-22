@@ -115,6 +115,7 @@ public class Template519 extends Template implements View.OnClickListener, View.
         mTitleCountTv = (TextView) view.findViewById(R.id.banner_title_count);
         mTitleTv = (TextView) view.findViewById(R.id.banner_title_tv);
         horizontal519Banner = (RecyclerViewTV) view.findViewById(R.id.horizontal_519_banner);
+        mBannerLinearLayout.setRecyclerViewTV(horizontal519Banner);
         horizontal519LayoutManager =
                 new LinearLayoutManagerTV(mContext, LinearLayoutManager.HORIZONTAL, false);
         int selectedItemSpace =
