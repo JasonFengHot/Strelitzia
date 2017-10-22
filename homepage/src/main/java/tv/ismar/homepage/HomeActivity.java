@@ -198,7 +198,6 @@ public class HomeActivity extends BaseActivity
         initListener();
         initAd();
         initData();
-        new Handler().postDelayed(mRunnable, 1000);
         //        contentview.getViewTreeObserver().addOnGlobalFocusChangeListener(new
         // ViewTreeObserver.OnGlobalFocusChangeListener() {
         //            @Override
@@ -387,8 +386,11 @@ public class HomeActivity extends BaseActivity
         }
         mSeekBar.setMax(mCountAdTime);
         mTotleTime=mCountAdTime;
-        if(fromPage==null||!fromPage.equals("launcher"))
-        playLaunchAd(0);
+        if(fromPage==null||!fromPage.equals("launcher")) {
+            playLaunchAd(0);
+        }else {
+            go2HomeActivity();
+        }
     }
 
     private void replaceFragment(Fragment fragment, String scrollType) {
@@ -821,6 +823,7 @@ public class HomeActivity extends BaseActivity
         ad_layout.setVisibility(View.GONE);
         home_layout.setVisibility(View.VISIBLE);
         initServer();
+        new Handler().postDelayed(mRunnable, 1000);
     }
 
     @Override
