@@ -28,7 +28,14 @@
         <item name="android:windowBackground">@mipmap/posters</item>
         <item name="android:textColor">@android:color/white</item>
     </style>
-
+    <style name="IsmartvAppTransferTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:textViewStyle">@style/AppTheme.Widget.TextView</item>
+        <item name="android:windowBackground">@mipmap/app_launch_bg</item>
+        <item name="android:textColor">@android:color/white</item>
+    </style>
     <style name="IsmartvTheme" parent="Theme.AppCompat.NoActionBar">cr
         <!-- Customize your theme here. -->
         <item name="android:textViewStyle">@style/AppTheme.Widget.TextView</item>

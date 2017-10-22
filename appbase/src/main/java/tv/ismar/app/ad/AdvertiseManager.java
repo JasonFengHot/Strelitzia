@@ -93,7 +93,6 @@ public class AdvertiseManager {
                     advertisementTables.add(tepAdvTable);
                     break;
                 }
-                advTable.location = "file://" + mContext.getFilesDir() + "/" + AD_DIR + "/" + location;
             }
         }
         return advertisementTables;

@@ -50,6 +50,7 @@ import tv.ismar.app.widget.TelescopicWrap;
 import tv.ismar.homepage.control.FetchDataControl;
 import tv.ismar.homepage.control.HomeControl;
 import tv.ismar.homepage.fragment.ChannelFragment;
+import tv.ismar.homepage.view.AdvertiseActivity;
 import tv.ismar.homepage.widget.DaisyVideoView;
 import tv.ismar.homepage.widget.HorizontalTabView;
 import tv.ismar.player.gui.PlaybackService;
@@ -131,6 +132,7 @@ public class HomeActivity extends BaseActivity
     private boolean mIsPlayingVideo = false;
     private int mCountAdTime = 0;
     private int mTotleTime = 0;
+    private String fromPage="";
     private Button timeBtn;
     private RelativeLayout ad_layout;
     private LinearLayout home_layout;
@@ -190,10 +192,10 @@ public class HomeActivity extends BaseActivity
         setContentView(contentview);
         homepageTemplate = getIntent().getStringExtra("homepage_template");
         homepageUrl = getIntent().getStringExtra("homepage_url");
+        fromPage=getIntent().getStringExtra("fromPage");
         systemInit();
         findViews();
         initListener();
-        initServer();
         initAd();
         initData();
         new Handler().postDelayed(mRunnable, 1000);
@@ -385,6 +387,7 @@ public class HomeActivity extends BaseActivity
         }
         mSeekBar.setMax(mCountAdTime);
         mTotleTime=mCountAdTime;
+        if(fromPage==null||!fromPage.equals("launcher"))
         playLaunchAd(0);
     }
 
@@ -711,7 +714,11 @@ public class HomeActivity extends BaseActivity
                 mPicImg.setVisibility(View.GONE);
                 mVideoView.setVisibility(View.VISIBLE);
             }
-            mVideoView.setVideoPath(mAdsList.get(index).location);
+            String path="file://" + getFilesDir() + "/" + AdvertiseManager.AD_DIR + "/" +mAdsList.get(index).location;
+            mVideoView.setVideoPath(path);
+            mVideoView.setOnPreparedListener(this);
+            mVideoView.setOnCompletionListener(this);
+            mVideoView.setOnErrorListener(this);
         } else {
             if (mPicImg.getVisibility() != View.VISIBLE) {
                 mVideoView.setVisibility(View.GONE);
@@ -807,11 +814,12 @@ public class HomeActivity extends BaseActivity
         setBackground(R.drawable.homepage_background);
         ad_layout.setVisibility(View.GONE);
         home_layout.setVisibility(View.VISIBLE);
+        initServer();
     }
 
     @Override
     public boolean onError(MediaPlayer mp, int what, int extra) {//播放出现错误
-        if(playNextVideo()){
+        if(!playNextVideo()){
             go2HomeActivity();
         }
         return true;
