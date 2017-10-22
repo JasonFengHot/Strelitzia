@@ -117,6 +117,7 @@ public class FetchDataControl extends BaseControl{
 
                     @Override
                     public void onError(Throwable e) {
+                        e.printStackTrace();
 
                     }
 
@@ -171,7 +172,9 @@ public class FetchDataControl extends BaseControl{
                     public void onCompleted() {}
 
                     @Override
-                    public void onError(Throwable e) {}
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                    }
 
                     @Override
                     public void onNext(List<BannerRecommend> bannerRecommends) {

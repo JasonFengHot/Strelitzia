@@ -17,31 +17,17 @@ import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.KeyEvent;
-import android.view.LayoutInflater;
-import android.view.MotionEvent;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.SeekBar;
-import android.widget.TextView;
-
+import android.view.*;
+import android.widget.*;
+import cn.ismartv.truetime.TrueTime;
 import com.squareup.leakcanary.RefWatcher;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-
-import cn.ismartv.truetime.TrueTime;
 import tv.ismar.account.ActiveService;
 import tv.ismar.app.BaseActivity;
 import tv.ismar.app.BaseControl;
@@ -64,10 +50,13 @@ import tv.ismar.app.widget.TelescopicWrap;
 import tv.ismar.homepage.control.FetchDataControl;
 import tv.ismar.homepage.control.HomeControl;
 import tv.ismar.homepage.fragment.ChannelFragment;
-import tv.ismar.homepage.view.AdvertiseActivity;
 import tv.ismar.homepage.widget.DaisyVideoView;
 import tv.ismar.homepage.widget.HorizontalTabView;
 import tv.ismar.player.gui.PlaybackService;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 
 import static tv.ismar.app.BaseControl.TAB_CHANGE_FALG;
 import static tv.ismar.homepage.control.FetchDataControl.FETCH_CHANNEL_TAB_FLAG;
@@ -81,6 +70,7 @@ public class HomeActivity extends BaseActivity
         View.OnFocusChangeListener,
         View.OnHoverListener ,MediaPlayer.OnPreparedListener,
         MediaPlayer.OnCompletionListener, MediaPlayer.OnErrorListener{
+    private static final String TAG = "HomeActivity";
 
     public static final String HOME_PAGE_CHANNEL_TAG = "homepage";
 /*modify by dragontec for bug 4057 start*/
@@ -102,7 +92,7 @@ public class HomeActivity extends BaseActivity
     private TelescopicWrap mCollectionTel; // 历史收藏伸缩包装类
     private TelescopicWrap mPersonCenterTel; // 个人中心包装类
     private BitmapDecoder mBitmapDecoder;
-    private int mLastSelectedIndex = 1; // 记录上一次选中的位置
+    private int mLastSelectedIndex = -1; // 记录上一次选中的位置
     private TimeTickBroadcast mTimeTickBroadcast = null;
     private View headHoverd;
 
@@ -189,12 +179,17 @@ public class HomeActivity extends BaseActivity
             }
         }
     };
+    private String homepageTemplate;
+    private String homepageUrl;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate((savedInstanceState != null) ? null : savedInstanceState);
         getWindow().setFormat(PixelFormat.TRANSLUCENT);
         View contentview = LayoutInflater.from(this).inflate(R.layout.home_activity_layout, null);
         setContentView(contentview);
+        homepageTemplate = getIntent().getStringExtra("homepage_template");
+        homepageUrl = getIntent().getStringExtra("homepage_url");
         systemInit();
         findViews();
         initListener();
@@ -211,11 +206,9 @@ public class HomeActivity extends BaseActivity
         //                }
         //            }
         //        });
+
     }
-    private void initServer(){
-        startAdsService();
-        startIntervalActive();
-    }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -255,6 +248,16 @@ public class HomeActivity extends BaseActivity
         mTimeTickBroadcast = null;
         RefWatcher refWatcher = VodApplication.getRefWatcher(this);
         refWatcher.watch(this);
+    }
+
+    private void initServer(){
+        startAdsService();
+        startIntervalActive();
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
     }
 
     /*初始化一些系统参数*/
@@ -367,10 +370,8 @@ public class HomeActivity extends BaseActivity
         isTitleHidden = false;
 		/*add by dragontec for bug 3983 end*/
         mFetchDataControl.fetchChannels();
-        ChannelFragment channelFragment = new ChannelFragment();
-        channelFragment.setChannel("首页", HOME_PAGE_CHANNEL_TAG, "首页", 0);
-        replaceFragment(channelFragment, "none");
     }
+
     private void initAd(){
         mAdvertiseManager = new AdvertiseManager(this);
         mAdsList = mAdvertiseManager.getAppLaunchAdvertisement();
@@ -402,18 +403,30 @@ public class HomeActivity extends BaseActivity
     }
 
     private void fillChannelTab(ChannelEntity[] channelEntities) {
+        int defaultSelectPosition = 1;
         List<HorizontalTabView.Tab> tabs = new ArrayList<>();
         HorizontalTabView.Tab searchTab = new HorizontalTabView.Tab("", "搜索");
         tabs.add(searchTab);
         HorizontalTabView.Tab homepageTab = new HorizontalTabView.Tab("", "首页");
         tabs.add(homepageTab);
-        for (ChannelEntity entity : channelEntities) {
-            HorizontalTabView.Tab tab = new HorizontalTabView.Tab("", entity.getName());
+        if (!TextUtils.isEmpty(homepageUrl) && homepageUrl.equals("/api/tv/homepage/top")) {
+            defaultSelectPosition = 1;
+        }
+        for (int i = 0; i < channelEntities.length; i++) {
+            ChannelEntity channelEntity = channelEntities[i];
+            if (!TextUtils.isEmpty(homepageUrl) && !TextUtils.isEmpty(channelEntity.getHomepage_url())
+                    && channelEntity.getHomepage_url().contains(homepageUrl)) {
+                defaultSelectPosition = i + 2;
+            }
+            HorizontalTabView.Tab tab = new HorizontalTabView.Tab("", channelEntity.getName());
             tabs.add(tab);
         }
-        mChannelTab.addAllViews(tabs, 1);
+        callBack( TAB_CHANGE_FALG, defaultSelectPosition);
+        Log.d(TAG, "channel default position: " + defaultSelectPosition);
+        mChannelTab.addAllViews(tabs, defaultSelectPosition);
     }
-	/*add by dragontec for bug 3983 start 当动画执行过程中不响应按键*/
+
+    /*add by dragontec for bug 3983 start 当动画执行过程中不响应按键*/
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
         if(isAnimationPlaying){

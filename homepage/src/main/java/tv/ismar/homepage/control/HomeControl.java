@@ -2,6 +2,7 @@ package tv.ismar.homepage.control;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.View;
 
 import java.text.DateFormat;
@@ -12,9 +13,11 @@ import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
 import cn.ismartv.truetime.TrueTime;
+import com.orhanobut.logger.Logger;
 import rx.Observable;
 import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
+import tv.ismar.account.IsmartvHttpLoggingInterceptor;
 import tv.ismar.app.BaseControl;
 import tv.ismar.app.service.TrueTimeService;
 import tv.ismar.homepage.view.ChannelChangeObservable;
@@ -27,6 +30,7 @@ import tv.ismar.homepage.widget.HorizontalTabView;
  */
 
 public class HomeControl extends BaseControl{
+    private static final String TAG = "HomeControl";
     public HomeControl(Context context,ControlCallBack callBack) {
         super(context, callBack);
     }
@@ -45,6 +49,7 @@ public class HomeControl extends BaseControl{
 
                     @Override
                     public void onNext(Integer position) {
+                        Logger.t(TAG).d("channel change position: " + position);
                         mCallBack.callBack(TAB_CHANGE_FALG, position);//0-搜索，1-首页
                     }
                 });
