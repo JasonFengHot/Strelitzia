@@ -211,7 +211,7 @@ public class TemplateTvPlay extends Template
                             mFetchDataControl.mHomeEntity.style,
                             mFetchDataControl.mHomeEntity.section_slug);
         } else {
-            mFetchDataControl.go2Detail(mAdapter.getmData().get(position - 1));
+            mFetchDataControl.go2Detail(mAdapter.getmData().get(position));
         }
     }
 
