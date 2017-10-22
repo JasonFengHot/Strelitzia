@@ -106,6 +106,7 @@ public class TemplateConlumn extends Template
         mBannerLinearLayout = (BannerLinearLayout) view.findViewById(R.id.banner_layout);
         mBannerLinearLayout.setNavigationLeft(navigationLeft);
         mBannerLinearLayout.setNavigationRight(navigationRight);
+        mBannerLinearLayout.setRecyclerViewTV(mRecyclerView);
     }
 
     @Override

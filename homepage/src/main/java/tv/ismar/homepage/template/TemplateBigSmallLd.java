@@ -110,6 +110,7 @@ public class TemplateBigSmallLd extends Template
         movieMixBanner = (RecyclerViewTV) view.findViewById(R.id.movie_mix_banner);
         movieMixLayoutManager =
                 new LinearLayoutManagerTV(mContext, LinearLayoutManager.HORIZONTAL, false);
+        mBannerLinearLayout.setRecyclerViewTV(movieMixBanner);
         int selectedItemSpace =
                 mContext.getResources().getDimensionPixelSize(R.dimen.banner_item_SelectedItemSpace);
         //        movieMixBanner.addItemDecoration(new

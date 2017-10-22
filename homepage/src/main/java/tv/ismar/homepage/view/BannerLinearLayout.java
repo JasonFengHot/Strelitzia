@@ -9,6 +9,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.LinearLayout;
 
+import com.open.androidtvwidget.leanback.recycle.RecyclerViewTV;
 import com.orhanobut.logger.Logger;
 
 import static android.view.MotionEvent.BUTTON_PRIMARY;
@@ -22,6 +23,7 @@ public class BannerLinearLayout extends LinearLayout {
 
     private View navigationLeft;
     private View navigationRight;
+    private RecyclerViewTV recyclerViewTV;
 
     private boolean isDpadCenterClick = false;
 
@@ -44,6 +46,10 @@ public class BannerLinearLayout extends LinearLayout {
         this.navigationRight = navigationRight;
     }
 
+    public void setRecyclerViewTV(RecyclerViewTV recyclerViewTV) {
+        this.recyclerViewTV = recyclerViewTV;
+    }
+
     public BannerLinearLayout(Context context) {
         super(context);
     }
@@ -58,8 +64,10 @@ public class BannerLinearLayout extends LinearLayout {
         switch (event.getAction()){
             case MotionEvent.ACTION_HOVER_ENTER:
             case MotionEvent.ACTION_HOVER_MOVE:
-                if (navigationLeft.getVisibility() == INVISIBLE){
+                if (navigationLeft.getVisibility() == INVISIBLE&&recyclerViewTV!=null&&!recyclerViewTV.cannotScrollBackward(-1)) {
                     navigationLeft.setVisibility(VISIBLE);
+                }
+                if(navigationRight.getVisibility()==INVISIBLE&&recyclerViewTV!=null&&!recyclerViewTV.cannotScrollForward(1)){
                     navigationRight.setVisibility(VISIBLE);
                 }
                 break;

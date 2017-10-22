@@ -140,6 +140,7 @@ public class TemplateOrder extends Template
             mTitleCountTv = (TextView) view.findViewById(R.id.banner_title_count);
             mTitleTv = (TextView) view.findViewById(R.id.banner_title_tv);
             subscribeBanner = (RecyclerViewTV) view.findViewById(R.id.subscribe_banner);
+            mBannerLinearLayout.setRecyclerViewTV(subscribeBanner);
             subscribeLayoutManager =
                     new LinearLayoutManagerTV(mContext, LinearLayoutManagerTV.HORIZONTAL, false);
             int selectedItemSpace =
