@@ -117,12 +117,15 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
                 template.onResume();
             }
         }
-        isneedpause = true;
+		if (!isneedpause) {
+			return;
+		}
+		Log.i(TAG,"onResum: "+isneedpause);
     }
 
     @Override
     public void onPause() {
-        Log.d(TAG, "onPause");
+        Log.d(TAG, "onPause isnnedpause: "+isneedpause);
         if (mTemplates != null) {
             for (Template template : mTemplates) {
             	if (isneedpause){
@@ -208,7 +211,7 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
 
     @Override
     public void callBack(int flags, Object... args) {
-        GuideBanner[] banners = (GuideBanner[]) args;
+		GuideBanner[] banners = (GuideBanner[]) args;
         initBanner(banners);
     }
 
@@ -433,4 +436,5 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
 			}
 		}
 	}
+
 }

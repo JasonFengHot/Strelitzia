@@ -588,11 +588,13 @@ public class HomeActivity extends BaseActivity
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
+        Log.i("ChannelFragment","activity key: "+keyCode);
         if (mLastFocusView != null && mHoverView != null && mHoverView.hasFocus()) {
             mLastFocusView.requestFocus();
             mLastFocusView.requestFocusFromTouch();
             //            mHoverView.setFocusable(false);
             //            mHoverView.setFocusableInTouchMode(false);
+            Log.i("ChannelFragment","activity return: "+keyCode);
             return true;
         }
 /*delete by dragontec for bug 4057 start*/
