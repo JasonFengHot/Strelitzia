@@ -144,7 +144,7 @@ public class TemplateGuide extends Template
 
     @Override
     public void onPause() {
-        Log.d(TAG, "onPause");
+        Logger.t(TAG).d("onPause");
 
         if (mHandler != null) {
             mHandler.removeMessages(CAROUSEL_NEXT);

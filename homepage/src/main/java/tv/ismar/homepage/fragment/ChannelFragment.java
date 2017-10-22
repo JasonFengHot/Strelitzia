@@ -17,6 +17,7 @@ import java.util.List;
 
 import tv.ismar.app.BaseControl;
 import tv.ismar.app.VodApplication;
+import tv.ismar.app.core.VodUserAgent;
 import tv.ismar.app.entity.GuideBanner;
 import tv.ismar.homepage.HomeActivity;
 import tv.ismar.homepage.R;
@@ -36,6 +37,8 @@ import tv.ismar.homepage.template.TemplateRecommend;
 import tv.ismar.homepage.template.TemplateTvPlay;
 import tv.ismar.homepage.widget.RecycleLinearLayout;
 import tv.ismar.library.util.StringUtils;
+
+import static android.view.KeyEvent.KEYCODE_SLEEP;
 
 /**
  * @AUTHOR: xi @DATE: 2017/9/8 @DESC: 频道fragemnt
@@ -75,7 +78,10 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
 
 	private View mLastFocus;
 	/*add by dragontec for bug 4077 end*/
-    @Override
+
+	private boolean isneedpause;
+
+	@Override
     public void onAttach(Context context) {
         super.onAttach(context);
         mControl = new FetchDataControl(getContext(), this);
@@ -105,11 +111,13 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
     @Override
     public void onResume() {
         super.onResume();
+
         if (mTemplates != null) {
             for (Template template : mTemplates) {
                 template.onResume();
             }
         }
+        isneedpause = true;
     }
 
     @Override
@@ -117,7 +125,11 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
         Log.d(TAG, "onPause");
         if (mTemplates != null) {
             for (Template template : mTemplates) {
-                template.onPause();
+            	if (isneedpause){
+					template.onPause();
+				}else {
+
+				}
             }
         }
 
@@ -400,4 +412,25 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
 		}
 	}
 	/*add by dragontec for bug 4077 end*/
+
+	public void onKeyDown(int keyCode, KeyEvent event) {
+		Log.d(TAG, "keydown: " + keyCode);
+		if ("lcd_s3a01".equals(VodUserAgent.getModelName())) {
+			if (keyCode == 707 || keyCode == 774 || keyCode == 253) {
+				isneedpause = false;
+			}
+		} else if ("lx565ab".equals(VodUserAgent.getModelName())) {
+			if (keyCode == 82 || keyCode == 707 || keyCode == 253) {
+				isneedpause = false;
+			}
+		} else if ("lcd_xxcae5a_b".equals(VodUserAgent.getModelName())) {
+			if (keyCode == 497 || keyCode == 498 || keyCode == 490) {
+				isneedpause = false;
+			}
+		} else {
+			if (keyCode == 223 || keyCode == 499 || keyCode == 480) {
+				isneedpause = false;
+			}
+		}
+	}
 }

@@ -596,6 +596,12 @@ public class HomeActivity extends BaseActivity
 //        headHoverd.setFocusableInTouchMode(false);
 //        headHoverd.setFocusable(false);
 /*delete by dragontec for bug 4057 end*/
+
+        ChannelFragment channelFragment = (ChannelFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_layout);
+        if (channelFragment != null){
+            channelFragment.onKeyDown(keyCode, event);
+        }
+
         return super.onKeyDown(keyCode, event);
     }
 
