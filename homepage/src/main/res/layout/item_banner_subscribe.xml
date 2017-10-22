@@ -47,7 +47,7 @@
 
         <TextView
             android:id="@+id/publish_time"
-            android:layout_width="@dimen/banner_subscribe_publish_time_w"
+            android:layout_width="wrap_content"
             android:layout_height="@dimen/banner_subscribe_publish_time_h"
             android:layout_marginTop="@dimen/banner_subscribe_publish_time_mt"
             android:gravity="center"
