@@ -240,6 +240,8 @@ public class TemplateGuide extends Template
         mHeadView.findViewById(R.id.guide_head_ismartv_linearlayout).setOnHoverListener(this);
         mVideoViewLayout.setOnClickListener(this);
         mLoadingIg.setOnClickListener(this);
+        mLoadingIg.setOnFocusChangeListener(this);
+        mLoadingIg.setOnHoverListener(this);
     }
 
     /*更改图标背景*/
