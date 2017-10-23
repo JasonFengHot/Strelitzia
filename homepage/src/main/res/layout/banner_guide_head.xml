@@ -37,6 +37,7 @@
                 android:id="@+id/guide_video_loading_image"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:focusableInTouchMode="false"
                 android:focusable="true"
                 android:scaleType="fitXY"
                 />
