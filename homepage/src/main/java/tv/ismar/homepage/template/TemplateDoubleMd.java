@@ -119,6 +119,7 @@ public class TemplateDoubleMd extends Template
     mRecyclerView.setItemAnimator(new DefaultItemAnimator());
     mRecyclerView.setLayoutManager(mDoubleLayoutManager);
     mRecyclerView.setSelectedItemAtCentered(false);
+    mRecyclerView.setHasHeaderView(true);
     int selectedItemOffset =
         mContext.getResources().getDimensionPixelSize(R.dimen.banner_item_setSelectedItemOffset);
     mRecyclerView.setSelectedItemOffset(100, 100);

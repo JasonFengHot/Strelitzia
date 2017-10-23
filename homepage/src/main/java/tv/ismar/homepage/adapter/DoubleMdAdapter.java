@@ -76,7 +76,7 @@ public class DoubleMdAdapter extends BaseRecycleAdapter<DoubleMdAdapter.DoubleMd
                     Picasso.with(mContext).load(poster.vertical_url).into(holder.mPosterIg);
                 }
             } else {
-                Picasso.with(mContext).load(R.drawable.list_item_preview_bg).into(holder.mPosterIg);
+                Picasso.with(mContext).load(R.drawable.list_item_ppreview_bg).into(holder.mPosterIg);
             }
             Picasso.with(mContext).load(VipMark.getInstance().getBannerIconMarkImage(poster.top_left_corner)).into(holder.mLtIconTv);
             holder.mRbIconTv.setText(new DecimalFormat("0.0").format(poster.rating_average));

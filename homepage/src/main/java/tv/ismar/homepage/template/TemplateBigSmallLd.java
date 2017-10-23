@@ -113,6 +113,7 @@ public class TemplateBigSmallLd extends Template
         mTitleCountTv = (TextView) view.findViewById(R.id.banner_title_count);
         mTitleTv = (TextView) view.findViewById(R.id.banner_title_tv);
         movieMixBanner = (RecyclerViewTV) view.findViewById(R.id.movie_mix_banner);
+        movieMixBanner.setHasHeaderView(true);
         movieMixLayoutManager =
                 new LinearLayoutManagerTV(mContext, LinearLayoutManager.HORIZONTAL, false);
         mBannerLinearLayout.setRecyclerViewTV(movieMixBanner);
