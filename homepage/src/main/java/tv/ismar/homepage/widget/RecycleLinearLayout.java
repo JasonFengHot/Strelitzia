@@ -43,8 +43,9 @@ public class RecycleLinearLayout extends LinearLayout {
 	/*add by dragontec for bug 3983 end*/
     private Button arrow_up;
     private Button arrow_down;
-    private int dataSize;
-
+    private int dataSize;    
+	private int currentBannerPos=0;
+    private HomeRootRelativeLayout homeRootRelativeLayout;
 
     public RecycleLinearLayout(Context context) {
         super(context);
@@ -132,6 +133,19 @@ public class RecycleLinearLayout extends LinearLayout {
 
     private void scrollToVisiable(View view){
         if(view != null){
+            currentBannerPos=indexOfChild(view);
+            if(homeRootRelativeLayout!=null) {
+                if (currentBannerPos < 2) {
+                    homeRootRelativeLayout.setShowUp(false);
+                }else{
+                    homeRootRelativeLayout.setShowUp(true);
+                }
+                if(currentBannerPos==getChildCount()-1||(int)view.getTag()==R.layout.banner_more){
+                    homeRootRelativeLayout.setShowDown(false);
+                }else{
+                    homeRootRelativeLayout.setShowDown(true);
+                }
+            }
             int height = view.getHeight();
             int[] location = new int[]{0, 0};
             view.getLocationOnScreen(location);
@@ -146,6 +160,19 @@ public class RecycleLinearLayout extends LinearLayout {
 
     private void scrollToTop(View view){
         if(view != null){
+            currentBannerPos=indexOfChild(view);
+            if(homeRootRelativeLayout!=null) {
+                if (currentBannerPos < 2) {
+                    homeRootRelativeLayout.setShowUp(false);
+                }else{
+                    homeRootRelativeLayout.setShowUp(true);
+                }
+                if(currentBannerPos==getChildCount()-1||(int)view.getTag()==R.layout.banner_more){
+                    homeRootRelativeLayout.setShowDown(false);
+                }else{
+                    homeRootRelativeLayout.setShowDown(true);
+                }
+            }
             int[] location = new int[]{0, 0};
             view.getLocationOnScreen(location);
             Log.i(TAG, "top:"+location[1]);
@@ -298,7 +325,35 @@ public class RecycleLinearLayout extends LinearLayout {
         this.arrow_up.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                View view = getChildAt(currentBannerPos<=2?0:currentBannerPos-1);
+                int key = (int) view.getTag();
+                int tag = (int) view.getTag(key);
+                boolean canScroll = tag>>30==1;//1可滑动，0不可滑动
+                int position = (tag<<2)>>2;
+                if(view==mLastView) {
+                    if (key == R.layout.banner_more) {
+                        YoYo.with(Techniques.VerticalShake).duration(1000).playOn(view);
+                    }
+                }
+                boolean startTitleState = HomeActivity.isTitleHidden;
+                if(mPositionChangeListener != null){
+                    mPositionChangeListener.onPositionChanged(position,KeyEvent.KEYCODE_DPAD_UP,canScroll);
+                }
+                boolean endTitleState = HomeActivity.isTitleHidden;
+                isScrollDuringTitleHiddenState =startTitleState && endTitleState;
+                if (position >= getChildCount() - BANNER_LOAD_AIMING_OFF) {
+                    if (mOnDataFinishedListener != null) {
+                        mOnDataFinishedListener.onDataFinished(view);
+                    }
+                }
+                //滑动处理
+                if(position==getChildCount()-1){
+                    if (key != R.layout.banner_more) {
+                        scrollToVisiable(view);
+                    }
+                } else {
+                    scrollToTop(view);
+                }
             }
         });
     }
@@ -308,7 +363,41 @@ public class RecycleLinearLayout extends LinearLayout {
         this.arrow_down.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
+                View view = getChildAt(currentBannerPos==0?2:currentBannerPos+1>=getChildCount()?currentBannerPos:currentBannerPos+1);
+                int key = (int) view.getTag();
+                int tag = (int) view.getTag(key);
+                boolean canScroll = tag>>30==1;//1可滑动，0不可滑动
+                int position = (tag<<2)>>2;
+                if(view==mLastView) {
+                    if (key == R.layout.banner_more) {
+                        YoYo.with(Techniques.VerticalShake).duration(1000).playOn(view);
+                    }
 
+                    if (position >= getChildCount() - BANNER_LOAD_AIMING_OFF) {
+                        if (mOnDataFinishedListener != null) {
+                            mOnDataFinishedListener.onDataFinished(view);
+                        }
+                    }
+                }
+                boolean startTitleState = HomeActivity.isTitleHidden;
+                    if(mPositionChangeListener != null){
+                        mPositionChangeListener.onPositionChanged(position,KeyEvent.KEYCODE_DPAD_DOWN,canScroll);
+                    }
+                boolean endTitleState = HomeActivity.isTitleHidden;
+                isScrollDuringTitleHiddenState =startTitleState && endTitleState;
+                if (position >= getChildCount() - BANNER_LOAD_AIMING_OFF) {
+                    if (mOnDataFinishedListener != null) {
+                        mOnDataFinishedListener.onDataFinished(view);
+                    }
+                }
+                //滑动处理
+                if(position==getChildCount()-1){
+                    if (key != R.layout.banner_more) {
+                        scrollToVisiable(view);
+                    }
+                } else {
+                    scrollToTop(view);
+                }
             }
         });
     }
@@ -347,4 +436,8 @@ public class RecycleLinearLayout extends LinearLayout {
         boolean onPositionChanged(int position, int direction, boolean canScroll);
     }
 	/*add by dragontec for bug 3983 end*/
+
+    public void setHomeRootRelativeLayout(HomeRootRelativeLayout homeRootRelativeLayout) {
+        this.homeRootRelativeLayout = homeRootRelativeLayout;
+    }
 }

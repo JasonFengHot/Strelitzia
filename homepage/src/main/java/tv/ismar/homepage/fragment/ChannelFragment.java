@@ -8,31 +8,17 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import com.orhanobut.logger.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import tv.ismar.app.BaseControl;
-import tv.ismar.app.core.VodUserAgent;
 import tv.ismar.app.entity.GuideBanner;
 import tv.ismar.homepage.HomeActivity;
 import tv.ismar.homepage.R;
 import tv.ismar.homepage.control.FetchDataControl;
-import tv.ismar.homepage.template.Template;
-import tv.ismar.homepage.template.Template519;
-import tv.ismar.homepage.template.TemplateBigSmallLd;
-import tv.ismar.homepage.template.TemplateCenter;
-import tv.ismar.homepage.template.TemplateConlumn;
-import tv.ismar.homepage.template.TemplateDoubleLd;
-import tv.ismar.homepage.template.TemplateDoubleMd;
-import tv.ismar.homepage.template.TemplateGuide;
-import tv.ismar.homepage.template.TemplateMore;
-import tv.ismar.homepage.template.TemplateMovie;
-import tv.ismar.homepage.template.TemplateOrder;
-import tv.ismar.homepage.template.TemplateRecommend;
-import tv.ismar.homepage.template.TemplateTvPlay;
+import tv.ismar.homepage.template.*;
 import tv.ismar.homepage.widget.RecycleLinearLayout;
 import tv.ismar.library.util.StringUtils;
 
@@ -75,8 +61,6 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
 	private View mLastFocus;
 	/*add by dragontec for bug 4077 end*/
 
-	private boolean isneedpause;
-
 	@Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -104,7 +88,18 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
         initData();
     }
 
-    @Override
+	@Override
+	public void onStart() {
+		super.onStart();
+		Log.d(TAG, "onStart");
+		if (mTemplates != null) {
+			for (Template template : mTemplates) {
+				template.onStart();
+			}
+		}
+	}
+
+	@Override
     public void onResume() {
         super.onResume();
 
@@ -113,22 +108,13 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
                 template.onResume();
             }
         }
-		if (!isneedpause) {
-			return;
-		}
-		Log.i(TAG,"onResum: "+isneedpause);
     }
 
     @Override
     public void onPause() {
-        Log.d(TAG, "onPause isnnedpause: "+isneedpause);
         if (mTemplates != null) {
             for (Template template : mTemplates) {
-            	if (isneedpause){
 					template.onPause();
-				}else {
-
-				}
             }
         }
 
@@ -182,10 +168,11 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
 
     private void findView(View view) {
         mLinearContainer = (RecycleLinearLayout) view.findViewById(R.id.scroll_linear_container);
-//        if(getActivity() instanceof HomeActivity){
-//            mLinearContainer.setArrow_up(((HomeActivity) getActivity()).banner_arrow_up);
-//            mLinearContainer.setArrow_down(((HomeActivity) getActivity()).banner_arrow_down);
-//        }
+        if(getActivity() instanceof HomeActivity){
+            mLinearContainer.setArrow_up(((HomeActivity) getActivity()).banner_arrow_up);
+            mLinearContainer.setArrow_down(((HomeActivity) getActivity()).banner_arrow_down);
+			mLinearContainer.setHomeRootRelativeLayout(((HomeActivity) getActivity()).mHoverView);
+        }
     }
 
     public void setChannel(String name, String channel, String title, int style) {
@@ -417,23 +404,23 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
 
 	public void onKeyDown(int keyCode, KeyEvent event) {
 		Log.d(TAG, "keydown: " + keyCode);
-		if ("lcd_s3a01".equals(VodUserAgent.getModelName())) {
-			if (keyCode == 707 || keyCode == 774 || keyCode == 253) {
-				isneedpause = false;
-			}
-		} else if ("lx565ab".equals(VodUserAgent.getModelName())) {
-			if (keyCode == 82 || keyCode == 707 || keyCode == 253) {
-				isneedpause = false;
-			}
-		} else if ("lcd_xxcae5a_b".equals(VodUserAgent.getModelName())) {
-			if (keyCode == 497 || keyCode == 498 || keyCode == 490) {
-				isneedpause = false;
-			}
-		} else {
-			if (keyCode == 223 || keyCode == 499 || keyCode == 480) {
-				isneedpause = false;
-			}
-		}
+//		if ("lcd_s3a01".equals(VodUserAgent.getModelName())) {
+//			if (keyCode == 707 || keyCode == 774 || keyCode == 253) {
+//				isneedpause = false;
+//			}
+//		} else if ("lx565ab".equals(VodUserAgent.getModelName())) {
+//			if (keyCode == 82 || keyCode == 707 || keyCode == 253) {
+//				isneedpause = false;
+//			}
+//		} else if ("lcd_xxcae5a_b".equals(VodUserAgent.getModelName())) {
+//			if (keyCode == 497 || keyCode == 498 || keyCode == 490) {
+//				isneedpause = false;
+//			}
+//		} else {
+//			if (keyCode == 223 || keyCode == 499 || keyCode == 480) {
+//				isneedpause = false;
+//			}
+//		}
 	}
 
 }

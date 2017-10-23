@@ -72,6 +72,11 @@ public class Template519 extends Template implements View.OnClickListener, View.
     }
 
     @Override
+    public void onStart() {
+
+    }
+
+    @Override
     public void onResume() {
     }
 

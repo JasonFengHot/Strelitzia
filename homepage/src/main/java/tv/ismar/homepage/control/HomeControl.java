@@ -45,12 +45,15 @@ public class HomeControl extends BaseControl{
                     public void onCompleted() {}
 
                     @Override
-                    public void onError(Throwable e) {}
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                    }
 
                     @Override
                     public void onNext(Integer position) {
                         Logger.t(TAG).d("channel change position: " + position);
                         mCallBack.callBack(TAB_CHANGE_FALG, position);//0-搜索，1-首页
+                        Logger.t(TAG).d("channel change position after: " + position);
                     }
                 });
 

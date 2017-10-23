@@ -131,16 +131,33 @@ public class TemplateGuide extends Template
 
     @Override
     public void onCreate() {
+
+    }
+
+    @Override
+    public void onStart() {
+        Log.d(TAG, "onStart");
+        playCarousel();
+        initCarousel();
     }
 
     @Override
     public void onResume() {
+
     }
 
     @Override
     public void onPause() {
         Logger.t(TAG).d("onPause");
 
+	/*add by dragontec for bug 4077 start*/
+        super.onPause();
+	/*add by dragontec for bug 4077 end*/
+    }
+
+    @Override
+    public void onStop() {
+        Logger.t(TAG).d("onStop");
         if (mHandler != null) {
             mHandler.removeMessages(CAROUSEL_NEXT);
             mHandler.removeMessages(START_PLAYBACK);
@@ -164,14 +181,6 @@ public class TemplateGuide extends Template
                 && !checkVideoViewFullVisibilitySubsc.isUnsubscribed()) {
             checkVideoViewFullVisibilitySubsc.unsubscribe();
         }
-	/*add by dragontec for bug 4077 start*/
-        super.onPause();
-	/*add by dragontec for bug 4077 end*/
-    }
-
-    @Override
-    public void onStop() {
-
     }
 
     @Override

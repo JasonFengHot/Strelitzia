@@ -71,6 +71,11 @@ public class TemplateBigSmallLd extends Template
     }
 
     @Override
+    public void onStart() {
+
+    }
+
+    @Override
     public void onResume() {
     }
 

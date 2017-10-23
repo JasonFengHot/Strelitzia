@@ -52,6 +52,7 @@ import tv.ismar.homepage.control.HomeControl;
 import tv.ismar.homepage.fragment.ChannelFragment;
 import tv.ismar.homepage.view.AdvertiseActivity;
 import tv.ismar.homepage.widget.DaisyVideoView;
+import tv.ismar.homepage.widget.HomeRootRelativeLayout;
 import tv.ismar.homepage.widget.HorizontalTabView;
 import tv.ismar.player.gui.PlaybackService;
 
@@ -76,7 +77,7 @@ public class HomeActivity extends BaseActivity
     public static final String HOME_PAGE_CHANNEL_TAG = "homepage";
 /*modify by dragontec for bug 4057 start*/
 //    public static View mHoverView;
-    private static View mHoverView;
+public static HomeRootRelativeLayout mHoverView;
 /*modify by dragontec for bug 4057 end*/
     public static View mLastFocusView;
     private final FetchDataControl mFetchDataControl = new FetchDataControl(this, this); // 业务类引用
@@ -276,7 +277,7 @@ public class HomeActivity extends BaseActivity
         ad_layout= (RelativeLayout) findViewById(R.id.advertisement);
         home_layout= (LinearLayout) findViewById(R.id.home_page);
         home_layout.setVisibility(View.GONE);
-        mHoverView = findViewById(R.id.home_view_layout);
+        mHoverView = (HomeRootRelativeLayout) findViewById(R.id.home_view_layout);
         headHoverd = findViewById(R.id.hover_view);
 /*delete by dragontec for bug 4057 start*/
 //        headHoverd.setOnHoverListener(this);
@@ -308,10 +309,14 @@ public class HomeActivity extends BaseActivity
         mSeekBar = (SeekBar) findViewById(R.id.home_ad_seekbar);
         timeBtn= (Button) findViewById(R.id.home_ad_timer);
 
-//        banner_arrow_up = findView(R.id.banner_arrow_up);
-//        banner_arrow_down = findView(R.id.banner_arrow_down);
-//        banner_arrow_up.setOnHoverListener(this);
-//        banner_arrow_down.setOnHoverListener(this);
+        banner_arrow_up = findView(R.id.banner_arrow_up);
+        banner_arrow_down = findView(R.id.banner_arrow_down);
+        banner_arrow_up.setOnHoverListener(this);
+        banner_arrow_down.setOnHoverListener(this);
+        mHoverView.setUpArrow(banner_arrow_up);
+        mHoverView.setDownArrow(banner_arrow_down);
+        mHoverView.setShowUp(false);
+        mHoverView.setShowDown(true);
     }
 
     private void setBackground(int id) {
@@ -522,7 +527,9 @@ public class HomeActivity extends BaseActivity
         }
         if (flags == TAB_CHANGE_FALG) { // 频道切换
             int position = (int) args[0];
-            if (mFetchDataControl.mChannels != null && mFetchDataControl.mChannels.length > position) {
+            Log.d(TAG, "callback position:" + position);
+            Log.d(TAG, "mChannels: " + mFetchDataControl.mChannels );
+            if (mFetchDataControl.mChannels != null && mFetchDataControl.mChannels.length  > position -2) {
                 ChannelFragment channelFragment = new ChannelFragment();
                 switch (position) {
                     case 0: // 搜索

@@ -35,6 +35,11 @@ public class TemplateMore extends Template implements View.OnClickListener {
   public void onCreate() {}
 
   @Override
+  public void onStart() {
+
+  }
+
+  @Override
   public void onResume() {}
 
   @Override

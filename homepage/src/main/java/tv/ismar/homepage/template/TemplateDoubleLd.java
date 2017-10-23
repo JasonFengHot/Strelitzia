@@ -86,6 +86,11 @@ public class TemplateDoubleLd extends Template
     }
 
     @Override
+    public void onStart() {
+
+    }
+
+    @Override
     public void onResume() {
     }
 

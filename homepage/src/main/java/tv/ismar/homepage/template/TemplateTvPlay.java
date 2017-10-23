@@ -70,6 +70,11 @@ public class TemplateTvPlay extends Template
     }
 
     @Override
+    public void onStart() {
+
+    }
+
+    @Override
     public void onResume() {
     }
 
