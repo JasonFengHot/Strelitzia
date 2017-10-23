@@ -21,6 +21,7 @@ import java.util.List;
 
 import tv.ismar.app.BaseControl;
 import tv.ismar.app.core.PageIntent;
+import tv.ismar.app.core.Source;
 import tv.ismar.app.entity.banner.BannerPoster;
 import tv.ismar.app.entity.banner.HomeEntity;
 import tv.ismar.homepage.HomeActivity;
@@ -184,16 +185,22 @@ public class TemplateConlumn extends Template
 
     @Override
     public void onItemClick(View view, int position) {
-        if (position == mFetchDataControl.mHomeEntity.count - 1) {
-            new PageIntent()
-                    .toListPage(
-                            mContext,
-                            mFetchDataControl.mHomeEntity.channel_title,
-                            mFetchDataControl.mHomeEntity.channel,
-                            mFetchDataControl.mHomeEntity.style,
-                            mFetchDataControl.mHomeEntity.section_slug);
-        } else {
-            mFetchDataControl.go2Detail(mFetchDataControl.mHomeEntity.posters.get(position));
+//        if (position == mFetchDataControl.mHomeEntity.count - 1) {
+//            new PageIntent()
+//                    .toListPage(
+//                            mContext,
+//                            mFetchDataControl.mHomeEntity.channel_title,
+//                            mFetchDataControl.mHomeEntity.channel,
+//                            mFetchDataControl.mHomeEntity.style,
+//                            mFetchDataControl.mHomeEntity.section_slug);
+//        } else {
+//            mFetchDataControl.go2Detail(mFetchDataControl.mHomeEntity.posters.get(position));
+//        }
+        BannerPoster poster = mFetchDataControl.mHomeEntity.posters.get(position);
+        if(poster.model_name.contains("gather")){
+            new PageIntent().toSubject(mContext,poster.model_name,poster.pk,poster.title,"homepage",poster.channel);
+        }else if(poster.model_name.equals("section")) {
+            new PageIntent().toListPage(mContext,poster.title,poster.channel,mFetchDataControl.mHomeEntity.style,poster.slug);
         }
     }
 

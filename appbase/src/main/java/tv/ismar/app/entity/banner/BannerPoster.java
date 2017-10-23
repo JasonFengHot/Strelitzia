@@ -23,4 +23,7 @@ public class BannerPoster {
     public String nameId;
     public String app_id;
     public String backgroundUrl;
+    public String channel;
+    public String slug;
+    public String image_url;
 }
