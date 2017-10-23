@@ -802,7 +802,7 @@
 <dimen name="channel_tab_space">51.11dp</dimen>
 <dimen name="channel_tab_height_">72.59dp</dimen>
 <dimen name="channel_tab_tvTab_h">38.52dp</dimen>
-<dimen name="channel_tab_tvTab_space">19.26dp</dimen>
+<dimen name="channel_tab_tvTab_space">74.07dp</dimen>
 <dimen name="banner_item_line_h">1.48dp</dimen>
 <dimen name="banner_item_line_ml">-37.04dp</dimen>
 <dimen name="banner_item_line_mr">-37.04dp</dimen>

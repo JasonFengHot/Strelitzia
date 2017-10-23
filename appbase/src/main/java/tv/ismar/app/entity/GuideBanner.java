@@ -13,4 +13,5 @@ public class GuideBanner {
     public String template;
     public String title;
     public String page_banner_pk;
+    public int position;
 }

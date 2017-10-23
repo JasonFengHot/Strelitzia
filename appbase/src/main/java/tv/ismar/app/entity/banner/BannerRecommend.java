@@ -20,6 +20,7 @@ public class BannerRecommend {
     public String introduction;
     public String bean_score;
     public int order;
+    public int pk;
 }
 
 class ExpenseInfo {

@@ -21,4 +21,5 @@ public class HomeEntity {
     public int style; //跳转的列表页的横竖版标记
     public String channel_title; //section名字
     public String channel; //跳转列表页title
+    public String url;
 }

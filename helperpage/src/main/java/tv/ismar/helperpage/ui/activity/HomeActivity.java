@@ -68,9 +68,9 @@ public class HomeActivity extends BaseActivity {
                 ToastTip.showToast(this, "网络连接超时，请重试");
             } else if (httpException.code() == 504) {
                 ToastTip.showToast(this, "服务器繁忙，请稍后再试");
+            }else{
+                ToastTip.showToast(this, "网络连接失败，请重试");
             }
-        } else {
-            ToastTip.showToast(this, "网络连接失败，请重试");
         }
     }
 }

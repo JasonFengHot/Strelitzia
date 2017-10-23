@@ -29,11 +29,16 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.TimeZone;
 
+import cn.ismartv.truetime.TrueTime;
 import okhttp3.ResponseBody;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -897,6 +902,14 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
         item.setQuality(history.quality);
         item.setTitle(history.title);
         item.setUrl(history.url);
+        if(history.add_time==null){
+            DateFormat format=new SimpleDateFormat("MM-dd");
+            format.setTimeZone(TimeZone.getTimeZone("Asia/Shanghai"));
+            long time= TrueTime.now().getTime();
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTimeInMillis(time);
+            history.add_time=format.format(calendar.getTime());
+        }
         item.setDate(history.add_time);
         item.setType(1);
 //		if(history.price==0){
@@ -925,6 +938,14 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
         item.setQuality(favorite.quality);
         item.setTitle(favorite.title);
         item.setUrl(favorite.url);
+        if(favorite.time==null){
+            DateFormat format=new SimpleDateFormat("MM-dd");
+            format.setTimeZone(TimeZone.getTimeZone("Asia/Shanghai"));
+            long time= TrueTime.now().getTime();
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTimeInMillis(time);
+            favorite.time=format.format(calendar.getTime());
+        }
         item.setDate(favorite.time);
         item.setType(1);
 //		if(history.price==0){

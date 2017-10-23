@@ -346,8 +346,6 @@ public class BaseActivity extends AppCompatActivity {
                 }else{
                     ToastTip.showToast(BaseActivity.this,"网络连接失败，请重试");
                 }
-            } else {
-                ToastTip.showToast(BaseActivity.this,"网络连接失败，请重试");
             }
         }
     }

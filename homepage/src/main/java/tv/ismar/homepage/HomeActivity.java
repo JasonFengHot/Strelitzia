@@ -496,9 +496,9 @@ public static HomeRootRelativeLayout mHoverView;
             case MotionEvent.ACTION_HOVER_EXIT:
                 //                onFocusChange(v,  false);
 /*add by dragontec for bug 4057 start*/
-//                if (event.getButtonState() != MotionEvent.BUTTON_PRIMARY) {
-//                    v.clearFocus();
-//                }
+                if (event.getButtonState() != MotionEvent.BUTTON_PRIMARY) {
+                    v.clearFocus();
+                }
 /*add by dragontec for bug 4057 end*/
                 break;
         }
@@ -595,13 +595,11 @@ public static HomeRootRelativeLayout mHoverView;
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        Log.i("ChannelFragment","activity key: "+keyCode);
         if (mLastFocusView != null && mHoverView != null && mHoverView.hasFocus()) {
             mLastFocusView.requestFocus();
             mLastFocusView.requestFocusFromTouch();
             //            mHoverView.setFocusable(false);
             //            mHoverView.setFocusableInTouchMode(false);
-            Log.i("ChannelFragment","activity return: "+keyCode);
             return true;
         }
 /*delete by dragontec for bug 4057 start*/
@@ -832,6 +830,7 @@ public static HomeRootRelativeLayout mHoverView;
         setBackground(R.drawable.homepage_background);
         ad_layout.setVisibility(View.GONE);
         home_layout.setVisibility(View.VISIBLE);
+        banner_arrow_down.setBackgroundResource(R.drawable.poster_arrow_down_vselector);
         initServer();
         new Handler().postDelayed(mRunnable, 1000);
     }

@@ -12,6 +12,7 @@ import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+import tv.ismar.account.IsmartvActivator;
 import tv.ismar.app.BaseControl;
 import tv.ismar.app.entity.ChannelEntity;
 import tv.ismar.app.entity.GuideBanner;
@@ -161,10 +162,11 @@ public class FetchDataControl extends BaseControl{
 
     /**
      * 获取首页下的推荐列表
+     * @param url
      * @param isMore 是否加载更多
      */
-    public void fetchHomeRecommend(final boolean isMore){
-        fetchHomeRecommend = SkyService.ServiceManager.getService().getHomeRecommend()
+    public void fetchHomeRecommend(String url, final boolean isMore){
+        fetchHomeRecommend = SkyService.ServiceManager.getService().getHomeRecommend(IsmartvActivator.getInstance().getApiDomain()+url)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<List<BannerRecommend>>() {
@@ -183,7 +185,9 @@ public class FetchDataControl extends BaseControl{
                                 mRecommends.clear();
                             }
                             mRecommends.addAll(bannerRecommends);
-                            mCallBack.callBack(FETCH_HOME_RECOMMEND_LIST_FLAG, bannerRecommends);
+                            if (mCallBack != null) {
+                                mCallBack.callBack(FETCH_HOME_RECOMMEND_LIST_FLAG, bannerRecommends);
+                            }
                         }
                     }
                 });
@@ -237,8 +241,12 @@ public class FetchDataControl extends BaseControl{
                                     }
                                 }
                             }
-                            if(mCallBack != null){
-                                mCallBack.callBack(FETCH_BANNERS_LIST_FLAG, mHomeEntity);
+                            if(mHomeEntity!=null&&"template_recommend".equals(mHomeEntity.template)){
+                                fetchHomeRecommend(mHomeEntity.url,mHomeEntity.is_more);
+                            }else {
+                                if (mCallBack != null) {
+                                    mCallBack.callBack(FETCH_BANNERS_LIST_FLAG, mHomeEntity);
+                                }
                             }
                         }
                 });

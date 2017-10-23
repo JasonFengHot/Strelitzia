@@ -25,7 +25,6 @@ import com.orhanobut.logger.Logger;
 
 import java.util.List;
 
-import tv.ismar.homepage.HomeActivity;
 import tv.ismar.homepage.R;
 
 /*add by dragontec for bug 4057 start*/
