@@ -244,7 +244,6 @@ public class TemplateGuide extends Template
         mGuideLayoutManager.setFocusSearchFailedListener(this);
         mHeadView.findViewById(R.id.guide_head_ismartv_linearlayout).setOnHoverListener(this);
         mVideoViewLayout.setOnClickListener(this);
-        mLoadingIg.setOnClickListener(this);
         mLoadingIg.setOnFocusChangeListener(this);
         mLoadingIg.setOnHoverListener(this);
     }
