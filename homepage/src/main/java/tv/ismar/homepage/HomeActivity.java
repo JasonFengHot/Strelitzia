@@ -522,7 +522,9 @@ public class HomeActivity extends BaseActivity
         }
         if (flags == TAB_CHANGE_FALG) { // 频道切换
             int position = (int) args[0];
-            if (mFetchDataControl.mChannels != null && mFetchDataControl.mChannels.length > position) {
+            Log.d(TAG, "callback position:" + position);
+            Log.d(TAG, "mChannels: " + mFetchDataControl.mChannels );
+            if (mFetchDataControl.mChannels != null && mFetchDataControl.mChannels.length  > position -2) {
                 ChannelFragment channelFragment = new ChannelFragment();
                 switch (position) {
                     case 0: // 搜索
