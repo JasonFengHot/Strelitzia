@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<tv.ismar.homepage.widget.HomeRootRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/home_view_layout"
                 android:orientation="vertical"
@@ -112,4 +112,20 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
     </LinearLayout>
-</RelativeLayout>
+    <Button
+        android:id="@+id/banner_arrow_up"
+        android:layout_width="@dimen/home_page_banner_arrow_w"
+        android:layout_height="@dimen/home_page_banner_arrow_h"
+        android:background="@drawable/poster_arrow_up_selector"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentTop="true"
+        android:visibility="gone"/>
+    <Button
+        android:id="@+id/banner_arrow_down"
+        android:layout_width="@dimen/home_page_banner_arrow_w"
+        android:layout_height="@dimen/home_page_banner_arrow_h"
+        android:background="@drawable/poster_arrow_down_vselector"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:visibility="gone"/>
+</tv.ismar.homepage.widget.HomeRootRelativeLayout>
