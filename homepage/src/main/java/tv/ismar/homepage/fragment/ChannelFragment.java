@@ -162,10 +162,11 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
 
     private void findView(View view) {
         mLinearContainer = (RecycleLinearLayout) view.findViewById(R.id.scroll_linear_container);
-//        if(getActivity() instanceof HomeActivity){
-//            mLinearContainer.setArrow_up(((HomeActivity) getActivity()).banner_arrow_up);
-//            mLinearContainer.setArrow_down(((HomeActivity) getActivity()).banner_arrow_down);
-//        }
+        if(getActivity() instanceof HomeActivity){
+            mLinearContainer.setArrow_up(((HomeActivity) getActivity()).banner_arrow_up);
+            mLinearContainer.setArrow_down(((HomeActivity) getActivity()).banner_arrow_down);
+			mLinearContainer.setHomeRootRelativeLayout(((HomeActivity) getActivity()).mHoverView);
+        }
     }
 
     public void setChannel(String name, String channel, String title, int style) {
