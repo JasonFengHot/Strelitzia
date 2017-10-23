@@ -96,7 +96,6 @@ public static HomeRootRelativeLayout mHoverView;
     private BitmapDecoder mBitmapDecoder;
     private int mLastSelectedIndex = -1; // 记录上一次选中的位置
     private TimeTickBroadcast mTimeTickBroadcast = null;
-    private View headHoverd;
 
     private ImageView left_image, right_image; // 导航左右遮罩
     private Runnable mRunnable =
@@ -278,7 +277,6 @@ public static HomeRootRelativeLayout mHoverView;
         home_layout= (LinearLayout) findViewById(R.id.home_page);
         home_layout.setVisibility(View.GONE);
         mHoverView = (HomeRootRelativeLayout) findViewById(R.id.home_view_layout);
-        headHoverd = findViewById(R.id.hover_view);
 /*delete by dragontec for bug 4057 start*/
 //        headHoverd.setOnHoverListener(this);
 //        mHoverView.setOnHoverListener(this);
