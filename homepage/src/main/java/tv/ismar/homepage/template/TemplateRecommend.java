@@ -18,7 +18,10 @@ import com.open.androidtvwidget.leanback.recycle.RecyclerViewTV;
 import java.util.List;
 
 import tv.ismar.app.BaseControl;
+import tv.ismar.app.entity.banner.BannerEntity;
+import tv.ismar.app.entity.banner.BannerPoster;
 import tv.ismar.app.entity.banner.BannerRecommend;
+import tv.ismar.app.entity.banner.HomeEntity;
 import tv.ismar.homepage.HomeActivity;
 import tv.ismar.homepage.OnItemClickListener;
 import tv.ismar.homepage.R;
@@ -125,12 +128,13 @@ public class TemplateRecommend extends Template
 
   @Override
   public void callBack(int flags, Object... args) {
-    if (flags == FetchDataControl.FETCH_HOME_RECOMMEND_LIST_FLAG) { // 获取推荐列表
-      initRecycleView(mFetchDataControl.mRecommends);
+    if (flags == FetchDataControl.FETCH_BANNERS_LIST_FLAG) { // 获取推荐列表
+      HomeEntity homeEntity = (HomeEntity) args[0];
+      initRecycleView(homeEntity.posters);
     }
   }
 
-  private void initRecycleView(List<BannerRecommend> recommends) {
+  private void initRecycleView(List<BannerPoster> recommends) {
     if (mAdapter == null) {
       mAdapter = new RecommendAdapter(mContext, recommends);
       mRecyclerView.setAdapter(mAdapter);

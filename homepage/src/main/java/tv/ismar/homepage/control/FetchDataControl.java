@@ -241,13 +241,13 @@ public class FetchDataControl extends BaseControl{
                                     }
                                 }
                             }
-                            if(mHomeEntity!=null&&"template_recommend".equals(mHomeEntity.template)){
-                                fetchHomeRecommend(mHomeEntity.url,mHomeEntity.is_more);
-                            }else {
+//                            if(mHomeEntity!=null&&"template_recommend".equals(mHomeEntity.template)){
+//                                fetchHomeRecommend(mHomeEntity.url,mHomeEntity.is_more);
+//                            }else {
                                 if (mCallBack != null) {
                                     mCallBack.callBack(FETCH_BANNERS_LIST_FLAG, mHomeEntity);
                                 }
-                            }
+//                            }
                         }
                 });
     }

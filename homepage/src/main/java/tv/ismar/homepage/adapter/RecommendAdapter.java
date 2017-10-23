@@ -13,6 +13,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
+import tv.ismar.app.entity.banner.BannerPoster;
 import tv.ismar.app.entity.banner.BannerRecommend;
 import tv.ismar.homepage.R;
 
@@ -25,9 +26,9 @@ import tv.ismar.homepage.R;
 public class RecommendAdapter extends BaseRecycleAdapter<RecommendAdapter.RecommendViewHolder>{
 
     private Context mContext;
-    private List<BannerRecommend> mData;
+    private List<BannerPoster> mData;
 
-    public RecommendAdapter(Context context, List<BannerRecommend> data){
+    public RecommendAdapter(Context context, List<BannerPoster> data){
         this.mContext = context;
         this.mData = data;
     }
@@ -40,7 +41,7 @@ public class RecommendAdapter extends BaseRecycleAdapter<RecommendAdapter.Recomm
 
     @Override
     public void onBindViewHolder(RecommendViewHolder holder, int position) {
-        BannerRecommend poster = mData.get(position);
+        BannerPoster poster = mData.get(position);
         holder.mPosition=position;
         holder.mTitle.setText(poster.title);
         if (!TextUtils.isEmpty(poster.poster_url)) {
