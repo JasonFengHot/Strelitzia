@@ -496,9 +496,9 @@ public static HomeRootRelativeLayout mHoverView;
             case MotionEvent.ACTION_HOVER_EXIT:
                 //                onFocusChange(v,  false);
 /*add by dragontec for bug 4057 start*/
-//                if (event.getButtonState() != MotionEvent.BUTTON_PRIMARY) {
-//                    v.clearFocus();
-//                }
+                if (event.getButtonState() != MotionEvent.BUTTON_PRIMARY) {
+                    v.clearFocus();
+                }
 /*add by dragontec for bug 4057 end*/
                 break;
         }
