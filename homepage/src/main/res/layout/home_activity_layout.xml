@@ -73,7 +73,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/channel_tab_height_"
                 android:layout_gravity="top"
-                android:layout_marginLeft="@dimen/channel_tab_ml"
                 app:tvTabFocusTextColor="#ff9c3c"
                 app:tvTabHeight="@dimen/channel_tab_tvTab_h"
                 app:tvTabSelectedDrawable="@drawable/channel_indicator_focus"

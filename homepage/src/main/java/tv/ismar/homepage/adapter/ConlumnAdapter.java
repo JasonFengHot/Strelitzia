@@ -43,6 +43,7 @@ public class ConlumnAdapter extends BaseRecycleAdapter<ConlumnAdapter.ConlumnVie
     public void onBindViewHolder(ConlumnViewHolder holder, int position) {
         BannerPoster poster = mData.get(position);
         Log.d("ConlumnAdapter", "position:"+position);
+        holder.mPosition=position;
         holder.mTitle.setText(poster.title);
         if (!TextUtils.isEmpty(poster.poster_url)) {
             if(!TextUtils.isEmpty(poster.poster_url) && poster.poster_url.equals("更多")){
