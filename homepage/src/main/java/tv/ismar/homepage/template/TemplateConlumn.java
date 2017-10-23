@@ -197,8 +197,10 @@ public class TemplateConlumn extends Template
 //            mFetchDataControl.go2Detail(mFetchDataControl.mHomeEntity.posters.get(position));
 //        }
         BannerPoster poster = mFetchDataControl.mHomeEntity.posters.get(position);
-        if(poster.model_name.contains("gather")){
-            new PageIntent().toSubject(mContext,poster.model_name,poster.pk,poster.title,"homepage",poster.channel);
+        if(poster.model_name.contains("item")){
+            if(poster.content_model.contains("gather")){
+                new PageIntent().toSubject(mContext,poster.content_model,poster.pk,poster.title,"homepage",poster.channel);
+            }
         }else if(poster.model_name.equals("section")) {
             new PageIntent().toListPage(mContext,poster.title,poster.channel,mFetchDataControl.mHomeEntity.style,poster.slug);
         }

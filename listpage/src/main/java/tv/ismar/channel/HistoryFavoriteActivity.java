@@ -596,13 +596,13 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
             }
             startActivity(intent);
         }else if(id==R.id.favorite_right_arrow){
-            favoriteRecycler.smoothScrollBy(getResources().getDimensionPixelOffset(R.dimen.history_1820),0);
+            favoriteRecycler.smoothScrollBy(getResources().getDimensionPixelOffset(R.dimen.history_1325),0);
         }else if(id==R.id.favorite_left_arrow){
-            favoriteRecycler.smoothScrollBy(-getResources().getDimensionPixelOffset(R.dimen.history_1820),0);
+            favoriteRecycler.smoothScrollBy(-getResources().getDimensionPixelOffset(R.dimen.history_1325),0);
         }else if(id==R.id.history_left_arrow){
-            historyRecycler.smoothScrollBy(-getResources().getDimensionPixelOffset(R.dimen.history_1820),0);
+            historyRecycler.smoothScrollBy(-getResources().getDimensionPixelOffset(R.dimen.history_1325),0);
         }else if(id==R.id.history_right_arrow){
-            historyRecycler.smoothScrollBy(getResources().getDimensionPixelOffset(R.dimen.history_1820),0);
+            historyRecycler.smoothScrollBy(getResources().getDimensionPixelOffset(R.dimen.history_1325),0);
         }
     }
 
@@ -708,7 +708,7 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
     @Override
     public void onItemfocused(View view, int position, boolean hasFocus) {
         RecyclerView.LayoutManager layoutManager = historyRecycler.getLayoutManager();
-        Log.i("onItemfocus","position: "+position+"  lastPosition: "+((LinearLayoutManager) layoutManager).findLastVisibleItemPosition());
+        Log.i("onItemfocus","position: "+position+"  lastPosition: "+((LinearLayoutManager) layoutManager).findLastVisibleItemPosition()+" X: "+ view.getX());
         if(hasFocus){
             JasmineUtil.scaleOut3(view);
         }else{
