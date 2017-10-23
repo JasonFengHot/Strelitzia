@@ -46,6 +46,7 @@ public class RecycleLinearLayout extends LinearLayout {
     private int dataSize;    
 	private int currentBannerPos=0;
     private HomeRootRelativeLayout homeRootRelativeLayout;
+    private boolean hasMore=false;
 
     public RecycleLinearLayout(Context context) {
         super(context);
@@ -140,7 +141,9 @@ public class RecycleLinearLayout extends LinearLayout {
                 }else{
                     homeRootRelativeLayout.setShowUp(true);
                 }
-                if(currentBannerPos==getChildCount()-1||(int)view.getTag()==R.layout.banner_more){
+                int childCount=getChildCount();
+                Log.e("childCount",childCount+"&"+currentBannerPos);
+                if(currentBannerPos==childCount-(hasMore?2:1)||(int)view.getTag()==R.layout.banner_more){
                     homeRootRelativeLayout.setShowDown(false);
                 }else{
                     homeRootRelativeLayout.setShowDown(true);
@@ -167,7 +170,9 @@ public class RecycleLinearLayout extends LinearLayout {
                 }else{
                     homeRootRelativeLayout.setShowUp(true);
                 }
-                if(currentBannerPos==getChildCount()-1||(int)view.getTag()==R.layout.banner_more){
+                int childCount=getChildCount();
+                Log.e("childCount",childCount+"&&&"+currentBannerPos);
+                if(currentBannerPos==childCount-(hasMore?2:1)||(int)view.getTag()==R.layout.banner_more){
                     homeRootRelativeLayout.setShowDown(false);
                 }else{
                     homeRootRelativeLayout.setShowDown(true);
@@ -411,7 +416,12 @@ public class RecycleLinearLayout extends LinearLayout {
     public void setDataSize(int dataSize) {
         this.dataSize = dataSize;
     }
-	/*modify by dragontec for bug 4178 end*/
+
+    public void setHasMore(boolean hasMore) {
+        this.hasMore = hasMore;
+    }
+
+    /*modify by dragontec for bug 4178 end*/
     public interface ViewHolder {
         void onCreateView(int position, int orientation);
     }

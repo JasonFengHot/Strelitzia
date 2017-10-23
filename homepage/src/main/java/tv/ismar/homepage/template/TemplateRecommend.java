@@ -170,10 +170,10 @@ public class TemplateRecommend extends Template
 
   @Override
   public void onItemClick(View view, int position) {
-    if(mFetchDataControl.mRecommends!=null) {
-      BannerRecommend bannerRecommend = mFetchDataControl.mRecommends.get(position);
+    if(mFetchDataControl.mPoster!=null) {
+      BannerPoster bannerRecommend = mFetchDataControl.mPoster.get(position);
       if (bannerRecommend != null) {
-        mFetchDataControl.go2Detail(bannerRecommend.pk,bannerRecommend.model_name,bannerRecommend.content_model,bannerRecommend.url,bannerRecommend.title,null,null,null);
+        mFetchDataControl.go2Detail(bannerRecommend.pk,bannerRecommend.model_name,bannerRecommend.content_model,bannerRecommend.content_url,bannerRecommend.title,null,null,null);
       }
     }
   }

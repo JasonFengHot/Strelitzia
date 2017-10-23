@@ -17,6 +17,7 @@ public class HomeRootRelativeLayout extends RelativeLayout {
     private View downArrow;
     private boolean showUp=false;
     private boolean showDown=true;
+
     public HomeRootRelativeLayout(Context context) {
         this(context,null);
     }
