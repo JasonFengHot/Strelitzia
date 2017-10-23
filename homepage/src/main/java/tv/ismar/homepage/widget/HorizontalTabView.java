@@ -324,10 +324,7 @@ public class HorizontalTabView extends HorizontalScrollView
             case KeyEvent.ACTION_UP:
                 Log.d(TAG, "onKey ACTION_UP");
                 if (keyCode == KeyEvent.KEYCODE_DPAD_DOWN || keyCode == KeyEvent.KEYCODE_DPAD_UP) {
-                    TextView lastSelectedView = (TextView) linearContainer.getChildAt(mSelectedIndex);
                     Log.d(TAG, "onKey ACTION_UP: " + mSelectedIndex);
-                    lastSelectedView.requestFocus();
-                    lastSelectedView.requestFocusFromTouch();
                     return true;
                 }
                 break;
