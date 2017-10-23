@@ -226,6 +226,7 @@ public class HorizontalTabView extends HorizontalScrollView
 
         if (currentRect[0] - view.getWidth() - tabSpace
                 <= mTabMargin) { // current view left less than left margin
+            Log.d(TAG, "channel: 左滑");
             if (mSelectedIndex == 0) {
                 if (currentRect[0] - tabSpace > mTabMargin + tabSpace) {
                     scrollChildPosition(linearContainer.getChildAt(0));
@@ -240,6 +241,7 @@ public class HorizontalTabView extends HorizontalScrollView
             // 右滑
         } else if (currentRect[0] + view.getWidth()
                 >= baseRightX) { // current view right more than right margin
+            Log.d(TAG, "channel: 右滑");
             if (mSelectedIndex == linearContainer.getChildCount() - 1) {
                 smoothScrollBy(currentRect[0] + view.getWidth() - baseRightX, 0);
             } else {
@@ -426,7 +428,10 @@ public class HorizontalTabView extends HorizontalScrollView
                     onItemSelectedListener.onItemSelected(view, mSelectedIndex);
                 }
             }else if (onItemSelectedListener != null &&!isOnKeyDown && !isDpad){
-                scrollChildPosition(view);
+                if (isCanScroll){
+                    scrollChildPosition(view);
+                    isCanScroll = false;
+                }
                 //处理选中态
                 if (mSelectedIndex != mFocusedIndex) {
                     TextView textView = (TextView) linearContainer.getChildAt(mSelectedIndex);
@@ -539,7 +544,6 @@ public class HorizontalTabView extends HorizontalScrollView
                 tag=false;
                 v.setHovered(true);
                 if (isCanScroll){
-                    isCanScroll = false;
                     changeViewStatus(textView, ViewStatus.Hovered);
                     mScrollEventHandler.sendEmptyMessageDelayed(0, 500);
                 }

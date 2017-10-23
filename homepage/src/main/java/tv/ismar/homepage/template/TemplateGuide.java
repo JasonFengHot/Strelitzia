@@ -141,8 +141,12 @@ public class TemplateGuide extends Template
     public void onStart() {
         Log.d(TAG, "onStart");
         if (!mFetchDataControl.mCarousels.isEmpty()) {
-            playCarousel();
-            initCarousel();
+            if (videoViewIsVisibility()){
+                playCarousel();
+                initCarousel();
+            }else {
+                checkVideoViewFullVisibility();
+            }
         }
     }
 
@@ -449,7 +453,7 @@ public class TemplateGuide extends Template
                 return false;
             case MotionEvent.ACTION_HOVER_EXIT:
                 if (event.getButtonState() != BUTTON_PRIMARY) {
-//                    navigationLeft.setVisibility(View.INVISIBLE);
+//                    navigationLeft.set ibility(View.INVISIBLE);
 //                    navigationRight.setVisibility(View.INVISIBLE);
 /*modify by dragontec for bug 4057 start*/
 //                    HomeActivity.mHoverView.requestFocus(); // 将焦点放置到一块隐藏view中
@@ -753,24 +757,22 @@ public class TemplateGuide extends Template
                                     public void onNext(Long aLong) {
                                         Rect rect = new Rect();
                                         mVideoView.getGlobalVisibleRect(rect);
-                                        //                        Log.d(TAG, "mVideoView
-                                        // getGlobalVisibleRect: " + rect);
+//                                                                Log.d(TAG, "mVideoView getGlobalVisibleRect: " + rect);
                                         Rect rect2 = new Rect();
                                         mVideoView.getDrawingRect(rect2);
-                                        //                        Log.d(TAG, "mVideoView
-                                        // getDrawingRect: " + rect2);
+//                                                                Log.d(TAG, "mVideoView getDrawingRect: " + rect2);
 
                                         Rect rect3 = new Rect();
                                         mVideoView.getLocalVisibleRect(rect3);
-                                        //                        Log.d(TAG, "mVideoView
-                                        // getLocalVisibleRect: " + rect3);
-                                        //                        Log.d(TAG, "mVideoView
-                                        // ======================================================");
+//                                                                Log.d(TAG, "mVideoView getLocalVisibleRect: " + rect3);
+//                                                                Log.d(TAG, "mVideoView ======================================================");
                                         if (videoViewVisibility) {
                                             if ((Math.abs(rect3.top - rect2.top)) > 10
                                                     || Math.abs(rect3.bottom - rect2.bottom) > 10
                                                     || Math.abs(rect3.left - rect2.left) > 10
-                                                    || Math.abs(rect3.right - rect2.right) > 10) {
+                                                    || Math.abs(rect3.right - rect2.right) > 10
+                                                    || mHeadView.getVisibility() == View.INVISIBLE
+                                                    || mHeadView.getVisibility() == View.GONE) {
                                                 onVideoViewFullVisibility(false);
                                             } else {
                                                 onVideoViewFullVisibility(true);
@@ -780,5 +782,32 @@ public class TemplateGuide extends Template
                                         }
                                     }
                                 });
+    }
+
+    private boolean videoViewIsVisibility(){
+        Rect rect = new Rect();
+        mVideoView.getGlobalVisibleRect(rect);
+//        Log.d(TAG, "mVideoView getGlobalVisibleRect: " + rect);
+        Rect rect2 = new Rect();
+        mVideoView.getDrawingRect(rect2);
+//        Log.d(TAG, "mVideoView getDrawingRect: " + rect2);
+
+        Rect rect3 = new Rect();
+        mVideoView.getLocalVisibleRect(rect3);
+//        Log.d(TAG, "mVideoView getLocalVisibleRect: " + rect3);
+//        Log.d(TAG, "mVideoView ======================================================");
+
+
+            if ((Math.abs(rect3.top - rect2.top)) > 10
+                    || Math.abs(rect3.bottom - rect2.bottom) > 10
+                    || Math.abs(rect3.left - rect2.left) > 10
+                    || Math.abs(rect3.right - rect2.right) > 10
+                    || mHeadView.getVisibility() == View.INVISIBLE
+                    || mHeadView.getVisibility() == View.GONE) {
+               return false;
+            } else {
+                return true;
+            }
+
     }
 }
