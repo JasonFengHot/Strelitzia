@@ -45,12 +45,8 @@ public class ConlumnAdapter extends BaseRecycleAdapter<ConlumnAdapter.ConlumnVie
         Log.d("ConlumnAdapter", "position:"+position);
         holder.mPosition=position;
         holder.mTitle.setText(poster.title);
-        if (!TextUtils.isEmpty(poster.poster_url)) {
-            if(!TextUtils.isEmpty(poster.poster_url) && poster.poster_url.equals("更多")){
-                Picasso.with(mContext).load(R.drawable.banner_horizontal_more).into(holder.mPoster);
-            } else {
-                Picasso.with(mContext).load(poster.poster_url).into(holder.mPoster);
-            }
+        if (!TextUtils.isEmpty(poster.image_url)) {
+            Picasso.with(mContext).load(poster.image_url).error(R.drawable.list_item_preview_bg).into(holder.mPoster);
         } else {
             Picasso.with(mContext).load(R.drawable.list_item_preview_bg).into(holder.mPoster);
         }

@@ -95,7 +95,7 @@ public class PaymentActivity extends BaseActivity implements View.OnClickListene
     private Subscription accountsPayWhStatusSub;
     private Subscription accountsGoodsRenewStatusSub;
 //    private ImageView shadow;
-
+    private boolean isdestory=false;
     public ImageView tmp;
     public String uuid;
     private ArrayList<String> firstdescriptions=new ArrayList<>();
@@ -236,7 +236,7 @@ public class PaymentActivity extends BaseActivity implements View.OnClickListene
         if(hasFocus&&!ishover){
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
              if (i == R.id.alipay) {
-                if(lastfocusId!=i) {
+                if(lastfocusId!=i&&!isdestory) {
                     transaction.remove(balanceFragment).commit();
                     alipayClick();
                 }
@@ -245,6 +245,7 @@ public class PaymentActivity extends BaseActivity implements View.OnClickListene
                     if (alipaySecrectSub != null && !alipaySecrectSub.isUnsubscribed()) {
                         alipaySecrectSub.unsubscribe();
                     }
+                    if(!isdestory)
                     transaction.replace(R.id.fragment_page, balanceFragment).commit();
                 }
             }else if(i==R.id.weixin){
@@ -729,6 +730,7 @@ public class PaymentActivity extends BaseActivity implements View.OnClickListene
 
     @Override
     protected void onDestroy() {
+        isdestory=true;
         super.onDestroy();
     }
 
