@@ -465,6 +465,7 @@ public static HomeRootRelativeLayout mHoverView;
         //        }
         switch (event.getAction()) {
             case MotionEvent.ACTION_HOVER_ENTER:
+            case MotionEvent.ACTION_HOVER_MOVE:
 /*modify by dragontec for bug 4057 start*/
 //                if (v.getId() != R.id.hover_view) {
 //                    if (!v.hasFocus()) {

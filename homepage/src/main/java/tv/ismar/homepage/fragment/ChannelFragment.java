@@ -19,6 +19,7 @@ import tv.ismar.homepage.HomeActivity;
 import tv.ismar.homepage.R;
 import tv.ismar.homepage.control.FetchDataControl;
 import tv.ismar.homepage.template.*;
+import tv.ismar.homepage.widget.HomeRootRelativeLayout;
 import tv.ismar.homepage.widget.RecycleLinearLayout;
 import tv.ismar.library.util.StringUtils;
 
@@ -59,6 +60,7 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
 	private int lastLoadedPostion = -1;
 
 	private View mLastFocus;
+	private HomeRootRelativeLayout homeRootRelativeLayout;
 	/*add by dragontec for bug 4077 end*/
 
 	@Override
@@ -171,7 +173,8 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
         if(getActivity() instanceof HomeActivity){
             mLinearContainer.setArrow_up(((HomeActivity) getActivity()).banner_arrow_up);
             mLinearContainer.setArrow_down(((HomeActivity) getActivity()).banner_arrow_down);
-			mLinearContainer.setHomeRootRelativeLayout(((HomeActivity) getActivity()).mHoverView);
+			homeRootRelativeLayout = ((HomeActivity) getActivity()).mHoverView;
+			mLinearContainer.setHomeRootRelativeLayout(homeRootRelativeLayout);
         }
     }
 
@@ -343,6 +346,7 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
             mTemplates.add(templateObject);
         }
         mLinearContainer.addView(bannerView);
+		mLinearContainer.setHasMore(true);
     }
 
     private View createView(int layoutId) {
