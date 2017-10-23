@@ -91,6 +91,11 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
 	public void onStart() {
 		super.onStart();
 		Log.d(TAG, "onStart");
+		if (mTemplates != null) {
+			for (Template template : mTemplates) {
+				template.onStart();
+			}
+		}
 	}
 
 	@Override

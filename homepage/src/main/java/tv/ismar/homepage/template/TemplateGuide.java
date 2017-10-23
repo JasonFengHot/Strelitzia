@@ -136,6 +136,7 @@ public class TemplateGuide extends Template
 
     @Override
     public void onStart() {
+        Log.d(TAG, "onStart");
         playCarousel();
         initCarousel();
     }
