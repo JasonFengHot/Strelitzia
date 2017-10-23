@@ -870,12 +870,6 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
         int count=0;
         if(list.size()>0){
             for(int i=0;i<list.size();i++){
-                if(count==3){
-                    HistoryFavoriteEntity more=new HistoryFavoriteEntity();
-                    more.setType(2);
-                    list2.add(more);
-                    return;
-                }
                 if(count<3) {
                     HistoryFavoriteEntity item = list.get(i);
                     if (i == 0) {
@@ -888,8 +882,14 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
                             count++;
                         }
                     }
-                    if(count!=3)
-                    list2.add(item);
+                    if(count<3) {
+                        list2.add(item);
+                    }else if(count==3){
+                        HistoryFavoriteEntity more=new HistoryFavoriteEntity();
+                        more.setType(2);
+                        list2.add(more);
+                        return;
+                    }
                 }
             }
         }
