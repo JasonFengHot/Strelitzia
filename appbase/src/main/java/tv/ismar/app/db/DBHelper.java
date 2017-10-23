@@ -112,13 +112,15 @@ public class DBHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         //delete old tables
         if (newVersion != oldVersion) {
-            db.execSQL("DROP TABLE IF EXISTS " + DBFields.HistroyTable.TABLE_NAME);
-            db.execSQL("DROP TABLE IF EXISTS " + DBFields.FavoriteTable.TABLE_NAME);
-            db.execSQL("DROP TABLE IF EXISTS " + DBFields.QualityTable.TABLE_NAME);
-
-            db.execSQL(CREATE_HISTORY_TABLE);
-            db.execSQL(CREATE_FAVORITE_TABLE);
-            db.execSQL(CREATE_QUALITY_TABLE);
+//            db.execSQL("DROP TABLE IF EXISTS " + DBFields.HistroyTable.TABLE_NAME);
+//            db.execSQL("DROP TABLE IF EXISTS " + DBFields.FavoriteTable.TABLE_NAME);
+//            db.execSQL("DROP TABLE IF EXISTS " + DBFields.QualityTable.TABLE_NAME);
+//
+//            db.execSQL(CREATE_HISTORY_TABLE);
+//            db.execSQL(CREATE_FAVORITE_TABLE);
+//            db.execSQL(CREATE_QUALITY_TABLE);
+            db.execSQL("Alter table "+ DBFields.HistroyTable.TABLE_NAME+" add column "+ DBFields.HistroyTable.HISTORY_TIME+" TEXT ");
+            db.execSQL("Alter table "+ DBFields.FavoriteTable.TABLE_NAME+" add column "+ DBFields.FavoriteTable.FAVORITE_TIME+" TEXT ");
         }
     }
 
