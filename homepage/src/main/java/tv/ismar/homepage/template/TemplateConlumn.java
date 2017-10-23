@@ -69,6 +69,11 @@ public class TemplateConlumn extends Template
     }
 
     @Override
+    public void onStart() {
+
+    }
+
+    @Override
     public void onResume() {
     }
 

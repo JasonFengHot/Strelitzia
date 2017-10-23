@@ -131,12 +131,18 @@ public class TemplateGuide extends Template
 
     @Override
     public void onCreate() {
+
+    }
+
+    @Override
+    public void onStart() {
+        playCarousel();
+        initCarousel();
     }
 
     @Override
     public void onResume() {
-        playCarousel();
-        initCarousel();
+
     }
 
     @Override

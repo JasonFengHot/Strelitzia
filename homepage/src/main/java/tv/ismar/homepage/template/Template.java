@@ -186,6 +186,8 @@ public abstract class Template {
 
     public abstract void onCreate();
 
+    public abstract void onStart();
+
     public abstract void onResume();
 
 	/*modify by dragontec for bug 4077 start*/

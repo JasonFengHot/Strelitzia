@@ -69,6 +69,11 @@ public class TemplateMovie extends Template implements View.OnClickListener, Vie
     }
 
     @Override
+    public void onStart() {
+
+    }
+
+    @Override
     public void onResume() {
     }
 

@@ -79,6 +79,11 @@ public class TemplateDoubleMd extends Template
   public void onCreate() {}
 
   @Override
+  public void onStart() {
+
+  }
+
+  @Override
   public void onResume() {}
 
   @Override
