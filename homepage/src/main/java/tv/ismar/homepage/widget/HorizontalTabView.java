@@ -227,14 +227,14 @@ public class HorizontalTabView extends HorizontalScrollView
         if (currentRect[0] - view.getWidth() - tabSpace
                 <= mTabMargin) { // current view left less than left margin
             Log.d(TAG, "channel: 左滑");
-            if (mSelectedIndex == 0) {
+            if (mFocusedIndex == 0) {
                 if (currentRect[0] - tabSpace > mTabMargin + tabSpace) {
                     scrollChildPosition(linearContainer.getChildAt(0));
                 }
             } else {
-                int leftViewWidth = linearContainer.getChildAt(mSelectedIndex - 1).getWidth();
+                int leftViewWidth = linearContainer.getChildAt(mFocusedIndex - 1).getWidth();
                 int[] lastleftRect = new int[2];
-                linearContainer.getChildAt(mSelectedIndex - 1).getLocationOnScreen(lastleftRect);
+                linearContainer.getChildAt(mFocusedIndex - 1).getLocationOnScreen(lastleftRect);
                 smoothScrollBy(
                         -(currentRect[0] - (lastleftRect[0] + leftViewWidth) + leftViewWidth / 2), 0);
             }
@@ -242,10 +242,10 @@ public class HorizontalTabView extends HorizontalScrollView
         } else if (currentRect[0] + view.getWidth()
                 >= baseRightX) { // current view right more than right margin
             Log.d(TAG, "channel: 右滑");
-            if (mSelectedIndex == linearContainer.getChildCount() - 1) {
+            if (mFocusedIndex == linearContainer.getChildCount() - 1) {
                 smoothScrollBy(currentRect[0] + view.getWidth() - baseRightX, 0);
             } else {
-                int rightViewWidth = linearContainer.getChildAt(mSelectedIndex + 1).getWidth();
+                int rightViewWidth = linearContainer.getChildAt(mFocusedIndex + 1).getWidth();
                 smoothScrollBy(currentRect[0] + view.getWidth() - baseRightX + rightViewWidth / 2, 0);
             }
         }
