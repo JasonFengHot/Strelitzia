@@ -15,6 +15,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import com.blankj.utilcode.util.StringUtils;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
@@ -23,6 +24,13 @@ import com.open.androidtvwidget.leanback.recycle.RecyclerViewTV;
 import com.orhanobut.logger.Logger;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
+
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.concurrent.TimeUnit;
+
 import okhttp3.HttpUrl;
 import rx.Observable;
 import rx.Observer;
@@ -37,7 +45,6 @@ import tv.ismar.app.core.cache.DownloadClient;
 import tv.ismar.app.entity.banner.HomeEntity;
 import tv.ismar.app.player.CallaPlay;
 import tv.ismar.app.util.HardwareUtils;
-import tv.ismar.homepage.HomeActivity;
 import tv.ismar.homepage.OnItemClickListener;
 import tv.ismar.homepage.OnItemSelectedListener;
 import tv.ismar.homepage.R;
@@ -46,19 +53,15 @@ import tv.ismar.homepage.control.FetchDataControl;
 import tv.ismar.homepage.control.GuideControl;
 import tv.ismar.homepage.view.BannerLinearLayout;
 import tv.ismar.homepage.widget.DaisyVideoView;
-	/*add by dragontec for bug 4077 start*/
-import tv.ismar.homepage.widget.RecycleLinearLayout;
-	/*add by dragontec for bug 4077 end*/
 import tv.ismar.library.exception.ExceptionUtils;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.concurrent.TimeUnit;
-
 import static android.view.MotionEvent.BUTTON_PRIMARY;
-import static tv.ismar.homepage.fragment.ChannelFragment.*;
+import static tv.ismar.homepage.fragment.ChannelFragment.BANNER_KEY;
+import static tv.ismar.homepage.fragment.ChannelFragment.CHANNEL_KEY;
+import static tv.ismar.homepage.fragment.ChannelFragment.NAME_KEY;
+
+/*add by dragontec for bug 4077 start*/
+/*add by dragontec for bug 4077 end*/
 
 /**
  * @AUTHOR: xi @DATE: 2017/8/29 @DESC: 导视模版
@@ -137,8 +140,10 @@ public class TemplateGuide extends Template
     @Override
     public void onStart() {
         Log.d(TAG, "onStart");
-        playCarousel();
-        initCarousel();
+        if (!mFetchDataControl.mCarousels.isEmpty()) {
+            playCarousel();
+            initCarousel();
+        }
     }
 
     @Override

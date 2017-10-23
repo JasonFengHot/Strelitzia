@@ -426,6 +426,7 @@ public class HorizontalTabView extends HorizontalScrollView
                     onItemSelectedListener.onItemSelected(view, mSelectedIndex);
                 }
             }else if (onItemSelectedListener != null &&!isOnKeyDown && !isDpad){
+                scrollChildPosition(view);
                 //处理选中态
                 if (mSelectedIndex != mFocusedIndex) {
                     TextView textView = (TextView) linearContainer.getChildAt(mSelectedIndex);
@@ -615,8 +616,8 @@ public class HorizontalTabView extends HorizontalScrollView
     }
 
 //    空鼠获取焦点时，禁止滑动
-    @Override
-    public void requestChildFocus(View child, View focused) {
-        super.requestChildFocus(child, linearContainer);
-    }
+//    @Override
+//    public void requestChildFocus(View child, View focused) {
+//        super.requestChildFocus(child, linearContainer);
+//    }
 }
