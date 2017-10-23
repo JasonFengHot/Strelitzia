@@ -830,6 +830,7 @@ public static HomeRootRelativeLayout mHoverView;
         setBackground(R.drawable.homepage_background);
         ad_layout.setVisibility(View.GONE);
         home_layout.setVisibility(View.VISIBLE);
+        banner_arrow_down.setBackgroundResource(R.drawable.poster_arrow_down_vselector);
         initServer();
         new Handler().postDelayed(mRunnable, 1000);
     }

@@ -30,6 +30,10 @@ import tv.ismar.homepage.widget.RecycleLinearLayout;
 	/*add by dragontec for bug 4077 end*/
 
 import static android.view.MotionEvent.BUTTON_PRIMARY;
+import static tv.ismar.homepage.fragment.ChannelFragment.BANNER_KEY;
+import static tv.ismar.homepage.fragment.ChannelFragment.CHANNEL_KEY;
+import static tv.ismar.homepage.fragment.ChannelFragment.NAME_KEY;
+import static tv.ismar.homepage.fragment.ChannelFragment.TITLE_KEY;
 
 /** @AUTHOR: xi @DATE: 2017/9/15 @DESC: 推荐模版 */
 public class TemplateRecommend extends Template
@@ -46,6 +50,9 @@ public class TemplateRecommend extends Template
   private BannerLinearLayout mBannerLinearLayout;
   private View navigationLeft;
   private View navigationRight;
+    private String mBannerPk; // banner标记
+    private String mName; // 频道名称（中文）
+    private String mChannel; // 频道名称（英文）
 
   public TemplateRecommend(Context context) {
     super(context);
@@ -99,7 +106,11 @@ public class TemplateRecommend extends Template
 
   @Override
   public void initData(Bundle bundle) {
-    mFetchDataControl.fetchHomeRecommend(false);
+      mBannerPk = bundle.getString(BANNER_KEY);
+      mName = bundle.getString(NAME_KEY);
+      mChannel = bundle.getString(CHANNEL_KEY);
+      mFetchDataControl.fetchBanners(mBannerPk, 1, false);
+//    mFetchDataControl.fetchHomeRecommend(false);
   }
 
   @Override
@@ -155,7 +166,12 @@ public class TemplateRecommend extends Template
 
   @Override
   public void onItemClick(View view, int position) {
-    //        mFetchDataControl.go2Detail(mFetchDataControl.mPoster.get(position));
+    if(mFetchDataControl.mRecommends!=null) {
+      BannerRecommend bannerRecommend = mFetchDataControl.mRecommends.get(position);
+      if (bannerRecommend != null) {
+        mFetchDataControl.go2Detail(bannerRecommend.pk,bannerRecommend.model_name,bannerRecommend.content_model,bannerRecommend.url,bannerRecommend.title,null,null,null);
+      }
+    }
   }
 
   @Override

@@ -41,6 +41,7 @@ public class RecommendAdapter extends BaseRecycleAdapter<RecommendAdapter.Recomm
     @Override
     public void onBindViewHolder(RecommendViewHolder holder, int position) {
         BannerRecommend poster = mData.get(position);
+        holder.mPosition=position;
         holder.mTitle.setText(poster.title);
         if (!TextUtils.isEmpty(poster.poster_url)) {
             Picasso.with(mContext).load(poster.poster_url).into(holder.mPoster);
