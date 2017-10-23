@@ -100,6 +100,9 @@ public class FocusGridLayoutManager extends GridLayoutManager {
                 }else{
                     scroll=true;
                 }
+                if(mItemCount - nextPos < getSpanCount()){
+                    scroll=true;
+                }
                 scrollToPositionWithOffset(nextPos, 0);
                 View nextView=findViewByPosition(nextPos +1);
                 return nextView;
@@ -132,13 +135,15 @@ public class FocusGridLayoutManager extends GridLayoutManager {
     @Override
     public void onLayoutChildren(RecyclerView.Recycler recycler, RecyclerView.State state) {
         super.onLayoutChildren(recycler, state);
-        if(scroll){
-            scroll=false;
-            getChildAt(1).requestFocus();
-        }else if(mItemCount- nextPos <getSpanCount()&&specialPos!=null){
-            View view=findViewByPosition(specialPos.get(specialPos.size()-1)+1);
-            if(view!=null){
-                view.requestFocus();
+        if(scroll) {
+            scroll = false;
+            if (mItemCount - nextPos < getSpanCount() && specialPos != null) {
+                View view = findViewByPosition(specialPos.get(specialPos.size() - 1) + 1);
+                if (view != null) {
+                    view.requestFocus();
+                }
+            } else {
+                getChildAt(1).requestFocus();
             }
         }
     }

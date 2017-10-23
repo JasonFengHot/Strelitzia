@@ -1113,7 +1113,7 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
             radioButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(!section.title.equals(current_section_title.getText())) {
+                    if(!section.title.equals(current_section_title.getText())||(finalI!=sectionSize-1&&mFocusGridLayoutManager.findLastCompletelyVisibleItemPosition()>specialPos.get(sectionSize-1))) {
                         mFocusGridLayoutManager.scrollToPositionWithOffset(specialPos.get(finalI), 0);
                     }
                     if(isFirst) {
