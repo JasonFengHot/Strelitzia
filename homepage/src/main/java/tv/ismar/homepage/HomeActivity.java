@@ -529,7 +529,7 @@ public static HomeRootRelativeLayout mHoverView;
             int position = (int) args[0];
             Log.d(TAG, "callback position:" + position);
             Log.d(TAG, "mChannels: " + mFetchDataControl.mChannels );
-            if (mFetchDataControl.mChannels != null && mFetchDataControl.mChannels.length  > position -2) {
+            if (mFetchDataControl.mChannels != null && mFetchDataControl.mChannels.length + 2  > position) {
                 ChannelFragment channelFragment = new ChannelFragment();
                 switch (position) {
                     case 0: // 搜索

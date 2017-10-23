@@ -51,7 +51,11 @@ public class CenterAdapter extends BaseRecycleAdapter<CenterAdapter.CenterViewHo
 
     @Override
     public int getItemCount() {
-        return Integer.MAX_VALUE;
+        if (mData.size() == 0){
+            return 0;
+        }else {
+            return Integer.MAX_VALUE;
+        }
     }
 
     public class CenterViewHolder extends BaseViewHolder{
