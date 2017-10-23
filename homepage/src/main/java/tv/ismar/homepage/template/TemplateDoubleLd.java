@@ -117,6 +117,9 @@ public class TemplateDoubleLd extends Template
         mTitleTv = (TextView) view.findViewById(R.id.banner_title_tv);
         mTitleCountTv = (TextView) view.findViewById(R.id.banner_title_count);
         mRecyclerView = (RecyclerViewTV) view.findViewById(R.id.double_ld_recyclerview);
+		/*modify by dragontec for bug 4221 start*/
+        mRecyclerView.setTag("recycleView");
+		/*modify by dragontec for bug 4221 end*/
         mHeadView = LayoutInflater.from(mContext).inflate(R.layout.banner_double_ld_head, null);
         mVerticalImg = (ImageView) mHeadView.findViewById(R.id.double_ld_image_poster);
         mLtImage = (ImageView) mHeadView.findViewById(R.id.double_ld_image_lt_icon);
@@ -249,7 +252,9 @@ public class TemplateDoubleLd extends Template
             }
             return focused;
         }
-        return null;
+        /*modify by dragontec for bug 4221 start*/
+        return findNextUpDownFocus(focusDirection, mBannerLinearLayout);
+        /*modify by dragontec for bug 4221 end*/
     }
 
     @Override

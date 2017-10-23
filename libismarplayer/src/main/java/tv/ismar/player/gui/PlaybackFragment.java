@@ -936,6 +936,9 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
         if (mPlaybackService == null || mPlaybackService.getMediaPlayer() == null) {
             return;
         }
+        /*add by dragontec for bug 4138 start*/
+        mCurrentPosition = mPlaybackService.getMediaPlayer().getCurrentPosition();
+        /*add by dragontec for bug 4138 end*/
         LogUtils.i(TAG, "showBuffering : " + showBuffer);
         if (showBuffer && !isSeeking) {
             showBuffer(null);

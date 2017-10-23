@@ -92,6 +92,9 @@ public class TemplateRecommend extends Template
   @Override
   public void getView(View view) {
     mRecyclerView = (RecyclerViewTV) view.findViewById(R.id.recommend_recyclerview);
+	/*modify by dragontec for bug 4221 start*/
+    mRecyclerView.setTag("recycleView");
+	/*modify by dragontec for bug 4221 start*/
     mRecommendLayoutManager =
         new LinearLayoutManagerTV(mContext, LinearLayoutManager.HORIZONTAL, false);
     mRecyclerView.setLayoutManager(mRecommendLayoutManager);
@@ -162,7 +165,9 @@ public class TemplateRecommend extends Template
       }
       return focused;
     }
-    return null;
+    /*modify by dragontec for bug 4221 start*/
+    return findNextUpDownFocus(focusDirection, mBannerLinearLayout);
+    /*modify by dragontec for bug 4221 end*/
   }
 
   @Override

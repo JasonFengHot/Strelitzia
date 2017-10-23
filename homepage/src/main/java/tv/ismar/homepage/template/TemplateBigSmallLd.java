@@ -113,6 +113,7 @@ public class TemplateBigSmallLd extends Template
         mTitleCountTv = (TextView) view.findViewById(R.id.banner_title_count);
         mTitleTv = (TextView) view.findViewById(R.id.banner_title_tv);
         movieMixBanner = (RecyclerViewTV) view.findViewById(R.id.movie_mix_banner);
+        movieMixBanner.setTag("recycleView");
         movieMixBanner.setHasHeaderView(true);
         movieMixLayoutManager =
                 new LinearLayoutManagerTV(mContext, LinearLayoutManager.HORIZONTAL, false);
@@ -163,7 +164,10 @@ public class TemplateBigSmallLd extends Template
                         //                    YoYo.with(Techniques.VerticalShake).duration(1000).playOn(view);
                         //                    return view;
                         //                }
-                        return null;
+
+                        /*modify by dragontec for bug 4221 start*/
+                        return findNextUpDownFocus(focusDirection, mBannerLinearLayout);
+                        /*modify by dragontec for bug 4221 end*/
                     }
                 });
 

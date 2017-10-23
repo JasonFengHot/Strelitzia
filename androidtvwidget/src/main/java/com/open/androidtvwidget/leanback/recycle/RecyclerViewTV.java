@@ -29,6 +29,9 @@ import java.util.EventListener;
 public class RecyclerViewTV extends RecyclerView implements PrvInterface {
 
     private int firstCompletelyVisiblePosition;
+    /*add by dragontec for bug 4221 start*/
+    private View lastFocusChild;
+    /*add by dragontec for bug 4221 end*/
 
     public RecyclerViewTV(Context context) {
         this(context, null);
@@ -158,6 +161,9 @@ public class RecyclerViewTV extends RecyclerView implements PrvInterface {
         }
         //
         if (null != child) {
+            /*add by dragontec for bug 4221 start*/
+            lastFocusChild = child;
+            /*add by dragontec for bug 4221 end*/
             if (mSelectedItemCentered) {
                 mSelectedItemOffsetStart = !isVertical() ? (getFreeWidth() - child.getWidth()) : (getFreeHeight() - child.getHeight());
                 mSelectedItemOffsetStart /= 2;
@@ -713,4 +719,9 @@ public class RecyclerViewTV extends RecyclerView implements PrvInterface {
     public void setHasHeaderView(boolean hasHeaderView) {
         this.hasHeaderView = hasHeaderView;
     }
+    /*add by dragontec for bug 4221 start*/
+    public View getLastFocusChild(){
+        return lastFocusChild;
+    }
+    /*add by dragontec for bug 4221 end*/
 }

@@ -101,6 +101,9 @@ public class TemplateTvPlay extends Template
         mTitleTv = (TextView) view.findViewById(R.id.banner_title_tv);
         mTitleCountTv = (TextView) view.findViewById(R.id.banner_title_count);
         mRecycleView = (RecyclerViewTV) view.findViewById(R.id.tv_player_recyclerview);
+		/*modify by dragontec for bug 4221 start*/
+        mRecycleView.setTag("recycleView");
+		/*modify by dragontec for bug 4221 end*/
         mTvPlayerLayoutManager =
                 new LinearLayoutManagerTV(mContext, LinearLayoutManager.HORIZONTAL, false);
         mRecycleView.setLayoutManager(mTvPlayerLayoutManager);
@@ -197,7 +200,9 @@ public class TemplateTvPlay extends Template
             }
             return focused;
         }
-        return null;
+        /*modify by dragontec for bug 4221 start*/
+        return findNextUpDownFocus(focusDirection, mBannerLinearLayout);
+        /*modify by dragontec for bug 4221 end*/
     }
 
     @Override

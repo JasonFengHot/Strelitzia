@@ -145,6 +145,9 @@ public class TemplateOrder extends Template
             mTitleCountTv = (TextView) view.findViewById(R.id.banner_title_count);
             mTitleTv = (TextView) view.findViewById(R.id.banner_title_tv);
             subscribeBanner = (RecyclerViewTV) view.findViewById(R.id.subscribe_banner);
+			/*modify by dragontec for bug 4221 start*/
+            subscribeBanner.setTag("recycleView");
+			/*modify by dragontec for bug 4221 end*/
             mBannerLinearLayout.setRecyclerViewTV(subscribeBanner);
             subscribeLayoutManager =
                     new LinearLayoutManagerTV(mContext, LinearLayoutManagerTV.HORIZONTAL, false);
@@ -196,7 +199,9 @@ public class TemplateOrder extends Template
                                 Log.d(TAG, "onFocusSearchFailed: " + view);
                                 return view;
                             }
-                            return null;
+                            /*modify by dragontec for bug 4221 start*/
+                            return findNextUpDownFocus(focusDirection, mBannerLinearLayout);
+                            /*modify by dragontec for bug 4221 end*/
                         }
                     });
 

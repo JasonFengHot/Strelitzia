@@ -120,6 +120,9 @@ public class Template519 extends Template implements View.OnClickListener, View.
         mTitleCountTv = (TextView) view.findViewById(R.id.banner_title_count);
         mTitleTv = (TextView) view.findViewById(R.id.banner_title_tv);
         horizontal519Banner = (RecyclerViewTV) view.findViewById(R.id.horizontal_519_banner);
+		/*modify by dragontec for bug 4221 start*/
+        horizontal519Banner.setTag("recycleView");
+		/*modify by dragontec for bug 4221 end*/
         mBannerLinearLayout.setRecyclerViewTV(horizontal519Banner);
         horizontal519LayoutManager =
                 new LinearLayoutManagerTV(mContext, LinearLayoutManager.HORIZONTAL, false);
@@ -164,7 +167,9 @@ public class Template519 extends Template implements View.OnClickListener, View.
                             }
                             return view;
                         }
-                        return null;
+                        /*modify by dragontec for bug 4221 start*/
+                        return findNextUpDownFocus(focusDirection, mBannerLinearLayout);
+                        /*modify by dragontec for bug 4221 end*/
                     }
                 });
 

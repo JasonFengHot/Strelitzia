@@ -87,6 +87,9 @@ public class TemplateCenter extends Template
     @Override
     public void getView(View view) {
         mRecycleView = (RecyclerViewTV) view.findViewById(R.id.center_recyclerview);
+		/*modify by dragontec for bug 4221 start*/
+        mRecycleView.setTag("recycleView");
+		/*modify by dragontec for bug 4221 end*/
         mCenterLayoutManager =
                 new LinearLayoutManagerTV(mContext, LinearLayoutManager.HORIZONTAL, false);
         mRecycleView.setLayoutManager(mCenterLayoutManager);
@@ -167,7 +170,9 @@ public class TemplateCenter extends Template
             }
             return focused;
         }
-        return null;
+        /*modify by dragontec for bug 4221 start*/
+        return findNextUpDownFocus(focusDirection, mBannerLinearLayout);
+        /*modify by dragontec for bug 4221 end*/
     }
 
     @Override

@@ -100,6 +100,9 @@ public class TemplateConlumn extends Template
     public void getView(View view) {
         mTitleCountTv = (TextView) view.findViewById(R.id.banner_title_count);
         mRecyclerView = (RecyclerViewTV) view.findViewById(R.id.conlumn_recyclerview);
+		/*modify by dragontec for bug 4221 start*/
+        mRecyclerView.setTag("recycleView");
+		/*modify by dragontec for bug 4221 end*/
         mConlumnLayoutManager =
                 new LinearLayoutManagerTV(mContext, LinearLayoutManager.HORIZONTAL, false);
         mRecyclerView.setLayoutManager(mConlumnLayoutManager);
@@ -180,7 +183,9 @@ public class TemplateConlumn extends Template
             }
             return focused;
         }
-        return null;
+        /*modify by dragontec for bug 4221 start*/
+        return findNextUpDownFocus(focusDirection, mBannerLinearLayout);
+        /*modify by dragontec for bug 4221 end*/
     }
 
     @Override

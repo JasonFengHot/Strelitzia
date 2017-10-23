@@ -10,6 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.daimajia.androidanimations.library.Techniques;
@@ -111,6 +112,9 @@ public class TemplateMovie extends Template implements View.OnClickListener, Vie
         mTitleCountTv = (TextView) view.findViewById(R.id.banner_title_count);
         mTitleTv = (TextView) view.findViewById(R.id.banner_title_tv);
         movieBanner = (RecyclerViewTV) view.findViewById(R.id.movie_banner);
+		/*modify by dragontec for bug 4221 start*/
+        movieBanner.setTag("recycleView");
+		/*modify by dragontec for bug 4221 end*/
         mBannerLinearLayout.setRecyclerViewTV(movieBanner);
         movieLayoutManager = new LinearLayoutManagerTV(mContext, LinearLayoutManager.HORIZONTAL, false);
         int selectedItemSpace =
@@ -155,7 +159,9 @@ public class TemplateMovie extends Template implements View.OnClickListener, Vie
                             }
                             return view;
                         }
-                        return null;
+                        /*modify by dragontec for bug 4221 start*/
+                        return findNextUpDownFocus(focusDirection, mBannerLinearLayout);
+                        /*modify by dragontec for bug 4221 end*/
                     }
                 });
 

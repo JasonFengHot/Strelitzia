@@ -8,6 +8,7 @@ import android.os.Handler;
 	/*add by dragontec for bug 4077 end*/
 import android.text.TextUtils;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
 
 	/*add by dragontec for bug 4077 start*/
@@ -22,6 +23,7 @@ import tv.ismar.app.core.Source;
 import tv.ismar.app.entity.banner.BannerCarousels;
 import tv.ismar.app.entity.banner.BannerEntity;
 	/*add by dragontec for bug 4077 start*/
+import tv.ismar.homepage.view.BannerLinearLayout;
 import tv.ismar.homepage.widget.RecycleLinearLayout;
 	/*add by dragontec for bug 4077 end*/
 
@@ -234,4 +236,61 @@ public abstract class Template {
 		}
 	}
 	/*add by dragontec for bug 4077 end*/
+    /*add by dragontec for bug 4221 start*/
+    protected View findNextUpDownFocus(int focusDirection, ViewGroup mBannerLinearLayout) {
+        if(focusDirection == View.FOCUS_UP){
+            int key = (int) mBannerLinearLayout.getTag();
+            int tag = (int) mBannerLinearLayout.getTag(key);
+//                            boolean canScroll = tag>>30==1;//1可滑动，0不可滑动
+            int position = (tag<<2)>>2;
+            if(position > 0){
+                BannerLinearLayout bannerLinearLayout = (BannerLinearLayout) ((ViewGroup)mBannerLinearLayout.getParent()).getChildAt(position - 1);
+                if(bannerLinearLayout != null) {
+                    View recycleView = bannerLinearLayout.findViewWithTag("recycleView");
+                    if (recycleView != null && recycleView instanceof RecyclerViewTV) {
+                        return ((RecyclerViewTV) recycleView).getLastFocusChild();
+                    }
+                }
+            }
+        }else if(focusDirection == View.FOCUS_DOWN){
+            int key = (int) mBannerLinearLayout.getTag();
+            int tag = (int) mBannerLinearLayout.getTag(key);
+//                            boolean canScroll = tag>>30==1;//1可滑动，0不可滑动
+            int position = (tag<<2)>>2;
+            int count = ((ViewGroup)mBannerLinearLayout.getParent()).getChildCount();
+            if(position < count -1){
+                View view = ((ViewGroup)mBannerLinearLayout.getParent()).getChildAt(position + 1);
+                if(view != null && view instanceof BannerLinearLayout){
+                    BannerLinearLayout bannerLinearLayout = (BannerLinearLayout) view;
+                    if(bannerLinearLayout != null) {
+                        View recycleView = bannerLinearLayout.findViewWithTag("recycleView");
+                        if (recycleView != null && recycleView instanceof RecyclerViewTV) {
+                            return ((RecyclerViewTV) recycleView).getLastFocusChild();
+                        }
+                    }
+                }
+
+            }
+        }
+        return null;
+    }
+
+    protected View findMoreUpFocus(ViewGroup mBannerLinearLayout) {
+        int key = (int) mBannerLinearLayout.getTag();
+        int tag = (int) mBannerLinearLayout.getTag(key);
+//                            boolean canScroll = tag>>30==1;//1可滑动，0不可滑动
+        int position = (tag<<2)>>2;
+        ViewGroup viewGroup = ((ViewGroup)mBannerLinearLayout.getParent());
+        if(position > 0 && viewGroup.getChildCount() > 1){
+            BannerLinearLayout bannerLinearLayout = (BannerLinearLayout)viewGroup.getChildAt(viewGroup.getChildCount()- 2);
+            if(bannerLinearLayout != null) {
+                View recycleView = bannerLinearLayout.findViewWithTag("recycleView");
+                if (recycleView != null && recycleView instanceof RecyclerViewTV) {
+                    return ((RecyclerViewTV) recycleView).getLastFocusChild();
+                }
+            }
+        }
+        return null;
+    }
+    /*add by dragontec for bug 4221 end*/
 }
