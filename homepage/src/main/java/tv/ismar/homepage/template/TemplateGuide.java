@@ -414,6 +414,9 @@ public class TemplateGuide extends Template
                 int targetPosition = mGuideLayoutManager.findFirstCompletelyVisibleItemPosition() - 5;
                 if (targetPosition <= 0) targetPosition = 0;
                 mGuideLayoutManager.smoothScrollToPosition(mRecycleView, null, targetPosition);
+            }else{
+                mHeadView.setVisibility(View.VISIBLE);
+                videoViewVisibility = true;
             }
         } else if (i == R.id.navigation_right) {
             mGuideLayoutManager.setCanScroll(true);

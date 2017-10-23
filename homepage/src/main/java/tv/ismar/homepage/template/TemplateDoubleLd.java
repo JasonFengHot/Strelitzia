@@ -290,13 +290,17 @@ public class TemplateDoubleLd extends Template
                 }
                 mSelectItemPosition = targetPosition;
                 mDoubleLayoutManager.smoothScrollToPosition(mRecyclerView, null, targetPosition);
-                if (targetPosition == mFetchDataControl.mHomeEntity.count)
-                    YoYo.with(Techniques.HorizontalShake)
-                            .duration(1000)
-                            .playOn(
-                                    mRecyclerView
-                                            .getChildAt(mRecyclerView.getChildCount() - 1)
-                                            .findViewById(R.id.double_md_ismartv_linear_layout));
+                try {
+                    if (targetPosition == mFetchDataControl.mHomeEntity.count)
+                        YoYo.with(Techniques.HorizontalShake)
+                                .duration(1000)
+                                .playOn(
+                                        mRecyclerView
+                                                .getChildAt(mRecyclerView.getChildCount() - 1)
+                                                .findViewById(R.id.double_md_ismartv_linear_layout));
+                }catch(Exception e){
+                    e.printStackTrace();
+                }
             }
             initTitle();
         }
