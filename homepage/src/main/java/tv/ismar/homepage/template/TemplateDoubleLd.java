@@ -135,6 +135,7 @@ public class TemplateDoubleLd extends Template
         mBannerLinearLayout.setNavigationLeft(navigationLeft);
         mBannerLinearLayout.setNavigationRight(navigationRight);
         mBannerLinearLayout.setRecyclerViewTV(mRecyclerView);
+        mRecyclerView.setHasHeaderView(true);
     }
 
     private void initTitle() {

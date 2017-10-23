@@ -54,6 +54,7 @@ public class RecyclerViewTV extends RecyclerView implements PrvInterface {
     private int offset = -1;
     private boolean isDispatch = true;
     private boolean ishover=false;
+    private boolean hasHeaderView=false;
 
     private RecyclerViewTV.OnChildViewHolderSelectedListener mChildViewHolderSelectedListener;
 
@@ -289,7 +290,11 @@ public class RecyclerViewTV extends RecyclerView implements PrvInterface {
      * (getWidth() - getPaddingRight());
      */
     public boolean cannotScrollForward(int delta) {
-        return (findLastCompletelyVisibleItemPosition()== getLayoutManager().getItemCount()-1) && (delta >= 0);
+        int lastpos=findLastCompletelyVisibleItemPosition();
+        if(hasHeaderView){
+            lastpos+=1;
+        }
+        return (lastpos== getLayoutManager().getItemCount()-1) && (delta >= 0);
     }
 
     @Override
@@ -603,12 +608,16 @@ public class RecyclerViewTV extends RecyclerView implements PrvInterface {
      */
     public int findLastCompletelyVisibleItemPosition() {
         LayoutManager layoutManager = getLayoutManager();
+        int[] positions = new int[] {0, 0};
         if (layoutManager != null) {
             if (layoutManager instanceof LinearLayoutManager) {
                 return ((LinearLayoutManager) layoutManager).findLastCompletelyVisibleItemPosition();
             }
             if (layoutManager instanceof GridLayoutManager) {
                 return ((GridLayoutManager) layoutManager).findLastCompletelyVisibleItemPosition();
+            }
+            if(layoutManager instanceof StaggeredGridLayoutManager){
+                return ((StaggeredGridLayoutManager) layoutManager).findLastCompletelyVisibleItemPositions(positions)[0];
             }
         }
         return RecyclerView.NO_POSITION;
@@ -699,5 +708,9 @@ public class RecyclerViewTV extends RecyclerView implements PrvInterface {
             }
         }
         return super.dispatchHoverEvent(event);
+    }
+
+    public void setHasHeaderView(boolean hasHeaderView) {
+        this.hasHeaderView = hasHeaderView;
     }
 }
