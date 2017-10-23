@@ -10,13 +10,11 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.orhanobut.logger.Logger;
-import com.squareup.leakcanary.RefWatcher;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import tv.ismar.app.BaseControl;
-import tv.ismar.app.VodApplication;
 import tv.ismar.app.core.VodUserAgent;
 import tv.ismar.app.entity.GuideBanner;
 import tv.ismar.homepage.HomeActivity;
@@ -37,8 +35,6 @@ import tv.ismar.homepage.template.TemplateRecommend;
 import tv.ismar.homepage.template.TemplateTvPlay;
 import tv.ismar.homepage.widget.RecycleLinearLayout;
 import tv.ismar.library.util.StringUtils;
-
-import static android.view.KeyEvent.KEYCODE_SLEEP;
 
 /**
  * @AUTHOR: xi @DATE: 2017/9/8 @DESC: 频道fragemnt
@@ -212,6 +208,9 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
     @Override
     public void callBack(int flags, Object... args) {
 		GuideBanner[] banners = (GuideBanner[]) args;
+		/*modify by dragontec for bug 4178 start*/
+		mLinearContainer.setDataSize(banners.length);
+		/*modify by dragontec for bug 4178 end*/
         initBanner(banners);
     }
 

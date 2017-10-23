@@ -5,13 +5,11 @@ import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.FocusFinder;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.OverScroller;
-import android.widget.ScrollView;
 
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
@@ -45,6 +43,7 @@ public class RecycleLinearLayout extends LinearLayout {
 	/*add by dragontec for bug 3983 end*/
     private Button arrow_up;
     private Button arrow_down;
+    private int dataSize;
 
 
     public RecycleLinearLayout(Context context) {
@@ -110,7 +109,17 @@ public class RecycleLinearLayout extends LinearLayout {
 		/*modify by dragontec for bug 3983 start*/
         if(HomeActivity.isTitleHidden && isScrollDuringTitleHiddenState){
             dy +=  getResources().getDimensionPixelSize(R.dimen.banner_margin_top);
-            mOverScroller.startScroll(mOverScroller.getFinalX(), mOverScroller.getFinalY(), dx, dy, SCROLL_DURATION);
+            /*modify by dragontec for bug 4178 start*/
+            if(dataSize <= getChildCount()){
+                int height = getHeight();
+                if(mOverScroller.getFinalY() + dy > (height - mScreenHeight)){
+                    dy = (height - mScreenHeight) - mOverScroller.getFinalY();
+                }
+            }
+            if(dy != 0){
+                mOverScroller.startScroll(mOverScroller.getFinalX(), mOverScroller.getFinalY(), dx, dy, SCROLL_DURATION);
+            }
+            /*modify by dragontec for bug 4178 end*/
         }else{
             if(mOverScroller.getFinalY() + dy < 0){
                 dy = -mOverScroller.getFinalY();
@@ -261,22 +270,24 @@ public class RecycleLinearLayout extends LinearLayout {
 					}
 				}
 	/*add by dragontec for bug 4077 end*/
+	/*modify by dragontec for bug 4178 start 所有滑动事件都进scrollToTop 在smoothScrollBy中作滑动限制*/
                 //滑动处理
-                if(position==getChildCount()-1){
-                    Log.i(TAG, "scrollToVisiable");
-//                    mScrollView.setBottom(mScrollHeight+mScreenHeight);
-					/*modify by dragontec for bug 4149 start*/
-					//最后一个banner不是更多按钮的时候banner不需要抖动
-					if (key != R.layout.banner_more) {
-						scrollToVisiable(view);
-//						YoYo.with(Techniques.VerticalShake).duration(1000).playOn(view);
-					}
-					/*modify by dragontec for bug 4149 end*/
-                } else {
+//                if(position==getChildCount()-1){
+//                    Log.i(TAG, "scrollToVisiable");
+////                    mScrollView.setBottom(mScrollHeight+mScreenHeight);
+//					/*modify by dragontec for bug 4149 start*/
+//					//最后一个banner不是更多按钮的时候banner不需要抖动
+//                    scrollToVisiable(view);
+//                    if (key != R.layout.banner_more) {
+////						YoYo.with(Techniques.VerticalShake).duration(1000).playOn(view);
+//					}
+//					/*modify by dragontec for bug 4149 end*/
+//                } else {
                     Log.i(TAG, "scrollToTop");
-//                    mScrollView.setBottom(mScreenHeight);
+                    //                    mScrollView.setBottom(mScreenHeight);
                     scrollToTop(view);
-                }
+//                }
+                /*modify by dragontec for bug 4178 end*/
             }
         }
         return super.dispatchKeyEvent(event);
@@ -307,7 +318,11 @@ public class RecycleLinearLayout extends LinearLayout {
     public void setHolder(ViewHolder holder){
         this.mHolder = holder;
     }
-
+	/*modify by dragontec for bug 4178 start*/
+    public void setDataSize(int dataSize) {
+        this.dataSize = dataSize;
+    }
+	/*modify by dragontec for bug 4178 end*/
     public interface ViewHolder {
         void onCreateView(int position, int orientation);
     }
