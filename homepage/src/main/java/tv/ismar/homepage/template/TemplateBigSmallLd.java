@@ -317,7 +317,7 @@ public class TemplateBigSmallLd extends Template
         if (i == R.id.navigation_left) {
             movieMixLayoutManager.setCanScroll(true);
             if (movieMixLayoutManager.findFirstCompletelyVisibleItemPosition() - 1 >= 0) {
-                int targetPosition = movieMixLayoutManager.findFirstCompletelyVisibleItemPosition() - 6;
+                int targetPosition = movieMixLayoutManager.findFirstCompletelyVisibleItemPosition() - 5;
                 if (targetPosition >= 0) {
                     // 表示可以滑动
                 } else {
@@ -335,7 +335,7 @@ public class TemplateBigSmallLd extends Template
             movieMixBanner.loadMore();
 
             if (movieMixLayoutManager.findLastCompletelyVisibleItemPosition() + 1 <= totalItemCount) {
-                int targetPosition = movieMixLayoutManager.findLastCompletelyVisibleItemPosition() + 6;
+                int targetPosition = movieMixLayoutManager.findLastCompletelyVisibleItemPosition() + 5;
                 if (targetPosition < totalItemCount) {
                     // 表示可以滑动
                 } else {

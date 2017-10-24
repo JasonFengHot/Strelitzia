@@ -217,7 +217,7 @@ public class TemplateConlumn extends Template
         if (i == R.id.navigation_left) {
             mConlumnLayoutManager.setCanScroll(true);
             if (mConlumnLayoutManager.findFirstCompletelyVisibleItemPosition() - 1 >= 0) { // 向左滑动
-                int targetPosition = mConlumnLayoutManager.findFirstCompletelyVisibleItemPosition() - 5;
+                int targetPosition = mConlumnLayoutManager.findFirstCompletelyVisibleItemPosition() - 4;
                 if (targetPosition <= 0) targetPosition = 0;
                 mConlumnLayoutManager.smoothScrollToPosition(mRecyclerView, null, targetPosition);
             }
@@ -226,7 +226,7 @@ public class TemplateConlumn extends Template
             mRecyclerView.loadMore();
             if (mConlumnLayoutManager.findLastCompletelyVisibleItemPosition()
                     <= mFetchDataControl.mHomeEntity.count) {
-                int targetPosition = mConlumnLayoutManager.findLastCompletelyVisibleItemPosition() + 5;
+                int targetPosition = mConlumnLayoutManager.findLastCompletelyVisibleItemPosition() + 4;
                 if (targetPosition >= mFetchDataControl.mHomeEntity.count) {
                     targetPosition = mFetchDataControl.mHomeEntity.count;
                 }
