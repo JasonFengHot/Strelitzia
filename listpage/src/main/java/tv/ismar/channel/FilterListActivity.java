@@ -211,9 +211,13 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
         filter_root_view.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if(v.hasFocus()){
-                    section_group.findViewById(section_group.getCheckedRadioButtonId()).requestFocus();
-                    return true;
+                try {
+                    if (v.hasFocus()) {
+                        section_group.findViewById(section_group.getCheckedRadioButtonId()).requestFocus();
+                        return true;
+                    }
+                }catch(Exception e){
+                    e.printStackTrace();
                 }
                 return false;
             }

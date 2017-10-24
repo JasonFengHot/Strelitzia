@@ -828,7 +828,7 @@
 <dimen name="subscribe_banner_recycler_ml">37.04dp</dimen>
 <dimen name="subscribe_banner_recycler_mr">37.04dp</dimen>
 <dimen name="subscribe_banner_recycler_pl">37.04dp</dimen>
-<dimen name="subscribe_banner_recycler_pr">37.04dp</dimen>
+<dimen name="subscribe_banner_recycler_pr">22.22dp</dimen>
 <dimen name="movie_banner_recycler_h">259.26dp</dimen>
 <dimen name="movie_banner_recycler_ml">37.04dp</dimen>
 <dimen name="movie_banner_recycler_mr">22.22dp</dimen>
@@ -838,7 +838,7 @@
 <dimen name="horizontal519_banner_recycler_ml">37.04dp</dimen>
 <dimen name="horizontal519_banner_recycler_mr">37.04dp</dimen>
 <dimen name="horizontal519_banner_recycler_pl">37.04dp</dimen>
-<dimen name="horizontal519_banner_recycler_pr">37.04dp</dimen>
+<dimen name="horizontal519_banner_recycler_pr">22.22dp</dimen>
 <dimen name="banner_item_setSelectedItemOffset">59.26dp</dimen>
 <dimen name="banner_item_SelectedItemSpace">14.81dp</dimen>
 <dimen name="banner_item_movie_small_width">214.81dp</dimen>
@@ -850,7 +850,7 @@
 <dimen name="movie_mix_banner_recycler_ml">37.04dp</dimen>
 <dimen name="movie_mix_banner_recycler_mr">37.04dp</dimen>
 <dimen name="movie_mix_banner_recycler_pl">37.04dp</dimen>
-<dimen name="movie_mix_banner_recycler_pr">37.04dp</dimen>
+<dimen name="movie_mix_banner_recycler_pr">22.22dp</dimen>
 <dimen name="space_banner_item_width">14.81dp</dimen>
 <dimen name="banner_mark_lt_width">80.74dp</dimen>
 <dimen name="banner_mark_br_width">57.78dp</dimen>

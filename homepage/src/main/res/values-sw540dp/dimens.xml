@@ -828,7 +828,7 @@
 <dimen name="subscribe_banner_recycler_ml">25.00dp</dimen>
 <dimen name="subscribe_banner_recycler_mr">25.00dp</dimen>
 <dimen name="subscribe_banner_recycler_pl">25.00dp</dimen>
-<dimen name="subscribe_banner_recycler_pr">25.00dp</dimen>
+<dimen name="subscribe_banner_recycler_pr">15.00dp</dimen>
 <dimen name="movie_banner_recycler_h">175.00dp</dimen>
 <dimen name="movie_banner_recycler_ml">25.00dp</dimen>
 <dimen name="movie_banner_recycler_mr">15.00dp</dimen>
@@ -838,7 +838,7 @@
 <dimen name="horizontal519_banner_recycler_ml">25.00dp</dimen>
 <dimen name="horizontal519_banner_recycler_mr">25.00dp</dimen>
 <dimen name="horizontal519_banner_recycler_pl">25.00dp</dimen>
-<dimen name="horizontal519_banner_recycler_pr">25.00dp</dimen>
+<dimen name="horizontal519_banner_recycler_pr">15.00dp</dimen>
 <dimen name="banner_item_setSelectedItemOffset">40.00dp</dimen>
 <dimen name="banner_item_SelectedItemSpace">10.00dp</dimen>
 <dimen name="banner_item_movie_small_width">145.00dp</dimen>
@@ -850,7 +850,7 @@
 <dimen name="movie_mix_banner_recycler_ml">25.00dp</dimen>
 <dimen name="movie_mix_banner_recycler_mr">25.00dp</dimen>
 <dimen name="movie_mix_banner_recycler_pl">25.00dp</dimen>
-<dimen name="movie_mix_banner_recycler_pr">25.00dp</dimen>
+<dimen name="movie_mix_banner_recycler_pr">15.00dp</dimen>
 <dimen name="space_banner_item_width">10.00dp</dimen>
 <dimen name="banner_mark_lt_width">54.50dp</dimen>
 <dimen name="banner_mark_br_width">39.00dp</dimen>
