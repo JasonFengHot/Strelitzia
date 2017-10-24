@@ -1,5 +1,7 @@
 package tv.ismar.app.network.entity;
 
+import android.text.TextUtils;
+
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
@@ -472,7 +474,7 @@ public class ItemEntity {
         }
 
         public String getLength() {
-            return length;
+            return TextUtils.isEmpty(length) ? "0" : length;
         }
 
         public void setLength(String length) {
@@ -725,7 +727,7 @@ public class ItemEntity {
         }
 
         public String getLength() {
-            return length;
+            return TextUtils.isEmpty(length) ? "0" : length;
         }
 
         public void setLength(String length) {
