@@ -975,70 +975,74 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
 
     @Override
     public void onClick(View v) {
-        int i = v.getId();
-        if(i==R.id.filter_tab){
-            current_section_title.setVisibility(View.INVISIBLE);
-            if(filter_checked_conditiion.getChildCount()>1){
-                filter_checked_conditiion.setVisibility(View.VISIBLE);
+        try {
+            int i = v.getId();
+            if (i == R.id.filter_tab) {
                 current_section_title.setVisibility(View.INVISIBLE);
-            }
-            if(filterPopup!=null&&!filterPopup.isShowing()) {
-                full_view.setVisibility(View.VISIBLE);
-                v.setBackgroundResource(R.drawable.section_checked_tab_selector);
-                full_view.requestFocus();
-                showFilterPopup();
-            }
-        }else if(i==R.id.tab_arrow_up){
-            tab_scroll.scrollBy(0, getResources().getDimensionPixelOffset(R.dimen.list_scroll_arrow_up_lenth));
-            firstPos = tab_scroll.getScrollY()/section_group.getChildAt(0).getHeight();
-            if(checkedTab<firstPos||checkedTab>firstPos+8) {
-                if (firstPos == 0) {
-                    firstPos = 1;
+                if (filter_checked_conditiion.getChildCount() > 1) {
+                    filter_checked_conditiion.setVisibility(View.VISIBLE);
+                    current_section_title.setVisibility(View.INVISIBLE);
                 }
-                ((RadioButton) section_group.getChildAt(firstPos)).setChecked(true);
-                section_group.getChildAt(firstPos).callOnClick();
-            }
-        }else if(i==R.id.tab_arrow_dowm){
-            tab_scroll.scrollBy(0, getResources().getDimensionPixelOffset(R.dimen.list_scroll_arrow_down_lenth));
-            firstPos=tab_scroll.getScrollY()/section_group.getChildAt(0).getHeight();
-            if(checkedTab<firstPos||checkedTab>firstPos+8) {
-                ((RadioButton) section_group.getChildAt(firstPos)).setChecked(true);
-                section_group.getChildAt(firstPos).callOnClick();
-            }
-        }else if(i==R.id.poster_arrow_up){
-            if(filter_tab.isChecked()){
-                if (isVertical) {
-                    mFilterFocusGridLayoutManager.scrollToPositionWithOffset(mFilterFocusGridLayoutManager.findFirstVisibleItemPosition() - 1, getResources().getDimensionPixelOffset(R.dimen.list_scroll_filter_offset_v));
-                } else {
-                    mFilterFocusGridLayoutManager.scrollToPositionWithOffset(mFilterFocusGridLayoutManager.findFirstVisibleItemPosition() - 1, getResources().getDimensionPixelOffset(R.dimen.list_scroll_filter_offset_h));
+                if (filterPopup != null && !filterPopup.isShowing()) {
+                    full_view.setVisibility(View.VISIBLE);
+                    v.setBackgroundResource(R.drawable.section_checked_tab_selector);
+                    full_view.requestFocus();
+                    showFilterPopup();
                 }
-            }else{
-                nextPos = specialPos.contains(mFocusGridLayoutManager.findFirstVisibleItemPosition()) ? mFocusGridLayoutManager.findFirstVisibleItemPosition() - spanCount-1 : mFocusGridLayoutManager.findFirstVisibleItemPosition()-1 ;
-                if (isVertical) {
-                    mFocusGridLayoutManager.scrollToPositionWithOffset(nextPos, getResources().getDimensionPixelOffset(R.dimen.list_scroll_up_offset_v));
-                } else {
-                    mFocusGridLayoutManager.scrollToPositionWithOffset(nextPos, getResources().getDimensionPixelOffset(R.dimen.list_scroll_up_offset_h));
-                }
-            }
-        }else if(i==R.id.poster_arrow_down){
-            if(filter_tab.isChecked()){
-                mFilterFocusGridLayoutManager.scrollToPositionWithOffset(mFilterFocusGridLayoutManager.findLastVisibleItemPosition(),0);
-            }else{
-                nextPos =mFocusGridLayoutManager.findLastVisibleItemPosition()+1;
-                if(isVertical) {
-                    if(specialPos.contains(mFocusGridLayoutManager.findLastVisibleItemPosition())){
-                        mFocusGridLayoutManager.scrollToPositionWithOffset(nextPos-1, 0);
-                    }else {
-                        mFocusGridLayoutManager.scrollToPositionWithOffset(nextPos, getResources().getDimensionPixelOffset(R.dimen.list_scroll_down_offset_v));
+            } else if (i == R.id.tab_arrow_up) {
+                tab_scroll.scrollBy(0, getResources().getDimensionPixelOffset(R.dimen.list_scroll_arrow_up_lenth));
+                firstPos = tab_scroll.getScrollY() / section_group.getChildAt(0).getHeight();
+                if (checkedTab < firstPos || checkedTab > firstPos + 8) {
+                    if (firstPos == 0) {
+                        firstPos = 1;
                     }
-                }else{
-                    if(specialPos.contains(mFocusGridLayoutManager.findLastVisibleItemPosition())){
-                        mFocusGridLayoutManager.scrollToPositionWithOffset(nextPos-1, 0);
-                    }else {
-                        mFocusGridLayoutManager.scrollToPositionWithOffset(nextPos, getResources().getDimensionPixelOffset(R.dimen.list_scroll_down_offset_h));
+                    ((RadioButton) section_group.getChildAt(firstPos)).setChecked(true);
+                    section_group.getChildAt(firstPos).callOnClick();
+                }
+            } else if (i == R.id.tab_arrow_dowm) {
+                tab_scroll.scrollBy(0, getResources().getDimensionPixelOffset(R.dimen.list_scroll_arrow_down_lenth));
+                firstPos = tab_scroll.getScrollY() / section_group.getChildAt(0).getHeight();
+                if (checkedTab < firstPos || checkedTab > firstPos + 8) {
+                    ((RadioButton) section_group.getChildAt(firstPos)).setChecked(true);
+                    section_group.getChildAt(firstPos).callOnClick();
+                }
+            } else if (i == R.id.poster_arrow_up) {
+                if (filter_tab.isChecked()) {
+                    if (isVertical) {
+                        mFilterFocusGridLayoutManager.scrollToPositionWithOffset(mFilterFocusGridLayoutManager.findFirstVisibleItemPosition() - 1, getResources().getDimensionPixelOffset(R.dimen.list_scroll_filter_offset_v));
+                    } else {
+                        mFilterFocusGridLayoutManager.scrollToPositionWithOffset(mFilterFocusGridLayoutManager.findFirstVisibleItemPosition() - 1, getResources().getDimensionPixelOffset(R.dimen.list_scroll_filter_offset_h));
+                    }
+                } else {
+                    nextPos = specialPos.contains(mFocusGridLayoutManager.findFirstVisibleItemPosition()) ? mFocusGridLayoutManager.findFirstVisibleItemPosition() - spanCount - 1 : mFocusGridLayoutManager.findFirstVisibleItemPosition() - 1;
+                    if (isVertical) {
+                        mFocusGridLayoutManager.scrollToPositionWithOffset(nextPos, getResources().getDimensionPixelOffset(R.dimen.list_scroll_up_offset_v));
+                    } else {
+                        mFocusGridLayoutManager.scrollToPositionWithOffset(nextPos, getResources().getDimensionPixelOffset(R.dimen.list_scroll_up_offset_h));
                     }
                 }
+            } else if (i == R.id.poster_arrow_down) {
+                if (filter_tab.isChecked()) {
+                    mFilterFocusGridLayoutManager.scrollToPositionWithOffset(mFilterFocusGridLayoutManager.findLastVisibleItemPosition(), 0);
+                } else {
+                    nextPos = mFocusGridLayoutManager.findLastVisibleItemPosition() + 1;
+                    if (isVertical) {
+                        if (specialPos.contains(mFocusGridLayoutManager.findLastVisibleItemPosition())) {
+                            mFocusGridLayoutManager.scrollToPositionWithOffset(nextPos - 1, 0);
+                        } else {
+                            mFocusGridLayoutManager.scrollToPositionWithOffset(nextPos, getResources().getDimensionPixelOffset(R.dimen.list_scroll_down_offset_v));
+                        }
+                    } else {
+                        if (specialPos.contains(mFocusGridLayoutManager.findLastVisibleItemPosition())) {
+                            mFocusGridLayoutManager.scrollToPositionWithOffset(nextPos - 1, 0);
+                        } else {
+                            mFocusGridLayoutManager.scrollToPositionWithOffset(nextPos, getResources().getDimensionPixelOffset(R.dimen.list_scroll_down_offset_h));
+                        }
+                    }
+                }
             }
+        }catch (Exception e){
+            e.printStackTrace();
         }
     }
 
