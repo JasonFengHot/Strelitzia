@@ -262,7 +262,7 @@ public class TemplateTvPlay extends Template
         if (i == R.id.navigation_left) {
             mTvPlayerLayoutManager.setCanScroll(true);
             if (mTvPlayerLayoutManager.findFirstCompletelyVisibleItemPosition() - 1 >= 0) { // 向左滑动
-                int targetPosition = mTvPlayerLayoutManager.findFirstCompletelyVisibleItemPosition() - 5;
+                int targetPosition = mTvPlayerLayoutManager.findFirstCompletelyVisibleItemPosition() - 4;
                 if (targetPosition <= 0) targetPosition = 0;
                 mSelectItemPosition = targetPosition;
                 mTvPlayerLayoutManager.smoothScrollToPosition(mRecycleView, null, targetPosition);
@@ -272,7 +272,7 @@ public class TemplateTvPlay extends Template
             mRecycleView.loadMore();
             if (mTvPlayerLayoutManager.findLastCompletelyVisibleItemPosition()
                     <= mFetchDataControl.mHomeEntity.count) {
-                int targetPosition = mTvPlayerLayoutManager.findLastCompletelyVisibleItemPosition() + 5;
+                int targetPosition = mTvPlayerLayoutManager.findLastCompletelyVisibleItemPosition() + 4;
                 if (targetPosition >= mFetchDataControl.mHomeEntity.count) {
                     targetPosition = mFetchDataControl.mHomeEntity.count;
                 }

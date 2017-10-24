@@ -189,7 +189,7 @@ public class TemplateRecommend extends Template
     if (i == R.id.navigation_left) {
       mRecommendLayoutManager.setCanScroll(true);
       if (mRecommendLayoutManager.findFirstCompletelyVisibleItemPosition() - 1 >= 0) { // 向左滑动
-        int targetPosition = mRecommendLayoutManager.findFirstCompletelyVisibleItemPosition() - 5;
+        int targetPosition = mRecommendLayoutManager.findFirstCompletelyVisibleItemPosition() - 4;
         if (targetPosition <= 0) targetPosition = 0;
         mRecommendLayoutManager.smoothScrollToPosition(mRecyclerView, null, targetPosition);
       }
@@ -198,7 +198,7 @@ public class TemplateRecommend extends Template
       mRecyclerView.loadMore();
       if (mRecommendLayoutManager.findLastCompletelyVisibleItemPosition()
           <= mFetchDataControl.mHomeEntity.count) {
-        int targetPosition = mRecommendLayoutManager.findLastCompletelyVisibleItemPosition() + 5;
+        int targetPosition = mRecommendLayoutManager.findLastCompletelyVisibleItemPosition() + 4;
         if (targetPosition >= mFetchDataControl.mHomeEntity.count) {
           targetPosition = mFetchDataControl.mHomeEntity.count;
         }
