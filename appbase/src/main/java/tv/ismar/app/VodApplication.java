@@ -30,8 +30,11 @@ import org.json.JSONObject;
 import java.io.File;
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Method;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -42,6 +45,7 @@ import cn.ismartv.injectdb.library.ActiveAndroid;
 import cn.ismartv.injectdb.library.app.Application;
 import cn.ismartv.truetime.TrueTime;
 import okhttp3.Cache;
+import okhttp3.Dns;
 import okhttp3.OkHttpClient;
 import tv.ismar.account.IsmartvActivator;
 import tv.ismar.account.IsmartvHttpParamsInterceptor;
@@ -187,13 +191,13 @@ public class VodApplication extends Application {
         OkHttpClient client = new OkHttpClient.Builder()
                 .addInterceptor(new UserAgentInterceptor())
                 .addInterceptor(new HttpCacheInterceptor(getApplicationContext()))
-//                .dns(new Dns() {
-//                    @Override
-//                    public List<InetAddress> lookup(String s) throws UnknownHostException {
-//                        String ipAddress = IsmartvActivator.getHostByName(s);
-//                        return Dns.SYSTEM.lookup(ipAddress);
-//                    }
-//                })
+                .dns(new Dns() {
+                    @Override
+                    public List<InetAddress> lookup(String s) throws UnknownHostException {
+                        String ipAddress = IsmartvActivator.getHostByName(s);
+                        return Dns.SYSTEM.lookup(ipAddress);
+                    }
+                })
                 .cache(cache)
                 .build();
 
@@ -210,13 +214,13 @@ public class VodApplication extends Application {
         OkHttpClient homepageClient = new OkHttpClient.Builder()
                 .addInterceptor(new UserAgentInterceptor())
                 .addInterceptor(new HttpCacheInterceptor(getApplicationContext()))
-//                .dns(new Dns() {
-//                    @Override
-//                    public List<InetAddress> lookup(String s) throws UnknownHostException {
-//                        String ipAddress = IsmartvActivator.getHostByName(s);
-//                        return Dns.SYSTEM.lookup(ipAddress);
-//                    }
-//                })
+                .dns(new Dns() {
+                    @Override
+                    public List<InetAddress> lookup(String s) throws UnknownHostException {
+                        String ipAddress = IsmartvActivator.getHostByName(s);
+                        return Dns.SYSTEM.lookup(ipAddress);
+                    }
+                })
                 .cache(homepageCache)
                 .build();
 
