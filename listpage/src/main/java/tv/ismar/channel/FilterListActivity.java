@@ -208,6 +208,16 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
         poster_arrow_up.setOnClickListener(this);
         poster_arrow_down.setOnClickListener(this);
         full_view.setOnHoverListener(this);
+        filter_root_view.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if(v.hasFocus()){
+                    section_group.findViewById(section_group.getCheckedRadioButtonId()).requestFocus();
+                    return true;
+                }
+                return false;
+            }
+        });
 
         RelativeLayout.LayoutParams recyclerParam= (RelativeLayout.LayoutParams) list_poster_recyclerview.getLayoutParams();
         if(isVertical){

@@ -280,6 +280,7 @@ public class HorizontalTabView extends HorizontalScrollView
             }else {
                 //确保焦点上移时还是在当前tab上，不会切换频道
                 if(tag&&linearContainer.indexOfChild(v)!=mSelectedIndex){
+                    isOnKeyDown=true;
                     changeViewStatus((TextView) linearContainer.getChildAt(mSelectedIndex), ViewStatus.Focused);
                 }else {
                     changeViewStatus(textView, ViewStatus.Focused);
@@ -541,6 +542,7 @@ public class HorizontalTabView extends HorizontalScrollView
                 break;
             case MotionEvent.ACTION_HOVER_EXIT:
                 changeViewStatus(textView, ViewStatus.UnHovered);
+                tag=true;
 /*add by dragontec for bug 4057 start*/
                 if (event.getButtonState() != BUTTON_PRIMARY) {
                     v.clearFocus();

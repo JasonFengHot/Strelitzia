@@ -27,6 +27,7 @@ public class TelescopicWrap {
     private static int mTextWidth;
     private static int mIconWidth;
 
+    private ValueAnimator openAnimator,closeAnimator;
     private ViewGroup mLayout;//隐藏的layout
 
     public TelescopicWrap(Context context, ViewGroup viewGroup) {
@@ -64,27 +65,39 @@ public class TelescopicWrap {
 
     private void animateOpen() {
         if(mLayout != null){
-            mTv.setVisibility(View.VISIBLE);
-            mTv.setWidth(0);
-            ValueAnimator animator = createDropAnimator(mLayout, 0,
+            if(closeAnimator!=null&&closeAnimator.isRunning()){
+                closeAnimator.cancel();
+            }
+            openAnimator= createDropAnimator(mLayout, 0,
                     mTextWidth, true);
-            animator.setDuration(200);
-            animator.start();
+            openAnimator.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationStart(Animator animation) {
+                    mTv.setVisibility(View.VISIBLE);
+                    mTv.setWidth(0);
+                    super.onAnimationStart(animation);
+                }
+            });
+            openAnimator.setDuration(200);
+            openAnimator.start();
         }
     }
 
     private void animateClose() {
         if(mLayout != null){
-            ValueAnimator animator = createDropAnimator(mLayout, mTextWidth, mTextWidth/3, false);
-            animator.addListener(new AnimatorListenerAdapter() {
+            if(openAnimator!=null&&openAnimator.isRunning()){
+                openAnimator.cancel();
+            }
+            closeAnimator = createDropAnimator(mLayout, mTextWidth, mTextWidth/3, false);
+            closeAnimator.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
                     mLayout.setBackgroundColor(Color.parseColor("#00000000"));
                     mTv.setVisibility(View.GONE);
                 }
             });
-            animator.setDuration(200);
-            animator.start();
+            closeAnimator.setDuration(200);
+            closeAnimator.start();
         }
     }
 

@@ -508,7 +508,6 @@ public static HomeRootRelativeLayout mHoverView;
     public void onFocusChange(View v, boolean hasFocus) {
         Log.i("favorite", "focus : " + hasFocus);
         if (v == mCollectionRect) { // 历史收藏伸缩处理
-
             mCollectionTel.openOrClose(hasFocus);
             return;
         }
