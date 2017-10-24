@@ -21,14 +21,14 @@ import android.widget.TextView;
 
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
-import com.orhanobut.logger.Logger;
 
 import java.util.List;
 
 import tv.ismar.homepage.R;
 
-/*add by dragontec for bug 4057 start*/
 import static android.view.MotionEvent.BUTTON_PRIMARY;
+
+/*add by dragontec for bug 4057 start*/
 /*add by dragontec for bug 4057 end*/
 
 public class HorizontalTabView extends HorizontalScrollView
@@ -224,33 +224,25 @@ public class HorizontalTabView extends HorizontalScrollView
         int[] currentRect = new int[2];
         view.getLocationOnScreen(currentRect);
 
-        if (currentRect[0] - view.getWidth() - tabSpace
-                <= mTabMargin) { // current view left less than left margin
+        if (mFocusedIndex == 0) {
+            if (canScrollHorizontally(FOCUS_LEFT)) {
+                fullScroll(FOCUS_LEFT);
+            }
+        } else if (mFocusedIndex == linearContainer.getChildCount() - 1) {
+            if (canScrollHorizontally(FOCUS_RIGHT)) {
+                fullScroll(FOCUS_RIGHT);
+            }
+        } else if (currentRect[0]  - tabSpace <= 0) { // current view left less than left margin
             Log.d(TAG, "channel: 左滑");
-            if (mFocusedIndex == 0) {
-//                if (currentRect[0] - tabSpace > mTabMargin + tabSpace) {
-//                    scrollChildPosition(linearContainer.getChildAt(0));
-//                }
-                if (canScrollHorizontally(FOCUS_LEFT)){
-                    fullScroll(FOCUS_LEFT);
-                }
-            } else {
-                int leftViewWidth = linearContainer.getChildAt(mFocusedIndex - 1).getWidth();
-                int[] lastleftRect = new int[2];
-                linearContainer.getChildAt(mFocusedIndex - 1).getLocationOnScreen(lastleftRect);
-                smoothScrollBy(
-                        -(currentRect[0] - (lastleftRect[0] + leftViewWidth) + leftViewWidth / 2), 0);
-            }
-            // 右滑
-        } else if (currentRect[0] + view.getWidth()
-                >= baseRightX) { // current view right more than right margin
+            View lastIndexView = linearContainer.getChildAt(mFocusedIndex - 1);
+            int lastIndexViewWidth = lastIndexView.getWidth();
+            int[] lastIndexViewRect = new int[2];
+            lastIndexView.getLocationOnScreen(lastIndexViewRect);
+            smoothScrollBy(-(tabSpace + lastIndexViewWidth / 2), 0);
+        } else if (currentRect[0] + view.getWidth() >= baseRightX) { // current view right more than right margin
             Log.d(TAG, "channel: 右滑");
-            if (mFocusedIndex == linearContainer.getChildCount() - 1) {
-                smoothScrollBy(currentRect[0] + view.getWidth() - baseRightX, 0);
-            } else {
-                int rightViewWidth = linearContainer.getChildAt(mFocusedIndex + 1).getWidth();
-                smoothScrollBy(currentRect[0] + view.getWidth() - baseRightX + rightViewWidth / 2, 0);
-            }
+            int rightViewWidth = linearContainer.getChildAt(mFocusedIndex + 1).getWidth();
+            smoothScrollBy(currentRect[0] + view.getWidth() - baseRightX + rightViewWidth / 2, 0);
         }
     }
 
@@ -420,7 +412,6 @@ public class HorizontalTabView extends HorizontalScrollView
 /*add by dragontec for bug 4048 end*/
                 }
                 mSelectedIndex = (int) view.getTag();
-                Logger.t(TAG).d("onItemSelectedListener.onItemSelected(view, mSelectedIndex);");
                 //计算滑动位置
                 scrollChildPosition(view);
                 if (isOnViewClick){
@@ -445,7 +436,6 @@ public class HorizontalTabView extends HorizontalScrollView
 
                 //空鼠获取焦点
                 if (!view.hasFocus()){
-                    Logger.t(TAG).d("空鼠获取焦点");
                     view.setHovered(true);
                     view.requestFocus();
                     view.requestFocusFromTouch();
@@ -461,8 +451,6 @@ public class HorizontalTabView extends HorizontalScrollView
                 }
             }
         } else {
-
-            Logger.t(TAG).d("changeViewDPadFocusStatus: 丢失焦点" + " isOnKeyDown: " + isOnKeyDown + " isDpad:" + isDpad + " isOnViewClick:" + isOnViewClick);
             //处理选中态
             //无向键
             if ((isOnKeyDown && isDpad)|| isOnViewClick){
@@ -574,8 +562,6 @@ public class HorizontalTabView extends HorizontalScrollView
 
     private enum ViewStatus {
         Hovered,
-//        Selected,
-//        UnSelected,
         Focused,
         UnHovered,
         UnFocused,
