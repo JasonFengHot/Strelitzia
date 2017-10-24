@@ -114,7 +114,7 @@ public class BannerHorizontal519Adapter extends RecyclerView.Adapter<BannerHoriz
                     .error(R.drawable.list_item_preview_bg).into(holder.mImageView);
         }
 
-        holder.mTitle.setText(entity.getTitle() + " " + position);
+        holder.mTitle.setText(entity.getTitle() + " ");
         holder.mItemView.findViewById(R.id.item_layout).setTag(entity);
         holder.mItemView.findViewById(R.id.item_layout).setTag(R.id.banner_item_position, position);
 

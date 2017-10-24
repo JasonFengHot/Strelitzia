@@ -102,7 +102,7 @@ public class BannerMovieAdapter extends RecyclerView.Adapter<BannerMovieAdapter.
 
 
 
-        holder.mTitle.setText(entity.getTitle() + " " + position);
+        holder.mTitle.setText(entity.getTitle() + " ");
         holder.mItemView.findViewById(R.id.item_layout).setTag(entity);
         holder.mItemView.findViewById(R.id.item_layout).setTag(R.id.banner_item_position, position);
 

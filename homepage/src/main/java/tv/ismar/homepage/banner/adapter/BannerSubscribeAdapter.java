@@ -141,7 +141,7 @@ public class BannerSubscribeAdapter
             holder.markRB.setVisibility(View.INVISIBLE);
         }
 
-        holder.mIntroduction.setText(entity.getTitle() + " " + position);
+        holder.mIntroduction.setText(entity.getTitle() + " ");
         holder.mItemView.findViewById(R.id.item_layout).setTag(entity);
         holder.mItemView.findViewById(R.id.item_layout).setTag(R.id.banner_item_position, position);
 
