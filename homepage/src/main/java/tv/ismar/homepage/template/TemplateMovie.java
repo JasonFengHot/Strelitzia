@@ -192,8 +192,15 @@ public class TemplateMovie extends Template implements View.OnClickListener, Vie
         nameKey = bundle.getString(ChannelFragment.NAME_KEY);
         mTitleTv.setText(mBannerTitle);
         mTitleCountTv.setText("00/00");
-        fetchMovieBanner(mBannerName, 1);
+/*modify by dragontec for bug 4200 start*/
     }
+
+	@Override
+	public void fetchData() {
+		hasAppeared = true;
+		fetchMovieBanner(mBannerName, 1);
+	}
+/*modify by dragontec for bug 4200 end*/
 
     private void fetchMovieBanner(String bannerName, final int pageNumber) {
         if (pageNumber != 1) {

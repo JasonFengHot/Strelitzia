@@ -200,8 +200,15 @@ public class Template519 extends Template implements View.OnClickListener, View.
         nameKey = bundle.getString(ChannelFragment.NAME_KEY);
         mTitleTv.setText(mBannerTitle);
         mTitleCountTv.setText("00/00");
-        fetchHorizontal519Banner(mBannerName, 1);
+/*modify by dragontec for bug 4200 start*/
     }
+
+	@Override
+	public void fetchData() {
+		hasAppeared = true;
+		fetchHorizontal519Banner(mBannerName, 1);
+	}
+/*modify by dragontec for bug 4200 end*/
 
     private void fetchHorizontal519Banner(String bannerName, final int pageNumber) {
         if (pageNumber != 1) {

@@ -119,6 +119,14 @@ public static HomeRootRelativeLayout mHoverView;
     //广告
     private static final int MSG_AD_COUNTDOWN = 0x01;
 
+/*add by dragontec for bug 4225, 4224, 4223 start*/
+    private final int SCROLL_TO_TOP_TOAST_DURATION = 600;
+    private final int UP_KEY_LONG_PRESS_DURATION = 1000;
+    private final int TITLE_ANIM_DURATION = 150;
+    private boolean mNeedShowScrollToTopTip = false;
+    private boolean mAtScrollerBottom = false;
+/*add by dragontec for bug 4225, 4224, 4223 end*/
+
     private DaisyVideoView mVideoView;
     private ImageView mPicImg;
     private SeekBar mSeekBar;
@@ -440,6 +448,53 @@ public static HomeRootRelativeLayout mHoverView;
         if(isAnimationPlaying){
             return true;
         }
+/*add by dragontec for bug 4225, 4224, 4223 start*/
+        if (event.getKeyCode() == KeyEvent.KEYCODE_BACK
+                && event.getAction() == KeyEvent.ACTION_UP) {
+            if (isScrollerAtTop()) {
+                if (currentTime == 0 || System.currentTimeMillis() - currentTime > 4000) {
+                    currentTime = System.currentTimeMillis();
+                    ToastTip.showToast(this, "再次点击返回按键，退出应用");
+                } else {
+                    isCheckoutUpdate = true;
+                    SkyService.ServiceManager.executeActive = true;
+                    CallaPlay callaPlay = new CallaPlay();
+                    callaPlay.app_exit(TrueTime.now().getTime() - app_start_time, SimpleRestClient.appVersion);
+                    ArrayList<String> cache_log = MessageQueue.getQueueList();
+                    HashSet<String> hasset_log = new HashSet<String>();
+                    for (int i = 0; i < cache_log.size(); i++) {
+                        hasset_log.add(cache_log.get(i));
+                    }
+                    DaisyUtils.getVodApplication(HomeActivity.this)
+                            .getEditor()
+                            .putStringSet(VodApplication.CACHED_LOG, hasset_log);
+                    DaisyUtils.getVodApplication(getApplicationContext()).save();
+                    BaseActivity.baseChannel = "";
+                    BaseActivity.baseSection = "";
+                    stopService(new Intent(HomeActivity.this, PlaybackService.class));
+                    HomeActivity.super.onBackPressed();
+                }
+            } else {
+                long current = System.currentTimeMillis();
+                long delta = current - currentTime;
+                if (currentTime == 0 || delta > SCROLL_TO_TOP_TOAST_DURATION) {
+                    currentTime = current;
+                } else {
+                    currentTime = current;
+                    //channelFragment存在，才能向上滑动到顶的场合下，才需要显示顶部title以及请求focus
+                    ChannelFragment channelFragment = getChannelFragment();
+                    if (channelFragment != null && channelFragment.scrollerScrollToTop()) {
+                        mHoverView.setShowUp(false);
+                        mHoverView.setShowDown(true);
+                        titleMoveIn();
+                        mChannelTab.requestFocus();
+                        mChannelTab.requestFocusFromTouch();
+                    }
+                }
+            }
+            return true;
+        }
+/*add by dragontec for bug 4225, 4224, 4223 end*/
         return super.dispatchKeyEvent(event);
     }
 	/*add by dragontec for bug 3983 end*/
@@ -565,30 +620,53 @@ public static HomeRootRelativeLayout mHoverView;
         }
     }
 
+/*add by dragontec for bug 4225, 4224, 4223 start*/
+    private ChannelFragment getChannelFragment() {
+        ChannelFragment channelFragment = null;
+        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment_layout);
+        if (fragment != null && fragment instanceof ChannelFragment) {
+            channelFragment = (ChannelFragment) fragment;
+        }
+        return channelFragment;
+    }
+
+    private boolean isScrollerAtTop() {
+        boolean isScrollerAtTop = false;
+        ChannelFragment channelFragment = getChannelFragment();
+        if (channelFragment != null) {
+            isScrollerAtTop = channelFragment.isScrollerAtTop();
+        }
+        return isScrollerAtTop;
+    }
+/*add by dragontec for bug 4225, 4224, 4223 end*/
+
     @Override
     public void onBackPressed() {
-        if (currentTime == 0 || System.currentTimeMillis() - currentTime > 4000) {
-            currentTime = System.currentTimeMillis();
-            ToastTip.showToast(this, "再次点击返回按键，退出应用");
-        } else {
-            isCheckoutUpdate = true;
-            SkyService.ServiceManager.executeActive = true;
-            CallaPlay callaPlay = new CallaPlay();
-            callaPlay.app_exit(TrueTime.now().getTime() - app_start_time, SimpleRestClient.appVersion);
-            ArrayList<String> cache_log = MessageQueue.getQueueList();
-            HashSet<String> hasset_log = new HashSet<String>();
-            for (int i = 0; i < cache_log.size(); i++) {
-                hasset_log.add(cache_log.get(i));
-            }
-            DaisyUtils.getVodApplication(HomeActivity.this)
-                    .getEditor()
-                    .putStringSet(VodApplication.CACHED_LOG, hasset_log);
-            DaisyUtils.getVodApplication(getApplicationContext()).save();
-            BaseActivity.baseChannel = "";
-            BaseActivity.baseSection = "";
-            stopService(new Intent(HomeActivity.this, PlaybackService.class));
-            HomeActivity.super.onBackPressed();
-        }
+/*delete by dragontec for bug 4225, 4224, 4223 start*/
+    //在有些场合下，迅速双击返回键不会进入到onBackPressed（疑似被劫持了），所以暂定放在dispatchKeyEvent中进行处理
+//        if (currentTime == 0 || System.currentTimeMillis() - currentTime > 4000) {
+//            currentTime = System.currentTimeMillis();
+//            ToastTip.showToast(this, "再次点击返回按键，退出应用");
+//        } else {
+//            isCheckoutUpdate = true;
+//            SkyService.ServiceManager.executeActive = true;
+//            CallaPlay callaPlay = new CallaPlay();
+//            callaPlay.app_exit(TrueTime.now().getTime() - app_start_time, SimpleRestClient.appVersion);
+//            ArrayList<String> cache_log = MessageQueue.getQueueList();
+//            HashSet<String> hasset_log = new HashSet<String>();
+//            for (int i = 0; i < cache_log.size(); i++) {
+//                hasset_log.add(cache_log.get(i));
+//            }
+//            DaisyUtils.getVodApplication(HomeActivity.this)
+//                    .getEditor()
+//                    .putStringSet(VodApplication.CACHED_LOG, hasset_log);
+//            DaisyUtils.getVodApplication(getApplicationContext()).save();
+//            BaseActivity.baseChannel = "";
+//            BaseActivity.baseSection = "";
+//            stopService(new Intent(HomeActivity.this, PlaybackService.class));
+//            HomeActivity.super.onBackPressed();
+//        }
+/*delete by dragontec for bug 4225, 4224, 4223 start*/
     }
 
     @Override
@@ -606,6 +684,19 @@ public static HomeRootRelativeLayout mHoverView;
 //        headHoverd.setFocusableInTouchMode(false);
 //        headHoverd.setFocusable(false);
 /*delete by dragontec for bug 4057 end*/
+/*add by dragontec for bug 4225, 4224, 4223 start*/
+        if (keyCode == KeyEvent.KEYCODE_DPAD_UP && !isScrollerAtTop()) {
+            long keyDownDuration = event.getEventTime() - event.getDownTime();
+            if (keyDownDuration > UP_KEY_LONG_PRESS_DURATION) {
+                if (mNeedShowScrollToTopTip) {
+                    //already show scroll to top tip, do nothing
+                } else {
+                    mNeedShowScrollToTopTip = true;
+                    showScrollToTopTip();
+                }
+            }
+        }
+/*add by dragontec for bug 4225, 4224, 4223 end*/
 
         ChannelFragment channelFragment = (ChannelFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_layout);
         if (channelFragment != null){
@@ -615,6 +706,31 @@ public static HomeRootRelativeLayout mHoverView;
         return super.onKeyDown(keyCode, event);
     }
 
+/*add by dragontec for bug 4225, 4224, 4223 start*/
+    @Override
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_DPAD_UP) {
+            mNeedShowScrollToTopTip = false;
+        }
+        return super.onKeyUp(keyCode, event);
+    }
+
+    public void actionScrollerMoveToBottom(boolean bottom) {
+        if (bottom) {
+            if (!mAtScrollerBottom) {
+                mAtScrollerBottom = true;
+                showScrollToTopTip();
+            }
+        } else {
+            mAtScrollerBottom = bottom;
+        }
+    }
+
+    public void showScrollToTopTip() {
+        ToastTip.showToast(this, getResources().getString(R.string.double_click_back_to_top));
+    }
+/*add by dragontec for bug 4225, 4224, 4223 end*/
+
     /*add by dragontec for bug 3983 start*/
     private void initTitleAnim(){
         int height = getResources().getDimensionPixelSize(R.dimen.banner_margin_top);
@@ -622,13 +738,13 @@ public static HomeRootRelativeLayout mHoverView;
         TitleAnimStateListener titleAnimStateListener = new TitleAnimStateListener();
 
         mTitleMoveOutAnimator = ValueAnimator.ofInt(0, -height);
-        mTitleMoveOutAnimator.setDuration(500);
+        mTitleMoveOutAnimator.setDuration(TITLE_ANIM_DURATION);
         mTitleMoveOutAnimator.setTarget(home_layout);
         mTitleMoveOutAnimator.addUpdateListener(titleAnimUpdateListener);
         mTitleMoveOutAnimator.addListener(titleAnimStateListener);
 
         mTitleMoveInAnimator = ValueAnimator.ofInt(-height, 0);
-        mTitleMoveInAnimator.setDuration(500);
+        mTitleMoveInAnimator.setDuration(TITLE_ANIM_DURATION);
         mTitleMoveInAnimator.setTarget(home_layout);
         mTitleMoveInAnimator.addUpdateListener(titleAnimUpdateListener);
         mTitleMoveInAnimator.addListener(titleAnimStateListener);

@@ -170,8 +170,15 @@ public class TemplateDoubleLd extends Template
         mName = bundle.getString(NAME_KEY);
         mChannel = bundle.getString(CHANNEL_KEY);
         mTitleCountTv.setText("00/00");
-        mFetchDataControl.fetchBanners(mBannerPk, 1, false);
+/*modify by dragontec for bug 4200 start*/
     }
+
+	@Override
+	public void fetchData() {
+		hasAppeared = true;
+		mFetchDataControl.fetchBanners(mBannerPk, 1, false);
+	}
+/*modify by dragontec for bug 4200 end*/
 
     private void initRecycleView() {
         if (mAdapter == null) {

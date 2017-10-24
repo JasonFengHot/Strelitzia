@@ -308,8 +308,15 @@ public class TemplateOrder extends Template
         channelName = bundle.getString(ChannelFragment.CHANNEL_KEY);
         mTitleTv.setText(mBannerTitle);
         mTitleCountTv.setText("00/00");
-        fetchSubscribeBanner(mBannerName, 1);
+/*modify by dragontec for bug 4200 start*/
     }
+
+	@Override
+	public void fetchData() {
+		hasAppeared = true;
+		fetchSubscribeBanner(mBannerName, 1);
+	}
+/*modify by dragontec for bug 4200 end*/
 
     @Override
     public void callBack(int flags, Object... args) {

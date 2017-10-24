@@ -113,7 +113,9 @@ public class TemplateBigSmallLd extends Template
         mTitleCountTv = (TextView) view.findViewById(R.id.banner_title_count);
         mTitleTv = (TextView) view.findViewById(R.id.banner_title_tv);
         movieMixBanner = (RecyclerViewTV) view.findViewById(R.id.movie_mix_banner);
+		/*modify by dragontec for bug 4221 start*/
         movieMixBanner.setTag("recycleView");
+		/*modify by dragontec for bug 4221 end*/
         movieMixBanner.setHasHeaderView(true);
         movieMixLayoutManager =
                 new LinearLayoutManagerTV(mContext, LinearLayoutManager.HORIZONTAL, false);
@@ -198,8 +200,15 @@ public class TemplateBigSmallLd extends Template
         nameKey = bundle.getString(ChannelFragment.NAME_KEY);
         mTitleTv.setText(mBannerTitle);
         mTitleCountTv.setText("00/00");
-        fetchMovieMixBanner(mBannerName, 1);
+/*modify by dragontec for bug 4200 start*/
     }
+
+	@Override
+	public void fetchData() {
+		hasAppeared = true;
+		fetchMovieMixBanner(mBannerName, 1);
+	}
+/*modify by dragontec for bug 4200 end*/
 
     private void fetchMovieMixBanner(String bannerName, final int pageNumber) {
         if (pageNumber != 1) {

@@ -27,9 +27,9 @@ import tv.ismar.library.util.StringUtils;
  * @AUTHOR: xi @DATE: 2017/9/8 @DESC: 频道fragemnt
  */
 public class ChannelFragment extends BaseFragment implements BaseControl.ControlCallBack
-	/*add by dragontec for bug 3983,4077 start*/
-		, RecycleLinearLayout.OnDataFinishedListener, RecycleLinearLayout.OnPositionChangedListener
-	/*add by dragontec for bug 3983,4077 end*/
+	/*add by dragontec for bug 3983,4077,4200 start*/
+		, RecycleLinearLayout.OnDataFinishedListener, RecycleLinearLayout.OnPositionChangedListener, RecycleLinearLayout.OnScrollFinishedListener
+	/*add by dragontec for bug 3983,4077,4200 end*/
 {
     private static final String TAG = "ChannelFragment";
     public static final String TITLE_KEY = "title";
@@ -54,6 +54,8 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
 	private GuideBanner[] mGuideBanners = null;
 
 	private final Object bannerDataLock = new Object();
+
+	private final Object templateDataLock = new Object();
 
 	private final Object layoutLock = new Object();
 
@@ -81,6 +83,9 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
 		/*add by dragontec for bug 4077 start*/
 		mLinearContainer.setOnDataFinishedListener(this);
 		/*add by dragontec for bug 4077 end*/
+		/*add by dragontec for bug 4200 start*/
+		mLinearContainer.setOnScrollFinishedListener(this);
+		/*add by dragontec for bug 4200 end*/
         return view;
     }
 
@@ -94,9 +99,11 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
 	public void onStart() {
 		super.onStart();
 		Log.d(TAG, "onStart");
-		if (mTemplates != null) {
-			for (Template template : mTemplates) {
-				template.onStart();
+		synchronized (templateDataLock) {
+			if (mTemplates != null) {
+				for (Template template : mTemplates) {
+					template.onStart();
+				}
 			}
 		}
 	}
@@ -105,20 +112,24 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
     public void onResume() {
         super.onResume();
 
-        if (mTemplates != null) {
-            for (Template template : mTemplates) {
-                template.onResume();
-            }
-        }
+		synchronized (templateDataLock) {
+			if (mTemplates != null) {
+				for (Template template : mTemplates) {
+					template.onResume();
+				}
+			}
+		}
     }
 
     @Override
     public void onPause() {
-        if (mTemplates != null) {
-            for (Template template : mTemplates) {
+		synchronized (templateDataLock) {
+			if (mTemplates != null) {
+				for (Template template : mTemplates) {
 					template.onPause();
-            }
-        }
+				}
+			}
+		}
 
         if (mControl != null) {
             mControl.stop();
@@ -132,16 +143,21 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
     @Override
     public void onStop() {
         Log.d(TAG, "onStop");
-        if (mTemplates != null) {
-            for (Template template : mTemplates) {
-                template.onStop();
-            }
-        }
+		synchronized (templateDataLock) {
+			if (mTemplates != null) {
+				for (Template template : mTemplates) {
+					template.onStop();
+				}
+			}
+		}
         super.onStop();
     }
 
     @Override
     public void onDestroyView() {
+		/*add by dragontec for bug 4200 start*/
+		mLinearContainer.setOnScrollFinishedListener(null);
+		/*add by dragontec for bug 4200 end*/
 		mLinearContainer.setOnPositionChangedListener(null);
 		mLinearContainer.setOnDataFinishedListener(null);
         if (mLinearContainer != null){
@@ -155,15 +171,16 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
     @Override
     public void onDestroy() {
         Log.d(TAG, "onDestroy");
-        if (mTemplates != null) {
-            for (Template template : mTemplates) {
-                template.onDestroy();
-            }
-        }
-        if (mTemplates != null){
-            mTemplates.clear();
-        }
-
+		synchronized (templateDataLock) {
+			if (mTemplates != null) {
+				for (Template template : mTemplates) {
+					template.onDestroy();
+				}
+			}
+			if (mTemplates != null) {
+				mTemplates.clear();
+			}
+		}
         mControl = null;
         super.onDestroy();
     }
@@ -210,7 +227,9 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
 		if (data == null || data.length <= 0) {
 			return;
 		}
-        mTemplates = new ArrayList<>();
+		synchronized (templateDataLock) {
+			mTemplates = new ArrayList<>();
+		}
 		synchronized (bannerDataLock) {
 			mGuideBanners = data;
 		}
@@ -225,6 +244,14 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
 				addMoreView(data.length);
 			}
 		}
+		/*add by dragontec for bug 4200 start*/
+		synchronized (templateDataLock) {
+			for (Template template :
+					mTemplates) {
+				template.fetchData();
+			}
+		}
+		/*add by dragontec for bug 4200 end*/
 		//        mLinearContainer.initView();
 	}
 
@@ -243,7 +270,6 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
 					addMoreView(data.length);
 				}
 			}
-
 		}
 	}
 
@@ -315,7 +341,11 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
 			int tag = createTag(position, canScroll);
 			bannerView.setTag(layoutId);
 			bannerView.setTag(layoutId, tag);
-			mTemplates.add(templateObject);
+			synchronized (templateDataLock) {
+				if (mTemplates != null) {
+					mTemplates.add(templateObject);
+				}
+			}
 			mLinearContainer.addView(bannerView);
 		}
 	}
@@ -342,9 +372,11 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
         bannerView.setTag(R.layout.banner_more, createTag(position, true));
 
         Template templateObject = new TemplateMore(getContext()).setView(bannerView, bundle);
-        if (mTemplates != null){
-            mTemplates.add(templateObject);
-        }
+		synchronized (templateDataLock) {
+			if (mTemplates != null) {
+				mTemplates.add(templateObject);
+			}
+		}
         mLinearContainer.addView(bannerView);
 		mLinearContainer.setHasMore(true);
     }
@@ -388,7 +420,7 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
 		}
 		Log.d(TAG,  "position = " + position );
 		synchronized (bannerDataLock) {
-			if (position > mGuideBanners.length + 1) {
+			if (mGuideBanners == null || position > mGuideBanners.length + 1) {
 				return;
 			}
 		}
@@ -427,4 +459,43 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
 //		}
 	}
 
+/*add by dragontec for bug 4225, 4224, 4223 start*/
+    public boolean isScrollerAtTop() {
+        float scaleY = 0f;
+        if (mLinearContainer != null) {
+            scaleY = mLinearContainer.getScrollerCurrentY();
+        }
+        if (scaleY <= 0.005) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public boolean scrollerScrollToTop() {
+        if (mLinearContainer != null) {
+            return mLinearContainer.scrollerScrollToTop();
+        }
+        return false;
+    }
+/*add by dragontec for bug 4225, 4224, 4223 end*/
+
+/*add by dragontec for bug 4200 start*/
+	@Override
+	public void onScrollFinished() {
+/*add by dragontec for bug 4225, 4224, 4223 start*/
+		if (mLinearContainer != null) {
+			((HomeActivity)getActivity()).actionScrollerMoveToBottom(mLinearContainer.isScrollAtBottom());
+		}
+/*add by dragontec for bug 4225, 4224, 4223 end*/
+		synchronized (templateDataLock) {
+			if (mTemplates != null) {
+				for (Template template :
+						mTemplates) {
+					template.checkViewAppear();
+				}
+			}
+		}
+	}
+/*add by dragontec for bug 4200 end*/
 }

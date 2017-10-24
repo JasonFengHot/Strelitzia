@@ -94,15 +94,25 @@ public class RecycleLinearLayout extends LinearLayout {
         return view.getLocalVisibleRect(mWindowRect);
     }
 
-    private static final int SCROLL_DURATION = 150;//默认滑动时间
+/*modify by dragontec for bug 4200 start 加快滑动速度*/
+    private static final int SCROLL_DURATION = 50;//150;//默认滑动时间
+/*modify by dragontec for bug 4200 end*/
     private OverScroller mOverScroller = null;
 
     @Override
     public void computeScroll() {
         if(mOverScroller.computeScrollOffset()){//判断滚动是否完毕
             scrollTo(mOverScroller.getCurrX(), mOverScroller.getCurrY());//调用view方法执行真实的滑动动作
-            postInvalidate();
-        }
+/*modify by dragontec for bug 4200 start*/
+//            postInvalidate();
+			invalidate();
+        } else {
+			//滚动完毕后确认数据请求
+			if (mOnScrollFinishedListener != null) {
+				mOnScrollFinishedListener.onScrollFinished();
+			}
+		}
+/*modify by dragontec for bug 4200 end*/
         super.computeScroll();
     }
 
@@ -274,6 +284,8 @@ public class RecycleLinearLayout extends LinearLayout {
 					}
 					return super.dispatchKeyEvent(event);//banner抖动问题
 				}
+				//fix bug by dragontec点击下箭头有时不生效的bug
+				mLastView = view;
 				/*modify by dragontec for bug 4149 end*/
 				/*modify by dragontec for bug 4077 end*/
 //                mHolder.onCreateView(position, keyCode);
@@ -339,26 +351,27 @@ public class RecycleLinearLayout extends LinearLayout {
                     if (key == R.layout.banner_more) {
                         YoYo.with(Techniques.VerticalShake).duration(1000).playOn(view);
                     }
+                    //处理同excuteKeyEvent
+					return;
                 }
+				mLastView = view;
                 boolean startTitleState = HomeActivity.isTitleHidden;
                 if(mPositionChangeListener != null){
                     mPositionChangeListener.onPositionChanged(position,KeyEvent.KEYCODE_DPAD_UP,canScroll);
                 }
                 boolean endTitleState = HomeActivity.isTitleHidden;
                 isScrollDuringTitleHiddenState =startTitleState && endTitleState;
-                if (position >= getChildCount() - BANNER_LOAD_AIMING_OFF) {
-                    if (mOnDataFinishedListener != null) {
-                        mOnDataFinishedListener.onDataFinished(view);
-                    }
-                }
+				/*modify by dragontec for bug 4178 start 所有滑动事件都进scrollToTop 在smoothScrollBy中作滑动限制*/
                 //滑动处理
-                if(position==getChildCount()-1){
-                    if (key != R.layout.banner_more) {
-                        scrollToVisiable(view);
-                    }
-                } else {
-                    scrollToTop(view);
-                }
+//                if(position==getChildCount()-1){
+//                    if (key != R.layout.banner_more) {
+//                        scrollToVisiable(view);
+//                    }
+//                } else {
+//                    scrollToTop(view);
+//                }
+				scrollToTop(view);
+				/*modify by dragontec for bug 4178 end*/
             }
         });
     }
@@ -383,7 +396,10 @@ public class RecycleLinearLayout extends LinearLayout {
                             mOnDataFinishedListener.onDataFinished(view);
                         }
                     }
+					//处理同excuteKeyEvent
+					return;
                 }
+                mLastView = view;
                 boolean startTitleState = HomeActivity.isTitleHidden;
                     if(mPositionChangeListener != null){
                         mPositionChangeListener.onPositionChanged(position,KeyEvent.KEYCODE_DPAD_DOWN,canScroll);
@@ -395,14 +411,17 @@ public class RecycleLinearLayout extends LinearLayout {
                         mOnDataFinishedListener.onDataFinished(view);
                     }
                 }
-                //滑动处理
-                if(position==getChildCount()-1){
-                    if (key != R.layout.banner_more) {
-                        scrollToVisiable(view);
-                    }
-                } else {
-                    scrollToTop(view);
-                }
+                /*modify by dragontec for bug 4178 start 所有滑动事件都进scrollToTop 在smoothScrollBy中作滑动限制*/
+//                //滑动处理
+//                if(position==getChildCount()-1){
+//                    if (key != R.layout.banner_more) {
+//                        scrollToVisiable(view);
+//                    }
+//                } else {
+//                    scrollToTop(view);
+//                }
+				scrollToTop(view);
+				/*modify by dragontec for bug 4178 end*/
             }
         });
     }
@@ -450,4 +469,57 @@ public class RecycleLinearLayout extends LinearLayout {
     public void setHomeRootRelativeLayout(HomeRootRelativeLayout homeRootRelativeLayout) {
         this.homeRootRelativeLayout = homeRootRelativeLayout;
     }
+
+/*add by dragontec for bug 4225, 4224, 4223 start*/
+    public float getScrollerCurrentY() {
+        if (mOverScroller != null) {
+            return mOverScroller.getCurrY();
+        } else {
+            return 0f;
+        }
+    }
+
+    public boolean scrollerScrollToTop() {
+        if (mOverScroller != null && !mOverScroller.computeScrollOffset()) {
+            currentBannerPos = 0;
+            //fix bug by dragontec点击下箭头有时不生效的bug
+            mLastView = null;
+            mOverScroller.startScroll(
+                    mOverScroller.getFinalX(),
+                    mOverScroller.getFinalY(),
+                    0,
+                    -mOverScroller.getFinalY(),
+                    SCROLL_DURATION);
+            invalidate();
+            return true;
+        }
+        return false;
+    }
+
+    public boolean isScrollAtBottom() {
+        boolean isScrollAtBottom = false;
+        //加载个数已经全部加载完成（包含“更多”）
+        if (dataSize <= getChildCount()) {
+            int height = getHeight();
+            int currY = mOverScroller.getCurrY();
+            int screenHeight = mScreenHeight;
+            //currY非0表示不在第一页
+            if (currY != 0 && currY + screenHeight >= height) {
+                isScrollAtBottom = true;
+            }
+        }
+        Log.i(TAG, "isScrollAtBottom:" + isScrollAtBottom);
+        return isScrollAtBottom;
+    }
+/*add by dragontec for bug 4225, 4224, 4223 end*/
+
+/*modify by dragontec for bug 4200 start*/
+	public interface OnScrollFinishedListener {
+		void onScrollFinished();
+	}
+	private OnScrollFinishedListener mOnScrollFinishedListener;
+	public void setOnScrollFinishedListener(OnScrollFinishedListener onScrollFinishedListener) {
+		mOnScrollFinishedListener = onScrollFinishedListener;
+	}
+/*modify by dragontec for bug 4200 end*/
 }
