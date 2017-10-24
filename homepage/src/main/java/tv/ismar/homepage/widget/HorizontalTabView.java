@@ -228,8 +228,11 @@ public class HorizontalTabView extends HorizontalScrollView
                 <= mTabMargin) { // current view left less than left margin
             Log.d(TAG, "channel: 左滑");
             if (mFocusedIndex == 0) {
-                if (currentRect[0] - tabSpace > mTabMargin + tabSpace) {
-                    scrollChildPosition(linearContainer.getChildAt(0));
+//                if (currentRect[0] - tabSpace > mTabMargin + tabSpace) {
+//                    scrollChildPosition(linearContainer.getChildAt(0));
+//                }
+                if (canScrollHorizontally(FOCUS_LEFT)){
+                    fullScroll(FOCUS_LEFT);
                 }
             } else {
                 int leftViewWidth = linearContainer.getChildAt(mFocusedIndex - 1).getWidth();
