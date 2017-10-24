@@ -173,7 +173,7 @@ public class TemplateMovie extends Template implements View.OnClickListener, Vie
                                 && mContext != null
                                 && mTitleCountTv != null
                                 && mMovieAdapter != null
-                                && position < mMovieAdapter.getTatalItemCount()) {
+                                && position <= mMovieAdapter.getTatalItemCount()-1) {
                             mTitleCountTv.setText(
                                     String.format(
                                             mContext.getString(R.string.home_item_title_count),
