@@ -28,8 +28,6 @@ import tv.ismar.homepage.R;
 
 import static android.view.MotionEvent.BUTTON_PRIMARY;
 
-/*add by dragontec for bug 4057 start*/
-/*add by dragontec for bug 4057 end*/
 
 public class HorizontalTabView extends HorizontalScrollView
         implements View.OnClickListener,

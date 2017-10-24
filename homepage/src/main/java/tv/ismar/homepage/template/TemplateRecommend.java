@@ -115,9 +115,16 @@ public class TemplateRecommend extends Template
       mBannerPk = bundle.getString(BANNER_KEY);
       mName = bundle.getString(NAME_KEY);
       mChannel = bundle.getString(CHANNEL_KEY);
-      mFetchDataControl.fetchBanners(mBannerPk, 1, false);
-//    mFetchDataControl.fetchHomeRecommend(false);
+/*modify by dragontec for bug 4200 start*/
   }
+
+	@Override
+	public void fetchData() {
+		hasAppeared = true;
+		mFetchDataControl.fetchBanners(mBannerPk, 1, false);
+//		mFetchDataControl.fetchHomeRecommend(false);
+	}
+/*modify by dragontec for bug 4200 end*/
 
   @Override
   protected void initListener(View view) {

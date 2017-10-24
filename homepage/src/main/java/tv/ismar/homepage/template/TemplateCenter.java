@@ -105,8 +105,15 @@ public class TemplateCenter extends Template
     @Override
     public void initData(Bundle bundle) {
         mBannerPk = bundle.getString("banner");
-        mFetchDataControl.fetchBanners(mBannerPk, 1, false);
+/*modify by dragontec for bug 4200 start*/
     }
+
+	@Override
+	public void fetchData() {
+		hasAppeared = true;
+		mFetchDataControl.fetchBanners(mBannerPk, 1, false);
+	}
+/*modify by dragontec for bug 4200 end*/
 
     @Override
     protected void initListener(View view) {

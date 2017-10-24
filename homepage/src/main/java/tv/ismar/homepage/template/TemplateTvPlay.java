@@ -136,9 +136,16 @@ public class TemplateTvPlay extends Template
         mBannerPk = bundle.getString("banner");
         mName = bundle.getString(NAME_KEY);
         mChannel = bundle.getString(CHANNEL_KEY);
-        mFetchDataControl.fetchBanners(mBannerPk, 1, false);
-        mTitleCountTv.setText("00/00");
+/*modify by dragontec for bug 4200 start*/
+		mTitleCountTv.setText("00/00");
     }
+
+	@Override
+	public void fetchData() {
+		hasAppeared = true;
+		mFetchDataControl.fetchBanners(mBannerPk, 1, false);
+	}
+/*modify by dragontec for bug 4200 end*/
 
     private void initTitle() {
         if (mSelectItemPosition > mFetchDataControl.mHomeEntity.count)

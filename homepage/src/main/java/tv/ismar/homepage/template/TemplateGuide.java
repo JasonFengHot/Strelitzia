@@ -11,6 +11,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
@@ -73,6 +74,9 @@ public class TemplateGuide extends Template
         RecyclerViewTV.PagingableListener,
         View.OnFocusChangeListener,
         View.OnHoverListener,
+		/*add by dragontec for bug 4242 start*/
+		View.OnKeyListener,
+		/*add by dragontec for bug 4242 end*/
         LinearLayoutManagerTV.FocusSearchFailedListener,
         OnItemSelectedListener,
         View.OnClickListener {
@@ -240,8 +244,15 @@ public class TemplateGuide extends Template
         mBannerPk = bundle.getString(BANNER_KEY);
         mName = bundle.getString(NAME_KEY);
         mChannel = bundle.getString(CHANNEL_KEY);
-        mFetchDataControl.fetchBanners(mBannerPk, 1, false);
+/*modify by dragontec for bug 4200 start*/
     }
+
+	@Override
+	public void fetchData() {
+		hasAppeared = true;
+		mFetchDataControl.fetchBanners(mBannerPk, 1, false);
+	}
+/*modify by dragontec for bug 4200 end*/
 
     @Override
     protected void initListener(View view) {
@@ -257,6 +268,9 @@ public class TemplateGuide extends Template
         mGuideLayoutManager.setFocusSearchFailedListener(this);
         mHeadView.findViewById(R.id.guide_head_ismartv_linearlayout).setOnHoverListener(this);
         mVideoViewLayout.setOnClickListener(this);
+		/*add by dragontec for bug 4242 start*/
+		mVideoViewLayout.setOnKeyListener(this);
+		/*add by dragontec for bug 4242 end*/
         mLoadingIg.setOnFocusChangeListener(this);
         mLoadingIg.setOnHoverListener(this);
     }
@@ -376,7 +390,9 @@ public class TemplateGuide extends Template
         if (focusDirection == View.FOCUS_RIGHT || focusDirection == View.FOCUS_LEFT) {
             if (mRecycleView.getChildAt(0).findViewById(R.id.guide_ismartv_linear_layout) == focused) {
                 mHeadView.requestFocus();
-                YoYo.with(Techniques.HorizontalShake).duration(1000).playOn(mHeadView);
+        /*modify by dragontec for bug 4242 start*/
+//                YoYo.with(Techniques.HorizontalShake).duration(1000).playOn(mHeadView);
+        /*modify by dragontec for bug 4242 end*/
                 return mHeadView;
             }
             if (mRecycleView
@@ -428,22 +444,18 @@ public class TemplateGuide extends Template
             mGuideLayoutManager.setCanScroll(true);
             // 向右滑动
             mRecycleView.loadMore();
-            mHeadView.setVisibility(View.GONE);
-            if (mGuideLayoutManager.findLastCompletelyVisibleItemPosition()
-                    <= mFetchDataControl.mPoster.size()) {
-                int targetPosition = mGuideLayoutManager.findLastCompletelyVisibleItemPosition() + 10;
-                if (targetPosition >= mFetchDataControl.mPoster.size()) {
-                    targetPosition = mFetchDataControl.mPoster.size();
-                }
-                mGuideLayoutManager.smoothScrollToPosition(mRecycleView, null, targetPosition);
-                if (targetPosition == mFetchDataControl.mPoster.size())
-                    YoYo.with(Techniques.HorizontalShake)
-                            .duration(1000)
-                            .playOn(
-                                    mRecycleView
-                                            .getChildAt(mRecycleView.getChildCount() - 1)
-                                            .findViewById(R.id.guide_ismartv_linear_layout));
-            }
+			mHeadView.setVisibility(View.GONE);
+
+        /*modify by dragontec for bug 4240 start*/
+			Log.d(TAG, "findLastCompletelyVisibleItemPosition = " + mGuideLayoutManager.findLastCompletelyVisibleItemPosition() + ", count = " + mAdapter.getItemCount());
+			if (mGuideLayoutManager.findLastCompletelyVisibleItemPosition() < mAdapter.getItemCount() - 1) {
+				int targetPosition = mGuideLayoutManager.findLastCompletelyVisibleItemPosition() + 10;
+				if (targetPosition >= mAdapter.getItemCount()) {
+					targetPosition = mAdapter.getItemCount() - 1;
+				}
+				mGuideLayoutManager.smoothScrollToPosition(mRecycleView, null, targetPosition);
+			}
+        /*modify by dragontec for bug 4240 end*/
         } else if (i == R.id.guide_head_ismartv_linearlayout) {
             Log.d(TAG, "onClick goToNextPage");
             goToNextPage(v);
@@ -792,6 +804,20 @@ public class TemplateGuide extends Template
                                     }
                                 });
     }
+
+	/*add by dragontec for bug 4242 start*/
+    private View keyDownView = null;
+	@Override
+	public boolean onKey(View v, int keyCode, KeyEvent event) {
+		if (event.getAction() == KeyEvent.ACTION_DOWN) {
+            if (keyCode == KeyEvent.KEYCODE_DPAD_LEFT && v == mVideoViewLayout) {
+                YoYo.with(Techniques.HorizontalShake).duration(1000).playOn(mHeadView);
+                return true;
+            }
+		}
+		return false;
+	}
+	/*add by dragontec for bug 4242 end*/
 
     private boolean videoViewIsVisibility(){
         Rect rect = new Rect();
