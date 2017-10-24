@@ -831,7 +831,7 @@
 <dimen name="subscribe_banner_recycler_pr">44.44dp</dimen>
 <dimen name="movie_banner_recycler_h">311.11dp</dimen>
 <dimen name="movie_banner_recycler_ml">44.44dp</dimen>
-<dimen name="movie_banner_recycler_mr">44.44dp</dimen>
+<dimen name="movie_banner_recycler_mr">26.67dp</dimen>
 <dimen name="movie_banner_recycler_pl">44.44dp</dimen>
 <dimen name="movie_banner_recycler_pr">44.44dp</dimen>
 <dimen name="horizontal519_banner_recycler_h">259.56dp</dimen>
