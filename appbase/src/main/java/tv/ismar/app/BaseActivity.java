@@ -10,6 +10,8 @@ import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
@@ -147,6 +149,7 @@ public class BaseActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         registerUpdateReceiver();
+        registerConnectionReceiver();
     }
 
     @Override
@@ -170,6 +173,7 @@ public class BaseActivity extends AppCompatActivity {
 
     @Override
     protected void onStop() {
+        unregisterConnectionReceiver();
         if (updatePopupWindow != null) {
             updatePopupWindow.dismiss();
             updatePopupWindow = null;
@@ -554,5 +558,53 @@ public class BaseActivity extends AppCompatActivity {
             Log.e(TAG, "can't find this application!!!");
         }
         return versionCode;
+    }
+
+
+    private ConnectionChangeReceiver connectionChangeReceiver;
+
+    private void registerConnectionReceiver() {
+        IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
+        connectionChangeReceiver = new ConnectionChangeReceiver();
+        registerReceiver(connectionChangeReceiver, filter);
+    }
+
+    private void unregisterConnectionReceiver() {
+        if (connectionChangeReceiver != null) {
+            unregisterReceiver(connectionChangeReceiver);
+        }
+    }
+
+    private class ConnectionChangeReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if (action.equals(ConnectivityManager.CONNECTIVITY_ACTION)) {
+
+                ConnectivityManager   mConnectivityManager = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
+                NetworkInfo netInfo = mConnectivityManager.getActiveNetworkInfo();
+                if(netInfo != null && netInfo.isAvailable()) {
+                    if (dialog != null && dialog.isShowing()){
+                        dialog.dismiss();
+                    }
+                    /////////////网络连接
+                    String name = netInfo.getTypeName();
+
+                    if(netInfo.getType()==ConnectivityManager.TYPE_WIFI){
+                        /////WiFi网络
+
+                    }else if(netInfo.getType()==ConnectivityManager.TYPE_ETHERNET){
+                        /////有线网络
+
+                    }else if(netInfo.getType()==ConnectivityManager.TYPE_MOBILE){
+                        /////////3g网络
+
+                    }
+                } else {
+                    ////////网络断开
+
+                }
+            }
+        }
     }
 }
