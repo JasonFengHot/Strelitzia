@@ -536,5 +536,6 @@
 <dimen name="history_178">79.11dp</dimen>
 <dimen name="history_1415">628.89dp</dimen>
 <dimen name="history_250">111.11dp</dimen>
-
+<dimen name="homepage_history_mr">-44.44dp</dimen>
+<dimen name="homepage_center_mr">-8.89dp</dimen>
 </resources>
