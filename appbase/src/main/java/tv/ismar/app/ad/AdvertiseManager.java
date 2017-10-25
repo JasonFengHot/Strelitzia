@@ -84,8 +84,7 @@ public class AdvertiseManager {
                 // 判断/data/data/tv.ismar.daisy/ad 目录下的文件是否被测试人员删除
                 File file = new File(mContext.getFilesDir() + "/" + AD_DIR + "/" + location);
                 if(!file.exists()){
-                    new Delete().from(AdvertiseTable.class).execute();
-                    advertisementTables.clear();
+                    advTable.delete();
                     AdvertiseTable tepAdvTable = new AdvertiseTable();
                     tepAdvTable.duration = 5;
                     tepAdvTable.media_type = TYPE_IMAGE;
