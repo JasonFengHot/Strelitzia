@@ -130,7 +130,11 @@ public class HistoryFavoritrListActivity extends BaseActivity implements OnItemC
 
     private void showPop() {
         pop=new ModuleMessagePopWindow(this);
-        pop.setMessage("您需要清空所有历史/收藏记录吗？");
+        if(type==1) {
+            pop.setMessage("您需要清空所有历史记录吗？");
+        }else{
+            pop.setMessage("您需要清空所有收藏记录吗？");
+        }
         pop.setConfirmBtn("确认清空");
         pop.setCancelBtn("取消");
         pop.showAtLocation(getRootView(), Gravity.CENTER, 0, 0, new ModuleMessagePopWindow.ConfirmListener() {
