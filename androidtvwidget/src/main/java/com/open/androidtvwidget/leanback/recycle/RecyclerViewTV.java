@@ -482,7 +482,11 @@ public class RecyclerViewTV extends RecyclerView implements PrvInterface {
 
     private PagingableListener mPagingableListener;
     private boolean isLoading = false;
-
+    private boolean isDoubleLd=false;
+    //判断是MDbanner还是LDbanner
+    public void setloadMoreType(boolean type){
+        isDoubleLd=type;
+    }
     public interface PagingableListener {
         void onLoadMoreItems();
     }
@@ -548,11 +552,23 @@ public class RecyclerViewTV extends RecyclerView implements PrvInterface {
             View view = getLayoutManager().getFocusedChild();
             int adapterPosition = getChildAdapterPosition(view);
 //            int layoutPosition = getChildLayoutPosition(view);
-            Log.i("RecyclerViewTV","totalItemCount:"+totalItemCount+"adapterPosition:"+(adapterPosition+3));
-            Log.i("RecyclerViewTV","visibleItemCount:"+totalItemCount+"adapterPosition:"+(adapterPosition+3));
-            if(!isLoading && view!=null && totalItemCount-(adapterPosition+3)<=LOAD_MORE_VALUE){
-                isLoading = true;
-                if(mPagingableListener != null) mPagingableListener.onLoadMoreItems();
+            if(view!=null) {
+                if (!isLoading && totalItemCount - (adapterPosition + 3) <= LOAD_MORE_VALUE) {
+                    isLoading = true;
+                    if (mPagingableListener != null) mPagingableListener.onLoadMoreItems();
+                }
+            }else{
+                if(!isDoubleLd) {
+                    if (!isLoading && totalItemCount - lastComVisiPos <= 16) {
+                        isLoading = true;
+                        if (mPagingableListener != null) mPagingableListener.onLoadMoreItems();
+                    }
+                }else{
+                    if (!isLoading && totalItemCount - lastComVisiPos <= 22) {
+                        isLoading = true;
+                        if (mPagingableListener != null) mPagingableListener.onLoadMoreItems();
+                    }
+                }
             }
             return true;
         }

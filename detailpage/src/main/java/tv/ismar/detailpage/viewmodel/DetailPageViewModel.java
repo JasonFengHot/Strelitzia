@@ -563,7 +563,7 @@ public class DetailPageViewModel extends BaseObservable {
             if (mItemEntity.is_order()) {
                 return View.GONE;
             } else {
-                if (getPlayText().equals(mContext.getString(R.string.video_preview))) {
+                if (getPlayText().equals(mContext.getString(R.string.video_preview))||getPlayText().equals(mContext.getString(R.string.detail_prevue))) {
                     if (mItemEntity.getPreview() == null) {
                         return View.GONE;
                     } else {

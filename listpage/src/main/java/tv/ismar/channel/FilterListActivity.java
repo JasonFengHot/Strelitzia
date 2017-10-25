@@ -132,6 +132,7 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
     private int checkedTab;
     private String section="";
     private int firstInSection=-1;
+    private View onKeyFocusView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -208,12 +209,40 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
         poster_arrow_up.setOnClickListener(this);
         poster_arrow_down.setOnClickListener(this);
         full_view.setOnHoverListener(this);
+        /*
+         * 空鼠使页面焦点丢失后，按五向键要使焦点落到特定view上
+         * 需求：优先落到最后一次获取到焦点的view
+         * 如果最后一次获取到焦点的view为箭头、或者已经在界面不可见，则选择第一张海报作为焦点的落脚点
+         */
         filter_root_view.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 try {
                     if (v.hasFocus()) {
-                        section_group.findViewById(section_group.getCheckedRadioButtonId()).requestFocus();
+                        if(onKeyFocusView!=v&&onKeyFocusView!=tab_arrow_up&&onKeyFocusView!=tab_arrow_dowm&&onKeyFocusView!=poster_arrow_up&&onKeyFocusView!=poster_arrow_down){
+                            onKeyFocusView.requestFocus();
+                            onKeyFocusView.requestFocusFromTouch();
+                        }else{
+                            //分别为列表页、筛选页、筛选无结果页面时找第一张海报
+                            if(filter_tab.isChecked()){
+                                if(poster_recyclerview!=null&&poster_recyclerview.getChildAt(0)!=null){
+                                    poster_recyclerview.getChildAt(0).requestFocus();
+                                }else if(noResultFetched&&filter_noresult_first_line!=null&&filter_noresult_first_line.getChildAt(0)!=null){
+                                    filter_noresult_first_line.getChildAt(0).requestFocus();
+                                }
+                            }else{
+                                View firstView = null;
+                                if(checkedTab==sectionSize-1&&mAllSectionItemList.getCount()-specialPos.get(checkedTab)<spanCount){
+                                    firstView=mFocusGridLayoutManager.findViewByPosition(specialPos.get(checkedTab)+1);
+                                }else if(list_poster_recyclerview.getChildCount()>spanCount) {
+                                    firstView = list_poster_recyclerview.getChildAt(spanCount);
+                                }
+                                if(list_poster_recyclerview.getChildAt(0) instanceof TextView){
+                                    firstView=list_poster_recyclerview.getChildAt(1);
+                                }
+                                firstView.requestFocus();
+                            }
+                        }
                         return true;
                     }
                 }catch(Exception e){
@@ -245,6 +274,7 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if(hasFocus){
+                    onKeyFocusView=v;
                     filter_tab.setTextSize(TypedValue.COMPLEX_UNIT_PX,getResources().getDimensionPixelSize(R.dimen.filter_layout_left_view_tab_ts_scaled));
                     if(filter_tab.isChecked()){
                         return;
@@ -484,24 +514,24 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
                         //将占位和实际请求到的数据大小进行修正，并修正标题所在的位置
                         int removeCount=0;
                         if(index!=specialPos.size()-1&&specialPos.get(index)+listSectionEntity.getCount()<specialPos.get(index+1)-1) {
-                                List<ListSectionEntity.ObjectsBean> list1=mAllSectionItemList.getObjects().subList(0,specialPos.get(index) + listSectionEntity.getCount()+1);
-                                List<ListSectionEntity.ObjectsBean> list2=mAllSectionItemList.getObjects().subList(specialPos.get(index+1),mAllSectionItemList.getCount());
-                                mAllSectionItemList.setObjects(new ArrayList<ListSectionEntity.ObjectsBean>());
-                                mAllSectionItemList.getObjects().addAll(list1);
-                                mAllSectionItemList.getObjects().addAll(list2);
-                                removeCount=specialPos.get(index+1)-1-specialPos.get(index)-listSectionEntity.getCount();
-                                mAllSectionItemList.setCount(mAllSectionItemList.getObjects().size());
+                            List<ListSectionEntity.ObjectsBean> list1=mAllSectionItemList.getObjects().subList(0,specialPos.get(index) + listSectionEntity.getCount()+1);
+                            List<ListSectionEntity.ObjectsBean> list2=mAllSectionItemList.getObjects().subList(specialPos.get(index+1),mAllSectionItemList.getCount());
+                            mAllSectionItemList.setObjects(new ArrayList<ListSectionEntity.ObjectsBean>());
+                            mAllSectionItemList.getObjects().addAll(list1);
+                            mAllSectionItemList.getObjects().addAll(list2);
+                            removeCount=specialPos.get(index+1)-1-specialPos.get(index)-listSectionEntity.getCount();
+                            mAllSectionItemList.setCount(mAllSectionItemList.getObjects().size());
                             Log.e("removecount", removeCount + "");
                             for (int i = index + 1; i < sectionSize; i++) {
                                 specialPos.set(i, specialPos.get(i) - removeCount);
                             }
-                                if(vSpaceItemDecoration!=null)
+                            if(vSpaceItemDecoration!=null)
                                 vSpaceItemDecoration.setSpecialPos(specialPos);
-                                if(hSpaceItemDecoration!=null)
+                            if(hSpaceItemDecoration!=null)
                                 hSpaceItemDecoration.setSpecialPos(specialPos);
-                                if(listPosterAdapter!=null)
-                                    listPosterAdapter.setmSpecialPos(specialPos);
-                                if(mFocusGridLayoutManager!=null)
+                            if(listPosterAdapter!=null)
+                                listPosterAdapter.setmSpecialPos(specialPos);
+                            if(mFocusGridLayoutManager!=null)
                                 mFocusGridLayoutManager.setSpecialPos(specialPos);
                         }else if(index==sectionSize-1&&mAllSectionItemList.getCount()>specialPos.get(index-1)+listSectionEntity.getCount()){
                             List<ListSectionEntity.ObjectsBean> list1=mAllSectionItemList.getObjects().subList(0,specialPos.get(index) + listSectionEntity.getCount()+1);
@@ -635,7 +665,7 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
             public void onDismiss() {
                 if(filterNoResult){
                     if(filter_noresult_first_line!=null&&filter_noresult_first_line.getChildAt(0)!=null)
-                    filter_noresult_first_line.getChildAt(0).requestFocus();
+                        filter_noresult_first_line.getChildAt(0).requestFocus();
                 }else {
                     if (poster_recyclerview.getChildAt(0) != null) {
                         poster_recyclerview.getChildAt(0).requestFocus();
@@ -712,6 +742,7 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
                                             public void onFocusChange(View v, boolean hasFocus) {
                                                 TextView title= (TextView) recommendView.findViewById(R.id.item_vertical_poster_title);
                                                 if(hasFocus){
+                                                    onKeyFocusView = v;
                                                     JasmineUtil.scaleOut3(v);
                                                     title.setEllipsize(TextUtils.TruncateAt.MARQUEE);
                                                     title.setSelected(true);
@@ -756,6 +787,7 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
                                             public void onFocusChange(View v, boolean hasFocus) {
                                                 TextView title= (TextView) recommendView.findViewById(R.id.item_filter_noresult_title);
                                                 if(hasFocus){
+                                                    onKeyFocusView=v;
                                                     JasmineUtil.scaleOut3(v);
                                                     title.setEllipsize(TextUtils.TruncateAt.MARQUEE);
                                                     title.setSelected(true);
@@ -869,6 +901,7 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
                 @Override
                 public void onItemfocused(View view, int position, boolean hasFocus) {
                     if(hasFocus){
+                        onKeyFocusView=view;
                         lastFocusedView = view;
                         if(!filter_root_view.horving) {
                             if (view.getY() > getResources().getDimensionPixelOffset(R.dimen.filter_poster_start_scroll_length)) {
@@ -958,7 +991,7 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
             checked.setTag("");
             filter_checked_conditiion.addView(checked);
             if(mFilterConditions!=null)
-            condition=mFilterConditions.getDefaultX()+"!";
+                condition=mFilterConditions.getDefaultX()+"!";
         }
 
 
@@ -1050,6 +1083,7 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
     public boolean onHover(View v, MotionEvent event) {
         if(event.getAction()==MotionEvent.ACTION_HOVER_ENTER||event.getAction()==MotionEvent.ACTION_HOVER_MOVE){
             v.requestFocus();
+            onKeyFocusView=v;
             lastFocusedView=null;
             if (filterPosterAdapter != null)
                 filterPosterAdapter.setFocusedPosition(-1);
@@ -1065,17 +1099,17 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
     private void showData(int position,boolean isFirstPos){
         Log.e("showdata",position+"");
         for (int i = 0; i <sectionSize ; i++) {
-                if(i!=sectionSize-1){
-                    booleanFlag=position<specialPos.get(i+1);
-                }else{
-                    booleanFlag=true;
+            if(i!=sectionSize-1){
+                booleanFlag=position<specialPos.get(i+1);
+            }else{
+                booleanFlag=true;
+            }
+            if(position>=specialPos.get(i)&&booleanFlag&&!sectionHasData[i]){
+                if(position==specialPos.get(i)){
+                    isFirstPos=false;
                 }
-                if(position>=specialPos.get(i)&&booleanFlag&&!sectionHasData[i]){
-                    if(position==specialPos.get(i)){
-                        isFirstPos=false;
-                    }
-                    fetchSectionData(sectionList.get(i).url,i,isFirstPos);
-                }
+                fetchSectionData(sectionList.get(i).url,i,isFirstPos);
+            }
 
         }
     }
@@ -1107,8 +1141,9 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
                 @Override
                 public void onFocusChange(View v, boolean hasFocus) {
                     if(hasFocus){
+                        onKeyFocusView=v;
                         if(listPosterAdapter!=null)
-                        listPosterAdapter.setFocusedPosition(-1);
+                            listPosterAdapter.setFocusedPosition(-1);
                         radioButton.setTextSize(TypedValue.COMPLEX_UNIT_PX,getResources().getDimensionPixelSize(R.dimen.filter_layout_left_view_tab_ts_scaled));
                         radioButton.setEllipsize(TextUtils.TruncateAt.MARQUEE);
                         if(radioButton.isChecked()){
@@ -1135,7 +1170,7 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
                         mFocusGridLayoutManager.scrollToPositionWithOffset(specialPos.get(finalI), 0);
                     }
                     if(isFirst) {
-                            fetchSectionData(section.url, finalI, false);
+                        fetchSectionData(section.url, finalI, false);
                     }
                     current_section_title.setText(sectionList.get(finalI).title);
                 }
@@ -1325,6 +1360,7 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
                 @Override
                 public void onItemfocused(View view, int position, boolean hasFocus) {
                     if(hasFocus){
+                        onKeyFocusView=view;
                         lastFocusedView = view;
                         changeCheckedTab(position);
                         Log.e("onitemfocus", view.getY()+"");

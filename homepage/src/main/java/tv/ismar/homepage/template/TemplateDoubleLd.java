@@ -294,6 +294,7 @@ public class TemplateDoubleLd extends Template
         } else if (i == R.id.navigation_right) { // 向右滑动
             mDoubleLayoutManager.findLastCompletelyVisibleItemPositions(positions);
             mDoubleLayoutManager.setCanScroll(true);
+            mRecyclerView.setloadMoreType(true);
             mRecyclerView.loadMore();
             if (positions[1] <= mFetchDataControl.mHomeEntity.count) {
                 int targetPosition = positions[1] + 8;
