@@ -342,27 +342,29 @@ public class RecycleLinearLayout extends LinearLayout {
         this.arrow_up.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                View view = getChildAt(currentBannerPos<=2?0:currentBannerPos-1);
-                int key = (int) view.getTag();
-                int tag = (int) view.getTag(key);
-                boolean canScroll = tag>>30==1;//1可滑动，0不可滑动
-                int position = (tag<<2)>>2;
-                if(view==mLastView) {
-                    if (key == R.layout.banner_more) {
-                        YoYo.with(Techniques.VerticalShake).duration(1000).playOn(view);
-                    }
-                    //处理同excuteKeyEvent
-					return;
-                }
-				mLastView = view;
-                boolean startTitleState = HomeActivity.isTitleHidden;
-                if(mPositionChangeListener != null){
-                    mPositionChangeListener.onPositionChanged(position,KeyEvent.KEYCODE_DPAD_UP,canScroll);
-                }
-                boolean endTitleState = HomeActivity.isTitleHidden;
-                isScrollDuringTitleHiddenState =startTitleState && endTitleState;
+                try {
+                    View view = getChildAt(currentBannerPos<=2?0:currentBannerPos-1);
+                    if(view!=null) {
+                        int key = (int) view.getTag();
+                        int tag = (int) view.getTag(key);
+                        boolean canScroll = tag >> 30 == 1;//1可滑动，0不可滑动
+                        int position = (tag << 2) >> 2;
+                        if (view == mLastView) {
+                            if (key == R.layout.banner_more) {
+                                YoYo.with(Techniques.VerticalShake).duration(1000).playOn(view);
+                            }
+                            //处理同excuteKeyEvent
+                            return;
+                        }
+                        mLastView = view;
+                        boolean startTitleState = HomeActivity.isTitleHidden;
+                        if (mPositionChangeListener != null) {
+                            mPositionChangeListener.onPositionChanged(position, KeyEvent.KEYCODE_DPAD_UP, canScroll);
+                        }
+                        boolean endTitleState = HomeActivity.isTitleHidden;
+                        isScrollDuringTitleHiddenState = startTitleState && endTitleState;
 				/*modify by dragontec for bug 4178 start 所有滑动事件都进scrollToTop 在smoothScrollBy中作滑动限制*/
-                //滑动处理
+                        //滑动处理
 //                if(position==getChildCount()-1){
 //                    if (key != R.layout.banner_more) {
 //                        scrollToVisiable(view);
@@ -370,8 +372,12 @@ public class RecycleLinearLayout extends LinearLayout {
 //                } else {
 //                    scrollToTop(view);
 //                }
-				scrollToTop(view);
+                        scrollToTop(view);
+                    }
 				/*modify by dragontec for bug 4178 end*/
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
             }
         });
     }
@@ -381,36 +387,38 @@ public class RecycleLinearLayout extends LinearLayout {
         this.arrow_down.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                View view = getChildAt(currentBannerPos==0?2:currentBannerPos+1>=getChildCount()?currentBannerPos:currentBannerPos+1);
-                int key = (int) view.getTag();
-                int tag = (int) view.getTag(key);
-                boolean canScroll = tag>>30==1;//1可滑动，0不可滑动
-                int position = (tag<<2)>>2;
-                if(view==mLastView) {
-                    if (key == R.layout.banner_more) {
-                        YoYo.with(Techniques.VerticalShake).duration(1000).playOn(view);
-                    }
+                try {
+                    View view = getChildAt(currentBannerPos==0?2:currentBannerPos+1>=getChildCount()?currentBannerPos:currentBannerPos+1);
+                    if(view!=null) {
+                        int key = (int) view.getTag();
+                        int tag = (int) view.getTag(key);
+                        boolean canScroll = tag >> 30 == 1;//1可滑动，0不可滑动
+                        int position = (tag << 2) >> 2;
+                        if (view == mLastView) {
+                            if (key == R.layout.banner_more) {
+                                YoYo.with(Techniques.VerticalShake).duration(1000).playOn(view);
+                            }
 
-                    if (position >= getChildCount() - BANNER_LOAD_AIMING_OFF) {
-                        if (mOnDataFinishedListener != null) {
-                            mOnDataFinishedListener.onDataFinished(view);
+                            if (position >= getChildCount() - BANNER_LOAD_AIMING_OFF) {
+                                if (mOnDataFinishedListener != null) {
+                                    mOnDataFinishedListener.onDataFinished(view);
+                                }
+                            }
+                            //处理同excuteKeyEvent
+                            return;
                         }
-                    }
-					//处理同excuteKeyEvent
-					return;
-                }
-                mLastView = view;
-                boolean startTitleState = HomeActivity.isTitleHidden;
-                    if(mPositionChangeListener != null){
-                        mPositionChangeListener.onPositionChanged(position,KeyEvent.KEYCODE_DPAD_DOWN,canScroll);
-                    }
-                boolean endTitleState = HomeActivity.isTitleHidden;
-                isScrollDuringTitleHiddenState =startTitleState && endTitleState;
-                if (position >= getChildCount() - BANNER_LOAD_AIMING_OFF) {
-                    if (mOnDataFinishedListener != null) {
-                        mOnDataFinishedListener.onDataFinished(view);
-                    }
-                }
+                        mLastView = view;
+                        boolean startTitleState = HomeActivity.isTitleHidden;
+                        if (mPositionChangeListener != null) {
+                            mPositionChangeListener.onPositionChanged(position, KeyEvent.KEYCODE_DPAD_DOWN, canScroll);
+                        }
+                        boolean endTitleState = HomeActivity.isTitleHidden;
+                        isScrollDuringTitleHiddenState = startTitleState && endTitleState;
+                        if (position >= getChildCount() - BANNER_LOAD_AIMING_OFF) {
+                            if (mOnDataFinishedListener != null) {
+                                mOnDataFinishedListener.onDataFinished(view);
+                            }
+                        }
                 /*modify by dragontec for bug 4178 start 所有滑动事件都进scrollToTop 在smoothScrollBy中作滑动限制*/
 //                //滑动处理
 //                if(position==getChildCount()-1){
@@ -420,8 +428,12 @@ public class RecycleLinearLayout extends LinearLayout {
 //                } else {
 //                    scrollToTop(view);
 //                }
-				scrollToTop(view);
+                        scrollToTop(view);
+                    }
 				/*modify by dragontec for bug 4178 end*/
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         });
     }
