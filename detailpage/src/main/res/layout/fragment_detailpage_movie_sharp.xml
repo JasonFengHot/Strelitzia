@@ -321,6 +321,7 @@
 
                             <Button
                                 android:layout_marginLeft="@dimen/movie_detail_button_space"
+                                android:visibility="@{tasks.visibility}"
                                 android:id="@+id/detail_btn_play"
                                 android:layout_width="@dimen/movie_detail_button_w"
                                 android:layout_height="@dimen/movie_detail_button_h"
