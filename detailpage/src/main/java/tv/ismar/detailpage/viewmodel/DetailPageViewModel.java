@@ -598,7 +598,11 @@ public class DetailPageViewModel extends BaseObservable {
 
     @Bindable
     public boolean getPlayTextWidthIsLong() {
-        return getPlayText().length() > 2;
+        if (getPlayText().equals("预告片")){
+            return false;
+        }else {
+            return getPlayText().length() > 2;
+        }
     }
 
     @Bindable
