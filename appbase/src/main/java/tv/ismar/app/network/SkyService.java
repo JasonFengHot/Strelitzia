@@ -7,6 +7,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import java.io.File;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
@@ -21,6 +23,7 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
 import okhttp3.Cache;
+import okhttp3.Dns;
 import okhttp3.OkHttpClient;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -40,6 +43,7 @@ import retrofit2.http.Query;
 import retrofit2.http.Streaming;
 import retrofit2.http.Url;
 import rx.Observable;
+import tv.ismar.account.IsmartvActivator;
 import tv.ismar.account.IsmartvHttpLoggingInterceptor;
 import tv.ismar.app.VodApplication;
 import tv.ismar.app.core.OfflineCheckManager;
@@ -812,16 +816,16 @@ public interface SkyService {
                     .addInterceptor(interceptor)
 //                    .addNetworkInterceptor(VodApplication.getModuleAppContext().getCacheInterceptor())
                     .addInterceptor(new UserAgentInterceptor())
-//                    .dns(new Dns() {
-//                        @Override
-//                        public List<InetAddress> lookup(String hostName) throws UnknownHostException {
-//                            String ipAddress = IsmartvActivator.getHostByName(hostName);
-//                            if (ipAddress.endsWith("0.0.0.0")) {
-//                                throw new UnknownHostException("can't connect to internet");
-//                            }
-//                            return Dns.SYSTEM.lookup(ipAddress);
-//                        }
-//                    })
+                    .dns(new Dns() {
+                        @Override
+                        public List<InetAddress> lookup(String hostName) throws UnknownHostException {
+                            String ipAddress = IsmartvActivator.getHostByName(hostName);
+                            if (ipAddress.endsWith("0.0.0.0")) {
+                                throw new UnknownHostException("can't connect to internet");
+                            }
+                            return Dns.SYSTEM.lookup(ipAddress);
+                        }
+                    })
                     .cache(cache)
                     .sslSocketFactory(sc.getSocketFactory())
                     .build();

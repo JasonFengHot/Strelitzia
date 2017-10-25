@@ -96,4 +96,8 @@
     <string name="str_recommend_more">更 多</string>
 
     <!--longhai 首页相关ui End -->
+
+    <!-- add by dragontec start -->
+    <string name="double_click_back_to_top">双击“返回”键可直达页面顶端！</string>
+    <!-- add by dragontec end -->
 </resources>

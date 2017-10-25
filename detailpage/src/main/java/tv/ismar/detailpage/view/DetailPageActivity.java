@@ -225,7 +225,7 @@ public class DetailPageActivity extends BaseActivity implements PlaybackService.
     // 详情页检查权限后触发
     public void playCheckResult(boolean permission) {
         Log.i(TAG, "playCheckResult:" + permission);
-        if(mItemEntity == null)
+        if(mItemEntity == null || mItemEntity.getClip() == null)
             return;
         String clipUrl = mItemEntity.getClip().getUrl();
         if (permission || mItemEntity.getExpense() == null) {

@@ -2,7 +2,7 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
 
->
+    >
 
     <data>
 
@@ -29,7 +29,7 @@
             android:id="@+id/detail_head"
             android:layout_width="match_parent"
             android:layout_height="@dimen/detail_header_height"
-        />
+            />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -54,8 +54,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:ellipsize="end"
-                        android:singleLine="true"
                         android:includeFontPadding="true"
+                        android:singleLine="true"
                         android:text="@{tasks.itemTitle}"
                         android:textColor="@color/module_color_white"
                         android:textSize="@dimen/text_size_40sp"/>
@@ -82,7 +82,7 @@
                             android:scaleType="centerCrop"
                             android:visibility="@{tasks.vipMarkVisibility}"
                             app:vipMark="@{tasks.vipMarkUrl}"
-                        />
+                            />
 
                     </FrameLayout>
 
@@ -91,8 +91,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/text_size_30sp"
                         android:layout_marginLeft="@dimen/entertainment_detail_des_ml"
-                        android:layout_toRightOf="@id/detail_preview_frame"
                         android:layout_marginTop="@dimen/entertainment_detail_des_mt"
+                        android:layout_toRightOf="@id/detail_preview_frame"
                         android:orientation="horizontal">
 
                         <LinearLayout
@@ -104,22 +104,22 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:includeFontPadding="true"
                                 android:text="@string/detail_page_type"
                                 android:textColor="@color/module_color_white"
-                                android:includeFontPadding="true"
                                 android:textSize="@dimen/text_size_30sp"
-                            />
+                                />
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:ellipsize="end"
-                                android:singleLine="true"
                                 android:includeFontPadding="true"
+                                android:singleLine="true"
                                 android:text="@{tasks.genre}"
                                 android:textColor="@color/module_color_white"
                                 android:textSize="@dimen/text_size_30sp"
-                            />
+                                />
 
                         </LinearLayout>
 
@@ -133,22 +133,22 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="@string/detail_page_area"
                                 android:includeFontPadding="true"
+                                android:text="@string/detail_page_area"
                                 android:textColor="@color/module_color_white"
                                 android:textSize="@dimen/text_size_30sp"
-                            />
+                                />
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:ellipsize="end"
-                                android:singleLine="true"
                                 android:includeFontPadding="true"
+                                android:singleLine="true"
                                 android:text="@{tasks.area}"
                                 android:textColor="@color/module_color_white"
                                 android:textSize="@dimen/text_size_30sp"
-                            />
+                                />
 
                         </LinearLayout>
 
@@ -162,22 +162,22 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="@string/detail_page_time"
                                 android:includeFontPadding="true"
+                                android:text="@string/detail_page_time"
                                 android:textColor="@color/module_color_white"
                                 android:textSize="@dimen/text_size_30sp"
-                            />
+                                />
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:ellipsize="end"
-                                android:singleLine="true"
                                 android:includeFontPadding="true"
+                                android:singleLine="true"
                                 android:text="@{tasks.airDate}"
                                 android:textColor="@color/module_color_white"
                                 android:textSize="@dimen/text_size_30sp"
-                            />
+                                />
 
                         </LinearLayout>
 
@@ -189,8 +189,8 @@
                         android:layout_height="@dimen/text_size_30sp"
                         android:layout_below="@id/detail_des_container1"
                         android:layout_marginLeft="@dimen/entertainment_detail_des_ml"
-                        android:layout_toRightOf="@id/detail_preview_frame"
                         android:layout_marginTop="@dimen/entertainment_detail_text_vspace"
+                        android:layout_toRightOf="@id/detail_preview_frame"
                         android:orientation="horizontal">
 
                         <LinearLayout
@@ -202,22 +202,22 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:includeFontPadding="true"
                                 android:text="@string/detail_page_length"
                                 android:textColor="@color/module_color_white"
-                                android:includeFontPadding="true"
                                 android:textSize="@dimen/text_size_30sp"
-                            />
+                                />
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:ellipsize="end"
+                                android:includeFontPadding="true"
                                 android:singleLine="true"
                                 android:text="@{tasks.length}"
-                                android:includeFontPadding="true"
                                 android:textColor="@color/module_color_white"
                                 android:textSize="@dimen/text_size_30sp"
-                            />
+                                />
 
                         </LinearLayout>
 
@@ -231,22 +231,22 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="@string/detail_page_level"
                                 android:includeFontPadding="true"
+                                android:text="@string/detail_page_level"
                                 android:textColor="@color/module_color_white"
                                 android:textSize="@dimen/text_size_30sp"
-                            />
+                                />
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:ellipsize="end"
-                                android:singleLine="true"
                                 android:includeFontPadding="true"
+                                android:singleLine="true"
                                 android:text="@{tasks.classification}"
                                 android:textColor="@color/module_color_white"
                                 android:textSize="@dimen/text_size_30sp"
-                            />
+                                />
 
                         </LinearLayout>
 
@@ -260,22 +260,22 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="@string/detail_page_presenter"
                                 android:includeFontPadding="true"
+                                android:text="@string/detail_page_presenter"
                                 android:textColor="@color/module_color_white"
                                 android:textSize="@dimen/text_size_30sp"
-                            />
+                                />
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:ellipsize="end"
-                                android:singleLine="true"
                                 android:includeFontPadding="true"
+                                android:singleLine="true"
                                 android:text="@{tasks.emcee}"
                                 android:textColor="@color/module_color_white"
                                 android:textSize="@dimen/text_size_30sp"
-                            />
+                                />
 
                         </LinearLayout>
 
@@ -286,37 +286,38 @@
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/text_size_30sp"
                         android:layout_below="@id/detail_des_container2"
-                        android:layout_marginTop="@dimen/entertainment_detail_text_vspace"
                         android:layout_marginLeft="@dimen/entertainment_detail_des_ml"
+                        android:layout_marginTop="@dimen/entertainment_detail_text_vspace"
                         android:layout_toRightOf="@id/detail_preview_frame"
                         android:orientation="horizontal"
                         >
 
-                       <LinearLayout
-                           android:layout_width="@dimen/entertainment_detail_content_item_w"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:visibility="@{tasks.emceeVisibility}">
-                        <TextView
-                            android:layout_width="wrap_content"
+                        <LinearLayout
+                            android:layout_width="@dimen/entertainment_detail_content_item_w"
                             android:layout_height="wrap_content"
-                            android:text="@string/detail_page_guest"
-                            android:includeFontPadding="true"
-                            android:textColor="@color/module_color_white"
-                            android:textSize="@dimen/text_size_30sp"
-                        />
+                            android:orientation="horizontal"
+                            android:visibility="@{tasks.emceeVisibility}">
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:ellipsize="end"
-                            android:singleLine="true"
-                            android:includeFontPadding="true"
-                            android:text="@{tasks.guest}"
-                            android:textColor="@color/module_color_white"
-                            android:textSize="@dimen/text_size_30sp"
-                        />
-                           </LinearLayout>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:includeFontPadding="true"
+                                android:text="@string/detail_page_guest"
+                                android:textColor="@color/module_color_white"
+                                android:textSize="@dimen/text_size_30sp"
+                                />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:ellipsize="end"
+                                android:includeFontPadding="true"
+                                android:singleLine="true"
+                                android:text="@{tasks.guest}"
+                                android:textColor="@color/module_color_white"
+                                android:textSize="@dimen/text_size_30sp"
+                                />
+                        </LinearLayout>
 
                     </LinearLayout>
 
@@ -330,32 +331,33 @@
                         android:orientation="horizontal">
 
                         <TextView
-                            android:visibility="@{tasks.subscribeTextVisibility}"
-                            android:text="@{tasks.subscribeText}"
-                            android:onClick="@{()->actionHandler.handleSubscribe()}"
                             android:id="@+id/subscribe_status_btn"
                             android:layout_width="@dimen/subscribe_status_btn_w"
                             android:layout_height="@dimen/subscribe_status_btn_h"
-                            android:gravity="center"
                             android:background="@drawable/selector_item_subscribe_btn"
+                            android:focusable="true"
+                            android:gravity="center"
                             android:paddingLeft="@dimen/entertainment_detail_button_padding_left"
+                            android:onClick="@{()->actionHandler.handleSubscribe()}"
                             android:textColor="@color/module_color_white"
                             android:textSize="@dimen/text_size_32sp"
+                            android:text="@{tasks.subscribeText}"
+                            android:visibility="@{tasks.subscribeTextVisibility}"
                             />
 
                         <TextView
-                            android:layout_marginLeft="@dimen/entertainment_detail_button_ml"
                             android:id="@+id/detail_btn_play"
                             android:layout_width="@{tasks.playTextWidthIsLong ? @dimen/entertainment_detail_button3_w : @dimen/entertainment_detail_play_short_w, default=wrap_content}"
                             android:layout_height="@dimen/entertainment_detail_button_h"
+                            android:layout_marginLeft="@dimen/entertainment_detail_button_ml"
                             android:background="@{tasks.playTextWidthIsLong ? @drawable/selector_entertainment_play : @drawable/selector_normal_play}"
                             android:focusable="true"
                             android:gravity="center"
                             android:includeFontPadding="true"
                             android:onClick="@{() -> actionHandler.handlePlay()}"
                             android:paddingLeft="@dimen/entertainment_detail_button_padding_left"
-                            android:text="@{tasks.playText}"
                             android:singleLine="true"
+                            android:text="@{tasks.playText}"
                             android:textColor="@color/module_color_white"
                             android:textSize="@dimen/h1_size"/>
 
@@ -372,9 +374,9 @@
                             android:onClick="@{() -> actionHandler.handleBookmark()}"
                             android:paddingLeft="@dimen/entertainment_detail_button_padding_left"
                             android:text="@{tasks.bookmarkText}"
-                            android:visibility="@{tasks.bookmarkVisibility}"
                             android:textColor="@color/module_color_white"
-                            android:textSize="@dimen/h1_size"/>
+                            android:textSize="@dimen/h1_size"
+                            android:visibility="@{tasks.bookmarkVisibility}"/>
 
                         <TextView
                             android:id="@+id/detail_btn_drama"
@@ -393,12 +395,13 @@
                             android:visibility="@{tasks.subitemsVisibility}"/>
 
                     </LinearLayout>
+
                     <ImageView
                         android:id="@+id/source"
                         android:layout_width="@dimen/source_tag_w"
                         android:layout_height="@dimen/source_tag_h"
-                        android:layout_marginTop="@dimen/source_tag_entertain_detail_ml"
                         android:layout_marginLeft="@dimen/source_tag_entertain_detail_mt"
+                        android:layout_marginTop="@dimen/source_tag_entertain_detail_ml"
                         android:visibility="@{tasks.cpLogoVisibility}"
                         app:imageUrl="@{tasks.cpLogoUrl}"
                         />
@@ -422,13 +425,13 @@
                 android:layout_marginRight="@dimen/entertainment_detail_content_padding_lr"
                 android:layout_marginTop="@dimen/entertainment_detail_detail_mt"
                 android:ellipsize="end"
-                android:lineSpacingExtra="@dimen/entertainment_detail_text_mt2"
                 android:includeFontPadding="true"
+                android:lineSpacingExtra="@dimen/entertainment_detail_text_mt2"
                 android:lines="2"
                 android:text="@{tasks.description}"
                 android:textColor="@color/module_color_white"
                 android:textSize="@dimen/text_size_30sp"
-            />
+                />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -436,8 +439,8 @@
                 android:layout_marginLeft="@dimen/entertainment_detail_content_padding_lr"
                 android:layout_marginRight="@dimen/entertainment_detail_content_padding_lr"
                 android:layout_marginTop="@dimen/entertainment_detail_relative_text_mt"
-                android:text="@string/recommend_str"
                 android:includeFontPadding="true"
+                android:text="@string/recommend_str"
                 android:textColor="@color/module_color_white"
                 android:textSize="@dimen/h1_size"/>
 
@@ -507,10 +510,10 @@
                             android:layout_marginTop="@dimen/entertainment_detail_label_text_mt"
                             android:ellipsize="marquee"
                             android:gravity="center"
+                            android:includeFontPadding="true"
                             android:marqueeRepeatLimit="marquee_forever"
                             android:singleLine="true"
                             android:text=""
-                            android:includeFontPadding="true"
                             android:textColor="@color/module_color_white"
                             android:textSize="@dimen/h6_size"/>
 
@@ -552,10 +555,10 @@
                             android:layout_marginTop="@dimen/entertainment_detail_label_text_mt"
                             android:ellipsize="marquee"
                             android:gravity="center"
+                            android:includeFontPadding="true"
                             android:marqueeRepeatLimit="marquee_forever"
                             android:singleLine="true"
                             android:text=""
-                            android:includeFontPadding="true"
                             android:textColor="@color/module_color_white"
                             android:textSize="@dimen/h6_size"/>
 
@@ -597,10 +600,10 @@
                             android:layout_marginTop="@dimen/entertainment_detail_label_text_mt"
                             android:ellipsize="marquee"
                             android:gravity="center"
+                            android:includeFontPadding="true"
                             android:marqueeRepeatLimit="marquee_forever"
                             android:singleLine="true"
                             android:text=""
-                            android:includeFontPadding="true"
                             android:textColor="@color/module_color_white"
                             android:textSize="@dimen/h6_size"/>
 
@@ -642,10 +645,10 @@
                             android:layout_marginTop="@dimen/entertainment_detail_label_text_mt"
                             android:ellipsize="marquee"
                             android:gravity="center"
+                            android:includeFontPadding="true"
                             android:marqueeRepeatLimit="marquee_forever"
                             android:singleLine="true"
                             android:text=""
-                            android:includeFontPadding="true"
                             android:textColor="@color/module_color_white"
                             android:textSize="@dimen/h6_size"/>
 
@@ -656,6 +659,7 @@
             </RelativeLayout>
 
         </LinearLayout>
+
         <ImageView
             android:id="@+id/tmp"
             android:layout_width="match_parent"

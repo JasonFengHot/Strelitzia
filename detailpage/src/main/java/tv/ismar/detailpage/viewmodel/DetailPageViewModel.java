@@ -11,7 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.orhanobut.logger.Logger;
 import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
 
@@ -494,43 +493,47 @@ public class DetailPageViewModel extends BaseObservable {
     public String getPlayText() {
 
         try {
-            switch (mPresenter.getContentModel()) {
-                case "entertainment":
-                case "variety":
-                    ItemEntity[] subItems = mItemEntity.getSubitems();
-                    String subitem_title = "";
-                    if (mHistory != null && mHistory.sub_url != null) {
-                        Log.e("getPlaytext", mHistory.toString());
-                        for (int i = 0; i < subItems.length; i++) {
-                            if (mItemEntity.getExpense() != null) {
-                                break;
-                            }
+            if (mItemEntity.is_order()) {
+                return mContext.getString(R.string.detail_prevue);
+            } else {
+                switch (mPresenter.getContentModel()) {
+                    case "entertainment":
+                    case "variety":
+                        ItemEntity[] subItems = mItemEntity.getSubitems();
+                        String subitem_title = "";
+                        if (mHistory != null && mHistory.sub_url != null) {
+                            Log.e("getPlaytext", mHistory.toString());
+                            for (int i = 0; i < subItems.length; i++) {
+                                if (mItemEntity.getExpense() != null) {
+                                    break;
+                                }
 
-                            if (mHistory.sub_url.contains(subItems[i].getPk() + "")) {
-                                subitem_title = subItems[i].getSubtitle();
-                                break;
+                                if (mHistory.sub_url.contains(subItems[i].getPk() + "")) {
+                                    subitem_title = subItems[i].getSubtitle();
+                                    break;
+                                }
                             }
                         }
-                    }
-                    if (subItems == null || subItems.length == 0) {
-                        return mItemEntity.getExpense() != null && mRemandDay <= 0 ? (mItemEntity.is_order() ?mContext.getString(R.string.detail_prevue):
-                                mContext.getString(R.string.video_preview) ):
-                                mContext.getString(R.string.video_play);
-                    } else {
-                        return mItemEntity.getExpense() != null && mRemandDay <= 0 ?
-                                (mItemEntity.is_order() ?mContext.getString(R.string.detail_prevue):
-                                        mContext.getString(R.string.video_preview) )
-                                        + " " + subitem_title
+                        if (subItems == null || subItems.length == 0) {
+                            return mItemEntity.getExpense() != null && mRemandDay <= 0 ? (mItemEntity.is_order() ? mContext.getString(R.string.detail_prevue) :
+                                    mContext.getString(R.string.video_preview)) :
+                                    mContext.getString(R.string.video_play);
+                        } else {
+                            return mItemEntity.getExpense() != null && mRemandDay <= 0 ?
+                                    (mItemEntity.is_order() ? mContext.getString(R.string.detail_prevue) :
+                                            mContext.getString(R.string.video_preview))
+                                            + " " + subitem_title
 //                                    subItems[subItems.length - 1].getSubtitle()
-                                :
-                                mContext.getString(R.string.video_play) + " " + subitem_title;
+                                    :
+                                    mContext.getString(R.string.video_play) + " " + subitem_title;
 //                                    subItems[subItems.length - 1].getSubtitle();
-                    }
+                        }
 
-                default:
-                    return mItemEntity.getExpense() != null && mRemandDay <= 0 ? (mItemEntity.is_order() ?mContext.getString(R.string.detail_prevue):
-                            mContext.getString(R.string.video_preview) ) :
-                            mContext.getString(R.string.video_play);
+                    default:
+                        return mItemEntity.getExpense() != null && mRemandDay <= 0 ? (mItemEntity.is_order() ? mContext.getString(R.string.detail_prevue) :
+                                mContext.getString(R.string.video_preview)) :
+                                mContext.getString(R.string.video_play);
+                }
             }
         }catch (Exception e){
             e.printStackTrace();
@@ -542,7 +545,7 @@ public class DetailPageViewModel extends BaseObservable {
     public boolean getEnabled() {
 
 
-                if(mItemEntity.getLiveVideo()){
+        if (mItemEntity.getLiveVideo() && !mItemEntity.is_order()) {
                     if(videoIsStart()){
 
                          return true;
@@ -556,19 +559,36 @@ public class DetailPageViewModel extends BaseObservable {
 
     @Bindable
     public int getVisibility() {
-
-                if(getPlayText().equals(mContext.getString(R.string.video_preview)) ||getPlayText().equals(mContext.getString(R.string.detail_prevue))){
-                    if(mItemEntity.getPreview()==null){
+        if (mItemEntity != null && !TextUtils.isEmpty(mItemEntity.getContentModel()) && mItemEntity.getContentModel().equals("sport")) {
+            if (mItemEntity.is_order()) {
+                return View.GONE;
+            } else {
+                if (getPlayText().equals(mContext.getString(R.string.video_preview))) {
+                    if (mItemEntity.getPreview() == null) {
                         return View.GONE;
-                    }else{
+                    } else {
                         return View.VISIBLE;
                     }
 
-                }else{
+                } else {
+                    return View.VISIBLE;
+                }
+            }
+
+        } else {
+            if (getPlayText().equals(mContext.getString(R.string.video_preview)) || getPlayText().equals(mContext.getString(R.string.detail_prevue))) {
+                if (mItemEntity.getPreview() == null) {
+                    return View.GONE;
+                } else {
                     return View.VISIBLE;
                 }
 
+            } else {
+                return View.VISIBLE;
+            }
+        }
     }
+
     @BindingAdapter("android:layout_width")
     public static void setLayoutWidth(View view, float width) {
         ViewGroup.LayoutParams layoutParams = view.getLayoutParams();
@@ -711,11 +731,7 @@ public class DetailPageViewModel extends BaseObservable {
 
     @Bindable
     public int getBookmarkVisibility(){
-        if (mItemEntity.is_order()){
-            return View.GONE;
-        }else {
             return View.VISIBLE;
-        }
     }
 
 }

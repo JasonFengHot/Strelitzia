@@ -2,6 +2,9 @@ package tv.ismar.homepage.template;
 
 import android.content.Context;
 import android.content.Intent;
+/*add by dragontec for bug 4200 start*/
+import android.graphics.Rect;
+/*add by dragontec for bug 4200 end*/
 import android.os.Bundle;
 	/*add by dragontec for bug 4077 start*/
 import android.os.Handler;
@@ -38,6 +41,9 @@ public abstract class Template {
 	protected View mParentView;
 	protected Handler handler;
 	protected CheckFocusRunnable mCheckFocusRunnable;
+	/*add by dragontec for bug 4200 start*/
+	protected boolean hasAppeared = false;
+	/*add by dragontec for bug 4200 end*/
 	/*add by dragontec for bug 4077 end*/
 
     public Template(Context context) {
@@ -77,6 +83,10 @@ public abstract class Template {
      * @param bundle
      */
     public abstract void initData(Bundle bundle);
+
+	/*add by dragontec for bug 4200 start*/
+	public abstract void fetchData();
+	/*add by dragontec for bug 4200 end*/
 
     protected void initListener(View view) {
     }
@@ -236,6 +246,22 @@ public abstract class Template {
 		}
 	}
 	/*add by dragontec for bug 4077 end*/
+
+	/*add by dragontec for bug 4200 start*/
+	public void checkViewAppear() {
+		//等view第一次显示出画面的是以进行数据取得
+		if (!hasAppeared && mParentView != null) {
+			Rect rect = new Rect();
+			if (mParentView.getGlobalVisibleRect(rect)) {
+				int screenHeight = mParentView.getResources().getDisplayMetrics().heightPixels;
+				if (rect.top < screenHeight) {
+					fetchData();
+				}
+			}
+		}
+	}
+	/*add by dragontec for bug 4200 end*/
+
     /*add by dragontec for bug 4221 start*/
     protected View findNextUpDownFocus(int focusDirection, ViewGroup mBannerLinearLayout) {
         if(focusDirection == View.FOCUS_UP){
@@ -286,7 +312,11 @@ public abstract class Template {
             if(bannerLinearLayout != null) {
                 View recycleView = bannerLinearLayout.findViewWithTag("recycleView");
                 if (recycleView != null && recycleView instanceof RecyclerViewTV) {
-                    return ((RecyclerViewTV) recycleView).getLastFocusChild();
+                    View targetFocus = ((RecyclerViewTV) recycleView).getLastFocusChild();
+                    if(targetFocus == null && ((RecyclerViewTV) recycleView).getChildCount() > 0){
+                        targetFocus = ((RecyclerViewTV) recycleView).getChildAt(0);
+                    }
+                    return targetFocus;
                 }
             }
         }

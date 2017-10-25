@@ -143,14 +143,14 @@ public final class IsmartvActivator {
                 .readTimeout(DEFAULT_READ_TIMEOUT, TimeUnit.SECONDS)
                 .addInterceptor(interceptor)
                 .addInterceptor(new UserAgentInterceptor())
-//                .dns(new Dns() {
-//                    @Override
-//                    public List<InetAddress> lookup(String hostName) throws UnknownHostException {
-//                        String ipAddress = getHostByName(hostName);
-//                        Log.d(TAG, "ip: " + ipAddress);
-//                        return Dns.SYSTEM.lookup(ipAddress);
-//                    }
-//                })
+                .dns(new Dns() {
+                    @Override
+                    public List<InetAddress> lookup(String hostName) throws UnknownHostException {
+                        String ipAddress = getHostByName(hostName);
+                        Log.d(TAG, "ip: " + ipAddress);
+                        return Dns.SYSTEM.lookup(ipAddress);
+                    }
+                })
                 .build();
 
         SKY_Retrofit = new Retrofit.Builder()
@@ -685,14 +685,14 @@ public final class IsmartvActivator {
         //cache is empty file, just for test
         if (!new File(mContext.getCacheDir(), "cache").exists()) {
             int processorCount = Runtime.getRuntime().availableProcessors();
-            ExecutorService executorService = Executors.newFixedThreadPool(100);
+            ExecutorService executorService = Executors.newFixedThreadPool(processorCount * 2);
+
             for (final String file : getAllCacheFile()) {
-//                executorService.execute(new Runnable() {
-                new Thread() {
+                executorService.execute(new Runnable() {
                     @Override
                     public void run() {
                         try {
-                            RandomAccessFile writeFile = null;
+                            RandomAccessFile writeFile;
                             InputStream assetsInputStream = mContext.getAssets().open(file);
                             byte[] buffer = new byte[512];
                             int readCount;
@@ -716,21 +716,9 @@ public final class IsmartvActivator {
                             Log.e(TAG, "initialize http cache: " + e.getMessage());
                             e.printStackTrace();
                         }
-
                     }
-                }.start();
+                });
             }
-        }
-    }
-
-    private void chmodAllFiles(File file) throws IOException {
-        if (file.isDirectory()) {
-            for (File f : file.listFiles()) {
-                chmodAllFiles(f);
-            }
-        } else if (file.isFile()) {
-            String[] args2 = {"chmod", "604", file.getAbsolutePath()};
-            Runtime.getRuntime().exec(args2);
         }
     }
 
