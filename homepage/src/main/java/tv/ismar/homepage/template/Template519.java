@@ -386,7 +386,9 @@ public class Template519 extends Template implements View.OnClickListener, View.
     @Override
     public boolean onHover(View v, MotionEvent event) {
         switch (event.getAction()) {
-            case MotionEvent.ACTION_HOVER_MOVE:
+			/*delete by dragontec for bug 4169 start*/
+        	//case MotionEvent.ACTION_HOVER_MOVE:
+			/*delete by dragontec for bug 4169 end*/
             case MotionEvent.ACTION_HOVER_ENTER:
                 if (!v.hasFocus()) {
                     v.requestFocus();

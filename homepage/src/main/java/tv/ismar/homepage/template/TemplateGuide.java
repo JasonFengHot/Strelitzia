@@ -6,6 +6,7 @@ import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.os.HandlerThread;
 import android.os.Message;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -131,6 +132,81 @@ public class TemplateGuide extends Template
                 }
             };
 
+/*add by dragontec for bug 4065 start*/
+    private final static String PLAYER_HANDLER_THREAD_NAME = "PLAYER_HANDLER_THREAD_NAME";
+    private static HandlerThread mPlayerHandlerThread = null;
+    private static Handler mPlayerHandler = null;
+    private static PlayerActionRunnable mPlayerActionRunnable = null;
+    private static Object stLock = new Object();
+
+    static
+    {
+        synchronized (stLock)
+        {
+            if(mPlayerHandlerThread == null)
+            {
+                mPlayerHandlerThread = new HandlerThread(PLAYER_HANDLER_THREAD_NAME);
+                mPlayerHandlerThread.start();
+                mPlayerHandler = new Handler(mPlayerHandlerThread.getLooper());
+            }
+        }
+    }
+    private class PlayerActionRunnable implements Runnable {
+
+        private DaisyVideoView daisyView = null;
+        public PlayerActionRunnable(DaisyVideoView videoView)
+        {
+            this.daisyView = videoView;
+        }
+        @Override
+        public void run() {
+            synchronized (stLock)
+            {
+                if (mPlayerHandler != null) {
+                    mPlayerHandler.removeCallbacks(this);
+                }
+                if (this.daisyView != null) {
+                    Log.d(TAG, "daisyView = " + daisyView + ", is playing = "
+                            + daisyView.isPlaying() + ", stopPlayback call");
+                    if (this.daisyView.isPlaying()) {
+                        this.daisyView.stopPlayback();
+                    }
+                }
+                mPlayerActionRunnable = null;
+            }
+        }
+
+        public DaisyVideoView getVideoView()
+        {
+            return daisyView;
+        }
+    }
+
+    private void stopVideoViewNormal()
+    {
+        if (mPlayerActionRunnable != null) {
+            if (mPlayerHandler != null) {
+                mPlayerHandler.removeCallbacks(mPlayerActionRunnable);
+            }
+            DaisyVideoView tempView = mPlayerActionRunnable.getVideoView();
+            if(tempView != null) {
+                if (tempView.isPlaying()) {
+                    tempView.stopPlayback();
+                }
+            }
+            mPlayerActionRunnable = null;
+        }
+    }
+
+    private void sendStopPlayerMessage(DaisyVideoView videoView) {
+        stopVideoViewNormal();
+        mPlayerActionRunnable = new PlayerActionRunnable(videoView);
+        if (mPlayerHandler != null) {
+            mPlayerHandler.post(mPlayerActionRunnable);
+        }
+    }
+/*add by dragontec for bug 4065 end*/
+
     public TemplateGuide(Context context) {
         super(context);
         mFetchDataControl = new FetchDataControl(context, this);
@@ -145,14 +221,23 @@ public class TemplateGuide extends Template
     @Override
     public void onStart() {
         Log.d(TAG, "onStart");
-        if (!mFetchDataControl.mCarousels.isEmpty()) {
-            if (videoViewIsVisibility()){
-                playCarousel();
-                initCarousel();
-            }else {
-                checkVideoViewFullVisibility();
+/*add by dragontec for bug 4065 start*/
+        synchronized (stLock)
+        {
+            stopVideoViewNormal();
+/*add by dragontec for bug 4065 end*/
+
+            if (!mFetchDataControl.mCarousels.isEmpty()) {
+                if (videoViewIsVisibility()){
+                    playCarousel();
+                    initCarousel();
+                }else {
+                    checkVideoViewFullVisibility();
+                }
             }
+/*add by dragontec for bug 4065 start*/
         }
+/*add by dragontec for bug 4065 end*/
     }
 
     @Override
@@ -179,7 +264,10 @@ public class TemplateGuide extends Template
 
         if (mVideoView != null) {
             if (mVideoView.isPlaying()) {
-                mVideoView.stopPlayback();
+/*modify by dragontec for bug 4065 start*/
+//                mVideoView.stopPlayback();
+                sendStopPlayerMessage(mVideoView);
+/*modify by dragontec for bug 4065 end*/
             }
         }
 
@@ -199,12 +287,25 @@ public class TemplateGuide extends Template
 
     @Override
     public void onDestroy() {
-        mHandler = null;
-        playSubscription = null;
-        checkVideoViewFullVisibilitySubsc = null;
-        mVideoView = null;
-        mLoadingIg = null;
-        mControl = null;
+/*add by dragontec for bug 4065 start*/
+        synchronized (stLock)
+        {
+/*add by dragontec for bug 4065 end*/
+            mHandler = null;
+            playSubscription = null;
+            checkVideoViewFullVisibilitySubsc = null;
+            mVideoView = null;
+            mLoadingIg = null;
+            mControl = null;
+/*add by dragontec for bug 4065 start*/
+            if (mPlayerActionRunnable != null) {
+                if (mPlayerHandler != null) {
+                    mPlayerHandler.removeCallbacks(mPlayerActionRunnable);
+                }
+                mPlayerActionRunnable = null;
+            }
+        }
+/*add by dragontec for bug 4065 end*/
 
     }
 
@@ -237,6 +338,10 @@ public class TemplateGuide extends Template
         mBannerLinearLayout.setNavigationLeft(navigationLeft);
         mBannerLinearLayout.setNavigationRight(navigationRight);
         mBannerLinearLayout.setRecyclerViewTV(mRecycleView);
+
+/*add by dragontec for bug 4065 start*/
+        mVideoView.setManualReset(true);
+/*add by dragontec for bug 4065 end*/
     }
 
     @Override
@@ -465,7 +570,9 @@ public class TemplateGuide extends Template
     @Override
     public boolean onHover(View v, MotionEvent event) {
         switch (event.getAction()) {
-            case MotionEvent.ACTION_HOVER_MOVE:
+			/*delete by dragontec for bug 4169 start*/
+        	//case MotionEvent.ACTION_HOVER_MOVE:
+			/*delete by dragontec for bug 4169 end*/
             case MotionEvent.ACTION_HOVER_ENTER:
                 if (!v.hasFocus()) {
                     v.requestFocus();
@@ -474,8 +581,8 @@ public class TemplateGuide extends Template
                 return false;
             case MotionEvent.ACTION_HOVER_EXIT:
                 if (event.getButtonState() != BUTTON_PRIMARY) {
-//                    navigationLeft.set ibility(View.INVISIBLE);
-//                    navigationRight.setVisibility(View.INVISIBLE);
+                    navigationLeft.setVisibility(View.INVISIBLE);
+                    navigationRight.setVisibility(View.INVISIBLE);
 /*modify by dragontec for bug 4057 start*/
 //                    HomeActivity.mHoverView.requestFocus(); // 将焦点放置到一块隐藏view中
                     v.clearFocus();

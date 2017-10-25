@@ -287,7 +287,8 @@ public class RecyclerViewTV extends RecyclerView implements PrvInterface {
      * getStartWithPadding --> return (mIsVertical ? getPaddingTop() : getPaddingLeft());
      */
     public boolean cannotScrollBackward(int delta) {
-        return (getFirstCompletelyVisiblePosition() == 0 && delta <= 0);
+		//modify by dragontec guide有视频的时候拿到的position为-1
+        return (getFirstCompletelyVisiblePosition() <= 0 && delta <= 0);
     }
 
     /**

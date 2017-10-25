@@ -338,14 +338,16 @@ public class HorizontalTabView extends HorizontalScrollView
         Log.d("MotionEvent", event.toString());
         return super.dispatchGenericMotionEvent(event);
     }
-
-    private void changeViewStatus(TextView view, ViewStatus status) {
+	
+	/*modify by dragontec start 增加返回值*/
+    private boolean changeViewStatus(TextView view, ViewStatus status) {
+        boolean needSendMessage = false;
         switch (status) {
             case Hovered:
-                changeViewDPadFocusStatus(view, true, false);
+                needSendMessage = changeViewDPadFocusStatus(view, true, false);
                 break;
             case UnHovered:
-                changeViewDPadFocusStatus(view, false, false);
+                needSendMessage = changeViewDPadFocusStatus(view, false, false);
                 break;
 //            case Selected:
 //                changeViewSelectedStatus(view, true);
@@ -354,13 +356,17 @@ public class HorizontalTabView extends HorizontalScrollView
 //                changeViewSelectedStatus(view, false);
 //                break;
             case Focused:
-                changeViewDPadFocusStatus(view, true, true);
+                needSendMessage = changeViewDPadFocusStatus(view, true, true);
                 break;
             case UnFocused:
-                changeViewDPadFocusStatus(view, false, true);
+                needSendMessage = changeViewDPadFocusStatus(view, false, true);
+                break;
+            default:
                 break;
         }
+        return needSendMessage;
     }
+		/*modify by dragontec end 增加返回值*/
 
 
     // 五向键获取焦点
@@ -369,7 +375,10 @@ public class HorizontalTabView extends HorizontalScrollView
      * @param isFocus
      * @param isDpad 是否回调
      */
-    private void changeViewDPadFocusStatus(TextView view, boolean isFocus, boolean isDpad) {
+	 /*modify by dragontec start 增加返回值*/
+    private boolean  changeViewDPadFocusStatus(TextView view, boolean isFocus, boolean isDpad) {
+        boolean needSendMessage = false;
+		/*modify by dragontec end 增加返回值*/
 
         // 五向键时禁止所有空鼠
 //        if (isOnKeyDown && isDpad) {
@@ -424,6 +433,9 @@ public class HorizontalTabView extends HorizontalScrollView
                 if (isCanScroll){
                     scrollChildPosition(view);
                     isCanScroll = false;
+					/*modify by dragontec start 增加返回值*/
+                    needSendMessage = true;
+					/*modify by dragontec end 增加返回值*/
                 }
                 //处理选中态
                 if (mSelectedIndex != mFocusedIndex) {
@@ -496,6 +508,9 @@ public class HorizontalTabView extends HorizontalScrollView
 //                HomeActivity.mHoverView.requestFocusFromTouch();
 //            }
         }
+		/*modify by dragontec start 增加返回值*/
+        return needSendMessage;
+		/*modify by dragontec end 增加返回值*/
     }
 
 
@@ -528,15 +543,19 @@ public class HorizontalTabView extends HorizontalScrollView
         TextView textView = (TextView) v;
         switch (event.getAction()) {
             case MotionEvent.ACTION_HOVER_ENTER:
-            case MotionEvent.ACTION_HOVER_MOVE:
+            /*delete by dragontec for bug 4169 start*/
+        	//case MotionEvent.ACTION_HOVER_MOVE:
+			/*delete by dragontec for bug 4169 end*/
                 isOnKeyDown = false;
                 isOnViewClick = false;
                 tag=false;
                 v.setHovered(true);
-                if (isCanScroll){
-                    changeViewStatus(textView, ViewStatus.Hovered);
+				/*modify by dragontec start 原先代码逻辑不对，原本代码本意是防止频繁scroll，但会造成500ms以内其他分支的代码不执行，已修正*/
+                boolean needSendMessage = changeViewStatus(textView, ViewStatus.Hovered);
+                if (needSendMessage){
                     mScrollEventHandler.sendEmptyMessageDelayed(0, 500);
                 }
+				/*modify by dragontec end 原先代码逻辑不对，原本代码本意是防止频繁scroll，但会造成500ms以内其他分支的代码不执行，已修正*/
                 break;
             case MotionEvent.ACTION_HOVER_EXIT:
                 changeViewStatus(textView, ViewStatus.UnHovered);

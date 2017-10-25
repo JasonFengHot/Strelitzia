@@ -56,11 +56,13 @@ public class LinerLayoutContainer extends LinearLayout {
 			requestFocus();
 			invalidate();
 			break;
-		case MotionEvent.ACTION_HOVER_MOVE:
-			isDrawBorder = true;
-			requestFocus();
-			invalidate();
-			break;
+		/*delete by dragontec for bug 4169 start*/
+//		case MotionEvent.ACTION_HOVER_MOVE:
+//			isDrawBorder = true;
+//			requestFocus();
+//			invalidate();
+//			break;
+		/*delete by dragontec for bug 4169 end*/
 		case MotionEvent.ACTION_HOVER_EXIT:
 			isDrawBorder = false;
 			invalidate();

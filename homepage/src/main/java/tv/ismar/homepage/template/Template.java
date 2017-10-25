@@ -323,4 +323,12 @@ public abstract class Template {
         return null;
     }
     /*add by dragontec for bug 4221 end*/
+
+/*add by dragontec for bug 4249 start*/
+    public void requestFocus() {
+        if (mParentView != null) {
+            mParentView.requestFocus();
+        }
+    }
+/*add by dragontec for bug 4249 end*/
 }

@@ -8,6 +8,12 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+/*add by dragontec for bug 4065 start*/
+import android.os.Handler;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+/*add by dragontec for bug 4065 end*/
+
 import com.orhanobut.logger.Logger;
 
 import java.util.ArrayList;
@@ -42,6 +48,9 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
     public static final String MORE_CHANNEL_FLAG = "channel";
     public static final String MORE_STYLE_FLAG = "style";
 	private static final int LOAD_BANNERS_COUNT = 5;
+	/*add by dragontec for bug 4248 start*/
+	private static final int APPEND_LOAD_BANNERS_COUNT = 2;
+	/*add by dragontec for bug 4248 end*/
 	private FetchDataControl mControl = null; // 业务类引用
     private RecycleLinearLayout mLinearContainer; // banner容器
     private List<Template> mTemplates;
@@ -65,6 +74,14 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
 	private HomeRootRelativeLayout homeRootRelativeLayout;
 	/*add by dragontec for bug 4077 end*/
 
+/*add by dragontec for bug 4065 start*/
+	private Object mAniLock = new Object();
+	private boolean mNeedAddBanner = false;
+	private boolean mDoingFragmentFlipAni = false;
+	private Handler mAniHandler = null;
+	private AniFinishRunnable mAniFinishRunnable = null;
+/*add by dragontec for bug 4065 end*/
+
 	@Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -86,6 +103,9 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
 		/*add by dragontec for bug 4200 start*/
 		mLinearContainer.setOnScrollFinishedListener(this);
 		/*add by dragontec for bug 4200 end*/
+/*add by dragontec for bug 4065 start*/
+		mAniHandler = new Handler();
+/*add by dragontec for bug 4065 end*/
         return view;
     }
 
@@ -160,17 +180,24 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
 		/*add by dragontec for bug 4200 end*/
 		mLinearContainer.setOnPositionChangedListener(null);
 		mLinearContainer.setOnDataFinishedListener(null);
-        if (mLinearContainer != null){
-            for (int i = 0; i < mLinearContainer.getChildCount(); i++){
-                mLinearContainer.removeViewAt(i);
-            }
-        }
+/*delete by dragontec for bug 4065 start*/
+//        if (mLinearContainer != null){
+//            for (int i = 0; i < mLinearContainer.getChildCount(); i++){
+//                mLinearContainer.removeViewAt(i);
+//            }
+//        }
+/*delete by dragontec for bug 4065 end*/
         super.onDestroyView();
     }
 
     @Override
     public void onDestroy() {
         Log.d(TAG, "onDestroy");
+/*add by dragontec for bug 4065 start*/
+		if (mLinearContainer != null){
+			mLinearContainer.removeAllViews();
+		}
+/*add by dragontec for bug 4065 end*/
 		synchronized (templateDataLock) {
 			if (mTemplates != null) {
 				for (Template template : mTemplates) {
@@ -214,11 +241,31 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
 
     @Override
     public void callBack(int flags, Object... args) {
-		GuideBanner[] banners = (GuideBanner[]) args;
-		/*modify by dragontec for bug 4178 start*/
-		mLinearContainer.setDataSize(banners.length);
-		/*modify by dragontec for bug 4178 end*/
-        initBanner(banners);
+/*modify by dragontec for bug 4065 start*/
+//        GuideBanner[] banners = (GuideBanner[]) args;
+//		/*modify by dragontec for bug 4178 start*/
+//        mLinearContainer.setDataSize(banners.length);
+//		/*modify by dragontec for bug 4178 end*/
+//        initBanner(banners);
+		synchronized (mAniLock) {
+			GuideBanner[] banners = (GuideBanner[]) args;
+			/*modify by dragontec for bug 4178 start*/
+			if (banners != null) {
+				mLinearContainer.setDataSize(banners.length);
+			} else {
+				mLinearContainer.setDataSize(0);
+			}
+			/*modify by dragontec for bug 4178 end*/
+			synchronized (bannerDataLock) {
+                mGuideBanners = banners;
+			}
+            if (mDoingFragmentFlipAni) {
+                mNeedAddBanner = true;
+            } else {
+                initBanner(mGuideBanners);
+            }
+        }
+/*modify by dragontec for bug 4065 end*/
     }
 
 	/*modify by dragontec for bug 4077 start*/
@@ -230,9 +277,11 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
 		synchronized (templateDataLock) {
 			mTemplates = new ArrayList<>();
 		}
-		synchronized (bannerDataLock) {
-			mGuideBanners = data;
-		}
+/*delete by dragontec for bug 4065 start*/
+//		synchronized (bannerDataLock) {
+//			mGuideBanners = data;
+//		}
+/*delete by dragontec for bug 4065 end*/
 		synchronized (layoutLock) {
 			lastLoadedPostion = -1;
 			mLinearContainer.removeAllViews();
@@ -411,13 +460,8 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
 		}
 		mLastFocus = view;
 		int layoutId = (int) view.getTag();
-		int position;
 		int positionTag = (int) view.getTag(layoutId);
-		if (layoutId == R.layout.banner_recommend || layoutId == R.layout.banner_more) {
-			position = positionTag;
-		} else {
-			position = (positionTag - (1 << 30));
-		}
+		int position = (positionTag << 2) >> 2;
 		Log.d(TAG,  "position = " + position );
 		synchronized (bannerDataLock) {
 			if (mGuideBanners == null || position > mGuideBanners.length + 1) {
@@ -430,7 +474,9 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
 		}
 		Log.d(TAG, "last = " + last);
 		if (position > last - RecycleLinearLayout.BANNER_LOAD_AIMING_OFF) {
-				int number = position + RecycleLinearLayout.BANNER_LOAD_AIMING_OFF - last;
+				/*modify by dragontec for bug 4248 start*/
+				int number = position + RecycleLinearLayout.BANNER_LOAD_AIMING_OFF - last + (APPEND_LOAD_BANNERS_COUNT - 1);
+				/*modify by dragontec for bug 4248 end*/
 				for (int i = 0; i < number; i++) {
 					appendBanner(last + i + 1);
 				}
@@ -458,6 +504,63 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
 //			}
 //		}
 	}
+
+/*add by dragontec for bug 4065 start*/
+	@Override
+	public Animation onCreateAnimation(int transit, boolean enter, int nextAnim) {
+		Animation animation = AnimationUtils.loadAnimation(getActivity(), nextAnim);
+		if (enter && (nextAnim == R.anim.push_left_in || nextAnim == R.anim.push_right_in)) {
+            animation.setAnimationListener(new Animation.AnimationListener() {
+				@Override
+				public void onAnimationStart(Animation animation) {
+					synchronized (mAniLock) {
+						mDoingFragmentFlipAni = true;
+					}
+				}
+
+				@Override
+				public void onAnimationEnd(Animation animation) {
+					synchronized (mAniLock) {
+						mDoingFragmentFlipAni = false;
+						if (mNeedAddBanner) {
+							mNeedAddBanner = false;
+							if (mAniFinishRunnable != null) {
+								if (mAniHandler != null) {
+									mAniHandler.removeCallbacks(mAniFinishRunnable);
+								}
+							}
+							mAniFinishRunnable = new AniFinishRunnable();
+							if (mAniHandler != null) {
+								mAniHandler.post(mAniFinishRunnable);
+							}
+						}
+					}
+				}
+
+				@Override
+				public void onAnimationRepeat(Animation animation) {
+				}
+			});
+		}
+		return animation;
+	}
+
+	private class AniFinishRunnable implements Runnable {
+
+		@Override
+		public void run() {
+			synchronized (mAniLock) {
+				if (mAniHandler != null) {
+					mAniHandler.removeCallbacks(this);
+				}
+				synchronized (bannerDataLock) {
+					initBanner(mGuideBanners);
+				}
+				mAniFinishRunnable = null;
+			}
+		}
+	}
+/*add by dragontec for bug 4065 end*/
 
 /*add by dragontec for bug 4225, 4224, 4223 start*/
     public boolean isScrollerAtTop() {
@@ -498,4 +601,14 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
 		}
 	}
 /*add by dragontec for bug 4200 end*/
+
+/*add by dragontec for bug 4249 start*/
+	public void requestFirstBannerFocus() {
+		synchronized (templateDataLock) {
+			if (mTemplates != null && !mTemplates.isEmpty()) {
+				mTemplates.get(0).requestFocus();
+			}
+		}
+	}
+/*add by dragontec for bug 4249 end*/
 }

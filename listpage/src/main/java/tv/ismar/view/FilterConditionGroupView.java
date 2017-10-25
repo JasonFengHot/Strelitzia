@@ -39,6 +39,9 @@ public class FilterConditionGroupView extends LinearLayout implements View.OnHov
     private int rightLimit=0;
     private boolean canScroll=false;
     private Rect rect;
+	/*add by dragontec for bug 4272 start*/
+	private Rect tempRect;
+	/*add by dragontec for bug 4272 end*/
 
     public Handler handler=new Handler(new Handler.Callback() {
         @Override
@@ -78,10 +81,21 @@ public class FilterConditionGroupView extends LinearLayout implements View.OnHov
         this.values = values;
         initView(context);
         rect=new Rect(filter_condition_radio_group.getLeft(),filter_condition_radio_group.getTop(),filter_condition_radio_group.getLeft()+filter_condition_radio_group.getWidth(),filter_condition_radio_group.getTop()+filter_condition_radio_group.getHeight());
+		/*add by dragontec for bug 4272 start*/
+		tempRect = new Rect();
+		/*add by dragontec for bug 4272 end*/
         initData(context);
 
     }
 
+	/*add by dragontec for bug 4272 start*/
+    private boolean checkRectOverlay(Rect rect1, Rect rect2) {
+		if (rect1.contains(rect2) || rect2.contains(rect1) || rect1.contains(rect2.left, rect2.top) || rect1.contains(rect2.right, rect2.top) || rect1.contains(rect2.left, rect2.bottom) || rect1.contains(rect2.right, rect2.bottom)) {
+			return true;
+		}
+		return false;
+	}
+	/*add by dragontec for bug 4272 end*/
 
     private void initData(final Context context) {
         filter_condition_group_title.setText(label+":");
@@ -122,12 +136,34 @@ public class FilterConditionGroupView extends LinearLayout implements View.OnHov
                 public void onFocusChange(View v, boolean hasFocus) {
                     if(hasFocus&&canScroll){
                         if(filter_condition_radio_group.getChildAt(0).getLocalVisibleRect(rect)){
-                            filter_condition_group_arrow_left.setVisibility(View.INVISIBLE);
+							/*modify by dragontec for bug 4272 start*/
+							//需要检查左右方向按键与item重叠的问题
+							if (filter_condition_radio_group.getChildAt(0).getGlobalVisibleRect(rect) && left_layer.getGlobalVisibleRect(tempRect)) {
+								if (checkRectOverlay(rect, tempRect)) {
+									filter_condition_group_arrow_left.setVisibility(View.VISIBLE);
+								} else {
+									filter_condition_group_arrow_left.setVisibility(View.INVISIBLE);
+								}
+							} else {
+								filter_condition_group_arrow_left.setVisibility(View.VISIBLE);
+							}
+							/*modify by dragontec for bug 4272 end*/
                         }else{
                             filter_condition_group_arrow_left.setVisibility(View.VISIBLE);
                         }
                         if(filter_condition_radio_group.getChildAt(values.size()-1).getLocalVisibleRect(rect)){
-                            filter_condition_group_arrow_right.setVisibility(View.INVISIBLE);
+							/*modify by dragontec for bug 4272 start*/
+							//需要检查左右方向按键与item重叠的问题
+							if (filter_condition_radio_group.getChildAt(values.size()-1).getGlobalVisibleRect(rect) && right_layer.getGlobalVisibleRect(tempRect)) {
+								if (checkRectOverlay(rect, tempRect)) {
+									filter_condition_group_arrow_right.setVisibility(View.VISIBLE);
+								} else {
+									filter_condition_group_arrow_right.setVisibility(View.INVISIBLE);
+								}
+							} else {
+								filter_condition_group_arrow_right.setVisibility(View.VISIBLE);
+							}
+							/*modify by dragontec for bug 4272 end*/
                         }else{
                             filter_condition_group_arrow_right.setVisibility(View.VISIBLE);
                         }

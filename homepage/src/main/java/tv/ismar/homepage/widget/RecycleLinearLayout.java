@@ -94,9 +94,9 @@ public class RecycleLinearLayout extends LinearLayout {
         return view.getLocalVisibleRect(mWindowRect);
     }
 
-/*modify by dragontec for bug 4200 start 加快滑动速度*/
-    private static final int SCROLL_DURATION = 50;//150;//默认滑动时间
-/*modify by dragontec for bug 4200 end*/
+/*modify by dragontec for bug 4200,4285 start 加快滑动速度*/
+    private static final int SCROLL_DURATION = 150;//默认滑动时间
+/*modify by dragontec for bug 4200,4285 end*/
     private OverScroller mOverScroller = null;
 
     @Override
@@ -175,11 +175,23 @@ public class RecycleLinearLayout extends LinearLayout {
         if(view != null){
             currentBannerPos=indexOfChild(view);
             if(homeRootRelativeLayout!=null) {
-                if (currentBannerPos < 2) {
-                    homeRootRelativeLayout.setShowUp(false);
-                }else{
-                    homeRootRelativeLayout.setShowUp(true);
-                }
+				/*modify by dragontec for bug 4248 start*/
+				if (currentBannerPos < 1) {
+					homeRootRelativeLayout.setShowUp(false);
+				} else if (currentBannerPos == 1) {
+					int key = (int) view.getTag();
+					int tag = (int) view.getTag(key);
+				/*modify by dragontec for bug 4077 start*/
+					boolean canScroll = tag>>30==1;//1可滑动，0不可滑动
+					if (canScroll) {
+						homeRootRelativeLayout.setShowUp(true);
+					} else {
+						homeRootRelativeLayout.setShowUp(false);
+					}
+				} else {
+					homeRootRelativeLayout.setShowUp(true);
+				}
+				/*modify by dragontec for bug 4248 end*/
                 int childCount=getChildCount();
                 Log.e("childCount",childCount+"&&&"+currentBannerPos);
                 if(currentBannerPos==childCount-(hasMore?2:1)||(int)view.getTag()==R.layout.banner_more){
@@ -337,12 +349,92 @@ public class RecycleLinearLayout extends LinearLayout {
         return super.dispatchKeyEvent(event);
     }
 
+	/*add by dragontec for bug 4248 start*/
+    private View findFirstViewOnLastPage() {
+		View view = null;
+		boolean getBottom = false;
+		int plusHeight = 0;
+		for (int i = currentBannerPos; i >= 0; i--) {
+			View v = getChildAt(i);
+			int layoutId = (int) v.getTag();
+			int positionTag = (int) v.getTag(layoutId);
+			boolean canScroll = positionTag >> 30 == 1;
+			//不滑动的banner需要特殊处理，当前top不是此banner下方一个的时候需要显示一次下方的banner
+			if (i == 1) {
+				if (!canScroll) {
+					if (i != currentBannerPos - 1) {
+						Log.d(TAG, "findFirstViewOnLastPage find view[" + (i + 1) +"]");
+						view = getChildAt(i + 1);
+					}
+					break;
+				}
+			}
+			int[] location = new int[]{0, 0};
+			v.getLocationOnScreen(location);
+			Log.d(TAG, "findFirstViewOnLastPage view[" + i + "] x = " + location[0] + " y = " + location[1]);
+			if (location[1] < 0) {
+				getBottom = true;
+			}
+			if (getBottom) {
+				plusHeight += v.getHeight();
+			}
+			int height = mScreenHeight;
+			if (i == 0) {
+				height = mScreenHeight - getResources().getDimensionPixelSize(R.dimen.banner_margin_top);
+			}
+			if (plusHeight > height) {
+				if (i != currentBannerPos - 1) {
+					Log.d(TAG, "findFirstViewOnLastPage find view[" + (i + 1) +"]");
+					view = getChildAt(i + 1);
+				} else {
+					Log.d(TAG, "findFirstViewOnLastPage find view[" + i +"]");
+					view = v;
+				}
+				break;
+			} else if (plusHeight == height){
+				Log.d(TAG, "findFirstViewOnLastPage find view[" + i +"]");
+				view = v;
+				break;
+			}
+		}
+		Log.d(TAG, "findFirstViewOnLastPage view = " + view);
+		if (view == null) {
+			view = getChildAt(0);
+		}
+		return view;
+	}
+
+    private View findFirstViewOnNextPage() {
+		View view = null;
+		Rect rect = new Rect();
+		for (int i = currentBannerPos; i < getChildCount(); i++) {
+			View v = getChildAt(i);
+			int[] location = new int[]{0, 0};
+			v.getLocationOnScreen(location);
+			Log.d(TAG, "findFirstViewOnNextPage view[" + i + "] x = " + location[0] + " y = " + location[1]);
+			if (location[1] >= mScreenHeight || location[1] + v.getHeight() > mScreenHeight) {
+				Log.d(TAG, "findFirstViewOnNextPage find view[" + i +"]");
+				view = v;
+				break;
+			}
+		}
+		Log.d(TAG, "findFirstViewOnNextPage view = " + view);
+		if (view == null) {
+			view = getChildAt(getChildCount() - 1);
+		}
+		return view;
+	}
+	/*add by dragontec for bug 4248 end*/
+
     public void setArrow_up(Button arrow_up) {
         this.arrow_up = arrow_up;
         this.arrow_up.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                View view = getChildAt(currentBannerPos<=2?0:currentBannerPos-1);
+				/*modify by dragontec for bug 4248 start*/
+				View view = findFirstViewOnLastPage();
+//                View view = getChildAt(currentBannerPos<=2?0:currentBannerPos-1);
+				/*modify by dragontec for bug 4248 end*/
                 int key = (int) view.getTag();
                 int tag = (int) view.getTag(key);
                 boolean canScroll = tag>>30==1;//1可滑动，0不可滑动
@@ -381,7 +473,10 @@ public class RecycleLinearLayout extends LinearLayout {
         this.arrow_down.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                View view = getChildAt(currentBannerPos==0?2:currentBannerPos+1>=getChildCount()?currentBannerPos:currentBannerPos+1);
+				/*modify by dragontec for bug 4248 start*/
+				View view = findFirstViewOnNextPage();
+//                View view = getChildAt(currentBannerPos==0?2:currentBannerPos+1>=getChildCount()?currentBannerPos:currentBannerPos+1);
+				/*modify by dragontec for bug 4248 end*/
                 int key = (int) view.getTag();
                 int tag = (int) view.getTag(key);
                 boolean canScroll = tag>>30==1;//1可滑动，0不可滑动

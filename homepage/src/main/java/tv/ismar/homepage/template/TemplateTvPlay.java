@@ -242,7 +242,9 @@ public class TemplateTvPlay extends Template
     public boolean onHover(View v, MotionEvent event) {
         Log.i("onHover", "Template action:" + event.getAction());
         switch (event.getAction()) {
-            case MotionEvent.ACTION_HOVER_MOVE:
+			/*delete by dragontec for bug 4169 start*/
+        	//case MotionEvent.ACTION_HOVER_MOVE:
+			/*delete by dragontec for bug 4169 end*/
             case MotionEvent.ACTION_HOVER_ENTER:
                 if (!v.hasFocus()) {
                     v.requestFocus();
