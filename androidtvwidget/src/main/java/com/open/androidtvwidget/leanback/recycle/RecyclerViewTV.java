@@ -261,7 +261,12 @@ public class RecyclerViewTV extends RecyclerView implements PrvInterface {
                 return ((GridLayoutManager) lm).findFirstCompletelyVisibleItemPosition();
             }
             if(lm instanceof StaggeredGridLayoutManager){
-                return ((StaggeredGridLayoutManager) lm).findFirstCompletelyVisibleItemPositions(positions)[0];
+                //temp fix crash by dragontec
+                try {
+                    return ((StaggeredGridLayoutManager) lm).findFirstCompletelyVisibleItemPositions(positions)[0];
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
             }
         }
         return RecyclerView.NO_POSITION;
@@ -640,7 +645,12 @@ public class RecyclerViewTV extends RecyclerView implements PrvInterface {
                 return ((GridLayoutManager) layoutManager).findLastCompletelyVisibleItemPosition();
             }
             if(layoutManager instanceof StaggeredGridLayoutManager){
-                return ((StaggeredGridLayoutManager) layoutManager).findLastCompletelyVisibleItemPositions(positions)[0];
+                //temp fix crash by dragontec
+                try {
+                    return ((StaggeredGridLayoutManager) layoutManager).findLastCompletelyVisibleItemPositions(positions)[0];
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
             }
         }
         return RecyclerView.NO_POSITION;
