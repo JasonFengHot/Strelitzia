@@ -31,6 +31,7 @@ import tv.ismar.app.core.PageIntent;
 import tv.ismar.app.entity.banner.BannerPoster;
 import tv.ismar.app.entity.banner.BigImage;
 import tv.ismar.app.entity.banner.HomeEntity;
+import tv.ismar.app.widget.ListSpacesItemDecoration;
 import tv.ismar.homepage.HomeActivity;
 import tv.ismar.homepage.OnItemClickListener;
 import tv.ismar.homepage.R;
@@ -162,6 +163,7 @@ public class TemplateDoubleMd extends Template
     mImgeTitleTv = (TextView) mHeadView.findViewById(R.id.double_md_image_title);
     mDoubleLayoutManager =
         new StaggeredGridLayoutManagerTV(2, StaggeredGridLayoutManager.HORIZONTAL);
+    mRecyclerView.addItemDecoration(new ListSpacesItemDecoration(mContext.getResources().getDimensionPixelOffset(R.dimen.double_md_padding)));
     mRecyclerView.setItemAnimator(new DefaultItemAnimator());
     mRecyclerView.setLayoutManager(mDoubleLayoutManager);
     mRecyclerView.setSelectedItemAtCentered(false);

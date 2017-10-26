@@ -2,19 +2,15 @@ package tv.ismar.homepage.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-/*add by dragontec for bug 4065 start*/
-import android.os.Handler;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-/*add by dragontec for bug 4065 end*/
-
-import android.widget.LinearLayout;
 
 import com.orhanobut.logger.Logger;
 
@@ -26,10 +22,25 @@ import tv.ismar.app.entity.GuideBanner;
 import tv.ismar.homepage.HomeActivity;
 import tv.ismar.homepage.R;
 import tv.ismar.homepage.control.FetchDataControl;
-import tv.ismar.homepage.template.*;
+import tv.ismar.homepage.template.Template;
+import tv.ismar.homepage.template.Template519;
+import tv.ismar.homepage.template.TemplateBigSmallLd;
+import tv.ismar.homepage.template.TemplateCenter;
+import tv.ismar.homepage.template.TemplateConlumn;
+import tv.ismar.homepage.template.TemplateDoubleLd;
+import tv.ismar.homepage.template.TemplateDoubleMd;
+import tv.ismar.homepage.template.TemplateGuide;
+import tv.ismar.homepage.template.TemplateMore;
+import tv.ismar.homepage.template.TemplateMovie;
+import tv.ismar.homepage.template.TemplateOrder;
+import tv.ismar.homepage.template.TemplateRecommend;
+import tv.ismar.homepage.template.TemplateTvPlay;
 import tv.ismar.homepage.widget.HomeRootRelativeLayout;
 import tv.ismar.homepage.widget.RecycleLinearLayout;
 import tv.ismar.library.util.StringUtils;
+
+/*add by dragontec for bug 4065 start*/
+/*add by dragontec for bug 4065 end*/
 
 /**
  * @AUTHOR: xi @DATE: 2017/9/8 @DESC: 频道fragemnt
@@ -396,14 +407,6 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
 				if (mTemplates != null) {
 					mTemplates.add(templateObject);
 				}
-			}
-			LinearLayout.LayoutParams params= new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-			if(template.equals("template_double_ld")){
-				params.bottomMargin=getResources().getDimensionPixelOffset(R.dimen.double_ld_padding);
-				bannerView.setLayoutParams(params);
-			}else if(template.equals("template_double_md")){
-				params.bottomMargin=getResources().getDimensionPixelOffset(R.dimen.double_md_padding);
-				bannerView.setLayoutParams(params);
 			}
 			mLinearContainer.addView(bannerView);
 		}

@@ -733,13 +733,13 @@
 <dimen name="double_ld_poster_title_height">34.81dp</dimen>
 <dimen name="double_ld_poster_title_size">28.89dp</dimen>
 <dimen name="double_ld_poster_padding">26.67dp</dimen>
-<dimen name="double_ld_padding">-26.67dp</dimen>
+<dimen name="double_ld_padding">13.33dp</dimen>
 <!--竖版双行尺寸-->
 <dimen name="double_shade_width">296.30dp</dimen>
 <dimen name="double_md_margin_left">74.07dp</dimen>
 <dimen name="double_md_img_container_width">458.52dp</dimen>
 <dimen name="double_md_img_height">570.37dp</dimen>
-<dimen name="double_md_recycler_height">601.48dp</dimen>
+<dimen name="double_md_recycler_height">570.37dp</dimen>
 <dimen name="double_md_img_width">416.30dp</dimen>
 <dimen name="double_md_img_lt_size">80.74dp</dimen>
 <dimen name="double_md_img_rb_icon_width">57.78dp</dimen>
@@ -757,7 +757,7 @@
 <dimen name="double_md_poster_title_height">34.81dp</dimen>
 <dimen name="double_md_poster_title_size">28.89dp</dimen>
 <dimen name="double_md_poster_padding_left">31.11dp</dimen>
-<dimen name="double_md_padding">-31.11dp</dimen>
+<dimen name="double_md_padding">15.56dp</dimen>
 <!--居中模版-->
 <dimen name="center_recycleview_height">377.04dp</dimen>
 <dimen name="center_poster_margin_top">18.52dp</dimen>
