@@ -131,6 +131,20 @@ public class FilterConditionGroupView extends LinearLayout implements View.OnHov
                     v.requestFocusFromTouch();
                 }
             });
+            radio.setOnHoverListener(new OnHoverListener() {
+                @Override
+                public boolean onHover(View v, MotionEvent event) {
+                    if(event.getAction()==MotionEvent.ACTION_HOVER_ENTER||event.getAction()==MotionEvent.ACTION_HOVER_MOVE){
+                        if(v.getLocalVisibleRect(rect)) {
+                            v.requestFocus();
+                            v.requestFocusFromTouch();
+                        }
+                    }else if(event.getAction()==MotionEvent.ACTION_HOVER_EXIT){
+                        v.clearFocus();
+                    }
+                    return false;
+                }
+            });
             radio.setOnFocusChangeListener(new OnFocusChangeListener() {
                 @Override
                 public void onFocusChange(View v, boolean hasFocus) {
@@ -263,6 +277,7 @@ public class FilterConditionGroupView extends LinearLayout implements View.OnHov
     @Override
     public boolean onHover(View v, MotionEvent event) {
         if(event.getAction()==MotionEvent.ACTION_HOVER_ENTER||event.getAction()==MotionEvent.ACTION_HOVER_MOVE){
+            canScroll=true;
             v.setFocusable(true);
             v.requestFocus();
             v.requestFocusFromTouch();

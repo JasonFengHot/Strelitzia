@@ -218,32 +218,34 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 try {
-                    if (v.hasFocus()) {
-                        if(onKeyFocusView!=v&&onKeyFocusView!=tab_arrow_up&&onKeyFocusView!=tab_arrow_dowm&&onKeyFocusView!=poster_arrow_up&&onKeyFocusView!=poster_arrow_down){
-                            onKeyFocusView.requestFocus();
-                            onKeyFocusView.requestFocusFromTouch();
-                        }else{
-                            //分别为列表页、筛选页、筛选无结果页面时找第一张海报
-                            if(filter_tab.isChecked()){
-                                if(poster_recyclerview!=null&&poster_recyclerview.getChildAt(0)!=null){
-                                    poster_recyclerview.getChildAt(0).requestFocus();
-                                }else if(noResultFetched&&filter_noresult_first_line!=null&&filter_noresult_first_line.getChildAt(0)!=null){
-                                    filter_noresult_first_line.getChildAt(0).requestFocus();
+                    if(keyCode==19||keyCode==20||keyCode==21||keyCode==22) {
+                        if (v.hasFocus()) {
+                            if (onKeyFocusView != v && onKeyFocusView != tab_arrow_up && onKeyFocusView != tab_arrow_dowm && onKeyFocusView != poster_arrow_up && onKeyFocusView != poster_arrow_down) {
+                                onKeyFocusView.requestFocus();
+                                onKeyFocusView.requestFocusFromTouch();
+                            } else {
+                                //分别为列表页、筛选页、筛选无结果页面时找第一张海报
+                                if (filter_tab.isChecked()) {
+                                    if (poster_recyclerview != null && poster_recyclerview.getChildAt(0) != null) {
+                                        poster_recyclerview.getChildAt(0).requestFocus();
+                                    } else if (noResultFetched && filter_noresult_first_line != null && filter_noresult_first_line.getChildAt(0) != null) {
+                                        filter_noresult_first_line.getChildAt(0).requestFocus();
+                                    }
+                                } else {
+                                    View firstView = null;
+                                    if (checkedTab == sectionSize - 1 && mAllSectionItemList.getCount() - specialPos.get(checkedTab) < spanCount) {
+                                        firstView = mFocusGridLayoutManager.findViewByPosition(specialPos.get(checkedTab) + 1);
+                                    } else if (list_poster_recyclerview.getChildCount() > spanCount) {
+                                        firstView = list_poster_recyclerview.getChildAt(spanCount);
+                                    }
+                                    if (list_poster_recyclerview.getChildAt(0) instanceof TextView) {
+                                        firstView = list_poster_recyclerview.getChildAt(1);
+                                    }
+                                    firstView.requestFocus();
                                 }
-                            }else{
-                                View firstView = null;
-                                if(checkedTab==sectionSize-1&&mAllSectionItemList.getCount()-specialPos.get(checkedTab)<spanCount){
-                                    firstView=mFocusGridLayoutManager.findViewByPosition(specialPos.get(checkedTab)+1);
-                                }else if(list_poster_recyclerview.getChildCount()>spanCount) {
-                                    firstView = list_poster_recyclerview.getChildAt(spanCount);
-                                }
-                                if(list_poster_recyclerview.getChildAt(0) instanceof TextView){
-                                    firstView=list_poster_recyclerview.getChildAt(1);
-                                }
-                                firstView.requestFocus();
                             }
+                            return true;
                         }
-                        return true;
                     }
                 }catch(Exception e){
                     e.printStackTrace();
