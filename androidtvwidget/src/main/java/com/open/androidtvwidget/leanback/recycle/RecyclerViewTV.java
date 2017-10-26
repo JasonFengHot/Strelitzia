@@ -261,7 +261,12 @@ public class RecyclerViewTV extends RecyclerView implements PrvInterface {
                 return ((GridLayoutManager) lm).findFirstCompletelyVisibleItemPosition();
             }
             if(lm instanceof StaggeredGridLayoutManager){
-                return ((StaggeredGridLayoutManager) lm).findFirstCompletelyVisibleItemPositions(positions)[0];
+                //temp fix crash by dragontec
+                try {
+                    return ((StaggeredGridLayoutManager) lm).findFirstCompletelyVisibleItemPositions(positions)[0];
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
             }
         }
         return RecyclerView.NO_POSITION;
@@ -287,7 +292,8 @@ public class RecyclerViewTV extends RecyclerView implements PrvInterface {
      * getStartWithPadding --> return (mIsVertical ? getPaddingTop() : getPaddingLeft());
      */
     public boolean cannotScrollBackward(int delta) {
-        return (getFirstCompletelyVisiblePosition() == 0 && delta <= 0);
+		//modify by dragontec guide有视频的时候拿到的position为-1
+        return (getFirstCompletelyVisiblePosition() <= 0 && delta <= 0);
     }
 
     /**
@@ -641,12 +647,17 @@ public class RecyclerViewTV extends RecyclerView implements PrvInterface {
                 return ((GridLayoutManager) layoutManager).findLastCompletelyVisibleItemPosition();
             }
             if(layoutManager instanceof StaggeredGridLayoutManager){
-                 ((StaggeredGridLayoutManager) layoutManager).findLastCompletelyVisibleItemPositions(positions);
-                 if (positions[1] > positions[0]){
-                     return positions[1];
-                 }else {
-                     return positions[0];
-                 }
+                //temp fix crash by dragontec
+                try {
+                     ((StaggeredGridLayoutManager) layoutManager).findLastCompletelyVisibleItemPositions(positions);
+                     if (positions[1] > positions[0]){
+                         return positions[1];
+                     }else {
+                         return positions[0];
+                     }
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
             }
         }
         return RecyclerView.NO_POSITION;

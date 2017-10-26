@@ -280,7 +280,9 @@ public class BannerHorizontal519Adapter extends RecyclerView.Adapter<BannerHoriz
         public boolean onHover(View v, MotionEvent event) {
             switch (event.getAction()) {
                 case MotionEvent.ACTION_HOVER_ENTER:
-                case MotionEvent.ACTION_HOVER_MOVE:
+				/*delete by dragontec for bug 4169 start*/
+            	//case MotionEvent.ACTION_HOVER_MOVE:
+				/*delete by dragontec for bug 4169 end*/
                     if (mHoverListener != null) {
                         int position = (int) v.getTag(R.id.banner_item_position);
 /*modify by dragontec for bug 4057 start*/

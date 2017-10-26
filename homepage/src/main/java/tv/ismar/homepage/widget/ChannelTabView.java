@@ -410,7 +410,9 @@ public class ChannelTabView extends HorizontalScrollView {
             ((LayoutParams) section_image.getLayoutParams()).width = v.getWidth();
             switch (keycode.getAction()) {
                 case MotionEvent.ACTION_HOVER_ENTER:
-                case MotionEvent.ACTION_HOVER_MOVE:
+				/*delete by dragontec for bug 4169 start*/
+	        	//case MotionEvent.ACTION_HOVER_MOVE:
+				/*delete by dragontec for bug 4169 end*/
                     int tabRightX = tabMargin + tabWidth;
                     int[] currentPos = new int[2];
                     v.getLocationOnScreen(currentPos);

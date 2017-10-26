@@ -73,23 +73,29 @@ public abstract class BaseViewHolder extends RecyclerView.ViewHolder implements
         Log.i("onHover", "ViewHolder action:"+event.getAction());
         switch (event.getAction()){
             case MotionEvent.ACTION_HOVER_ENTER://鼠标放置到view上时 9
-            case MotionEvent.ACTION_HOVER_MOVE://7
+			/*delete by dragontec for bug 4169 start*/
+//            case MotionEvent.ACTION_HOVER_MOVE://7 
+			/*delete by dragontec for bug 4169 end*/
                 if (mHoverListener!= null){
                     mHoverListener.onHover(v, mPosition, true);
                 }
-                v.requestFocusFromTouch();
-                v.requestFocus();
+				//by dragontec 和其他地方保持一致
+                if(!v.hasFocus()) {
+                    v.requestFocusFromTouch();
+                    v.requestFocus();
+                }
                 break;
             case MotionEvent.ACTION_HOVER_EXIT://10
                 if (mHoverListener!= null){
                     mHoverListener.onHover(v, mPosition, false);
-/*modify by dragontec for bug 4057 start*/
-//                    HomeActivity.mHoverView.requestFocus();//将焦点放置到一块隐藏view中
-                    if (event.getButtonState() != MotionEvent.BUTTON_PRIMARY) {
-                        v.clearFocus();
-                    }
-/*modify by dragontec for bug 4057 end*/
                 }
+				//by dragontec clearfocus应该和是否setListener无关
+                /*modify by dragontec for bug 4057 start*/
+//                    HomeActivity.mHoverView.requestFocus();//将焦点放置到一块隐藏view中
+                if (event.getButtonState() != MotionEvent.BUTTON_PRIMARY) {
+                    v.clearFocus();
+                }
+                /*modify by dragontec for bug 4057 end*/
                 break;
         }
         return false;

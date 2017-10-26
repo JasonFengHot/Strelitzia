@@ -119,13 +119,19 @@ public static HomeRootRelativeLayout mHoverView;
     //广告
     private static final int MSG_AD_COUNTDOWN = 0x01;
 
-/*add by dragontec for bug 4225, 4224, 4223 start*/
-    private final int SCROLL_TO_TOP_TOAST_DURATION = 600;
-    private final int UP_KEY_LONG_PRESS_DURATION = 1000;
+    /*add by dragontec for bug 3983 start*/
     private final int TITLE_ANIM_DURATION = 150;
+    /*add by dragontec for bug 3983 end*/
+/*add by dragontec for bug 4225, 4224, 4223 start*/
+//    private final int SCROLL_TO_TOP_TOAST_DURATION = 600;
+    private final int UP_KEY_LONG_PRESS_DURATION = 1000;
     private boolean mNeedShowScrollToTopTip = false;
     private boolean mAtScrollerBottom = false;
+//    private long scrollTipCurrentTime = 0;
 /*add by dragontec for bug 4225, 4224, 4223 end*/
+/*add by dragontec for bug 4249 start*/
+    private boolean mInAdvertisement = false;
+/*add by dragontec for bug 4249 end*/
 
     private DaisyVideoView mVideoView;
     private ImageView mPicImg;
@@ -385,6 +391,9 @@ public static HomeRootRelativeLayout mHoverView;
     }
 
     private void initAd(){
+/*add by dragontec for bug 4249 start*/
+        mInAdvertisement = true;
+/*add by dragontec for bug 4249 end*/
         mAdvertiseManager = new AdvertiseManager(this);
         mAdsList = mAdvertiseManager.getAppLaunchAdvertisement();
         mAdvertisement = new Advertisement(this);
@@ -451,6 +460,27 @@ public static HomeRootRelativeLayout mHoverView;
 /*add by dragontec for bug 4225, 4224, 4223 start*/
         if (event.getKeyCode() == KeyEvent.KEYCODE_BACK
                 && event.getAction() == KeyEvent.ACTION_UP) {
+/*add by dragontec for bug 4249 start*/
+            if (mInAdvertisement) {
+                isCheckoutUpdate = true;
+                SkyService.ServiceManager.executeActive = true;
+                CallaPlay callaPlay = new CallaPlay();
+                callaPlay.app_exit(TrueTime.now().getTime() - app_start_time, SimpleRestClient.appVersion);
+                ArrayList<String> cache_log = MessageQueue.getQueueList();
+                HashSet<String> hasset_log = new HashSet<String>();
+                for (int i = 0; i < cache_log.size(); i++) {
+                    hasset_log.add(cache_log.get(i));
+                }
+                DaisyUtils.getVodApplication(HomeActivity.this)
+                        .getEditor()
+                        .putStringSet(VodApplication.CACHED_LOG, hasset_log);
+                DaisyUtils.getVodApplication(getApplicationContext()).save();
+                BaseActivity.baseChannel = "";
+                BaseActivity.baseSection = "";
+                stopService(new Intent(HomeActivity.this, PlaybackService.class));
+                HomeActivity.super.onBackPressed();
+            } else
+/*add by dragontec for bug 4249 end*/
             if (isScrollerAtTop()) {
                 if (currentTime == 0 || System.currentTimeMillis() - currentTime > 4000) {
                     currentTime = System.currentTimeMillis();
@@ -475,12 +505,12 @@ public static HomeRootRelativeLayout mHoverView;
                     HomeActivity.super.onBackPressed();
                 }
             } else {
-                long current = System.currentTimeMillis();
-                long delta = current - currentTime;
-                if (currentTime == 0 || delta > SCROLL_TO_TOP_TOAST_DURATION) {
-                    currentTime = current;
-                } else {
-                    currentTime = current;
+//                long current = System.currentTimeMillis();
+//                long delta = current - scrollTipCurrentTime;
+//                if (scrollTipCurrentTime == 0 || delta > SCROLL_TO_TOP_TOAST_DURATION) {
+//                    scrollTipCurrentTime = current;
+//                } else {
+//                    scrollTipCurrentTime = current;
                     //channelFragment存在，才能向上滑动到顶的场合下，才需要显示顶部title以及请求focus
                     ChannelFragment channelFragment = getChannelFragment();
                     if (channelFragment != null && channelFragment.scrollerScrollToTop()) {
@@ -490,7 +520,7 @@ public static HomeRootRelativeLayout mHoverView;
                         mChannelTab.requestFocus();
                         mChannelTab.requestFocusFromTouch();
                     }
-                }
+//                }
             }
             return true;
         }
@@ -520,7 +550,9 @@ public static HomeRootRelativeLayout mHoverView;
         //        }
         switch (event.getAction()) {
             case MotionEvent.ACTION_HOVER_ENTER:
-            case MotionEvent.ACTION_HOVER_MOVE:
+			/*delete by dragontec for bug 4169 start*/
+        	//case MotionEvent.ACTION_HOVER_MOVE:
+			/*delete by dragontec for bug 4169 end*/
 /*modify by dragontec for bug 4057 start*/
 //                if (v.getId() != R.id.hover_view) {
 //                    if (!v.hasFocus()) {
@@ -543,8 +575,10 @@ public static HomeRootRelativeLayout mHoverView;
 //                    v.requestFocusFromTouch();
 //                    v.requestFocus();
 //                }
-                v.requestFocusFromTouch();
-                v.requestFocus();
+                if(!v.hasFocus()) {
+                    v.requestFocusFromTouch();
+                    v.requestFocus();
+                }
 /*modify by dragontec for bug 4057 end*/
                 break;
             case MotionEvent.ACTION_HOVER_EXIT:
@@ -943,12 +977,22 @@ public static HomeRootRelativeLayout mHoverView;
     }
 
     private void go2HomeActivity(){
+/*add by dragontec for bug 4249 start*/
+        mInAdvertisement = false;
+/*add by dragontec for bug 4249 end*/
         setBackground(R.drawable.homepage_background);
         ad_layout.setVisibility(View.GONE);
         home_layout.setVisibility(View.VISIBLE);
         banner_arrow_down.setBackgroundResource(R.drawable.poster_arrow_down_vselector);
         initServer();
         new Handler().postDelayed(mRunnable, 1000);
+
+/*add by dragontec for bug 4249 start*/
+        ChannelFragment channelFragment = getChannelFragment();
+        if (channelFragment != null) {
+            channelFragment.requestFirstBannerFocus();
+        }
+/*add by dragontec for bug 4249 end*/
     }
 
     @Override

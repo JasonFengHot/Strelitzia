@@ -57,7 +57,9 @@ public class HomeItemContainer extends FrameLayout {
         // TODO Auto-generated method stub
         switch (event.getAction()) {
             case MotionEvent.ACTION_HOVER_ENTER:
-            case MotionEvent.ACTION_HOVER_MOVE:
+			/*delete by dragontec for bug 4169 start*/
+        	//case MotionEvent.ACTION_HOVER_MOVE:
+			/*delete by dragontec for bug 4169 end*/
 //                isDrawBorder = true;
                 requestFocusFromTouch();
                 invalidate();

@@ -79,6 +79,14 @@ public class DaisyVideoView extends SurfaceView implements MediaPlayerControl {
 	private boolean mCanSeekForward;
 	private Context mContext;
 
+/*add by dragontec for bug 4065 start*/
+	private boolean mManualReset = false;
+
+	public void setManualReset(boolean reset) {
+		mManualReset = reset;
+	}
+/*add by dragontec for bug 4065 end*/
+
 	public DaisyVideoView(Context context) {
 		super(context);
 		mContext = context;
@@ -198,7 +206,10 @@ public class DaisyVideoView extends SurfaceView implements MediaPlayerControl {
 		invalidate();
 	}
 
-	public void stopPlayback() {
+/*modify by dragontec for bug 4065 start*/
+//	public void stopPlayback() {
+    synchronized public void stopPlayback() {
+/*modify by dragontec for bug 4065 end*/
 		if (player != null) {
 			player.stop();
 			player.release();
@@ -535,14 +546,22 @@ public class DaisyVideoView extends SurfaceView implements MediaPlayerControl {
 			mSurfaceHolder = null;
 			if (mMediaController != null)
 				mMediaController.hide();
-			release(true);
+/*modify by dragontec for bug 4065 start*/
+//			release(true);
+			if (!mManualReset) {
+				release(true);
+			}
+/*modify by dragontec for bug 4065 end*/
 		}
 	};
 
 	/*
 	 * release the media player in any state
 	 */
-	private void release(boolean cleartargetstate) {
+/*modify by dragontec for bug 4065 start*/
+//	private void release(boolean cleartargetstate) {
+    synchronized private void release(boolean cleartargetstate) {
+/*modify by dragontec for bug 4065 end*/
 		if (player != null) {
 			player.reset();
 			player.release();
@@ -625,7 +644,10 @@ public class DaisyVideoView extends SurfaceView implements MediaPlayerControl {
 		}
 	}
 
-	public void start() {
+/*modify by dragontec for bug 4065 start*/
+//	public void start() {
+    synchronized public void start() {
+/*modify by dragontec for bug 4065 end*/
 		if (isInPlaybackState()) {
 			player.start();
 			mCurrentState = STATE_PLAYING;
@@ -633,7 +655,10 @@ public class DaisyVideoView extends SurfaceView implements MediaPlayerControl {
 		mTargetState = STATE_PLAYING;
 	}
 
-	public void pause() {
+/*modify by dragontec for bug 4065 start*/
+//	public void pause() {
+    synchronized public void pause() {
+/*modify by dragontec for bug 4065 end*/
 		if (isInPlaybackState()) {
 			if (player.isPlaying()) {
 				player.pause();

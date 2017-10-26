@@ -80,7 +80,9 @@ public class ChannelRecyclerAdapter extends RecyclerView.Adapter<ChannelRecycler
 //                Log.i("LH/","itemView onHover");
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_HOVER_ENTER:
-                    case MotionEvent.ACTION_HOVER_MOVE:
+					/*delete by dragontec for bug 4169 start*/
+                	//case MotionEvent.ACTION_HOVER_MOVE:
+					/*delete by dragontec for bug 4169 end*/
                         recyclerView.setHovered(true);
                         recyclerView.requestFocus();
                         onHoveredView = v;

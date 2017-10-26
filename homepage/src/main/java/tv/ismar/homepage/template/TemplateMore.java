@@ -117,7 +117,9 @@ public class TemplateMore extends Template implements View.OnClickListener, View
 
   @Override
   public boolean onHover(View v, MotionEvent event) {
-    if(event.getAction() == MotionEvent.ACTION_HOVER_ENTER || event.getAction() == MotionEvent.ACTION_HOVER_MOVE){
+  		/*delete by dragontec for bug 4169 start*/
+    if(event.getAction() == MotionEvent.ACTION_HOVER_ENTER /*|| event.getAction() == MotionEvent.ACTION_HOVER_MOVE*/){
+  	  /*delete by dragontec for bug 4169 end*/
       mButton.requestFocus();
       mButton.requestFocusFromTouch();
     }else if(event.getAction() == MotionEvent.ACTION_HOVER_EXIT){
