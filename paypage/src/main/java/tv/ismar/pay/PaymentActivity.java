@@ -221,7 +221,7 @@ public class PaymentActivity extends BaseActivity implements View.OnClickListene
         bundle.putString("type", type);
         bundle.putStringArrayList("descriptions",list);
         alipayFragment.setArguments(bundle);
-        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_page, alipayFragment).commit();
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_page, alipayFragment).commitAllowingStateLoss();
     }
 
     @Override
@@ -237,7 +237,7 @@ public class PaymentActivity extends BaseActivity implements View.OnClickListene
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
              if (i == R.id.alipay) {
                 if(lastfocusId!=i&&!isdestory) {
-                    transaction.remove(balanceFragment).commit();
+                    transaction.remove(balanceFragment).commitAllowingStateLoss();
                     alipayClick();
                 }
             } else if (i == R.id.balance_pay) {
@@ -246,7 +246,7 @@ public class PaymentActivity extends BaseActivity implements View.OnClickListene
                         alipaySecrectSub.unsubscribe();
                     }
                     if(!isdestory)
-                    transaction.replace(R.id.fragment_page, balanceFragment).commit();
+                    transaction.replace(R.id.fragment_page, balanceFragment).commitAllowingStateLoss();
                 }
             }else if(i==R.id.weixin){
                  if(lastfocusId!=i){
@@ -266,13 +266,13 @@ public class PaymentActivity extends BaseActivity implements View.OnClickListene
         int i = v.getId();
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
          if (i == R.id.alipay) {
-             transaction.remove(balanceFragment).commit();
+             transaction.remove(balanceFragment).commitAllowingStateLoss();
              alipayClick();
         }else if (i == R.id.balance_pay) {
              if (alipaySecrectSub != null && !alipaySecrectSub.isUnsubscribed()) {
                  alipaySecrectSub.unsubscribe();
              }
-            transaction.replace(R.id.fragment_page, balanceFragment).commit();
+            transaction.replace(R.id.fragment_page, balanceFragment).commitAllowingStateLoss();
         }else if(i==R.id.weixin){
              channelClick("",firstdescriptions);
          }else if(i==R.id.videocard){
@@ -562,13 +562,13 @@ public class PaymentActivity extends BaseActivity implements View.OnClickListene
                             Bundle bundle3 = new Bundle();
                             bundle3.putString("url", choosewayEntity.getPay().getUrl());
                             yktRenewalFragment.setArguments(bundle3);
-                            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_page, yktRenewalFragment).commit();
+                            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_page, yktRenewalFragment).commitAllowingStateLoss();
                         }else {
                             MmnormalPay mmnormalPay=new MmnormalPay();
                             Bundle bundle4 = new Bundle();
                             bundle4.putString("url", choosewayEntity.getPay().getUrl());
                             mmnormalPay.setArguments(bundle4);
-                            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_page, mmnormalPay).commit();
+                            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_page, mmnormalPay).commitAllowingStateLoss();
                         }
                     }
                 });
@@ -649,7 +649,7 @@ public class PaymentActivity extends BaseActivity implements View.OnClickListene
                             changeLoginStatus(false);
                             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
                             transaction.replace(R.id.fragment_page, loginFragment)
-                                    .commit();
+                                    .commitAllowingStateLoss();
                         } else {
                             changeLoginStatus(true);
                             if (mItemEntity.getPk()==1111) {
@@ -713,7 +713,7 @@ public class PaymentActivity extends BaseActivity implements View.OnClickListene
         bundle.putString("flag", "usercenter_charge");
 //        cardpayFragment.setArguments(bundle);
 //        transaction.replace(R.id.fragment_page, cardpayFragment)
-//                .commit();
+//                .commitAllowingStateLoss();
     }
 
 
@@ -784,7 +784,7 @@ public class PaymentActivity extends BaseActivity implements View.OnClickListene
                                 Bundle bundle = new Bundle();
                                 bundle.putString("type", "alipay");
                                 alipayFragment.setArguments(bundle);
-                                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_page, alipayFragment).commit();
+                                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_page, alipayFragment).commitAllowingStateLoss();
                                 break;
                             case PayWhStatusEntity.Status.OPEN:
                                 MmnormalPay mmnormalPay=new MmnormalPay();
@@ -793,7 +793,7 @@ public class PaymentActivity extends BaseActivity implements View.OnClickListene
                                 bundle2.putString("uid",getUuid());
                                 bundle2.putString("category",category);
                                 mmnormalPay.setArguments(bundle2);
-                                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_page, mmnormalPay).commit();
+                                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_page, mmnormalPay).commitAllowingStateLoss();
                                 break;
                         }
                     }
@@ -815,7 +815,7 @@ public class PaymentActivity extends BaseActivity implements View.OnClickListene
                             case PayWhStatusEntity.Status.WITHOUT_OPEN:
                                 MmContinuousPayFragment mmContinuousPayFragment=new MmContinuousPayFragment();
                                 createOrder(OderType.alipay, mmContinuousPayFragment);
-                                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_page, mmContinuousPayFragment).commit();
+                                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_page, mmContinuousPayFragment).commitAllowingStateLoss();
                                 break;
                             case PayWhStatusEntity.Status.OPEN:
                                 goodsRenewStatus(pk);
@@ -842,7 +842,7 @@ public class PaymentActivity extends BaseActivity implements View.OnClickListene
                             //已开通续订购
                             case GoodsRenewStatusEntity.Status.OPEN:
                                 AlipayYKTRenewalFragment yktRenewalFragment = new AlipayYKTRenewalFragment();
-                                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_page, yktRenewalFragment).commit();
+                                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_page, yktRenewalFragment).commitAllowingStateLoss();
                                 break;
                             //未开通续订购
                             case GoodsRenewStatusEntity.Status.WITHOUT_OPEN:
