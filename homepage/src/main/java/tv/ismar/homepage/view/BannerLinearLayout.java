@@ -64,11 +64,15 @@ public class BannerLinearLayout extends LinearLayout {
         switch (event.getAction()){
             case MotionEvent.ACTION_HOVER_ENTER:
             case MotionEvent.ACTION_HOVER_MOVE:
-                if (navigationLeft.getVisibility() == INVISIBLE&&recyclerViewTV!=null&&!recyclerViewTV.cannotScrollBackward(-1)) {
+                if (recyclerViewTV!=null&&!recyclerViewTV.cannotScrollBackward(-10)) {
                     navigationLeft.setVisibility(VISIBLE);
+                }else if (recyclerViewTV!=null){
+                    navigationLeft.setVisibility(INVISIBLE);
                 }
-                if(navigationRight.getVisibility()==INVISIBLE&&recyclerViewTV!=null&&!recyclerViewTV.cannotScrollForward(1)){
+                if(recyclerViewTV!=null&&!recyclerViewTV.cannotScrollForward(10)){
                     navigationRight.setVisibility(VISIBLE);
+                }else if (recyclerViewTV!=null){
+                    navigationRight.setVisibility(INVISIBLE);
                 }
                 break;
             case MotionEvent.ACTION_HOVER_EXIT:

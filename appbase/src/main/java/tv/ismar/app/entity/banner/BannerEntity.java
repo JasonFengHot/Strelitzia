@@ -2,14 +2,18 @@ package tv.ismar.app.entity.banner;
 
 import android.support.annotation.NonNull;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import tv.ismar.app.entity.HomePagerEntity;
 
 /**
  * Created by huibin on 25/08/2017.
  */
 
 public class BannerEntity {
+    private PosterBean bg_image;
     private int count;
     private int page;
     private int num_pages;
@@ -18,6 +22,14 @@ public class BannerEntity {
     private int style; //跳转的列表页的横竖版标记
     private String channel_title; //section名字
     private String channel; //跳转列表页title
+
+    public PosterBean getBg_image() {
+        return bg_image;
+    }
+
+    public void setBg_image(PosterBean bg_image) {
+        this.bg_image = bg_image;
+    }
 
     public String getSection_slug() {
         return section_slug;
@@ -104,7 +116,14 @@ public class BannerEntity {
     }
 
     public List<PosterBean> getPoster() {
-        return posters;
+        if (bg_image != null){
+            List<PosterBean> list = new ArrayList<>();
+            list.add(bg_image);
+            list.addAll(posters);
+            return list;
+        }else {
+            return posters;
+        }
     }
 
     public void setPosters(List<PosterBean> posters) {

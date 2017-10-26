@@ -5,6 +5,7 @@ import android.os.Bundle;
 	/*add by dragontec for bug 4077 start*/
 import android.os.Handler;
 	/*add by dragontec for bug 4077 end*/
+import android.os.Message;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -40,6 +41,8 @@ import tv.ismar.homepage.widget.RecycleLinearLayout;
 	/*add by dragontec for bug 4077 end*/
 
 import static android.view.MotionEvent.BUTTON_PRIMARY;
+import static android.view.View.INVISIBLE;
+import static android.view.View.VISIBLE;
 
 /**
  * @AUTHOR: xi @DATE: 2017/8/29 @DESC: 519横图模版
@@ -62,9 +65,38 @@ public class Template519 extends Template implements View.OnClickListener, View.
     private boolean isMore;
     private Subscription fetchHorizontal519Banner;
 
+    private static final int NAVIGATION_LEFT = 0x0001;
+    private static final int NAVIGATION_RIGHT = 0x0002;
+
+    private NavigationtHandler mNavigationtHandler;
+
+    private class NavigationtHandler extends Handler {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what){
+                case NAVIGATION_LEFT:
+                    if (horizontal519Banner!=null&&!horizontal519Banner.cannotScrollBackward(-10)) {
+                        navigationLeft.setVisibility(VISIBLE);
+                    }else if (horizontal519Banner!=null){
+                        navigationLeft.setVisibility(INVISIBLE);
+                    }
+                    break;
+                case NAVIGATION_RIGHT:
+                    if(horizontal519Banner!=null&&!horizontal519Banner.cannotScrollForward(10)){
+                        navigationRight.setVisibility(VISIBLE);
+                    }else if (horizontal519Banner!=null){
+                        navigationRight.setVisibility(INVISIBLE);
+                    }
+                    break;
+            }
+        }
+    }
+
+
     public Template519(Context context) {
         super(context);
         Logger.t(TAG).d("Template519 construct");
+        mNavigationtHandler = new NavigationtHandler();
     }
 
     @Override
@@ -94,11 +126,20 @@ public class Template519 extends Template implements View.OnClickListener, View.
     @Override
     public void onStop() {
         Log.d(TAG, "onStop()");
+        if (mNavigationtHandler.hasMessages(NAVIGATION_LEFT)){
+            mNavigationtHandler.removeMessages(NAVIGATION_LEFT);
+        }
+        if (mNavigationtHandler.hasMessages(NAVIGATION_RIGHT)){
+            mNavigationtHandler.removeMessages(NAVIGATION_RIGHT);
+        }
     }
 
     @Override
     public void onDestroy() {
         Log.d(TAG, "onDestroy()");
+        if (mNavigationtHandler != null){
+            mNavigationtHandler = null;
+        }
 //        RefWatcher refWatcher = VodApplication.getRefWatcher(mContext);
 //        refWatcher.watch(this);
     }
@@ -352,6 +393,9 @@ public class Template519 extends Template implements View.OnClickListener, View.
                 setBannerItemCount(targetPosition);
                 horizontal519LayoutManager.smoothScrollToPosition(
                         horizontal519Banner, null, targetPosition);
+                if (targetPosition == 0){
+                    mNavigationtHandler.sendEmptyMessageDelayed(NAVIGATION_LEFT,500);
+                }
             }
         } else if (i == R.id.navigation_right) {
             horizontal519LayoutManager.setCanScroll(true);
@@ -371,6 +415,9 @@ public class Template519 extends Template implements View.OnClickListener, View.
                                 : targetPosition);
                 horizontal519LayoutManager.smoothScrollToPosition(
                         horizontal519Banner, null, targetPosition);
+                if (targetPosition == mHorizontal519Adapter.getTatalItemCount() - 1){
+                    mNavigationtHandler.sendEmptyMessageDelayed(NAVIGATION_RIGHT, 500);
+                }
             }
         }
     }

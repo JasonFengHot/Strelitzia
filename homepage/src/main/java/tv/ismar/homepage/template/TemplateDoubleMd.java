@@ -5,6 +5,7 @@ import android.os.Bundle;
 	/*add by dragontec for bug 4077 start*/
 import android.os.Handler;
 	/*add by dragontec for bug 4077 end*/
+import android.os.Message;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
@@ -38,6 +39,8 @@ import tv.ismar.homepage.widget.RecycleLinearLayout;
 	/*add by dragontec for bug 4077 end*/
 
 import static android.view.MotionEvent.BUTTON_PRIMARY;
+import static android.view.View.INVISIBLE;
+import static android.view.View.VISIBLE;
 import static tv.ismar.homepage.fragment.ChannelFragment.BANNER_KEY;
 import static tv.ismar.homepage.fragment.ChannelFragment.CHANNEL_KEY;
 import static tv.ismar.homepage.fragment.ChannelFragment.NAME_KEY;
@@ -70,9 +73,37 @@ public class TemplateDoubleMd extends Template
   private String mName; // 频道名称（中文）
   private String mChannel; // 频道名称（英文）
 
+  private static final int NAVIGATION_LEFT = 0x0001;
+  private static final int NAVIGATION_RIGHT = 0x0002;
+
+  private NavigationtHandler mNavigationtHandler;
+
+  private class NavigationtHandler extends Handler {
+    @Override
+    public void handleMessage(Message msg) {
+      switch (msg.what){
+        case NAVIGATION_LEFT:
+          if (mRecyclerView!=null&&!mRecyclerView.cannotScrollBackward(-10)) {
+            navigationLeft.setVisibility(VISIBLE);
+          }else if (mRecyclerView!=null){
+            navigationLeft.setVisibility(INVISIBLE);
+          }
+          break;
+        case NAVIGATION_RIGHT:
+          if(mRecyclerView!=null&&!mRecyclerView.cannotScrollForward(10)){
+            navigationRight.setVisibility(VISIBLE);
+          }else if (mRecyclerView!=null){
+            navigationRight.setVisibility(INVISIBLE);
+          }
+          break;
+      }
+    }
+  }
+
   public TemplateDoubleMd(Context context) {
     super(context);
     mFetchDataControl = new FetchDataControl(context, this);
+    mNavigationtHandler = new NavigationtHandler();
   }
 
   @Override
@@ -98,10 +129,20 @@ public class TemplateDoubleMd extends Template
 
   @Override
   public void onStop() {
+    if (mNavigationtHandler.hasMessages(NAVIGATION_LEFT)){
+      mNavigationtHandler.removeMessages(NAVIGATION_LEFT);
+    }
+    if (mNavigationtHandler.hasMessages(NAVIGATION_RIGHT)){
+      mNavigationtHandler.removeMessages(NAVIGATION_RIGHT);
+    }
   }
 
   @Override
-  public void onDestroy() {}
+  public void onDestroy() {
+    if (mNavigationtHandler != null){
+      mNavigationtHandler = null;
+    }
+  }
 
   @Override
   public void getView(View view) {
@@ -285,6 +326,9 @@ public class TemplateDoubleMd extends Template
         if (targetPosition <= 0) targetPosition = 0;
         mSelectItemPosition = targetPosition;
         mDoubleLayoutManager.smoothScrollToPosition(mRecyclerView, null, targetPosition);
+        if (targetPosition == 0){
+          mNavigationtHandler.sendEmptyMessageDelayed(NAVIGATION_LEFT,500);
+        }
       }
     } else if (i == R.id.navigation_right) { // 向右滑动
       mDoubleLayoutManager.findLastCompletelyVisibleItemPositions(positions);
@@ -297,6 +341,10 @@ public class TemplateDoubleMd extends Template
         }
         mSelectItemPosition = targetPosition;
         mDoubleLayoutManager.smoothScrollToPosition(mRecyclerView, null, targetPosition);
+        if (mNavigationtHandler.hasMessages(NAVIGATION_RIGHT)){
+          mNavigationtHandler.removeMessages(NAVIGATION_RIGHT);
+        }
+        mNavigationtHandler.sendEmptyMessageDelayed(NAVIGATION_RIGHT, 500);
         if (targetPosition == mFetchDataControl.mHomeEntity.count)
           YoYo.with(Techniques.HorizontalShake)
               .duration(1000)

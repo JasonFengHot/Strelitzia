@@ -25,6 +25,7 @@ import com.open.androidtvwidget.leanback.recycle.RecyclerViewTV;
 import com.orhanobut.logger.Logger;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Transformation;
 
 import java.io.File;
 import java.io.FileReader;
@@ -46,7 +47,6 @@ import tv.ismar.app.core.cache.DownloadClient;
 import tv.ismar.app.entity.banner.HomeEntity;
 import tv.ismar.app.player.CallaPlay;
 import tv.ismar.app.util.HardwareUtils;
-import tv.ismar.homepage.HomeActivity;
 import tv.ismar.homepage.OnItemClickListener;
 import tv.ismar.homepage.OnItemSelectedListener;
 import tv.ismar.homepage.R;
@@ -55,15 +55,17 @@ import tv.ismar.homepage.control.FetchDataControl;
 import tv.ismar.homepage.control.GuideControl;
 import tv.ismar.homepage.view.BannerLinearLayout;
 import tv.ismar.homepage.widget.DaisyVideoView;
-	/*add by dragontec for bug 4077 start*/
-import tv.ismar.homepage.widget.RecycleLinearLayout;
-	/*add by dragontec for bug 4077 end*/
 import tv.ismar.library.exception.ExceptionUtils;
 
 import static android.view.MotionEvent.BUTTON_PRIMARY;
+import static android.view.View.INVISIBLE;
+import static android.view.View.VISIBLE;
 import static tv.ismar.homepage.fragment.ChannelFragment.BANNER_KEY;
 import static tv.ismar.homepage.fragment.ChannelFragment.CHANNEL_KEY;
 import static tv.ismar.homepage.fragment.ChannelFragment.NAME_KEY;
+
+/*add by dragontec for bug 4077 start*/
+/*add by dragontec for bug 4077 end*/
 
 /**
  * @AUTHOR: xi @DATE: 2017/8/29 @DESC: 导视模版
@@ -131,10 +133,40 @@ public class TemplateGuide extends Template
                 }
             };
 
+
+    private static final int NAVIGATION_LEFT = 0x0001;
+    private static final int NAVIGATION_RIGHT = 0x0002;
+
+    private NavigationtHandler mNavigationtHandler;
+    private Transformation transformation;
+
+    private class NavigationtHandler extends Handler {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what){
+                case NAVIGATION_LEFT:
+                    if (mRecycleView!=null&&!mRecycleView.cannotScrollBackward(-10)) {
+                        navigationLeft.setVisibility(VISIBLE);
+                    }else if (mRecycleView!=null){
+                        navigationLeft.setVisibility(INVISIBLE);
+                    }
+                    break;
+                case NAVIGATION_RIGHT:
+                    if(mRecycleView!=null&&!mRecycleView.cannotScrollForward(10)){
+                        navigationRight.setVisibility(VISIBLE);
+                    }else if (mRecycleView!=null){
+                        navigationRight.setVisibility(INVISIBLE);
+                    }
+                    break;
+            }
+        }
+    }
+
     public TemplateGuide(Context context) {
         super(context);
         mFetchDataControl = new FetchDataControl(context, this);
         mControl = new GuideControl(mContext);
+        mNavigationtHandler = new NavigationtHandler();
     }
 
     @Override
@@ -195,6 +227,13 @@ public class TemplateGuide extends Template
                 && !checkVideoViewFullVisibilitySubsc.isUnsubscribed()) {
             checkVideoViewFullVisibilitySubsc.unsubscribe();
         }
+
+        if (mNavigationtHandler.hasMessages(NAVIGATION_LEFT)){
+            mNavigationtHandler.removeMessages(NAVIGATION_LEFT);
+        }
+        if (mNavigationtHandler.hasMessages(NAVIGATION_RIGHT)){
+            mNavigationtHandler.removeMessages(NAVIGATION_RIGHT);
+        }
     }
 
     @Override
@@ -205,7 +244,9 @@ public class TemplateGuide extends Template
         mVideoView = null;
         mLoadingIg = null;
         mControl = null;
-
+        if (mNavigationtHandler != null){
+            mNavigationtHandler = null;
+        }
     }
 
     @Override
@@ -436,6 +477,9 @@ public class TemplateGuide extends Template
                 int targetPosition = mGuideLayoutManager.findFirstCompletelyVisibleItemPosition() - 5;
                 if (targetPosition <= 0) targetPosition = 0;
                 mGuideLayoutManager.smoothScrollToPosition(mRecycleView, null, targetPosition);
+                if (targetPosition == 0){
+                    mNavigationtHandler.sendEmptyMessageDelayed(NAVIGATION_LEFT,500);
+                }
             }else{
                 mHeadView.setVisibility(View.VISIBLE);
                 videoViewVisibility = true;
@@ -454,6 +498,10 @@ public class TemplateGuide extends Template
 					targetPosition = mAdapter.getItemCount() - 1;
 				}
 				mGuideLayoutManager.smoothScrollToPosition(mRecycleView, null, targetPosition);
+                if (mNavigationtHandler.hasMessages(NAVIGATION_RIGHT)){
+                    mNavigationtHandler.removeMessages(NAVIGATION_RIGHT);
+                }
+                mNavigationtHandler.sendEmptyMessageDelayed(NAVIGATION_RIGHT, 500);
 			}
         /*modify by dragontec for bug 4240 end*/
         } else if (i == R.id.guide_head_ismartv_linearlayout) {
@@ -608,7 +656,6 @@ public class TemplateGuide extends Template
         Picasso.with(mContext)
                 .load(url)
                 .error(R.drawable.list_item_preview_bg)
-
                 .into(
                         mLoadingIg,
                         new Callback() {

@@ -3,6 +3,7 @@ package tv.ismar.homepage.template;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -30,13 +31,14 @@ import tv.ismar.homepage.control.OrderControl;
 import tv.ismar.homepage.fragment.ChannelFragment;
 import tv.ismar.homepage.view.BannerLinearLayout;
 	/*add by dragontec for bug 4077 start*/
-import tv.ismar.homepage.widget.RecycleLinearLayout;
-	/*add by dragontec for bug 4077 end*/
+/*add by dragontec for bug 4077 end*/
 
 import static android.view.MotionEvent.BUTTON_PRIMARY;
 /*delete by dragontec for bug 4057 start*/
 //import static tv.ismar.homepage.HomeActivity.mHoverView;
 /*delete by dragontec for bug 4057 end*/
+import static android.view.View.INVISIBLE;
+import static android.view.View.VISIBLE;
 import static tv.ismar.homepage.control.FetchDataControl.FETCH_BANNERS_LIST_FLAG;
 import static tv.ismar.homepage.control.FetchDataControl.FETCH_M_BANNERS_LIST_NEXTPAGE_FLAG;
 
@@ -63,21 +65,42 @@ public class TemplateOrder extends Template
 
     private LinearLayoutManagerTV subscribeLayoutManager;
     private int selectedItemOffset;
+    private static final int NAVIGATION_LEFT = 0x0001;
+    private static final int NAVIGATION_RIGHT = 0x0002;
 
-    private boolean isBannerNavigateClick = false;
+    private NavigationtHandler mNavigationtHandler;
 
-    private Handler hoverEventHandler;
-    private Runnable hoverEventRunnable;
+    private class NavigationtHandler extends Handler {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what){
+                case NAVIGATION_LEFT:
+                    if (subscribeBanner!=null&&!subscribeBanner.cannotScrollBackward(-10)) {
+                        navigationLeft.setVisibility(VISIBLE);
+                    }else if (subscribeBanner!=null){
+                        navigationLeft.setVisibility(INVISIBLE);
+                    }
+                    break;
+                case NAVIGATION_RIGHT:
+                    if(subscribeBanner!=null&&!subscribeBanner.cannotScrollForward(10)){
+                        navigationRight.setVisibility(VISIBLE);
+                    }else if (subscribeBanner!=null){
+                        navigationRight.setVisibility(INVISIBLE);
+                    }
+                    break;
+            }
+        }
+    }
 
-    private int currentFocusItemPosition = 0;
+
 
     private String channelName;
     private Subscription fetchSubscribeBanner;
 
     public TemplateOrder(Context context) {
         super(context);
-        hoverEventHandler = new Handler();
         mControl = new OrderControl(mContext, this);
+        mNavigationtHandler = new NavigationtHandler();
     }
 
     @Override
@@ -98,6 +121,7 @@ public class TemplateOrder extends Template
         if (fetchSubscribeBanner != null && !fetchSubscribeBanner.isUnsubscribed()) {
             fetchSubscribeBanner.unsubscribe();
         }
+
 	/*add by dragontec for bug 4077 start*/
 		super.onPause();
 	/*add by dragontec for bug 4077 end*/
@@ -105,10 +129,20 @@ public class TemplateOrder extends Template
 
     @Override
     public void onStop() {
+        if (mNavigationtHandler.hasMessages(NAVIGATION_LEFT)){
+            mNavigationtHandler.removeMessages(NAVIGATION_LEFT);
+        }
+        if (mNavigationtHandler.hasMessages(NAVIGATION_RIGHT)){
+            mNavigationtHandler.removeMessages(NAVIGATION_RIGHT);
+        }
+
     }
 
     @Override
     public void onDestroy() {
+        if (mNavigationtHandler !=null){
+            mNavigationtHandler = null;
+        }
     }
 
     @Override
@@ -213,7 +247,6 @@ public class TemplateOrder extends Template
                                     && mContext != null
                                     && mTitleCountTv != null
                                     && subscribeAdapter != null) {
-                                currentFocusItemPosition = position + 1;
                                 mTitleCountTv.setText(
                                         String.format(
                                                 mContext.getString(R.string.home_item_title_count),
@@ -454,28 +487,12 @@ public class TemplateOrder extends Template
                 break;
             case MotionEvent.ACTION_HOVER_EXIT:
                 if (event.getButtonState() != BUTTON_PRIMARY) {
-                    navigationLeft.setVisibility(View.INVISIBLE);
-                    navigationRight.setVisibility(View.INVISIBLE);
+                    navigationLeft.setVisibility(INVISIBLE);
+                    navigationRight.setVisibility(INVISIBLE);
 /*add by dragontec for bug 4057 start*/
                     v.clearFocus();
 /*add by dragontec for bug 4057 end*/
                 }
-                //                Log.d(TAG, "NAVIGATION ACTION_HOVER_EXIT");
-                //                if (hoverEventRunnable!= null){
-                //                    isBannerNavigateClick = true;
-                //                    hoverEventHandler.removeCallbacks(hoverEventRunnable);
-                //                }
-                //                hoverEventRunnable = new Runnable() {
-                //                    @Override
-                //                    public void run() {
-                //                        if (isBannerNavigateClick) {
-                //                            isBannerNavigateClick = false;
-                //                        } else {
-                //                            mHoverView.requestFocus();
-                //                        }
-                //                    }
-                //                };
-                //                hoverEventHandler.postDelayed(hoverEventRunnable, 20);
                 break;
         }
         return false;
@@ -495,6 +512,9 @@ public class TemplateOrder extends Template
                 }
                 setBannerItemCount(targetPosition);
                 subscribeLayoutManager.smoothScrollToPosition(subscribeBanner, null, targetPosition);
+                if (targetPosition == 0){
+                    mNavigationtHandler.sendEmptyMessageDelayed(NAVIGATION_LEFT,500);
+                }
             }
         } else if (i == R.id.navigation_right) {
             subscribeLayoutManager.setCanScroll(true);
@@ -510,6 +530,9 @@ public class TemplateOrder extends Template
                 }
                 setBannerItemCount(targetPosition);
                 subscribeLayoutManager.smoothScrollToPosition(subscribeBanner, null, targetPosition);
+                if (targetPosition == subscribeAdapter.getTatalItemCount() - 1){
+                    mNavigationtHandler.sendEmptyMessageDelayed(NAVIGATION_RIGHT, 500);
+                }
             }
         }
     }

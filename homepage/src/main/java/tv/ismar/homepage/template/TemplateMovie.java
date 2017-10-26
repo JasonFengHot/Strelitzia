@@ -5,6 +5,7 @@ import android.os.Bundle;
 	/*add by dragontec for bug 4077 start*/
 import android.os.Handler;
 	/*add by dragontec for bug 4077 end*/
+import android.os.Message;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -39,6 +40,8 @@ import tv.ismar.homepage.widget.RecycleLinearLayout;
 	/*add by dragontec for bug 4077 end*/
 
 import static android.view.MotionEvent.BUTTON_PRIMARY;
+import static android.view.View.INVISIBLE;
+import static android.view.View.VISIBLE;
 
 /**
  * @AUTHOR: xi @DATE: 2017/8/29 @DESC: 电影模版
@@ -61,8 +64,36 @@ public class TemplateMovie extends Template implements View.OnClickListener, Vie
     private boolean isMore;
     private Subscription fetchMovieBanner;
 
+    private static final int NAVIGATION_LEFT = 0x0001;
+    private static final int NAVIGATION_RIGHT = 0x0002;
+
+    private NavigationtHandler mNavigationtHandler;
+
+    private class NavigationtHandler extends Handler {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what){
+                case NAVIGATION_LEFT:
+                    if (movieBanner!=null&&!movieBanner.cannotScrollBackward(-10)) {
+                        navigationLeft.setVisibility(VISIBLE);
+                    }else if (movieBanner!=null){
+                        navigationLeft.setVisibility(INVISIBLE);
+                    }
+                    break;
+                case NAVIGATION_RIGHT:
+                    if(movieBanner!=null&&!movieBanner.cannotScrollForward(10)){
+                        navigationRight.setVisibility(VISIBLE);
+                    }else if (movieBanner!=null){
+                        navigationRight.setVisibility(INVISIBLE);
+                    }
+                    break;
+            }
+        }
+    }
+
     public TemplateMovie(Context context) {
         super(context);
+        mNavigationtHandler = new NavigationtHandler();
     }
 
     @Override
@@ -90,10 +121,19 @@ public class TemplateMovie extends Template implements View.OnClickListener, Vie
 
     @Override
     public void onStop() {
+        if (mNavigationtHandler.hasMessages(NAVIGATION_LEFT)){
+            mNavigationtHandler.removeMessages(NAVIGATION_LEFT);
+        }
+        if (mNavigationtHandler.hasMessages(NAVIGATION_RIGHT)){
+            mNavigationtHandler.removeMessages(NAVIGATION_RIGHT);
+        }
     }
 
     @Override
     public void onDestroy() {
+        if (mNavigationtHandler !=null){
+            mNavigationtHandler = null;
+        }
     }
 
     @Override
@@ -327,6 +367,9 @@ public class TemplateMovie extends Template implements View.OnClickListener, Vie
                 }
                 setBannerItemCount(targetPosition);
                 movieLayoutManager.smoothScrollToPosition(movieBanner, null, targetPosition);
+                if (targetPosition == 0){
+                    mNavigationtHandler.sendEmptyMessageDelayed(NAVIGATION_LEFT,500);
+                }
             } else {
                 //                View firstView = movieBanner.getChildAt(0).findViewById(R.id.item_layout)
                 // ;
@@ -347,6 +390,10 @@ public class TemplateMovie extends Template implements View.OnClickListener, Vie
                                 ? mMovieAdapter.getTatalItemCount() - 1
                                 : targetPosition);
                 movieLayoutManager.smoothScrollToPosition(movieBanner, null, targetPosition);
+
+                if (targetPosition == mMovieAdapter.getTatalItemCount() - 1){
+                    mNavigationtHandler.sendEmptyMessageDelayed(NAVIGATION_RIGHT, 500);
+                }
             } else {
                 //                View lastView = movieBanner.getChildAt(totalItemCount -
                 // 1).findViewById(R.id.item_layout) ;

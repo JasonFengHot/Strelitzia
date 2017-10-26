@@ -297,9 +297,11 @@ public class RecyclerViewTV extends RecyclerView implements PrvInterface {
      */
     public boolean cannotScrollForward(int delta) {
         int lastpos=findLastCompletelyVisibleItemPosition();
-        if(hasHeaderView){
-            lastpos+=1;
-        }
+        LayoutManager lm = getLayoutManager();
+//        if(hasHeaderView&& lm instanceof StaggeredGridLayoutManager){
+//            lastpos+=1;
+//        }
+        int count = getLayoutManager().getItemCount();
         return (lastpos== getLayoutManager().getItemCount()-1) && (delta >= 0);
     }
 
@@ -639,7 +641,12 @@ public class RecyclerViewTV extends RecyclerView implements PrvInterface {
                 return ((GridLayoutManager) layoutManager).findLastCompletelyVisibleItemPosition();
             }
             if(layoutManager instanceof StaggeredGridLayoutManager){
-                return ((StaggeredGridLayoutManager) layoutManager).findLastCompletelyVisibleItemPositions(positions)[0];
+                 ((StaggeredGridLayoutManager) layoutManager).findLastCompletelyVisibleItemPositions(positions);
+                 if (positions[1] > positions[0]){
+                     return positions[1];
+                 }else {
+                     return positions[0];
+                 }
             }
         }
         return RecyclerView.NO_POSITION;
