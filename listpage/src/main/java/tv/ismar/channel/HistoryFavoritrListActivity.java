@@ -126,6 +126,17 @@ public class HistoryFavoritrListActivity extends BaseActivity implements OnItemC
                 }
             }
         });
+        clearAll.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if(event.getAction()==KeyEvent.ACTION_DOWN&&keyCode==20){
+                    if(lastFocusView!=null){
+                        lastFocusView.requestFocusFromTouch();
+                    }
+                }
+                return false;
+            }
+        });
     }
 
     private void showPop() {
@@ -169,7 +180,7 @@ public class HistoryFavoritrListActivity extends BaseActivity implements OnItemC
                 }
             }, 500);
         }
-        if(mlists.size()>12){
+        if(mlists.size()>8){
             arrow_down.setVisibility(View.VISIBLE);
         }
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -398,6 +409,7 @@ public class HistoryFavoritrListActivity extends BaseActivity implements OnItemC
             }
         }else{
             JasmineUtil.scaleIn3(view);
+            lastFocusView=view;
         }
     }
     //防止recyclerview焦点乱跑
@@ -439,7 +451,7 @@ public class HistoryFavoritrListActivity extends BaseActivity implements OnItemC
         }
         return super.onKeyDown(keyCode, event);
     }
-
+    private View lastFocusView;
     boolean ishover=false;
     @Override
     public void OnItemOnhoverlistener(View v, MotionEvent event, int position, int recommend) {
