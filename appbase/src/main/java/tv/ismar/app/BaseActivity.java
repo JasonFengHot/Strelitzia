@@ -602,7 +602,7 @@ public class BaseActivity extends AppCompatActivity {
                     }
                 } else {
                     ////////网络断开
-
+                    showNoNetConnectDialog();
                 }
             }
         }
