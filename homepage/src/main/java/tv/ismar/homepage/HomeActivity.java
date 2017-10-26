@@ -720,6 +720,8 @@ public static HomeRootRelativeLayout mHoverView;
             if (!mAtScrollerBottom) {
                 mAtScrollerBottom = true;
                 showScrollToTopTip();
+                mHoverView.setShowDown(false);
+                banner_arrow_down.setVisibility(View.GONE);
             }
         } else {
             mAtScrollerBottom = bottom;

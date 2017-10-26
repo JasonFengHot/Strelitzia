@@ -886,14 +886,14 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
                     baseChannel=channel;
                     PageIntent intent = new PageIntent();
                     Item item=itemList.objects.get(position);
-                    if(item.content_model!=null&&item.content_model.contains("gather")){
+                    if(item.model_name!=null&&"clip".equals(item.model_name)){
+                        intent.toPlayPage(FilterListActivity.this,item.pk,0, Source.RETRIEVAL);
+                    }else if(item.content_model!=null&&item.content_model.contains("gather")){
                         intent.toSubject(FilterListActivity.this,item.content_model,item.pk,item.title,Source.RETRIEVAL.getValue(),baseChannel);
                     }else if(item.model_name!=null&&item.model_name.equals("package")){
                         intent.toPackageDetail(FilterListActivity.this,Source.RETRIEVAL.getValue(),item.pk);
-                    }else if(item.is_complex) {
-                        intent.toDetailPage(FilterListActivity.this,Source.RETRIEVAL.getValue(),item.pk);
                     }else{
-                        intent.toPlayPage(FilterListActivity.this,item.pk,0, Source.RETRIEVAL);
+                        intent.toDetailPage(FilterListActivity.this,Source.RETRIEVAL.getValue(),item.pk);
                     }
                 }
             });
@@ -1344,14 +1344,14 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
                     baseChannel=channel;
                     PageIntent intent = new PageIntent();
                     ListSectionEntity.ObjectsBean item=listSectionEntity.getObjects().get(position);
-                    if(item.getContent_model()!=null&&item.getContent_model().contains("gather")){
+                    if(item.getModel_name()!=null&&"clip".equals(item.getModel_name())){
+                        intent.toPlayPage(FilterListActivity.this,item.getPk(),0, Source.LIST);
+                    }else if(item.getContent_model()!=null&&item.getContent_model().contains("gather")){
                         intent.toSubject(FilterListActivity.this,item.getContent_model(),item.getPk(),item.getTitle(),Source.LIST.getValue(),baseChannel);
                     }else if(item.getModel_name()!=null&&item.getModel_name().equals("package")){
                         intent.toPackageDetail(FilterListActivity.this,Source.LIST.getValue(),item.getPk());
-                    }else if("item".equals(item.getModel_name())) {
+                    }else {
                         intent.toDetailPage(FilterListActivity.this,Source.LIST.getValue(),item.getPk());
-                    }else{
-                        intent.toPlayPage(FilterListActivity.this,item.getPk(),0, Source.LIST);
                     }
                 }
             });

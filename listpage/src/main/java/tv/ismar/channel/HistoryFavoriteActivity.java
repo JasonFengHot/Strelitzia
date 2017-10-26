@@ -196,6 +196,7 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
                         int pos=historyLayoutManager.findFirstCompletelyVisibleItemPosition();
                         int endPos=historyLayoutManager.findLastCompletelyVisibleItemPosition();
                         if(pos!=0){
+                            if(!isEdit)
                             history_left_arrow.setVisibility(View.VISIBLE);
                         }else{
                             history_left_arrow.setVisibility(View.GONE);
@@ -555,6 +556,11 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
             isEdit=true;
             historyRecycler.scrollToPosition(0);
             favoriteRecycler.scrollToPosition(0);
+            history_left_arrow.setVisibility(View.GONE);
+            favorite_left_arrow.setVisibility(View.GONE);
+            history_right_arrow.setVisibility(View.GONE);
+            favorite_right_arrow.setVisibility(View.GONE);
+
             edit_shadow.setVisibility(View.VISIBLE);
             edit_history.setVisibility(View.GONE);
             if(historyLists.size()>0){
@@ -569,6 +575,7 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
                     delet_history.setVisibility(View.VISIBLE);
                 }
             }
+
             delet_history.requestFocusFromTouch();
 
             RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
@@ -632,6 +639,13 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
 
         historyLayoutManager.setScrollEnabled(true);
         favoriteManager.setScrollEnabled(true);
+
+        if(historyLists.size()>=4){
+            history_right_arrow.setVisibility(View.VISIBLE);
+        }
+        if(favoriteLists.size()>=4){
+            favorite_right_arrow.setVisibility(View.VISIBLE);
+        }
     }
     private void showNoData(){
         history_relativelayout.setVisibility(View.GONE);
@@ -723,54 +737,58 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
         mDataCollectionProperties=new HashMap<>();
         int pk=0;
         if(type.equals("history")){
-            HistoryFavoriteEntity history=historyLists.get(postion);
-            boolean[] isSubItem = new boolean[1];
-             pk = SimpleRestClient.getItemId(history.getUrl(), isSubItem);
-            if(pk==0){
-                pk=history.getPk();
-            }
-            if(history.getType()!=2) {
-                mDataCollectionProperties.put("to_item",history.getItem_pk());
-                mDataCollectionProperties.put("to_subitem",pk);
-                mDataCollectionProperties.put("to_title", history.getTitle());
-//                mDataCollectionProperties.put("position", history.get/1000);
-                if(history.getModel_name()!=null&&history.getModel_name().equals("subitem")) {
-                    intent.toPlayPage(this, history.getItem_pk(),0 , Source.HISTORY);
-                }else{
-                    intent.toPlayPage(this, pk, 0, Source.HISTORY);
+            if(postion<=historyLists.size()-1) {
+                HistoryFavoriteEntity history = historyLists.get(postion);
+                boolean[] isSubItem = new boolean[1];
+                pk = SimpleRestClient.getItemId(history.getUrl(), isSubItem);
+                if (pk == 0) {
+                    pk = history.getPk();
                 }
-            }else{
-                Intent intent1=new Intent();
-                intent1.setAction("tv.ismar.daisy.historyfavoriteList");
-                intent1.putExtra("source","list");
-                intent1.putExtra("type",1);
-                intent1.putExtra("List",(Serializable) allhistoryLists);
-                startActivity(intent1);
+                if (history.getType() != 2) {
+                    mDataCollectionProperties.put("to_item", history.getItem_pk());
+                    mDataCollectionProperties.put("to_subitem", pk);
+                    mDataCollectionProperties.put("to_title", history.getTitle());
+//                mDataCollectionProperties.put("position", history.get/1000);
+                    if (history.getModel_name() != null && history.getModel_name().equals("subitem")) {
+                        intent.toPlayPage(this, history.getItem_pk(), 0, Source.HISTORY);
+                    } else {
+                        intent.toPlayPage(this, pk, 0, Source.HISTORY);
+                    }
+                } else {
+                    Intent intent1 = new Intent();
+                    intent1.setAction("tv.ismar.daisy.historyfavoriteList");
+                    intent1.putExtra("source", "list");
+                    intent1.putExtra("type", 1);
+                    intent1.putExtra("List", (Serializable) allhistoryLists);
+                    startActivity(intent1);
+                }
             }
         }else {
-            HistoryFavoriteEntity favoriteEntity=favoriteLists.get(postion);
-            boolean[] isSubItem = new boolean[1];
-            pk = SimpleRestClient.getItemId(favoriteEntity.getUrl(), isSubItem);
-            if(pk==0){
-                pk=favoriteEntity.getPk();
-            }
-            if(favoriteEntity.getType()!=2) {
-                if(favoriteEntity.getContent_model().contains("gather")){
-                    intent.toSubject(this,favoriteEntity.getContent_model(),pk,favoriteEntity.getTitle(),"favorite","");
-                }else {
-                    if (favoriteEntity.getIs_complex()) {
-                        intent.toDetailPage(this, "favorite", pk);
-                    } else {
-                        intent.toPlayPageEpisode(this, pk, 0, Source.FAVORITE,favoriteEntity.getContent_model());
-                    }
+            if (postion <= favoriteLists.size() - 1) {
+                HistoryFavoriteEntity favoriteEntity = favoriteLists.get(postion);
+                boolean[] isSubItem = new boolean[1];
+                pk = SimpleRestClient.getItemId(favoriteEntity.getUrl(), isSubItem);
+                if (pk == 0) {
+                    pk = favoriteEntity.getPk();
                 }
-            }else{
-                Intent intent1=new Intent();
-                intent1.setAction("tv.ismar.daisy.historyfavoriteList");
-                intent1.putExtra("source","list");
-                intent1.putExtra("type",2);
-                intent1.putExtra("List",(Serializable) allfavoriteLists);
-                startActivity(intent1);
+                if (favoriteEntity.getType() != 2) {
+                    if (favoriteEntity.getContent_model().contains("gather")) {
+                        intent.toSubject(this, favoriteEntity.getContent_model(), pk, favoriteEntity.getTitle(), "favorite", "");
+                    } else {
+                        if (favoriteEntity.getIs_complex()) {
+                            intent.toDetailPage(this, "favorite", pk);
+                        } else {
+                            intent.toPlayPageEpisode(this, pk, 0, Source.FAVORITE, favoriteEntity.getContent_model());
+                        }
+                    }
+                } else {
+                    Intent intent1 = new Intent();
+                    intent1.setAction("tv.ismar.daisy.historyfavoriteList");
+                    intent1.putExtra("source", "list");
+                    intent1.putExtra("type", 2);
+                    intent1.putExtra("List", (Serializable) allfavoriteLists);
+                    startActivity(intent1);
+                }
             }
         }
     }

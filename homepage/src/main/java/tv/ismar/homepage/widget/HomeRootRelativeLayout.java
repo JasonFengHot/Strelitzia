@@ -77,4 +77,12 @@ public class HomeRootRelativeLayout extends RelativeLayout {
     public void setShowDown(boolean showDown) {
         this.showDown = showDown;
     }
+
+    public View getUpArrow() {
+        return upArrow;
+    }
+
+    public View getDownArrow() {
+        return downArrow;
+    }
 }
