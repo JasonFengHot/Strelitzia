@@ -132,6 +132,12 @@ public static HomeRootRelativeLayout mHoverView;
 /*add by dragontec for bug 4249 start*/
     private boolean mInAdvertisement = false;
 /*add by dragontec for bug 4249 end*/
+/*add by dragontec for bug 4259 start*/
+    private boolean mRequestBannerFocusInterrupt = false;
+    private final int RequestBannerFocusDelay = 500;
+    private Handler mRequestBannerFocusHandler = null;
+    private RequestFocusBannerRunnable mRequestBannerFocusRunnable = null;
+/*add by dragontec for bug 4259 end*/
 
     private DaisyVideoView mVideoView;
     private ImageView mPicImg;
@@ -197,6 +203,9 @@ public static HomeRootRelativeLayout mHoverView;
     };
     private String homepageTemplate;
     private String homepageUrl;
+	/*add by dragontec for bug 4294 start*/
+    private LinearLayout mHeadLayout;
+	/*add by dragontec for bug 4294 end*/
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -210,6 +219,9 @@ public static HomeRootRelativeLayout mHoverView;
         systemInit();
         findViews();
         initListener();
+/*add by dragontec for bug 4259 start*/
+        initHandlerAndRunnable();
+/*add by dragontec for bug 4259 end*/
         initAd();
         initData();
         //        contentview.getViewTreeObserver().addOnGlobalFocusChangeListener(new
@@ -256,6 +268,14 @@ public static HomeRootRelativeLayout mHoverView;
     @Override
     protected void onDestroy() {
         super.onDestroy();
+/*add by dragontec for bug 4259 start*/
+        if (mRequestBannerFocusHandler != null
+                && mRequestBannerFocusRunnable != null) {
+            mRequestBannerFocusHandler.removeCallbacks(mRequestBannerFocusRunnable);
+        }
+        mRequestBannerFocusHandler = null;
+        mRequestBannerFocusRunnable = null;
+/*add by dragontec for bug 4259 end*/
         /*add by dragontec for bug 3983 start*/
         uninitTitleAnim();
         /*add by dragontec for bug 3983 end*/
@@ -291,6 +311,9 @@ public static HomeRootRelativeLayout mHoverView;
         home_layout= (LinearLayout) findViewById(R.id.home_page);
         home_layout.setVisibility(View.GONE);
         mHoverView = (HomeRootRelativeLayout) findViewById(R.id.home_view_layout);
+		/*add by dragontec for bug 4294 start*/
+        mHeadLayout = (LinearLayout) findViewById(R.id.head_layout);
+		/*add by dragontec for bug 4294 end*/
 /*delete by dragontec for bug 4057 start*/
 //        headHoverd.setOnHoverListener(this);
 //        mHoverView.setOnHoverListener(this);
@@ -457,6 +480,17 @@ public static HomeRootRelativeLayout mHoverView;
         if(isAnimationPlaying){
             return true;
         }
+/*add by dragontec for bug 4259 start*/
+        if (!mRequestBannerFocusInterrupt) {
+            if ((event.getAction() == KeyEvent.ACTION_DOWN)
+                    && (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_UP
+                            || event.getKeyCode() == KeyEvent.KEYCODE_DPAD_DOWN
+                            || event.getKeyCode() == KeyEvent.KEYCODE_DPAD_LEFT
+                            || event.getKeyCode() == KeyEvent.KEYCODE_DPAD_RIGHT)) {
+                stopRequestFocusBanner();
+            }
+        }
+/*add by dragontec for bug 4259 end*/
 /*add by dragontec for bug 4225, 4224, 4223 start*/
         if (event.getKeyCode() == KeyEvent.KEYCODE_BACK
                 && event.getAction() == KeyEvent.ACTION_UP) {
@@ -763,7 +797,7 @@ public static HomeRootRelativeLayout mHoverView;
     }
 
     public void showScrollToTopTip() {
-        ToastTip.showToast(this, getResources().getString(R.string.double_click_back_to_top));
+        ToastTip.showToast(this, getResources().getString(R.string.click_back_to_top));
     }
 /*add by dragontec for bug 4225, 4224, 4223 end*/
 
@@ -833,11 +867,24 @@ public static HomeRootRelativeLayout mHoverView;
         @Override
         public void onAnimationStart(Animator animation) {
             isAnimationPlaying = true;
+			/*add by dragontec for bug 4294 start*/
+            if(animation == mTitleMoveInAnimator){
+                mHeadLayout.setVisibility(View.VISIBLE);
+                int height = getResources().getDimensionPixelSize(R.dimen.banner_margin_top);
+                home_layout.setTranslationY(-height);
+            }
+			/*add by dragontec for bug 4294 end*/
         }
 
         @Override
         public void onAnimationEnd(Animator animation) {
             isAnimationPlaying = false;
+			/*add by dragontec for bug 4294 start*/
+            if(animation == mTitleMoveOutAnimator){
+                mHeadLayout.setVisibility(View.GONE);
+                home_layout.setTranslationY(0);
+            }
+			/*add by dragontec for bug 4294 end*/
         }
 
         @Override
@@ -987,13 +1034,59 @@ public static HomeRootRelativeLayout mHoverView;
         initServer();
         new Handler().postDelayed(mRunnable, 1000);
 
-/*add by dragontec for bug 4249 start*/
+/*add by dragontec for bug 4259 start*/
+        startRequestFocusBanner();
+/*add by dragontec for bug 4259 end*/
+    }
+
+/*add by dragontec for bug 4259 start*/
+    private void initHandlerAndRunnable() {
+        mRequestBannerFocusHandler = new Handler();
+        mRequestBannerFocusRunnable = new RequestFocusBannerRunnable();
+    }
+
+    private boolean requestFirstBannerFocus() {
         ChannelFragment channelFragment = getChannelFragment();
         if (channelFragment != null) {
-            channelFragment.requestFirstBannerFocus();
+            return channelFragment.requestFirstBannerFocus();
         }
-/*add by dragontec for bug 4249 end*/
+        return false;
     }
+
+    private void startRequestFocusBanner() {
+        if (mRequestBannerFocusHandler != null
+                && mRequestBannerFocusRunnable != null) {
+            if (!mRequestBannerFocusInterrupt) {
+                mRequestBannerFocusHandler.postDelayed(mRequestBannerFocusRunnable, RequestBannerFocusDelay);
+            }
+        }
+    }
+
+    private void stopRequestFocusBanner() {
+        mRequestBannerFocusInterrupt = true;
+        if (mRequestBannerFocusHandler != null
+                && mRequestBannerFocusRunnable != null) {
+            mRequestBannerFocusHandler.removeCallbacks(mRequestBannerFocusRunnable);
+        }
+    }
+
+    private class RequestFocusBannerRunnable implements Runnable {
+        @Override
+        public void run() {
+            if (mRequestBannerFocusHandler != null) {
+                mRequestBannerFocusHandler.removeCallbacks(this);
+            }
+            if (!mRequestBannerFocusInterrupt) {
+                boolean success = requestFirstBannerFocus();
+                if (!success) {
+                    startRequestFocusBanner();
+                } else {
+                    Log.e(TAG, "startRequestFocusBanner success");
+                }
+            }
+        }
+    }
+/*add by dragontec for bug 4259 end*/
 
     @Override
     public boolean onError(MediaPlayer mp, int what, int extra) {//播放出现错误

@@ -48,6 +48,7 @@ import tv.ismar.app.core.cache.DownloadClient;
 import tv.ismar.app.entity.banner.HomeEntity;
 import tv.ismar.app.player.CallaPlay;
 import tv.ismar.app.util.HardwareUtils;
+import tv.ismar.homepage.HomeActivity;
 import tv.ismar.homepage.OnItemClickListener;
 import tv.ismar.homepage.OnItemSelectedListener;
 import tv.ismar.homepage.R;
@@ -56,6 +57,9 @@ import tv.ismar.homepage.control.FetchDataControl;
 import tv.ismar.homepage.control.GuideControl;
 import tv.ismar.homepage.view.BannerLinearLayout;
 import tv.ismar.homepage.widget.DaisyVideoView;
+	/*add by dragontec for bug 4077 start*/
+import tv.ismar.homepage.widget.RecycleLinearLayout;
+	/*add by dragontec for bug 4077 end*/
 import tv.ismar.library.exception.ExceptionUtils;
 
 import static android.view.MotionEvent.BUTTON_PRIMARY;
@@ -64,9 +68,6 @@ import static android.view.View.VISIBLE;
 import static tv.ismar.homepage.fragment.ChannelFragment.BANNER_KEY;
 import static tv.ismar.homepage.fragment.ChannelFragment.CHANNEL_KEY;
 import static tv.ismar.homepage.fragment.ChannelFragment.NAME_KEY;
-
-/*add by dragontec for bug 4077 start*/
-/*add by dragontec for bug 4077 end*/
 
 /**
  * @AUTHOR: xi @DATE: 2017/8/29 @DESC: 导视模版
@@ -483,9 +484,11 @@ public class TemplateGuide extends Template
                 mAdapter.setOnItemClickListener(this);
                 mAdapter.setOnItemSelectedListener(this);
                 mRecycleView.setAdapter(mAdapter);
-	/*add by dragontec for bug 4077 start*/
-				checkFocus(mRecycleView);
-	/*add by dragontec for bug 4077 end*/
+/*delete by dragontec for bug 4259 start*/
+//	/*add by dragontec for bug 4077 start*/
+//				checkFocus(mRecycleView);
+//	/*add by dragontec for bug 4077 end*/
+/*delete by dragontec for bug 4259 end*/
             } else {
                 int start = mFetchDataControl.mPoster.size() - mFetchDataControl.mHomeEntity.posters.size();
                 int end = mFetchDataControl.mPoster.size();

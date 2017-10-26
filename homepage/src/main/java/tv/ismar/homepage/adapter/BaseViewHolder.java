@@ -76,15 +76,26 @@ public abstract class BaseViewHolder extends RecyclerView.ViewHolder implements
 			/*delete by dragontec for bug 4169 start*/
 //            case MotionEvent.ACTION_HOVER_MOVE://7 
 			/*delete by dragontec for bug 4169 end*/
+			/*modify by dragontec for bug 4277 start*/
+			boolean needRequestFocus = true;
                 if (mHoverListener!= null){
-                    mHoverListener.onHover(v, mPosition, true);
+                    needRequestFocus= mHoverListener.onHover(v, mPosition, true);
                 }
 				//by dragontec 和其他地方保持一致
-                if(!v.hasFocus()) {
-                    v.requestFocusFromTouch();
-                    v.requestFocus();
-                }
+				/*add by dragontec for bug 4265 start*/
+				if (needRequestFocus && !v.hasFocus()) {
+					int[] location = new int[]{0, 0};
+					v.getLocationOnScreen(location);
+					int screenWidth = v.getResources().getDisplayMetrics().widthPixels;
+					int screenHeight = v.getResources().getDisplayMetrics().heightPixels;
+					if (location[0] >= 0 && location[1] >= 0 && location[0] + v.getWidth() <= screenWidth && location[1] + v.getHeight() <= screenHeight) {
+						v.requestFocus();
+						v.requestFocusFromTouch();
+					}
+				}
+				/*add by dragontec for bug 4265 end*/
                 break;
+			/*modify by dragontec for bug 4277 end*/
             case MotionEvent.ACTION_HOVER_EXIT://10
                 if (mHoverListener!= null){
                     mHoverListener.onHover(v, mPosition, false);

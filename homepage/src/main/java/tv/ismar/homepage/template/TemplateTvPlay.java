@@ -272,11 +272,14 @@ public class TemplateTvPlay extends Template
             mFetchDataControl.go2Detail(mAdapter.getmData().get(position));
         }
     }
-
+	
+	/*modify by dragontec for bug 4277 start*/
     @Override
-    public void onHover(View v, int position, boolean hovered) {
+    public boolean onHover(View v, int position, boolean hovered) {
         mRecycleView.setHovered(hovered);
+        return true;
     }
+	/*modify by dragontec for bug 4277 end*/
 
     @Override
     public boolean onHover(View v, MotionEvent event) {

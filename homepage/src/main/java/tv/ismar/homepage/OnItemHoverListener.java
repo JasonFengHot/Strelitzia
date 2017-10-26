@@ -9,5 +9,7 @@ import android.view.View;
  */
 
 public interface OnItemHoverListener {
-    void onHover(View v, int position, boolean hovered);
+	/*modify by dragontec for bug 4277 start*/
+    boolean onHover(View v, int position, boolean hovered);
+	/*modify by dragontec for bug 4277 end*/
 }

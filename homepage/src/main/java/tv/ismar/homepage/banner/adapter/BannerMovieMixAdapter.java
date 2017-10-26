@@ -272,8 +272,18 @@ public class BannerMovieMixAdapter extends RecyclerView.Adapter<BannerMovieMixAd
                         mHoverListener.onBannerHover(v, position, true, event.getButtonState() == MotionEvent.BUTTON_PRIMARY);
 /*modify by dragontec for bug 4057 end*/
                     }
-                    v.requestFocusFromTouch();
-                    v.requestFocus();
+                    /*add by dragontec for bug 4265 start*/
+					if (!v.hasFocus()) {
+						int[] location = new int[]{0, 0};
+						v.getLocationOnScreen(location);
+						int screenWidth = v.getResources().getDisplayMetrics().widthPixels;
+						int screenHeight = v.getResources().getDisplayMetrics().heightPixels;
+						if (location[0] >= 0 && location[1] >= 0 && location[0] + v.getWidth() <= screenWidth && location[1] + v.getHeight() <= screenHeight) {
+							v.requestFocus();
+							v.requestFocusFromTouch();
+						}
+					}
+					/*add by dragontec for bug 4265 end*/
                     break;
                 case MotionEvent.ACTION_HOVER_EXIT:
                     if (mHoverListener!= null){

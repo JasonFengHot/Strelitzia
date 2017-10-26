@@ -205,13 +205,15 @@ public class TemplateRecommend extends Template
   public View onFocusSearchFailed(
       View focused, int focusDirection, RecyclerView.Recycler recycler, RecyclerView.State state) {
     if (focusDirection == View.FOCUS_RIGHT || focusDirection == View.FOCUS_LEFT) {
-      if (mRecyclerView.getChildAt(0).findViewById(R.id.conlumn_ismartv_linear_layout) == focused
+    /*modify by dragontec for bug 4299 start*/
+      if (mRecyclerView.getChildAt(0).findViewById(R.id.recommend_ismartv_linear_layout) == focused
           || mRecyclerView
                   .getChildAt(mRecyclerView.getChildCount() - 1)
-                  .findViewById(R.id.conlumn_ismartv_linear_layout)
+                  .findViewById(R.id.recommend_ismartv_linear_layout)
               == focused) {
         YoYo.with(Techniques.HorizontalShake).duration(1000).playOn(focused);
       }
+    /*modify by dragontec for bug 4299 end*/
       return focused;
     }
     /*modify by dragontec for bug 4221 start*/

@@ -292,16 +292,46 @@ public class TemplateDoubleMd extends Template
   @Override
   public View onFocusSearchFailed(
       View focused, int focusDirection, RecyclerView.Recycler recycler, RecyclerView.State state) {
-    if (focusDirection == View.FOCUS_RIGHT || focusDirection == View.FOCUS_LEFT) {
-      if (mRecyclerView.getChildAt(0).findViewById(R.id.double_md_ismartv_linear_layout) == focused
-          || mRecyclerView
-                  .getChildAt(mRecyclerView.getChildCount() - 1)
-                  .findViewById(R.id.double_md_ismartv_linear_layout)
-              == focused) {
-        YoYo.with(Techniques.HorizontalShake).duration(1000).playOn(focused);
-      }
-      return focused;
-    }
+  	/*modify by dragontec for bug 4242 start*/
+	  if (focusDirection == View.FOCUS_LEFT) {
+	  	boolean cannotScrollBackward = mRecyclerView.cannotScrollBackward(-1);
+		  if (cannotScrollBackward) {
+			  View view = mRecyclerView.getChildAt(mRecyclerView.getFirstCompletelyVisiblePosition() - mRecyclerView.getFirstVisiblePosition());
+			  if (view != null && view.findViewById(R.id.double_md_ismartv_linear_layout) == focused) {
+				  YoYo.with(Techniques.HorizontalShake).duration(1000).playOn(focused);
+			  }
+		  }
+		  return focused;
+	  }
+	  if (focusDirection == View.FOCUS_RIGHT) {
+	  	boolean cannotScrollForward = mRecyclerView.cannotScrollForward(1);
+		  if (cannotScrollForward) {
+			  int[] postions = mRecyclerView.findLastCompletelyVisibleItemPositions();
+			  if (postions != null) {
+				  for (int pos :
+						  postions) {
+					  int firstPos = mRecyclerView.getFirstVisiblePosition();
+					  View view = mRecyclerView.getChildAt(pos - firstPos);
+					  if (view != null && view.findViewById(R.id.double_md_ismartv_linear_layout) == focused) {
+						  YoYo.with(Techniques.HorizontalShake).duration(1000).playOn(focused);
+						  break;
+					  }
+				  }
+			  }
+		  }
+		  return focused;
+	  }
+//    if (focusDirection == View.FOCUS_RIGHT || focusDirection == View.FOCUS_LEFT) {
+//      if (mRecyclerView.getChildAt(0).findViewById(R.id.double_md_ismartv_linear_layout) == focused
+//          || mRecyclerView
+//                  .getChildAt(mRecyclerView.getChildCount() - 1)
+//                  .findViewById(R.id.double_md_ismartv_linear_layout)
+//              == focused) {
+//        YoYo.with(Techniques.HorizontalShake).duration(1000).playOn(focused);
+//      }
+//      return focused;
+//    }
+	  /*modify by dragontec for bug 4242 end*/
     /*modify by dragontec for bug 4221 start*/
     return findNextUpDownFocus(focusDirection, mBannerLinearLayout);
     /*modify by dragontec for bug 4221 end*/

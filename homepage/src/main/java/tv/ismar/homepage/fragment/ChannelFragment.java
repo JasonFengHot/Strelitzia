@@ -615,13 +615,15 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
 	}
 /*add by dragontec for bug 4200 end*/
 
-/*add by dragontec for bug 4249 start*/
-	public void requestFirstBannerFocus() {
+/*add by dragontec for bug 4259 start*/
+	public boolean requestFirstBannerFocus() {
 		synchronized (templateDataLock) {
 			if (mTemplates != null && !mTemplates.isEmpty()) {
 				mTemplates.get(0).requestFocus();
+				return true;
 			}
 		}
+		return false;
 	}
-/*add by dragontec for bug 4249 end*/
+/*add by dragontec for bug 4259 end*/
 }
