@@ -196,6 +196,7 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
                         int pos=historyLayoutManager.findFirstCompletelyVisibleItemPosition();
                         int endPos=historyLayoutManager.findLastCompletelyVisibleItemPosition();
                         if(pos!=0){
+                            if(!isEdit)
                             history_left_arrow.setVisibility(View.VISIBLE);
                         }else{
                             history_left_arrow.setVisibility(View.GONE);
@@ -555,6 +556,11 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
             isEdit=true;
             historyRecycler.scrollToPosition(0);
             favoriteRecycler.scrollToPosition(0);
+            history_left_arrow.setVisibility(View.GONE);
+            favorite_left_arrow.setVisibility(View.GONE);
+            history_right_arrow.setVisibility(View.GONE);
+            favorite_right_arrow.setVisibility(View.GONE);
+
             edit_shadow.setVisibility(View.VISIBLE);
             edit_history.setVisibility(View.GONE);
             if(historyLists.size()>0){
@@ -569,10 +575,6 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
                     delet_history.setVisibility(View.VISIBLE);
                 }
             }
-            history_left_arrow.setVisibility(View.GONE);
-            favorite_left_arrow.setVisibility(View.GONE);
-            history_right_arrow.setVisibility(View.GONE);
-            favorite_right_arrow.setVisibility(View.GONE);
 
             delet_history.requestFocusFromTouch();
 
@@ -637,6 +639,13 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
 
         historyLayoutManager.setScrollEnabled(true);
         favoriteManager.setScrollEnabled(true);
+
+        if(historyLists.size()>=4){
+            history_right_arrow.setVisibility(View.VISIBLE);
+        }
+        if(favoriteLists.size()>=4){
+            favorite_right_arrow.setVisibility(View.VISIBLE);
+        }
     }
     private void showNoData(){
         history_relativelayout.setVisibility(View.GONE);
