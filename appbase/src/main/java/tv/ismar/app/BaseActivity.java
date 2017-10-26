@@ -242,7 +242,7 @@ public class BaseActivity extends AppCompatActivity {
         dialog.setOnDismissListener(new PopupWindow.OnDismissListener() {
             @Override
             public void onDismiss() {
-                if (!(act.contains("HomeActivity") || act.contains("WordSearchActivity") || act.contains("FilmStar")||act.contains("UserCenterActivity"))) {
+                if (!(act.contains("HomeActivity") || act.contains("WordSearchActivity") || act.contains("FilmStar")||act.contains("UserCenterActivity")||act.contains("PlaybackActivity"))) {
                     if(act.contains("PlayFinishedActivity"))
                         setResult(EXIT_PLAY);
                     finish();
@@ -292,7 +292,7 @@ public class BaseActivity extends AppCompatActivity {
         dialog.setOnDismissListener(new PopupWindow.OnDismissListener() {
             @Override
             public void onDismiss() {
-                if (!(act.contains("HomeActivity") || act.contains("WordSearchActivity") || act.contains("FilmStar")||act.contains("UserCenterActivity"))) {
+                if (!(act.contains("HomeActivity") || act.contains("WordSearchActivity") || act.contains("FilmStar")||act.contains("UserCenterActivity")||act.contains("PlaybackActivity"))) {
                     if(act.contains("PlayFinishedActivity"))
                         setResult(EXIT_PLAY);
                     finish();

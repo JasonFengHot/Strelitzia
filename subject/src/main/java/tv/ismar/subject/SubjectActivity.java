@@ -73,7 +73,7 @@ public class SubjectActivity extends BaseActivity{
                 break;
         }
         fragmentTransaction.commit();
-        if(fromPage.equals("launcher")){
+        if(fromPage!=null&&fromPage.equals("launcher")){
             HashMap<String, Object> properties = new HashMap<String, Object>();
             properties.put(EventProperty.TYPE, "item");
             properties.put(EventProperty.PK,itemid);
