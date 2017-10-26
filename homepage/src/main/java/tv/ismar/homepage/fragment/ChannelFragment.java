@@ -14,6 +14,8 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 /*add by dragontec for bug 4065 end*/
 
+import android.widget.LinearLayout;
+
 import com.orhanobut.logger.Logger;
 
 import java.util.ArrayList;
@@ -394,6 +396,14 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
 				if (mTemplates != null) {
 					mTemplates.add(templateObject);
 				}
+			}
+			LinearLayout.LayoutParams params= new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+			if(template.equals("template_double_ld")){
+				params.bottomMargin=getResources().getDimensionPixelOffset(R.dimen.double_ld_padding);
+				bannerView.setLayoutParams(params);
+			}else if(template.equals("template_double_md")){
+				params.bottomMargin=getResources().getDimensionPixelOffset(R.dimen.double_md_padding);
+				bannerView.setLayoutParams(params);
 			}
 			mLinearContainer.addView(bannerView);
 		}
