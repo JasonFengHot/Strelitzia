@@ -514,9 +514,10 @@ public class TemplateOrder extends Template
                 }
                 setBannerItemCount(targetPosition);
                 subscribeLayoutManager.smoothScrollToPosition(subscribeBanner, null, targetPosition);
-                if (targetPosition == 0){
-                    mNavigationtHandler.sendEmptyMessageDelayed(NAVIGATION_LEFT,500);
+                if (mNavigationtHandler.hasMessages(NAVIGATION_LEFT)) {
+                    mNavigationtHandler.removeMessages(NAVIGATION_LEFT);
                 }
+                    mNavigationtHandler.sendEmptyMessageDelayed(NAVIGATION_LEFT,500);
             }
         } else if (i == R.id.navigation_right) {
             subscribeLayoutManager.setCanScroll(true);
@@ -532,9 +533,10 @@ public class TemplateOrder extends Template
                 }
                 setBannerItemCount(targetPosition);
                 subscribeLayoutManager.smoothScrollToPosition(subscribeBanner, null, targetPosition);
-                if (targetPosition == subscribeAdapter.getTatalItemCount() - 1){
-                    mNavigationtHandler.sendEmptyMessageDelayed(NAVIGATION_RIGHT, 500);
+                if (mNavigationtHandler.hasMessages(NAVIGATION_RIGHT)) {
+                    mNavigationtHandler.removeMessages(NAVIGATION_RIGHT);
                 }
+                    mNavigationtHandler.sendEmptyMessageDelayed(NAVIGATION_RIGHT, 500);
             }
         }
     }

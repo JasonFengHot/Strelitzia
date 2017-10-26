@@ -268,9 +268,10 @@ public class TemplateConlumn extends Template
                 int targetPosition = mConlumnLayoutManager.findFirstCompletelyVisibleItemPosition() - 4;
                 if (targetPosition <= 0) targetPosition = 0;
                 mConlumnLayoutManager.smoothScrollToPosition(mRecyclerView, null, targetPosition);
-                if (targetPosition == 0){
-                    mNavigationtHandler.sendEmptyMessageDelayed(NAVIGATION_LEFT,500);
+                if (mNavigationtHandler.hasMessages(NAVIGATION_LEFT)) {
+                    mNavigationtHandler.removeMessages(NAVIGATION_LEFT);
                 }
+                    mNavigationtHandler.sendEmptyMessageDelayed(NAVIGATION_LEFT,500);
             }
         } else if (i == R.id.navigation_right) { // 向右滑动
             mConlumnLayoutManager.setCanScroll(true);

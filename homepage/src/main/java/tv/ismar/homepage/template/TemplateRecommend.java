@@ -241,9 +241,10 @@ public class TemplateRecommend extends Template
         int targetPosition = mRecommendLayoutManager.findFirstCompletelyVisibleItemPosition() - 4;
         if (targetPosition <= 0) targetPosition = 0;
         mRecommendLayoutManager.smoothScrollToPosition(mRecyclerView, null, targetPosition);
-        if (targetPosition == 0){
-          mNavigationtHandler.sendEmptyMessageDelayed(NAVIGATION_LEFT,500);
+        if (mNavigationtHandler.hasMessages(NAVIGATION_LEFT)) {
+          mNavigationtHandler.removeMessages(NAVIGATION_LEFT);
         }
+          mNavigationtHandler.sendEmptyMessageDelayed(NAVIGATION_LEFT,500);
       }
     } else if (i == R.id.navigation_right) { // 向右滑动
       mRecommendLayoutManager.setCanScroll(true);

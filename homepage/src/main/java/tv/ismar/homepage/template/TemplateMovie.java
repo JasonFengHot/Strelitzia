@@ -368,9 +368,10 @@ public class TemplateMovie extends Template implements View.OnClickListener, Vie
                 }
                 setBannerItemCount(targetPosition);
                 movieLayoutManager.smoothScrollToPosition(movieBanner, null, targetPosition);
-                if (targetPosition == 0){
-                    mNavigationtHandler.sendEmptyMessageDelayed(NAVIGATION_LEFT,500);
+                if (mNavigationtHandler.hasMessages(NAVIGATION_LEFT)) {
+                    mNavigationtHandler.removeMessages(NAVIGATION_LEFT);
                 }
+                mNavigationtHandler.sendEmptyMessageDelayed(NAVIGATION_LEFT,500);
             } else {
                 //                View firstView = movieBanner.getChildAt(0).findViewById(R.id.item_layout)
                 // ;
@@ -392,9 +393,10 @@ public class TemplateMovie extends Template implements View.OnClickListener, Vie
                                 : targetPosition);
                 movieLayoutManager.smoothScrollToPosition(movieBanner, null, targetPosition);
 
-                if (targetPosition == mMovieAdapter.getTatalItemCount() - 1){
-                    mNavigationtHandler.sendEmptyMessageDelayed(NAVIGATION_RIGHT, 500);
+                if (mNavigationtHandler.hasMessages(NAVIGATION_RIGHT)) {
+                    mNavigationtHandler.removeMessages(NAVIGATION_RIGHT);
                 }
+                mNavigationtHandler.sendEmptyMessageDelayed(NAVIGATION_RIGHT, 500);
             } else {
                 //                View lastView = movieBanner.getChildAt(totalItemCount -
                 // 1).findViewById(R.id.item_layout) ;
