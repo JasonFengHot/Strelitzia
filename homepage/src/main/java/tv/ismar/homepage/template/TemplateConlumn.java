@@ -286,13 +286,16 @@ public class TemplateConlumn extends Template
                     mNavigationtHandler.removeMessages(NAVIGATION_RIGHT);
                 }
                 mNavigationtHandler.sendEmptyMessageDelayed(NAVIGATION_RIGHT, 500);
-                if (targetPosition == mFetchDataControl.mHomeEntity.count)
-                    YoYo.with(Techniques.HorizontalShake)
-                            .duration(1000)
-                            .playOn(
-                                    mRecyclerView
-                                            .getChildAt(mRecyclerView.getChildCount() - 1)
-                                            .findViewById(R.id.conlumn_ismartv_linear_layout));
+
+			/*delete by dragontec for bug 4303 start*/
+//                if (targetPosition == mFetchDataControl.mHomeEntity.count)
+//                    YoYo.with(Techniques.HorizontalShake)
+//                            .duration(1000)
+//                            .playOn(
+//                                    mRecyclerView
+//                                            .getChildAt(mRecyclerView.getChildCount() - 1)
+//                                            .findViewById(R.id.conlumn_ismartv_linear_layout));
+			/*delete by dragontec for bug 4303 end*/
             }
         }
     }

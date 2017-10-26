@@ -385,17 +385,20 @@ public class TemplateDoubleLd extends Template
                     mNavigationtHandler.removeMessages(NAVIGATION_RIGHT);
                 }
                 mNavigationtHandler.sendEmptyMessageDelayed(NAVIGATION_RIGHT, 500);
-                try {
-                    if (targetPosition == mFetchDataControl.mHomeEntity.count)
-                        YoYo.with(Techniques.HorizontalShake)
-                                .duration(1000)
-                                .playOn(
-                                        mRecyclerView
-                                                .getChildAt(mRecyclerView.getChildCount() - 1)
-                                                .findViewById(R.id.double_md_ismartv_linear_layout));
-                }catch(Exception e){
-                    e.printStackTrace();
-                }
+
+			/*delete by dragontec for bug 4303 start*/
+//                try {
+//                    if (targetPosition == mFetchDataControl.mHomeEntity.count)
+//                        YoYo.with(Techniques.HorizontalShake)
+//                                .duration(1000)
+//                                .playOn(
+//                                        mRecyclerView
+//                                                .getChildAt(mRecyclerView.getChildCount() - 1)
+//                                                .findViewById(R.id.double_md_ismartv_linear_layout));
+//                }catch(Exception e){
+//                    e.printStackTrace();
+//                }
+			/*delete by dragontec for bug 4303 end*/
             }
             initTitle();
         }
