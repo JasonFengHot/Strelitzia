@@ -24,8 +24,11 @@ import com.open.androidtvwidget.leanback.recycle.StaggeredGridLayoutManagerTV;
 import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
+
 import tv.ismar.app.BaseControl;
 import tv.ismar.app.core.PageIntent;
+import tv.ismar.app.entity.banner.BannerPoster;
 import tv.ismar.app.entity.banner.BigImage;
 import tv.ismar.app.entity.banner.HomeEntity;
 import tv.ismar.homepage.HomeActivity;
@@ -166,6 +169,7 @@ public class TemplateDoubleMd extends Template
     int selectedItemOffset =
         mContext.getResources().getDimensionPixelSize(R.dimen.banner_item_setSelectedItemOffset);
     mRecyclerView.setSelectedItemOffset(100, 100);
+    mRecyclerView.setAdapter(new DoubleMdAdapter(mContext, new ArrayList<BannerPoster>()));
     navigationLeft = view.findViewById(R.id.navigation_left);
     navigationRight = view.findViewById(R.id.navigation_right);
     mBannerLinearLayout = (BannerLinearLayout) view.findViewById(R.id.banner_layout);

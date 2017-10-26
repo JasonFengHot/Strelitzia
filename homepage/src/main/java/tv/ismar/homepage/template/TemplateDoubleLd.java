@@ -26,10 +26,12 @@ import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 
 import tv.ismar.app.BaseControl;
 import tv.ismar.app.core.PageIntent;
 import tv.ismar.app.core.VipMark;
+import tv.ismar.app.entity.banner.BannerPoster;
 import tv.ismar.app.entity.banner.BigImage;
 import tv.ismar.app.entity.banner.HomeEntity;
 import tv.ismar.homepage.HomeActivity;
@@ -172,6 +174,7 @@ public class TemplateDoubleLd extends Template
         mRecyclerView.setLayoutManager(mDoubleLayoutManager);
         mRecyclerView.setSelectedItemAtCentered(false);
         mRecyclerView.setSelectedItemOffset(100, 100);
+        mRecyclerView.setAdapter(new DoubleLdAdapter(mContext, new ArrayList<BannerPoster>()));
         navigationLeft = view.findViewById(R.id.navigation_left);
         navigationRight = view.findViewById(R.id.navigation_right);
         mBannerLinearLayout = (BannerLinearLayout) view.findViewById(R.id.banner_layout);
