@@ -225,13 +225,28 @@ public abstract class Template {
 		handler.postDelayed(mCheckFocusRunnable, 200);
 	}
 
+    protected void checkFocus(RecyclerViewTV recyclerViewTV, int select) {
+        if (mCheckFocusRunnable != null) {
+            handler.removeCallbacks(mCheckFocusRunnable);
+            mCheckFocusRunnable = null;
+        }
+        mCheckFocusRunnable = new CheckFocusRunnable(recyclerViewTV);
+        mCheckFocusRunnable.setDefaultSelect(select);
+        handler.postDelayed(mCheckFocusRunnable, 200);
+    }
+
 	protected class CheckFocusRunnable implements Runnable {
+	    private int defaultSelect = 0;
 
 		private RecyclerViewTV mRecyclerViewTV;
 
 		CheckFocusRunnable(RecyclerViewTV recyclerViewTV) {
 			mRecyclerViewTV = recyclerViewTV;
 		}
+
+		public void setDefaultSelect(int select) {
+            defaultSelect = select;
+        }
 
 		@Override
 		public void run() {
@@ -241,7 +256,7 @@ public abstract class Template {
 				focusedChild = layout.getFocusedChild();
 			}
 			if (focusedChild == mParentView) {
-				mRecyclerViewTV.setDefaultSelect(0);
+				mRecyclerViewTV.setDefaultSelect(defaultSelect);
 			}
 		}
 	}
@@ -274,7 +289,13 @@ public abstract class Template {
                 if(bannerLinearLayout != null) {
                     View recycleView = bannerLinearLayout.findViewWithTag("recycleView");
                     if (recycleView != null && recycleView instanceof RecyclerViewTV) {
-                        return ((RecyclerViewTV) recycleView).getLastFocusChild();
+						/*modify by dragontec for bug 4270 start*/
+                        if(((RecyclerViewTV) recycleView).isSelectedItemAtCentered()){
+                            return ((RecyclerViewTV) recycleView).getLastFocusChild();
+                        }else{
+                            return null;
+                        }
+						/*modify by dragontec for bug 4270 end*/
                     }
                 }
             }
@@ -291,7 +312,13 @@ public abstract class Template {
                     if(bannerLinearLayout != null) {
                         View recycleView = bannerLinearLayout.findViewWithTag("recycleView");
                         if (recycleView != null && recycleView instanceof RecyclerViewTV) {
-                            return ((RecyclerViewTV) recycleView).getLastFocusChild();
+							/*modify by dragontec for bug 4270 start*/
+                            if(((RecyclerViewTV) recycleView).isSelectedItemAtCentered()){
+                                return ((RecyclerViewTV) recycleView).getLastFocusChild();
+                            }else{
+                                return null;
+                            }
+							/*modify by dragontec for bug 4270 end*/
                         }
                     }
                 }
@@ -312,10 +339,26 @@ public abstract class Template {
             if(bannerLinearLayout != null) {
                 View recycleView = bannerLinearLayout.findViewWithTag("recycleView");
                 if (recycleView != null && recycleView instanceof RecyclerViewTV) {
-                    View targetFocus = ((RecyclerViewTV) recycleView).getLastFocusChild();
-                    if(targetFocus == null && ((RecyclerViewTV) recycleView).getChildCount() > 0){
-                        targetFocus = ((RecyclerViewTV) recycleView).getChildAt(0);
+					/*modify by dragontec for bug 4270 start*/
+                    RecyclerViewTV mRecyclerViewTV = (RecyclerViewTV) recycleView;
+                    int middle = mBannerLinearLayout.getContext().getResources().getDisplayMetrics().widthPixels/2;
+                    View  targetFocus = null;
+                    int maxY = 0;
+                    for (int i = 0; i < mRecyclerViewTV.getChildCount(); i++) {
+                        View view = mRecyclerViewTV.getChildAt(i);
+                        Rect rect = new Rect();
+                        view.getGlobalVisibleRect(rect);
+                        if(rect.left < middle && rect.right> middle){
+                            if(rect.top > maxY){
+                                maxY = rect.top;
+                                targetFocus = view;
+                            }
+                        }
                     }
+                    if(((RecyclerViewTV) recycleView).isSelectedItemAtCentered() || targetFocus == null){
+                        targetFocus = ((RecyclerViewTV) recycleView).getLastFocusChild();
+                    }
+					/*modify by dragontec for bug 4270 end*/
                     return targetFocus;
                 }
             }

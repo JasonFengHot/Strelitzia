@@ -58,7 +58,12 @@ public class MmContinuousPayFragment extends Fragment implements View.OnClickLis
         agreementTextView = (TextView) view.findViewById(R.id.agreement);
         agreementTextView.setText(Html.fromHtml("<u>《视云连续扣费协议》</u>"));
         agreementTextView.setOnClickListener(this);
-
+/*add by dragontec for bug 4283 start*/
+        agreementTextView.setFocusable(true);
+        agreementTextView.setFocusableInTouchMode(true);
+        agreementTextView.requestFocus();
+        agreementTextView.requestFocusFromTouch();
+/*add by dragontec for bug 4283 end*/
     }
 
     @Override

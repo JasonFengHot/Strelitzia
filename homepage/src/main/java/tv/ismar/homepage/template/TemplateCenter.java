@@ -1,10 +1,8 @@
 package tv.ismar.homepage.template;
 
 import android.content.Context;
+import android.graphics.Rect;
 import android.os.Bundle;
-	/*add by dragontec for bug 4077 start*/
-import android.os.Handler;
-	/*add by dragontec for bug 4077 end*/
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -18,16 +16,12 @@ import com.open.androidtvwidget.leanback.recycle.RecyclerViewTV;
 
 import tv.ismar.app.BaseControl;
 import tv.ismar.app.entity.banner.HomeEntity;
-import tv.ismar.homepage.HomeActivity;
 import tv.ismar.homepage.OnItemClickListener;
+import tv.ismar.homepage.OnItemHoverListener;
 import tv.ismar.homepage.R;
 import tv.ismar.homepage.adapter.CenterAdapter;
 import tv.ismar.homepage.control.FetchDataControl;
 import tv.ismar.homepage.view.BannerLinearLayout;
-	/*add by dragontec for bug 4077 start*/
-import tv.ismar.homepage.widget.RecycleLinearLayout;
-	/*add by dragontec for bug 4077 end*/
-
 import static android.view.MotionEvent.BUTTON_PRIMARY;
 
 /**
@@ -38,7 +32,9 @@ public class TemplateCenter extends Template
         RecyclerViewTV.PagingableListener,
         LinearLayoutManagerTV.FocusSearchFailedListener,
         OnItemClickListener,
-        View.OnHoverListener, View.OnClickListener {
+		/*modify by dragontec for bug 4277 start*/
+        View.OnHoverListener, View.OnClickListener, OnItemHoverListener {
+		/*modify by dragontec for bug 4277 end*/
     public FetchDataControl mFetchDataControl = null;
     private RecyclerViewTV mRecycleView; // 海报recycleview
     private LinearLayoutManagerTV mCenterLayoutManager;
@@ -134,9 +130,12 @@ public class TemplateCenter extends Template
                     mFetchDataControl.mCarousels.size() * 100,
                     mContext.getResources().getDimensionPixelOffset(R.dimen.center_padding_offset));
             mAdapter.setOnItemClickListener(this);
-	/*add by dragontec for bug 4077 start*/
-			checkFocus(mRecycleView);
-	/*add by dragontec for bug 4077 end*/
+			/*modify by dragontec for bug 4277 start*/
+            mAdapter.setOnHoverListener(this);
+			/*modify by dragontec for bug 4277 start*/
+		/*add by dragontec for bug 4077 start*/
+			checkFocus(mRecycleView, mFetchDataControl.mCarousels.size() * 100);
+		/*add by dragontec for bug 4077 end*/
         } else {
             int start =
                     mFetchDataControl.mCarousels.size() - mFetchDataControl.mHomeEntity.carousels.size();
@@ -221,4 +220,17 @@ public class TemplateCenter extends Template
 
         }
     }
+	/*add by dragontec for bug 4277 start*/
+    @Override
+    public boolean onHover(View v, int position, boolean hovered) {
+        Rect rect = new Rect();
+        v.getGlobalVisibleRect(rect);
+        int middle = mContext.getResources().getDisplayMetrics().widthPixels/2;
+        if(rect.left< middle && rect.right> middle){
+            return true;
+        }else{
+            return false;
+        }
+    }
+	/*add by dragontec for bug 4277 end*/
 }

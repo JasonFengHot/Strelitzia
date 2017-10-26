@@ -252,7 +252,7 @@ public class RecyclerViewTV extends RecyclerView implements PrvInterface {
 
     public int getFirstCompletelyVisiblePosition() {
         LayoutManager lm = getLayoutManager();
-        int[] positions = new int[] {0, 0};
+        /*modify by dragontec for bug 4242 start*/
         if (lm != null) {
             if (lm instanceof LinearLayoutManager) {
                 return ((LinearLayoutManager) lm).findFirstCompletelyVisibleItemPosition();
@@ -263,7 +263,17 @@ public class RecyclerViewTV extends RecyclerView implements PrvInterface {
             if(lm instanceof StaggeredGridLayoutManager){
                 //temp fix crash by dragontec
                 try {
-                    return ((StaggeredGridLayoutManager) lm).findFirstCompletelyVisibleItemPositions(positions)[0];
+                	int min = -1;
+                	int[] positions = ((StaggeredGridLayoutManager) lm).findFirstCompletelyVisibleItemPositions(null);
+					for (int pos:
+						 positions) {
+						if (min == -1 || min > pos) {
+							min = pos;
+						}
+					}
+					return min;
+
+        /*modify by dragontec for bug 4242 end*/
                 }catch (Exception e){
                     e.printStackTrace();
                 }
@@ -308,7 +318,9 @@ public class RecyclerViewTV extends RecyclerView implements PrvInterface {
 //            lastpos+=1;
 //        }
         int count = getLayoutManager().getItemCount();
-        return (lastpos== getLayoutManager().getItemCount()-1) && (delta >= 0);
+        /*modify by dragontec for bug 4242 start*/
+        return (lastpos >= getLayoutManager().getItemCount() - 1) && (delta >= 0);
+        /*modify by dragontec for bug 4242 end*/
     }
 
     @Override
@@ -374,7 +386,11 @@ public class RecyclerViewTV extends RecyclerView implements PrvInterface {
     public void setSelectedItemAtCentered(boolean isCentered) {
         this.mSelectedItemCentered = isCentered;
     }
-
+    /*add by dragontec for bug 4270 start*/
+    public boolean isSelectedItemAtCentered() {
+        return mSelectedItemCentered;
+    }
+    /*add by dragontec for bug 4270 end*/
     public View getSelectView() {
         if (mItemView == null)
             mItemView = getFocusedChild();
@@ -638,7 +654,7 @@ public class RecyclerViewTV extends RecyclerView implements PrvInterface {
      */
     public int findLastCompletelyVisibleItemPosition() {
         LayoutManager layoutManager = getLayoutManager();
-        int[] positions = new int[] {0, 0};
+        /*modify by dragontec for bug 4242 start*/
         if (layoutManager != null) {
             if (layoutManager instanceof LinearLayoutManager) {
                 return ((LinearLayoutManager) layoutManager).findLastCompletelyVisibleItemPosition();
@@ -649,19 +665,40 @@ public class RecyclerViewTV extends RecyclerView implements PrvInterface {
             if(layoutManager instanceof StaggeredGridLayoutManager){
                 //temp fix crash by dragontec
                 try {
-                     ((StaggeredGridLayoutManager) layoutManager).findLastCompletelyVisibleItemPositions(positions);
-                     if (positions[1] > positions[0]){
-                         return positions[1];
-                     }else {
-                         return positions[0];
-                     }
-                }catch (Exception e){
+					int[] positions = ((StaggeredGridLayoutManager) layoutManager).findLastCompletelyVisibleItemPositions(null);
+					int max = 0;
+					for (int pos :
+							positions) {
+						if (max < pos) {
+							max = pos;
+						}
+					}
+					return max;
+				}catch (NullPointerException e){
                     e.printStackTrace();
                 }
             }
         }
+        /*modify by dragontec for bug 4242 end*/
         return RecyclerView.NO_POSITION;
     }
+
+	/*add by dragontec for bug 4242 start*/
+    public int[] findLastCompletelyVisibleItemPositions() {
+		LayoutManager layoutManager = getLayoutManager();
+		if (layoutManager != null) {
+			if(layoutManager instanceof StaggeredGridLayoutManager){
+				//temp fix crash by dragontec
+				try {
+					return ((StaggeredGridLayoutManager) layoutManager).findLastCompletelyVisibleItemPositions(null);
+				}catch (Exception e){
+					e.printStackTrace();
+				}
+			}
+		}
+		return null;
+	}
+    /*add by dragontec for bug 4242 end*/
 
     public int findFirstVisibleItemPosition() {
         LayoutManager lm = getLayoutManager();
