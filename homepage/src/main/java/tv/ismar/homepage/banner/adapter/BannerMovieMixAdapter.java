@@ -1,6 +1,5 @@
 package tv.ismar.homepage.banner.adapter;
 
-import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.graphics.Rect;
 import android.support.v7.widget.RecyclerView;
@@ -15,10 +14,10 @@ import android.widget.RelativeLayout;
 import android.widget.Space;
 import android.widget.TextView;
 
-import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -27,9 +26,6 @@ import tv.ismar.app.core.VipMark;
 import tv.ismar.app.entity.banner.BannerEntity;
 import tv.ismar.homepage.R;
 import tv.ismar.searchpage.utils.JasmineUtil;
-
-import static android.view.View.SCALE_X;
-import static android.view.View.SCALE_Y;
 
 /**
  * Created by huibin on 25/08/2017.
@@ -79,6 +75,13 @@ public class BannerMovieMixAdapter extends RecyclerView.Adapter<BannerMovieMixAd
         totalItemCount = bannerEntity.getCount();
         bigWidth = context.getResources().getDimensionPixelSize(R.dimen.banner_item_movie_big_width);
         smallWidth = context.getResources().getDimensionPixelSize(R.dimen.banner_item_movie_small_width);
+        if (bannerEntity.getBg_image() != null){
+            if (bannerEntity.getPoster() == null){
+                bannerEntity.setPosters(new ArrayList<BannerEntity.PosterBean>());
+            }
+            bannerEntity.getPoster().add(0, bannerEntity.getBg_image());
+        }
+
         //如果存在更多按钮，并且是在加载最后一页数据时，添加更多按钮的空数据
         if (bannerEntity.is_more() && bannerEntity.getNum_pages() == bannerEntity.getCount_pages()){
             BannerEntity.PosterBean posterBean = new BannerEntity.PosterBean();
@@ -146,6 +149,9 @@ public class BannerMovieMixAdapter extends RecyclerView.Adapter<BannerMovieMixAd
         String targetImageUrl = TextUtils.isEmpty(imageUrl) ? null : imageUrl;
 
         if (position == 0) {
+            holder.mItemView.findViewById(R.id.item_layout).setBackgroundResource(android.R.color.transparent);
+            holder.mTitle.setVisibility(View.VISIBLE);
+            holder.itemWrapper.setVisibility(View.VISIBLE);
             Picasso.with(mContext).load(targetImageUrl).placeholder(R.drawable.list_item_preview_bg)
                     .error(R.drawable.list_item_preview_bg).into(holder.mImageView);
         } else {

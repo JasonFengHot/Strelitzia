@@ -116,14 +116,7 @@ public class BannerEntity {
     }
 
     public List<PosterBean> getPoster() {
-        if (bg_image != null){
-            List<PosterBean> list = new ArrayList<>();
-            list.add(bg_image);
-            list.addAll(posters);
-            return list;
-        }else {
             return posters;
-        }
     }
 
     public void setPosters(List<PosterBean> posters) {
