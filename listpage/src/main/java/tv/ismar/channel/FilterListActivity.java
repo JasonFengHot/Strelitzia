@@ -405,9 +405,13 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
     }
 
     private void changeCheckedTab(int position) {
-        try {
-            ((RadioButton) section_group.getChildAt(position + 1)).setChecked(true);
         for (int i = 0; i < sectionSize; i++) {
+            if (i == sectionSize - 1) {
+                if(specialPos!=null&&position>=specialPos.get(i)){
+                    ((RadioButton) section_group.getChildAt(i + 1)).setChecked(true);
+                }
+                break;
+            }
             if (specialPos != null && position >= specialPos.get(i) && position < specialPos.get(i + 1)) {
 
                 ((RadioButton) section_group.getChildAt(i + 1)).setChecked(true);
@@ -418,9 +422,6 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
                 }
                 break;
             }
-        }
-        }catch (Exception e){
-            e.printStackTrace();
         }
     }
 
