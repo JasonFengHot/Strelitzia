@@ -78,7 +78,7 @@ public class TelescopicWrap {
                     super.onAnimationStart(animation);
                 }
             });
-            openAnimator.setDuration(200);
+            openAnimator.setDuration(100);
             openAnimator.start();
         }
     }
@@ -96,7 +96,7 @@ public class TelescopicWrap {
                     mTv.setVisibility(View.GONE);
                 }
             });
-            closeAnimator.setDuration(200);
+            closeAnimator.setDuration(100);
             closeAnimator.start();
         }
     }

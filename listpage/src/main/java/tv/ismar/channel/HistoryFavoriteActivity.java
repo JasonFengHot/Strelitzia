@@ -155,7 +155,7 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
         historyRecycler.setLayoutManager(historyLayoutManager);
         favoriteRecycler.setLayoutManager(favoriteManager);
         historyRecycler.setSelectedItemAtCentered(true);
-//        historyRecycler.setSelectedItemOffset(251,250);
+//        favoriteRecycler.setSelectedItemOffset(100,165);
         edit_history= (LinearLayout) findViewById(R.id.edit_btn);
         edit_history.setOnClickListener(this);
         edit_history.setOnHoverListener(this);
@@ -224,6 +224,7 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
         favoriteRecycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                Log.i("ScrollListener","newstate: "+newState);
                 if(newState==SCROLL_STATE_IDLE){
                     if(favoriteManager!=null){
                         int pos=favoriteManager.findFirstCompletelyVisibleItemPosition();
@@ -546,6 +547,7 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
         historyAdapter.setItemOnhoverlistener(HistoryFavoriteActivity.this);
         historyAdapter.setItemKeyListener(HistoryFavoriteActivity.this);
     }
+    private int targetPosition;
     @Override
     public void onClick(View v) {
         int id=v.getId();
@@ -603,16 +605,87 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
             }
             startActivity(intent);
         }else if(id==R.id.favorite_right_arrow){
-            favoriteRecycler.smoothScrollBy(getResources().getDimensionPixelOffset(R.dimen.history_1325),0);
+            favorite_left_arrow.setVisibility(View.VISIBLE);
+            targetPosition=favoriteManager.findFirstCompletelyVisibleItemPosition()+3;
+            favoriteManager.scrollToPositionWithOffset(targetPosition,165);
+            if(favoriteManager.findFirstCompletelyVisibleItemPosition()==0){
+                favorite_left_arrow.setVisibility(View.VISIBLE);
+            }else {
+                arrowState();
+            }
+//            targetPosition=favoriteManager.findLastCompletelyVisibleItemPosition()+3;
+//            favoriteManager.smoothScrollToPosition(favoriteRecycler,null,targetPosition);
         }else if(id==R.id.favorite_left_arrow){
-            favoriteRecycler.smoothScrollBy(-getResources().getDimensionPixelOffset(R.dimen.history_1325),0);
+            targetPosition=favoriteManager.findFirstCompletelyVisibleItemPosition()-2;
+            if(targetPosition<=0) {
+                targetPosition = 0;
+                favoriteManager.smoothScrollToPosition(favoriteRecycler,null,0);
+            }else{
+                favoriteManager.scrollToPositionWithOffset(targetPosition, 165);
+            }
+            arrowState();
         }else if(id==R.id.history_left_arrow){
-            historyRecycler.smoothScrollBy(-getResources().getDimensionPixelOffset(R.dimen.history_1325),0);
+            targetPosition=historyLayoutManager.findFirstCompletelyVisibleItemPosition()-2;
+            if(targetPosition<=0){
+                historyLayoutManager.smoothScrollToPosition(historyRecycler,null,0);
+            }else {
+                historyLayoutManager.scrollToPositionWithOffset(targetPosition, 165);
+            }
+            arrowState();
         }else if(id==R.id.history_right_arrow){
-            historyRecycler.smoothScrollBy(getResources().getDimensionPixelOffset(R.dimen.history_1325),0);
+            targetPosition=historyLayoutManager.findFirstCompletelyVisibleItemPosition()+3;
+            if(targetPosition>=historyLists.size()-1) {
+
+            }else {
+                historyLayoutManager.scrollToPositionWithOffset(targetPosition, 165);
+                arrowState();
+            }
         }
     }
+    private void arrowState(){
+        if(favoriteManager!=null&&favoriteLists.size()>0){
+            int pos=favoriteManager.findFirstCompletelyVisibleItemPosition();
+            int endPos=favoriteManager.findLastCompletelyVisibleItemPosition();
+            Log.i("ScrollListener","pos"+pos);
+            if(pos!=0){
+                favorite_left_arrow.setVisibility(View.VISIBLE);
+            }else{
+                favorite_left_arrow.setVisibility(View.GONE);
+            }
+            if (endPos != favoriteLists.size() - 1) {
+                favorite_right_arrow.setVisibility(View.VISIBLE);
+            } else {
+                favorite_right_arrow.setVisibility(View.GONE);
+            }
+        }
+        if(historyLayoutManager!=null){
+            int pos=historyLayoutManager.findFirstCompletelyVisibleItemPosition();
+            int endPos=historyLayoutManager.findLastCompletelyVisibleItemPosition();
+            if(pos!=0){
+                if(!isEdit)
+                    history_left_arrow.setVisibility(View.VISIBLE);
+            }else{
+                history_left_arrow.setVisibility(View.GONE);
+            }
+            if(historyLists.size()>0) {
+                if (endPos != historyLists.size() - 1) {
+                    history_right_arrow.setVisibility(View.VISIBLE);
+                } else {
+                    history_right_arrow.setVisibility(View.GONE);
+                }
+            }else if(favoriteLists.size()>0){
+                if (endPos != favoriteLists.size() - 1) {
+                    history_right_arrow.setVisibility(View.VISIBLE);
+                } else {
+                    history_right_arrow.setVisibility(View.GONE);
+                }
+            }
 
+        }
+
+
+
+    }
     @Override
     public void onBackPressed() {
         if(isEdit){
@@ -772,13 +845,25 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
                     pk = favoriteEntity.getPk();
                 }
                 if (favoriteEntity.getType() != 2) {
-                    if (favoriteEntity.getContent_model().contains("gather")) {
-                        intent.toSubject(this, favoriteEntity.getContent_model(), pk, favoriteEntity.getTitle(), "favorite", "");
-                    } else {
-                        if (favoriteEntity.getIs_complex()) {
-                            intent.toDetailPage(this, "favorite", pk);
-                        } else {
+                    if(IsmartvActivator.getInstance().isLogin()) {
+                        if (favoriteEntity.getModel_name() != null && favoriteEntity.getModel_name().equals("clip")) {
                             intent.toPlayPageEpisode(this, pk, 0, Source.FAVORITE, favoriteEntity.getContent_model());
+                        } else {
+                            if (favoriteEntity.getContent_model().contains("gather")) {
+                                intent.toSubject(this, favoriteEntity.getContent_model(), pk, favoriteEntity.getTitle(), "favorite", "");
+                            } else {
+                                intent.toDetailPage(this, "favorite", pk);
+                            }
+                        }
+                    }else{
+                        if (favoriteEntity.getContent_model().contains("gather")) {
+                            intent.toSubject(this, favoriteEntity.getContent_model(), pk, favoriteEntity.getTitle(), "favorite", "");
+                        } else {
+                            if (favoriteEntity.getIs_complex()) {
+                                intent.toDetailPage(this, "favorite", pk);
+                            } else {
+                                intent.toPlayPageEpisode(this, pk, 0, Source.FAVORITE, favoriteEntity.getContent_model());
+                            }
                         }
                     }
                 } else {
