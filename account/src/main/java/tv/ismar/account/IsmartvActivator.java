@@ -143,14 +143,14 @@ public final class IsmartvActivator {
                 .readTimeout(DEFAULT_READ_TIMEOUT, TimeUnit.SECONDS)
                 .addInterceptor(interceptor)
                 .addInterceptor(new UserAgentInterceptor())
-                .dns(new Dns() {
-                    @Override
-                    public List<InetAddress> lookup(String hostName) throws UnknownHostException {
-                        String ipAddress = getHostByName(hostName);
-                        Log.d(TAG, "ip: " + ipAddress);
-                        return Dns.SYSTEM.lookup(ipAddress);
-                    }
-                })
+//                .dns(new Dns() {
+//                    @Override
+//                    public List<InetAddress> lookup(String hostName) throws UnknownHostException {
+//                        String ipAddress = getHostByName(hostName);
+//                        Log.d(TAG, "ip: " + ipAddress);
+//                        return Dns.SYSTEM.lookup(ipAddress);
+//                    }
+//                })
                 .build();
 
         SKY_Retrofit = new Retrofit.Builder()

@@ -191,13 +191,13 @@ public class VodApplication extends Application {
         OkHttpClient client = new OkHttpClient.Builder()
                 .addInterceptor(new UserAgentInterceptor())
                 .addInterceptor(new HttpCacheInterceptor(getApplicationContext()))
-                .dns(new Dns() {
-                    @Override
-                    public List<InetAddress> lookup(String s) throws UnknownHostException {
-                        String ipAddress = IsmartvActivator.getHostByName(s);
-                        return Dns.SYSTEM.lookup(ipAddress);
-                    }
-                })
+//                .dns(new Dns() {
+//                    @Override
+//                    public List<InetAddress> lookup(String s) throws UnknownHostException {
+//                        String ipAddress = IsmartvActivator.getHostByName(s);
+//                        return Dns.SYSTEM.lookup(ipAddress);
+//                    }
+//                })
                 .cache(cache)
                 .build();
 
@@ -214,13 +214,13 @@ public class VodApplication extends Application {
         OkHttpClient homepageClient = new OkHttpClient.Builder()
                 .addInterceptor(new UserAgentInterceptor())
                 .addInterceptor(new HttpCacheInterceptor(getApplicationContext()))
-                .dns(new Dns() {
-                    @Override
-                    public List<InetAddress> lookup(String s) throws UnknownHostException {
-                        String ipAddress = IsmartvActivator.getHostByName(s);
-                        return Dns.SYSTEM.lookup(ipAddress);
-                    }
-                })
+//                .dns(new Dns() {
+//                    @Override
+//                    public List<InetAddress> lookup(String s) throws UnknownHostException {
+//                        String ipAddress = IsmartvActivator.getHostByName(s);
+//                        return Dns.SYSTEM.lookup(ipAddress);
+//                    }
+//                })
                 .cache(homepageCache)
                 .build();
 

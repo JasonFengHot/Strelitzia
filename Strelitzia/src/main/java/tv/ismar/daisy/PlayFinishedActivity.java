@@ -197,7 +197,7 @@ public class PlayFinishedActivity extends BaseActivity implements View.OnClickLi
             }
             SharedPreferences sharedPreferences= PreferenceManager.getDefaultSharedPreferences(this);
             String sn=sharedPreferences.getString("sn_token","");
-            playExitSub = SkyService.ServiceManager.getCacheSkyService2().apiPlayExitRecommend(sn, itemId,channel,playScale)
+            playExitSub = SkyService.ServiceManager.getService().apiPlayExitRecommend(sn, itemId,channel,playScale)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Observer<PlayRecommend>() {

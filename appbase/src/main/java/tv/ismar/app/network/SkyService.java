@@ -75,7 +75,35 @@ import tv.ismar.app.models.Sport;
 import tv.ismar.app.models.SubjectEntity;
 import tv.ismar.app.models.VodFacetEntity;
 import tv.ismar.app.models.VodSearchRequestEntity;
-import tv.ismar.app.network.entity.*;
+import tv.ismar.app.network.entity.AccountBalanceEntity;
+import tv.ismar.app.network.entity.AccountPlayAuthEntity;
+import tv.ismar.app.network.entity.AccountsLoginEntity;
+import tv.ismar.app.network.entity.AccountsOrdersEntity;
+import tv.ismar.app.network.entity.ActiveEntity;
+import tv.ismar.app.network.entity.AgreementEntity;
+import tv.ismar.app.network.entity.BannerIconMarkEntity;
+import tv.ismar.app.network.entity.BindedCdnEntity;
+import tv.ismar.app.network.entity.ChatMsgEntity;
+import tv.ismar.app.network.entity.DpiEntity;
+import tv.ismar.app.network.entity.Empty;
+import tv.ismar.app.network.entity.ExplainEntity;
+import tv.ismar.app.network.entity.GoodsRenewStatusEntity;
+import tv.ismar.app.network.entity.IpLookUpEntity;
+import tv.ismar.app.network.entity.ItemEntity;
+import tv.ismar.app.network.entity.OpenRenewEntity;
+import tv.ismar.app.network.entity.PayLayerEntity;
+import tv.ismar.app.network.entity.PayLayerPackageEntity;
+import tv.ismar.app.network.entity.PayLayerVipEntity;
+import tv.ismar.app.network.entity.PayVerifyEntity;
+import tv.ismar.app.network.entity.PayWhStatusEntity;
+import tv.ismar.app.network.entity.ProblemEntity;
+import tv.ismar.app.network.entity.QiyiCheckEntity;
+import tv.ismar.app.network.entity.SubjectPayLayerEntity;
+import tv.ismar.app.network.entity.TeleEntity;
+import tv.ismar.app.network.entity.UpgradeRequestEntity;
+import tv.ismar.app.network.entity.VersionInfoV2Entity;
+import tv.ismar.app.network.entity.WeatherEntity;
+import tv.ismar.app.network.entity.YouHuiDingGouEntity;
 import tv.ismar.library.exception.ExceptionUtils;
 import tv.ismar.library.network.UserAgentInterceptor;
 
@@ -436,13 +464,6 @@ public interface SkyService {
             @Field("sid") String sid
     );
 
-
-//    @GET
-//    Observable<HomePagerEntity> fetchHomePage(
-//            @Url String url
-//    );
-//
-
     @FormUrlEncoded
     @POST("api/play/check/")
     Observable<ResponseBody> videoPlayCheck(
@@ -480,15 +501,6 @@ public interface SkyService {
             @Url String url
     );
 
-    //
-//    @GET("/api/package/relate/{pkg}/")
-//    Observable<Item[]> packageRelate(
-//            @Path("pkg")
-//            String pkg,
-//            @Query("device_token")
-//            String deviceToken,
-//            @Query("access_token")
-//            String accessToken);
     @GET("{geoId}.xml")
     Observable<WeatherEntity> apifetchWeatherInfo(
             @Path("geoId") String geoId
@@ -752,28 +764,31 @@ public interface SkyService {
         private volatile static ServiceManager serviceManager;
         private static final int DEFAULT_CONNECT_TIMEOUT = 6;
         private static final int DEFAULT_READ_TIMEOUT = 15;
-        public static final String API_HOST = "http://wx.api.tvxio.com/";
+
+        private static final String API_HOST = "http://wx.api.tvxio.com/";
         private static final String IRIS_TVXIO_HOST = "http://iris.tvxio.com/";
         private static final String SPEED_CALLA_TVXIO_HOST = "http://speed.calla.tvxio.com/";
         private static final String LILY_TVXIO_HOST = "http://lily.tvxio.com/";
-        private final SkyService mCarnationService;
-        private SkyService mSkyService;
-        private SkyService adSkyService;
-        private SkyService upgradeService;
-        private SkyService weatherService;
-        private SkyService wxApiService;
-        private SkyService irisService;
-        private SkyService speedCallaService;
-        private SkyService lilyHostService;
-        private SkyService mCacheSkyService;
-        private SkyService mCacheSkyService2;
-        private SkyService logSkyService;
 
-        private SkyService localTestSkyService;
+        private final SkyService mCarnationService;
+        private static String[] domain = new String[]{
+                "1.1.1.1",  //sky域名
+                "1.1.1.2",  //广告域名
+                "1.1.1.3",  //更新域名
+                "1.1.1.4",  //日志域名
+                "1.1.1.5",  //未知
+                "1.1.1.6"   //爱奇艺购买域名
+        };
+        private final SkyService mSkyService;
+        private final SkyService adSkyService;
+        private final SkyService upgradeService;
+        private final SkyService weatherService;
+        private final SkyService wxApiService;
+        private final SkyService irisService;
+        private final SkyService speedCallaService;
 
         public static boolean executeActive = true;
-
-        private static String[] domain = new String[]{"1.1.1.1", "1.1.1.2", "1.1.1.3", "1.1.1.4", "1.1.1.5", "1.1.1.6"};
+        private final SkyService lilyHostService;
 
         TrustManager[] trustAllCerts = new TrustManager[]{new X509TrustManager() {
 
@@ -814,18 +829,17 @@ public interface SkyService {
                     .addInterceptor(VodApplication.getHttpParamsInterceptor())
                     .addInterceptor(VodApplication.getModuleAppContext().getCacheInterceptor())
                     .addInterceptor(interceptor)
-//                    .addNetworkInterceptor(VodApplication.getModuleAppContext().getCacheInterceptor())
                     .addInterceptor(new UserAgentInterceptor())
-                    .dns(new Dns() {
-                        @Override
-                        public List<InetAddress> lookup(String hostName) throws UnknownHostException {
-                            String ipAddress = IsmartvActivator.getHostByName(hostName);
-                            if (ipAddress.endsWith("0.0.0.0")) {
-                                throw new UnknownHostException("can't connect to internet");
-                            }
-                            return Dns.SYSTEM.lookup(ipAddress);
-                        }
-                    })
+//                    .dns(new Dns() {
+//                        @Override
+//                        public List<InetAddress> lookup(String hostName) throws UnknownHostException {
+//                            String ipAddress = IsmartvActivator.getHostByName(hostName);
+//                            if (ipAddress.endsWith("0.0.0.0")) {
+//                                throw new UnknownHostException("can't connect to internet");
+//                            }
+//                            return Dns.SYSTEM.lookup(ipAddress);
+//                        }
+//                    })
                     .cache(cache)
                     .sslSocketFactory(sc.getSocketFactory())
                     .build();
@@ -833,6 +847,10 @@ public interface SkyService {
             Gson gson = new GsonBuilder()
                     .setDateFormat("yyyy-MM-dd hh:mm:ss")
                     .create();
+
+            /**
+             * ==================================主域名======================================
+             */
             Retrofit retrofit = new Retrofit.Builder()
                     .baseUrl(appendProtocol(domain[0]))
                     .addConverterFactory(GsonConverterFactory.create(gson))
@@ -840,24 +858,25 @@ public interface SkyService {
                     .client(mClient)
                     .build();
             mSkyService = retrofit.create(SkyService.class);
+            //=============================================================================
 
-            Retrofit localTestRetrofit = new Retrofit.Builder()
-                    .baseUrl(appendProtocol("http://192.168.2.27:10091"))
-                    .addConverterFactory(GsonConverterFactory.create(gson))
-                    .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-                    .client(mClient)
-                    .build();
-            localTestSkyService = localTestRetrofit.create(SkyService.class);
 
+            /**
+             * ==================================广告域名======================================
+             */
             Retrofit adRetrofit = new Retrofit.Builder()
                     .baseUrl(appendProtocol(domain[1]))
-//                    .baseUrl("http://103.254.66.8:8082/")
+                    //                    .baseUrl("http://103.254.66.8:8082/")
                     .addConverterFactory(GsonConverterFactory.create(gson))
                     .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                     .client(mClient)
                     .build();
             adSkyService = adRetrofit.create(SkyService.class);
+            //=============================================================================
 
+            /**
+             * ==================================应用升级域名======================================
+             */
             Retrofit upgradeRetrofit = new Retrofit.Builder()
                     .baseUrl(appendProtocol(domain[2]))
                     //               .baseUrl(appendProtocol("http://124.42.65.66/"))
@@ -865,8 +884,12 @@ public interface SkyService {
                     .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                     .client(mClient)
                     .build();
-
             upgradeService = upgradeRetrofit.create(SkyService.class);
+            //=============================================================================
+
+            /**
+             * ==================================天气预报域名======================================
+             */
 
             Retrofit weatherRetrofit = new Retrofit.Builder()
                     .baseUrl(appendProtocol("http://media.lily.tvxio.com/"))
@@ -875,7 +898,11 @@ public interface SkyService {
                     .client(mClient)
                     .build();
             weatherService = weatherRetrofit.create(SkyService.class);
+            //=============================================================================
 
+            /**
+             * ==================================微信域名======================================
+             */
             Retrofit wxApiServiceRetrofit = new Retrofit.Builder()
                     .baseUrl(API_HOST)
                     .addConverterFactory(GsonConverterFactory.create(gson))
@@ -883,7 +910,11 @@ public interface SkyService {
                     .client(mClient)
                     .build();
             wxApiService = wxApiServiceRetrofit.create(SkyService.class);
+            //=============================================================================
 
+            /**
+             * ==================================视云客服域名======================================
+             */
             Retrofit irisServiceRetrofit = new Retrofit.Builder()
                     .baseUrl(IRIS_TVXIO_HOST)
                     .addConverterFactory(GsonConverterFactory.create(gson))
@@ -891,7 +922,11 @@ public interface SkyService {
                     .client(mClient)
                     .build();
             irisService = irisServiceRetrofit.create(SkyService.class);
+            //=============================================================================
 
+            /**
+             * ==================================视云客服日志上报域名======================================
+             */
             Retrofit speedCallaServiceRetrofit = new Retrofit.Builder()
                     .baseUrl(SPEED_CALLA_TVXIO_HOST)
                     .addConverterFactory(GsonConverterFactory.create(gson))
@@ -899,7 +934,11 @@ public interface SkyService {
                     .client(mClient)
                     .build();
             speedCallaService = speedCallaServiceRetrofit.create(SkyService.class);
+            //=============================================================================
 
+            /**
+             * ==================================GEO_ID域名======================================
+             */
             Retrofit lilyHostServiceRetrofit = new Retrofit.Builder()
                     .baseUrl(LILY_TVXIO_HOST)
                     .addConverterFactory(GsonConverterFactory.create())
@@ -907,36 +946,11 @@ public interface SkyService {
                     .client(mClient)
                     .build();
             lilyHostService = lilyHostServiceRetrofit.create(SkyService.class);
+            //=============================================================================
 
-            Retrofit cacheSkyRetrofit = new Retrofit.Builder()
-                    .client(mClient)
-                    .baseUrl(appendProtocol(domain[0]))
-                    .addConverterFactory(GsonConverterFactory.create(gson))
-                    .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-                    .build();
-            mCacheSkyService = cacheSkyRetrofit.create(SkyService.class);
-
-            Retrofit cacheSkyRetrofit2 = new Retrofit.Builder()
-                    .client(mClient)
-                    .baseUrl(appendProtocol(domain[0]))
-                    .addConverterFactory(GsonConverterFactory.create(gson))
-                    .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-                    .build();
-            mCacheSkyService2 = cacheSkyRetrofit2.create(SkyService.class);
-
-
-            OkHttpClient mLogClient = new OkHttpClient.Builder()
-                    .connectTimeout(DEFAULT_CONNECT_TIMEOUT, TimeUnit.SECONDS)
-                    .readTimeout(DEFAULT_READ_TIMEOUT, TimeUnit.SECONDS)
-                    .addInterceptor(new UserAgentInterceptor())
-                    .addInterceptor(interceptor)
-                    .build();
-//            Retrofit logRetrofit = new Retrofit.Builder()
-//                    .baseUrl(appendProtocol(HttpUrl.parse(domain[4]).host()))
-//                    .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-//                    .client(mLogClient)
-//                    .build();
-
+            /**
+             * ==================================爱奇艺购买域名======================================
+             */
             Retrofit carnationRetrofit = new Retrofit.Builder()
                     .baseUrl(appendProtocol(domain[5]))
                     .addConverterFactory(GsonConverterFactory.create(gson))
@@ -944,6 +958,7 @@ public interface SkyService {
                     .client(mClient)
                     .build();
             mCarnationService = carnationRetrofit.create(SkyService.class);
+            //=============================================================================
         }
 
 
@@ -968,7 +983,6 @@ public interface SkyService {
             }
             return serviceManager;
         }
-
 
         public static SkyService getService() {
 
@@ -1010,39 +1024,8 @@ public interface SkyService {
             return getInstance().lilyHostService;
         }
 
-        public static SkyService getLocalTestService() {
-
-            return getInstance().localTestSkyService;
-        }
-
-        public static SkyService getCacheSkyService() {
-            return getInstance().mCacheSkyService;
-        }
-
-        public static SkyService getCacheSkyService2() {
-            return getInstance().mCacheSkyService2;
-        }
-
         public static SkyService getCarnationService() {
             return getInstance().mCarnationService;
         }
     }
-
-
-//    class DateDeserializer implements JsonDeserializer<Date> {
-//        @Override
-//        public Date deserialize(JsonElement element, Type arg1, JsonDeserializationContext arg2) throws JsonParseException {
-//            String date = element.getAsString();
-//
-//            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-//            formatter.setTimeZone(TimeZone.getTimeZone("Asia/Shanghai"));
-//
-//            try {
-//                return formatter.parse(date);
-//            } catch (ParseException e) {
-//                e.printStackTrace();
-//                return null;
-//            }
-//        }
-//    }
 }
