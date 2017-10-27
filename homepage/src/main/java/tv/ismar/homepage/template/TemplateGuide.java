@@ -797,10 +797,10 @@ public class TemplateGuide extends Template
 
         mVideoViewLayout.setTag(mFetchDataControl.mCarousels.get(mCurrentCarouselIndex));
 
-        String intro = mFetchDataControl.mCarousels.get(mCurrentCarouselIndex).getIntroduction();
-        if (!StringUtils.isEmpty(intro)) {
+        String title = mFetchDataControl.mCarousels.get(mCurrentCarouselIndex).getTitle();
+        if (!StringUtils.isEmpty(title)) {
             mVideoTitleTv.setVisibility(View.VISIBLE);
-            mVideoTitleTv.setText(intro);
+            mVideoTitleTv.setText(title);
         } else {
             mVideoTitleTv.setVisibility(View.GONE);
         }
