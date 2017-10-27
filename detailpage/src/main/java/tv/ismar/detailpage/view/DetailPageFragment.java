@@ -387,10 +387,10 @@ public class DetailPageFragment extends Fragment implements DetailPageContract.V
 //            relTextViews[i].setEllipsize(TextUtils.TruncateAt.MARQUEE);
             relTextViews[i].setText(itemEntities[i].getTitle());
 
-            if (mMovieBinding != null || mEntertainmentBinding != null) {
+            if (mEntertainmentBinding != null) {
                 relRelImageViews[i].setLivLabelText(itemEntities[i].getFocus());
 
-            } else {
+            } else if(mNormalBinding!=null){
                 relFocusTextViews[i].setText(itemEntities[i].getFocus());
             }
         }

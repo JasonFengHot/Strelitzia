@@ -74,7 +74,6 @@ public class ModuleMessagePopWindow extends PopupWindow implements View.OnClickL
 
         setContentView(contentView);
 
-        setBackgroundDrawable(mContext.getResources().getDrawable(R.drawable.transparent));
 
         setFocusable(true);
 

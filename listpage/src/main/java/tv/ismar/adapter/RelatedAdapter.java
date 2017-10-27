@@ -104,8 +104,8 @@ public class RelatedAdapter extends BaseAdapter implements AsyncImageView.OnImag
             } else {
                 holder.previewImage.setUrl(mItemList.get(position).list_url);
             }
-            if (mItemList.get(position).focus != null)
-                ((LabelImageView) holder.previewImage).setFocustitle(mItemList.get(position).focus);
+//            if (mItemList.get(position).focus != null)
+//                ((LabelImageView) holder.previewImage).setFocustitle(mItemList.get(position).focus);
         }
         holder.title.setText(mItemList.get(position).title);
         holder.qualityLabel = (ImageView) convertView.findViewById(R.id.list_item_quality_label);
