@@ -610,9 +610,9 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
             if(targetPosition==3){
                 favorite_left_arrow.setVisibility(View.VISIBLE);
                 favoriteManager.scrollToPositionWithOffset(targetPosition,getResources().getDimensionPixelOffset(R.dimen.history_165));
-            }else if(targetPosition>=favoriteLists.size()-1){
+            }else if(targetPosition+2>=favoriteLists.size()-1){
                 favoriteManager.smoothScrollToPosition(favoriteRecycler,null,getResources().getDimensionPixelOffset(R.dimen.history_165));
-            }else {
+            }else{
                 favoriteManager.scrollToPositionWithOffset(targetPosition,getResources().getDimensionPixelOffset(R.dimen.history_165));
                 arrowState();
             }
@@ -641,14 +641,26 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
             history_right_arrow.setVisibility(View.VISIBLE);
         }else if(id==R.id.history_right_arrow){
             targetPosition=historyLayoutManager.findFirstCompletelyVisibleItemPosition()+3;
-            if(targetPosition==3) {
-                history_left_arrow.setVisibility(View.VISIBLE);
-                favoriteManager.scrollToPositionWithOffset(targetPosition,getResources().getDimensionPixelOffset(R.dimen.history_165));
-            }else if(targetPosition>=historyLists.size()-1) {
-                historyLayoutManager.smoothScrollToPosition(historyRecycler,null,getResources().getDimensionPixelOffset(R.dimen.history_165));
-            }else {
-                historyLayoutManager.scrollToPositionWithOffset(targetPosition, getResources().getDimensionPixelOffset(R.dimen.history_165));
-                arrowState();
+            if(historyLists.size()>0){
+                if(targetPosition==3) {
+                    history_left_arrow.setVisibility(View.VISIBLE);
+                    favoriteManager.scrollToPositionWithOffset(targetPosition,getResources().getDimensionPixelOffset(R.dimen.history_165));
+                }else if(targetPosition+2>=historyLists.size()-1) {
+                    historyLayoutManager.smoothScrollToPosition(historyRecycler,null,getResources().getDimensionPixelOffset(R.dimen.history_165));
+                }else{
+                    historyLayoutManager.scrollToPositionWithOffset(targetPosition, getResources().getDimensionPixelOffset(R.dimen.history_165));
+                    arrowState();
+                }
+            }else{
+                if(targetPosition==3) {
+                    history_left_arrow.setVisibility(View.VISIBLE);
+                    favoriteManager.scrollToPositionWithOffset(targetPosition,getResources().getDimensionPixelOffset(R.dimen.history_165));
+                }else if(targetPosition+2>=historyLists.size()-1) {
+                    historyLayoutManager.smoothScrollToPosition(historyRecycler,null,getResources().getDimensionPixelOffset(R.dimen.history_165));
+                }else{
+                    historyLayoutManager.scrollToPositionWithOffset(targetPosition, getResources().getDimensionPixelOffset(R.dimen.history_165));
+                    arrowState();
+                }
             }
         }
     }
