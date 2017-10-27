@@ -405,13 +405,9 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
     }
 
     private void changeCheckedTab(int position) {
+        try {
+            ((RadioButton) section_group.getChildAt(position + 1)).setChecked(true);
         for (int i = 0; i < sectionSize; i++) {
-            if (i == sectionSize - 1) {
-                if(specialPos!=null&&position>=specialPos.get(i)){
-                    ((RadioButton) section_group.getChildAt(i + 1)).setChecked(true);
-                }
-                break;
-            }
             if (specialPos != null && position >= specialPos.get(i) && position < specialPos.get(i + 1)) {
 
                 ((RadioButton) section_group.getChildAt(i + 1)).setChecked(true);
@@ -422,6 +418,9 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
                 }
                 break;
             }
+        }
+        }catch (Exception e){
+            e.printStackTrace();
         }
     }
 
@@ -566,7 +565,7 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
                 mDownTime=downTime;
                 return false;
             }
-            if(downTime-mDownTime>400){
+            if(downTime-mDownTime>200){
                 mDownTime=downTime;
                 return false;
             }
@@ -578,7 +577,7 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
                 mUpTime=upTime;
                 return false;
             }
-            if(upTime-mUpTime>400){
+            if(upTime-mUpTime>200){
                 mUpTime=upTime;
                 return false;
             }
