@@ -9,8 +9,13 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+/*add by dragontec for bug 4065 start*/
+import android.os.Handler;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+/*add by dragontec for bug 4065 end*/
+
+import android.widget.LinearLayout;
 
 import com.orhanobut.logger.Logger;
 
@@ -38,9 +43,6 @@ import tv.ismar.homepage.template.TemplateTvPlay;
 import tv.ismar.homepage.widget.HomeRootRelativeLayout;
 import tv.ismar.homepage.widget.RecycleLinearLayout;
 import tv.ismar.library.util.StringUtils;
-
-/*add by dragontec for bug 4065 start*/
-/*add by dragontec for bug 4065 end*/
 
 /**
  * @AUTHOR: xi @DATE: 2017/9/8 @DESC: 频道fragemnt
@@ -227,6 +229,9 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
 
     private void findView(View view) {
         mLinearContainer = (RecycleLinearLayout) view.findViewById(R.id.scroll_linear_container);
+/*add by dragontec for bug 4195 start*/
+		mLinearContainer.enableChildrenDrawingOrder();
+/*add by dragontec for bug 4195 end*/
         if(getActivity() instanceof HomeActivity){
             mLinearContainer.setArrow_up(((HomeActivity) getActivity()).banner_arrow_up);
             mLinearContainer.setArrow_down(((HomeActivity) getActivity()).banner_arrow_down);

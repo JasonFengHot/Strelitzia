@@ -3,8 +3,17 @@ package tv.ismar.homepage.adapter;
 import android.animation.ObjectAnimator;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+
+/*add by dragontec for bug 4265 start*/
+import android.view.KeyEvent;
+/*add by dragontec for bug 4265 end*/
 import android.view.MotionEvent;
 import android.view.View;
+
+/*add by dragontec for bug 4265 start*/
+import com.open.androidtvwidget.leanback.recycle.LinearLayoutManagerTV;
+import com.open.androidtvwidget.leanback.recycle.RecyclerViewTV;
+/*add by dragontec for bug 4265 end*/
 
 import tv.ismar.homepage.HomeActivity;
 import tv.ismar.homepage.OnItemClickListener;
@@ -21,18 +30,32 @@ import static android.view.View.SCALE_Y;
  * @DESC: ViewHolder基类
  */
 public abstract class BaseViewHolder extends RecyclerView.ViewHolder implements
-        View.OnFocusChangeListener, View.OnClickListener, View.OnHoverListener{
+        View.OnFocusChangeListener, View.OnClickListener, View.OnHoverListener,
+/*add by dragontec for bug 4265 start*/
+		View.OnKeyListener
+/*add by dragontec for bug 4265 end*/
+{
 
     public int mPosition;//item位置
     private OnItemClickListener mClickListener = null;
     private OnItemSelectedListener mSelectedListener = null;
     private OnItemHoverListener mHoverListener = null;
+	/*add by dragontec for bug 4265 start*/
+    private RecyclerView mRecyclerView = null;
+    private boolean isCenter = false;
+	/*add by dragontec for bug 4265 end*/
 
     public BaseViewHolder(View itemView, BaseRecycleAdapter baseAdapter) {
         super(itemView);
         this.mClickListener = baseAdapter.mClickListener;
         this.mSelectedListener = baseAdapter.mSelectedListener;
         this.mHoverListener = baseAdapter.mHoverListener;
+		/*add by dragontec for bug 4265 start*/
+        this.mRecyclerView = baseAdapter.mRecyclerView;
+        if (baseAdapter instanceof CenterAdapter) {
+			isCenter = true;
+		}
+		/*add by dragontec for bug 4265 end*/
         initListener();
     }
 
@@ -41,6 +64,9 @@ public abstract class BaseViewHolder extends RecyclerView.ViewHolder implements
             itemView.findViewById(getScaleLayoutId()).setOnFocusChangeListener(this);
             itemView.findViewById(getScaleLayoutId()).setOnClickListener(this);
             itemView.findViewById(getScaleLayoutId()).setOnHoverListener(this);
+			/*add by dragontec for bug 4265 start*/
+            itemView.findViewById(getScaleLayoutId()).setOnKeyListener(this);
+			/*add by dragontec for bug 4265 end*/
         }
     }
 
@@ -112,7 +138,56 @@ public abstract class BaseViewHolder extends RecyclerView.ViewHolder implements
         return false;
     }
 
-    /*缩放到1.1倍*/
+	/*add by dragontec for bug 4265 start*/
+	@Override
+	public boolean onKey(View v, int keyCode, KeyEvent event) {
+    	if (event.getAction() == KeyEvent.ACTION_UP) {
+    		if (keyCode == KeyEvent.KEYCODE_DPAD_LEFT || keyCode == KeyEvent.KEYCODE_DPAD_RIGHT ) {
+    			if (mRecyclerView != null && mRecyclerView instanceof RecyclerViewTV) {
+    				if (((RecyclerViewTV) mRecyclerView).isNotScrolling()) {
+						//check item
+						int[] location = new int[]{0, 0};
+						v.getLocationOnScreen(location);
+						int screenWidth = v.getResources().getDisplayMetrics().widthPixels;
+						if (location[0] < 0 || location[0] + v.getWidth() > screenWidth) {
+							if (mRecyclerView.getLayoutManager() != null) {
+								if (isCenter) {
+									if (mRecyclerView.getLayoutManager() instanceof LinearLayoutManagerTV) {
+										if (keyCode == KeyEvent.KEYCODE_DPAD_LEFT) {
+											int position = ((RecyclerViewTV)mRecyclerView).findFirstVisibleItemPosition();
+											((LinearLayoutManagerTV) mRecyclerView.getLayoutManager()).setCanScroll(true);
+											((LinearLayoutManagerTV) mRecyclerView.getLayoutManager()).scrollToPositionWithOffset( ((RecyclerViewTV)mRecyclerView).findFirstVisibleItemPosition(), v.getContext().getResources().getDimensionPixelOffset(R.dimen.center_padding_offset));
+											if (mSelectedListener != null) {
+												mSelectedListener.onItemSelect(v, position);
+											}
+										}
+										if (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT) {
+											int position = ((RecyclerViewTV)mRecyclerView).findFirstVisibleItemPosition();
+											((LinearLayoutManagerTV) mRecyclerView.getLayoutManager()).setCanScroll(true);
+											((LinearLayoutManagerTV) mRecyclerView.getLayoutManager()).scrollToPositionWithOffset( ((RecyclerViewTV)mRecyclerView).findLastVisibleItemPosition(), v.getContext().getResources().getDimensionPixelOffset(R.dimen.center_padding_offset));
+											if (mSelectedListener != null) {
+												mSelectedListener.onItemSelect(v, position);
+											}
+										}
+									}
+								} else {
+									int position = getAdapterPosition();
+									mRecyclerView.getLayoutManager().smoothScrollToPosition(mRecyclerView, null, getAdapterPosition());
+									if (mSelectedListener != null) {
+										mSelectedListener.onItemSelect(v, position);
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		return false;
+	}
+	/*add by dragontec for bug 4265 end*/
+
+	/*缩放到1.1倍*/
     protected void scaleToLarge(View view) {
         ObjectAnimator objectAnimatorX = ObjectAnimator.ofFloat(view, SCALE_X, 1.0F, getScaleXY());
         objectAnimatorX.setDuration(100L);

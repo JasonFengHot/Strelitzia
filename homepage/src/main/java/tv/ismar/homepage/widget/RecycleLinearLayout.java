@@ -47,6 +47,10 @@ public class RecycleLinearLayout extends LinearLayout {
 	private int currentBannerPos=0;
     private HomeRootRelativeLayout homeRootRelativeLayout;
     private boolean hasMore=false;
+	/*modify by dragontec for bug 4296 start*/
+    private boolean isHideTopOutSideChild = false;
+    private Object hideTopOutSideChildLock = new Object();
+	/*modify by dragontec for bug 4296 end*/
 
     public RecycleLinearLayout(Context context) {
         super(context);
@@ -57,6 +61,12 @@ public class RecycleLinearLayout extends LinearLayout {
         super(context, attrs);
         initWindow(context);
     }
+
+/*add by dragontec for bug 4195 start*/
+    public void enableChildrenDrawingOrder() {
+        setChildrenDrawingOrderEnabled(true);
+    }
+/*add by dragontec for bug 4195 end*/
 
 //    public void setScrollView(ScrollView view){
 //        this.mScrollView = view;
@@ -105,6 +115,12 @@ public class RecycleLinearLayout extends LinearLayout {
             scrollTo(mOverScroller.getCurrX(), mOverScroller.getCurrY());//调用view方法执行真实的滑动动作
 /*modify by dragontec for bug 4200 start*/
 //            postInvalidate();
+			/*modify by dragontec for bug 4296 start*/
+            int delta = Math.abs(mOverScroller.getCurrY() - mOverScroller.getFinalY());
+            if(delta == 0){
+                hideFirstOutTopChild();
+            }
+			/*modify by dragontec for bug 4296 start*/
 			invalidate();
         } else {
 			//滚动完毕后确认数据请求
@@ -122,7 +138,9 @@ public class RecycleLinearLayout extends LinearLayout {
         if(HomeActivity.isTitleHidden && isScrollDuringTitleHiddenState){
             dy +=  getResources().getDimensionPixelSize(R.dimen.banner_margin_top);
             /*modify by dragontec for bug 4178 start*/
-            if(dataSize <= getChildCount()){
+			/*modify by dragontec for bug 4296 start*/
+            if(dataSize <= getChildCount() && getFocusedChildPosition() >= getChildCount() - BANNER_LOAD_AIMING_OFF){
+			/*modify by dragontec for bug 4296 end*/
                 int height = getHeight();
                 if(mOverScroller.getFinalY() + dy > (height - mScreenHeight)){
                     dy = (height - mScreenHeight) - mOverScroller.getFinalY();
@@ -141,7 +159,18 @@ public class RecycleLinearLayout extends LinearLayout {
 		/*modify by dragontec for bug 3983 end*/
         invalidate();//保证computeScroll()执行
     }
-
+	/*modify by dragontec for bug 4296 start*/
+    private int getFocusedChildPosition() {
+        View view = getFocusedChild();
+        int position = 0;
+        if(view != null) {
+            int key = (int) view.getTag();
+            int tag = (int) view.getTag(key);
+            position = (tag << 2) >> 2;
+        }
+        return position;
+    }
+	/*modify by dragontec for bug 4296 end*/
     private void scrollToVisiable(View view){
         if(view != null){
             currentBannerPos=indexOfChild(view);
@@ -204,6 +233,14 @@ public class RecycleLinearLayout extends LinearLayout {
             view.getLocationOnScreen(location);
             Log.i(TAG, "top:"+location[1]);
             Log.i(TAG, "margin:"+mContext.getResources().getDimensionPixelOffset(R.dimen.banner_margin_top));
+			/*modify by dragontec for bug 4296 start*/
+            for (int i = 0; i < getChildCount(); i++) {
+                View v = getChildAt(i);
+                if(v.getVisibility() != View.VISIBLE){
+                    v.setVisibility(View.VISIBLE);
+                }
+            }
+			/*modify by dragontec for bug 4296 end*/
 			/*modify by dragontec for bug 4149 start*/
 			if (location[1] != 0) {
 				smoothScrollBy(0, location[1] - mContext.getResources().getDimensionPixelOffset(R.dimen.banner_margin_top));
@@ -263,12 +300,20 @@ public class RecycleLinearLayout extends LinearLayout {
         } else {
             mLastTime = mCurrentTime;
         }
+		/*modify by dragontec for bug 4296 start*/
+        if(mOverScroller.computeScrollOffset() && event.getAction() == KeyEvent.ACTION_DOWN){
+            return true;
+        }
+		/*modify by dragontec for bug 4296 end*/
         return excuteKeyEvent(event, longPress);
     }
 
     private boolean excuteKeyEvent(KeyEvent event, boolean longPress){
         int keyCode = event.getKeyCode();
         if(event.getAction() == KeyEvent.ACTION_DOWN){
+			/*modify by dragontec for bug 4296 start*/
+            showAllChild();
+			/*modify by dragontec for bug 4296 end*/
             mLastView = getFocusedChild();
         }
         Log.i(TAG, "action:"+event.getAction()+" keyCode:"+keyCode);
@@ -432,6 +477,11 @@ public class RecycleLinearLayout extends LinearLayout {
             @Override
             public void onClick(View v) {
                 try {
+					/*modify by dragontec for bug 4296 start*/
+                    if(mOverScroller.computeScrollOffset()){
+                        return ;
+                    }
+					/*modify by dragontec for bug 4296 end*/
                     View view = findFirstViewOnLastPage();
                     if(view!=null) {
                         int key = (int) view.getTag();
@@ -461,6 +511,9 @@ public class RecycleLinearLayout extends LinearLayout {
 //                } else {
 //                    scrollToTop(view);
 //                }
+						/*modify by dragontec for bug 4296 start*/
+			            showAllChild();
+						/*modify by dragontec for bug 4296 end*/
                         scrollToTop(view);
                     }
 				/*modify by dragontec for bug 4178 end*/
@@ -477,6 +530,11 @@ public class RecycleLinearLayout extends LinearLayout {
             @Override
             public void onClick(View v) {
                 try {
+					/*modify by dragontec for bug 4296 start*/
+                    if(mOverScroller.computeScrollOffset()){
+                        return ;
+                    }
+					/*modify by dragontec for bug 4296 end*/
                     /*modify by dragontec for bug 4248 start*/
                     View view = findFirstViewOnNextPage();
 //                View view = getChildAt(currentBannerPos==0?2:currentBannerPos+1>=getChildCount()?currentBannerPos:currentBannerPos+1);
@@ -520,6 +578,9 @@ public class RecycleLinearLayout extends LinearLayout {
 //                } else {
 //                    scrollToTop(view);
 //                }
+						/*modify by dragontec for bug 4296 start*/
+			            showAllChild();
+						/*modify by dragontec for bug 4296 end*/
                         scrollToTop(view);
                     }
 				/*modify by dragontec for bug 4178 end*/
@@ -529,6 +590,39 @@ public class RecycleLinearLayout extends LinearLayout {
             }
         });
     }
+	/*modify by dragontec for bug 4296 start*/
+    private void hideFirstOutTopChild(){
+        synchronized (hideTopOutSideChildLock) {
+            if (!isHideTopOutSideChild) {
+                isHideTopOutSideChild = true;
+                for (int i = 0; i < getChildCount(); i++) {
+                    View v = getChildAt(i);
+                    Rect rect = new Rect();
+                    v.getGlobalVisibleRect(rect);
+                    if(rect.bottom == 0){
+                        if(v.getVisibility() == View.VISIBLE){
+                            v.setVisibility(View.INVISIBLE);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private void showAllChild(){
+        synchronized (hideTopOutSideChildLock) {
+            if (isHideTopOutSideChild) {
+                isHideTopOutSideChild = false;
+                for (int i = 0; i < getChildCount(); i++) {
+                    View v = getChildAt(i);
+                    if (v.getVisibility() != View.VISIBLE) {
+                        v.setVisibility(View.VISIBLE);
+                    }
+                }
+            }
+        }
+    }
+	/*modify by dragontec for bug 4296 end*/
 
     private ViewHolder mHolder;
 
@@ -585,6 +679,9 @@ public class RecycleLinearLayout extends LinearLayout {
 
     public boolean scrollerScrollToTop() {
         if (mOverScroller != null && !mOverScroller.computeScrollOffset()) {
+			/*modify by dragontec for bug 4296 start*/
+            showAllChild();
+			/*modify by dragontec for bug 4296 end*/
             currentBannerPos = 0;
             //fix bug by dragontec点击下箭头有时不生效的bug
             mLastView = null;
@@ -626,4 +723,11 @@ public class RecycleLinearLayout extends LinearLayout {
 		mOnScrollFinishedListener = onScrollFinishedListener;
 	}
 /*modify by dragontec for bug 4200 end*/
+
+/*add by dragontec for bug 4195 start*/
+    @Override
+    protected int getChildDrawingOrder(int childCount, int i) {
+        return childCount - i - 1;
+    }
+/*add by dragontec for bug 4195 end*/
 }

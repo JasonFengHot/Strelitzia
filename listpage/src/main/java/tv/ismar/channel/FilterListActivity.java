@@ -54,6 +54,9 @@ import tv.ismar.app.models.FilterConditions;
 import tv.ismar.app.network.entity.EventProperty;
 import tv.ismar.app.ui.adapter.OnItemClickListener;
 import tv.ismar.app.ui.adapter.OnItemFocusedListener;
+//add by dragontec for bug 4310 start
+import tv.ismar.app.ui.adapter.OnItemKeyListener;
+//add by dragontec for bug 4310 end
 import tv.ismar.app.widget.MyRecyclerView;
 import tv.ismar.listpage.R;
 import tv.ismar.searchpage.utils.JasmineUtil;
@@ -563,6 +566,13 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
     long mUpTime=0;
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
+/*add by dragontec for bug 4267 start*/
+        if (keyCode != KeyEvent.KEYCODE_BACK) {
+            if (onKeyFocusView == null) {
+                return true;
+            }
+        }
+/*add by dragontec for bug 4267 end*/
         //长按滑动 滑动时焦点不会乱跳，但是每隔400毫秒滑动一次
         if (keyCode == 20) {
             long downTime =System.currentTimeMillis();
@@ -903,23 +913,49 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
                     }
                 }
             });
+			//add by dragontec for bug 4310 start
+			filterPosterAdapter.setItemKeyListener(new OnItemKeyListener() {
+				@Override
+				public void onItemKeyListener(View v, int keyCode, KeyEvent event) {
+					if (event.getAction() == KeyEvent.ACTION_UP) {
+						int position = poster_recyclerview.getChildAdapterPosition(v);
+						if (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT || keyCode == KeyEvent.KEYCODE_DPAD_DOWN || keyCode == KeyEvent.KEYCODE_DPAD_LEFT || keyCode == KeyEvent.KEYCODE_DPAD_UP) {
+							if(!filter_root_view.horving) {
+								if (v.getY() > getResources().getDimensionPixelOffset(R.dimen.filter_poster_start_scroll_length)) {
+									mFilterFocusGridLayoutManager.scrollToPositionWithOffset(position, 0);
+								} else if (v.getY() < 0) {
+									if (isVertical) {
+										mFilterFocusGridLayoutManager.scrollToPositionWithOffset(position, getResources().getDimensionPixelOffset(R.dimen.list_scroll_filter_offset_v));
+									} else {
+										mFilterFocusGridLayoutManager.scrollToPositionWithOffset(position, getResources().getDimensionPixelOffset(R.dimen.list_scroll_filter_offset_h));
+									}
+								}
+							}
+						}
+					}
+				}
+			});
+			//add by dragontec for bug 4310 end
+
             filterPosterAdapter.setItemFocusedListener(new OnItemFocusedListener() {
                 @Override
                 public void onItemfocused(View view, int position, boolean hasFocus) {
                     if(hasFocus){
                         onKeyFocusView=view;
                         lastFocusedView = view;
-                        if(!filter_root_view.horving) {
-                            if (view.getY() > getResources().getDimensionPixelOffset(R.dimen.filter_poster_start_scroll_length)) {
-                                mFilterFocusGridLayoutManager.scrollToPositionWithOffset(position, 0);
-                            } else if (view.getY() < 0) {
-                                if (isVertical) {
-                                    mFilterFocusGridLayoutManager.scrollToPositionWithOffset(position, getResources().getDimensionPixelOffset(R.dimen.list_scroll_filter_offset_v));
-                                } else {
-                                    mFilterFocusGridLayoutManager.scrollToPositionWithOffset(position, getResources().getDimensionPixelOffset(R.dimen.list_scroll_filter_offset_h));
-                                }
-                            }
-                        }
+						//modify by dragontec for bug 4310 start
+//                        if(!filter_root_view.horving) {
+//                            if (view.getY() > getResources().getDimensionPixelOffset(R.dimen.filter_poster_start_scroll_length)) {
+//                                mFilterFocusGridLayoutManager.scrollToPositionWithOffset(position, 0);
+//                            } else if (view.getY() < 0) {
+//                                if (isVertical) {
+//                                    mFilterFocusGridLayoutManager.scrollToPositionWithOffset(position, getResources().getDimensionPixelOffset(R.dimen.list_scroll_filter_offset_v));
+//                                } else {
+//                                    mFilterFocusGridLayoutManager.scrollToPositionWithOffset(position, getResources().getDimensionPixelOffset(R.dimen.list_scroll_filter_offset_h));
+//                                }
+//                            }
+//                        }
+						//modify by dragontec for bug 4310 end
                         JasmineUtil.scaleOut3(view);
                         if(isVertical) {
                             view.findViewById(R.id.item_vertical_poster_title).setSelected(true);
@@ -1217,6 +1253,11 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
             radioButton.setOnKeyListener(new View.OnKeyListener() {
                 @Override
                 public boolean onKey(View v, int keyCode, KeyEvent event) {
+/*add by dragontec for bug 4310 start*/
+                	if (list_poster_recyclerview.isScrolling() || poster_recyclerview.isScrolling()) {
+                		return true;
+					}
+/*add by dragontec for bug 4310 end*/
                     v.getLocationOnScreen(location);
                     if(event.getAction()==KeyEvent.ACTION_DOWN) {
                         if (keyCode == 20) {
@@ -1362,6 +1403,49 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
                     }
                 }
             });
+			//add by dragontec for bug 4310 start
+            listPosterAdapter.setItemKeyListener(new OnItemKeyListener() {
+				@Override
+				public void onItemKeyListener(View v, int keyCode, KeyEvent event) {
+					if (event.getAction() == KeyEvent.ACTION_UP) {
+						int position = list_poster_recyclerview.getChildAdapterPosition(v);
+						if (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT || keyCode == KeyEvent.KEYCODE_DPAD_DOWN || keyCode == KeyEvent.KEYCODE_DPAD_LEFT || keyCode == KeyEvent.KEYCODE_DPAD_UP) {
+							if (!filter_root_view.horving) {
+								if (v.getY() > getResources().getDimensionPixelOffset(R.dimen.filter_poster_start_scroll_length)) {
+									if (isVertical) {
+										mFocusGridLayoutManager.scrollToPositionWithOffset(position, getResources().getDimensionPixelOffset(R.dimen.list_scroll_up_offset_v));
+									} else {
+										mFocusGridLayoutManager.scrollToPositionWithOffset(position, getResources().getDimensionPixelOffset(R.dimen.list_scroll_up_offset_h));
+									}
+								} else if (v.getY() < 0) {
+									if (isVertical) {
+										if (specialPos != null && (specialPos.contains(position - 1) || specialPos.contains(position - 2) || specialPos.contains(position - 3) || specialPos.contains(position - 4) || specialPos.contains(position - 5))) {
+											mFocusGridLayoutManager.scrollToPositionWithOffset(position, getResources().getDimensionPixelOffset(R.dimen.list_scroll_up_offset_v));
+										} else {
+											mFocusGridLayoutManager.scrollToPositionWithOffset(position, getResources().getDimensionPixelOffset(R.dimen.list_scroll_down_offset_v));
+										}
+									} else {
+										if (specialPos != null && (specialPos.contains(position - 1) || specialPos.contains(position - 2) || specialPos.contains(position - 3))) {
+											mFocusGridLayoutManager.scrollToPositionWithOffset(position, getResources().getDimensionPixelOffset(R.dimen.list_scroll_up_offset_h));
+										} else {
+											mFocusGridLayoutManager.scrollToPositionWithOffset(position, getResources().getDimensionPixelOffset(R.dimen.list_scroll_down_offset_h));
+										}
+
+									}
+								} else if (isVertical && v.getY() > 0 && v.getY() < current_section_title.getHeight()) {
+									if (specialPos != null && (specialPos.contains(position - 1) || specialPos.contains(position - 2) || specialPos.contains(position - 3) || specialPos.contains(position - 4) || specialPos.contains(position - 5))) {
+										mFocusGridLayoutManager.scrollToPositionWithOffset(position, getResources().getDimensionPixelOffset(R.dimen.list_scroll_up_offset_v));
+									} else {
+										mFocusGridLayoutManager.scrollToPositionWithOffset(position, getResources().getDimensionPixelOffset(R.dimen.list_scroll_down_offset_v));
+									}
+								}
+							}
+						}
+					}
+				}
+			});
+			//add by dragontec for bug 4310 end
+
             //设置海报焦点事件监听
             listPosterAdapter.setItemFocusedListener(new OnItemFocusedListener() {
                 @Override
@@ -1371,36 +1455,38 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
                         lastFocusedView = view;
                         changeCheckedTab(position);
                         Log.e("onitemfocus", view.getY()+"");
-                        if(!filter_root_view.horving) {
-                            if (view.getY() > getResources().getDimensionPixelOffset(R.dimen.filter_poster_start_scroll_length)) {
-                                if (isVertical) {
-                                    mFocusGridLayoutManager.scrollToPositionWithOffset(position, getResources().getDimensionPixelOffset(R.dimen.list_scroll_up_offset_v));
-                                } else {
-                                    mFocusGridLayoutManager.scrollToPositionWithOffset(position, getResources().getDimensionPixelOffset(R.dimen.list_scroll_up_offset_h));
-                                }
-                            } else if (view.getY() < 0) {
-                                if (isVertical) {
-                                    if(specialPos!=null&&(specialPos.contains(position-1)||specialPos.contains(position-2)||specialPos.contains(position-3)||specialPos.contains(position-4)||specialPos.contains(position-5))){
-                                        mFocusGridLayoutManager.scrollToPositionWithOffset(position, getResources().getDimensionPixelOffset(R.dimen.list_scroll_up_offset_v));
-                                    }else{
-                                        mFocusGridLayoutManager.scrollToPositionWithOffset(position, getResources().getDimensionPixelOffset(R.dimen.list_scroll_down_offset_v));
-                                    }
-                                } else {
-                                    if(specialPos!=null&&(specialPos.contains(position-1)||specialPos.contains(position-2)||specialPos.contains(position-3))){
-                                        mFocusGridLayoutManager.scrollToPositionWithOffset(position, getResources().getDimensionPixelOffset(R.dimen.list_scroll_up_offset_h));
-                                    }else{
-                                        mFocusGridLayoutManager.scrollToPositionWithOffset(position, getResources().getDimensionPixelOffset(R.dimen.list_scroll_down_offset_h));
-                                    }
-
-                                }
-                            }else if(isVertical&&view.getY()>0&&view.getY()<current_section_title.getHeight()){
-                                if(specialPos!=null&&(specialPos.contains(position-1)||specialPos.contains(position-2)||specialPos.contains(position-3)||specialPos.contains(position-4)||specialPos.contains(position-5))){
-                                    mFocusGridLayoutManager.scrollToPositionWithOffset(position, getResources().getDimensionPixelOffset(R.dimen.list_scroll_up_offset_v));
-                                }else{
-                                    mFocusGridLayoutManager.scrollToPositionWithOffset(position, getResources().getDimensionPixelOffset(R.dimen.list_scroll_down_offset_v));
-                                }
-                            }
-                        }
+						//modify by dragontec for bug 4310 start
+//                        if(!filter_root_view.horving) {
+//                            if (view.getY() > getResources().getDimensionPixelOffset(R.dimen.filter_poster_start_scroll_length)) {
+//                                if (isVertical) {
+//                                    mFocusGridLayoutManager.scrollToPositionWithOffset(position, getResources().getDimensionPixelOffset(R.dimen.list_scroll_up_offset_v));
+//                                } else {
+//                                    mFocusGridLayoutManager.scrollToPositionWithOffset(position, getResources().getDimensionPixelOffset(R.dimen.list_scroll_up_offset_h));
+//                                }
+//                            } else if (view.getY() < 0) {
+//                                if (isVertical) {
+//                                    if(specialPos!=null&&(specialPos.contains(position-1)||specialPos.contains(position-2)||specialPos.contains(position-3)||specialPos.contains(position-4)||specialPos.contains(position-5))){
+//                                        mFocusGridLayoutManager.scrollToPositionWithOffset(position, getResources().getDimensionPixelOffset(R.dimen.list_scroll_up_offset_v));
+//                                    }else{
+//                                        mFocusGridLayoutManager.scrollToPositionWithOffset(position, getResources().getDimensionPixelOffset(R.dimen.list_scroll_down_offset_v));
+//                                    }
+//                                } else {
+//                                    if(specialPos!=null&&(specialPos.contains(position-1)||specialPos.contains(position-2)||specialPos.contains(position-3))){
+//                                        mFocusGridLayoutManager.scrollToPositionWithOffset(position, getResources().getDimensionPixelOffset(R.dimen.list_scroll_up_offset_h));
+//                                    }else{
+//                                        mFocusGridLayoutManager.scrollToPositionWithOffset(position, getResources().getDimensionPixelOffset(R.dimen.list_scroll_down_offset_h));
+//                                    }
+//
+//                                }
+//                            }else if(isVertical&&view.getY()>0&&view.getY()<current_section_title.getHeight()){
+//                                if(specialPos!=null&&(specialPos.contains(position-1)||specialPos.contains(position-2)||specialPos.contains(position-3)||specialPos.contains(position-4)||specialPos.contains(position-5))){
+//                                    mFocusGridLayoutManager.scrollToPositionWithOffset(position, getResources().getDimensionPixelOffset(R.dimen.list_scroll_up_offset_v));
+//                                }else{
+//                                    mFocusGridLayoutManager.scrollToPositionWithOffset(position, getResources().getDimensionPixelOffset(R.dimen.list_scroll_down_offset_v));
+//                                }
+//                            }
+//                        }
+						//modify by dragontec for bug 4310 end
                         JasmineUtil.scaleOut3(view);
                         if(isVertical) {
                             view.findViewById(R.id.item_vertical_poster_title).setSelected(true);

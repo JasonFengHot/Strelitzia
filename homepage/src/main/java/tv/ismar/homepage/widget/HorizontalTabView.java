@@ -160,6 +160,23 @@ public class HorizontalTabView extends HorizontalScrollView
             initFocus.requestFocus();
             initFocus.requestFocusFromTouch();
             changeViewStatus(initFocus, ViewStatus.Focused);
+/*add by dragontec for bug 4298 start*/
+            initFocus.addOnLayoutChangeListener(new OnLayoutChangeListener() {
+                @Override
+                public void onLayoutChange(View view, int i, int i1, int i2, int i3, int i4, int i5, int i6, int i7) {
+                    view.removeOnLayoutChangeListener(this);
+                    int baseRightX = getWidth() - mTabMargin;
+                    int[] currentRect = new int[2];
+                    view.getLocationOnScreen(currentRect);
+                    if (currentRect[0]  - tabSpace <= 0) { // current view left less than left margin
+                        //暂定不考虑进入画面时，左侧超出屏幕
+                    } else if (currentRect[0] + view.getWidth() >= baseRightX) { // current view right more than right margin
+                        int rightViewWidth = linearContainer.getChildAt(mFocusedIndex + 1).getWidth();
+                        scrollBy(currentRect[0] + view.getWidth() - baseRightX + rightViewWidth / 2, 0);
+                    }
+                }
+            });
+/*add by dragontec for bug 4298 end*/
         }
     }
 
@@ -632,4 +649,14 @@ public class HorizontalTabView extends HorizontalScrollView
 //    public void requestChildFocus(View child, View focused) {
 //        super.requestChildFocus(child, linearContainer);
 //    }
+
+/*add by dragontec for bug 4225, 4224, 4223 start*/
+    public void requestLastFocus() {
+        TextView textView = (TextView) linearContainer.getChildAt(mSelectedIndex);
+        if (textView != null) {
+            textView.requestFocus();
+            textView.requestFocusFromTouch();
+        }
+    }
+/*add by dragontec for bug 4225, 4224, 4223 end*/
 }

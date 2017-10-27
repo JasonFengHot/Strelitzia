@@ -2,7 +2,9 @@ package tv.ismar.homepage.template;
 
 import android.content.Context;
 import android.os.Bundle;
+	/*add by dragontec for bug 4077 start*/
 import android.os.Handler;
+	/*add by dragontec for bug 4077 end*/
 import android.os.Message;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -16,6 +18,7 @@ import com.daimajia.androidanimations.library.YoYo;
 import com.open.androidtvwidget.leanback.recycle.LinearLayoutManagerTV;
 import com.open.androidtvwidget.leanback.recycle.RecyclerViewTV;
 import com.orhanobut.logger.Logger;
+import com.squareup.leakcanary.RefWatcher;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,22 +27,22 @@ import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+import tv.ismar.app.VodApplication;
 import tv.ismar.app.core.PageIntent;
 import tv.ismar.app.entity.banner.BannerEntity;
 import tv.ismar.app.network.SkyService;
+import tv.ismar.homepage.HomeActivity;
 import tv.ismar.homepage.R;
 import tv.ismar.homepage.banner.adapter.BannerHorizontal519Adapter;
 import tv.ismar.homepage.fragment.ChannelFragment;
 import tv.ismar.homepage.view.BannerLinearLayout;
+	/*add by dragontec for bug 4077 start*/
+import tv.ismar.homepage.widget.RecycleLinearLayout;
+	/*add by dragontec for bug 4077 end*/
 
 import static android.view.MotionEvent.BUTTON_PRIMARY;
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
-
-/*add by dragontec for bug 4077 start*/
-/*add by dragontec for bug 4077 end*/
-/*add by dragontec for bug 4077 start*/
-/*add by dragontec for bug 4077 end*/
 
 /**
  * @AUTHOR: xi @DATE: 2017/8/29 @DESC: 519横图模版

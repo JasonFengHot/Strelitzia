@@ -11,6 +11,9 @@ import android.view.MotionEvent;
  */
 
 public class MyRecyclerView extends RecyclerView {
+/*add by dragontec for bug 4310 start*/
+	private int mScrollState = SCROLL_STATE_IDLE;
+/*add by dragontec for bug 4310 end*/
 
     public MyRecyclerView(Context context) {
         this(context,null);
@@ -32,4 +35,16 @@ public class MyRecyclerView extends RecyclerView {
             return super.dispatchTouchEvent(ev);
         }
     }
+
+/*add by dragontec for bug 4310 start*/
+	@Override
+	public void onScrollStateChanged(int state) {
+		mScrollState = state;
+		super.onScrollStateChanged(state);
+	}
+
+	public boolean isScrolling() {
+    	return mScrollState != SCROLL_STATE_IDLE;
+	}
+/*add by dragontec for bug 4310 end*/
 }
