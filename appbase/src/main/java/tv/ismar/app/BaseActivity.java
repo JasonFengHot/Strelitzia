@@ -115,7 +115,6 @@ public class BaseActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-
         activityIsAlive = true;
         if (getRequestedOrientation() != ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
@@ -139,6 +138,8 @@ public class BaseActivity extends AppCompatActivity {
                 updateAgainHandler.postDelayed(updateAgainRunnable, 4000);
             }
         }
+
+        registerConnectionReceiver();
     }
 
     /**
@@ -149,11 +150,11 @@ public class BaseActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         registerUpdateReceiver();
-        registerConnectionReceiver();
     }
 
     @Override
     protected void onPause() {
+        unregisterConnectionReceiver();
         activityIsAlive = false;
         try {
             unregisterReceiver(mUpdateReceiver);
@@ -173,7 +174,6 @@ public class BaseActivity extends AppCompatActivity {
 
     @Override
     protected void onStop() {
-        unregisterConnectionReceiver();
         if (updatePopupWindow != null) {
             updatePopupWindow.dismiss();
             updatePopupWindow = null;
