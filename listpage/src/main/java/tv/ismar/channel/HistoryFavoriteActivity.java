@@ -607,37 +607,43 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
         }else if(id==R.id.favorite_right_arrow){
             favorite_left_arrow.setVisibility(View.VISIBLE);
             targetPosition=favoriteManager.findFirstCompletelyVisibleItemPosition()+3;
-            favoriteManager.scrollToPositionWithOffset(targetPosition,165);
-            if(favoriteManager.findFirstCompletelyVisibleItemPosition()==0){
+            favoriteManager.scrollToPositionWithOffset(targetPosition,getResources().getDimensionPixelOffset(R.dimen.history_165));
+            if(targetPosition==3){
                 favorite_left_arrow.setVisibility(View.VISIBLE);
+            }else if(targetPosition>=favoriteLists.size()-1){
+                favorite_right_arrow.setVisibility(View.GONE);
             }else {
                 arrowState();
             }
 //            targetPosition=favoriteManager.findLastCompletelyVisibleItemPosition()+3;
 //            favoriteManager.smoothScrollToPosition(favoriteRecycler,null,targetPosition);
         }else if(id==R.id.favorite_left_arrow){
-            targetPosition=favoriteManager.findFirstCompletelyVisibleItemPosition()-2;
+            targetPosition=favoriteManager.findFirstCompletelyVisibleItemPosition()-3;
             if(targetPosition<=0) {
                 targetPosition = 0;
                 favoriteManager.smoothScrollToPosition(favoriteRecycler,null,0);
             }else{
-                favoriteManager.scrollToPositionWithOffset(targetPosition, 165);
+                favoriteManager.scrollToPositionWithOffset(targetPosition, getResources().getDimensionPixelOffset(R.dimen.history_165));
+                arrowState();
             }
-            arrowState();
+            if(favoriteManager.findLastVisibleItemPosition()==favoriteLists.size()-1){
+                favorite_right_arrow.setVisibility(View.VISIBLE);
+            }
         }else if(id==R.id.history_left_arrow){
             targetPosition=historyLayoutManager.findFirstCompletelyVisibleItemPosition()-2;
             if(targetPosition<=0){
                 historyLayoutManager.smoothScrollToPosition(historyRecycler,null,0);
             }else {
-                historyLayoutManager.scrollToPositionWithOffset(targetPosition, 165);
+                historyLayoutManager.scrollToPositionWithOffset(targetPosition, getResources().getDimensionPixelOffset(R.dimen.history_165));
+                arrowState();
             }
-            arrowState();
+            history_right_arrow.setVisibility(View.VISIBLE);
         }else if(id==R.id.history_right_arrow){
             targetPosition=historyLayoutManager.findFirstCompletelyVisibleItemPosition()+3;
             if(targetPosition>=historyLists.size()-1) {
-
+                historyLayoutManager.smoothScrollToPosition(historyRecycler,null,getResources().getDimensionPixelOffset(R.dimen.history_165));
             }else {
-                historyLayoutManager.scrollToPositionWithOffset(targetPosition, 165);
+                historyLayoutManager.scrollToPositionWithOffset(targetPosition, getResources().getDimensionPixelOffset(R.dimen.history_165));
                 arrowState();
             }
         }
