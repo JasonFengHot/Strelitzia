@@ -8,6 +8,9 @@ import android.graphics.Rect;
 import android.os.Build;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+//add by dragontec for bug 4310 start
+import android.view.KeyEvent;
+//add by dragontec for bug 4310 end
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -23,6 +26,9 @@ import tv.ismar.app.entity.Item;
 import tv.ismar.app.entity.ItemList;
 import tv.ismar.app.ui.adapter.OnItemClickListener;
 import tv.ismar.app.ui.adapter.OnItemFocusedListener;
+//add by dragontec for bug 4310 start
+import tv.ismar.app.ui.adapter.OnItemKeyListener;
+//add by dragontec for bug 4310 end
 import tv.ismar.listpage.R;
 
 /**
@@ -38,6 +44,9 @@ public class FilterPosterAdapter extends RecyclerView.Adapter<FilterPosterAdapte
     private static boolean mIsVertical;
     private OnItemClickListener itemClickListener;
     private OnItemFocusedListener itemFocusedListener;
+	//add by dragontec for bug 4310 start
+    private OnItemKeyListener itemKeyListener;
+	//add by dragontec for bug 4310 end
     private int focusedPosition=-1;
     private Rect rect;
 
@@ -65,6 +74,16 @@ public class FilterPosterAdapter extends RecyclerView.Adapter<FilterPosterAdapte
     public void setItemFocusedListener(OnItemFocusedListener itemFocusedListener) {
         this.itemFocusedListener = itemFocusedListener;
     }
+
+	//add by dragontec for bug 4310 start
+	public OnItemKeyListener getItemKeyListener () {
+		return itemKeyListener;
+	}
+
+	public void setItemKeyListener(OnItemKeyListener itemKeyListener) {
+		this.itemKeyListener = itemKeyListener;
+	}
+	//add by dragontec for bug 4310 end
 
     public FilterPosterAdapter(Context context, ItemList itemList, boolean isVertical) {
 
@@ -184,6 +203,17 @@ public class FilterPosterAdapter extends RecyclerView.Adapter<FilterPosterAdapte
                         });
                     }
                 }
+				//add by dragontec for bug 4310 start
+                if (itemKeyListener != null) {
+                	holder.itemView.setOnKeyListener(new View.OnKeyListener() {
+						@Override
+						public boolean onKey(View v, int keyCode, KeyEvent event) {
+							itemKeyListener.onItemKeyListener(v, keyCode, event);
+							return false;
+						}
+					});
+				}
+				//add by dragontec for bug 4310 end
                 if (itemClickListener != null) {
                     holder.itemView.setOnClickListener(new View.OnClickListener() {
                         @Override

@@ -183,7 +183,11 @@ public class TemplateCenter extends Template
 
     @Override
     public void onItemClick(View view, int position) {
-        mFetchDataControl.go2Detail(mFetchDataControl.mCarousels.get(position));
+		/*add by dragontec for bug 4307,4277 start*/
+        if(view.hasFocus()) {
+            mFetchDataControl.go2Detail(mFetchDataControl.mCarousels.get(position));
+        }
+		/*add by dragontec for bug 4307,4277 end*/
     }
 
     @Override

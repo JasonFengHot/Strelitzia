@@ -19,6 +19,10 @@ public abstract class BaseRecycleAdapter<VH extends RecyclerView.ViewHolder> ext
     public OnItemSelectedListener mSelectedListener = null;
     public OnItemHoverListener mHoverListener = null;
 
+	/*add by dragontec for bug 4265 start*/
+    public RecyclerView mRecyclerView = null;
+	/*add by dragontec for bug 4265 end*/
+
     @Override
     public void onViewAttachedToWindow(VH holder) {
         super.onViewAttachedToWindow(holder);
@@ -31,7 +35,23 @@ public abstract class BaseRecycleAdapter<VH extends RecyclerView.ViewHolder> ext
         }
     }
 
-    public void setOnItemClickListener(OnItemClickListener listener){
+	/*add by dragontec for bug 4265 start*/
+	@Override
+	public void onAttachedToRecyclerView(RecyclerView recyclerView) {
+		super.onAttachedToRecyclerView(recyclerView);
+		mRecyclerView = recyclerView;
+	}
+
+	@Override
+	public void onDetachedFromRecyclerView(RecyclerView recyclerView) {
+    	if (mRecyclerView == recyclerView) {
+			mRecyclerView = null;
+		}
+		super.onDetachedFromRecyclerView(recyclerView);
+	}
+	/*add by dragontec for bug 4265 end*/
+
+	public void setOnItemClickListener(OnItemClickListener listener){
         this.mClickListener = listener;
     }
 

@@ -1,9 +1,13 @@
 package tv.ismar.homepage.banner.adapter;
 
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.graphics.Rect;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+/*add by dragontec for bug 4265 start*/
+import android.view.KeyEvent;
+/*add by dragontec for bug 4265 end*/
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -14,6 +18,10 @@ import android.widget.RelativeLayout;
 import android.widget.Space;
 import android.widget.TextView;
 
+/*add by dragontec for bug 4265 start*/
+import com.open.androidtvwidget.leanback.recycle.RecyclerViewTV;
+/*add by dragontec for bug 4265 end*/
+import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
 
 import java.text.DecimalFormat;
@@ -92,6 +100,24 @@ public class BannerMovieMixAdapter extends RecyclerView.Adapter<BannerMovieMixAd
         }
         mSubscribeEntityList = bannerEntity.getPoster();
     }
+
+	/*add by dragontec for bug 4265 start*/
+	private RecyclerView mRecyclerView = null;
+
+	@Override
+	public void onAttachedToRecyclerView(RecyclerView recyclerView) {
+		super.onAttachedToRecyclerView(recyclerView);
+		mRecyclerView = recyclerView;
+	}
+
+	@Override
+	public void onDetachedFromRecyclerView(RecyclerView recyclerView) {
+		if (mRecyclerView == recyclerView) {
+			mRecyclerView = null;
+		}
+		super.onDetachedFromRecyclerView(recyclerView);
+	}
+	/*add by dragontec for bug 4265 end*/
 
     @Override
     public SubscribeViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -194,7 +220,11 @@ public class BannerMovieMixAdapter extends RecyclerView.Adapter<BannerMovieMixAd
     }
 
 
-    class SubscribeViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener,View.OnFocusChangeListener, View.OnHoverListener {
+    class SubscribeViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener,View.OnFocusChangeListener, View.OnHoverListener
+/*add by dragontec for bug 4265 start*/
+			, View.OnKeyListener
+/*add by dragontec for bug 4265 end*/
+	{
 
         private Space mLeftSpace;
         private ImageView mImageView;
@@ -214,6 +244,9 @@ public class BannerMovieMixAdapter extends RecyclerView.Adapter<BannerMovieMixAd
             mItemView.findViewById(R.id.item_layout).setOnClickListener(this);
             mItemView.findViewById(R.id.item_layout).setOnFocusChangeListener(this);
             mItemView.findViewById(R.id.item_layout).setOnHoverListener(this);
+/*add by dragontec for bug 4265 start*/
+			mItemView.findViewById(R.id.item_layout).setOnKeyListener(this);
+/*add by dragontec for bug 4265 end*/
             mImageView = (ImageView) itemView.findViewById(R.id.image_view);
             mTitle = (TextView) itemView.findViewById(R.id.title);
             mLeftSpace = (Space)itemView.findViewById(R.id.left_space);
@@ -305,6 +338,30 @@ public class BannerMovieMixAdapter extends RecyclerView.Adapter<BannerMovieMixAd
         private void scaleToNormal(View view) {
             JasmineUtil.scaleIn3(view);
         }
+
+		/*add by dragontec for bug 4265 start*/
+		@Override
+		public boolean onKey(View v, int keyCode, KeyEvent event) {
+			if (event.getAction() == KeyEvent.ACTION_UP) {
+				if (keyCode == KeyEvent.KEYCODE_DPAD_LEFT || keyCode == KeyEvent.KEYCODE_DPAD_RIGHT) {
+					if (mRecyclerView != null && mRecyclerView instanceof RecyclerViewTV) {
+						if (((RecyclerViewTV) mRecyclerView).isNotScrolling()) {
+							//check item
+							int[] location = new int[]{0, 0};
+							v.getLocationOnScreen(location);
+							int screenWidth = v.getResources().getDisplayMetrics().widthPixels;
+							if (location[0] < 0 || location[0] + v.getWidth() > screenWidth) {
+								if (mRecyclerView.getLayoutManager() != null) {
+									mRecyclerView.getLayoutManager().smoothScrollToPosition(mRecyclerView, null, getAdapterPosition());
+								}
+							}
+						}
+					}
+				}
+			}
+			return false;
+		}
+		/*add by dragontec for bug 4265 end*/
     }
 
     public static class SpacesItemDecoration extends RecyclerView.ItemDecoration {

@@ -551,8 +551,7 @@ public static HomeRootRelativeLayout mHoverView;
                         mHoverView.setShowUp(false);
                         mHoverView.setShowDown(true);
                         titleMoveIn();
-                        mChannelTab.requestFocus();
-                        mChannelTab.requestFocusFromTouch();
+                        mChannelTab.requestLastFocus();
                     }
 //                }
             }

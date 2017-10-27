@@ -58,6 +58,9 @@ public class RecyclerViewTV extends RecyclerView implements PrvInterface {
     private boolean isDispatch = true;
     private boolean ishover=false;
     private boolean hasHeaderView=false;
+	/*add by dragontec for bug 4265 start*/
+    private int mScrollState = 0;
+	/*add by dragontec for bug 4265 end*/
 
     private RecyclerViewTV.OnChildViewHolderSelectedListener mChildViewHolderSelectedListener;
 
@@ -443,6 +446,10 @@ public class RecyclerViewTV extends RecyclerView implements PrvInterface {
 
     @Override
     public void onScrollStateChanged(int state) {
+	/*add by dragontec for bug 4265 start*/
+    	Log.d("RecyclerViewTV", "onScrollStateChanged : state = " + state);
+		mScrollState = state;
+	/*add by dragontec for bug 4265 end*/
         if (state == SCROLL_STATE_IDLE) {
             offset = -1;
             final View focuse = getFocusedChild();
@@ -795,4 +802,10 @@ public class RecyclerViewTV extends RecyclerView implements PrvInterface {
         return lastFocusChild;
     }
     /*add by dragontec for bug 4221 end*/
+
+	/*add by dragontec for bug 4265 start*/
+    public boolean isNotScrolling() {
+    	return mScrollState == SCROLL_STATE_IDLE;
+	}
+	/*add by dragontec for bug 4265 end*/
 }
