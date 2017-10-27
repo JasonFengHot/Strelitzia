@@ -607,12 +607,13 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
         }else if(id==R.id.favorite_right_arrow){
             favorite_left_arrow.setVisibility(View.VISIBLE);
             targetPosition=favoriteManager.findFirstCompletelyVisibleItemPosition()+3;
-            favoriteManager.scrollToPositionWithOffset(targetPosition,getResources().getDimensionPixelOffset(R.dimen.history_165));
             if(targetPosition==3){
                 favorite_left_arrow.setVisibility(View.VISIBLE);
+                favoriteManager.scrollToPositionWithOffset(targetPosition,getResources().getDimensionPixelOffset(R.dimen.history_165));
             }else if(targetPosition>=favoriteLists.size()-1){
-                favorite_right_arrow.setVisibility(View.GONE);
+                favoriteManager.smoothScrollToPosition(favoriteRecycler,null,getResources().getDimensionPixelOffset(R.dimen.history_165));
             }else {
+                favoriteManager.scrollToPositionWithOffset(targetPosition,getResources().getDimensionPixelOffset(R.dimen.history_165));
                 arrowState();
             }
 //            targetPosition=favoriteManager.findLastCompletelyVisibleItemPosition()+3;
@@ -640,7 +641,10 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
             history_right_arrow.setVisibility(View.VISIBLE);
         }else if(id==R.id.history_right_arrow){
             targetPosition=historyLayoutManager.findFirstCompletelyVisibleItemPosition()+3;
-            if(targetPosition>=historyLists.size()-1) {
+            if(targetPosition==3) {
+                history_left_arrow.setVisibility(View.VISIBLE);
+                favoriteManager.scrollToPositionWithOffset(targetPosition,getResources().getDimensionPixelOffset(R.dimen.history_165));
+            }else if(targetPosition>=historyLists.size()-1) {
                 historyLayoutManager.smoothScrollToPosition(historyRecycler,null,getResources().getDimensionPixelOffset(R.dimen.history_165));
             }else {
                 historyLayoutManager.scrollToPositionWithOffset(targetPosition, getResources().getDimensionPixelOffset(R.dimen.history_165));
@@ -901,9 +905,35 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
         switch (event.getAction()){
             case MotionEvent.ACTION_HOVER_ENTER:
                 if(!isEdit) {
-                    historyRecycler.setHovered(true);
-                    favoriteRecycler.setHovered(true);
-                    v.requestFocusFromTouch();
+                    int pos=favoriteManager.findFirstVisibleItemPosition();
+                    int endPos=favoriteManager.findLastVisibleItemPosition();
+                    if(recommend==0){
+                        if(historyLists.size()>0){
+                            if(position==0||position==historyLists.size()-1){
+                                historyRecycler.setHovered(true);
+                                v.requestFocusFromTouch();
+                            }else if(position!=pos&&position!=endPos){
+                                historyRecycler.setHovered(true);
+                                v.requestFocusFromTouch();
+                            }
+                        }else{
+                            if(position==0||position==favoriteLists.size()-1){
+                                historyRecycler.setHovered(true);
+                                v.requestFocusFromTouch();
+                            }else if(position!=pos&&position!=endPos){
+                                historyRecycler.setHovered(true);
+                                v.requestFocusFromTouch();
+                            }
+                        }
+                    }else{
+                        if(position==0||position==favoriteLists.size()-1){
+                            favoriteRecycler.setHovered(true);
+                            v.requestFocusFromTouch();
+                        }else if(position!=pos&&position!=endPos){
+                            favoriteRecycler.setHovered(true);
+                            v.requestFocusFromTouch();
+                        }
+                    }
                 }
                     break;
 

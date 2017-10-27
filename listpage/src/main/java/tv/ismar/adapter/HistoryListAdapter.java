@@ -127,7 +127,11 @@ public class HistoryListAdapter extends RecyclerView.Adapter<HistoryListAdapter.
         holder.item_detail.setOnHoverListener(new View.OnHoverListener() {
             @Override
             public boolean onHover(View v, MotionEvent event) {
-               itemOnhoverlistener.OnItemOnhoverlistener(v,event,position,0);
+                if(type.equals("history")){
+                    itemOnhoverlistener.OnItemOnhoverlistener(v,event,position,0);
+                }else{
+                    itemOnhoverlistener.OnItemOnhoverlistener(v,event,position,1);
+                }
                 return false;
             }
         });
