@@ -138,7 +138,7 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnClickList
     private void initData() {
         type = ((SubjectActivity)getActivity()).gather_type;
         id = ((SubjectActivity)getActivity()).itemid;
-        if(((SubjectActivity)getActivity()).fromPage.equals(Source.LIST.getValue())){
+        if(((SubjectActivity)getActivity()).fromPage!=null&&((SubjectActivity)getActivity()).fromPage.equals(Source.LIST.getValue())){
             channel= BaseActivity.baseChannel;
         }
         mFavoriteManager = DaisyUtils.getFavoriteManager(getActivity());

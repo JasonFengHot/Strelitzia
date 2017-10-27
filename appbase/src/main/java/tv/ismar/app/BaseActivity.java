@@ -253,7 +253,7 @@ public class BaseActivity extends AppCompatActivity {
             dialog.showAtLocation(getRootView(), Gravity.CENTER, 0, 0, new ModuleMessagePopWindow.ConfirmListener() {
                         @Override
                         public void confirmClick(View view) {
-                            dialog.dismiss();
+//                            dialog.dismiss();
                             Intent intent = new Intent(Settings.ACTION_SETTINGS);
                             startActivity(intent);
                             if(onNoNetConfirmListener != null){
@@ -303,7 +303,7 @@ public class BaseActivity extends AppCompatActivity {
             dialog.showAtLocation(getRootView(), Gravity.CENTER, 0, 0, new ModuleMessagePopWindow.ConfirmListener() {
                         @Override
                         public void confirmClick(View view) {
-                            dialog.dismiss();
+//                            dialog.dismiss();
                             Intent intent = new Intent(Settings.ACTION_SETTINGS);
                             startActivity(intent);
 
