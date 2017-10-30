@@ -27,6 +27,7 @@ import java.util.Stack;
 import cn.ismartv.truetime.TrueTime;
 import retrofit2.adapter.rxjava.HttpException;
 import rx.Observer;
+import tv.ismar.account.IsmartvActivator;
 import tv.ismar.app.network.SkyService;
 import tv.ismar.app.player.OnNoNetConfirmListener;
 import tv.ismar.app.ui.ToastTip;
@@ -539,7 +540,7 @@ public class BaseActivity extends AppCompatActivity {
     public void showLoginHint(){
         SharedPreferences sp=getSharedPreferences("Daisy",0);
         int code=fetchInstallVersionCode();
-        if(sp!=null&&sp.getInt("installCode",-1)!=code){
+        if(sp!=null&&sp.getInt("installCode",-1)!=code&&!IsmartvActivator.getInstance().isLogin()){
             SharedPreferences.Editor editor=sp.edit();
             editor.putInt("installCode",code);
             editor.commit();
