@@ -263,7 +263,15 @@ public class TemplateDoubleMd extends Template
       initTitle();
       initRecycleView();
       initImage();
-    }
+	/* modify by dragontec for bug 4264 start */
+      mRecyclerView.setOnLoadMoreComplete();
+    } else {
+    	if (mRecyclerView.isOnLoadMore()) {
+			mFetchDataControl.mHomeEntity.page--;
+			mRecyclerView.setOnLoadMoreComplete();
+		}
+	/* modify by dragontec for bug 4264 end */
+	}
   }
 
   @Override
@@ -343,9 +351,12 @@ public class TemplateDoubleMd extends Template
     HomeEntity homeEntity = mFetchDataControl.mHomeEntity;
     if (homeEntity != null) {
       if (homeEntity.page < homeEntity.num_pages) {
-        mRecyclerView.setOnLoadMoreComplete();
+	/* modify by dragontec for bug 4264 start */
         mFetchDataControl.fetchBanners(mBannerPk, ++homeEntity.page, true);
-      }
+      } else {
+      	mRecyclerView.setOnLoadMoreComplete();
+	/* modify by dragontec for bug 4264 end */
+	  }
     }
   }
 

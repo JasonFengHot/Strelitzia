@@ -65,6 +65,13 @@ public class GuideAdapter extends BaseRecycleAdapter<GuideAdapter.GuideViewHolde
         }
         holder.mTitleTv.setText(poster.title);
         holder.mPosition = position;
+		/*add by dragontec for bug 4325 start*/
+        String focusStr = poster.title;
+        if(poster.introduce != null && !poster.introduce.equals("") && !poster.introduce.equals("null")){
+            focusStr = poster.introduce;
+        }
+        holder.mTitleTv.setTag(new String[]{poster.title,focusStr});
+		/*add by dragontec for bug 4325 end*/
     }
 
     @Override
@@ -96,5 +103,11 @@ public class GuideAdapter extends BaseRecycleAdapter<GuideAdapter.GuideViewHolde
         protected int getScaleLayoutId() {
             return R.id.guide_ismartv_linear_layout;
         }
+		/*add by dragontec for bug 4325 start*/
+        @Override
+        protected int getTitleId() {
+            return R.id.guide_recycle_item_title;
+        }
+		/*add by dragontec for bug 4325 end*/
     }
 }

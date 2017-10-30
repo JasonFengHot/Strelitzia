@@ -54,7 +54,8 @@
                 android:layout_alignParentBottom="true"
                 android:background="@drawable/banner_subscrib_introduction_bg"
                 android:textColor="@color/_ffffff"
-                android:ellipsize="marquee"
+                android:ellipsize="end"
+                android:singleLine="true"
                 android:gravity="center"
                 android:textSize="@dimen/double_md_poster_title_size" />
         </RelativeLayout>

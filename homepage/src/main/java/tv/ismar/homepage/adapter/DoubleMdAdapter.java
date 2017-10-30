@@ -87,6 +87,13 @@ public class DoubleMdAdapter extends BaseRecycleAdapter<DoubleMdAdapter.DoubleMd
                 holder.mTitleTv.setVisibility(View.VISIBLE);
             }
             holder.mTitleTv.setText(poster.title);
+			/*add by dragontec for bug 4325 start*/
+            String focusStr = poster.title;
+            if(poster.introduce != null && !poster.introduce.equals("") && !poster.introduce.equals("null")){
+                focusStr = poster.introduce;
+            }
+            holder.mTitleTv.setTag(new String[]{poster.title,focusStr});
+			/*add by dragontec for bug 4325 end*/
         }
     }
 
@@ -114,6 +121,12 @@ public class DoubleMdAdapter extends BaseRecycleAdapter<DoubleMdAdapter.DoubleMd
         protected int getScaleLayoutId() {
             return R.id.double_md_ismartv_linear_layout;
         }
+		/*add by dragontec for bug 4325 start*/
+        @Override
+        protected int getTitleId() {
+            return R.id.double_md_item_title;
+        }
+		/*add by dragontec for bug 4325 end*/
     }
 
 }

@@ -67,6 +67,13 @@ public class TvPlayAdapter extends BaseRecycleAdapter<TvPlayAdapter.TvPlayerView
         } else {
             holder.mTitleTv.setVisibility(View.VISIBLE);
         }
+		/*add by dragontec for bug 4325 start*/
+        String focusStr = poster.title;
+        if(poster.introduce != null && !poster.introduce.equals("") && !poster.introduce.equals("null")){
+            focusStr = poster.introduce;
+        }
+        holder.mTitleTv.setTag(new String[]{poster.title,focusStr});
+		/*add by dragontec for bug 4325 end*/
         holder.mTitleTv.setText(poster.title);
     }
 
@@ -99,5 +106,11 @@ public class TvPlayAdapter extends BaseRecycleAdapter<TvPlayAdapter.TvPlayerView
         protected int getScaleLayoutId() {
             return R.id.tv_player_ismartv_linear_layout;
         }
+		/*add by dragontec for bug 4325 start*/
+        @Override
+        protected int getTitleId() {
+            return R.id.tv_player_item_title;
+        }
+		/*add by dragontec for bug 4325 end*/
     }
 }

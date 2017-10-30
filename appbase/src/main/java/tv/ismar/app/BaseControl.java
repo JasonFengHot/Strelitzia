@@ -29,6 +29,9 @@ public class BaseControl {
     public static final int FETCH_HOME_RECOMMEND_LIST_FLAG = 0X07;//推荐列表
     public static final int FETCH_POSTER_CONNERS_FLAG = 0X08;//获取角标
     public static final int TAB_CHANGE_FALG = 0x09;//首页tab变化
+	/* add by dragontec for bug 4264 start */
+	public static final int FETCH_DATA_FAIL_FLAG = 0x0A;//获取数据失败
+	/* add by dragontec for bug 4264 end */
 
     public Context mContext;
     public Activity mActivity;

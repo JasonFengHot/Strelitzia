@@ -2,6 +2,7 @@ package tv.ismar.homepage.adapter;
 
 import android.animation.ObjectAnimator;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 
 /*add by dragontec for bug 4265 start*/
@@ -9,6 +10,7 @@ import android.view.KeyEvent;
 /*add by dragontec for bug 4265 end*/
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.TextView;
 
 /*add by dragontec for bug 4265 start*/
 import com.open.androidtvwidget.leanback.recycle.LinearLayoutManagerTV;
@@ -71,7 +73,9 @@ public abstract class BaseViewHolder extends RecyclerView.ViewHolder implements
     }
 
     protected abstract int getScaleLayoutId();
-
+	/*add by dragontec for bug 4325 start*/
+    protected abstract int getTitleId();
+	/*add by dragontec for bug 4325 end*/
     protected  float getScaleXY(){
         return 1.1F;
     }
@@ -80,11 +84,19 @@ public abstract class BaseViewHolder extends RecyclerView.ViewHolder implements
     public void onFocusChange(View v, boolean hasFocus) {
         if (hasFocus) {
             scaleToLarge(v.findViewById(getScaleLayoutId()));
-            if(mSelectedListener == null) return;
-            mSelectedListener.onItemSelect(v, mPosition);
+            if(mSelectedListener != null) {
+                mSelectedListener.onItemSelect(v, mPosition);
+            }
         } else {
             scaleToNormal(v.findViewById(getScaleLayoutId()));
         }
+		/*add by dragontec for bug 4325,4316 start*/
+		if (!(this instanceof CenterAdapter.CenterViewHolder)) {
+			updateTitleText(hasFocus);
+		}else{
+			updateForCenter(hasFocus);
+		}
+		/*add by dragontec for bug 4325,4316 end*/
     }
 
     @Override
@@ -137,8 +149,70 @@ public abstract class BaseViewHolder extends RecyclerView.ViewHolder implements
         }
         return false;
     }
+	/*add by dragontec for bug 4325 start*/
+    private void updateTitleText(boolean hasFocus) {
+        View view = itemView.findViewById(getTitleId());
+        if(view != null && view instanceof TextView) {
+            TextView textView = (TextView) itemView.findViewById(getTitleId());
+            Object tag = itemView.findViewById(getTitleId()).getTag();
+            if (tag != null && tag instanceof String[] && ((String[]) tag).length == 2) {
+                String title = ((String[]) tag)[0];
+                String focusTitle = ((String[]) tag)[1];
+                if (hasFocus) {
+                    textView.setText(focusTitle);
+                    textView.setEllipsize(TextUtils.TruncateAt.MARQUEE);
+                    textView.setMarqueeRepeatLimit(-1);
+                    textView.setHorizontallyScrolling(true);
+                    textView.setSelected(true);
+                } else {
+                    textView.setText(title);
+                    textView.setEllipsize(TextUtils.TruncateAt.END);
+                    textView.setMarqueeRepeatLimit(0);
+                    textView.setHorizontallyScrolling(false);
+                    textView.setSelected(false);
+                }
+            }
+        }
+    }
+	/*add by dragontec for bug 4325 end*/
+	 /*add by dragontec for bug 4316 start*/
+    private void updateForCenter(boolean hasFocus) {
+        if (this instanceof CenterAdapter.CenterViewHolder) {
+            ((CenterAdapter.CenterViewHolder) this).mIntroduction.setVisibility(hasFocus?View.VISIBLE:View.GONE);
+            TextView title =  ((CenterAdapter.CenterViewHolder) this).mTitle;
+            TextView introduction =  ((CenterAdapter.CenterViewHolder) this).mIntroduction;
+            if(hasFocus){
+				title.setVisibility(title.length() > 0 ? View.VISIBLE : View.GONE);
+				introduction.setVisibility(introduction.length() > 0 ? View.VISIBLE : View.GONE);
+                title.setEllipsize(TextUtils.TruncateAt.MARQUEE);
+                title.setMarqueeRepeatLimit(-1);
+                title.setHorizontallyScrolling(true);
+                title.setSelected(true);
+				title.setTextSize(title.getResources().getDimensionPixelSize(R.dimen.center_title_focused_size) / title.getResources().getDisplayMetrics().density);
+				title.getLayoutParams().height = (int) (title.getResources().getDimensionPixelSize(R.dimen.center_title_focused_height) / title.getResources().getDisplayMetrics().density);
+                introduction.setEllipsize(TextUtils.TruncateAt.MARQUEE);
+                introduction.setMarqueeRepeatLimit(-1);
+                introduction.setHorizontallyScrolling(true);
+                introduction.setSelected(true);
+            }else{
+            	title.setVisibility(View.VISIBLE);
+				introduction.setVisibility(View.GONE);
+                title.setEllipsize(TextUtils.TruncateAt.END);
+                title.setMarqueeRepeatLimit(0);
+                title.setHorizontallyScrolling(false);
+                title.setSelected(false);
+				title.setTextSize(title.getResources().getDimensionPixelSize(R.dimen.center_title_size) / title.getResources().getDisplayMetrics().density);
+				title.getLayoutParams().height = (int) (title.getResources().getDimensionPixelSize(R.dimen.center_title_height) / title.getResources().getDisplayMetrics().density);
+                introduction.setEllipsize(TextUtils.TruncateAt.END);
+                introduction.setMarqueeRepeatLimit(0);
+                introduction.setHorizontallyScrolling(false);
+                introduction.setSelected(false);
+            }
+        }
+	}
+	/*add by dragontec for bug 4316 end*/
 
-	/*add by dragontec for bug 4265 start*/
+    /*add by dragontec for bug 4265 start*/
 	@Override
 	public boolean onKey(View v, int keyCode, KeyEvent event) {
     	if (event.getAction() == KeyEvent.ACTION_UP) {

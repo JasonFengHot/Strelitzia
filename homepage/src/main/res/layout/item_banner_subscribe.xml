@@ -85,7 +85,7 @@
                     />
 
                 <TextView
-                    android:id="@+id/introduction"
+                    android:id="@+id/title"
                     android:layout_width="@dimen/banner_subscribe_post_w"
                     android:layout_height="@dimen/banner_subscribe_post_introduction_h"
                     android:layout_alignParentBottom="true"
@@ -116,7 +116,7 @@
             </RelativeLayout>
 
             <TextView
-                android:id="@+id/title"
+                android:id="@+id/order_title"
                 android:layout_width="@dimen/banner_subscribe_post_w"
                 android:layout_height="@dimen/banner_subscribe_post_title_h"
                 android:background="@drawable/selector_item_banner_subscribe_text"

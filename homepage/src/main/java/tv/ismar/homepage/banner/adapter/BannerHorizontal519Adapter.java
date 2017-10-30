@@ -157,6 +157,13 @@ public class BannerHorizontal519Adapter extends RecyclerView.Adapter<BannerHoriz
         } else {
             holder.mLeftSpace.setVisibility(View.VISIBLE);
         }
+		/*add by dragontec for bug 4325 start*/
+        String focusStr = entity.getTitle();
+        if(entity.getIntroduction() != null && !entity.getIntroduction().equals("") && !entity.getIntroduction().equals("null")){
+            focusStr = entity.getIntroduction();
+        }
+        holder.mTitle.setTag(new String[]{entity.getTitle(),focusStr});
+		/*add by dragontec for bug 4325 end*/
     }
 
     @Override
@@ -297,6 +304,9 @@ public class BannerHorizontal519Adapter extends RecyclerView.Adapter<BannerHoriz
                 scaleToNormal(v.findViewById(R.id.item_layout));
                 v.findViewById(R.id.title).setSelected(false);
             }
+			/*add by dragontec for bug 4325 start*/
+            updateTitleText(hasFocus);
+			/*add by dragontec for bug 4325 end*/
         }
 
         private void scaleToLarge(View view) {
@@ -306,6 +316,33 @@ public class BannerHorizontal519Adapter extends RecyclerView.Adapter<BannerHoriz
         private void scaleToNormal(View view) {
             JasmineUtil.scaleIn3(view);
         }
+
+		/*add by dragontec for bug 4325 start*/
+        private void updateTitleText(boolean hasFocus) {
+            View view = itemView.findViewById(R.id.title);
+            if(view != null && view instanceof TextView) {
+                TextView textView = (TextView) itemView.findViewById(R.id.title);
+                Object tag = itemView.findViewById(R.id.title).getTag();
+                if (tag != null && tag instanceof String[] && ((String[]) tag).length == 2) {
+                    String title = ((String[]) tag)[0];
+                    String focusTitle = ((String[]) tag)[1];
+                    if (hasFocus) {
+                        textView.setText(focusTitle);
+                        textView.setEllipsize(TextUtils.TruncateAt.MARQUEE);
+                        textView.setMarqueeRepeatLimit(-1);
+                        textView.setHorizontallyScrolling(true);
+                        textView.setSelected(true);
+                    } else {
+                        textView.setText(title);
+                        textView.setEllipsize(TextUtils.TruncateAt.END);
+                        textView.setMarqueeRepeatLimit(0);
+                        textView.setHorizontallyScrolling(false);
+                        textView.setSelected(false);
+                    }
+                }
+            }
+        }
+		/*add by dragontec for bug 4325 end*/
 
         @Override
         public boolean onHover(View v, MotionEvent event) {

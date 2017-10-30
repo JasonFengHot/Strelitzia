@@ -62,7 +62,7 @@
                 android:layout_height="@dimen/guide_recycle_item_title_height"
                 android:background="@drawable/banner_subscrib_introduction_bg"
                 android:textColor="@color/_ffffff"
-                android:ellipsize="marquee"
+                android:ellipsize="end"
                 android:gravity="center"
                 android:singleLine="true"
                 android:layout_alignParentBottom="true"

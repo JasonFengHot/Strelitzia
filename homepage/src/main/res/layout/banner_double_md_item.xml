@@ -53,7 +53,8 @@
                 android:layout_height="@dimen/double_md_poster_title_height"
                 android:background="@drawable/banner_subscrib_introduction_bg"
                 android:textColor="@color/_ffffff"
-                android:ellipsize="marquee"
+                android:singleLine="true"
+                android:ellipsize="end"
                 android:gravity="center"
                 android:layout_alignParentBottom="true"
                 android:textSize="@dimen/double_md_poster_title_size" />

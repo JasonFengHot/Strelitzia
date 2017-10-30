@@ -15,6 +15,10 @@ import tv.ismar.homepage.OnItemSelectedListener;
  */
 
 public abstract class BaseRecycleAdapter<VH extends RecyclerView.ViewHolder> extends RecyclerView.Adapter<VH>{
+	/*add by dragontec for bug 4316 start*/
+	public final String TAG = this.getClass().getSimpleName();
+	/*add by dragontec for bug 4316 end*/
+
     public OnItemClickListener mClickListener = null;
     public OnItemSelectedListener mSelectedListener = null;
     public OnItemHoverListener mHoverListener = null;
@@ -22,6 +26,8 @@ public abstract class BaseRecycleAdapter<VH extends RecyclerView.ViewHolder> ext
 	/*add by dragontec for bug 4265 start*/
     public RecyclerView mRecyclerView = null;
 	/*add by dragontec for bug 4265 end*/
+
+
 
     @Override
     public void onViewAttachedToWindow(VH holder) {

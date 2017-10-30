@@ -7,7 +7,10 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.media.AudioManager;
 import android.os.Binder;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Looper;
+import android.os.Message;
 import android.support.annotation.MainThread;
 import android.util.Log;
 import android.view.SurfaceView;
@@ -277,7 +280,14 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
     }
 
     public void setCallback(ServiceCallback serviceCallback) {
-        this.serviceCallback = serviceCallback;
+/*add by dragontec for bug 4322 start*/
+        synchronized (mAdLock)
+        {
+/*add by dragontec for bug 4322 end*/
+            this.serviceCallback = serviceCallback;
+/*add by dragontec for bug 4322 start*/
+        }
+/*add by dragontec for bug 4322 end*/
     }
 
     /**
@@ -375,6 +385,9 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
     }
 
     private void cancelRequest() {
+/*add by dragontec for bug 4312 start*/
+        stopRetryLoadPlayItem();
+/*add by dragontec for bug 4312 end*/
         if (mApiItemSubsc != null && !mApiItemSubsc.isUnsubscribed()) {
             mApiItemSubsc.unsubscribe();
         }
@@ -388,6 +401,84 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
             mAdvertisement.stopSubscription();
         }
     }
+
+/*add by dragontec for bug 4312 start*/
+    private static final long RETRY_DELAY_DURATION = 100;
+    private static Object mRetryLock = new Object();
+    private static Handler mRetryLoadItemHandle = null;
+    private class RetryLoadItemRunnable implements Runnable
+    {
+        private boolean isDirectFetch = false;
+        private String fetchUrl = null;
+
+        public RetryLoadItemRunnable(boolean isDirect, String url)
+        {
+            isDirectFetch = isDirect;
+            fetchUrl = url;
+        }
+        @Override
+        public void run() {
+            synchronized (mRetryLock) {
+                if (mRetryLoadItemHandle != null) {
+                    mRetryLoadItemHandle.removeCallbacks(this);
+                }
+                mRetryLoadItemHandle = null;
+            }
+
+            if(isBindActivity) {
+                if(!isDirectFetch)
+                {
+                    loadPlayerItem();
+                }
+                else
+                {
+                    fetchClipUrl(fetchUrl);
+                }
+
+            }
+            else
+            {
+                if(mRetryLoadItemHandle != null) {
+                    mRetryLoadItemRunnable = new RetryLoadItemRunnable(isDirectFetch, fetchUrl);
+                    mRetryLoadItemHandle.postDelayed(mRetryLoadItemRunnable, RETRY_DELAY_DURATION);
+                }
+            }
+
+        }
+    }
+
+    private static RetryLoadItemRunnable mRetryLoadItemRunnable =null;
+
+    private void retryLoadPlayItem(boolean isDirect, String url)
+    {
+        synchronized (mRetryLock)
+        {
+            if(mRetryLoadItemHandle == null)
+            {
+                mRetryLoadItemHandle = new Handler(Looper.getMainLooper());
+            }
+            if(mRetryLoadItemRunnable != null)
+            {
+                mRetryLoadItemHandle.removeCallbacks(mRetryLoadItemRunnable);
+            }
+            mRetryLoadItemRunnable = new RetryLoadItemRunnable(isDirect, url);
+
+            mRetryLoadItemHandle.postDelayed(mRetryLoadItemRunnable, RETRY_DELAY_DURATION);
+        }
+    }
+
+    private void stopRetryLoadPlayItem()
+    {
+        synchronized (mRetryLock)
+        {
+            if(mRetryLoadItemHandle != null && mRetryLoadItemRunnable != null)
+            {
+                mRetryLoadItemHandle.removeCallbacks(mRetryLoadItemRunnable);
+            }
+            mRetryLoadItemRunnable = null;
+        }
+    }
+/*add by dragontec for bug 4312 end*/
 
     private void loadPlayerItem() {
         initHistory();
@@ -420,6 +511,9 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
                         public void onNext(ResponseBody responseBody) {
                             if (!isBindActivity) {
                                 LogUtils.d(TAG, "Activity unbind on play check");
+/*add by dragontec for bug 4312 start*/
+                                retryLoadPlayItem(false, null);
+/*add by dragontec for bug 4312 end*/
                                 return;
                             }
                             String result = null;
@@ -629,12 +723,22 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
 
                     @Override
                     public void onNext(ItemEntity itemEntity) {
-                        if (itemEntity == null || !isBindActivity) {
+/*modify by dragontec for bug 4312 start*/
+//                        if (itemEntity == null || !isBindActivity) {
+//                            Log.e(TAG, "Response item data null or activity unbind");
+//                            return;
+//                        }
+//                        mItemEntity = itemEntity;
+//                        loadPlayerItem();
+                        if (itemEntity == null) {
                             Log.e(TAG, "Response item data null or activity unbind");
                             return;
                         }
+
                         mItemEntity = itemEntity;
+
                         loadPlayerItem();
+/*modify by dragontec for bug 4312 end*/
                     }
                 });
 
@@ -653,6 +757,9 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
         }
         String sign = "";
         String code = "1";
+/*add by dragontec for bug 4312 start*/
+        final String tempClipUrl = clipUrl;
+/*add by dragontec for bug 4312 end*/
         initUserInfo();
         mApiMediaUrlSubsc = HttpManager.getDomainService(SkyService.class).fetchMediaUrl(clipUrl, sign, code)
                 .subscribeOn(Schedulers.io())
@@ -678,63 +785,191 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
 
                     @Override
                     public void onNext(ClipEntity clipEntity) {
-                        if (clipEntity == null || !isBindActivity) {
-                            Log.e(TAG, "Response clip data null or activity unbind");
+/*modify by dragontec for bug 4312 start*/
+//                        if (clipEntity == null || !isBindActivity) {
+//                            Log.e(TAG, "Response clip data null or activity unbind");
+//                            return;
+//                        }
+//                        loadPlayerClip(clipEntity);
+                        if (clipEntity == null) {
+                            Log.e(TAG, "clipEntity null do nothing");
+                            return;
+                        }
+
+                        if(!isBindActivity)
+                        {
+                            retryLoadPlayItem(true, tempClipUrl);
                             return;
                         }
                         loadPlayerClip(clipEntity);
+/*modify by dragontec for bug 4312 end*/
                     }
                 });
 
     }
 
+/*add by dragontec for bug 4322 start*/
+    private Object mAdLock = new Object();
+    private static final int AD_START = 0;
+    private static final int AD_END = 1;
+    private static final int MIDDLE_AD_START = 2;
+    private static final int MIDDLE_AD_END = 3;
+
+    private final long AD_DELAY_DURATION = 500;
+
+    private Handler mAdHandle = new Handler(Looper.getMainLooper()) {
+        @Override
+        public void handleMessage(Message msg) {
+
+            synchronized (mAdLock)
+            {
+                if(serviceCallback == null)
+                {
+                    return;
+                }
+                int code = msg.what;
+                switch (code)
+                {
+                    case AD_START:
+                    {
+                        if (hlsPlayer == null) {
+                            return;
+                        }
+                        mIsPlayingAd = true;
+                        if (serviceCallback != null && serviceCallback.isPrepared()) {
+                            serviceCallback.showAdvertisement(true);
+                            if(isSendlog) {
+                                serviceCallback.sendAdlog(adElementEntityList);
+                            }
+//                Advertisement advertisement=new Advertisement()
+                        }
+                    }
+                    break;
+                    case AD_END:
+                    {
+                        if (hlsPlayer == null) {
+                            return;
+                        }
+                        mIsPlayingAd = false;
+                        if (serviceCallback != null && serviceCallback.isPrepared()) {
+                            serviceCallback.showAdvertisement(false);
+                        }
+                    }
+                    break;
+                    case MIDDLE_AD_START:
+                    {
+                        if (hlsPlayer == null) {
+                            return;
+                        }
+                        mIsPlayingAd = true;
+                        if (serviceCallback != null && serviceCallback.isPrepared()) {
+                            serviceCallback.showAdvertisement(true);
+                        }
+                    }
+                    break;
+                    case MIDDLE_AD_END:
+                    {
+                        if (hlsPlayer == null) {
+                            return;
+                        }
+                        mIsPlayingAd = false;
+                        if (serviceCallback != null && serviceCallback.isPrepared()) {
+                            serviceCallback.showAdvertisement(false);
+                        }
+                    }
+                    break;
+                    default:
+                        break;
+                }
+            }
+        }
+    };
+/*add by dragontec for bug 4322 end*/
+
+
     private IPlayer.OnAdvertisementListener onAdvertisementListener = new IPlayer.OnAdvertisementListener() {
         @Override
         public void onAdStart() {
-            if (hlsPlayer == null) {
-                return;
-            }
-            mIsPlayingAd = true;
+/*modify by dragontec for bug 4322 start*/
+//            if (hlsPlayer == null) {
+//                return;
+//            }
+//            mIsPlayingAd = true;
+//            if (serviceCallback != null) {
+//                serviceCallback.showAdvertisement(true);
+//                if(isSendlog) {
+//                    serviceCallback.sendAdlog(adElementEntityList);
+//                }
+////                Advertisement advertisement=new Advertisement()
+//            }
             if (serviceCallback != null) {
-                serviceCallback.showAdvertisement(true);
-                if(isSendlog) {
-                    serviceCallback.sendAdlog(adElementEntityList);
+                if (serviceCallback.isPrepared()) {
+                    mAdHandle.sendEmptyMessage(AD_START);
+                } else {
+                    mAdHandle.sendEmptyMessageDelayed(AD_START, AD_DELAY_DURATION);
                 }
-//                Advertisement advertisement=new Advertisement()
             }
+/*modify by dragontec for bug 4322 end*/
         }
 
         @Override
         public void onAdEnd() {
-            if (hlsPlayer == null) {
-                return;
-            }
-            mIsPlayingAd = false;
+/*modify by dragontec for bug 4322 start*/
+//            if (hlsPlayer == null) {
+//                return;
+//            }
+//            mIsPlayingAd = false;
+//            if (serviceCallback != null) {
+//                serviceCallback.showAdvertisement(false);
+//            }
             if (serviceCallback != null) {
-                serviceCallback.showAdvertisement(false);
+                if (serviceCallback.isPrepared()) {
+                    mAdHandle.sendEmptyMessage(AD_END);
+                } else {
+                    mAdHandle.sendEmptyMessageDelayed(AD_END, AD_DELAY_DURATION);
+                }
             }
+/*modify by dragontec for bug 4322 end*/
         }
 
         @Override
         public void onMiddleAdStart() {
-            if (hlsPlayer == null) {
-                return;
-            }
-            mIsPlayingAd = true;
+/*modify by dragontec for bug 4322 start*/
+//            if (hlsPlayer == null) {
+//                return;
+//            }
+//            mIsPlayingAd = true;
+//            if (serviceCallback != null) {
+//                serviceCallback.showAdvertisement(true);
+//            }
             if (serviceCallback != null) {
-                serviceCallback.showAdvertisement(true);
+                if (serviceCallback.isPrepared()) {
+                    mAdHandle.sendEmptyMessage(MIDDLE_AD_START);
+                } else {
+                    mAdHandle.sendEmptyMessageDelayed(MIDDLE_AD_START, AD_DELAY_DURATION);
+                }
             }
+/*modify by dragontec for bug 4322 end*/
         }
 
         @Override
         public void onMiddleAdEnd() {
-            if (hlsPlayer == null) {
-                return;
-            }
-            mIsPlayingAd = false;
+/*modify by dragontec for bug 4322 start*/
+//            if (hlsPlayer == null) {
+//                return;
+//            }
+//            mIsPlayingAd = false;
+//            if (serviceCallback != null) {
+//                serviceCallback.showAdvertisement(false);
+//            }
             if (serviceCallback != null) {
-                serviceCallback.showAdvertisement(false);
+                if (serviceCallback.isPrepared()) {
+                    mAdHandle.sendEmptyMessage(MIDDLE_AD_END);
+                } else {
+                    mAdHandle.sendEmptyMessageDelayed(MIDDLE_AD_END, AD_DELAY_DURATION);
+                }
             }
+/*modify by dragontec for bug 4322 end*/
         }
     };
     private IPlayer.OnBufferChangedListener onBufferChangedListener = new IPlayer.OnBufferChangedListener() {
@@ -901,6 +1136,10 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
         void onBufferUpdate(long value);
 
         void sendAdlog(List<AdElementEntity> adlist);
+
+/*add by dragontec for bug 4322 start*/
+        boolean isPrepared();
+/*add by dragontec for bug 4322 end*/
     }
 
     enum PlayerStatus {

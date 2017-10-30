@@ -27,7 +27,9 @@ import java.util.EventListener;
  * https://github.com/zhousuqiang/TvRecyclerView(参考源码)
  */
 public class RecyclerViewTV extends RecyclerView implements PrvInterface {
-
+	/*add by dragontec for bug 4264 start*/
+	private final String TAG = this.getClass().getSimpleName();
+	/*add by dragontec for bug 4264 end*/
     private int firstCompletelyVisiblePosition;
     /*add by dragontec for bug 4221 start*/
     private View lastFocusChild;
@@ -525,7 +527,11 @@ public class RecyclerViewTV extends RecyclerView implements PrvInterface {
     public void setOnLoadMoreComplete() {
         isLoading = false;
     }
-
+	/*add by dragontec for bug 4264 start*/
+    public boolean isOnLoadMore() {
+    	return isLoading;
+	}
+	/*add by dragontec for bug 4264 end*/
     @Override
     public void setPagingableListener(PagingableListener pagingableListener) {
         this.mPagingableListener = pagingableListener;
@@ -604,6 +610,9 @@ public class RecyclerViewTV extends RecyclerView implements PrvInterface {
         }
 
         // 判断是否显示最底了.提前5个item预加载
+		/*add by dragontec for bug 4264 start*/
+		Log.d(TAG, "check loadMore (isLoading = " + isLoading + ", totalItemCount = " + totalItemCount + ", visibleItemCount = " + visibleItemCount + ", firstVisibleItem + " + firstVisibleItem + ")");
+		/*add by dragontec for bug 4264 end*/
         if (!isLoading && totalItemCount - visibleItemCount <= firstVisibleItem + 10) {
             isLoading = true;
             if (mPagingableListener != null) {

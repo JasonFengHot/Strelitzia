@@ -721,6 +721,14 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
             AdIndex++;
         }
     }
+
+/*add by dragontec for bug 4322 start*/
+    @Override
+    public boolean isPrepared() {
+        return getActivity() != null && !getActivity().isFinishing();
+    }
+/*add by dragontec for bug 4322 end*/
+
     private void repostAdLog(String url) {
         SkyService skyService = SkyService.ServiceManager.getAdService();
         skyService.repostAdLog(url).subscribeOn(Schedulers.io())
