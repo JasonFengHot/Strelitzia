@@ -405,23 +405,27 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
     }
 
     private void changeCheckedTab(int position) {
-        for (int i = 0; i < sectionSize; i++) {
-            if (i == sectionSize - 1) {
-                if(specialPos!=null&&position>=specialPos.get(i)){
-                    ((RadioButton) section_group.getChildAt(i + 1)).setChecked(true);
+        try {
+            for (int i = 0; i < sectionSize; i++) {
+                if (i == sectionSize - 1) {
+                    if (specialPos != null && position >= specialPos.get(i)) {
+                        ((RadioButton) section_group.getChildAt(i + 1)).setChecked(true);
+                    }
+                    break;
                 }
-                break;
-            }
-            if (specialPos != null && position >= specialPos.get(i) && position < specialPos.get(i + 1)) {
+                if (specialPos != null && position >= specialPos.get(i) && position < specialPos.get(i + 1)) {
 
-                ((RadioButton) section_group.getChildAt(i + 1)).setChecked(true);
-                if (section_group.getChildAt(i + 1).getY() + section_group.getChildAt(i + 1).getHeight() > tab_scroll.getScrollY() + tab_scroll.getHeight()) {
-                    tab_scroll.smoothScrollBy(0, getResources().getDimensionPixelOffset(R.dimen.list_scroll_arrow_down_lenth));
-                } else if (section_group.getChildAt(i + 1).getY() < tab_scroll.getScrollY()) {
-                    tab_scroll.smoothScrollBy(0, getResources().getDimensionPixelOffset(R.dimen.list_scroll_arrow_up_lenth));
+                    ((RadioButton) section_group.getChildAt(i + 1)).setChecked(true);
+                    if (section_group.getChildAt(i + 1).getY() + section_group.getChildAt(i + 1).getHeight() > tab_scroll.getScrollY() + tab_scroll.getHeight()) {
+                        tab_scroll.smoothScrollTo(0, (int) section_group.getChildAt(i + 1).getY());
+                    } else if (section_group.getChildAt(i + 1).getY() < tab_scroll.getScrollY()) {
+                        tab_scroll.smoothScrollBy(0, getResources().getDimensionPixelOffset(R.dimen.list_scroll_arrow_up_lenth));
+                    }
+                    break;
                 }
-                break;
             }
+        }catch (Exception e){
+            e.printStackTrace();
         }
     }
 
@@ -1027,7 +1031,7 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
             } else if (i == R.id.tab_arrow_up) {
                 tab_scroll.scrollBy(0, getResources().getDimensionPixelOffset(R.dimen.list_scroll_arrow_up_lenth));
                 firstPos = tab_scroll.getScrollY() / section_group.getChildAt(0).getHeight();
-                if (checkedTab < firstPos || checkedTab > firstPos + 8) {
+                if (checkedTab < firstPos || checkedTab >= firstPos + 8) {
                     if (firstPos == 0) {
                         firstPos = 1;
                     }
