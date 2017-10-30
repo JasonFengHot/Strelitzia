@@ -249,7 +249,7 @@ public class TemplateDoubleMd extends Template
       if (!TextUtils.isEmpty(data.vertical_url)) {
         Picasso.with(mContext).load(data.vertical_url).into(mVerticalImg);
       } else {
-        Picasso.with(mContext).load(R.drawable.list_item_preview_bg).into(mVerticalImg);
+        Picasso.with(mContext).load(R.drawable.list_item_ppreview_bg).into(mVerticalImg);
       }
       //        Picasso.with(mContext).load(data.poster_url).into(mLtImage);
       //        Picasso.with(mContext).load(data.poster_url).into(mRbImage);
