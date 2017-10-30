@@ -77,7 +77,7 @@ import static tv.ismar.listpage.R.id.vip_image;
  * Created by liucan on 2017/8/22.
  */
 
-public class HistoryFavoriteActivity extends BaseActivity implements View.OnClickListener,OnItemFocusedListener,LfListItemClickListener,View.OnHoverListener,OnItemOnhoverlistener,OnItemKeyListener{
+public class HistoryFavoriteActivity extends BaseActivity implements View.OnClickListener,OnItemFocusedListener,LfListItemClickListener,View.OnHoverListener,OnItemOnhoverlistener,OnItemKeyListener,View.OnKeyListener{
     private GetHistoryTask mGetHistoryTask;
     private Subscription historySub,favoriteSub;
     private SkyService skyService;
@@ -187,6 +187,12 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
         history_left_arrow.setOnClickListener(this);
         favorite_right_arrow.setOnClickListener(this);
         favorite_left_arrow.setOnClickListener(this);
+
+        history_right_arrow.setOnKeyListener(this);
+        history_left_arrow.setOnKeyListener(this);
+        favorite_right_arrow.setOnKeyListener(this);
+        favorite_left_arrow.setOnKeyListener(this);
+
 
         historyRecycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -607,11 +613,11 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
         }else if(id==R.id.favorite_right_arrow){
             favorite_left_arrow.setVisibility(View.VISIBLE);
             targetPosition=favoriteManager.findFirstCompletelyVisibleItemPosition()+3;
-            if(targetPosition==3){
+            if(targetPosition+2>=favoriteLists.size()-1) {
+                favoriteManager.smoothScrollToPosition(favoriteRecycler, null, getResources().getDimensionPixelOffset(R.dimen.history_165));
+            }else if(targetPosition==3){
                 favorite_left_arrow.setVisibility(View.VISIBLE);
                 favoriteManager.scrollToPositionWithOffset(targetPosition,getResources().getDimensionPixelOffset(R.dimen.history_165));
-            }else if(targetPosition+2>=favoriteLists.size()-1){
-                favoriteManager.smoothScrollToPosition(favoriteRecycler,null,getResources().getDimensionPixelOffset(R.dimen.history_165));
             }else{
                 favoriteManager.scrollToPositionWithOffset(targetPosition,getResources().getDimensionPixelOffset(R.dimen.history_165));
                 arrowState();
@@ -631,7 +637,7 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
                 favorite_right_arrow.setVisibility(View.VISIBLE);
             }
         }else if(id==R.id.history_left_arrow){
-            targetPosition=historyLayoutManager.findFirstCompletelyVisibleItemPosition()-2;
+            targetPosition=historyLayoutManager.findFirstCompletelyVisibleItemPosition()-3;
             if(targetPosition<=0){
                 historyLayoutManager.smoothScrollToPosition(historyRecycler,null,0);
             }else {
@@ -642,21 +648,21 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
         }else if(id==R.id.history_right_arrow){
             targetPosition=historyLayoutManager.findFirstCompletelyVisibleItemPosition()+3;
             if(historyLists.size()>0){
-                if(targetPosition==3) {
+                if(targetPosition+2>=historyLists.size()-1) {
+                    historyLayoutManager.smoothScrollToPosition(historyRecycler, null, getResources().getDimensionPixelOffset(R.dimen.history_165));
+                }else if(targetPosition==3) {
                     history_left_arrow.setVisibility(View.VISIBLE);
-                    favoriteManager.scrollToPositionWithOffset(targetPosition,getResources().getDimensionPixelOffset(R.dimen.history_165));
-                }else if(targetPosition+2>=historyLists.size()-1) {
-                    historyLayoutManager.smoothScrollToPosition(historyRecycler,null,getResources().getDimensionPixelOffset(R.dimen.history_165));
+                    historyLayoutManager.scrollToPositionWithOffset(targetPosition,getResources().getDimensionPixelOffset(R.dimen.history_165));
                 }else{
                     historyLayoutManager.scrollToPositionWithOffset(targetPosition, getResources().getDimensionPixelOffset(R.dimen.history_165));
                     arrowState();
                 }
             }else{
-                if(targetPosition==3) {
+                if(targetPosition+2>=favoriteLists.size()-1) {
+                    historyLayoutManager.smoothScrollToPosition(historyRecycler, null, getResources().getDimensionPixelOffset(R.dimen.history_165));
+                }else if(targetPosition==3) {
                     history_left_arrow.setVisibility(View.VISIBLE);
-                    favoriteManager.scrollToPositionWithOffset(targetPosition,getResources().getDimensionPixelOffset(R.dimen.history_165));
-                }else if(targetPosition+2>=historyLists.size()-1) {
-                    historyLayoutManager.smoothScrollToPosition(historyRecycler,null,getResources().getDimensionPixelOffset(R.dimen.history_165));
+                    historyLayoutManager.scrollToPositionWithOffset(targetPosition,getResources().getDimensionPixelOffset(R.dimen.history_165));
                 }else{
                     historyLayoutManager.scrollToPositionWithOffset(targetPosition, getResources().getDimensionPixelOffset(R.dimen.history_165));
                     arrowState();
@@ -917,9 +923,9 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
         switch (event.getAction()){
             case MotionEvent.ACTION_HOVER_ENTER:
                 if(!isEdit) {
-                    int pos=favoriteManager.findFirstVisibleItemPosition();
-                    int endPos=favoriteManager.findLastVisibleItemPosition();
                     if(recommend==0){
+                        int pos=historyLayoutManager.findFirstVisibleItemPosition();
+                        int endPos=historyLayoutManager.findLastVisibleItemPosition();
                         if(historyLists.size()>0){
                             if(position==0||position==historyLists.size()-1){
                                 historyRecycler.setHovered(true);
@@ -927,6 +933,8 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
                             }else if(position!=pos&&position!=endPos){
                                 historyRecycler.setHovered(true);
                                 v.requestFocusFromTouch();
+                            }else{
+                                historyRecycler.setHovered(false);
                             }
                         }else{
                             if(position==0||position==favoriteLists.size()-1){
@@ -938,12 +946,16 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
                             }
                         }
                     }else{
+                        int pos=favoriteManager.findFirstVisibleItemPosition();
+                        int endPos=favoriteManager.findLastVisibleItemPosition();
                         if(position==0||position==favoriteLists.size()-1){
                             favoriteRecycler.setHovered(true);
                             v.requestFocusFromTouch();
                         }else if(position!=pos&&position!=endPos){
                             favoriteRecycler.setHovered(true);
                             v.requestFocusFromTouch();
+                        }else{
+                            favoriteRecycler.setHovered(false);
                         }
                     }
                 }
@@ -961,6 +973,15 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
         favorite_right_arrow.setFocusable(false);
         favorite_left_arrow.setFocusable(false);
         empty.setFocusable(false);
+    }
+
+    @Override
+    public boolean onKey(View v, int keyCode, KeyEvent event) {
+        if(event.getAction()==KeyEvent.ACTION_DOWN){
+            v.setFocusable(false);
+            v.setHovered(false);
+        }
+        return false;
     }
 
 
