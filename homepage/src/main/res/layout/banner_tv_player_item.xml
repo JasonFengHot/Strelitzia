@@ -55,7 +55,7 @@
                 android:id="@+id/tv_player_item_title"
                 android:textSize="@dimen/tv_play_poster_title_size"
                 android:textColor="@color/_ffffff"
-                android:ellipsize="marquee"
+                android:ellipsize="end"
                 android:gravity="center"
                 android:singleLine="true"
                 android:layout_alignParentBottom="true"

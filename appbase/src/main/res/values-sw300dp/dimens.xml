@@ -1,16 +1,16 @@
 <resources>
-<dimen name="text_size_50sp">13.89dp</dimen>
-<dimen name="text_size_48sp">13.33dp</dimen>
-<dimen name="text_size_36sp">10.00dp</dimen>
-<dimen name="text_size_24sp">6.67dp</dimen>
-<dimen name="text_size_27sp">7.50dp</dimen>
-<dimen name="text_size_60sp">16.67dp</dimen>
-<dimen name="text_size_30sp">8.33dp</dimen>
-<dimen name="text_size_32sp">8.89dp</dimen>
-<dimen name="text_size_34sp">9.44dp</dimen>
-<dimen name="text_size_40sp">11.11dp</dimen>
-<dimen name="text_size_18sp">5.00dp</dimen>
-<dimen name="text_size_28sp">7.78dp</dimen>
+<dimen name="text_size_50sp">13.89sp</dimen>
+<dimen name="text_size_48sp">13.33sp</dimen>
+<dimen name="text_size_36sp">10.00sp</dimen>
+<dimen name="text_size_24sp">6.67sp</dimen>
+<dimen name="text_size_27sp">7.50sp</dimen>
+<dimen name="text_size_60sp">16.67sp</dimen>
+<dimen name="text_size_30sp">8.33sp</dimen>
+<dimen name="text_size_32sp">8.89sp</dimen>
+<dimen name="text_size_34sp">9.44sp</dimen>
+<dimen name="text_size_40sp">11.11sp</dimen>
+<dimen name="text_size_18sp">5.00sp</dimen>
+<dimen name="text_size_28sp">7.78sp</dimen>
 <dimen name="focus_padding">5.83dp</dimen>
 
 <dimen name="text_size_48sp_height">18.61dp</dimen>
@@ -669,7 +669,7 @@
 <dimen name="guide_video_title_width">253.06dp</dimen>
 <dimen name="guide_video_title_height">11.94dp</dimen>
 <dimen name="guide_video_icon_width">77.78dp</dimen>
-<dimen name="guide_video_title_size">10.83dp</dimen>
+<dimen name="guide_video_title_size">8.33sp</dimen>
 <dimen name="guide_navigation_width">11.67dp</dimen>
 <dimen name="guide_navigation_height">20.28dp</dimen>
 <dimen name="guide_swithc_container_icon_size">8.89dp</dimen>
@@ -690,7 +690,7 @@
 <dimen name="guide_recycle_item_rb_icon_padding_right">1.11dp</dimen>
 <dimen name="guide_recycle_item_rb_margin_bottom">2.22dp</dimen>
 
-<!--电视剧尺�?-->
+<!--电视剧尺寸-->
 <dimen name="tv_player_recycleview_margin_left">16.67dp</dimen>
 <dimen name="tv_player_recycleview_margin_right">27.78dp</dimen>
 <dimen name="tv_play_recycleview_item_padding">11.11dp</dimen>
@@ -698,7 +698,7 @@
 <dimen name="tv_play_item_margin_top">3.06dp</dimen>
 <dimen name="tv_play_poster_height">60.00dp</dimen>
 <dimen name="tv_play_poster_width">106.67dp</dimen>
-<dimen name="tv_play_poster_title_size">10.83dp</dimen>
+<dimen name="tv_play_poster_title_size">8.33sp</dimen>
 <dimen name="tv_play_poster_lt_size">30.28dp</dimen>
 <dimen name="tv_play_poster_rb_width">17.22dp</dimen>
 <dimen name="tv_play_poster_rb_height">11.94dp</dimen>
@@ -731,7 +731,7 @@
 <dimen name="double_ld_poster_rb_margin_bottom">2.78dp</dimen>
 <dimen name="double_ld_poster_rb_height">11.11dp</dimen>
 <dimen name="double_ld_poster_title_height">13.06dp</dimen>
-<dimen name="double_ld_poster_title_size">10.83dp</dimen>
+<dimen name="double_ld_poster_title_size">8.33sp</dimen>
 <dimen name="double_ld_poster_padding">10.00dp</dimen>
 <dimen name="double_ld_padding">5.00dp</dimen>
 <!--竖版双行尺寸-->
@@ -755,7 +755,7 @@
 <dimen name="double_md_poster_rb_margin_bottom">2.78dp</dimen>
 <dimen name="double_md_poster_rb_height">11.11dp</dimen>
 <dimen name="double_md_poster_title_height">13.06dp</dimen>
-<dimen name="double_md_poster_title_size">10.83dp</dimen>
+<dimen name="double_md_poster_title_size">8.33sp</dimen>
 <dimen name="double_md_poster_padding_left">11.67dp</dimen>
 <dimen name="double_md_padding">5.83dp</dimen>
 <!--居中模版-->
@@ -764,14 +764,18 @@
 <dimen name="center_poster_width">226.94dp</dimen>
 <dimen name="center_poster_height">127.50dp</dimen>
 <dimen name="center_title_height">13.06dp</dimen>
-<dimen name="center_title_size">10.83dp</dimen>
+<dimen name="center_title_focused_height">18.61dp</dimen>
+<dimen name="center_title_size">8.33sp</dimen>
+<dimen name="center_title_focused_size">11.11sp</dimen>
+<dimen name="center_introduction_height">14.44dp</dimen>
+<dimen name="center_introduction_size">8.33sp</dimen>
 <dimen name="center_padding">20.83dp</dimen>
 <dimen name="center_padding_offset">125.56dp</dimen>
 <!--更多模版-->
 <dimen name="more_btn_width">133.33dp</dimen>
 <dimen name="more_btn_height">27.78dp</dimen>
 <dimen name="more_btn_margin_top_bottom">27.78dp</dimen>
-<dimen name="more_btn_text_size">13.33dp</dimen>
+<dimen name="more_btn_text_size">13.33sp</dimen>
 <!--首页 end-->
 
 <dimen name="popup_layout_style_title_view_h">28.06dp</dimen>
@@ -791,7 +795,7 @@
 <dimen name="msg_text_item_text_ts">10.00dp</dimen>
 <dimen name="msg_text_item_text_mb">5.56dp</dimen>
 
-<!--升级提示�?-->
+<!--升级提示框-->
 <dimen name="popup_update_w">296.94dp</dimen>
 <dimen name="popup_update_h">227.22dp</dimen>
 <dimen name="popup_update_mt">27.78dp</dimen>
@@ -806,7 +810,7 @@
 <dimen name="popup_update_btn_h">20.28dp</dimen>
 <dimen name="popup_update_btn_ml">22.50dp</dimen>
 
-<!--普�?�提示框-->
+<!--普通提示框-->
 <dimen name="popup_tip_w">296.94dp</dimen>
 <dimen name="popup_tip_h">169.17dp</dimen>
 <dimen name="popup_tip_ml">118.06dp</dimen>
@@ -821,7 +825,7 @@
 <dimen name="popup_tip_btn_ml">22.50dp</dimen>
 <dimen name="popup_tip_btn_mt">23.89dp</dimen>
 
-<!--吐司提示�?-->
+<!--吐司提示框-->
 <dimen name="toast_content_h">20.83dp</dimen>
 <dimen name="toast_content_w">269.72dp</dimen>
 <dimen name="toast_content_mt">256.11dp</dimen>

@@ -198,11 +198,8 @@ public class TemplateGuide extends Template
                     mPlayerHandler.removeCallbacks(this);
                 }
                 if (this.daisyView != null) {
-                    Log.d(TAG, "daisyView = " + daisyView + ", is playing = "
-                            + daisyView.isPlaying() + ", stopPlayback call");
-                    if (this.daisyView.isPlaying()) {
-                        this.daisyView.stopPlayback();
-                    }
+                    Log.d(TAG, "daisyView = " + daisyView + ", release daisyView");
+                        this.daisyView.release(true);
                 }
                 mPlayerActionRunnable = null;
             }
@@ -295,14 +292,14 @@ public class TemplateGuide extends Template
             mHandler.removeMessages(START_PLAYBACK);
         }
 
-        if (mVideoView != null) {
-            if (mVideoView.isPlaying()) {
 /*modify by dragontec for bug 4065 start*/
+//        if (mVideoView != null) {
+//            if (mVideoView.isPlaying()) {
 //                mVideoView.stopPlayback();
-                sendStopPlayerMessage(mVideoView);
+//            }
+//        }
+        sendStopPlayerMessage(mVideoView);
 /*modify by dragontec for bug 4065 end*/
-            }
-        }
 
         if (mFetchDataControl != null) {
             mFetchDataControl.stop();
@@ -382,6 +379,9 @@ public class TemplateGuide extends Template
         mBannerLinearLayout.setNavigationLeft(navigationLeft);
         mBannerLinearLayout.setNavigationRight(navigationRight);
         mBannerLinearLayout.setRecyclerViewTV(mRecycleView);
+/*add by dragontec for bug 4275 start*/
+        mBannerLinearLayout.setHeadView(mHeadView);
+/*add by dragontec for bug 4275 end*/
 
 /*add by dragontec for bug 4065 start*/
         mVideoView.setManualReset(true);
@@ -505,7 +505,15 @@ public class TemplateGuide extends Template
             //            playGuideVideo((int)mVideoView.getTag());
             playCarousel();
             initCarousel();
-        }
+	/* modify by dragontec for bug 4264 start */
+			mRecycleView.setOnLoadMoreComplete();
+        } else {
+        	if (mRecycleView.isOnLoadMore()) {
+        		mFetchDataControl.mHomeEntity.page--;
+				mRecycleView.setOnLoadMoreComplete();
+			}
+	/* modify by dragontec for bug 4264 end */
+		}
     }
 
     @Override
@@ -514,9 +522,12 @@ public class TemplateGuide extends Template
         HomeEntity homeEntity = mFetchDataControl.mHomeEntity;
         if (homeEntity != null) {
             if (homeEntity.page < homeEntity.num_pages) {
-                mRecycleView.setOnLoadMoreComplete();
+	/* modify by dragontec for bug 4264 start */
                 mFetchDataControl.fetchBanners(mBannerPk, ++homeEntity.page, true);
-            }
+            } else {
+				mRecycleView.setOnLoadMoreComplete();
+	/* modify by dragontec for bug 4264 end */
+			}
         }
     }
 
@@ -882,10 +893,20 @@ public class TemplateGuide extends Template
                 new MediaPlayer.OnPreparedListener() {
                     @Override
                     public void onPrepared(MediaPlayer mp) {
-                        if (mp != null && !mp.isPlaying()) {
-                            mp.start();
+/*modify by dragontec for bug 4327 start*/
+//                        if (mp != null && !mp.isPlaying()) {
+//                            mp.start();
+//                        }
+//                        mLoadingIg.setVisibility(View.GONE);
+                        synchronized (stLock) {
+                            if (mp != null && !mp.isPlaying()) {
+                                mp.start();
+                            }
+                            if (mLoadingIg != null) {
+                                mLoadingIg.setVisibility(View.GONE);
+                            }
                         }
-                        mLoadingIg.setVisibility(View.GONE);
+/*modify by dragontec for bug 4327 start*/
                     }
                 };
 

@@ -63,9 +63,9 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
     public static final String MORE_CHANNEL_FLAG = "channel";
     public static final String MORE_STYLE_FLAG = "style";
 	private static final int LOAD_BANNERS_COUNT = 5;
-	/*add by dragontec for bug 4248 start*/
-	private static final int APPEND_LOAD_BANNERS_COUNT = 2;
-	/*add by dragontec for bug 4248 end*/
+	/*add by dragontec for bug 4248,4334 start*/
+	private static final int APPEND_LOAD_BANNERS_COUNT = 3;
+	/*add by dragontec for bug 4248,4334 end*/
 	private FetchDataControl mControl = null; // 业务类引用
     private RecycleLinearLayout mLinearContainer; // banner容器
     private List<Template> mTemplates;

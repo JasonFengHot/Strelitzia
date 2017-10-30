@@ -188,7 +188,15 @@ public class TemplateConlumn extends Template
     public void callBack(int flags, Object... args) {
         if (flags == FetchDataControl.FETCH_BANNERS_LIST_FLAG) { // 获取单个banner业务
             initRecycleView(mFetchDataControl.mPoster);
-        }
+	/* modify by dragontec for bug 4264 start */
+			mRecyclerView.setOnLoadMoreComplete();
+        } else if (flags == FetchDataControl.FETCH_DATA_FAIL_FLAG) {
+			if (mRecyclerView.isOnLoadMore()) {
+				mFetchDataControl.mHomeEntity.page--;
+				mRecyclerView.setOnLoadMoreComplete();
+			}
+	/* modify by dragontec for bug 4264 end */
+		}
     }
 
     private void initRecycleView(List<BannerPoster> posters) {
@@ -212,9 +220,12 @@ public class TemplateConlumn extends Template
         HomeEntity homeEntity = mFetchDataControl.mHomeEntity;
         if (homeEntity != null) {
             if (homeEntity.page < homeEntity.num_pages) {
-                mRecyclerView.setOnLoadMoreComplete();
+	/* modify by dragontec for bug 4264 start */
                 mFetchDataControl.fetchBanners(mBannerPk, ++homeEntity.page, true);
-            }
+            } else {
+				mRecyclerView.setOnLoadMoreComplete();
+			}
+	/* modify by dragontec for bug 4264 end */
         }
     }
 

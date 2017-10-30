@@ -49,6 +49,13 @@ public class RecommendAdapter extends BaseRecycleAdapter<RecommendAdapter.Recomm
         } else {
             Picasso.with(mContext).load(R.drawable.list_item_preview_bg).into(holder.mPoster);
         }
+		/*add by dragontec for bug 4325 start*/
+        String focusStr = poster.title;
+        if(poster.introduce != null && !poster.introduce.equals("") && !poster.introduce.equals("null")){
+            focusStr = poster.introduce;
+        }
+        holder.mTitle.setTag(new String[]{poster.title,focusStr});
+		/*add by dragontec for bug 4325 end*/
     }
 
     @Override
@@ -71,5 +78,11 @@ public class RecommendAdapter extends BaseRecycleAdapter<RecommendAdapter.Recomm
         protected int getScaleLayoutId() {
             return R.id.recommend_ismartv_linear_layout;
         }
+		/*add by dragontec for bug 4325 start*/
+        @Override
+        protected int getTitleId() {
+            return R.id.recommend_item_tv;
+        }
+		/*add by dragontec for bug 4325 end*/
     }
 }

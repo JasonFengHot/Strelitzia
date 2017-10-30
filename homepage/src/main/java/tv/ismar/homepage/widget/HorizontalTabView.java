@@ -171,8 +171,7 @@ public class HorizontalTabView extends HorizontalScrollView
                     if (currentRect[0]  - tabSpace <= 0) { // current view left less than left margin
                         //暂定不考虑进入画面时，左侧超出屏幕
                     } else if (currentRect[0] + view.getWidth() >= baseRightX) { // current view right more than right margin
-                        int rightViewWidth = linearContainer.getChildAt(mFocusedIndex + 1).getWidth();
-                        scrollBy(currentRect[0] + view.getWidth() - baseRightX + rightViewWidth / 2, 0);
+                        scrollBy(currentRect[0] + view.getWidth() - baseRightX, 0);
                     }
                 }
             });

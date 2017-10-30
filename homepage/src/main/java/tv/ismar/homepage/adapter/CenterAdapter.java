@@ -8,12 +8,14 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.open.androidtvwidget.leanback.recycle.RecyclerViewTV;
 import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
 import tv.ismar.app.entity.banner.BannerCarousels;
+import tv.ismar.app.widget.MyRecyclerView;
 import tv.ismar.homepage.R;
 
 import tv.ismar.homepage.banner.IsmartvLinearLayout;
@@ -44,6 +46,9 @@ public class CenterAdapter extends BaseRecycleAdapter<CenterAdapter.CenterViewHo
     public void onBindViewHolder(CenterViewHolder holder, int position) {
         BannerCarousels carousels = mData.get(position%mData.size());
         holder.mTitle.setText(carousels.title);
+	/*add by dragontec for bug 4316 start*/
+        holder.mIntroduction.setText(carousels.introduction);
+	/*add by dragontec for bug 4316 end*/
 		/*add by dragontec for bug 4307,4277 start*/
         holder.mLayout.setFocusableInTouchMode(false);
 		/*add by dragontec for bug 4307,4277 end*/
@@ -52,6 +57,13 @@ public class CenterAdapter extends BaseRecycleAdapter<CenterAdapter.CenterViewHo
         } else {
             Picasso.with(mContext).load(R.drawable.list_item_preview_bg).into(holder.mPosterIg);
         }
+		/*add by dragontec for bug 4325 start*/
+        String focusStr = carousels.title;
+        if(carousels.getIntroduction() != null && !carousels.getIntroduction().equals("") && !carousels.getIntroduction().equals("null")){
+            focusStr = carousels.getIntroduction();
+        }
+        holder.mTitle.setTag(new String[]{carousels.title,focusStr});
+		/*add by dragontec for bug 4325 end*/
     }
 
     @Override
@@ -65,6 +77,9 @@ public class CenterAdapter extends BaseRecycleAdapter<CenterAdapter.CenterViewHo
 
     public class CenterViewHolder extends BaseViewHolder{
         public TextView mTitle;
+		/*add by dragontec for bug 4316 start*/
+        public TextView mIntroduction;
+		/*add by dragontec for bug 4316 end*/
         public ImageView mPosterIg;
 		/*add by dragontec for bug 4307,4277 start*/
         public IsmartvLinearLayout mLayout;
@@ -73,6 +88,9 @@ public class CenterAdapter extends BaseRecycleAdapter<CenterAdapter.CenterViewHo
         public CenterViewHolder(View itemView) {
             super(itemView, CenterAdapter.this);
             mTitle = (TextView) itemView.findViewById(R.id.center_item_title);
+			/*add by dragontec for bug 4316 start*/
+			mIntroduction = (TextView) itemView.findViewById(R.id.center_item_introduction);
+			/*add by dragontec for bug 4316 end*/
             mPosterIg = (ImageView) itemView.findViewById(R.id.center_item_poster);
 			/*add by dragontec for bug 4307,4277 start*/
             mLayout = (IsmartvLinearLayout) itemView.findViewById(R.id.center_ismartv_linear_layout);
@@ -88,5 +106,11 @@ public class CenterAdapter extends BaseRecycleAdapter<CenterAdapter.CenterViewHo
         protected int getScaleLayoutId() {
             return R.id.center_ismartv_linear_layout;
         }
+		/*add by dragontec for bug 4325 start*/
+        @Override
+        protected int getTitleId() {
+            return R.id.center_item_title;
+        }
+		/*add by dragontec for bug 4325 end*/
     }
 }

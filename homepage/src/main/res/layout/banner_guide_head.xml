@@ -54,6 +54,7 @@
                 android:layout_height="@dimen/guide_video_title_height"
                 android:layout_gravity="left|bottom"
                 android:textColor="#ffffff"
+                android:ellipsize="end"
                 android:singleLine="true"
                 android:textSize="@dimen/guide_video_title_size" />
             <LinearLayout

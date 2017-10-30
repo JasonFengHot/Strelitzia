@@ -36,6 +36,9 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
                 android:layout_centerHorizontal="true"
+                android:singleLine="true"
+                android:textSize="@dimen/text_size_30sp"
+                android:ellipsize="end"
                 android:visibility="gone"/>
         </RelativeLayout>
     </tv.ismar.homepage.banner.IsmartvLinearLayout>

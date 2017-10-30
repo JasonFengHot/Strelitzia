@@ -205,12 +205,21 @@ public class FetchDataControl extends BaseControl{
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<HomeEntity>() {
                     @Override
-                    public void onCompleted() {}
+                    public void onCompleted() {
+	/* add by dragontec for bug 4264 start */
+                    	Log.i("fetchBanners", "onCompleted");
+	/* add by dragontec for bug 4264 end */
+					}
 
                     @Override
                     public void onError(Throwable e) {
                         e.printStackTrace();
                         Log.i("onError", "onError");
+	/* add by dragontec for bug 4264 start */
+						if (mCallBack != null) {
+							mCallBack.callBack(FETCH_DATA_FAIL_FLAG);
+						}
+	/* add by dragontec for bug 4264 end */
                     }
 
                     @Override
