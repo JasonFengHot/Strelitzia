@@ -394,6 +394,8 @@
 <dimen name="list_scroll_arrow_down_lenth">816.00dp</dimen>
 <dimen name="list_scroll_up_offset_h">88.89dp</dimen>
 <dimen name="list_scroll_up_offset_v">97.78dp</dimen>
+<dimen name="list_scroll_up_offset_v1">571.56dp</dimen>
+<dimen name="list_scroll_up_offset_h1">476.44dp</dimen>
 <dimen name="list_scroll_down_offset_v">488.89dp</dimen>
 <dimen name="list_scroll_down_offset_h">414.22dp</dimen>
 <dimen name="list_scroll_filter_offset_v">393.78dp</dimen>
