@@ -1209,6 +1209,7 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
                     }
                     if(isFirst) {
                         fetchSectionData(section.url, finalI, false);
+
                     }
                     current_section_title.setText(sectionList.get(finalI).title);
                 }
@@ -1504,8 +1505,14 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
                 listPosterAdapter.setFocusedPosition(-1);
                 position=index+1==specialPos.size()?-1:specialPos.get(index+1)-1;
             }else{
-                listPosterAdapter.setFocusedPosition(list_poster_recyclerview.getChildLayoutPosition(lastFocusedView)-removeCount);
-                position=list_poster_recyclerview.getChildLayoutPosition(lastFocusedView) - removeCount;
+                //判断是从顶部更新数据还是从底部更新数据
+                if(isFirstPos) {
+                    listPosterAdapter.setFocusedPosition(list_poster_recyclerview.getChildLayoutPosition(lastFocusedView) - removeCount);
+                    position = list_poster_recyclerview.getChildLayoutPosition(lastFocusedView) - removeCount;
+                }else {
+                    listPosterAdapter.setFocusedPosition(list_poster_recyclerview.getChildLayoutPosition(lastFocusedView));
+                    position = list_poster_recyclerview.getChildLayoutPosition(lastFocusedView);
+                }
             }
             listPosterAdapter.setmItemList(listSectionEntity.getObjects());
             //修正滚动位置
