@@ -156,6 +156,7 @@ public class BannerSubscribeAdapter
 //            String timeString = entity.getOrder_date().getMonth() +"月" + entity.getOrder_date().getDate() + "日";
         holder.mPublishTime.setText(entity.getDisplay_order_date());
         Picasso.with(mContext).load(VipMark.getInstance().getBannerIconMarkImage(entity.getTop_left_corner())).into(holder.markLT);
+        Picasso.with(mContext).load(VipMark.getInstance().getBannerIconMarkImage(entity.getTop_right_corner())).into(holder.markRT);
 
         if (entity.getRating_average() != 0){
             holder.markRB.setText(new DecimalFormat("0.0").format(entity.getRating_average()));
@@ -272,6 +273,7 @@ public class BannerSubscribeAdapter
 	/*add by dragontec for bug 4265 end*/
 	{
 
+        private final ImageView markRT;
         private  Space mLeftSpace;
         private ImageView mImageView;
         private TextView mOrderTitle;
@@ -299,6 +301,7 @@ public class BannerSubscribeAdapter
             mTimeLine = (ImageView)itemView.findViewById(R.id.banner_item_timeline);
             markLT = (ImageView) itemView.findViewById(R.id.banner_mark_lt);
             markRB = (TextView)itemView.findViewById(R.id.banner_mark_br);
+            markRT = (ImageView) itemView.findViewById(R.id.banner_mark_rt);
         }
 
         @Override

@@ -56,6 +56,15 @@
                     android:layout_width="@dimen/banner_mark_lt_width"
                     android:layout_height="@dimen/banner_mark_lt_width"/>
 
+                <ImageView
+                    android:layout_marginTop="@dimen/banner_mark_rt_margin"
+                    android:layout_marginRight="@dimen/banner_mark_rt_margin"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentRight="true"
+                    android:id="@+id/banner_mark_rt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
                 <TextView
                     android:id="@+id/banner_mark_br"
                     android:layout_width="@dimen/banner_mark_br_width"

@@ -143,6 +143,7 @@ public class BannerHorizontal519Adapter extends RecyclerView.Adapter<BannerHoriz
         holder.mItemView.findViewById(R.id.item_layout).setTag(R.id.banner_item_position, position);
 
         Picasso.with(mContext).load(VipMark.getInstance().getBannerIconMarkImage(entity.getTop_left_corner())).into(holder.markLT);
+        Picasso.with(mContext).load(VipMark.getInstance().getBannerIconMarkImage(entity.getTop_right_corner())).into(holder.markRT);
 
         if (entity.getRating_average() != 0){
             holder.markRB.setText(new DecimalFormat("0.0").format(entity.getRating_average()));
@@ -266,6 +267,7 @@ public class BannerHorizontal519Adapter extends RecyclerView.Adapter<BannerHoriz
         private View mItemView;
         private ImageView markLT;
         private TextView markRB;
+        private ImageView markRT;
 
 
         public SubscribeViewHolder(View itemView) {
@@ -283,6 +285,7 @@ public class BannerHorizontal519Adapter extends RecyclerView.Adapter<BannerHoriz
             mLeftSpace = (Space) itemView.findViewById(R.id.left_space);
             markLT = (ImageView) itemView.findViewById(R.id.banner_mark_lt);
             markRB = (TextView)itemView.findViewById(R.id.banner_mark_br);
+            markRT = (ImageView) itemView.findViewById(R.id.banner_mark_rt);
 
         }
 

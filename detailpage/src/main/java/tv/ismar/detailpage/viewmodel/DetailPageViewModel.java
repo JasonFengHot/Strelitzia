@@ -140,10 +140,10 @@ public class DetailPageViewModel extends BaseObservable {
 
     @BindingAdapter({"vipMark"})
     public static void vipMark(ImageView view, String imageUrl) {
-        Picasso.with(view.getContext())
-                .load(imageUrl).memoryPolicy(MemoryPolicy.NO_CACHE).memoryPolicy(MemoryPolicy.NO_STORE)
-                .rotate(90)
-                .into(view);
+//        Picasso.with(view.getContext())
+//                .load(imageUrl).memoryPolicy(MemoryPolicy.NO_CACHE).memoryPolicy(MemoryPolicy.NO_STORE)
+//                .into(view);
+        Picasso.with(view.getContext()).load(VipMark.getInstance().getBannerIconMarkImage(imageUrl)).into(view);
     }
 
     @Bindable
@@ -391,14 +391,14 @@ public class DetailPageViewModel extends BaseObservable {
 
     @Bindable
     public String getVipMarkUrl() {
-        String url;
-        if (mItemEntity.getExpense() != null) {
-            url = VipMark.getInstance().getImage((Activity) mContext, mItemEntity.getExpense().getPay_type(),
-                    mItemEntity.getExpense().getCpid());
-        } else {
-            url = "test";
-        }
-        return url;
+//        String url;
+//        if (mItemEntity.getExpense() != null) {
+//            url = VipMark.getInstance().getImage((Activity) mContext, mItemEntity.getExpense().getPay_type(),
+//                    mItemEntity.getExpense().getCpid());
+//        } else {
+//            url = "test";
+//        }
+        return mItemEntity.getTop_right_corner();
     }
 
 
