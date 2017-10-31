@@ -2051,6 +2051,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
                     baseActivity.showNoNetConnectDialog(null);
                 }
             } else if (baseActivity.isNoNetDialogShowing() && NetworkUtils.isConnected(context)) {
+                if(!baseActivity.isFinishing())
                 baseActivity.dismissNoNetConnectDialog();
                 mPlaybackService.resetPreload();
                 mPlaybackService.preparePlayer(extraItemPk, extraSubItemPk, extraSource);
