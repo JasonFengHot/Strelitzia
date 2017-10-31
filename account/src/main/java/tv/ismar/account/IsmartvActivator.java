@@ -185,8 +185,9 @@ public final class IsmartvActivator {
             Log.e(TAG, "激活失败!!!");
             initHttpCache();
             resultEntity = new ResultEntity();
+        }else {
+            saveAccountInfo(resultEntity);
         }
-        saveAccountInfo(resultEntity);
         return resultEntity;
     }
 
