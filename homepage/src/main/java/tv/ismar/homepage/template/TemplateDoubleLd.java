@@ -74,6 +74,9 @@ public class TemplateDoubleLd extends Template
 //    private RecyclerViewTV mRecyclerView;
 /*delete by dragontec for bug 4332 start*/
     private ImageView mRtImage;//右上角图标
+/*delete by dragontec for bug 4332 start*/
+//    private RecyclerViewTV mRecyclerView;
+/*delete by dragontec for bug 4332 start*/
     private DoubleLdAdapter mAdapter;
     private FetchDataControl mFetchDataControl = null;
     private BannerLinearLayout mBannerLinearLayout;
@@ -178,6 +181,7 @@ public class TemplateDoubleLd extends Template
         mIgTitleTv = (TextView) mHeaderView.findViewById(R.id.double_ld_image_title);
 /*modify by dragontec for bug 4332 end*/
         mRtImage= (ImageView) mHeadView.findViewById(R.id.guide_rt_icon);
+/*modify by dragontec for bug 4332 end*/
         mDoubleLayoutManager =
                 new StaggeredGridLayoutManagerTV(2, StaggeredGridLayoutManager.HORIZONTAL);
         mRecyclerView.addItemDecoration(new ListSpacesItemDecoration(mContext.getResources().getDimensionPixelOffset(R.dimen.double_ld_padding)));

@@ -69,7 +69,6 @@ public class TemplateDoubleMd extends Template
 /*delete by dragontec for bug 4332 start*/
 //  private RecyclerViewTV mRecyclerView;
 /*delete by dragontec for bug 4332 end*/
-
   private DoubleMdAdapter mAdapter;
   private FetchDataControl mFetchDataControl = null;
   private int mSelectItemPosition = 1; // 标题--选中海报位置
@@ -171,6 +170,7 @@ public class TemplateDoubleMd extends Template
     mImgeTitleTv = (TextView) mHeaderView.findViewById(R.id.double_md_image_title);
 /*modify by dragontec for bug 4332 end*/
     mRtImage= (ImageView) mHeadView.findViewById(R.id.guide_rt_icon);
+/*modify by dragontec for bug 4332 end*/
     mDoubleLayoutManager =
         new StaggeredGridLayoutManagerTV(2, StaggeredGridLayoutManager.HORIZONTAL);
     mRecyclerView.addItemDecoration(new ListSpacesItemDecoration(mContext.getResources().getDimensionPixelOffset(R.dimen.double_md_padding)));
