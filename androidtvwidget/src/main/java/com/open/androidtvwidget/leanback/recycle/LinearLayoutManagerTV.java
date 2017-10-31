@@ -149,4 +149,15 @@ public class LinearLayoutManagerTV extends LinearLayoutManager {
     public void setCanScroll(boolean canScroll) {
         this.canScroll = canScroll;
     }
+
+/*add by dragontec for bug 4317 start*/
+    @Override
+    public void onLayoutChildren(RecyclerView.Recycler recycler, RecyclerView.State state) {
+        try {
+            super.onLayoutChildren(recycler, state);
+        } catch (Exception e) {
+            Log.e("Catch Exception", "onLayoutChildren catch exception " + e.toString());
+        }
+    }
+/*add by dragontec for bug 4317 end*/
 }

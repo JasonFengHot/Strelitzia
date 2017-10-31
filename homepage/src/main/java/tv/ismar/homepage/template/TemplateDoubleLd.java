@@ -70,13 +70,19 @@ public class TemplateDoubleLd extends Template
     private ImageView mLtImage; // 左上角图标
     private TextView mRbImage; // 右下角图标
     private TextView mIgTitleTv; // 大图标题
-    private RecyclerViewTV mRecyclerView;
+/*delete by dragontec for bug 4332 start*/
+//    private RecyclerViewTV mRecyclerView;
+/*delete by dragontec for bug 4332 start*/
     private DoubleLdAdapter mAdapter;
     private FetchDataControl mFetchDataControl = null;
     private BannerLinearLayout mBannerLinearLayout;
-    private View navigationLeft;
-    private View navigationRight;
-    private View mHeadView; // recylview头view
+	/*delete by dragontec for bug 4332 start*/
+//    private View navigationLeft;
+//    private View navigationRight;
+	/*delete by dragontec for bug 4332 end*/
+	/*modify by dragontec for bug 4332 start*/
+    private View mHeaderView; // recylview头view
+	/*modify by dragontec for bug 4332 start*/
     private StaggeredGridLayoutManagerTV mDoubleLayoutManager;
     private String mBannerPk; // banner标记
     private String mName; // 频道名称（中文）
@@ -163,11 +169,13 @@ public class TemplateDoubleLd extends Template
 		/*modify by dragontec for bug 4221 start*/
         mRecyclerView.setTag("recycleView");
 		/*modify by dragontec for bug 4221 end*/
-        mHeadView = LayoutInflater.from(mContext).inflate(R.layout.banner_double_ld_head, null);
-        mVerticalImg = (ImageView) mHeadView.findViewById(R.id.double_ld_image_poster);
-        mLtImage = (ImageView) mHeadView.findViewById(R.id.double_ld_image_lt_icon);
-        mRbImage = (TextView) mHeadView.findViewById(R.id.double_ld_image_rb_icon);
-        mIgTitleTv = (TextView) mHeadView.findViewById(R.id.double_ld_image_title);
+/*modify by dragontec for bug 4332 start*/
+        mHeaderView = LayoutInflater.from(mContext).inflate(R.layout.banner_double_ld_head, null);
+        mVerticalImg = (ImageView) mHeaderView.findViewById(R.id.double_ld_image_poster);
+        mLtImage = (ImageView) mHeaderView.findViewById(R.id.double_ld_image_lt_icon);
+        mRbImage = (TextView) mHeaderView.findViewById(R.id.double_ld_image_rb_icon);
+        mIgTitleTv = (TextView) mHeaderView.findViewById(R.id.double_ld_image_title);
+/*modify by dragontec for bug 4332 end*/
         mDoubleLayoutManager =
                 new StaggeredGridLayoutManagerTV(2, StaggeredGridLayoutManager.HORIZONTAL);
         mRecyclerView.addItemDecoration(new ListSpacesItemDecoration(mContext.getResources().getDimensionPixelOffset(R.dimen.double_ld_padding)));
@@ -184,6 +192,9 @@ public class TemplateDoubleLd extends Template
         mBannerLinearLayout.setNavigationRight(navigationRight);
         mBannerLinearLayout.setRecyclerViewTV(mRecyclerView);
         mRecyclerView.setHasHeaderView(true);
+/*add by dragontec for bug 4332 start*/
+        mHoverView = view.findViewById(R.id.hover_view);
+/*add by dragontec for bug 4332 end*/
     }
 
     private void initTitle() {
@@ -229,7 +240,9 @@ public class TemplateDoubleLd extends Template
         if (mAdapter == null) {
             mAdapter = new DoubleLdAdapter(mContext, mFetchDataControl.mPoster);
             mAdapter.setOnItemClickListener(this);
-            mAdapter.setHeaderView(mHeadView);
+/*modify by dragontec for bug 4332 start*/
+            mAdapter.setHeaderView(mHeaderView);
+/*modify by dragontec for bug 4332 end*/
             mRecyclerView.setAdapter(mAdapter);
 	/*add by dragontec for bug 4077 start*/
 			checkFocus(mRecyclerView);
@@ -344,6 +357,11 @@ public class TemplateDoubleLd extends Template
 //            return focused;
 //        }
 		/*modify by dragontec for bug 4242 end*/
+/*add by dragontec for bug 4331 start*/
+		if (isLastView && focusDirection == View.FOCUS_DOWN) {
+			YoYo.with(Techniques.VerticalShake).duration(1000).playOn(mParentView);
+		}
+/*add by dragontec for bug 4331 end*/
         /*modify by dragontec for bug 4221 start*/
         return findNextUpDownFocus(focusDirection, mBannerLinearLayout);
         /*modify by dragontec for bug 4221 end*/
@@ -377,6 +395,9 @@ public class TemplateDoubleLd extends Template
                 int targetPosition = positions[1] - 8;
                 if (targetPosition <= 0) targetPosition = 0;
                 mSelectItemPosition = targetPosition;
+/*add by dragontec for bug 4332 start*/
+				setNeedCheckScrollEnd();
+/*add by dragontec for bug 4332 end*/
                 mDoubleLayoutManager.smoothScrollToPosition(mRecyclerView, null, targetPosition);
                 if (mNavigationtHandler.hasMessages(NAVIGATION_LEFT)) {
                     mNavigationtHandler.removeMessages(NAVIGATION_LEFT);
@@ -394,6 +415,9 @@ public class TemplateDoubleLd extends Template
                     targetPosition = mFetchDataControl.mHomeEntity.count;
                 }
                 mSelectItemPosition = targetPosition;
+/*add by dragontec for bug 4332 start*/
+				setNeedCheckScrollEnd();
+/*add by dragontec for bug 4332 end*/
                 mDoubleLayoutManager.smoothScrollToPosition(mRecyclerView, null, targetPosition);
                 if (mNavigationtHandler.hasMessages(NAVIGATION_RIGHT)){
                     mNavigationtHandler.removeMessages(NAVIGATION_RIGHT);

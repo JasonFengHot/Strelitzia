@@ -68,49 +68,44 @@ public class BannerLinearLayout extends LinearLayout {
     }
 
 
-    @Override
-    protected boolean dispatchHoverEvent(MotionEvent event) {
-        switch (event.getAction()){
-            case MotionEvent.ACTION_HOVER_ENTER:
-            case MotionEvent.ACTION_HOVER_MOVE:
-                if (recyclerViewTV!=null&&!recyclerViewTV.cannotScrollBackward(-10)) {
-                    navigationLeft.setVisibility(VISIBLE);
-                }else if (recyclerViewTV!=null){
-/*modify by dragontec for bug 4275 start*/
+/*delete by dragontec for bug 4332 start*/
+//    @Override
+//    protected boolean dispatchHoverEvent(MotionEvent event) {
+//        switch (event.getAction()){
+//            case MotionEvent.ACTION_HOVER_ENTER:
+//            case MotionEvent.ACTION_HOVER_MOVE:
+//            	if (recyclerViewTV != null) {
+//            		if (recyclerViewTV.cannotScrollBackward(-10) && (headView == null || headView.getVisibility() == View.VISIBLE)) {
+//            			navigationLeft.setVisibility(INVISIBLE);
+//					} else {
+//            			navigationLeft.setVisibility(VISIBLE);
+//					}
+//					if (recyclerViewTV.cannotScrollForward(10)) {
+//						navigationRight.setVisibility(INVISIBLE);
+//					} else {
+//            			navigationRight.setVisibility(VISIBLE);
+//					}
+//				}
+//                break;
+//            case MotionEvent.ACTION_HOVER_EXIT:
+//                if (event.getButtonState() != BUTTON_PRIMARY){
 //                    navigationLeft.setVisibility(INVISIBLE);
-                    if (headView == null) {
-                        navigationLeft.setVisibility(INVISIBLE);
-                    } else {
-                        if (headView.getVisibility() == View.VISIBLE) {
-                            navigationLeft.setVisibility(INVISIBLE);
-                        } else {
-                            navigationLeft.setVisibility(VISIBLE);
-                        }
-                    }
-/*modify by dragontec for bug 4275 end*/
-                }
-                if(recyclerViewTV!=null&&!recyclerViewTV.cannotScrollForward(10)){
-                    navigationRight.setVisibility(VISIBLE);
-                }else if (recyclerViewTV!=null){
-                    navigationRight.setVisibility(INVISIBLE);
-                }
-                break;
-            case MotionEvent.ACTION_HOVER_EXIT:
-                if (event.getButtonState() != BUTTON_PRIMARY){
-                    navigationLeft.setVisibility(INVISIBLE);
-                    navigationRight.setVisibility(INVISIBLE);
-                }
-                break;
-        }
-        return super.dispatchHoverEvent(event);
-    }
+//                    navigationRight.setVisibility(INVISIBLE);
+//                }
+//                break;
+//        }
+//        return super.dispatchHoverEvent(event);
+//    }
+/*delete by dragontec for bug 4332 end*/
 
-    @Override
-    public boolean dispatchKeyEvent(KeyEvent event) {
-            if (navigationLeft.getVisibility() == VISIBLE){
-                navigationLeft.setVisibility(INVISIBLE);
-                navigationRight.setVisibility(INVISIBLE);
-            }
-        return super.dispatchKeyEvent(event);
-    }
+	@Override
+	public boolean dispatchKeyEvent(KeyEvent event) {
+/*modify by dragontec for bug 4332 start*/
+		if (navigationLeft.getVisibility() == VISIBLE || navigationRight.getVisibility() == VISIBLE) {
+			navigationLeft.setVisibility(INVISIBLE);
+			navigationRight.setVisibility(INVISIBLE);
+		}
+/*modify by dragontec for bug 4332 end*/
+		return super.dispatchKeyEvent(event);
+	}
 }

@@ -52,13 +52,17 @@ public class TemplateConlumn extends Template
         OnItemClickListener,
         View.OnHoverListener,
         View.OnClickListener {
-    private RecyclerViewTV mRecyclerView;
+/*delete by dragontec for bug 4332 start*/
+//    private RecyclerViewTV mRecyclerView;
+/*delete by dragontec for bug 4332 end*/
     private LinearLayoutManagerTV mConlumnLayoutManager;
     private ConlumnAdapter mAdapter;
     private FetchDataControl mFetchDataControl = null;
     private BannerLinearLayout mBannerLinearLayout;
-    private View navigationLeft;
-    private View navigationRight;
+/*delete by dragontec for bug 4332 start*/
+//    private View navigationLeft;
+//    private View navigationRight;
+/*delete by dragontec for bug 4332 end*/
     private String mBannerPk;
     private String mName; // 频道名称（中文）
     private String mChannel; // 频道名称（英文）
@@ -71,22 +75,24 @@ public class TemplateConlumn extends Template
     private class NavigationtHandler extends Handler {
         @Override
         public void handleMessage(Message msg) {
-            switch (msg.what){
-                case NAVIGATION_LEFT:
-                    if (mRecyclerView!=null&&!mRecyclerView.cannotScrollBackward(-10)) {
-                        navigationLeft.setVisibility(VISIBLE);
-                    }else if (mRecyclerView!=null){
-                        navigationLeft.setVisibility(INVISIBLE);
-                    }
-                    break;
-                case NAVIGATION_RIGHT:
-                    if(mRecyclerView!=null&&!mRecyclerView.cannotScrollForward(10)){
-                        navigationRight.setVisibility(VISIBLE);
-                    }else if (mRecyclerView!=null){
-                        navigationRight.setVisibility(INVISIBLE);
-                    }
-                    break;
-            }
+/*delete by dragontec for bug 4332 start*/
+//            switch (msg.what){
+//                case NAVIGATION_LEFT:
+//                    if (mRecyclerView!=null&&!mRecyclerView.cannotScrollBackward(-10)) {
+//                        navigationLeft.setVisibility(VISIBLE);
+//                    }else if (mRecyclerView!=null){
+//                        navigationLeft.setVisibility(INVISIBLE);
+//                    }
+//                    break;
+//                case NAVIGATION_RIGHT:
+//                    if(mRecyclerView!=null&&!mRecyclerView.cannotScrollForward(10)){
+//                        navigationRight.setVisibility(VISIBLE);
+//                    }else if (mRecyclerView!=null){
+//                        navigationRight.setVisibility(INVISIBLE);
+//                    }
+//                    break;
+//            }
+/*delete by dragontec for bug 4332 end*/
         }
     }
 
@@ -157,6 +163,9 @@ public class TemplateConlumn extends Template
         mBannerLinearLayout.setNavigationLeft(navigationLeft);
         mBannerLinearLayout.setNavigationRight(navigationRight);
         mBannerLinearLayout.setRecyclerViewTV(mRecyclerView);
+/*add by dragontec for bug 4332 start*/
+        mHoverView = view.findViewById(R.id.hover_view);
+/*add by dragontec for bug 4332 end*/
     }
 
     @Override
@@ -176,6 +185,9 @@ public class TemplateConlumn extends Template
 
     @Override
     protected void initListener(View view) {
+/*add by dragontec for bug 4332 start*/
+    	super.initListener(view);
+/*add by dragontec for bug 4332 end*/
         navigationLeft.setOnClickListener(this);
         navigationRight.setOnClickListener(this);
         navigationRight.setOnHoverListener(this);
@@ -242,6 +254,11 @@ public class TemplateConlumn extends Template
             }
             return focused;
         }
+/*add by dragontec for bug 4331 start*/
+		if (isLastView && focusDirection == View.FOCUS_DOWN) {
+			YoYo.with(Techniques.VerticalShake).duration(1000).playOn(mParentView);
+		}
+/*add by dragontec for bug 4331 end*/
         /*modify by dragontec for bug 4221 start*/
         return findNextUpDownFocus(focusDirection, mBannerLinearLayout);
         /*modify by dragontec for bug 4221 end*/
@@ -278,6 +295,9 @@ public class TemplateConlumn extends Template
             if (mConlumnLayoutManager.findFirstCompletelyVisibleItemPosition() - 1 >= 0) { // 向左滑动
                 int targetPosition = mConlumnLayoutManager.findFirstCompletelyVisibleItemPosition() - 4;
                 if (targetPosition <= 0) targetPosition = 0;
+/*add by dragontec for bug 4332 start*/
+				setNeedCheckScrollEnd();
+/*add by dragontec for bug 4332 end*/
                 mConlumnLayoutManager.smoothScrollToPosition(mRecyclerView, null, targetPosition);
                 if (mNavigationtHandler.hasMessages(NAVIGATION_LEFT)) {
                     mNavigationtHandler.removeMessages(NAVIGATION_LEFT);
@@ -293,6 +313,9 @@ public class TemplateConlumn extends Template
                 if (targetPosition >= mFetchDataControl.mHomeEntity.count) {
                     targetPosition = mFetchDataControl.mHomeEntity.count;
                 }
+/*add by dragontec for bug 4332 start*/
+				setNeedCheckScrollEnd();
+/*add by dragontec for bug 4332 end*/
                 mConlumnLayoutManager.smoothScrollToPosition(mRecyclerView, null, targetPosition);
                 if (mNavigationtHandler.hasMessages(NAVIGATION_RIGHT)){
                     mNavigationtHandler.removeMessages(NAVIGATION_RIGHT);
@@ -326,8 +349,10 @@ public class TemplateConlumn extends Template
                 break;
             case MotionEvent.ACTION_HOVER_EXIT:
                 if (event.getButtonState() != BUTTON_PRIMARY) {
-                    navigationLeft.setVisibility(View.INVISIBLE);
-                    navigationRight.setVisibility(View.INVISIBLE);
+/*delete by dragontec for bug 4332 start*/
+//                    navigationLeft.setVisibility(View.INVISIBLE);
+//                    navigationRight.setVisibility(View.INVISIBLE);
+/*delete by dragontec for bug 4332 end*/
 /*modify by dragontec for bug 4057 start*/
 //                    HomeActivity.mHoverView.requestFocus(); // 将焦点放置到一块隐藏view中
                     v.clearFocus();

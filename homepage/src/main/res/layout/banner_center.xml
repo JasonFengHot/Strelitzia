@@ -10,7 +10,7 @@
 
     <RelativeLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/center_recycleview_height"
         android:clipChildren="false"
         android:clipToPadding="false"
         >
@@ -32,7 +32,9 @@
             android:layout_alignParentLeft="true"
             android:background="@drawable/selector_banner_movie_arrow_left"
             android:focusable="true"
-            android:focusableInTouchMode="true" />
+            android:focusableInTouchMode="true"
+            android:nextFocusLeft="@id/center_recyclerview"
+            android:nextFocusRight="@id/center_recyclerview" />
 
         <Button
             android:visibility="invisible"
@@ -43,6 +45,15 @@
             android:layout_marginTop="@dimen/header_fragment_padding_l"
             android:background="@drawable/selector_banner_movie_arrow_right"
             android:focusable="true"
-            android:focusableInTouchMode="true" />
+            android:focusableInTouchMode="true"
+            android:nextFocusLeft="@id/center_recyclerview"
+            android:nextFocusRight="@id/center_recyclerview" />
+        <View
+            android:id="@+id/hover_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clickable="false"
+            android:focusable="false"
+            />
     </RelativeLayout>
 </tv.ismar.homepage.view.BannerLinearLayout>

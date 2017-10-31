@@ -631,10 +631,20 @@ public static HomeRootRelativeLayout mHoverView;
         Log.i("favorite", "focus : " + hasFocus);
         if (v == mCollectionRect) { // 历史收藏伸缩处理
             mCollectionTel.openOrClose(hasFocus);
+/*add by dragontec for bug 4356 start*/
+            if (hasFocus) {
+                v.bringToFront();
+            }
+/*add by dragontec for bug 4356 end*/
             return;
         }
         if (v == mCenterRect) { // 个人中心伸缩处理
             mPersonCenterTel.openOrClose(hasFocus);
+/*add by dragontec for bug 4356 start*/
+            if (hasFocus) {
+                v.bringToFront();
+            }
+/*add by dragontec for bug 4356 end*/
             return;
         }
     }
@@ -792,7 +802,11 @@ public static HomeRootRelativeLayout mHoverView;
             }
         } else {
             mAtScrollerBottom = bottom;
+			/*modify by dragontec for bug 4339 start*/
+            mHoverView.setShowDown(true);
         }
+        mHoverView.updateUpDownArrow();
+		/*modify by dragontec for bug 4339 end*/
     }
 
     public void showScrollToTopTip() {

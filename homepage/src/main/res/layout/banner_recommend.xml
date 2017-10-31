@@ -10,7 +10,7 @@
 
     <RelativeLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/tv_play_poster_height"
         android:layout_marginTop="@dimen/channel_no_title_height"
         android:focusable="false"
         android:clipChildren="false"
@@ -28,23 +28,34 @@
             android:visibility="invisible"
             android:id="@+id/navigation_left"
             android:layout_width="@dimen/guide_switch_container_margin_left"
-            android:layout_height="@dimen/column_recyleview_height"
+            android:layout_height="@dimen/tv_play_poster_height"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
-            android:background="@drawable/selector_recommend_left_arrow"
+            android:background="@drawable/selector_template_left_arrow"
             android:focusable="true"
-            android:focusableInTouchMode="true" />
+            android:focusableInTouchMode="true"
+            android:nextFocusLeft="@id/recommend_recyclerview"
+            android:nextFocusRight="@id/recommend_recyclerview" />
 
         <Button
             android:visibility="invisible"
             android:id="@+id/navigation_right"
             android:layout_width="@dimen/guide_switch_container_margin_left"
-            android:layout_height="@dimen/column_recyleview_height"
+            android:layout_height="@dimen/tv_play_poster_height"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:background="@drawable/selector_recommend_right_arrow"
+            android:background="@drawable/selector_template_right_arrow"
             android:focusable="true"
-            android:focusableInTouchMode="true" />
+            android:focusableInTouchMode="true"
+            android:nextFocusLeft="@id/recommend_recyclerview"
+            android:nextFocusRight="@id/recommend_recyclerview" />
+        <View
+            android:id="@+id/hover_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clickable="false"
+            android:focusable="false"
+            />
     </RelativeLayout>
 
 </tv.ismar.homepage.view.BannerLinearLayout>

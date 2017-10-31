@@ -49,14 +49,18 @@ import static android.view.View.VISIBLE;
 public class TemplateMovie extends Template implements View.OnClickListener, View.OnHoverListener {
     private static final String TAG = "TemplateMovie";
 
-    private RecyclerViewTV movieBanner;
+/*delete by dragontec for bug 4332 start*/
+//    private RecyclerViewTV movieBanner;
+/*delete by dragontec for bug 4332 end*/
     private BannerMovieAdapter mMovieAdapter;
     private String mBannerName;
     private TextView mTitleTv;
     private String mBannerTitle;
 
-    private View navigationLeft;
-    private View navigationRight;
+/*delete by dragontec for bug 4332 start*/
+//    private View navigationLeft;
+//    private View navigationRight;
+/*delete by dragontec for bug 4332 end*/
     private BannerLinearLayout mBannerLinearLayout;
     private LinearLayoutManagerTV movieLayoutManager;
     private String channelKey;
@@ -72,22 +76,24 @@ public class TemplateMovie extends Template implements View.OnClickListener, Vie
     private class NavigationtHandler extends Handler {
         @Override
         public void handleMessage(Message msg) {
-            switch (msg.what){
-                case NAVIGATION_LEFT:
-                    if (movieBanner!=null&&!movieBanner.cannotScrollBackward(-10)) {
-                        navigationLeft.setVisibility(VISIBLE);
-                    }else if (movieBanner!=null){
-                        navigationLeft.setVisibility(INVISIBLE);
-                    }
-                    break;
-                case NAVIGATION_RIGHT:
-                    if(movieBanner!=null&&!movieBanner.cannotScrollForward(10)){
-                        navigationRight.setVisibility(VISIBLE);
-                    }else if (movieBanner!=null){
-                        navigationRight.setVisibility(INVISIBLE);
-                    }
-                    break;
-            }
+/*delete by dragontec for bug 4332 start*/
+//            switch (msg.what){
+//                case NAVIGATION_LEFT:
+//                    if (mRecyclerView!=null&&!mRecyclerView.cannotScrollBackward(-10)) {
+//                        navigationLeft.setVisibility(VISIBLE);
+//                    }else if (mRecyclerView!=null){
+//                        navigationLeft.setVisibility(INVISIBLE);
+//                    }
+//                    break;
+//                case NAVIGATION_RIGHT:
+//                    if(mRecyclerView!=null&&!mRecyclerView.cannotScrollForward(10)){
+//                        navigationRight.setVisibility(VISIBLE);
+//                    }else if (mRecyclerView!=null){
+//                        navigationRight.setVisibility(INVISIBLE);
+//                    }
+//                    break;
+//            }
+/*delete by dragontec for bug 4332 end*/
         }
     }
 
@@ -151,23 +157,24 @@ public class TemplateMovie extends Template implements View.OnClickListener, Vie
 
         mTitleCountTv = (TextView) view.findViewById(R.id.banner_title_count);
         mTitleTv = (TextView) view.findViewById(R.id.banner_title_tv);
-        movieBanner = (RecyclerViewTV) view.findViewById(R.id.movie_banner);
+/*modify by dragontec for bug 4332 start*/
+        mRecyclerView = (RecyclerViewTV) view.findViewById(R.id.movie_banner);
 		/*modify by dragontec for bug 4221 start*/
-        movieBanner.setTag("recycleView");
+        mRecyclerView.setTag("recycleView");
 		/*modify by dragontec for bug 4221 end*/
-        mBannerLinearLayout.setRecyclerViewTV(movieBanner);
+        mBannerLinearLayout.setRecyclerViewTV(mRecyclerView);
         movieLayoutManager = new LinearLayoutManagerTV(mContext, LinearLayoutManager.HORIZONTAL, false);
         int selectedItemSpace =
                 mContext.getResources().getDimensionPixelSize(R.dimen.banner_item_SelectedItemSpace);
-        //        movieBanner.addItemDecoration(new
+        //        mRecyclerView.addItemDecoration(new
         // BannerMovieAdapter.SpacesItemDecoration(selectedItemSpace));
-        movieBanner.setLayoutManager(movieLayoutManager);
-        movieBanner.setSelectedItemAtCentered(false);
+        mRecyclerView.setLayoutManager(movieLayoutManager);
+        mRecyclerView.setSelectedItemAtCentered(false);
         int selectedItemOffset =
                 mContext.getResources().getDimensionPixelSize(R.dimen.banner_item_setSelectedItemOffset);
-        movieBanner.setSelectedItemOffset(selectedItemOffset, selectedItemOffset);
+        mRecyclerView.setSelectedItemOffset(selectedItemOffset, selectedItemOffset);
 
-        movieBanner.setPagingableListener(
+        mRecyclerView.setPagingableListener(
                 new RecyclerViewTV.PagingableListener() {
                     @Override
                     public void onLoadMoreItems() {
@@ -180,6 +187,7 @@ public class TemplateMovie extends Template implements View.OnClickListener, Vie
                         }
                     }
                 });
+/*modify by dragontec for bug 4332 end*/
 
         movieLayoutManager.setFocusSearchFailedListener(
                 new LinearLayoutManagerTV.FocusSearchFailedListener() {
@@ -190,22 +198,30 @@ public class TemplateMovie extends Template implements View.OnClickListener, Vie
                             RecyclerView.Recycler recycler,
                             RecyclerView.State state) {
                         if (focusDirection == View.FOCUS_RIGHT || focusDirection == View.FOCUS_LEFT) {
-                            if (movieBanner.getChildAt(0).findViewById(R.id.item_layout) == view
-                                    || movieBanner
-                                    .getChildAt(movieBanner.getChildCount() - 1)
+/*modify by dragontec for bug 4332 start*/
+                            if (mRecyclerView.getChildAt(0).findViewById(R.id.item_layout) == view
+                                    || mRecyclerView
+                                    .getChildAt(mRecyclerView.getChildCount() - 1)
                                     .findViewById(R.id.item_layout)
                                     == view) {
                                 YoYo.with(Techniques.HorizontalShake).duration(1000).playOn(view);
                             }
+/*modify by dragontec for bug 4332 end*/
                             return view;
                         }
+/*add by dragontec for bug 4331 start*/
+						if (isLastView && focusDirection == View.FOCUS_DOWN) {
+							YoYo.with(Techniques.VerticalShake).duration(1000).playOn(mParentView);
+						}
+/*add by dragontec for bug 4331 end*/
                         /*modify by dragontec for bug 4221 start*/
                         return findNextUpDownFocus(focusDirection, mBannerLinearLayout);
                         /*modify by dragontec for bug 4221 end*/
                     }
                 });
 
-        movieBanner.setOnItemFocusChangeListener(
+/*modify by dragontec for bug 4332 start*/
+        mRecyclerView.setOnItemFocusChangeListener(
                 new RecyclerViewTV.OnItemFocusChangeListener() {
                     @Override
                     public void onItemFocusGain(View itemView, int position) {
@@ -222,6 +238,10 @@ public class TemplateMovie extends Template implements View.OnClickListener, Vie
                         }
                     }
                 });
+/*modify by dragontec for bug 4332 end*/
+/*add by dragontec for bug 4332 start*/
+        mHoverView = view.findViewById(R.id.hover_view);
+/*add by dragontec for bug 4332 end*/
     }
 
     @Override
@@ -258,9 +278,14 @@ public class TemplateMovie extends Template implements View.OnClickListener, Vie
                 totalPostList.add(emptyPostBean);
             }
             mMovieAdapter.addEmptyDatas(totalPostList);
-            int mSavePos = movieBanner.getSelectPostion();
-            mMovieAdapter.notifyItemRangeInserted(startIndex, endIndex - startIndex);
-            movieBanner.setOnLoadMoreComplete();
+/*modify by dragontec for bug 4332 start*/
+            int mSavePos = mRecyclerView.getSelectPostion();
+/*modify by dragontec for bug 4317 start*/
+//            mMovieAdapter.notifyItemRangeInserted(startIndex, endIndex - startIndex);
+            mMovieAdapter.notifyItemRangeInserted(startIndex, endIndex - startIndex + 1);
+/*modify by dragontec for bug 4317 end*/
+            mRecyclerView.setOnLoadMoreComplete();
+/*modify by dragontec for bug 4332 end*/
             //            mMovieAdapter.setCurrentPageNumber(pageNumber);
             //            mFocusHandler.sendEmptyMessageDelayed(mSavePos, 10);
         }
@@ -286,7 +311,9 @@ public class TemplateMovie extends Template implements View.OnClickListener, Vie
                                 if (pageNumber == 1) {
                                     fillMovieBanner(bannerEntity);
                                 } else {
-                                    int mSavePos = movieBanner.getSelectPostion();
+/*modify by dragontec for bug 4332 start*/
+                                    int mSavePos = mRecyclerView.getSelectPostion();
+/*modify by dragontec for bug 4332 end*/
                                     mMovieAdapter.addDatas(bannerEntity);
                                     //                            mFocusHandler.sendEmptyMessageDelayed(mSavePos, 10);
                                 }
@@ -323,7 +350,9 @@ public class TemplateMovie extends Template implements View.OnClickListener, Vie
 /*modify by dragontec for bug 4057 end*/
                         Log.d(TAG, view + " : " + hovered);
                         if (hovered) {
-                            movieBanner.setHovered(true);
+/*modify by dragontec for bug 4332 start*/
+                            mRecyclerView.setHovered(true);
+/*modify by dragontec for bug 4332 end*/
                             if(position<=mMovieAdapter.getTatalItemCount()-1)
                             mTitleCountTv.setText(
                                     String.format(
@@ -331,7 +360,9 @@ public class TemplateMovie extends Template implements View.OnClickListener, Vie
                                             (1 + position) + "",
                                             mMovieAdapter.getTatalItemCount() + ""));
                         } else {
-                            movieBanner.setHovered(false);
+/*modify by dragontec for bug 4332 start*/
+                            mRecyclerView.setHovered(false);
+/*modify by dragontec for bug 4332 end*/
 /*modify by dragontec for bug 4057 start*/
 //                            HomeActivity.mHoverView.requestFocus();
                             if (!isPrimary) {
@@ -341,15 +372,17 @@ public class TemplateMovie extends Template implements View.OnClickListener, Vie
                         }
                     }
                 });
-        movieBanner.setAdapter(mMovieAdapter);
+/*modify by dragontec for bug 4332 start*/
+        mRecyclerView.setAdapter(mMovieAdapter);
         mTitleCountTv.setText(
                 String.format(
                         mContext.getString(R.string.home_item_title_count),
                         (1) + "",
                         mMovieAdapter.getTatalItemCount() + ""));
 	/*add by dragontec for bug 4077 start*/
-		checkFocus(movieBanner);
+		checkFocus(mRecyclerView);
 	/*add by dragontec for bug 4077 end*/
+/*modify by dragontec for bug 4332 end*/
     }
 
     @Override
@@ -367,19 +400,26 @@ public class TemplateMovie extends Template implements View.OnClickListener, Vie
                     targetPosition = 0;
                 }
                 setBannerItemCount(targetPosition);
-                movieLayoutManager.smoothScrollToPosition(movieBanner, null, targetPosition);
+/*add by dragontec for bug 4332 start*/
+				setNeedCheckScrollEnd();
+/*add by dragontec for bug 4332 end*/
+/*modify by dragontec for bug 4332 start*/
+                movieLayoutManager.smoothScrollToPosition(mRecyclerView, null, targetPosition);
+/*modify by dragontec for bug 4332 end*/
                 if (mNavigationtHandler.hasMessages(NAVIGATION_LEFT)) {
                     mNavigationtHandler.removeMessages(NAVIGATION_LEFT);
                 }
                 mNavigationtHandler.sendEmptyMessageDelayed(NAVIGATION_LEFT,500);
             } else {
-                //                View firstView = movieBanner.getChildAt(0).findViewById(R.id.item_layout)
+                //                View firstView = mRecyclerView.getChildAt(0).findViewById(R.id.item_layout)
                 // ;
                 //                YoYo.with(Techniques.HorizontalShake).duration(1000).playOn(firstView);
             }
         } else if (i == R.id.navigation_right) {
             movieLayoutManager.setCanScroll(true);
-            movieBanner.loadMore();
+/*modify by dragontec for bug 4332 start*/
+            mRecyclerView.loadMore();
+/*modify by dragontec for bug 4332 end*/
             if (movieLayoutManager.findLastCompletelyVisibleItemPosition() + 1 <= totalItemCount) {
                 int targetPosition = movieLayoutManager.findLastCompletelyVisibleItemPosition() + 6;
                 if (targetPosition < totalItemCount) {
@@ -391,14 +431,19 @@ public class TemplateMovie extends Template implements View.OnClickListener, Vie
                         targetPosition >= mMovieAdapter.getTatalItemCount()
                                 ? mMovieAdapter.getTatalItemCount() - 1
                                 : targetPosition);
-                movieLayoutManager.smoothScrollToPosition(movieBanner, null, targetPosition);
+/*add by dragontec for bug 4332 start*/
+				setNeedCheckScrollEnd();
+/*add by dragontec for bug 4332 end*/
+/*modify by dragontec for bug 4332 start*/
+                movieLayoutManager.smoothScrollToPosition(mRecyclerView, null, targetPosition);
+/*modify by dragontec for bug 4332 end*/
 
                 if (mNavigationtHandler.hasMessages(NAVIGATION_RIGHT)) {
                     mNavigationtHandler.removeMessages(NAVIGATION_RIGHT);
                 }
                 mNavigationtHandler.sendEmptyMessageDelayed(NAVIGATION_RIGHT, 500);
             } else {
-                //                View lastView = movieBanner.getChildAt(totalItemCount -
+                //                View lastView = mRecyclerView.getChildAt(totalItemCount -
                 // 1).findViewById(R.id.item_layout) ;
                 //                YoYo.with(Techniques.HorizontalShake).duration(1000).playOn(lastView);
             }
@@ -427,8 +472,10 @@ public class TemplateMovie extends Template implements View.OnClickListener, Vie
                 break;
             case MotionEvent.ACTION_HOVER_EXIT:
                 if (event.getButtonState() != BUTTON_PRIMARY) {
-                    navigationLeft.setVisibility(View.INVISIBLE);
-                    navigationRight.setVisibility(View.INVISIBLE);
+/*delete by dragontec for bug 4332 start*/
+//                    navigationLeft.setVisibility(View.INVISIBLE);
+//                    navigationRight.setVisibility(View.INVISIBLE);
+/*delete by dragontec for bug 4332 end*/
 /*add by dragontec for bug 4057 start*/
                     v.clearFocus();
 /*add by dragontec for bug 4057 end*/

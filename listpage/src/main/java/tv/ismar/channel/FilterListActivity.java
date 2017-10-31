@@ -223,7 +223,10 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
                 try {
                     if(keyCode==19||keyCode==20||keyCode==21||keyCode==22) {
                         if (v.hasFocus()) {
-                            if (onKeyFocusView != v && onKeyFocusView != tab_arrow_up && onKeyFocusView != tab_arrow_dowm && onKeyFocusView != poster_arrow_up && onKeyFocusView != poster_arrow_down) {
+/*modify by dragontec for bug 4267 start*/
+//                            if (onKeyFocusView != v && onKeyFocusView != tab_arrow_up && onKeyFocusView != tab_arrow_dowm && onKeyFocusView != poster_arrow_up && onKeyFocusView != poster_arrow_down) {
+                            if (onKeyFocusView != null && onKeyFocusView != v && onKeyFocusView != tab_arrow_up && onKeyFocusView != tab_arrow_dowm && onKeyFocusView != poster_arrow_up && onKeyFocusView != poster_arrow_down) {
+/*modify by dragontec for bug 4267 end*/
                                 onKeyFocusView.requestFocus();
                                 onKeyFocusView.requestFocusFromTouch();
                             } else {
@@ -232,7 +235,13 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
                                     if (poster_recyclerview != null && poster_recyclerview.getChildAt(0) != null) {
                                         poster_recyclerview.getChildAt(0).requestFocus();
                                     } else if (noResultFetched && filter_noresult_first_line != null && filter_noresult_first_line.getChildAt(0) != null) {
-                                        filter_noresult_first_line.getChildAt(0).requestFocus();
+/*modify by dragontec for bug 4267 start*/
+//                                        filter_noresult_first_line.getChildAt(0).requestFocus();
+                                        View firstChild = filter_noresult_first_line.getChildAt(0);
+                                        if (firstChild != null) {
+                                            firstChild.requestFocus();
+                                        }
+/*modify by dragontec for bug 4267 end*/
                                     }
                                 } else {
                                     View firstView = null;
@@ -244,7 +253,12 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
                                     if (list_poster_recyclerview.getChildAt(0) instanceof TextView) {
                                         firstView = list_poster_recyclerview.getChildAt(1);
                                     }
-                                    firstView.requestFocus();
+/*modify by dragontec for bug 4267 start*/
+//                                    firstView.requestFocus();
+                                    if (firstView != null) {
+                                        firstView.requestFocus();
+                                    }
+/*modify by dragontec for bug 4267 end*/
                                 }
                             }
                             return true;

@@ -14,7 +14,7 @@
         android:clipChildren="false"
         android:clipToPadding="false"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="@dimen/movie_banner_recycler_h">
 
         <com.open.androidtvwidget.leanback.recycle.RecyclerViewTV
             android:id="@+id/movie_banner"
@@ -38,8 +38,9 @@
             android:focusable="true"
             android:focusableInTouchMode="true"
             android:gravity="center_vertical"
-            >
-        </Button>
+            android:nextFocusLeft="@id/movie_banner"
+            android:nextFocusRight="@id/movie_banner"
+            />
 
         <Button
             android:visibility="invisible"
@@ -52,7 +53,15 @@
             android:focusable="true"
             android:focusableInTouchMode="true"
             android:gravity="center_vertical"
-            >
-        </Button>
+            android:nextFocusLeft="@id/movie_banner"
+            android:nextFocusRight="@id/movie_banner"
+            />
+        <View
+            android:id="@+id/hover_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clickable="false"
+            android:focusable="false"
+            />
     </RelativeLayout>
 </tv.ismar.homepage.view.BannerLinearLayout>

@@ -456,12 +456,20 @@ public class DaisyVideoView extends SurfaceView implements MediaPlayerControl {
 	
 	MediaPlayer.OnVideoSizeChangedListener mSizeChangedListener = new MediaPlayer.OnVideoSizeChangedListener() {
 		public void onVideoSizeChanged(MediaPlayer mp, int width, int height) {
-			mVideoWidth = mp.getVideoWidth();
-			mVideoHeight = mp.getVideoHeight();
-			if (mVideoWidth != 0 && mVideoHeight != 0) {
-				getHolder().setFixedSize(mVideoWidth, mVideoHeight);
-				requestLayout();
+/*add by dragontec start*/
+			try {
+/*add by dragontec end*/
+				mVideoWidth = mp.getVideoWidth();
+				mVideoHeight = mp.getVideoHeight();
+				if (mVideoWidth != 0 && mVideoHeight != 0) {
+					getHolder().setFixedSize(mVideoWidth, mVideoHeight);
+					requestLayout();
+				}
+/*add by dragontec start*/
+			} catch (Exception e) {
+				Log.e("Catch Exception", "onVideoSizeChanged catch exception " + e.toString());
 			}
+/*add by dragontec end*/
 		}
 	};
 
