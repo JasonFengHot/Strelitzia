@@ -199,6 +199,7 @@ public class BannerMovieMixAdapter extends RecyclerView.Adapter<BannerMovieMixAd
         holder.mItemView.findViewById(R.id.item_layout).setTag(R.id.banner_item_position, position);
 
         Picasso.with(mContext).load(VipMark.getInstance().getBannerIconMarkImage(entity.getTop_left_corner())).into(holder.markLT);
+        Picasso.with(mContext).load(VipMark.getInstance().getBannerIconMarkImage(entity.getTop_right_corner())).into(holder.markRT);
 
         if (entity.getRating_average() != 0){
             holder.markRB.setText(new DecimalFormat("0.0").format(entity.getRating_average()));
@@ -233,6 +234,7 @@ public class BannerMovieMixAdapter extends RecyclerView.Adapter<BannerMovieMixAd
 /*add by dragontec for bug 4265 end*/
 	{
 
+        private final ImageView markRT;
         private Space mLeftSpace;
         private ImageView mImageView;
         private TextView mTitle;
@@ -259,6 +261,7 @@ public class BannerMovieMixAdapter extends RecyclerView.Adapter<BannerMovieMixAd
             mLeftSpace = (Space)itemView.findViewById(R.id.left_space);
             markLT = (ImageView) itemView.findViewById(R.id.banner_mark_lt);
             markRB = (TextView)itemView.findViewById(R.id.banner_mark_br);
+            markRT = (ImageView) itemView.findViewById(R.id.banner_mark_rt);
         }
 
         int getItemId(String url) {

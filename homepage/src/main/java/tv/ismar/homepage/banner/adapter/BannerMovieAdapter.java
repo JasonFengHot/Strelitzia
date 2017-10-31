@@ -144,6 +144,7 @@ public class BannerMovieAdapter extends RecyclerView.Adapter<BannerMovieAdapter.
         }
 
         Picasso.with(mContext).load(VipMark.getInstance().getBannerIconMarkImage(entity.getTop_left_corner())).into(holder.markLT);
+        Picasso.with(mContext).load(VipMark.getInstance().getBannerIconMarkImage(entity.getTop_right_corner())).into(holder.markRT);
 
         if (entity.getRating_average() != 0){
             holder.markRB.setText(new DecimalFormat("0.0").format(entity.getRating_average()));
@@ -178,6 +179,7 @@ public class BannerMovieAdapter extends RecyclerView.Adapter<BannerMovieAdapter.
 /*add by dragontec for bug 4265 end*/
 	{
 
+        private final ImageView markRT;
         private ImageView mImageView;
         private TextView mTitle;
         private View mItemView;
@@ -218,6 +220,7 @@ public class BannerMovieAdapter extends RecyclerView.Adapter<BannerMovieAdapter.
             mLeftSpace = (Space)itemView.findViewById(R.id.left_space);
             markLT = (ImageView) itemView.findViewById(R.id.banner_mark_lt);
             markRB = (TextView)itemView.findViewById(R.id.banner_mark_br);
+            markRT = (ImageView) itemView.findViewById(R.id.banner_mark_rt);
         }
 
         @Override

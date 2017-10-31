@@ -72,6 +72,15 @@ public class ItemEntity {
     private String logo_solid;
     private String detail_url_old;
     private String poster_url_old;
+    private String top_right_corner;
+
+    public String getTop_right_corner() {
+        return top_right_corner;
+    }
+
+    public void setTop_right_corner(String top_right_corner) {
+        this.top_right_corner = top_right_corner;
+    }
 
     public String getLogo_solid() {
         return logo_solid;
