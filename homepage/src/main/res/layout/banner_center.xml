@@ -13,22 +13,21 @@
         android:layout_height="@dimen/center_recycleview_height"
         android:clipChildren="false"
         android:clipToPadding="false"
+        android:layout_marginTop="@dimen/guide_recycle_item_margin_top"
         >
         <com.open.androidtvwidget.leanback.recycle.RecyclerViewTV
             android:id="@+id/center_recyclerview"
             android:layout_width="wrap_content"
             android:clipChildren="false"
             android:clipToPadding="false"
-            android:layout_height="@dimen/center_recycleview_height"
+            android:layout_height="@dimen/center_poster_height"
             android:layout_marginRight="@dimen/center_padding"
-            android:layout_marginTop="@dimen/guide_recycle_item_margin_top"
             android:focusable="false" />
         <Button
             android:visibility="invisible"
             android:id="@+id/navigation_left"
             android:layout_width="@dimen/guide_switch_container_margin_left"
             android:layout_height="@dimen/center_poster_height"
-            android:layout_marginTop="@dimen/header_fragment_padding_l"
             android:layout_alignParentLeft="true"
             android:background="@drawable/selector_banner_movie_arrow_left"
             android:focusable="true"
@@ -42,7 +41,6 @@
             android:layout_width="@dimen/guide_switch_container_margin_left"
             android:layout_height="@dimen/center_poster_height"
             android:layout_alignParentRight="true"
-            android:layout_marginTop="@dimen/header_fragment_padding_l"
             android:background="@drawable/selector_banner_movie_arrow_right"
             android:focusable="true"
             android:focusableInTouchMode="true"
