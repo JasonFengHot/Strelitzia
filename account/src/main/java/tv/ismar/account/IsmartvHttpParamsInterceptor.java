@@ -117,6 +117,7 @@ public class IsmartvHttpParamsInterceptor implements Interceptor {
             Log.e(TAG, "error: " + request.url() + " " + var27.getMessage());
             var27.printStackTrace();
             response = new Response.Builder().code(500)
+                    .message("IsmartvHttpParamsInterceptor Exception")
                     .request(request)
                     .protocol(Protocol.HTTP_1_1)
                     .build();
