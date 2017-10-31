@@ -233,6 +233,15 @@ public interface SkyService {
     @GET("api/bookmarks/")
     Observable<Item[]> getBookmarks(
     );
+
+    @FormUrlEncoded
+    @POST("api/bookmark/check/")
+    Observable<Integer> checkBookmark(
+            @Field("device_token") String device_token,
+            @Field("access_token") String access_token,
+            @Field("pk") int pk
+    );
+
     @GET("api/v3/bookmarks/")
     Observable<ResponseBody> getBookmarksV3(
     );

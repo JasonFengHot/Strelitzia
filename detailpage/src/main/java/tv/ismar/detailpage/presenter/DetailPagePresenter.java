@@ -3,8 +3,11 @@ package tv.ismar.detailpage.presenter;
 import android.content.Intent;
 import android.text.TextUtils;
 
-import cn.ismartv.truetime.TrueTime;
 import com.google.gson.GsonBuilder;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.text.DateFormat;
@@ -14,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.TimeZone;
 
+import cn.ismartv.truetime.TrueTime;
 import okhttp3.ResponseBody;
 import rx.Observer;
 import rx.Subscription;
@@ -27,7 +31,7 @@ import tv.ismar.app.core.DaisyUtils;
 import tv.ismar.app.core.PageIntent;
 import tv.ismar.app.db.FavoriteManager;
 import tv.ismar.app.entity.Favorite;
-import tv.ismar.app.entity.banner.AccountsItemSubscribeExistsEntity;
+import tv.ismar.app.entity.HistoryFavoriteEntity;
 import tv.ismar.app.network.SkyService;
 import tv.ismar.app.network.entity.ItemEntity;
 import tv.ismar.app.network.entity.PlayCheckEntity;
@@ -402,8 +406,8 @@ public class DetailPagePresenter implements DetailPageContract.Presenter {
                 deleteFavoriteByNet();
             } else {
                 isnet = "no";
+                favoriteManager.deleteFavoriteByUrl(url, isnet);
             }
-            favoriteManager.deleteFavoriteByUrl(url, isnet);
             mDetailView.notifyBookmark(false, true);
         } else {
             DateFormat format=new SimpleDateFormat("MM-dd");
@@ -431,13 +435,13 @@ public class DetailPagePresenter implements DetailPageContract.Presenter {
                 createBookmarks(String.valueOf(mItemEntity.getPk()));
             } else {
                 favorite.isnet = "no";
-            }
-            ArrayList<Favorite> favorites = DaisyUtils.getFavoriteManager(mDetailView.getActivity()).getAllFavorites("no");
-            if (favorites.size() > 49) {
-                favoriteManager.deleteFavoriteByUrl(favorites.get(favorites.size() - 1).url, "no");
+                ArrayList<Favorite> favorites = DaisyUtils.getFavoriteManager(mDetailView.getActivity()).getAllFavorites("no");
+                if (favorites.size() > 49) {
+                    favoriteManager.deleteFavoriteByUrl(favorites.get(favorites.size() - 1).url, "no");
 
+                }
+                favoriteManager.addFavorite(favorite, favorite.isnet);
             }
-            favoriteManager.addFavorite(favorite, favorite.isnet);
             mDetailView.notifyBookmark(true, true);
         }
     }
@@ -452,16 +456,16 @@ public class DetailPagePresenter implements DetailPageContract.Presenter {
         }
         Favorite favorite;
         if (isLogin()) {
-            favorite = favoriteManager.getFavoriteByUrl(url, "yes");
+            return checkIsFavorite(mItemEntity.getPk());
         } else {
             favorite = favoriteManager.getFavoriteByUrl(url, "no");
+            if (favorite != null) {
+                return true;
+            } else {
+                return false;
+            }
         }
 
-        if (favorite != null) {
-            return true;
-        } else {
-            return false;
-        }
     }
 
     private boolean isLogin() {
@@ -480,6 +484,35 @@ public class DetailPagePresenter implements DetailPageContract.Presenter {
         mItemEntity = itemEntity;
     }
 
+
+    public boolean checkIsFavorite(int pk) {
+        final boolean[] isFavorite = new boolean[1];
+        SkyService skyService=SkyService.ServiceManager.getService();
+        skyService.checkBookmark(IsmartvActivator.getInstance().getDeviceToken(),IsmartvActivator.getInstance().getAuthToken(),pk).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<Integer>() {
+
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable throwable) {
+                        throwable.printStackTrace();
+                    }
+
+                    @Override
+                    public void onNext(Integer i) {
+                        if(i==1){
+                            isFavorite[0] =true;
+                        }else{
+                            isFavorite[0] =false;
+                        }
+                    }
+                });
+            return isFavorite[0];
+    }
 //    @Override
 //    public void fetchSubscribeStatus(int pk){
 //        if (subscribeStatusSubsc != null && !subscribeStatusSubsc.isUnsubscribed()) {

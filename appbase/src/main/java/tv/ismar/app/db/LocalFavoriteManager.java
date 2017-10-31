@@ -57,10 +57,10 @@ public class LocalFavoriteManager implements FavoriteManager {
         }
         Favorite favorite = null;
         if (mFavorites == null) {
-            mFavorites = new ArrayList<Favorite>();
+            mFavorites = new ArrayList<>();
         } else {
             for (Favorite f : mFavorites) {
-                if (url.equals(f.url)) {
+                if (f!=null&&f.url!=null&&f.url.contains(url)) {
                     favorite = f;
                     break;
                 }
@@ -160,5 +160,4 @@ public class LocalFavoriteManager implements FavoriteManager {
         }
 
     }
-
 }
