@@ -8,14 +8,12 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
 import tv.ismar.app.core.VipMark;
 import tv.ismar.app.entity.banner.BannerPoster;
-import tv.ismar.app.entity.banner.BannerRecommend;
 import tv.ismar.homepage.R;
 
 /**
@@ -53,8 +51,8 @@ public class RecommendAdapter extends BaseRecycleAdapter<RecommendAdapter.Recomm
         Picasso.with(mContext).load(VipMark.getInstance().getBannerIconMarkImage(poster.top_right_corner)).into(holder.mRtIconTv);
 		/*add by dragontec for bug 4325 start*/
         String focusStr = poster.title;
-        if(poster.introduce != null && !poster.introduce.equals("") && !poster.introduce.equals("null")){
-            focusStr = poster.introduce;
+        if(poster.focus != null && !poster.focus.equals("") && !poster.focus.equals("null")){
+            focusStr = poster.focus;
         }
         holder.mTitle.setTag(new String[]{poster.title,focusStr});
 		/*add by dragontec for bug 4325 end*/

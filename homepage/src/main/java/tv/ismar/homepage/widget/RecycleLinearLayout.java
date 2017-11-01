@@ -332,9 +332,11 @@ public class RecycleLinearLayout extends LinearLayout {
 				boolean canScroll = tag>>30==1;//1可滑动，0不可滑动
 				int position = (tag<<2)>>2;
                 if(view==mLastView && !longPress) {
-					if (key == R.layout.banner_more) {
+                	/*modify by dragontec for bug 4353 start*/
+					if (key == R.layout.banner_more && keyCode == KeyEvent.KEYCODE_DPAD_DOWN) {
 						YoYo.with(Techniques.VerticalShake).duration(1000).playOn(view);
 					}
+					/*modify by dragontec for bug 4353 end*/
 
 					if (position >= getChildCount() - BANNER_LOAD_AIMING_OFF && keyCode == KeyEvent.KEYCODE_DPAD_DOWN) {
 						if (mOnDataFinishedListener != null) {
@@ -589,6 +591,20 @@ public class RecycleLinearLayout extends LinearLayout {
         });
     }
 
+/*add by dragontec for bug 4205 start*/
+    public void resetArrowUp() {
+        if (this.arrow_up != null) {
+            this.arrow_up = null;
+        }
+    }
+
+    public void resetArrowDown() {
+        if (this.arrow_down != null) {
+            this.arrow_down = null;
+        }
+    }
+/*add by dragontec for bug 4205 end*/
+
     private ViewHolder mHolder;
 
     public void setHolder(ViewHolder holder){
@@ -602,7 +618,11 @@ public class RecycleLinearLayout extends LinearLayout {
     public void setHasMore(boolean hasMore) {
         this.hasMore = hasMore;
     }
-
+/*modify by dragontec for bug 4335 start*/
+    public boolean hasMore(){
+        return  hasMore;
+    }
+/*modify by dragontec for bug 4335 end*/
     /*modify by dragontec for bug 4178 end*/
     public interface ViewHolder {
         void onCreateView(int position, int orientation);

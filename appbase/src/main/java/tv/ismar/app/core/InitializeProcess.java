@@ -3,6 +3,7 @@ package tv.ismar.app.core;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.util.Log;
 
 import com.google.gson.GsonBuilder;
 
@@ -174,8 +175,14 @@ public class InitializeProcess implements Runnable {
             e.printStackTrace();
         }
         if (!Utils.isEmptyText(resultString)) {
-            IpLookUpEntity ipLookUpEntity = new GsonBuilder().create().fromJson(resultString, IpLookUpEntity.class);
-            initializeLocation(ipLookUpEntity);
+		//modify by dragontec 无外网的时候会crash
+            try {
+                IpLookUpEntity ipLookUpEntity = new GsonBuilder().create().fromJson(resultString, IpLookUpEntity.class);
+                initializeLocation(ipLookUpEntity);
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+
         }
     }
 

@@ -143,6 +143,21 @@ public class Template519 extends Template implements View.OnClickListener, View.
     @Override
     public void onDestroy() {
         Log.d(TAG, "onDestroy()");
+/*add by dragontec for bug 4205 start*/
+        if (mHorizontal519Adapter != null) {
+            mHorizontal519Adapter.setBannerClickListener(null);
+            mHorizontal519Adapter.setHoverListener(null);
+        }
+        if (mRecyclerView != null) {
+            mRecyclerView.setAdapter(null);
+        }
+        if (mBannerLinearLayout != null) {
+            mBannerLinearLayout.setNavigationLeft(null);
+            mBannerLinearLayout.setNavigationRight(null);
+            mBannerLinearLayout.setRecyclerViewTV(null);
+            mBannerLinearLayout.setHeadView(null);
+        }
+/*add by dragontec for bug 4205 end*/
         if (mNavigationtHandler != null){
             mNavigationtHandler = null;
         }
@@ -220,11 +235,13 @@ public class Template519 extends Template implements View.OnClickListener, View.
                         }
 /*add by dragontec for bug 4331 start*/
                         if (isLastView && focusDirection == View.FOCUS_DOWN) {
-							YoYo.with(Techniques.VerticalShake).duration(1000).playOn(mParentView);
+							YoYo.with(Techniques.VerticalShake).duration(1000).playOn(view);
 						}
 /*add by dragontec for bug 4331 end*/
                         /*modify by dragontec for bug 4221 start*/
-                        return findNextUpDownFocus(focusDirection, mBannerLinearLayout);
+                        /*modify by dragontec for bug 4338 start*/
+                        return findNextUpDownFocus(focusDirection, mBannerLinearLayout, view);
+                        /*modify by dragontec for bug 4338 end*/
                         /*modify by dragontec for bug 4221 end*/
                     }
                 });

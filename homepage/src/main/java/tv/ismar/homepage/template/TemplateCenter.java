@@ -82,6 +82,26 @@ public class TemplateCenter extends Template
 
     @Override
     public void onDestroy() {
+/*add by dragontec for bug 4205 start*/
+        if (mFetchDataControl != null) {
+            mFetchDataControl.clear();
+        }
+        if (mAdapter != null) {
+            mAdapter.setOnItemSelectedListener(null);
+            mAdapter.setOnHoverListener(null);
+            mAdapter.setOnItemClickListener(null);
+        }
+        if (mRecyclerView != null) {
+            mRecyclerView.setLayoutManager(null);
+            mRecyclerView.setAdapter(null);
+        }
+        if (mBannerLinearLayout != null) {
+            mBannerLinearLayout.setNavigationLeft(null);
+            mBannerLinearLayout.setNavigationRight(null);
+            mBannerLinearLayout.setRecyclerViewTV(null);
+            mBannerLinearLayout.setHeadView(null);
+        }
+/*add by dragontec for bug 4205 end*/
     }
 
     @Override
@@ -208,11 +228,13 @@ public class TemplateCenter extends Template
         }
 /*add by dragontec for bug 4331 start*/
 		if (isLastView && focusDirection == View.FOCUS_DOWN) {
-			YoYo.with(Techniques.VerticalShake).duration(1000).playOn(mParentView);
+			YoYo.with(Techniques.VerticalShake).duration(1000).playOn(focused);
 		}
 /*add by dragontec for bug 4331 end*/
         /*modify by dragontec for bug 4221 start*/
-        return findNextUpDownFocus(focusDirection, mBannerLinearLayout);
+        /*modify by dragontec for bug 4338 start*/
+        return findNextUpDownFocus(focusDirection, mBannerLinearLayout, focused);
+        /*modify by dragontec for bug 4338 end*/
         /*modify by dragontec for bug 4221 end*/
     }
 

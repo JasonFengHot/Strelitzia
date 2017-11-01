@@ -9,7 +9,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -52,8 +51,8 @@ public class ConlumnAdapter extends BaseRecycleAdapter<ConlumnAdapter.ConlumnVie
         }
 		/*add by dragontec for bug 4325 start*/
         String focusStr = poster.title;
-        if(poster.introduce != null && !poster.introduce.equals("") && !poster.introduce.equals("null")){
-            focusStr = poster.introduce;
+        if(poster.focus != null && !poster.focus.equals("") && !poster.focus.equals("null")){
+            focusStr = poster.focus;
         }
         holder.mTitle.setTag(new String[]{poster.title,focusStr});
 		/*add by dragontec for bug 4325 end*/

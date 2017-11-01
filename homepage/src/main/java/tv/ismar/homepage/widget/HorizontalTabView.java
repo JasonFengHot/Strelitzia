@@ -134,20 +134,23 @@ public class HorizontalTabView extends HorizontalScrollView
         TextView lastItemView = (TextView) linearContainer.getChildAt(datas.size() -1);
         lastItemView.setNextFocusRightId(lastItemView.getId());
 
-        //最后一个按右键抖动动画
-        lastItemView.setOnKeyListener(new OnKeyListener() {
-            @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                switch (event.getAction()){
-                    case KeyEvent.ACTION_DOWN:
-                        if (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT){
-                            YoYo.with(Techniques.HorizontalShake).duration(1000).playOn(v);
-                        }
-                        break;
-                }
-                return false;
-            }
-        });
+/*delete by dragontec for bug 4354 start*/
+        //last item的监听器不能单独追加，会造成不进入该类的onKey函数，所以右键抖动动画移动到onKey执行
+//        //最后一个按右键抖动动画
+//        lastItemView.setOnKeyListener(new OnKeyListener() {
+//            @Override
+//            public boolean onKey(View v, int keyCode, KeyEvent event) {
+//                switch (event.getAction()){
+//                    case KeyEvent.ACTION_DOWN:
+//                        if (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT){
+//                            YoYo.with(Techniques.HorizontalShake).duration(1000).playOn(v);
+//                        }
+//                        break;
+//                }
+//                return false;
+//            }
+//        });
+/*delete by dragontec for bug 4354 end*/
 
         TextView firstItemView = (TextView) linearContainer.getChildAt(0);
         firstItemView.setNextFocusLeftId(firstItemView.getId());
@@ -332,6 +335,14 @@ public class HorizontalTabView extends HorizontalScrollView
                         }
                     }, 50);
                 }
+/*delete by dragontec for bug 4354 start*/
+                else if (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT){
+                    TextView lastItemView = (TextView) linearContainer.getChildAt(linearContainer.getChildCount() - 1);
+                    if (lastItemView == v) {
+                        YoYo.with(Techniques.HorizontalShake).duration(1000).playOn(v);
+                    }
+                }
+/*delete by dragontec for bug 4354 end*/
                 break;
             case KeyEvent.ACTION_UP:
                 Log.d(TAG, "onKey ACTION_UP");

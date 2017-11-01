@@ -661,6 +661,23 @@ public class RecyclerViewTV extends RecyclerView implements PrvInterface {
             if (layoutManager instanceof GridLayoutManager) {
                 return ((GridLayoutManager) layoutManager).findLastVisibleItemPosition();
             }
+/*add by dragontec for bug 4338 start*/
+            if (layoutManager instanceof StaggeredGridLayoutManager) {
+				try {
+					int[] positions = ((StaggeredGridLayoutManager) layoutManager).findLastVisibleItemPositions(null);
+					int max = 0;
+					for (int pos :
+							positions) {
+						if (max < pos) {
+							max = pos;
+						}
+					}
+					return max;
+				} catch (NullPointerException e) {
+					e.printStackTrace();
+				}
+			}
+/*add by dragontec for bug 4338 end*/
         }
         return RecyclerView.NO_POSITION;
     }
@@ -725,6 +742,24 @@ public class RecyclerViewTV extends RecyclerView implements PrvInterface {
             if (lm instanceof GridLayoutManager) {
                 return ((GridLayoutManager) lm).findFirstVisibleItemPosition();
             }
+            /*add by dragontec for bug 4338 start*/
+			if(lm instanceof StaggeredGridLayoutManager){
+				//temp fix crash by dragontec
+				try {
+					int min = -1;
+					int[] positions = ((StaggeredGridLayoutManager) lm).findFirstVisibleItemPositions(null);
+					for (int pos:
+							positions) {
+						if (min == -1 || min > pos) {
+							min = pos;
+						}
+					}
+					return min;
+				} catch (NullPointerException e){
+					e.printStackTrace();
+				}
+			}
+			/*add by dragontec for bug 4338 end*/
         }
         return RecyclerView.NO_POSITION;
     }

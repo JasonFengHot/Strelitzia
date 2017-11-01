@@ -107,8 +107,9 @@ public class FilterPosterAdapter extends RecyclerView.Adapter<FilterPosterAdapte
 
     @Override
     public void onBindViewHolder(final FilterPosterHolder holder, final int position) {
-            if(position<mItemList.objects.size()) {
-                final Item item = mItemList.objects.get(position);
+    	/*modify by dragontec for bug 4343 start*/
+            if(holder.getAdapterPosition()<mItemList.objects.size()) {
+                final Item item = mItemList.objects.get(holder.getAdapterPosition());
                 if (mIsVertical) {
                     if (item.bean_score > 0) {
                         holder.item_vertical_poster_mark.setText(item.bean_score + "");
@@ -151,7 +152,7 @@ public class FilterPosterAdapter extends RecyclerView.Adapter<FilterPosterAdapte
                                     }
                                     holder.item_vertical_poster_title.setEllipsize(TextUtils.TruncateAt.END);
                                 }
-                                itemFocusedListener.onItemfocused(v, position, hasFocus);
+                                itemFocusedListener.onItemfocused(v, holder.getAdapterPosition(), hasFocus);
                             }
                         });
                     }
@@ -198,7 +199,7 @@ public class FilterPosterAdapter extends RecyclerView.Adapter<FilterPosterAdapte
                                 }else{
                                     holder.item_horizontal_poster_title.setEllipsize(TextUtils.TruncateAt.END);
                                 }
-                                itemFocusedListener.onItemfocused(v, position, hasFocus);
+                                itemFocusedListener.onItemfocused(v, holder.getAdapterPosition(), hasFocus);
                             }
                         });
                     }
@@ -218,7 +219,7 @@ public class FilterPosterAdapter extends RecyclerView.Adapter<FilterPosterAdapte
                     holder.itemView.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            itemClickListener.onItemClick(v, position);
+                            itemClickListener.onItemClick(v, holder.getAdapterPosition());
                         }
                     });
                 }
@@ -235,6 +236,7 @@ public class FilterPosterAdapter extends RecyclerView.Adapter<FilterPosterAdapte
         if(position==focusedPosition){
             holder.itemView.requestFocus();
         }
+        /*modify by dragontec for bug 4343 end*/
     }
 
 

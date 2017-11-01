@@ -107,4 +107,33 @@ public class HomeRootRelativeLayout extends RelativeLayout {
     public View getDownArrow() {
         return downArrow;
     }
+
+	/*modify by dragontec for bug 4338 start*/
+	@Override
+	public View focusSearch(View focused, int direction) {
+    	View result = null;
+    	try {
+			if (focused.getParent().getParent() instanceof HorizontalTabView) {
+				if (mFocusSearchFailedListener != null) {
+					result = mFocusSearchFailedListener.onFocusSearchFailed(focused, direction);
+				}
+			}
+		} catch (NullPointerException e) {
+    		e.printStackTrace();
+    		result = null;
+		}
+
+		return result != null ? result : super.focusSearch(focused, direction);
+	}
+
+	public interface FocusSearchFailedListener {
+		View onFocusSearchFailed(View focused, int direction);
+	}
+
+	private FocusSearchFailedListener mFocusSearchFailedListener = null;
+
+	public void setFocusSearchFailedListener(FocusSearchFailedListener focusSearchFailedListener) {
+		mFocusSearchFailedListener = focusSearchFailedListener;
+	}
+	/*modify by dragontec for bug 4338 end*/
 }

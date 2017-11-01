@@ -55,6 +55,14 @@ public class BaseControl {
         setCallBack(callBack);
     }
 
+/*add by dragontec for bug 4205 start*/
+    public void clear() {
+        mContext = null;
+        mActivity = null;
+        mCallBack = null;
+    }
+/*add by dragontec for bug 4205 end*/
+
     public void setCallBack(ControlCallBack callBack){
         this.mCallBack = callBack;
     }

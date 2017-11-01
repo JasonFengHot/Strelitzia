@@ -12,8 +12,8 @@
         android:background="#00000000"/>
     <tv.ismar.homepage.banner.IsmartvLinearLayout
         android:id="@+id/guide_ismartv_linear_layout"
-        android:layout_width="@dimen/guide_recycle_item_width"
-        android:layout_height="@dimen/guide_recycle_item_height"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:clipChildren="false"
         android:clipToPadding="false"
         android:focusable="true"
@@ -23,8 +23,8 @@
         android:orientation="vertical">
 
         <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="@dimen/guide_recycle_item_width"
+            android:layout_height="@dimen/guide_recycle_item_height"
             android:clipChildren="false"
             android:clipToPadding="false"
             >
@@ -58,7 +58,7 @@
 
             <TextView
                 android:id="@+id/guide_recycle_item_title"
-                android:layout_width="match_parent"
+                android:layout_width="@dimen/guide_recycle_item_width"
                 android:layout_height="@dimen/guide_recycle_item_title_height"
                 android:background="@drawable/banner_subscrib_introduction_bg"
                 android:textColor="@color/_ffffff"

@@ -353,6 +353,13 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
 
     @Override
     public void onDisconnected() {
+/*add by dragontec for bug 4205 start*/
+        if (mPlaybackService != null) {
+            mPlaybackService.setCallback(null);
+            mPlaybackService.setQiyiContainer(null);
+            mPlaybackService.setSurfaceView(null);
+        }
+/*add by dragontec for bug 4205 end*/
         mPlaybackService = null;
     }
 

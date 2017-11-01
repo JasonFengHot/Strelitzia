@@ -48,6 +48,7 @@ import tv.ismar.app.core.cache.DownloadClient;
 import tv.ismar.app.entity.banner.HomeEntity;
 import tv.ismar.app.player.CallaPlay;
 import tv.ismar.app.util.HardwareUtils;
+import tv.ismar.homepage.HomeActivity;
 import tv.ismar.homepage.OnItemClickListener;
 import tv.ismar.homepage.OnItemSelectedListener;
 import tv.ismar.homepage.R;
@@ -56,6 +57,9 @@ import tv.ismar.homepage.control.FetchDataControl;
 import tv.ismar.homepage.control.GuideControl;
 import tv.ismar.homepage.view.BannerLinearLayout;
 import tv.ismar.homepage.widget.DaisyVideoView;
+	/*add by dragontec for bug 4077 start*/
+import tv.ismar.homepage.widget.RecycleLinearLayout;
+	/*add by dragontec for bug 4077 end*/
 import tv.ismar.library.exception.ExceptionUtils;
 
 import static android.view.MotionEvent.BUTTON_PRIMARY;
@@ -64,9 +68,6 @@ import static android.view.View.VISIBLE;
 import static tv.ismar.homepage.fragment.ChannelFragment.BANNER_KEY;
 import static tv.ismar.homepage.fragment.ChannelFragment.CHANNEL_KEY;
 import static tv.ismar.homepage.fragment.ChannelFragment.NAME_KEY;
-
-/*add by dragontec for bug 4077 start*/
-/*add by dragontec for bug 4077 end*/
 
 /**
  * @AUTHOR: xi @DATE: 2017/8/29 @DESC: 导视模版
@@ -335,6 +336,36 @@ public class TemplateGuide extends Template
 
     @Override
     public void onDestroy() {
+/*add by dragontec for bug 4205 start*/
+        if (mFetchDataControl != null) {
+            mFetchDataControl.clear();
+        }
+        if (mVideoView != null) {
+            mVideoView.setOnFocusChangeListener(null);
+            mVideoView.setOnCompletionListener(null);
+            mVideoView.setOnErrorListener(null);
+            mVideoView.setOnPreparedListener(null);
+        }
+        if (mGuideLayoutManager != null) {
+            mGuideLayoutManager.setFocusSearchFailedListener(null);
+        }
+        if (mAdapter != null) {
+            mAdapter.setOnHoverListener(null);
+            mAdapter.setOnItemClickListener(null);
+            mAdapter.setOnItemSelectedListener(null);
+        }
+        if (mRecyclerView != null) {
+            mRecyclerView.setPagingableListener(null);
+            mRecyclerView.setLayoutManager(null);
+            mRecyclerView.setAdapter(null);
+        }
+        if (mBannerLinearLayout != null) {
+            mBannerLinearLayout.setNavigationLeft(null);
+            mBannerLinearLayout.setNavigationRight(null);
+            mBannerLinearLayout.setRecyclerViewTV(null);
+            mBannerLinearLayout.setHeadView(null);
+        }
+/*add by dragontec for bug 4205 end*/
 /*add by dragontec for bug 4065 start*/
         synchronized (stLock)
         {
@@ -343,6 +374,13 @@ public class TemplateGuide extends Template
             playSubscription = null;
             checkVideoViewFullVisibilitySubsc = null;
             mVideoView = null;
+/*add by dragontec for bug 4205 start*/
+            if (mLoadingIg != null) {
+                mLoadingIg.setImageDrawable(null);
+                mLoadingIg.setOnHoverListener(null);
+                mLoadingIg.setOnFocusChangeListener(null);
+            }
+/*add by dragontec for bug 4205 end*/
             mLoadingIg = null;
             mControl = null;
 /*add by dragontec for bug 4065 start*/
@@ -443,6 +481,14 @@ public class TemplateGuide extends Template
 		/*add by dragontec for bug 4242 end*/
         mLoadingIg.setOnFocusChangeListener(this);
         mLoadingIg.setOnHoverListener(this);
+        /*add by dragontec for bug 4338 start*/
+		mBannerLinearLayout.setFocusSearchFailedListener(new BannerLinearLayout.FocusSearchFailedListener() {
+			@Override
+			public View onFocusSearchFailed(View focused, int direction) {
+				return findNextUpDownFocus(direction, mBannerLinearLayout, focused);
+			}
+		});
+		/*add by dragontec for bug 4338 end*/
     }
 
     /*更改图标背景*/
@@ -596,11 +642,13 @@ public class TemplateGuide extends Template
         }
 /*add by dragontec for bug 4331 start*/
 		if (isLastView && focusDirection == View.FOCUS_DOWN) {
-			YoYo.with(Techniques.VerticalShake).duration(1000).playOn(mParentView);
+			YoYo.with(Techniques.VerticalShake).duration(1000).playOn(focused);
 		}
 /*add by dragontec for bug 4331 end*/
         /*modify by dragontec for bug 4221 start*/
-        return findNextUpDownFocus(focusDirection, mBannerLinearLayout);
+        /*modify by dragontec for bug 4338 start*/
+        return findNextUpDownFocus(focusDirection, mBannerLinearLayout, focused);
+        /*modify by dragontec for bug 4338 end*/
         /*modify by dragontec for bug 4221 end*/
     }
 
@@ -904,8 +952,11 @@ public class TemplateGuide extends Template
         Log.d(TAG, "current video path ====> " + videoPath);
         CallaPlay play = new CallaPlay();
         play.homepage_vod_trailer_play(videoPath, mChannel);
-//        mLoadingIg.setImageResource(R.drawable.guide_video_loading);
-//        mLoadingIg.setVisibility(View.VISIBLE);
+/*add by dragontec for bug 4205 start*/
+        mLoadingIg.setImageDrawable(null);
+/*add by dragontec for bug 4205 end*/
+        mLoadingIg.setImageResource(R.drawable.guide_video_loading);
+        mLoadingIg.setVisibility(View.VISIBLE);
         stopPlayback();
         initCallback();
         mVideoView.setVideoPath(videoPath);

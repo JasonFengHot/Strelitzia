@@ -77,9 +77,15 @@ public class HomeActivity extends BaseActivity
     public static final String HOME_PAGE_CHANNEL_TAG = "homepage";
 /*modify by dragontec for bug 4057 start*/
 //    public static View mHoverView;
-public static HomeRootRelativeLayout mHoverView;
+/*modify by dragontec for bug 4205 start*/
+//  public static HomeRootRelativeLayout mHoverView;
+    public HomeRootRelativeLayout mHoverView;
+/*modify by dragontec for bug 4205 end*/
 /*modify by dragontec for bug 4057 end*/
-    public static View mLastFocusView;
+/*modify by dragontec for bug 4205 start*/
+//    public static View mLastFocusView;
+    public View mLastFocusView;
+/*modify by dragontec for bug 4205 end*/
     private final FetchDataControl mFetchDataControl = new FetchDataControl(this, this); // 业务类引用
     private final HomeControl mHomeControl = new HomeControl(this, this);
     private HorizontalTabView mChannelTab;
@@ -96,6 +102,11 @@ public static HomeRootRelativeLayout mHoverView;
     private BitmapDecoder mBitmapDecoder;
     private int mLastSelectedIndex = -1; // 记录上一次选中的位置
     private TimeTickBroadcast mTimeTickBroadcast = null;
+
+/*add by dragontec for bug 4230 start*/
+    private ImageView mPersonCollectionImg;
+    private ImageView mPersonCenterImg;
+/*add by dragontec for bug 4230 end*/
 
     private ImageView left_image, right_image; // 导航左右遮罩
     private Runnable mRunnable =
@@ -268,6 +279,26 @@ public static HomeRootRelativeLayout mHoverView;
     @Override
     protected void onDestroy() {
         super.onDestroy();
+/*add by dragontec for bug 4205 start*/
+        if (banner_arrow_up != null) {
+            banner_arrow_up.setOnClickListener(null);
+        }
+        if (banner_arrow_down != null) {
+            banner_arrow_down.setOnClickListener(null);
+        }
+        mAdvertisement = null;
+        if (mHomeControl != null) {
+            mHomeControl.clear();
+        }
+        if (mFetchDataControl != null) {
+            mFetchDataControl.clear();
+        }
+        if (mChannelTab != null) {
+            mChannelTab.leftbtn = null;
+            mChannelTab.rightbtn = null;
+            mChannelTab.removeAllViews();
+        }
+/*add by dragontec for bug 4205 end*/
 /*add by dragontec for bug 4259 start*/
         if (mRequestBannerFocusHandler != null
                 && mRequestBannerFocusRunnable != null) {
@@ -338,6 +369,11 @@ public static HomeRootRelativeLayout mHoverView;
         mChannelTab.leftbtn = left_image;
         mChannelTab.rightbtn = right_image;
 
+/*add by dragontec for bug 4230 start*/
+        mPersonCollectionImg = (ImageView) findViewById(R.id.person_collection_img);
+        mPersonCenterImg = (ImageView) findViewById(R.id.person_center_img);
+/*add by dragontec for bug 4230 end*/
+
         //广告
         mVideoView = (DaisyVideoView) findViewById(R.id.home_ad_video);
         mPicImg = (ImageView) findViewById(R.id.home_ad_pic);
@@ -362,6 +398,9 @@ public static HomeRootRelativeLayout mHoverView;
                 new BitmapDecoder.Callback() {
                     @Override
                     public void onSuccess(BitmapDrawable bitmapDrawable) {
+/*add by dragontec for bug 4205 start*/
+                        mViewGroup.setBackground(null);
+/*add by dragontec for bug 4205 end*/
                         mViewGroup.setBackground(bitmapDrawable);
                         mBitmapDecoder = null;
                     }
@@ -379,6 +418,12 @@ public static HomeRootRelativeLayout mHoverView;
         mCenterRect.setOnClickListener(this);
         mCollectionRect.setOnFocusChangeListener(this);
         mCollectionRect.setOnClickListener(this);
+
+/*add by dragontec for bug 4230 start*/
+        mPersonCollectionImg.setOnHoverListener(this);
+        mPersonCenterImg.setOnHoverListener(this);
+/*add by dragontec for bug 4230 end*/
+
         mHomeControl.setChannelChange(mChannelTab);
         mCollectionRect.setOnHoverListener(this);
         mCenterRect.setOnHoverListener(this);
@@ -608,9 +653,29 @@ public static HomeRootRelativeLayout mHoverView;
 //                    v.requestFocusFromTouch();
 //                    v.requestFocus();
 //                }
+/*modify by dragontec for bug 4230 start*/
+//                if(!v.hasFocus()) {
+//                    v.requestFocusFromTouch();
+//                    v.requestFocus();
+//                }
                 if(!v.hasFocus()) {
-                    v.requestFocusFromTouch();
-                    v.requestFocus();
+                    if (v.getId() == R.id.person_collection_img) {
+                        if (mCollectionRect != null) {
+                            mCollectionRect.requestFocusFromTouch();
+                            mCollectionRect.requestFocus();
+                        }
+                    } else if (v.getId() == R.id.person_center_img) {
+                        if (mCenterRect != null) {
+                            mCenterRect.requestFocusFromTouch();
+                            mCenterRect.requestFocus();
+                        }
+                    } else if (v.getId() == R.id.collection_rect_layout || v.getId() == R.id.center_rect_layout) {
+                        //do nothing
+                    } else {
+                        v.requestFocusFromTouch();
+                        v.requestFocus();
+                    }
+/*modify by dragontec for bug 4230 end*/
                 }
 /*modify by dragontec for bug 4057 end*/
                 break;
@@ -618,7 +683,16 @@ public static HomeRootRelativeLayout mHoverView;
                 //                onFocusChange(v,  false);
 /*add by dragontec for bug 4057 start*/
                 if (event.getButtonState() != MotionEvent.BUTTON_PRIMARY) {
-                    v.clearFocus();
+/*modify by dragontec for bug 4230 start*/
+//                    v.clearFocus();
+                    if (v.getId() == R.id.person_collection_img || v.getId() == R.id.person_center_img) {
+                        //do nothing
+                    } else if (v.getId() == R.id.collection_rect_layout || v.getId() == R.id.center_rect_layout) {
+                        v.clearFocus();
+                    } else {
+                        v.clearFocus();
+                    }
+/*modify by dragontec for bug 4230 end*/
                 }
 /*add by dragontec for bug 4057 end*/
                 break;

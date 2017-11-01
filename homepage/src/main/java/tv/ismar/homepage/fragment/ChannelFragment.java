@@ -108,16 +108,8 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
             LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = LayoutInflater.from(getActivity()).inflate(R.layout.channel_fragment_layout, null);
         findView(view);
+		initListener();
         Logger.t(TAG).d("ChannelFragment onCreateView");
-		/*add by dragontec for bug 3983 start*/
-        mLinearContainer.setOnPositionChangedListener(this);
-		/*add by dragontec for bug 3983 end*/
-		/*add by dragontec for bug 4077 start*/
-		mLinearContainer.setOnDataFinishedListener(this);
-		/*add by dragontec for bug 4077 end*/
-		/*add by dragontec for bug 4200 start*/
-		mLinearContainer.setOnScrollFinishedListener(this);
-		/*add by dragontec for bug 4200 end*/
 /*add by dragontec for bug 4065 start*/
 		mAniHandler = new Handler();
 /*add by dragontec for bug 4065 end*/
@@ -190,11 +182,7 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
 
     @Override
     public void onDestroyView() {
-		/*add by dragontec for bug 4200 start*/
-		mLinearContainer.setOnScrollFinishedListener(null);
-		/*add by dragontec for bug 4200 end*/
-		mLinearContainer.setOnPositionChangedListener(null);
-		mLinearContainer.setOnDataFinishedListener(null);
+		unInitListener();
 /*delete by dragontec for bug 4065 start*/
 //        if (mLinearContainer != null){
 //            for (int i = 0; i < mLinearContainer.getChildCount(); i++){
@@ -208,6 +196,17 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
     @Override
     public void onDestroy() {
         Log.d(TAG, "onDestroy");
+/*add by dragontec for bug 4205 start*/
+        if (mControl != null) {
+			mControl.clear();
+		}
+		if (mLinearContainer != null){
+			mLinearContainer.resetArrowUp();
+			mLinearContainer.resetArrowDown();
+			mLinearContainer.setHomeRootRelativeLayout(null);
+		}
+		homeRootRelativeLayout = null;
+/*add by dragontec for bug 4205 end*/
 /*add by dragontec for bug 4065 start*/
 		if (mLinearContainer != null){
 			mLinearContainer.removeAllViews();
@@ -239,6 +238,50 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
 			mLinearContainer.setHomeRootRelativeLayout(homeRootRelativeLayout);
         }
     }
+
+	/*add by dragontec for bug 4338 start*/
+    private void initListener() {
+		if (homeRootRelativeLayout != null) {
+			homeRootRelativeLayout.setFocusSearchFailedListener(new HomeRootRelativeLayout.FocusSearchFailedListener() {
+				@Override
+				public View onFocusSearchFailed(View focused, int direction) {
+					if (direction == View.FOCUS_DOWN) {
+						synchronized (templateDataLock) {
+							if (mTemplates != null && mTemplates.size() > 0) {
+								return mTemplates.get(0).findNearestItemForPosition(focused, direction);
+							}
+						}
+					}
+					return null;
+				}
+			});
+		}
+		if (mLinearContainer != null) {
+			/*add by dragontec for bug 3983 start*/
+			mLinearContainer.setOnPositionChangedListener(this);
+		/*add by dragontec for bug 3983 end*/
+		/*add by dragontec for bug 4077 start*/
+			mLinearContainer.setOnDataFinishedListener(this);
+		/*add by dragontec for bug 4077 end*/
+		/*add by dragontec for bug 4200 start*/
+			mLinearContainer.setOnScrollFinishedListener(this);
+		/*add by dragontec for bug 4200 end*/
+		}
+	}
+
+	private void unInitListener() {
+		if (mLinearContainer != null) {
+		/*add by dragontec for bug 4200 start*/
+			mLinearContainer.setOnScrollFinishedListener(null);
+		/*add by dragontec for bug 4200 end*/
+			mLinearContainer.setOnPositionChangedListener(null);
+			mLinearContainer.setOnDataFinishedListener(null);
+		}
+		if (homeRootRelativeLayout != null) {
+			homeRootRelativeLayout.setFocusSearchFailedListener(null);
+		}
+	}
+	/*add by dragontec for bug 4338 end*/
 
     public void setChannel(String name, String channel, String title, int style) {
         mName = name;
@@ -516,6 +559,12 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
 					appendBanner(last + i + 1);
 				}
 		}
+		/*modify by dragontec for bug 4335 start*/
+		View lastView = mLinearContainer.getChildAt(mLinearContainer.getChildCount() - 1);
+		if(!mLinearContainer.hasMore() && lastView != null){
+			lastView.setPadding(lastView.getPaddingLeft(),lastView.getPaddingTop(),lastView.getPaddingRight(),getResources().getDimensionPixelSize(R.dimen.banner_bottom_margin));
+		}
+		/*modify by dragontec for bug 4335 end*/
 	}
 	/*add by dragontec for bug 4077 end*/
 

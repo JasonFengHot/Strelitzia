@@ -1416,6 +1416,38 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
 
     }
 
+	/*add by dragontec for bug 4343 start*/
+    private void checkItemScroll(View v, int position, GridLayoutManager layoutManager) {
+		if (v.getY() > getResources().getDimensionPixelOffset(R.dimen.filter_poster_start_scroll_length)) {
+			if (isVertical) {
+				layoutManager.scrollToPositionWithOffset(position, getResources().getDimensionPixelOffset(R.dimen.list_scroll_up_offset_v));
+			} else {
+				layoutManager.scrollToPositionWithOffset(position, getResources().getDimensionPixelOffset(R.dimen.list_scroll_up_offset_h));
+			}
+		} else if (v.getY() < 0) {
+			if (isVertical) {
+				if (specialPos != null && (specialPos.contains(position - 1) || specialPos.contains(position - 2) || specialPos.contains(position - 3) || specialPos.contains(position - 4) || specialPos.contains(position - 5))) {
+					layoutManager.scrollToPositionWithOffset(position, getResources().getDimensionPixelOffset(R.dimen.list_scroll_up_offset_v));
+				} else {
+					layoutManager.scrollToPositionWithOffset(position, getResources().getDimensionPixelOffset(R.dimen.list_scroll_down_offset_v));
+				}
+			} else {
+				if (specialPos != null && (specialPos.contains(position - 1) || specialPos.contains(position - 2) || specialPos.contains(position - 3))) {
+					layoutManager.scrollToPositionWithOffset(position, getResources().getDimensionPixelOffset(R.dimen.list_scroll_up_offset_h));
+				} else {
+					layoutManager.scrollToPositionWithOffset(position, getResources().getDimensionPixelOffset(R.dimen.list_scroll_down_offset_h));
+				}
+
+			}
+		} else if (isVertical && v.getY() > 0 && v.getY() < current_section_title.getHeight()) {
+			if (specialPos != null && (specialPos.contains(position - 1) || specialPos.contains(position - 2) || specialPos.contains(position - 3) || specialPos.contains(position - 4) || specialPos.contains(position - 5))) {
+				mFocusGridLayoutManager.scrollToPositionWithOffset(position, getResources().getDimensionPixelOffset(R.dimen.list_scroll_up_offset_v));
+			} else {
+				mFocusGridLayoutManager.scrollToPositionWithOffset(position, getResources().getDimensionPixelOffset(R.dimen.list_scroll_down_offset_v));
+			}
+		}
+	}
+	/*add by dragontec for bug 4343 end*/
 
     /**
      * 处理请求到的列表页海报区数据
@@ -1452,41 +1484,27 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
             listPosterAdapter.setItemKeyListener(new OnItemKeyListener() {
 				@Override
 				public void onItemKeyListener(View v, int keyCode, KeyEvent event) {
+					/*modify by dragontec for bug 4343 start*/
 					if (event.getAction() == KeyEvent.ACTION_UP) {
 						int position = list_poster_recyclerview.getChildAdapterPosition(v);
 						if (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT || keyCode == KeyEvent.KEYCODE_DPAD_DOWN || keyCode == KeyEvent.KEYCODE_DPAD_LEFT || keyCode == KeyEvent.KEYCODE_DPAD_UP) {
 							if (!filter_root_view.horving) {
-								if (v.getY() > getResources().getDimensionPixelOffset(R.dimen.filter_poster_start_scroll_length)) {
-									if (isVertical) {
-										mFocusGridLayoutManager.scrollToPositionWithOffset(position, getResources().getDimensionPixelOffset(R.dimen.list_scroll_up_offset_v));
-									} else {
-										mFocusGridLayoutManager.scrollToPositionWithOffset(position, getResources().getDimensionPixelOffset(R.dimen.list_scroll_up_offset_h));
-									}
-								} else if (v.getY() < 0) {
-									if (isVertical) {
-										if (specialPos != null && (specialPos.contains(position - 1) || specialPos.contains(position - 2) || specialPos.contains(position - 3) || specialPos.contains(position - 4) || specialPos.contains(position - 5))) {
-											mFocusGridLayoutManager.scrollToPositionWithOffset(position, getResources().getDimensionPixelOffset(R.dimen.list_scroll_up_offset_v));
-										} else {
-											mFocusGridLayoutManager.scrollToPositionWithOffset(position, getResources().getDimensionPixelOffset(R.dimen.list_scroll_down_offset_v));
-										}
-									} else {
-										if (specialPos != null && (specialPos.contains(position - 1) || specialPos.contains(position - 2) || specialPos.contains(position - 3))) {
-											mFocusGridLayoutManager.scrollToPositionWithOffset(position, getResources().getDimensionPixelOffset(R.dimen.list_scroll_up_offset_h));
-										} else {
-											mFocusGridLayoutManager.scrollToPositionWithOffset(position, getResources().getDimensionPixelOffset(R.dimen.list_scroll_down_offset_h));
-										}
-
-									}
-								} else if (isVertical && v.getY() > 0 && v.getY() < current_section_title.getHeight()) {
-									if (specialPos != null && (specialPos.contains(position - 1) || specialPos.contains(position - 2) || specialPos.contains(position - 3) || specialPos.contains(position - 4) || specialPos.contains(position - 5))) {
-										mFocusGridLayoutManager.scrollToPositionWithOffset(position, getResources().getDimensionPixelOffset(R.dimen.list_scroll_up_offset_v));
-									} else {
-										mFocusGridLayoutManager.scrollToPositionWithOffset(position, getResources().getDimensionPixelOffset(R.dimen.list_scroll_down_offset_v));
-									}
-								}
+								checkItemScroll(v, position, mFocusGridLayoutManager);
+							}
+						}
+					} else if (event.getAction() == KeyEvent.ACTION_DOWN) {
+						int position = list_poster_recyclerview.getChildAdapterPosition(v);
+						if (!filter_root_view.horving) {
+							int[] location = new int[]{0, 0};
+							v.getLocationOnScreen(location);
+							int screenWidth = v.getResources().getDisplayMetrics().widthPixels;
+							int screenHeight = v.getResources().getDisplayMetrics().heightPixels;
+							if (location[0] < 0 || location[1] < 0 || location[0] + v.getWidth() > screenWidth || location[1] + v.getHeight() > screenHeight) {
+								checkItemScroll(v, position, mFocusGridLayoutManager);
 							}
 						}
 					}
+					/*modify by dragontec for bug 4343 end*/
 				}
 			});
 			//add by dragontec for bug 4310 end
@@ -1500,6 +1518,19 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
                         lastFocusedView = view;
                         changeCheckedTab(position);
                         Log.e("onitemfocus", view.getY()+"");
+                        /*modify by dragontec for bug 4343 start*/
+                        if (!list_poster_recyclerview.isScrolling()) {
+							if (!filter_root_view.horving) {
+								int[] location = new int[]{0, 0};
+								view.getLocationOnScreen(location);
+								int screenWidth = view.getResources().getDisplayMetrics().widthPixels;
+								int screenHeight = view.getResources().getDisplayMetrics().heightPixels;
+								if (location[0] < 0 || location[1] < 0 || location[0] + view.getWidth() > screenWidth || location[1] + view.getHeight() > screenHeight) {
+									checkItemScroll(view, position, mFocusGridLayoutManager);
+								}
+							}
+						}
+						/*modify by dragontec for bug 4343 end*/
 						//modify by dragontec for bug 4310 start
 //                        if(!filter_root_view.horving) {
 //                            if (view.getY() > getResources().getDimensionPixelOffset(R.dimen.filter_poster_start_scroll_length)) {

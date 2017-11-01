@@ -11,6 +11,9 @@ import android.widget.LinearLayout;
 
 import com.open.androidtvwidget.leanback.recycle.RecyclerViewTV;
 import com.orhanobut.logger.Logger;
+/*add by dragontec for bug 4338 start*/
+import tv.ismar.homepage.R;
+/*add by dragontec for bug 4338 end*/
 
 import static android.view.MotionEvent.BUTTON_PRIMARY;
 
@@ -100,12 +103,42 @@ public class BannerLinearLayout extends LinearLayout {
 
 	@Override
 	public boolean dispatchKeyEvent(KeyEvent event) {
+/*add by dragontec for bug 4205 start*/
+	    if (navigationLeft != null && navigationRight != null) {
+/*add by dragontec for bug 4205 end*/
 /*modify by dragontec for bug 4332 start*/
-		if (navigationLeft.getVisibility() == VISIBLE || navigationRight.getVisibility() == VISIBLE) {
-			navigationLeft.setVisibility(INVISIBLE);
-			navigationRight.setVisibility(INVISIBLE);
-		}
+            if (navigationLeft.getVisibility() == VISIBLE || navigationRight.getVisibility() == VISIBLE) {
+                navigationLeft.setVisibility(INVISIBLE);
+                navigationRight.setVisibility(INVISIBLE);
+            }
 /*modify by dragontec for bug 4332 end*/
+/*add by dragontec for bug 4205 start*/
+        }
+/*add by dragontec for bug 4205 end*/
 		return super.dispatchKeyEvent(event);
 	}
+
+	/*add by dragontec for bug 4338 start*/
+	@Override
+	public View focusSearch(View focused, int direction) {
+		View result = null;
+		if (focused.getId() == R.id.guide_head_ismartv_linearlayout) {
+			if (mFocusSearchFailedListener != null) {
+				result = mFocusSearchFailedListener.onFocusSearchFailed(focused, direction);
+			}
+		}
+		return result != null ? result : super.focusSearch(focused, direction);
+	}
+
+	public interface FocusSearchFailedListener {
+		View onFocusSearchFailed(View focused, int direction);
+	}
+
+	private FocusSearchFailedListener mFocusSearchFailedListener = null;
+
+	public void setFocusSearchFailedListener(FocusSearchFailedListener focusSearchFailedListener) {
+		mFocusSearchFailedListener = focusSearchFailedListener;
+	}
+	/*add by dragontec for bug 4338 end*/
+
 }

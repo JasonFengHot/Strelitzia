@@ -74,9 +74,6 @@ public class TemplateDoubleLd extends Template
 //    private RecyclerViewTV mRecyclerView;
 /*delete by dragontec for bug 4332 start*/
     private ImageView mRtImage;//右上角图标
-/*delete by dragontec for bug 4332 start*/
-//    private RecyclerViewTV mRecyclerView;
-/*delete by dragontec for bug 4332 start*/
     private DoubleLdAdapter mAdapter;
     private FetchDataControl mFetchDataControl = null;
     private BannerLinearLayout mBannerLinearLayout;
@@ -160,6 +157,27 @@ public class TemplateDoubleLd extends Template
 
     @Override
     public void onDestroy() {
+/*add by dragontec for bug 4205 start*/
+        if (mFetchDataControl != null) {
+            mFetchDataControl.clear();
+        }
+        if (mAdapter != null) {
+            mAdapter.setHeaderView(null);
+            mAdapter.setOnHoverListener(null);
+            mAdapter.setOnItemClickListener(null);
+            mAdapter.setOnItemSelectedListener(null);
+        }
+        if (mRecyclerView != null) {
+            mRecyclerView.setLayoutManager(null);
+            mRecyclerView.setAdapter(null);
+        }
+        if (mBannerLinearLayout != null) {
+            mBannerLinearLayout.setNavigationLeft(null);
+            mBannerLinearLayout.setNavigationRight(null);
+            mBannerLinearLayout.setRecyclerViewTV(null);
+            mBannerLinearLayout.setHeadView(null);
+        }
+/*add by dragontec for bug 4205 end*/
         if (mNavigationtHandler != null){
             mNavigationtHandler = null;
         }
@@ -179,7 +197,6 @@ public class TemplateDoubleLd extends Template
         mLtImage = (ImageView) mHeaderView.findViewById(R.id.double_ld_image_lt_icon);
         mRbImage = (TextView) mHeaderView.findViewById(R.id.double_ld_image_rb_icon);
         mIgTitleTv = (TextView) mHeaderView.findViewById(R.id.double_ld_image_title);
-/*modify by dragontec for bug 4332 end*/
         mRtImage= (ImageView) mHeaderView.findViewById(R.id.guide_rt_icon);
 /*modify by dragontec for bug 4332 end*/
         mDoubleLayoutManager =
@@ -366,11 +383,13 @@ public class TemplateDoubleLd extends Template
 		/*modify by dragontec for bug 4242 end*/
 /*add by dragontec for bug 4331 start*/
 		if (isLastView && focusDirection == View.FOCUS_DOWN) {
-			YoYo.with(Techniques.VerticalShake).duration(1000).playOn(mParentView);
+			YoYo.with(Techniques.VerticalShake).duration(1000).playOn(focused);
 		}
 /*add by dragontec for bug 4331 end*/
         /*modify by dragontec for bug 4221 start*/
-        return findNextUpDownFocus(focusDirection, mBannerLinearLayout);
+        /*modify by dragontec for bug 4338 start*/
+        return findNextUpDownFocus(focusDirection, mBannerLinearLayout, focused);
+        /*modify by dragontec for bug 4338 end*/
         /*modify by dragontec for bug 4221 end*/
     }
 

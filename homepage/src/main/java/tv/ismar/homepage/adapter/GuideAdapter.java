@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
 
 import java.text.DecimalFormat;
@@ -64,14 +63,16 @@ public class GuideAdapter extends BaseRecycleAdapter<GuideAdapter.GuideViewHolde
         } else {
             holder.mTitleTv.setVisibility(View.VISIBLE);
         }
-        holder.mTitleTv.setText(poster.title);
-        holder.mPosition = position;
 		/*add by dragontec for bug 4325 start*/
-        String focusStr = poster.title;
-        if(poster.introduce != null && !poster.introduce.equals("") && !poster.introduce.equals("null")){
-            focusStr = poster.introduce;
+        String title = poster.title;
+        holder.mTitleTv.setText(title);
+        holder.mPosition = position;
+		
+        String focusStr = title;
+        if(poster.focus != null && !poster.focus.equals("") && !poster.focus.equals("null")){
+            focusStr = poster.focus;
         }
-        holder.mTitleTv.setTag(new String[]{poster.title,focusStr});
+        holder.mTitleTv.setTag(new String[]{title,focusStr});
 		/*add by dragontec for bug 4325 end*/
     }
 

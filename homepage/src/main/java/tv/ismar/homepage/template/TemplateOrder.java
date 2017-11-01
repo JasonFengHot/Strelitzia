@@ -146,6 +146,22 @@ public class TemplateOrder extends Template
 
     @Override
     public void onDestroy() {
+/*add by dragontec for bug 4205 start*/
+        if (subscribeAdapter != null) {
+            subscribeAdapter.setSubscribeClickListener(null);
+            subscribeAdapter.setSubscribeHoverListener(null);
+        }
+        if (mRecyclerView != null) {
+            mRecyclerView.setLayoutManager(null);
+            mRecyclerView.setAdapter(null);
+        }
+        if (mBannerLinearLayout != null) {
+            mBannerLinearLayout.setNavigationLeft(null);
+            mBannerLinearLayout.setNavigationRight(null);
+            mBannerLinearLayout.setRecyclerViewTV(null);
+            mBannerLinearLayout.setHeadView(null);
+        }
+/*add by dragontec for bug 4205 end*/
         if (mNavigationtHandler !=null){
             mNavigationtHandler = null;
         }
@@ -245,11 +261,13 @@ public class TemplateOrder extends Template
                             }
 /*add by dragontec for bug 4331 start*/
 							if (isLastView && focusDirection == View.FOCUS_DOWN) {
-								YoYo.with(Techniques.VerticalShake).duration(1000).playOn(mParentView);
+								YoYo.with(Techniques.VerticalShake).duration(1000).playOn(view);
 							}
 /*add by dragontec for bug 4331 end*/
                             /*modify by dragontec for bug 4221 start*/
-                            return findNextUpDownFocus(focusDirection, mBannerLinearLayout);
+                            /*modify by dragontec for bug 4338 start*/
+                            return findNextUpDownFocus(focusDirection, mBannerLinearLayout, view);
+                            /*modify by dragontec for bug 4338 start*/
                             /*modify by dragontec for bug 4221 end*/
                         }
                     });
