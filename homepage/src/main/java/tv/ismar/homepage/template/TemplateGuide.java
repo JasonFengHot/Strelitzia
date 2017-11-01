@@ -48,7 +48,6 @@ import tv.ismar.app.core.cache.DownloadClient;
 import tv.ismar.app.entity.banner.HomeEntity;
 import tv.ismar.app.player.CallaPlay;
 import tv.ismar.app.util.HardwareUtils;
-import tv.ismar.homepage.HomeActivity;
 import tv.ismar.homepage.OnItemClickListener;
 import tv.ismar.homepage.OnItemSelectedListener;
 import tv.ismar.homepage.R;
@@ -57,9 +56,6 @@ import tv.ismar.homepage.control.FetchDataControl;
 import tv.ismar.homepage.control.GuideControl;
 import tv.ismar.homepage.view.BannerLinearLayout;
 import tv.ismar.homepage.widget.DaisyVideoView;
-	/*add by dragontec for bug 4077 start*/
-import tv.ismar.homepage.widget.RecycleLinearLayout;
-	/*add by dragontec for bug 4077 end*/
 import tv.ismar.library.exception.ExceptionUtils;
 
 import static android.view.MotionEvent.BUTTON_PRIMARY;
@@ -68,6 +64,9 @@ import static android.view.View.VISIBLE;
 import static tv.ismar.homepage.fragment.ChannelFragment.BANNER_KEY;
 import static tv.ismar.homepage.fragment.ChannelFragment.CHANNEL_KEY;
 import static tv.ismar.homepage.fragment.ChannelFragment.NAME_KEY;
+
+/*add by dragontec for bug 4077 start*/
+/*add by dragontec for bug 4077 end*/
 
 /**
  * @AUTHOR: xi @DATE: 2017/8/29 @DESC: 导视模版
@@ -856,9 +855,9 @@ public class TemplateGuide extends Template
         if (mVideoView.getVisibility() == View.GONE) {
             mVideoView.setVisibility(View.VISIBLE);
         }
-
-        if (mLoadingIg.getVisibility() == View.VISIBLE) {
-            mLoadingIg.setVisibility(View.GONE);
+        mLoadingIg.setImageResource(R.drawable.guide_video_loading);
+        if (mLoadingIg.getVisibility() != View.VISIBLE) {
+            mLoadingIg.setVisibility(View.VISIBLE);
         }
 
         mVideoViewLayout.setTag(mFetchDataControl.mCarousels.get(mCurrentCarouselIndex));
@@ -905,8 +904,8 @@ public class TemplateGuide extends Template
         Log.d(TAG, "current video path ====> " + videoPath);
         CallaPlay play = new CallaPlay();
         play.homepage_vod_trailer_play(videoPath, mChannel);
-        mLoadingIg.setImageResource(R.drawable.guide_video_loading);
-        mLoadingIg.setVisibility(View.VISIBLE);
+//        mLoadingIg.setImageResource(R.drawable.guide_video_loading);
+//        mLoadingIg.setVisibility(View.VISIBLE);
         stopPlayback();
         initCallback();
         mVideoView.setVideoPath(videoPath);
