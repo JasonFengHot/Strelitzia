@@ -48,7 +48,9 @@ import static android.view.View.VISIBLE;
 public class TemplateBigSmallLd extends Template
         implements View.OnHoverListener, View.OnClickListener {
     private static final String TAG = TemplateBigSmallLd.class.getSimpleName();
-    private RecyclerViewTV movieMixBanner;
+/*delete by dragontec for bug 4332 start*/
+//    private RecyclerViewTV movieMixBanner;
+/*delete by dragontec for bug 4332 end*/
 
     private BannerMovieMixAdapter adapter;
     private String mBannerName;
@@ -56,8 +58,10 @@ public class TemplateBigSmallLd extends Template
     private TextView mTitleTv;
     private String mBannerTitle;
 
-    private View navigationLeft;
-    private View navigationRight;
+/*delete by dragontec for bug 4332 start*/
+//    private View navigationLeft;
+//    private View navigationRight;
+/*delete by dragontec for bug 4332 end*/
     private BannerLinearLayout mBannerLinearLayout;
     private LinearLayoutManagerTV movieMixLayoutManager;
     private String channelName;
@@ -73,22 +77,24 @@ public class TemplateBigSmallLd extends Template
     private class NavigationtHandler extends Handler {
         @Override
         public void handleMessage(Message msg) {
-            switch (msg.what){
-                case NAVIGATION_LEFT:
-                    if (movieMixBanner!=null&&!movieMixBanner.cannotScrollBackward(-10)) {
-                        navigationLeft.setVisibility(VISIBLE);
-                    }else if (movieMixBanner!=null){
-                        navigationLeft.setVisibility(INVISIBLE);
-                    }
-                    break;
-                case NAVIGATION_RIGHT:
-                    if(movieMixBanner!=null&&!movieMixBanner.cannotScrollForward(10)){
-                        navigationRight.setVisibility(VISIBLE);
-                    }else if (movieMixBanner!=null){
-                        navigationRight.setVisibility(INVISIBLE);
-                    }
-                    break;
-            }
+/*delete by dragontec for bug 4332 start*/
+//            switch (msg.what){
+//                case NAVIGATION_LEFT:
+//                    if (mRecyclerView!=null&&!mRecyclerView.cannotScrollBackward(-10)) {
+//                        navigationLeft.setVisibility(VISIBLE);
+//                    }else if (mRecyclerView!=null){
+//                        navigationLeft.setVisibility(INVISIBLE);
+//                    }
+//                    break;
+//                case NAVIGATION_RIGHT:
+//                    if(mRecyclerView!=null&&!mRecyclerView.cannotScrollForward(10)){
+//                        navigationRight.setVisibility(VISIBLE);
+//                    }else if (mRecyclerView!=null){
+//                        navigationRight.setVisibility(INVISIBLE);
+//                    }
+//                    break;
+//            }
+/*delete by dragontec for bug 4332 end*/
         }
     }
 
@@ -152,24 +158,25 @@ public class TemplateBigSmallLd extends Template
 
         mTitleCountTv = (TextView) view.findViewById(R.id.banner_title_count);
         mTitleTv = (TextView) view.findViewById(R.id.banner_title_tv);
-        movieMixBanner = (RecyclerViewTV) view.findViewById(R.id.movie_mix_banner);
+/*modify by dragontec for bug 4332 start*/
+        mRecyclerView = (RecyclerViewTV) view.findViewById(R.id.movie_mix_banner);
 		/*modify by dragontec for bug 4221 start*/
-        movieMixBanner.setTag("recycleView");
+        mRecyclerView.setTag("recycleView");
 		/*modify by dragontec for bug 4221 end*/
-        movieMixBanner.setHasHeaderView(true);
+        mRecyclerView.setHasHeaderView(true);
         movieMixLayoutManager =
                 new LinearLayoutManagerTV(mContext, LinearLayoutManager.HORIZONTAL, false);
-        mBannerLinearLayout.setRecyclerViewTV(movieMixBanner);
+        mBannerLinearLayout.setRecyclerViewTV(mRecyclerView);
         int selectedItemSpace =
                 mContext.getResources().getDimensionPixelSize(R.dimen.banner_item_SelectedItemSpace);
-        //        movieMixBanner.addItemDecoration(new
+        //        mRecyclerView.addItemDecoration(new
         // BannerMovieMixAdapter.SpacesItemDecoration(selectedItemSpace));
-        movieMixBanner.setLayoutManager(movieMixLayoutManager);
-        movieMixBanner.setSelectedItemAtCentered(false);
+        mRecyclerView.setLayoutManager(movieMixLayoutManager);
+        mRecyclerView.setSelectedItemAtCentered(false);
         int selectedItemOffset =
                 mContext.getResources().getDimensionPixelSize(R.dimen.banner_item_setSelectedItemOffset);
-        //        movieMixBanner.setSelectedItemOffset(selectedItemOffset, selectedItemOffset);
-        movieMixBanner.setPagingableListener(
+        //        mRecyclerView.setSelectedItemOffset(selectedItemOffset, selectedItemOffset);
+        mRecyclerView.setPagingableListener(
                 new RecyclerViewTV.PagingableListener() {
                     @Override
                     public void onLoadMoreItems() {
@@ -182,6 +189,7 @@ public class TemplateBigSmallLd extends Template
                         }
                     }
                 });
+/*modify by dragontec for bug 4332 end*/
 
         movieMixLayoutManager.setFocusSearchFailedListener(
                 new LinearLayoutManagerTV.FocusSearchFailedListener() {
@@ -192,13 +200,15 @@ public class TemplateBigSmallLd extends Template
                             RecyclerView.Recycler recycler,
                             RecyclerView.State state) {
                         if (focusDirection == View.FOCUS_RIGHT || focusDirection == View.FOCUS_LEFT) {
-                            if (movieMixBanner.getChildAt(0).findViewById(R.id.item_layout) == view
-                                    || movieMixBanner
-                                    .getChildAt(movieMixBanner.getChildCount() - 1)
+/*modify by dragontec for bug 4332 start*/
+                            if (mRecyclerView.getChildAt(0).findViewById(R.id.item_layout) == view
+                                    || mRecyclerView
+                                    .getChildAt(mRecyclerView.getChildCount() - 1)
                                     .findViewById(R.id.item_layout)
                                     == view) {
                                 YoYo.with(Techniques.HorizontalShake).duration(1000).playOn(view);
                             }
+/*modify by dragontec for bug 4332 end*/
                             return view;
                         }
 
@@ -207,13 +217,20 @@ public class TemplateBigSmallLd extends Template
                         //                    return view;
                         //                }
 
+/*add by dragontec for bug 4331 start*/
+						if (isLastView && focusDirection == View.FOCUS_DOWN) {
+							YoYo.with(Techniques.VerticalShake).duration(1000).playOn(mParentView);
+						}
+/*add by dragontec for bug 4331 end*/
+
                         /*modify by dragontec for bug 4221 start*/
                         return findNextUpDownFocus(focusDirection, mBannerLinearLayout);
                         /*modify by dragontec for bug 4221 end*/
                     }
                 });
 
-        movieMixBanner.setOnItemFocusChangeListener(
+/*modify by dragontec for bug 4332 start*/
+        mRecyclerView.setOnItemFocusChangeListener(
                 new RecyclerViewTV.OnItemFocusChangeListener() {
                     @Override
                     public void onItemFocusGain(View itemView, int position) {
@@ -230,6 +247,10 @@ public class TemplateBigSmallLd extends Template
                         }
                     }
                 });
+/*modify by dragontec for bug 4332 end*/
+/*add by dragontec for bug 4332 start*/
+        mHoverView = view.findViewById(R.id.hover_view);
+/*add by dragontec for bug 4332 end*/
     }
 
     @Override
@@ -266,9 +287,14 @@ public class TemplateBigSmallLd extends Template
                 totalPostList.add(emptyPostBean);
             }
             adapter.addEmptyDatas(totalPostList);
-            int mSavePos = movieMixBanner.getSelectPostion();
-            adapter.notifyItemRangeInserted(startIndex, endIndex - startIndex);
-            movieMixBanner.setOnLoadMoreComplete();
+/*modify by dragontec for bug 4332 start*/
+            int mSavePos = mRecyclerView.getSelectPostion();
+/*modify by dragontec for bug 4317 start*/
+//            adapter.notifyItemRangeInserted(startIndex, endIndex - startIndex);
+            adapter.notifyItemRangeInserted(startIndex, endIndex - startIndex + 1);
+/*modify by dragontec for bug 4317 end*/
+            mRecyclerView.setOnLoadMoreComplete();
+/*modify by dragontec for bug 4332 end*/
             //            mMovieAdapter.setCurrentPageNumber(pageNumber);
             //            mFocusHandler.sendEmptyMessageDelayed(mSavePos, 10);
         }
@@ -294,7 +320,9 @@ public class TemplateBigSmallLd extends Template
                                 if (pageNumber == 1) {
                                     fillMovieMixBanner(bannerEntity);
                                 } else {
-                                    int mSavePos = movieMixBanner.getSelectPostion();
+/*modify by dragontec for bug 4332 start*/
+                                    int mSavePos = mRecyclerView.getSelectPostion();
+/*modify by dragontec for bug 4332 end*/
                                     adapter.addDatas(bannerEntity);
                                     //                            mFocusHandler.sendEmptyMessageDelayed(mSavePos, 10);
                                 }
@@ -330,15 +358,16 @@ public class TemplateBigSmallLd extends Template
                     public void onBannerHover(View view, int position, boolean hovered, boolean isPrimary) {
 /*modify by dragontec for bug 4057 end*/
                         Log.d(TAG, view + " : " + hovered);
+/*modify by dragontec for bug 4332 start*/
                         if (hovered) {
-                            movieMixBanner.setHovered(true);
+                            mRecyclerView.setHovered(true);
                             mTitleCountTv.setText(
                                     String.format(
                                             mContext.getString(R.string.home_item_title_count),
                                             (1 + position) + "",
                                             adapter.getTatalItemCount() + ""));
                         } else {
-                            movieMixBanner.setHovered(false);
+                            mRecyclerView.setHovered(false);
 /*modify by dragontec for bug 4057 start*/
 //                            HomeActivity.mHoverView.requestFocus();
                             if (!isPrimary) {
@@ -346,17 +375,20 @@ public class TemplateBigSmallLd extends Template
                             }
 /*modify by dragontec for bug 4057 end*/
                         }
+/*modify by dragontec for bug 4332 end*/
                     }
                 });
-        movieMixBanner.setAdapter(adapter);
+/*modify by dragontec for bug 4332 start*/
+        mRecyclerView.setAdapter(adapter);
         mTitleCountTv.setText(
                 String.format(
                         mContext.getString(R.string.home_item_title_count),
                         (1) + "",
                         adapter.getTatalItemCount() + ""));
 	/*add by dragontec for bug 4077 start*/
-		checkFocus(movieMixBanner);
+		checkFocus(mRecyclerView);
 	/*add by dragontec for bug 4077 end*/
+/*modify by dragontec for bug 4332 end*/
     }
 
     @Override
@@ -373,19 +405,26 @@ public class TemplateBigSmallLd extends Template
                     targetPosition = 0;
                 }
                 setBannerItemCount(targetPosition);
-                movieMixLayoutManager.smoothScrollToPosition(movieMixBanner, null, targetPosition);
+/*add by dragontec for bug 4332 start*/
+				setNeedCheckScrollEnd();
+/*add by dragontec for bug 4332 end*/
+/*modify by dragontec for bug 4332 start*/
+                movieMixLayoutManager.smoothScrollToPosition(mRecyclerView, null, targetPosition);
+/*modify by dragontec for bug 4332 end*/
                     if (mNavigationtHandler.hasMessages(NAVIGATION_LEFT)){
                         mNavigationtHandler.removeMessages(NAVIGATION_LEFT);
                     }
                     mNavigationtHandler.sendEmptyMessageDelayed(NAVIGATION_LEFT,500);
             } else {
                 //                View firstView =
-                // movieMixBanner.getChildAt(0).findViewById(R.id.item_layout);
+                // mRecyclerView.getChildAt(0).findViewById(R.id.item_layout);
                 //                YoYo.with(Techniques.HorizontalShake).duration(1000).playOn(firstView);
             }
         } else if (i == R.id.navigation_right) {
             movieMixLayoutManager.setCanScroll(true);
-            movieMixBanner.loadMore();
+/*modify by dragontec for bug 4332 start*/
+            mRecyclerView.loadMore();
+/*modify by dragontec for bug 4332 end*/
 
             if (movieMixLayoutManager.findLastCompletelyVisibleItemPosition() + 1 <= totalItemCount) {
                 int targetPosition = movieMixLayoutManager.findLastCompletelyVisibleItemPosition() + 5;
@@ -398,7 +437,12 @@ public class TemplateBigSmallLd extends Template
                         targetPosition >= adapter.getTatalItemCount()
                                 ? adapter.getTatalItemCount() - 1
                                 : targetPosition);
-                movieMixLayoutManager.smoothScrollToPosition(movieMixBanner, null, targetPosition);
+/*add by dragontec for bug 4332 start*/
+				setNeedCheckScrollEnd();
+/*add by dragontec for bug 4332 end*/
+/*modify by dragontec for bug 4332 start*/
+                movieMixLayoutManager.smoothScrollToPosition(mRecyclerView, null, targetPosition);
+/*modify by dragontec for bug 4332 start*/
                 Log.d(TAG, "right total count: " + adapter.getTatalItemCount() );
                 Log.d(TAG, "right target position: " + targetPosition);
                     if (mNavigationtHandler.hasMessages(NAVIGATION_RIGHT)){
@@ -406,7 +450,7 @@ public class TemplateBigSmallLd extends Template
                     }
                     mNavigationtHandler.sendEmptyMessageDelayed(NAVIGATION_RIGHT, 500);
             } else {
-                //                View lastView = movieMixBanner.getChildAt(totalItemCount -
+                //                View lastView = mRecyclerView.getChildAt(totalItemCount -
                 // 1).findViewById(R.id.item_layout) ;
                 //                YoYo.with(Techniques.HorizontalShake).duration(1000).playOn(lastView);
             }
@@ -435,8 +479,10 @@ public class TemplateBigSmallLd extends Template
                 break;
             case MotionEvent.ACTION_HOVER_EXIT:
                 if (event.getButtonState() != BUTTON_PRIMARY) {
-                    navigationLeft.setVisibility(View.INVISIBLE);
-                    navigationRight.setVisibility(View.INVISIBLE);
+/*delete by dragontec for bug 4332 start*/
+//                    navigationLeft.setVisibility(View.INVISIBLE);
+//                    navigationRight.setVisibility(View.INVISIBLE);
+/*delete by dragontec for bug 4332 end*/
 /*add by dragontec for bug 4057 start*/
                     v.clearFocus();
 /*add by dragontec for bug 4057 end*/

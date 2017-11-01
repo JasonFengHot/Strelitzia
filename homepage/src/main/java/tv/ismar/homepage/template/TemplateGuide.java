@@ -95,13 +95,17 @@ public class TemplateGuide extends Template
     private TextView mThirdIcon;
     private TextView mFourIcon;
     private TextView mFiveIcon;
-    private RecyclerViewTV mRecycleView; // 海报recycleview
+/*delete by dragontec for bug 4332 start*/
+//    private RecyclerViewTV mRecycleView; // 海报recycleview
+/*delete by dragontec for bug 4332 end*/
     private LinearLayoutManagerTV mGuideLayoutManager;
     private GuideAdapter mAdapter;
 
     private BannerLinearLayout mBannerLinearLayout;
-    private View navigationLeft;
-    private View navigationRight;
+/*delete by dragontec for bug 4332 start*/
+//    private View navigationLeft;
+//    private View navigationRight;
+/*delete by dragontec for bug 4332 end*/
 
     private int mCurrentCarouselIndex = -1;
     private boolean videoViewVisibility = true;
@@ -109,7 +113,9 @@ public class TemplateGuide extends Template
     private Subscription checkVideoViewFullVisibilitySubsc;
 
     private View mVideoViewLayout;
-    private View mHeadView; // recylview头view
+	/*delete by dragontec for bug 4332 start*/
+//    private View mHeadView; // recylview头view
+	/*delete by dragontec for bug 4332 end*/
     private String mBannerPk; // banner标记
     private String mName; // 频道名称（中文）
     private String mChannel; // 频道名称（英文）
@@ -144,23 +150,29 @@ public class TemplateGuide extends Template
     private class NavigationtHandler extends Handler {
         @Override
         public void handleMessage(Message msg) {
-            switch (msg.what){
-                case NAVIGATION_LEFT:
-                    if (mRecycleView!=null&&!mRecycleView.cannotScrollBackward(-10)) {
-                        navigationLeft.setVisibility(VISIBLE);
-                    }else if (mRecycleView!=null){
-                        navigationLeft.setVisibility(INVISIBLE);
-                    }
-                    break;
-                case NAVIGATION_RIGHT:
-                    if(mRecycleView!=null&&!mRecycleView.cannotScrollForward(10)){
-                        navigationRight.setVisibility(VISIBLE);
-                    }else if (mRecycleView!=null){
-                        navigationRight.setVisibility(INVISIBLE);
-                    }
-                    break;
-            }
+/*delete by dragontec for bug 4332 start*/
+//            switch (msg.what){
+//                case NAVIGATION_LEFT:
+//                	if (mRecyclerView != null) {
+//                		if (mRecyclerView.cannotScrollBackward(-10) && mHeadView.getVisibility() == VISIBLE) {
+//                			navigationLeft.setVisibility(INVISIBLE);
+//						} else {
+//                			navigationLeft.setVisibility(VISIBLE);
+//						}
+//					}
+//                    break;
+//                case NAVIGATION_RIGHT:
+//                	if (mRecyclerView != null) {
+//                		if (mRecyclerView.cannotScrollForward(10)) {
+//                			navigationRight.setVisibility(INVISIBLE);
+//						} else {
+//                			navigationRight.setVisibility(VISIBLE);
+//						}
+//					}
+//                    break;
+//            }
         }
+/*delete by dragontec for bug 4332 end*/
     }
 
 /*add by dragontec for bug 4065 start*/
@@ -364,20 +376,22 @@ public class TemplateGuide extends Template
         mFiveIcon = (TextView) view.findViewById(R.id.five_video_icon);
         mVideoViewLayout = view.findViewById(R.id.guide_head_ismartv_linearlayout);
 
-        mRecycleView = (RecyclerViewTV) view.findViewById(R.id.guide_recyclerview);
+/*modify by dragontec for bug 4332 start*/
+        mRecyclerView = (RecyclerViewTV) view.findViewById(R.id.guide_recyclerview);
 		/*modify by dragontec for bug 4221 start*/
-        mRecycleView.setTag("recycleView");
+        mRecyclerView.setTag("recycleView");
 		/*modify by dragontec for bug 4221 end*/
         mGuideLayoutManager =
                 new LinearLayoutManagerTV(mContext, LinearLayoutManager.HORIZONTAL, false);
-        mRecycleView.setLayoutManager(mGuideLayoutManager);
-        mRecycleView.setSelectedItemOffset(100, 100);
+        mRecyclerView.setLayoutManager(mGuideLayoutManager);
+        mRecyclerView.setSelectedItemOffset(100, 100);
         navigationLeft = view.findViewById(R.id.navigation_left);
         navigationRight = view.findViewById(R.id.navigation_right);
         mBannerLinearLayout = (BannerLinearLayout) view.findViewById(R.id.banner_layout);
         mBannerLinearLayout.setNavigationLeft(navigationLeft);
         mBannerLinearLayout.setNavigationRight(navigationRight);
-        mBannerLinearLayout.setRecyclerViewTV(mRecycleView);
+        mBannerLinearLayout.setRecyclerViewTV(mRecyclerView);
+/*modify by dragontec for bug 4332 end*/
 /*add by dragontec for bug 4275 start*/
         mBannerLinearLayout.setHeadView(mHeadView);
 /*add by dragontec for bug 4275 end*/
@@ -385,6 +399,9 @@ public class TemplateGuide extends Template
 /*add by dragontec for bug 4065 start*/
         mVideoView.setManualReset(true);
 /*add by dragontec for bug 4065 end*/
+/*add by dragontec for bug 4332 start*/
+		mHoverView = view.findViewById(R.id.hover_view);
+/*add by dragontec for bug 4332 end*/
     }
 
     @Override
@@ -404,6 +421,9 @@ public class TemplateGuide extends Template
 
     @Override
     protected void initListener(View view) {
+/*add by dragontec for bug 4332 start*/
+		super.initListener(view);
+/*add by dragontec for bug 4332 end*/
         navigationLeft.setOnClickListener(this);
         navigationRight.setOnClickListener(this);
         navigationRight.setOnHoverListener(this);
@@ -411,7 +431,9 @@ public class TemplateGuide extends Template
         //        mVideoView.setOnCompletionListener(this);
         //        mVideoView.setOnErrorListener(this);
         //        mVideoView.setOnPreparedListener(this);
-        mRecycleView.setPagingableListener(this);
+/*modify by dragontec for bug 4332 start*/
+        mRecyclerView.setPagingableListener(this);
+/*modify by dragontec for bug 4332 end*/
         mVideoView.setOnFocusChangeListener(this);
         mGuideLayoutManager.setFocusSearchFailedListener(this);
         mHeadView.findViewById(R.id.guide_head_ismartv_linearlayout).setOnHoverListener(this);
@@ -482,10 +504,12 @@ public class TemplateGuide extends Template
                 mAdapter.setMarginLeftEnable(true);
                 mAdapter.setOnItemClickListener(this);
                 mAdapter.setOnItemSelectedListener(this);
-                mRecycleView.setAdapter(mAdapter);
+/*modify by dragontec for bug 4332 start*/
+                mRecyclerView.setAdapter(mAdapter);
+/*modify by dragontec for bug 4332 end*/
 /*delete by dragontec for bug 4259 start*/
 //	/*add by dragontec for bug 4077 start*/
-//				checkFocus(mRecycleView);
+//				checkFocus(mRecyclerView);
 //	/*add by dragontec for bug 4077 end*/
 /*delete by dragontec for bug 4259 end*/
             } else {
@@ -505,12 +529,14 @@ public class TemplateGuide extends Template
             playCarousel();
             initCarousel();
 	/* modify by dragontec for bug 4264 start */
-			mRecycleView.setOnLoadMoreComplete();
+/*modify by dragontec for bug 4332 start*/
+			mRecyclerView.setOnLoadMoreComplete();
         } else {
-        	if (mRecycleView.isOnLoadMore()) {
+        	if (mRecyclerView.isOnLoadMore()) {
         		mFetchDataControl.mHomeEntity.page--;
-				mRecycleView.setOnLoadMoreComplete();
+				mRecyclerView.setOnLoadMoreComplete();
 			}
+/*modify by dragontec for bug 4332 end*/
 	/* modify by dragontec for bug 4264 end */
 		}
     }
@@ -524,7 +550,9 @@ public class TemplateGuide extends Template
 	/* modify by dragontec for bug 4264 start */
                 mFetchDataControl.fetchBanners(mBannerPk, ++homeEntity.page, true);
             } else {
-				mRecycleView.setOnLoadMoreComplete();
+/*modify by dragontec for bug 4332 start*/
+				mRecyclerView.setOnLoadMoreComplete();
+/*modify by dragontec for bug 4332 end*/
 	/* modify by dragontec for bug 4264 end */
 			}
         }
@@ -549,21 +577,28 @@ public class TemplateGuide extends Template
     public View onFocusSearchFailed(
             View focused, int focusDirection, RecyclerView.Recycler recycler, RecyclerView.State state) {
         if (focusDirection == View.FOCUS_RIGHT || focusDirection == View.FOCUS_LEFT) {
-            if (mRecycleView.getChildAt(0).findViewById(R.id.guide_ismartv_linear_layout) == focused) {
+/*modify by dragontec for bug 4332 start*/
+            if (mRecyclerView.getChildAt(0).findViewById(R.id.guide_ismartv_linear_layout) == focused) {
                 mHeadView.requestFocus();
         /*modify by dragontec for bug 4242 start*/
 //                YoYo.with(Techniques.HorizontalShake).duration(1000).playOn(mHeadView);
         /*modify by dragontec for bug 4242 end*/
                 return mHeadView;
             }
-            if (mRecycleView
-                    .getChildAt(mRecycleView.getChildCount() - 1)
+            if (mRecyclerView
+                    .getChildAt(mRecyclerView.getChildCount() - 1)
                     .findViewById(R.id.guide_ismartv_linear_layout)
                     == focused) {
                 YoYo.with(Techniques.HorizontalShake).duration(1000).playOn(focused);
                 return focused;
             }
+/*modify by dragontec for bug 4332 end*/
         }
+/*add by dragontec for bug 4331 start*/
+		if (isLastView && focusDirection == View.FOCUS_DOWN) {
+			YoYo.with(Techniques.VerticalShake).duration(1000).playOn(mParentView);
+		}
+/*add by dragontec for bug 4331 end*/
         /*modify by dragontec for bug 4221 start*/
         return findNextUpDownFocus(focusDirection, mBannerLinearLayout);
         /*modify by dragontec for bug 4221 end*/
@@ -593,10 +628,15 @@ public class TemplateGuide extends Template
         int i = v.getId();
         if (i == R.id.navigation_left) {
             mGuideLayoutManager.setCanScroll(true);
-            if (mGuideLayoutManager.findFirstCompletelyVisibleItemPosition() - 1 >= 0) { // 向左滑动
+            if (mGuideLayoutManager.findFirstCompletelyVisibleItemPosition() > 0) { // 向左滑动
                 int targetPosition = mGuideLayoutManager.findFirstCompletelyVisibleItemPosition() - 5;
                 if (targetPosition <= 0) targetPosition = 0;
-                mGuideLayoutManager.smoothScrollToPosition(mRecycleView, null, targetPosition);
+/*add by dragontec for bug 4332 start*/
+				setNeedCheckScrollEnd();
+/*add by dragontec for bug 4332 end*/
+/*modify by dragontec for bug 4332 start*/
+                mGuideLayoutManager.smoothScrollToPosition(mRecyclerView, null, targetPosition);
+/*modify by dragontec for bug 4332 end*/
                 if (mNavigationtHandler.hasMessages(NAVIGATION_LEFT)) {
                     mNavigationtHandler.removeMessages(NAVIGATION_LEFT);
                 }
@@ -604,11 +644,16 @@ public class TemplateGuide extends Template
             }else{
                 mHeadView.setVisibility(View.VISIBLE);
                 videoViewVisibility = true;
+/*add by dragontec for bug 4332 start*/
+				checkNavigationButtonVisibility();
+/*add by dragontec for bug 4332 end*/
             }
         } else if (i == R.id.navigation_right) {
             mGuideLayoutManager.setCanScroll(true);
             // 向右滑动
-            mRecycleView.loadMore();
+/*modify by dragontec for bug 4332 start*/
+            mRecyclerView.loadMore();
+/*modify by dragontec for bug 4332 end*/
 			mHeadView.setVisibility(View.GONE);
 
         /*modify by dragontec for bug 4240 start*/
@@ -618,7 +663,12 @@ public class TemplateGuide extends Template
 				if (targetPosition >= mAdapter.getItemCount()) {
 					targetPosition = mAdapter.getItemCount() - 1;
 				}
-				mGuideLayoutManager.smoothScrollToPosition(mRecycleView, null, targetPosition);
+/*add by dragontec for bug 4332 start*/
+				setNeedCheckScrollEnd();
+/*add by dragontec for bug 4332 end*/
+/*modify by dragontec for bug 4332 start*/
+				mGuideLayoutManager.smoothScrollToPosition(mRecyclerView, null, targetPosition);
+/*modify by dragontec for bug 4332 end*/
                 if (mNavigationtHandler.hasMessages(NAVIGATION_RIGHT)){
                     mNavigationtHandler.removeMessages(NAVIGATION_RIGHT);
                 }
@@ -645,8 +695,10 @@ public class TemplateGuide extends Template
                 return false;
             case MotionEvent.ACTION_HOVER_EXIT:
                 if (event.getButtonState() != BUTTON_PRIMARY) {
-                    navigationLeft.setVisibility(View.INVISIBLE);
-                    navigationRight.setVisibility(View.INVISIBLE);
+/*delete by dragontec for bug 4332 start*/
+//                    navigationLeft.setVisibility(View.INVISIBLE);
+//                    navigationRight.setVisibility(View.INVISIBLE);
+/*delete by dragontec for bug 4332 end*/
 /*modify by dragontec for bug 4057 start*/
 //                    HomeActivity.mHoverView.requestFocus(); // 将焦点放置到一块隐藏view中
                     v.clearFocus();

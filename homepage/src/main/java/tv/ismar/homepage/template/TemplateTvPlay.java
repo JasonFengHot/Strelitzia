@@ -53,12 +53,16 @@ public class TemplateTvPlay extends Template
     private int mSelectItemPosition = 1; // 标题--选中海报位置
     private FetchDataControl mFetchDataControl = null; // 抓网络数据类
     private TextView mTitleTv; // banner标题
-    private RecyclerViewTV mRecycleView;
+/*delete by dragontec for bug 4332 start*/
+//    private RecyclerViewTV mRecycleView;
+/*delete by dragontec for bug 4332 end*/
     private TvPlayAdapter mAdapter;
     private LinearLayoutManagerTV mTvPlayerLayoutManager = null;
     private BannerLinearLayout mBannerLinearLayout;
-    private View navigationLeft;
-    private View navigationRight;
+/*delete by dragontec for bug 4332 start*/
+//    private View navigationLeft;
+//    private View navigationRight;
+/*delete by dragontec for bug 4332 end*/
     private String mBannerPk;
     private String mName; // 频道名称（中文）
     private String mChannel; // 频道名称（英文）
@@ -71,22 +75,24 @@ public class TemplateTvPlay extends Template
     private class NavigationtHandler extends Handler {
         @Override
         public void handleMessage(Message msg) {
-            switch (msg.what){
-                case NAVIGATION_LEFT:
-                    if (mRecycleView!=null&&!mRecycleView.cannotScrollBackward(-10)) {
-                        navigationLeft.setVisibility(VISIBLE);
-                    }else if (mRecycleView!=null){
-                        navigationLeft.setVisibility(INVISIBLE);
-                    }
-                    break;
-                case NAVIGATION_RIGHT:
-                    if(mRecycleView!=null&&!mRecycleView.cannotScrollForward(10)){
-                        navigationRight.setVisibility(VISIBLE);
-                    }else if (mRecycleView!=null){
-                        navigationRight.setVisibility(INVISIBLE);
-                    }
-                    break;
-            }
+/*delete by dragontec for bug 4332 start*/
+//            switch (msg.what){
+//                case NAVIGATION_LEFT:
+//                    if (mRecyclerView!=null&&!mRecyclerView.cannotScrollBackward(-10)) {
+//                        navigationLeft.setVisibility(VISIBLE);
+//                    }else if (mRecyclerView!=null){
+//                        navigationLeft.setVisibility(INVISIBLE);
+//                    }
+//                    break;
+//                case NAVIGATION_RIGHT:
+//                    if(mRecyclerView!=null&&!mRecyclerView.cannotScrollForward(10)){
+//                        navigationRight.setVisibility(VISIBLE);
+//                    }else if (mRecyclerView!=null){
+//                        navigationRight.setVisibility(INVISIBLE);
+//                    }
+//                    break;
+//            }
+/*delete by dragontec for bug 4332 end*/
         }
     }
 
@@ -140,33 +146,41 @@ public class TemplateTvPlay extends Template
     public void getView(View view) {
         mTitleTv = (TextView) view.findViewById(R.id.banner_title_tv);
         mTitleCountTv = (TextView) view.findViewById(R.id.banner_title_count);
-        mRecycleView = (RecyclerViewTV) view.findViewById(R.id.tv_player_recyclerview);
+/*modify by dragontec for bug 4332 start*/
+        mRecyclerView = (RecyclerViewTV) view.findViewById(R.id.tv_player_recyclerview);
 		/*modify by dragontec for bug 4221 start*/
-        mRecycleView.setTag("recycleView");
+        mRecyclerView.setTag("recycleView");
 		/*modify by dragontec for bug 4221 end*/
         mTvPlayerLayoutManager =
                 new LinearLayoutManagerTV(mContext, LinearLayoutManager.HORIZONTAL, false);
-        mRecycleView.setLayoutManager(mTvPlayerLayoutManager);
-        mRecycleView.setSelectedItemAtCentered(false);
+        mRecyclerView.setLayoutManager(mTvPlayerLayoutManager);
+        mRecyclerView.setSelectedItemAtCentered(false);
         int selectedItemOffset =
                 mContext.getResources().getDimensionPixelSize(R.dimen.banner_item_setSelectedItemOffset);
-        mRecycleView.setSelectedItemOffset(selectedItemOffset, selectedItemOffset);
+        mRecyclerView.setSelectedItemOffset(selectedItemOffset, selectedItemOffset);
         navigationLeft = view.findViewById(R.id.navigation_left);
         navigationRight = view.findViewById(R.id.navigation_right);
         mBannerLinearLayout = (BannerLinearLayout) view.findViewById(R.id.banner_layout);
         mBannerLinearLayout.setNavigationLeft(navigationLeft);
         mBannerLinearLayout.setNavigationRight(navigationRight);
-        mBannerLinearLayout.setRecyclerViewTV(mRecycleView);
+        mBannerLinearLayout.setRecyclerViewTV(mRecyclerView);
+        mHoverView = view.findViewById(R.id.hover_view);
+/*modify by dragontec for bug 4332 end*/
     }
 
     @Override
     protected void initListener(View view) {
+/*add by dragontec for bug 4332 start*/
+		super.initListener(view);
+/*add by dragontec for bug 4332 end*/
         navigationLeft.setOnClickListener(this);
         navigationRight.setOnClickListener(this);
         navigationRight.setOnHoverListener(this);
         navigationLeft.setOnHoverListener(this);
-        mRecycleView.setPagingableListener(this);
-        mRecycleView.setOnItemFocusChangeListener(this);
+/*modify by dragontec for bug 4332 start*/
+        mRecyclerView.setPagingableListener(this);
+        mRecyclerView.setOnItemFocusChangeListener(this);
+/*modify by dragontec for bug 4332 end*/
         mTvPlayerLayoutManager.setFocusSearchFailedListener(this);
     }
 
@@ -201,11 +215,13 @@ public class TemplateTvPlay extends Template
         if (mAdapter == null) {
             mAdapter = new TvPlayAdapter(mContext, mFetchDataControl.mPoster);
             mAdapter.setMarginLeftEnable(true);
-            mRecycleView.setAdapter(mAdapter);
+/*modify by dragontec for bug 4332 start*/
+            mRecyclerView.setAdapter(mAdapter);
             mAdapter.setOnItemClickListener(this);
 	/*add by dragontec for bug 4077 start*/
-			checkFocus(mRecycleView);
+			checkFocus(mRecyclerView);
 	/*add by dragontec for bug 4077 end*/
+/*modify by dragontec for bug 4332 end*/
         } else {
             int start = mFetchDataControl.mPoster.size() - mFetchDataControl.mHomeEntity.posters.size();
             int end = mFetchDataControl.mPoster.size();
@@ -219,10 +235,12 @@ public class TemplateTvPlay extends Template
             initTitle();
             initRecycle();
 	/* modify by dragontec for bug 4264 start */
-			mRecycleView.setOnLoadMoreComplete();
+/*modify by dragontec for bug 4332 start*/
+			mRecyclerView.setOnLoadMoreComplete();
         } else if (flags == FetchDataControl.FETCH_DATA_FAIL_FLAG) {
 			mFetchDataControl.mHomeEntity.page--;
-			mRecycleView.setOnLoadMoreComplete();
+			mRecyclerView.setOnLoadMoreComplete();
+/*modify by dragontec for bug 4332 end*/
 	/* modify by dragontec for bug 4264 end */
 		}
     }
@@ -236,7 +254,9 @@ public class TemplateTvPlay extends Template
 	/* modify by dragontec for bug 4264 start */
                 mFetchDataControl.fetchBanners(mBannerPk, ++homeEntity.page, true);
             } else {
-				mRecycleView.setOnLoadMoreComplete();
+/*modify by dragontec for bug 4332 start*/
+				mRecyclerView.setOnLoadMoreComplete();
+/*modify by dragontec for bug 4332 end*/
 	/* modify by dragontec for bug 4264 end */
 			}
         }
@@ -247,15 +267,22 @@ public class TemplateTvPlay extends Template
     public View onFocusSearchFailed(
             View focused, int focusDirection, RecyclerView.Recycler recycler, RecyclerView.State state) {
         if (focusDirection == View.FOCUS_RIGHT || focusDirection == View.FOCUS_LEFT) {
-            if (mRecycleView.getChildAt(0).findViewById(R.id.tv_player_ismartv_linear_layout) == focused
-                    || mRecycleView
-                    .getChildAt(mRecycleView.getChildCount() - 1)
+/*modify by dragontec for bug 4332 start*/
+            if (mRecyclerView.getChildAt(0).findViewById(R.id.tv_player_ismartv_linear_layout) == focused
+                    || mRecyclerView
+                    .getChildAt(mRecyclerView.getChildCount() - 1)
                     .findViewById(R.id.tv_player_ismartv_linear_layout)
                     == focused) {
                 YoYo.with(Techniques.HorizontalShake).duration(1000).playOn(focused);
             }
+/*modify by dragontec for bug 4332 end*/
             return focused;
         }
+/*add by dragontec for bug 4331 start*/
+		if (isLastView && focusDirection == View.FOCUS_DOWN) {
+			YoYo.with(Techniques.VerticalShake).duration(1000).playOn(mParentView);
+		}
+/*add by dragontec for bug 4331 end*/
         /*modify by dragontec for bug 4221 start*/
         return findNextUpDownFocus(focusDirection, mBannerLinearLayout);
         /*modify by dragontec for bug 4221 end*/
@@ -285,7 +312,9 @@ public class TemplateTvPlay extends Template
 	/*modify by dragontec for bug 4277 start*/
     @Override
     public boolean onHover(View v, int position, boolean hovered) {
-        mRecycleView.setHovered(hovered);
+/*modify by dragontec for bug 4332 start*/
+        mRecyclerView.setHovered(hovered);
+/*modify by dragontec for bug 4332 end*/
         return true;
     }
 	/*modify by dragontec for bug 4277 end*/
@@ -305,8 +334,10 @@ public class TemplateTvPlay extends Template
                 break;
             case MotionEvent.ACTION_HOVER_EXIT:
                 if (event.getButtonState() != BUTTON_PRIMARY) {
-                    navigationLeft.setVisibility(View.INVISIBLE);
-                    navigationRight.setVisibility(View.INVISIBLE);
+/*delete by dragontec for bug 4332 start*/
+//                    navigationLeft.setVisibility(View.INVISIBLE);
+//                    navigationRight.setVisibility(View.INVISIBLE);
+/*delete by dragontec for bug 4332 end*/
 /*modify by dragontec for bug 4057 start*/
 //                    HomeActivity.mHoverView.requestFocus(); // 将焦点放置到一块隐藏view中
                     v.clearFocus();
@@ -326,7 +357,12 @@ public class TemplateTvPlay extends Template
                 int targetPosition = mTvPlayerLayoutManager.findFirstCompletelyVisibleItemPosition() - 4;
                 if (targetPosition <= 0) targetPosition = 0;
                 mSelectItemPosition = targetPosition;
-                mTvPlayerLayoutManager.smoothScrollToPosition(mRecycleView, null, targetPosition);
+/*add by dragontec for bug 4332 start*/
+				setNeedCheckScrollEnd();
+/*add by dragontec for bug 4332 end*/
+/*modify by dragontec for bug 4332 start*/
+                mTvPlayerLayoutManager.smoothScrollToPosition(mRecyclerView, null, targetPosition);
+/*modify by dragontec for bug 4332 end*/
                 if (mNavigationtHandler.hasMessages(NAVIGATION_LEFT)) {
                     mNavigationtHandler.removeMessages(NAVIGATION_LEFT);
                 }
@@ -334,7 +370,9 @@ public class TemplateTvPlay extends Template
             }
         } else if (i == R.id.navigation_right) { // 向右滑动
             mTvPlayerLayoutManager.setCanScroll(true);
-            mRecycleView.loadMore();
+/*modify by dragontec for bug 4332 start*/
+            mRecyclerView.loadMore();
+/*modify by dragontec for bug 4332 end*/
             if (mTvPlayerLayoutManager.findLastCompletelyVisibleItemPosition()
                     <= mFetchDataControl.mHomeEntity.count) {
                 int targetPosition = mTvPlayerLayoutManager.findLastCompletelyVisibleItemPosition() + 4;
@@ -342,7 +380,12 @@ public class TemplateTvPlay extends Template
                     targetPosition = mFetchDataControl.mHomeEntity.count;
                 }
                 mSelectItemPosition = targetPosition;
-                mTvPlayerLayoutManager.smoothScrollToPosition(mRecycleView, null, targetPosition);
+/*add by dragontec for bug 4332 start*/
+				setNeedCheckScrollEnd();
+/*add by dragontec for bug 4332 end*/
+/*modify by dragontec for bug 4332 start*/
+                mTvPlayerLayoutManager.smoothScrollToPosition(mRecyclerView, null, targetPosition);
+/*modify by dragontec for bug 4332 end*/
                 if (mNavigationtHandler.hasMessages(NAVIGATION_RIGHT)){
                     mNavigationtHandler.removeMessages(NAVIGATION_RIGHT);
                 }
@@ -352,8 +395,8 @@ public class TemplateTvPlay extends Template
 //                    YoYo.with(Techniques.HorizontalShake)
 //                            .duration(1000)
 //                            .playOn(
-//                                    mRecycleView
-//                                            .getChildAt(mRecycleView.getChildCount() - 1)
+//                                    mRecyclerView
+//                                            .getChildAt(mRecyclerView.getChildCount() - 1)
 //                                            .findViewById(R.id.tv_player_ismartv_linear_layout));
 			/*delete by dragontec for bug 4303 end*/
             }

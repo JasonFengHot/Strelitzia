@@ -66,14 +66,16 @@ public class TemplateDoubleMd extends Template
   private ImageView mRbImage; // 右下角图标
   private TextView mImgeTitleTv; // 大图标题
   private ImageView mRtImage;//右上图标
-  private RecyclerViewTV mRecyclerView;
+/*delete by dragontec for bug 4332 start*/
+//  private RecyclerViewTV mRecyclerView;
+/*delete by dragontec for bug 4332 end*/
   private DoubleMdAdapter mAdapter;
   private FetchDataControl mFetchDataControl = null;
   private int mSelectItemPosition = 1; // 标题--选中海报位置
   private BannerLinearLayout mBannerLinearLayout;
-  private View navigationLeft;
-  private View navigationRight;
-  private View mHeadView; // recylview头view
+	/*modify by dragontec for bug 4332 start*/
+  private View mHeaderView; // recylview头view
+	/*modify by dragontec for bug 4332 end*/
   private StaggeredGridLayoutManagerTV mDoubleLayoutManager;
   private String mBannerPk; // banner标记
   private String mName; // 频道名称（中文）
@@ -87,22 +89,24 @@ public class TemplateDoubleMd extends Template
   private class NavigationtHandler extends Handler {
     @Override
     public void handleMessage(Message msg) {
-      switch (msg.what){
-        case NAVIGATION_LEFT:
-          if (mRecyclerView!=null&&!mRecyclerView.cannotScrollBackward(-10)) {
-            navigationLeft.setVisibility(VISIBLE);
-          }else if (mRecyclerView!=null){
-            navigationLeft.setVisibility(INVISIBLE);
-          }
-          break;
-        case NAVIGATION_RIGHT:
-          if(mRecyclerView!=null&&!mRecyclerView.cannotScrollForward(10)){
-            navigationRight.setVisibility(VISIBLE);
-          }else if (mRecyclerView!=null){
-            navigationRight.setVisibility(INVISIBLE);
-          }
-          break;
-      }
+/*delete by dragontec for bug 4332 start*/
+//      switch (msg.what){
+//        case NAVIGATION_LEFT:
+//          if (mRecyclerView!=null&&!mRecyclerView.cannotScrollBackward(-10)) {
+//            navigationLeft.setVisibility(VISIBLE);
+//          }else if (mRecyclerView!=null){
+//            navigationLeft.setVisibility(INVISIBLE);
+//          }
+//          break;
+//        case NAVIGATION_RIGHT:
+//          if(mRecyclerView!=null&&!mRecyclerView.cannotScrollForward(10)){
+//            navigationRight.setVisibility(VISIBLE);
+//          }else if (mRecyclerView!=null){
+//            navigationRight.setVisibility(INVISIBLE);
+//          }
+//          break;
+//      }
+/*delete by dragontec for bug 4332 end*/
     }
   }
 
@@ -158,12 +162,15 @@ public class TemplateDoubleMd extends Template
 	/*modify by dragontec for bug 4221 start*/
     mRecyclerView.setTag("recycleView");
 	/*modify by dragontec for bug 4221 end*/
-    mHeadView = LayoutInflater.from(mContext).inflate(R.layout.banner_double_md_head, null);
-    mVerticalImg = (ImageView) mHeadView.findViewById(R.id.double_md_image_poster);
-    mLtImage = (ImageView) mHeadView.findViewById(R.id.double_md_image_lt_icon);
-    mRbImage = (ImageView) mHeadView.findViewById(R.id.double_md_image_rb_icon);
-    mImgeTitleTv = (TextView) mHeadView.findViewById(R.id.double_md_image_title);
+/*modify by dragontec for bug 4332 start*/
+    mHeaderView = LayoutInflater.from(mContext).inflate(R.layout.banner_double_md_head, null);
+    mVerticalImg = (ImageView) mHeaderView.findViewById(R.id.double_md_image_poster);
+    mLtImage = (ImageView) mHeaderView.findViewById(R.id.double_md_image_lt_icon);
+    mRbImage = (ImageView) mHeaderView.findViewById(R.id.double_md_image_rb_icon);
+    mImgeTitleTv = (TextView) mHeaderView.findViewById(R.id.double_md_image_title);
+/*modify by dragontec for bug 4332 end*/
     mRtImage= (ImageView) mHeadView.findViewById(R.id.guide_rt_icon);
+/*modify by dragontec for bug 4332 end*/
     mDoubleLayoutManager =
         new StaggeredGridLayoutManagerTV(2, StaggeredGridLayoutManager.HORIZONTAL);
     mRecyclerView.addItemDecoration(new ListSpacesItemDecoration(mContext.getResources().getDimensionPixelOffset(R.dimen.double_md_padding)));
@@ -181,6 +188,9 @@ public class TemplateDoubleMd extends Template
     mBannerLinearLayout.setNavigationLeft(navigationLeft);
     mBannerLinearLayout.setNavigationRight(navigationRight);
     mBannerLinearLayout.setRecyclerViewTV(mRecyclerView);
+/*add by dragontec for bug 4332 start*/
+    mHoverView = view.findViewById(R.id.hover_view);
+/*add by dragontec for bug 4332 end*/
   }
 
   @Override
@@ -226,7 +236,9 @@ public class TemplateDoubleMd extends Template
     if (mAdapter == null) {
       mAdapter = new DoubleMdAdapter(mContext, mFetchDataControl.mPoster);
       mAdapter.setOnItemClickListener(this);
-      mAdapter.setHeaderView(mHeadView);
+/*modify by dragontec for bug 4332 start*/
+      mAdapter.setHeaderView(mHeaderView);
+/*modify by dragontec for bug 4332 end*/
       mRecyclerView.setAdapter(mAdapter);
 	/*add by dragontec for bug 4077 start*/
 		checkFocus(mRecyclerView);
@@ -344,6 +356,11 @@ public class TemplateDoubleMd extends Template
 //      return focused;
 //    }
 	  /*modify by dragontec for bug 4242 end*/
+/*add by dragontec for bug 4331 start*/
+	  if (isLastView && focusDirection == View.FOCUS_DOWN) {
+		  YoYo.with(Techniques.VerticalShake).duration(1000).playOn(mParentView);
+	  }
+/*add by dragontec for bug 4331 end*/
     /*modify by dragontec for bug 4221 start*/
     return findNextUpDownFocus(focusDirection, mBannerLinearLayout);
     /*modify by dragontec for bug 4221 end*/
@@ -376,6 +393,9 @@ public class TemplateDoubleMd extends Template
         int targetPosition = positions[1] - 12;
         if (targetPosition <= 0) targetPosition = 0;
         mSelectItemPosition = targetPosition;
+/*add by dragontec for bug 4332 start*/
+		  setNeedCheckScrollEnd();
+/*add by dragontec for bug 4332 end*/
         mDoubleLayoutManager.smoothScrollToPosition(mRecyclerView, null, targetPosition);
         if (mNavigationtHandler.hasMessages(NAVIGATION_LEFT)) {
           mNavigationtHandler.removeMessages(NAVIGATION_LEFT);
@@ -392,6 +412,9 @@ public class TemplateDoubleMd extends Template
           targetPosition = mFetchDataControl.mHomeEntity.count;
         }
         mSelectItemPosition = targetPosition;
+/*add by dragontec for bug 4332 start*/
+		  setNeedCheckScrollEnd();
+/*add by dragontec for bug 4332 end*/
         mDoubleLayoutManager.smoothScrollToPosition(mRecyclerView, null, targetPosition);
         if (mNavigationtHandler.hasMessages(NAVIGATION_RIGHT)){
           mNavigationtHandler.removeMessages(NAVIGATION_RIGHT);
@@ -425,8 +448,10 @@ public class TemplateDoubleMd extends Template
         break;
       case MotionEvent.ACTION_HOVER_EXIT:
         if (event.getButtonState() != BUTTON_PRIMARY) {
-          navigationLeft.setVisibility(View.INVISIBLE);
-          navigationRight.setVisibility(View.INVISIBLE);
+/*delete by dragontec for bug 4332 start*/
+//          navigationLeft.setVisibility(View.INVISIBLE);
+//          navigationRight.setVisibility(View.INVISIBLE);
+/*delete by dragontec for bug 4332 end*/
 /*modify by dragontec for bug 4057 start*/
 //          HomeActivity.mHoverView.requestFocus(); // 将焦点放置到一块隐藏view中
           v.clearFocus();

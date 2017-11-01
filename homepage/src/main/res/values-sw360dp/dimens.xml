@@ -809,7 +809,8 @@
 <dimen name="banner_subscribe_publish_time_w">51.00dp</dimen>
 <dimen name="banner_subscribe_publish_time_h">17.33dp</dimen>
 <dimen name="banner_subscribe_publish_time_mt">1.67dp</dimen>
-<dimen name="banner_subscribe_item_layout_mt">8.00dp</dimen>
+<dimen name="banner_subscribe_item_layout_mt">6.33dp</dimen>
+<dimen name="banner_subscribe_time_line_translateY">-2.67dp</dimen>
 <dimen name="banner_subscribe_post_w">129.33dp</dimen>
 <dimen name="banner_subscribe_post_h">73.00dp</dimen>
 <dimen name="banner_subscribe_post_introduction_h">15.67dp</dimen>

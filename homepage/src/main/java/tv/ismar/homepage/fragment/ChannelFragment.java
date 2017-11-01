@@ -307,8 +307,16 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
 			for (int position = 0; position < size; position++) {
 				addBannerView(position, data[position]);
 			}
-			if (lastLoadedPostion == data.length - 1&&!mChannel.equals("homepage")) {//首页频道最后不添加更多banner
-				addMoreView(data.length);
+			/*modify by dragontec for bug 4331 start*/
+			if (lastLoadedPostion == data.length - 1) {
+				if (!mChannel.equals("homepage")) {//首页频道最后不添加更多banner
+					addMoreView(data.length);
+				} else {
+					synchronized (templateDataLock) {
+						mTemplates.get(lastLoadedPostion).isLastView = true;
+					}
+				}
+			/*modify by dragontec for bug 4331 end*/
 			}
 		}
 		/*add by dragontec for bug 4200 start*/
@@ -333,8 +341,17 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
 					addBannerView(position, data[position]);
 				}
 				Log.d(TAG, "lastLoadedPostion = " + lastLoadedPostion + ", data.length = " + data.length);
-				if (lastLoadedPostion == data.length - 1&&!mChannel.equals("homepage")) {
-					addMoreView(data.length);
+
+			/*modify by dragontec for bug 4331 start*/
+				if (lastLoadedPostion == data.length - 1) {
+					if (!mChannel.equals("homepage")) {//首页频道最后不添加更多banner
+						addMoreView(data.length);
+					} else {
+						synchronized (templateDataLock) {
+							mTemplates.get(lastLoadedPostion).isLastView = true;
+						}
+					}
+			/*modify by dragontec for bug 4331 end*/
 				}
 			}
 		}

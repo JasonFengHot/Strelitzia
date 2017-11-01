@@ -146,13 +146,11 @@ public final class IsmartvActivator {
                 .dns(new Dns() {
                     @Override
                     public List<InetAddress> lookup(String hostName) throws UnknownHostException {
-                        String ipAddress = getHostByName(hostName);
-                        Log.d(TAG, "ip: " + ipAddress);
-                        if (TextUtils.isEmpty(ipAddress) || "0.0.0.0".equals(ipAddress)){
-                            return Dns.SYSTEM.lookup(ipAddress);
-                        }else {
-                            throw  new UnknownHostException("UnknownHostException");
+                        String ipAddress = IsmartvActivator.getHostByName(hostName);
+                        if (ipAddress.endsWith("0.0.0.0")) {
+                            throw new UnknownHostException("can't connect to internet");
                         }
+                        return Dns.SYSTEM.lookup(ipAddress);
                     }
                 })
                 .build();

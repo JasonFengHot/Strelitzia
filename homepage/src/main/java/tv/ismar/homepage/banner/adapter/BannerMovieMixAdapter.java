@@ -283,10 +283,18 @@ public class BannerMovieMixAdapter extends RecyclerView.Adapter<BannerMovieMixAd
 
         @Override
         public void onClick(View v) {
-            if (mSubscribeClickListener != null) {
-                int position = (int) v.getTag(R.id.banner_item_position);
-                mSubscribeClickListener.onBannerClick(v, position);
-            }
+/*modify by dragontec for bug 4330 start*/
+        	int[] location = new int[]{0, 0};
+			v.getLocationOnScreen(location);
+			int screenWidth = v.getResources().getDisplayMetrics().widthPixels;
+			int screenHeight = v.getResources().getDisplayMetrics().heightPixels;
+			if (location[0] >= 0 && location[1] >= 0 && location[0] + v.getWidth() <= screenWidth && location[1] + v.getHeight() <= screenHeight) {
+				if (mSubscribeClickListener != null) {
+					int position = (int) v.getTag(R.id.banner_item_position);
+					mSubscribeClickListener.onBannerClick(v, position);
+				}
+			}
+/*modify by dragontec for bug 4330 end*/
         }
 
         @Override
@@ -447,7 +455,10 @@ public class BannerMovieMixAdapter extends RecyclerView.Adapter<BannerMovieMixAd
         for (int i = 0; i < bannerEntity.getPoster().size(); i++) {
             mSubscribeEntityList.set(startIndex + i, bannerEntity.getPoster().get(i));
         }
-        notifyItemRangeInserted(startIndex, endIndex - startIndex);
+/*modify by dragontec for bug 4317 start*/
+//        notifyItemRangeInserted(startIndex, endIndex - startIndex);
+        notifyItemRangeChanged(startIndex, endIndex - startIndex + 1);
+/*modify by dragontec for bug 4317 end*/
     }
 
     public void addEmptyDatas(List<BannerEntity.PosterBean> emptyList) {

@@ -101,9 +101,17 @@ public abstract class BaseViewHolder extends RecyclerView.ViewHolder implements
 
     @Override
     public void onClick(View v) {
-        if(mClickListener!=null && v.getId()==getScaleLayoutId()){//item选中事件
-            mClickListener.onItemClick(v, mPosition);
-        }
+/*modify by dragontec for bug 4330 start*/
+    	int[] location = new int[]{0, 0};
+		v.getLocationOnScreen(location);
+		int screenWidth = v.getResources().getDisplayMetrics().widthPixels;
+		int screenHeight = v.getResources().getDisplayMetrics().heightPixels;
+		if (location[0] >= 0 && location[1] >= 0 && location[0] + v.getWidth() <= screenWidth && location[1] + v.getHeight() <= screenHeight) {
+			if (mClickListener != null && v.getId() == getScaleLayoutId()) {//item选中事件
+				mClickListener.onItemClick(v, mPosition);
+			}
+		}
+/*modify by dragontec for bug 4330 end*/
     }
 
     @Override

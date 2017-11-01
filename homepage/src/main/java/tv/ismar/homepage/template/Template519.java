@@ -50,14 +50,18 @@ import static android.view.View.VISIBLE;
 public class Template519 extends Template implements View.OnClickListener, View.OnHoverListener {
     private static final String TAG = Template519.class.getSimpleName();
 
-    private RecyclerViewTV horizontal519Banner;
+/*delete by dragontec for bug 4332 start*/
+//    private RecyclerViewTV horizontal519Banner;
+/*delete by dragontec for bug 4332 end*/
     private BannerHorizontal519Adapter mHorizontal519Adapter;
     private String mBannerName;
     private String mBannerTitle;
     private TextView mTitleTv;
 
-    private View navigationLeft;
-    private View navigationRight;
+/*delete by dragontec for bug 4332 start*/
+//    private View navigationLeft;
+//    private View navigationRight;
+/*delete by dragontec for bug 4332 end*/
     private BannerLinearLayout mBannerLinearLayout;
     private LinearLayoutManagerTV horizontal519LayoutManager;
     private String channelName;
@@ -71,25 +75,27 @@ public class Template519 extends Template implements View.OnClickListener, View.
     private NavigationtHandler mNavigationtHandler;
 
     private class NavigationtHandler extends Handler {
-        @Override
-        public void handleMessage(Message msg) {
-            switch (msg.what){
-                case NAVIGATION_LEFT:
-                    if (horizontal519Banner!=null&&!horizontal519Banner.cannotScrollBackward(-10)) {
-                        navigationLeft.setVisibility(VISIBLE);
-                    }else if (horizontal519Banner!=null){
-                        navigationLeft.setVisibility(INVISIBLE);
-                    }
-                    break;
-                case NAVIGATION_RIGHT:
-                    if(horizontal519Banner!=null&&!horizontal519Banner.cannotScrollForward(10)){
-                        navigationRight.setVisibility(VISIBLE);
-                    }else if (horizontal519Banner!=null){
-                        navigationRight.setVisibility(INVISIBLE);
-                    }
-                    break;
-            }
-        }
+/*delete by dragontec for bug 4332 start*/
+//        @Override
+//        public void handleMessage(Message msg) {
+//            switch (msg.what){
+//                case NAVIGATION_LEFT:
+//                    if (mRecyclerView!=null&&!mRecyclerView.cannotScrollBackward(-10)) {
+//                        navigationLeft.setVisibility(VISIBLE);
+//                    }else if (mRecyclerView!=null){
+//                        navigationLeft.setVisibility(INVISIBLE);
+//                    }
+//                    break;
+//                case NAVIGATION_RIGHT:
+//                    if(mRecyclerView!=null&&!mRecyclerView.cannotScrollForward(10)){
+//                        navigationRight.setVisibility(VISIBLE);
+//                    }else if (mRecyclerView!=null){
+//                        navigationRight.setVisibility(INVISIBLE);
+//                    }
+//                    break;
+//            }
+//        }
+/*delete by dragontec for bug 4332 end*/
     }
 
 
@@ -160,24 +166,25 @@ public class Template519 extends Template implements View.OnClickListener, View.
 
         mTitleCountTv = (TextView) view.findViewById(R.id.banner_title_count);
         mTitleTv = (TextView) view.findViewById(R.id.banner_title_tv);
-        horizontal519Banner = (RecyclerViewTV) view.findViewById(R.id.horizontal_519_banner);
+/*modify by dragontec for bug 4332 start*/
+		mRecyclerView = (RecyclerViewTV) view.findViewById(R.id.horizontal_519_banner);
 		/*modify by dragontec for bug 4221 start*/
-        horizontal519Banner.setTag("recycleView");
+		mRecyclerView.setTag("recycleView");
 		/*modify by dragontec for bug 4221 end*/
-        mBannerLinearLayout.setRecyclerViewTV(horizontal519Banner);
+        mBannerLinearLayout.setRecyclerViewTV(mRecyclerView);
         horizontal519LayoutManager =
                 new LinearLayoutManagerTV(mContext, LinearLayoutManager.HORIZONTAL, false);
         int selectedItemSpace =
                 mContext.getResources().getDimensionPixelSize(R.dimen.banner_item_SelectedItemSpace);
-        //        horizontal519Banner.addItemDecoration(new
+        //        mRecyclerView.addItemDecoration(new
         // BannerHorizontal519Adapter.SpacesItemDecoration(selectedItemSpace));
-        horizontal519Banner.setLayoutManager(horizontal519LayoutManager);
-        horizontal519Banner.setSelectedItemAtCentered(false);
+		mRecyclerView.setLayoutManager(horizontal519LayoutManager);
+        mRecyclerView.setSelectedItemAtCentered(false);
         int selectedItemOffset =
                 mContext.getResources().getDimensionPixelSize(R.dimen.banner_item_setSelectedItemOffset);
-        horizontal519Banner.setSelectedItemOffset(selectedItemOffset, selectedItemOffset);
+        mRecyclerView.setSelectedItemOffset(selectedItemOffset, selectedItemOffset);
 
-        horizontal519Banner.setPagingableListener(
+        mRecyclerView.setPagingableListener(
                 new RecyclerViewTV.PagingableListener() {
                     @Override
                     public void onLoadMoreItems() {
@@ -190,6 +197,7 @@ public class Template519 extends Template implements View.OnClickListener, View.
                         }
                     }
                 });
+/*modify by dragontec for bug 4332 end*/
         horizontal519LayoutManager.setFocusSearchFailedListener(
                 new LinearLayoutManagerTV.FocusSearchFailedListener() {
                     @Override
@@ -199,22 +207,31 @@ public class Template519 extends Template implements View.OnClickListener, View.
                             RecyclerView.Recycler recycler,
                             RecyclerView.State state) {
                         if (focusDirection == View.FOCUS_RIGHT || focusDirection == View.FOCUS_LEFT) {
-                            if (horizontal519Banner.getChildAt(0).findViewById(R.id.item_layout) == view
-                                    || horizontal519Banner
-                                    .getChildAt(horizontal519Banner.getChildCount() - 1)
+/*modify by dragontec for bug 4332 start*/
+                            if (mRecyclerView.getChildAt(0).findViewById(R.id.item_layout) == view
+                                    || mRecyclerView
+                                    .getChildAt(mRecyclerView.getChildCount() - 1)
                                     .findViewById(R.id.item_layout)
                                     == view) {
                                 YoYo.with(Techniques.HorizontalShake).duration(1000).playOn(view);
                             }
+/*modify by dragontec for bug 4332 end*/
                             return view;
                         }
+/*add by dragontec for bug 4331 start*/
+                        if (isLastView && focusDirection == View.FOCUS_DOWN) {
+							YoYo.with(Techniques.VerticalShake).duration(1000).playOn(mParentView);
+						}
+/*add by dragontec for bug 4331 end*/
                         /*modify by dragontec for bug 4221 start*/
                         return findNextUpDownFocus(focusDirection, mBannerLinearLayout);
                         /*modify by dragontec for bug 4221 end*/
                     }
                 });
 
-        horizontal519Banner.setOnItemFocusChangeListener(
+/*modify by dragontec for bug 4332 start*/
+        mRecyclerView.setOnItemFocusChangeListener(
+/*modify by dragontec for bug 4332 end*/
                 new RecyclerViewTV.OnItemFocusChangeListener() {
                     @Override
                     public void onItemFocusGain(View itemView, int position) {
@@ -231,6 +248,9 @@ public class Template519 extends Template implements View.OnClickListener, View.
                         }
                     }
                 });
+/*add by dragontec for bug 4332 start*/
+        mHoverView = view.findViewById(R.id.hover_view);
+/*add by dragontec for bug 4332 end*/
     }
 
     @Override
@@ -267,9 +287,14 @@ public class Template519 extends Template implements View.OnClickListener, View.
                 totalPostList.add(emptyPostBean);
             }
             mHorizontal519Adapter.addEmptyDatas(totalPostList);
-            int mSavePos = horizontal519Banner.getSelectPostion();
-            mHorizontal519Adapter.notifyItemRangeInserted(startIndex, endIndex - startIndex);
-            horizontal519Banner.setOnLoadMoreComplete();
+/*modify by dragontec for bug 4332 start*/
+            int mSavePos = mRecyclerView.getSelectPostion();
+/*modify by dragontec for bug 4317 start*/
+//            mHorizontal519Adapter.notifyItemRangeInserted(startIndex, endIndex - startIndex);
+            mHorizontal519Adapter.notifyItemRangeInserted(startIndex, endIndex - startIndex + 1);
+/*modify by dragontec for bug 4317 end*/
+            mRecyclerView.setOnLoadMoreComplete();
+/*modify by dragontec for bug 4332 end*/
             //            mMovieAdapter.setCurrentPageNumber(pageNumber);
             //            mFocusHandler.sendEmptyMessageDelayed(mSavePos, 10);
         }
@@ -299,7 +324,9 @@ public class Template519 extends Template implements View.OnClickListener, View.
                                 if (pageNumber == 1) {
                                     fillHorizontal519Banner(bannerEntity);
                                 } else {
-                                    int mSavePos = horizontal519Banner.getSelectPostion();
+/*modify by dragontec for bug 4332 start*/
+                                    int mSavePos = mRecyclerView.getSelectPostion();
+/*modify by dragontec for bug 4332 end*/
                                     mHorizontal519Adapter.addDatas(bannerEntity);
                                     //                            mFocusHandler.sendEmptyMessageDelayed(mSavePos, 10);
                                 }
@@ -318,7 +345,9 @@ public class Template519 extends Template implements View.OnClickListener, View.
 /*modify by dragontec for bug 4057 end*/
                         //                Log.d(TAG, view + " : " + hovered);
                         if (hovered) {
-                            horizontal519Banner.setHovered(true);
+/*modify by dragontec for bug 4332 start*/
+                            mRecyclerView.setHovered(true);
+/*modify by dragontec for bug 4332 end*/
                             if(position<mHorizontal519Adapter.getTatalItemCount())
                             mTitleCountTv.setText(
                                     String.format(
@@ -326,7 +355,9 @@ public class Template519 extends Template implements View.OnClickListener, View.
                                             (1 + position) + "",
                                             mHorizontal519Adapter.getTatalItemCount() + ""));
                         } else {
-                            horizontal519Banner.setHovered(false);
+/*modify by dragontec for bug 4332 start*/
+                            mRecyclerView.setHovered(false);
+/*modify by dragontec for bug 4332 end*/
 /*modify by dragontec for bug 4057 start*/
 //                            HomeActivity.mHoverView.requestFocus();
                             if (!isPrimary) {
@@ -360,14 +391,18 @@ public class Template519 extends Template implements View.OnClickListener, View.
                         }
                     }
                 });
-        horizontal519Banner.setAdapter(mHorizontal519Adapter);
+/*modify by dragontec for bug 4332 start*/
+        mRecyclerView.setAdapter(mHorizontal519Adapter);
+/*modify by dragontec for bug 4332 end*/
         mTitleCountTv.setText(
                 String.format(
                         mContext.getString(R.string.home_item_title_count),
                         (1) + "",
                         mHorizontal519Adapter.getTatalItemCount() + ""));
 	/*add by dragontec for bug 4077 start*/
-		checkFocus(horizontal519Banner);
+/*modify by dragontec for bug 4332 start*/
+		checkFocus(mRecyclerView);
+/*modify by dragontec for bug 4332 end*/
 	/*add by dragontec for bug 4077 end*/
     }
 
@@ -381,7 +416,7 @@ public class Template519 extends Template implements View.OnClickListener, View.
         if (i == R.id.navigation_left) {
             horizontal519LayoutManager.setCanScroll(true);
             //
-            // horizontal519LayoutManager.scrollToPositionWithOffset(horizontal519Banner.findFirstVisibleItemPosition() - 1, 0);
+            // horizontal519LayoutManager.scrollToPositionWithOffset(mRecyclerView.findFirstVisibleItemPosition() - 1, 0);
 
             if (horizontal519LayoutManager.findFirstCompletelyVisibleItemPosition() - 1 >= 0) {
                 int targetPosition =
@@ -392,8 +427,13 @@ public class Template519 extends Template implements View.OnClickListener, View.
                     targetPosition = 0;
                 }
                 setBannerItemCount(targetPosition);
+/*add by dragontec for bug 4332 start*/
+                setNeedCheckScrollEnd();
+/*add by dragontec for bug 4332 end*/
+/*modify by dragontec for bug 4332 start*/
                 horizontal519LayoutManager.smoothScrollToPosition(
-                        horizontal519Banner, null, targetPosition);
+                        mRecyclerView, null, targetPosition);
+/*modify by dragontec for bug 4332 end*/
                 if (mNavigationtHandler.hasMessages(NAVIGATION_LEFT)) {
                     mNavigationtHandler.removeMessages(NAVIGATION_LEFT);
                 }
@@ -401,7 +441,9 @@ public class Template519 extends Template implements View.OnClickListener, View.
             }
         } else if (i == R.id.navigation_right) {
             horizontal519LayoutManager.setCanScroll(true);
-            horizontal519Banner.loadMore();
+/*modify by dragontec for bug 4332 start*/
+            mRecyclerView.loadMore();
+/*modify by dragontec for bug 4332 end*/
 
             if (horizontal519LayoutManager.findLastCompletelyVisibleItemPosition() + 1
                     <= mHorizontal519Adapter.getTatalItemCount()) {
@@ -415,8 +457,13 @@ public class Template519 extends Template implements View.OnClickListener, View.
                         targetPosition >= mHorizontal519Adapter.getTatalItemCount()
                                 ? mHorizontal519Adapter.getTatalItemCount() - 1
                                 : targetPosition);
+/*add by dragontec for bug 4332 start*/
+				setNeedCheckScrollEnd();
+/*add by dragontec for bug 4332 end*/
+/*modify by dragontec for bug 4332 start*/
                 horizontal519LayoutManager.smoothScrollToPosition(
-                        horizontal519Banner, null, targetPosition);
+                        mRecyclerView, null, targetPosition);
+/*modify by dragontec for bug 4332 end*/
                 if (mNavigationtHandler.hasMessages(NAVIGATION_RIGHT)) {
                     mNavigationtHandler.removeMessages(NAVIGATION_RIGHT);
                 }
@@ -447,8 +494,10 @@ public class Template519 extends Template implements View.OnClickListener, View.
                 break;
             case MotionEvent.ACTION_HOVER_EXIT:
                 if (event.getButtonState() != BUTTON_PRIMARY) {
-                    navigationLeft.setVisibility(View.INVISIBLE);
-                    navigationRight.setVisibility(View.INVISIBLE);
+/*delete by dragontec for bug 4332 start*/
+//                    navigationLeft.setVisibility(View.INVISIBLE);
+//                    navigationRight.setVisibility(View.INVISIBLE);
+/*delete by dragontec for bug 4332 end*/
 /*add by dragontec for bug 4057 start*/
                     v.clearFocus();
 /*add by dragontec for bug 4057 end*/

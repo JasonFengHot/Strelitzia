@@ -9,7 +9,13 @@ import android.os.Bundle;
 	/*add by dragontec for bug 4077 start*/
 import android.os.Handler;
 	/*add by dragontec for bug 4077 end*/
+/*add by dragontec for bug 4332 start*/
+import android.support.v7.widget.RecyclerView;
+/*add by dragontec for bug 4332 end*/
 import android.text.TextUtils;
+/*add by dragontec for bug 4332 start*/
+import android.view.MotionEvent;
+/*add by dragontec for bug 4332 end*/
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -28,6 +34,10 @@ import tv.ismar.app.entity.banner.BannerEntity;
 	/*add by dragontec for bug 4077 start*/
 import tv.ismar.homepage.view.BannerLinearLayout;
 import tv.ismar.homepage.widget.RecycleLinearLayout;
+
+/*add by dragontec for bug 4332 start*/
+import static android.view.MotionEvent.BUTTON_PRIMARY;
+/*add by dragontec for bug 4332 end*/
 	/*add by dragontec for bug 4077 end*/
 
 /**
@@ -45,6 +55,19 @@ public abstract class Template {
 	protected boolean hasAppeared = false;
 	/*add by dragontec for bug 4200 end*/
 	/*add by dragontec for bug 4077 end*/
+/*add by dragontec for bug 4332 start*/
+	protected View mHeadView;
+	protected RecyclerViewTV mRecyclerView;
+	protected View mHoverView;
+	protected View navigationLeft;
+	protected View navigationRight;
+	private final Object mLock = new Object();
+	private boolean checkScrollEnd = false;
+/*add by dragontec for bug 4332 end*/
+
+/*add by dragontec for bug 4331 start*/
+	public boolean isLastView = false;
+/*add by dragontec for bug 4331 end*/
 
     public Template(Context context) {
         this.mContext = context;
@@ -89,6 +112,46 @@ public abstract class Template {
 	/*add by dragontec for bug 4200 end*/
 
     protected void initListener(View view) {
+/*add by dragontec for bug 4332 start*/
+    	if (mHoverView != null) {
+    		mHoverView.setOnHoverListener(new View.OnHoverListener() {
+				@Override
+				public boolean onHover(View v, MotionEvent event) {
+					switch (event.getAction()) {
+						case MotionEvent.ACTION_HOVER_ENTER:
+						case MotionEvent.ACTION_HOVER_MOVE:
+							checkNavigationButtonVisibility();
+							break;
+						case MotionEvent.ACTION_HOVER_EXIT:
+							if (event.getButtonState() != BUTTON_PRIMARY) {
+								dismissNavigationButton();
+							}
+							break;
+					}
+					return false;
+				}
+			});
+		}
+		if (mRecyclerView != null) {
+    		mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+				@Override
+				public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+					synchronized (mLock) {
+						if (checkScrollEnd && newState == RecyclerView.SCROLL_STATE_IDLE) {
+							checkScrollEnd = false;
+							checkNavigationButtonVisibility();
+						}
+					}
+					super.onScrollStateChanged(recyclerView, newState);
+				}
+
+				@Override
+				public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+					super.onScrolled(recyclerView, dx, dy);
+				}
+			});
+		}
+/*add by dragontec for bug 4332 emd*/
     }
 
     public void goToNextPage(View view) {
@@ -374,4 +437,40 @@ public abstract class Template {
         }
     }
 /*add by dragontec for bug 4249 end*/
+
+/*add by dragontec for bug 4332 start*/
+	public void checkNavigationButtonVisibility() {
+		if (mRecyclerView != null) {
+			if (navigationLeft != null) {
+				if (mRecyclerView.cannotScrollBackward(-1) && (mHeadView == null || mHeadView.getVisibility() == View.VISIBLE)) {
+					navigationLeft.setVisibility(View.INVISIBLE);
+				} else {
+					navigationLeft.setVisibility(View.VISIBLE);
+				}
+			}
+			if (navigationRight != null) {
+				if (mRecyclerView.cannotScrollForward(1)) {
+					navigationRight.setVisibility(View.INVISIBLE);
+				} else {
+					navigationRight.setVisibility(View.VISIBLE);
+				}
+			}
+		}
+	}
+
+	public void dismissNavigationButton() {
+		if (navigationLeft != null && navigationLeft.getVisibility() == View.VISIBLE) {
+			navigationLeft.setVisibility(View.INVISIBLE);
+		}
+		if (navigationRight != null && navigationRight.getVisibility() == View.VISIBLE) {
+			navigationRight.setVisibility(View.INVISIBLE);
+		}
+	}
+
+	public void setNeedCheckScrollEnd() {
+		synchronized (mLock) {
+			checkScrollEnd = true;
+		}
+	}
+/*add by dragontec for bug 4332 end*/
 }

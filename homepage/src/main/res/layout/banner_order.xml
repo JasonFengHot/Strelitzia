@@ -12,7 +12,7 @@
 
     <RelativeLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/subscribe_banner_recycler_h"
         android:clipChildren="false"
         android:clipToPadding="false">
 
@@ -39,6 +39,8 @@
             android:focusable="true"
             android:focusableInTouchMode="true"
             android:gravity="center_vertical"
+            android:nextFocusLeft="@id/subscribe_banner"
+            android:nextFocusRight="@id/subscribe_banner"
             >
         </Button>
 
@@ -54,9 +56,17 @@
             android:focusable="true"
             android:focusableInTouchMode="true"
             android:gravity="center_vertical"
+            android:nextFocusLeft="@id/subscribe_banner"
+            android:nextFocusRight="@id/subscribe_banner"
             >
         </Button>
-
+        <View
+            android:id="@+id/hover_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clickable="false"
+            android:focusable="false"
+            />
     </RelativeLayout>
 
 </tv.ismar.homepage.view.BannerLinearLayout>
