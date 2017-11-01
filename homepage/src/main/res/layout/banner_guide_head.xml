@@ -38,7 +38,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:focusableInTouchMode="false"
-                android:background="@drawable/guide_video_loading"
+                android:src="@drawable/guide_video_loading"
                 android:focusable="true"
                 android:scaleType="fitXY"
                 />
