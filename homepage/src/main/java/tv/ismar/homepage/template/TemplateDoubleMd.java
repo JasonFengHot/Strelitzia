@@ -169,8 +169,7 @@ public class TemplateDoubleMd extends Template
     mRbImage = (ImageView) mHeaderView.findViewById(R.id.double_md_image_rb_icon);
     mImgeTitleTv = (TextView) mHeaderView.findViewById(R.id.double_md_image_title);
 /*modify by dragontec for bug 4332 end*/
-    mRtImage= (ImageView) mHeadView.findViewById(R.id.guide_rt_icon);
-/*modify by dragontec for bug 4332 end*/
+    mRtImage= (ImageView) mHeaderView.findViewById(R.id.guide_rt_icon);
     mDoubleLayoutManager =
         new StaggeredGridLayoutManagerTV(2, StaggeredGridLayoutManager.HORIZONTAL);
     mRecyclerView.addItemDecoration(new ListSpacesItemDecoration(mContext.getResources().getDimensionPixelOffset(R.dimen.double_md_padding)));

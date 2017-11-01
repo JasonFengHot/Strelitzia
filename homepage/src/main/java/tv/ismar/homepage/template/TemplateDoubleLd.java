@@ -180,7 +180,7 @@ public class TemplateDoubleLd extends Template
         mRbImage = (TextView) mHeaderView.findViewById(R.id.double_ld_image_rb_icon);
         mIgTitleTv = (TextView) mHeaderView.findViewById(R.id.double_ld_image_title);
 /*modify by dragontec for bug 4332 end*/
-        mRtImage= (ImageView) mHeadView.findViewById(R.id.guide_rt_icon);
+        mRtImage= (ImageView) mHeaderView.findViewById(R.id.guide_rt_icon);
 /*modify by dragontec for bug 4332 end*/
         mDoubleLayoutManager =
                 new StaggeredGridLayoutManagerTV(2, StaggeredGridLayoutManager.HORIZONTAL);
