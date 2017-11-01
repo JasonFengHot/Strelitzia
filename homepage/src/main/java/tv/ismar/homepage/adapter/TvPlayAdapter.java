@@ -59,6 +59,7 @@ public class TvPlayAdapter extends BaseRecycleAdapter<TvPlayAdapter.TvPlayerView
         } else {
             Picasso.with(mContext).load(R.drawable.list_item_preview_bg).into(holder.mPosterIg);
         }
+        Picasso.with(mContext).load(VipMark.getInstance().getBannerIconMarkImage(poster.top_right_corner)).into(holder.mRtIconTv);
         Picasso.with(mContext).load(VipMark.getInstance().getBannerIconMarkImage(poster.top_left_corner)).into(holder.mLtIconTv);
         holder.mRbIconTv.setText(new DecimalFormat("0.0").format(poster.rating_average));
         holder.mRbIconTv.setVisibility((poster.rating_average==0) ? View.GONE:View.VISIBLE);
@@ -92,6 +93,7 @@ public class TvPlayAdapter extends BaseRecycleAdapter<TvPlayAdapter.TvPlayerView
         public TextView mRbIconTv;//右下icon
         public TextView mTitleTv;//标题
         public View mMarginLeftView;//左边距
+        public ImageView mRtIconTv;
 
         public TvPlayerViewHolder(View itemView) {
             super(itemView, TvPlayAdapter.this);
@@ -100,6 +102,7 @@ public class TvPlayAdapter extends BaseRecycleAdapter<TvPlayAdapter.TvPlayerView
             mRbIconTv = (TextView) itemView.findViewById(R.id.tv_player_item_rb_icon);
             mTitleTv = (TextView) itemView.findViewById(R.id.tv_player_item_title);
             mMarginLeftView = itemView.findViewById(R.id.tv_player_margin_left);
+            mRtIconTv= (ImageView) itemView.findViewById(R.id.guide_rt_icon);
         }
 
         @Override

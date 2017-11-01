@@ -61,6 +61,15 @@
                 android:singleLine="true"
                 android:gravity="center"
                 android:textSize="@dimen/double_ld_poster_title_size" />
+            <ImageView
+                android:id="@+id/guide_rt_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="@dimen/tv_play_recycleview_item_h"
+                android:layout_marginTop="@dimen/tv_play_recycleview_item_h"
+                />
         </RelativeLayout>
     </tv.ismar.homepage.banner.IsmartvLinearLayout>
 </FrameLayout>

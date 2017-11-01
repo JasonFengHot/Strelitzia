@@ -61,6 +61,15 @@
                 android:background="@drawable/banner_subscrib_introduction_bg"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/tv_play_poster_title_height" />
+            <ImageView
+                android:id="@+id/guide_rt_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="@dimen/tv_play_recycleview_item_h"
+                android:layout_marginTop="@dimen/tv_play_recycleview_item_h"
+                />
         </RelativeLayout>
 
     </tv.ismar.homepage.banner.IsmartvLinearLayout>
