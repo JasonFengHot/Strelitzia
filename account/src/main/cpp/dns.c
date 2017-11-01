@@ -177,7 +177,7 @@ char *ngethostbyname(unsigned char *host, int query_type) {
     LOGD("Done");
 #endif
 
-    struct timeval timeout = {1, 0};
+    struct timeval timeout = {5, 0};
 
     if (setsockopt(s, SOL_SOCKET, SO_RCVTIMEO, (char *) &timeout, sizeof(timeout)) < 0) {
         LOGE("setsockopt");
