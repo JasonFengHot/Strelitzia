@@ -10,6 +10,7 @@ import android.graphics.Bitmap;
 import android.os.StrictMode;
 import android.preference.PreferenceManager;
 import android.support.multidex.MultiDex;
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
 
@@ -195,7 +196,12 @@ public class VodApplication extends Application {
                     @Override
                     public List<InetAddress> lookup(String s) throws UnknownHostException {
                         String ipAddress = IsmartvActivator.getHostByName(s);
-                        return Dns.SYSTEM.lookup(ipAddress);
+                        Log.d(TAG, "ip: " + ipAddress);
+                        if (TextUtils.isEmpty(ipAddress) || "0.0.0.0".equals(ipAddress)){
+                            return Dns.SYSTEM.lookup(ipAddress);
+                        }else {
+                            throw  new UnknownHostException("UnknownHostException");
+                        }
                     }
                 })
                 .cache(cache)
@@ -218,7 +224,12 @@ public class VodApplication extends Application {
                     @Override
                     public List<InetAddress> lookup(String s) throws UnknownHostException {
                         String ipAddress = IsmartvActivator.getHostByName(s);
-                        return Dns.SYSTEM.lookup(ipAddress);
+                        Log.d(TAG, "ip: " + ipAddress);
+                        if (TextUtils.isEmpty(ipAddress) || "0.0.0.0".equals(ipAddress)){
+                            return Dns.SYSTEM.lookup(ipAddress);
+                        }else {
+                            throw  new UnknownHostException("UnknownHostException");
+                        }
                     }
                 })
                 .cache(homepageCache)
