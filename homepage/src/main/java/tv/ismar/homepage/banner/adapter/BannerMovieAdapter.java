@@ -144,6 +144,7 @@ public class BannerMovieAdapter extends RecyclerView.Adapter<BannerMovieAdapter.
         }
 
         Picasso.with(mContext).load(VipMark.getInstance().getBannerIconMarkImage(entity.getTop_left_corner())).into(holder.markLT);
+        Picasso.with(mContext).load(VipMark.getInstance().getBannerIconMarkImage(entity.getTop_right_corner())).into(holder.markRT);
 
         if (entity.getRating_average() != 0){
             holder.markRB.setText(new DecimalFormat("0.0").format(entity.getRating_average()));
@@ -157,6 +158,13 @@ public class BannerMovieAdapter extends RecyclerView.Adapter<BannerMovieAdapter.
         }else {
             holder.mLeftSpace.setVisibility(View.VISIBLE);
         }
+		/*add by dragontec for bug 4325 start*/
+        String focusStr = entity.getTitle();
+        if(entity.getIntroduction() != null && !entity.getIntroduction().equals("") && !entity.getIntroduction().equals("null")){
+            focusStr = entity.getIntroduction();
+        }
+        holder.mTitle.setTag(new String[]{entity.getTitle(),focusStr});
+		/*add by dragontec for bug 4325 end*/
     }
 
     @Override
@@ -171,6 +179,7 @@ public class BannerMovieAdapter extends RecyclerView.Adapter<BannerMovieAdapter.
 /*add by dragontec for bug 4265 end*/
 	{
 
+        private final ImageView markRT;
         private ImageView mImageView;
         private TextView mTitle;
         private View mItemView;
@@ -211,6 +220,7 @@ public class BannerMovieAdapter extends RecyclerView.Adapter<BannerMovieAdapter.
             mLeftSpace = (Space)itemView.findViewById(R.id.left_space);
             markLT = (ImageView) itemView.findViewById(R.id.banner_mark_lt);
             markRB = (TextView)itemView.findViewById(R.id.banner_mark_br);
+            markRT = (ImageView) itemView.findViewById(R.id.banner_mark_rt);
         }
 
         @Override
@@ -232,6 +242,9 @@ public class BannerMovieAdapter extends RecyclerView.Adapter<BannerMovieAdapter.
                 scaleToNormal(v.findViewById(R.id.item_layout));
                 v.findViewById(R.id.title).setSelected(false);
             }
+			/*add by dragontec for bug 4325 start*/
+            updateTitleText(hasFocus);
+			/*add by dragontec for bug 4325 end*/
         }
 
         @Override
@@ -280,6 +293,32 @@ public class BannerMovieAdapter extends RecyclerView.Adapter<BannerMovieAdapter.
         private void scaleToNormal(View view) {
             JasmineUtil.scaleIn3(view);
         }
+		/*add by dragontec for bug 4325 start*/
+        private void updateTitleText(boolean hasFocus) {
+            View view = itemView.findViewById(R.id.title);
+            if(view != null && view instanceof TextView) {
+                TextView textView = (TextView) itemView.findViewById(R.id.title);
+                Object tag = itemView.findViewById(R.id.title).getTag();
+                if (tag != null && tag instanceof String[] && ((String[]) tag).length == 2) {
+                    String title = ((String[]) tag)[0];
+                    String focusTitle = ((String[]) tag)[1];
+                    if (hasFocus) {
+                        textView.setText(focusTitle);
+                        textView.setEllipsize(TextUtils.TruncateAt.MARQUEE);
+                        textView.setMarqueeRepeatLimit(-1);
+                        textView.setHorizontallyScrolling(true);
+                        textView.setSelected(true);
+                    } else {
+                        textView.setText(title);
+                        textView.setEllipsize(TextUtils.TruncateAt.END);
+                        textView.setMarqueeRepeatLimit(0);
+                        textView.setHorizontallyScrolling(false);
+                        textView.setSelected(false);
+                    }
+                }
+            }
+        }
+		/*add by dragontec for bug 4325 end*/
 
 		/*add by dragontec for bug 4265 start*/
 		@Override

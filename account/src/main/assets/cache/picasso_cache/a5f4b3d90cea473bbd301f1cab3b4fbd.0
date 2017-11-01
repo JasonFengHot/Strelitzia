@@ -1,0 +1,22 @@
+http://pic0.qiyipic.com/image/20160907/e5/a0/a_100030462_m_601_m1_480_270.jpg
+GET
+0
+HTTP/1.1 200 OK
+17
+Server: QWS
+Date: Wed, 01 Nov 2017 05:33:59 GMT
+Content-Type: image/jpeg
+Content-Length: 32163
+Connection: keep-alive
+Last-Modified: Wed, 07 Sep 2016 05:12:54 GMT
+Expires: Thu, 13 Sep 2018 11:58:39 GMT
+Cache-Control: max-age=31536000
+X-Cache: from 58.215.125.70
+X-Cache: from 127.0.0.1
+Age: 4133069
+Via: http/1.1 QTS (QTS [cRs f ])
+X-Cache: from 10.121.32.224
+X-Cache: HIT from 101.227.22.159
+Accept-Ranges: bytes
+OkHttp-Sent-Millis: 1509514439275
+OkHttp-Received-Millis: 1509514439286

@@ -1,7 +1,10 @@
 package tv.ismar.channel;
 
+import android.annotation.TargetApi;
 import android.content.Intent;
+import android.graphics.Rect;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.widget.LinearLayoutManager;
@@ -611,6 +614,7 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
             }
             startActivity(intent);
         }else if(id==R.id.favorite_right_arrow){
+            favoriteManager.setScrollEnabled(true);
             favorite_left_arrow.setVisibility(View.VISIBLE);
             targetPosition=favoriteManager.findFirstCompletelyVisibleItemPosition()+3;
             if(targetPosition+2>=favoriteLists.size()-1) {
@@ -625,10 +629,11 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
 //            targetPosition=favoriteManager.findLastCompletelyVisibleItemPosition()+3;
 //            favoriteManager.smoothScrollToPosition(favoriteRecycler,null,targetPosition);
         }else if(id==R.id.favorite_left_arrow){
+            favoriteManager.setScrollEnabled(true);
             targetPosition=favoriteManager.findFirstCompletelyVisibleItemPosition()-3;
             if(targetPosition<=0) {
-                targetPosition = 0;
                 favoriteManager.smoothScrollToPosition(favoriteRecycler,null,0);
+                favoriteManager.scrollToPositionWithOffset(targetPosition, getResources().getDimensionPixelOffset(R.dimen.history_165));
             }else{
                 favoriteManager.scrollToPositionWithOffset(targetPosition, getResources().getDimensionPixelOffset(R.dimen.history_165));
                 arrowState();
@@ -637,6 +642,7 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
                 favorite_right_arrow.setVisibility(View.VISIBLE);
             }
         }else if(id==R.id.history_left_arrow){
+            historyLayoutManager.setScrollEnabled(true);
             targetPosition=historyLayoutManager.findFirstCompletelyVisibleItemPosition()-3;
             if(targetPosition<=0){
                 historyLayoutManager.smoothScrollToPosition(historyRecycler,null,0);
@@ -646,6 +652,7 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
             }
             history_right_arrow.setVisibility(View.VISIBLE);
         }else if(id==R.id.history_right_arrow){
+            historyLayoutManager.setScrollEnabled(true);
             targetPosition=historyLayoutManager.findFirstCompletelyVisibleItemPosition()+3;
             if(historyLists.size()>0){
                 if(targetPosition+2>=historyLists.size()-1) {
@@ -822,10 +829,12 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
 
     @Override
     public void onItemfocused(View view, int position, boolean hasFocus) {
-        RecyclerView.LayoutManager layoutManager = historyRecycler.getLayoutManager();
-        Log.i("onItemfocus","position: "+position+"  lastPosition: "+((LinearLayoutManager) layoutManager).findLastVisibleItemPosition()+" X: "+ view.getX());
+        Rect rect=new Rect();
+        view.getGlobalVisibleRect(rect);
         if(hasFocus){
-            JasmineUtil.scaleOut3(view);
+            if(rect.left>=100&&rect.left<1576) {
+                JasmineUtil.scaleOut3(view);
+            }
         }else{
             JasmineUtil.scaleIn3(view);
         }
@@ -836,7 +845,13 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
     public void onlfItemClick(View v, int postion, String type) {
         PageIntent intent=new PageIntent();
         mDataCollectionProperties=new HashMap<>();
+        Log.i("hoverX","position: "+postion);
         int pk=0;
+        Rect rect=new Rect();
+        v.getGlobalVisibleRect(rect);
+//        if(rect.left<100||rect.left>=1576){
+//            return;
+//        }
         if(type.equals("history")){
             if(postion<=historyLists.size()-1) {
                 HistoryFavoriteEntity history = historyLists.get(postion);
@@ -917,45 +932,28 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
         }
         return false;
     }
-
     @Override
     public void OnItemOnhoverlistener(View v, MotionEvent event, int position, int recommend) {
         switch (event.getAction()){
             case MotionEvent.ACTION_HOVER_ENTER:
+                Rect rect = new Rect();
+                v.getGlobalVisibleRect(rect);
+                Log.i("hoverX",rect.left+"");
                 if(!isEdit) {
                     if(recommend==0){
-                        int pos=historyLayoutManager.findFirstVisibleItemPosition();
-                        int endPos=historyLayoutManager.findLastVisibleItemPosition();
-                        if(historyLists.size()>0){
-                            if(position==0||position==historyLists.size()-1){
-                                historyRecycler.setHovered(true);
-                                v.requestFocusFromTouch();
-                            }else if(position!=pos&&position!=endPos){
-                                historyRecycler.setHovered(true);
-                                v.requestFocusFromTouch();
-                            }else{
-                                historyRecycler.setHovered(false);
-                            }
+                        if(rect.left>=100&&rect.left<1576){
+                            historyRecycler.setHovered(true);
+                            v.setFocusable(true);
+                            v.requestFocusFromTouch();
                         }else{
-                            if(position==0||position==favoriteLists.size()-1){
-                                historyRecycler.setHovered(true);
-                                v.requestFocusFromTouch();
-                            }else if(position!=pos&&position!=endPos){
-                                historyRecycler.setHovered(true);
-                                v.requestFocusFromTouch();
-                            }
+                            historyLayoutManager.setScrollEnabled(false);
                         }
                     }else{
-                        int pos=favoriteManager.findFirstVisibleItemPosition();
-                        int endPos=favoriteManager.findLastVisibleItemPosition();
-                        if(position==0||position==favoriteLists.size()-1){
-                            favoriteRecycler.setHovered(true);
-                            v.requestFocusFromTouch();
-                        }else if(position!=pos&&position!=endPos){
+                        if(rect.left>=100&&rect.left<1576){
                             favoriteRecycler.setHovered(true);
                             v.requestFocusFromTouch();
                         }else{
-                            favoriteRecycler.setHovered(false);
+                            favoriteManager.setScrollEnabled(false);
                         }
                     }
                 }
@@ -966,12 +964,15 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
 
     @Override
     public void onItemKeyListener(View v, int keyCode, KeyEvent event) {
+        Log.i("hoverX","onkey: "+keyCode);
         historyRecycler.setHovered(false);
         favoriteRecycler.setHovered(false);
         history_left_arrow.setFocusable(false);
         history_right_arrow.setFocusable(false);
         favorite_right_arrow.setFocusable(false);
         favorite_left_arrow.setFocusable(false);
+        historyLayoutManager.setScrollEnabled(true);
+        favoriteManager.setScrollEnabled(true);
         empty.setFocusable(false);
     }
 

@@ -148,7 +148,11 @@ public final class IsmartvActivator {
                     public List<InetAddress> lookup(String hostName) throws UnknownHostException {
                         String ipAddress = getHostByName(hostName);
                         Log.d(TAG, "ip: " + ipAddress);
-                        return Dns.SYSTEM.lookup(ipAddress);
+                        if (TextUtils.isEmpty(ipAddress) || "0.0.0.0".equals(ipAddress)){
+                            return Dns.SYSTEM.lookup(ipAddress);
+                        }else {
+                            throw  new UnknownHostException("UnknownHostException");
+                        }
                     }
                 })
                 .build();
@@ -185,8 +189,9 @@ public final class IsmartvActivator {
             Log.e(TAG, "激活失败!!!");
             initHttpCache();
             resultEntity = new ResultEntity();
+        }else {
+            saveAccountInfo(resultEntity);
         }
-        saveAccountInfo(resultEntity);
         return resultEntity;
     }
 

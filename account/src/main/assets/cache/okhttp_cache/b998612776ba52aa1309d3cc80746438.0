@@ -1,0 +1,15 @@
+http://sky.test.tvxio.com/v5_0/SKY2/touc/api/tv/banner/159/1/?token_check=1&device_token=__csWpX06UFb1nF7D-T8CvpKa4BpSIK8Ws2cnqrxf_VaB-HcJTWBGFkh_X2sD9bZvn
+GET
+0
+HTTP/1.1 200 OK
+10
+Transfer-Encoding: chunked
+Connection: keep-alive
+Vary: X-User-Agent
+ETag: "3df43f6ef5fbfb549d856b4e226078d4"
+Allow: GET, POST, HEAD, OPTIONS
+Server: nginx
+Date: Wed, 01 Nov 2017 05:34:07 GMT
+Content-Type: text/html; charset=utf-8
+OkHttp-Sent-Millis: 1509514447775
+OkHttp-Received-Millis: 1509514448001

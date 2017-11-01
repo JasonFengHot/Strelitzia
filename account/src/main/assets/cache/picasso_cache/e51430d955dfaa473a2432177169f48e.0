@@ -1,0 +1,20 @@
+http://res.tvxio.bestv.com.cn/media/upload/20160420/right_corner_gengxin_01_02.png
+GET
+0
+HTTP/1.1 200 OK
+15
+Server: marco/1.8
+Date: Wed, 01 Nov 2017 05:33:58 GMT
+Content-Type: image/png
+Content-Length: 3836
+Connection: keep-alive
+X-Source: C/200
+Last-Modified: Mon, 30 Oct 2017 10:27:43 GMT
+Accept-Ranges: bytes
+Expires: Mon, 29 Jan 2018 08:40:23 GMT
+Cache-Control: max-age=7776000
+Age: 75215
+X-Request-Id: d3d7ee913b9045c02b337dd3837e49bd; 6f82818866f327304449dc34aa0ebf01
+Via: S.mix-hz-fdi-163, T.101168.M.1, V.mix-hz-fdi-170, T.3546.R.1, M.ctn-zj-lna4-049
+OkHttp-Sent-Millis: 1509514438996
+OkHttp-Received-Millis: 1509514439007

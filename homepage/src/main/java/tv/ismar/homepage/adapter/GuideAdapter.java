@@ -57,6 +57,7 @@ public class GuideAdapter extends BaseRecycleAdapter<GuideAdapter.GuideViewHolde
         Picasso.with(mContext).load(VipMark.getInstance().getBannerIconMarkImage(poster.top_left_corner)).into(holder.mLtIconTv);
         holder.mRbIconTv.setText(new DecimalFormat("0.0").format(poster.rating_average));
         holder.mRbIconTv.setVisibility((poster.rating_average==0) ? View.GONE:View.VISIBLE);
+        Picasso.with(mContext).load(VipMark.getInstance().getBannerIconMarkImage(poster.top_right_corner)).into(holder.mRtIconTv);
 
         if(!TextUtils.isEmpty(poster.vertical_url) && poster.vertical_url.equals("更多")){
             holder.mTitleTv.setVisibility(View.INVISIBLE);
@@ -65,6 +66,13 @@ public class GuideAdapter extends BaseRecycleAdapter<GuideAdapter.GuideViewHolde
         }
         holder.mTitleTv.setText(poster.title);
         holder.mPosition = position;
+		/*add by dragontec for bug 4325 start*/
+        String focusStr = poster.title;
+        if(poster.introduce != null && !poster.introduce.equals("") && !poster.introduce.equals("null")){
+            focusStr = poster.introduce;
+        }
+        holder.mTitleTv.setTag(new String[]{poster.title,focusStr});
+		/*add by dragontec for bug 4325 end*/
     }
 
     @Override
@@ -82,6 +90,7 @@ public class GuideAdapter extends BaseRecycleAdapter<GuideAdapter.GuideViewHolde
         public TextView mRbIconTv;//右下icon
         public TextView mTitleTv;//标题
         public View mMarginLeftView;//左边距
+        public ImageView mRtIconTv;//右上icon
 
         public GuideViewHolder(View itemView) {
             super(itemView, GuideAdapter.this);
@@ -90,11 +99,18 @@ public class GuideAdapter extends BaseRecycleAdapter<GuideAdapter.GuideViewHolde
             mRbIconTv = (TextView) itemView.findViewById(R.id.guide_recycle_item_rb_icon);
             mTitleTv = (TextView) itemView.findViewById(R.id.guide_recycle_item_title);
             mMarginLeftView = itemView.findViewById(R.id.guide_margin_left);
+            mRtIconTv= (ImageView) itemView.findViewById(R.id.guide_rt_icon);
         }
 
         @Override
         protected int getScaleLayoutId() {
             return R.id.guide_ismartv_linear_layout;
         }
+		/*add by dragontec for bug 4325 start*/
+        @Override
+        protected int getTitleId() {
+            return R.id.guide_recycle_item_title;
+        }
+		/*add by dragontec for bug 4325 end*/
     }
 }

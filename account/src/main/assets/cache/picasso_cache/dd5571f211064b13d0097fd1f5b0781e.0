@@ -1,0 +1,20 @@
+http://res.tvxio.bestv.com.cn/media/upload/20160420/right_corner_zhuanti_04_01.png
+GET
+0
+HTTP/1.1 200 OK
+15
+Server: marco/1.8
+Date: Wed, 01 Nov 2017 05:33:57 GMT
+Content-Type: image/png
+Content-Length: 3900
+Connection: keep-alive
+X-Source: C/200
+Last-Modified: Mon, 30 Oct 2017 10:27:43 GMT
+Accept-Ranges: bytes
+Expires: Mon, 29 Jan 2018 11:14:01 GMT
+Cache-Control: max-age=7776000
+Age: 65996
+X-Request-Id: 8650e19f2c38b9b654a23551a24bd01b; 35364c3491cdfd30fc4a553514857e0f
+Via: S.mix-hz-fdi-169, T.101166.M.1, V.mix-hz-fdi-171, T.3550.R.1, M.ctn-zj-lna4-049
+OkHttp-Sent-Millis: 1509514437373
+OkHttp-Received-Millis: 1509514437383

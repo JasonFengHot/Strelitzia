@@ -1,0 +1,20 @@
+http://res.tvxio.bestv.com.cn/media/upload/20160711/hanzhan2160915yyshu_detail.jpg
+GET
+0
+HTTP/1.1 200 OK
+15
+Server: marco/1.8
+Date: Wed, 01 Nov 2017 05:34:49 GMT
+Content-Type: image/jpeg
+Content-Length: 39242
+Connection: keep-alive
+X-Source: C/200
+Last-Modified: Thu, 15 Sep 2016 06:54:20 GMT
+Accept-Ranges: bytes
+Expires: Tue, 09 Jan 2018 06:24:37 GMT
+Cache-Control: max-age=7776000
+Age: 1811412
+X-Request-Id: 3672e8cb09353228bc81c036f12910e2; fb418d3461300f7cbaa32908ea7c7714
+Via: T.101167.M.1, S.mix-hz-fdi-171, V.mix-hz-fdi-168, T.3549.H.1, M.ctn-zj-lna4-049
+OkHttp-Sent-Millis: 1509514489424
+OkHttp-Received-Millis: 1509514489470

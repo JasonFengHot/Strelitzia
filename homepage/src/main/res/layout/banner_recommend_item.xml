@@ -36,7 +36,19 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
                 android:layout_centerHorizontal="true"
+                android:singleLine="true"
+                android:textSize="@dimen/text_size_30sp"
+                android:ellipsize="end"
                 android:visibility="gone"/>
+            <ImageView
+                android:id="@+id/guide_rt_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="@dimen/tv_play_recycleview_item_h"
+                android:layout_marginTop="@dimen/tv_play_recycleview_item_h"
+                />
         </RelativeLayout>
     </tv.ismar.homepage.banner.IsmartvLinearLayout>
 </LinearLayout>

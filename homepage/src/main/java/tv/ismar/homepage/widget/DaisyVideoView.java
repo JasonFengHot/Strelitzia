@@ -560,7 +560,7 @@ public class DaisyVideoView extends SurfaceView implements MediaPlayerControl {
 	 */
 /*modify by dragontec for bug 4065 start*/
 //	private void release(boolean cleartargetstate) {
-    synchronized private void release(boolean cleartargetstate) {
+    synchronized public void release(boolean cleartargetstate) {
 /*modify by dragontec for bug 4065 end*/
 		if (player != null) {
 			player.reset();

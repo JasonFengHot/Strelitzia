@@ -1,0 +1,20 @@
+http://res.tvxio.bestv.com.cn/media/upload/20160711/huiguniang160822.jpg
+GET
+0
+HTTP/1.1 200 OK
+15
+Server: marco/1.8
+Date: Wed, 01 Nov 2017 05:34:28 GMT
+Content-Type: image/jpeg
+Content-Length: 57143
+Connection: keep-alive
+X-Source: C/200
+Last-Modified: Mon, 22 Aug 2016 02:08:00 GMT
+Accept-Ranges: bytes
+Expires: Wed, 17 Jan 2018 07:40:39 GMT
+Cache-Control: max-age=7776000
+Age: 1115629
+X-Request-Id: 80548163ae817b8c719ad8689097f1b6; 6080715069d80a48bd2467870b996811
+Via: S.mix-hz-fdi-169, T.101169.M.1, V.mix-hz-fdi-167, T.3546.H.1, M.ctn-zj-lna4-049
+OkHttp-Sent-Millis: 1509514468132
+OkHttp-Received-Millis: 1509514468179

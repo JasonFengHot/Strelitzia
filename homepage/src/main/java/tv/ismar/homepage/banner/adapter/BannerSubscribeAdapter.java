@@ -19,7 +19,6 @@ import android.widget.TextView;
 /*add by dragontec for bug 4265 start*/
 import com.open.androidtvwidget.leanback.recycle.RecyclerViewTV;
 /*add by dragontec for bug 4265 end*/
-import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
 
 import java.text.DecimalFormat;
@@ -117,16 +116,16 @@ public class BannerSubscribeAdapter
 
         String imageUrl = entity.getPoster_url();
         String targetImageUrl = TextUtils.isEmpty(imageUrl) ? null : imageUrl;
-
+		/*modify by dragontec 修改了变量名和layout_id避免产生误解*/
         if ("更多".equals(title)){
             holder.mItemView.findViewById(R.id.item_layout).setBackgroundResource(R.drawable.banner_horizontal_more);
             holder.mItemView.findViewById(R.id.content_layout).setVisibility(View.INVISIBLE);
-            holder.mTitle.setVisibility(View.INVISIBLE);
+            holder.mOrderTitle.setVisibility(View.INVISIBLE);
 //            Picasso.with(mContext).load(R.drawable.banner_horizontal_more).into(holder.mImageView);
         }else {
             holder.mItemView.findViewById(R.id.item_layout).setBackgroundResource(android.R.color.transparent);
             holder.mItemView.findViewById(R.id.content_layout).setVisibility(View.VISIBLE);
-            holder.mTitle.setVisibility(View.VISIBLE);
+            holder.mOrderTitle.setVisibility(View.VISIBLE);
 
             Picasso.with(mContext).load(targetImageUrl).placeholder(R.drawable.list_item_preview_bg)
                     .error(R.drawable.list_item_preview_bg).into(holder.mImageView);
@@ -140,23 +139,24 @@ public class BannerSubscribeAdapter
         //        int itemId = getMovieItemId(entity.getContent_url());
         //
         //        if (entity.getSubscribeStatus() == BannerEntity.SubscribeStatus.None) {
-        //            holder.mTitle.setText("");
-        //            loadSubscribeStatus(itemId, holder.mTitle, mSubscribeEntityList, position);
+        //            holder.mOrderTitle.setText("");
+        //            loadSubscribeStatus(itemId, holder.mOrderTitle, mSubscribeEntityList, position);
         //        } else if (entity.getSubscribeStatus() == BannerEntity.SubscribeStatus.Yes) {
-        //            holder.mTitle.setText("已预约");
+        //            holder.mOrderTitle.setText("已预约");
         //        } else if (entity.getSubscribeStatus() == BannerEntity.SubscribeStatus.No) {
-        //            holder.mTitle.setText("预约");
+        //            holder.mOrderTitle.setText("预约");
         //        }
 
-        holder.mTitle.setText("预约");
+        holder.mOrderTitle.setText("预约");
 
         //        if (itemId == subscribeStatusChangedItemId) {
-        //            loadSubscribeStatus(itemId, holder.mTitle, mSubscribeEntityList, position);
+        //            loadSubscribeStatus(itemId, holder.mOrderTitle, mSubscribeEntityList, position);
         //        }
 
 //            String timeString = entity.getOrder_date().getMonth() +"月" + entity.getOrder_date().getDate() + "日";
         holder.mPublishTime.setText(entity.getDisplay_order_date());
         Picasso.with(mContext).load(VipMark.getInstance().getBannerIconMarkImage(entity.getTop_left_corner())).into(holder.markLT);
+        Picasso.with(mContext).load(VipMark.getInstance().getBannerIconMarkImage(entity.getTop_right_corner())).into(holder.markRT);
 
         if (entity.getRating_average() != 0){
             holder.markRB.setText(new DecimalFormat("0.0").format(entity.getRating_average()));
@@ -165,7 +165,7 @@ public class BannerSubscribeAdapter
             holder.markRB.setVisibility(View.INVISIBLE);
         }
 
-        holder.mIntroduction.setText(entity.getTitle() + " ");
+        holder.mTitle.setText(entity.getTitle() + " ");
         holder.mItemView.findViewById(R.id.item_layout).setTag(entity);
         holder.mItemView.findViewById(R.id.item_layout).setTag(R.id.banner_item_position, position);
 
@@ -174,6 +174,13 @@ public class BannerSubscribeAdapter
         }else {
             holder.mLeftSpace.setVisibility(View.VISIBLE);
         }
+		/*add by dragontec for bug 4325 start*/
+        String focusStr = entity.getTitle();
+        if(entity.getIntroduction() != null && !entity.getIntroduction().equals("") && !entity.getIntroduction().equals("null")){
+            focusStr = entity.getIntroduction();
+        }
+        holder.mOrderTitle.setTag(new String[]{entity.getTitle(),focusStr});
+		/*add by dragontec for bug 4325 end*/
     }
 
     private int getMovieItemId(String url) {
@@ -266,12 +273,13 @@ public class BannerSubscribeAdapter
 	/*add by dragontec for bug 4265 end*/
 	{
 
+        private final ImageView markRT;
         private  Space mLeftSpace;
         private ImageView mImageView;
-        private TextView mTitle;
+        private TextView mOrderTitle;
         private TextView mPublishTime;
         private View mItemView;
-        private TextView mIntroduction;
+        private TextView mTitle;
         private ImageView mTimeLine;
         private ImageView markLT;
         private TextView markRB;
@@ -286,13 +294,14 @@ public class BannerSubscribeAdapter
             mItemView.findViewById(R.id.item_layout).setOnKeyListener(this);
 	/*add by dragontec for bug 4265 end*/
             mImageView = (ImageView) itemView.findViewById(R.id.image_view);
-            mTitle = (TextView) itemView.findViewById(R.id.title);
+            mOrderTitle = (TextView) itemView.findViewById(R.id.order_title);
             mPublishTime = (TextView) itemView.findViewById(R.id.publish_time);
-            mIntroduction = (TextView) itemView.findViewById(R.id.introduction);
+            mTitle = (TextView) itemView.findViewById(R.id.title);
             mLeftSpace = (Space)itemView.findViewById(R.id.left_space);
             mTimeLine = (ImageView)itemView.findViewById(R.id.banner_item_timeline);
             markLT = (ImageView) itemView.findViewById(R.id.banner_mark_lt);
             markRB = (TextView)itemView.findViewById(R.id.banner_mark_br);
+            markRT = (ImageView) itemView.findViewById(R.id.banner_mark_rt);
         }
 
         @Override
@@ -307,16 +316,19 @@ public class BannerSubscribeAdapter
         public void onFocusChange(View v, boolean hasFocus) {
             if (hasFocus) {
                 scaleToLarge(v.findViewById(R.id.item_layout));
+                v.findViewById(R.id.order_title).setSelected(true);
+                v.findViewById(R.id.order_title).setBackgroundResource(R.color._ff9c3c);
                 v.findViewById(R.id.title).setSelected(true);
-                v.findViewById(R.id.title).setBackgroundResource(R.color._ff9c3c);
-                v.findViewById(R.id.introduction).setSelected(true);
                 v.requestFocus();
             } else {
                 scaleToNormal(v.findViewById(R.id.item_layout));
+                v.findViewById(R.id.order_title).setSelected(false);
+                v.findViewById(R.id.order_title).setBackgroundResource(R.color._333333);
                 v.findViewById(R.id.title).setSelected(false);
-                v.findViewById(R.id.title).setBackgroundResource(R.color._333333);
-                v.findViewById(R.id.introduction).setSelected(false);
             }
+			/*add by dragontec for bug 4325 start*/
+            updateTitleText(hasFocus);
+			/*add by dragontec for bug 4325 end*/
         }
 
         @Override
@@ -366,6 +378,33 @@ public class BannerSubscribeAdapter
         private void scaleToNormal(View view) {
             JasmineUtil.scaleIn3(view);
         }
+
+		/*add by dragontec for bug 4325 start*/
+        private void updateTitleText(boolean hasFocus) {
+            View view = itemView.findViewById(R.id.title);
+            if(view != null && view instanceof TextView) {
+                TextView textView = (TextView) view;
+                Object tag = itemView.findViewById(R.id.order_title).getTag();
+                if (tag != null && tag instanceof String[] && ((String[]) tag).length == 2) {
+                    String title = ((String[]) tag)[0];
+                    String focusTitle = ((String[]) tag)[1];
+                    if (hasFocus) {
+                        textView.setText(focusTitle);
+                        textView.setEllipsize(TextUtils.TruncateAt.MARQUEE);
+                        textView.setMarqueeRepeatLimit(-1);
+                        textView.setHorizontallyScrolling(true);
+                        textView.setSelected(true);
+                    } else {
+                        textView.setText(title);
+                        textView.setEllipsize(TextUtils.TruncateAt.END);
+                        textView.setMarqueeRepeatLimit(0);
+                        textView.setHorizontallyScrolling(false);
+                        textView.setSelected(false);
+                    }
+                }
+            }
+        }
+		/*add by dragontec for bug 4325 end*/
 
         int getItemId(String url) {
             int id = 0;

@@ -1,0 +1,20 @@
+http://res.tvxio.bestv.com.cn/media/upload/20160711/fsx160919shuban_detail.jpg
+GET
+0
+HTTP/1.1 200 OK
+15
+Server: marco/1.8
+Date: Wed, 01 Nov 2017 05:34:31 GMT
+Content-Type: image/jpeg
+Content-Length: 59697
+Connection: keep-alive
+X-Source: C/200
+Last-Modified: Mon, 19 Sep 2016 03:41:23 GMT
+Accept-Ranges: bytes
+Expires: Wed, 10 Jan 2018 05:52:05 GMT
+Cache-Control: max-age=7776000
+Age: 1726947
+X-Request-Id: 020e45ce82a5bddb665c3556b0613728; 2d5b7b745d1e9013d630bc97779a1137
+Via: T.101168.M.1, S.mix-hz-fdi-166, V.mix-hz-fdi-166, T.3549.H.1, M.ctn-zj-lna4-049
+OkHttp-Sent-Millis: 1509514471276
+OkHttp-Received-Millis: 1509514471305

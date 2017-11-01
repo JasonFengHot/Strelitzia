@@ -218,7 +218,13 @@ public class TemplateTvPlay extends Template
         if (flags == FetchDataControl.FETCH_BANNERS_LIST_FLAG) { // 获取单个banner业务
             initTitle();
             initRecycle();
-        }
+	/* modify by dragontec for bug 4264 start */
+			mRecycleView.setOnLoadMoreComplete();
+        } else if (flags == FetchDataControl.FETCH_DATA_FAIL_FLAG) {
+			mFetchDataControl.mHomeEntity.page--;
+			mRecycleView.setOnLoadMoreComplete();
+	/* modify by dragontec for bug 4264 end */
+		}
     }
 
     @Override
@@ -227,9 +233,12 @@ public class TemplateTvPlay extends Template
         HomeEntity homeEntity = mFetchDataControl.mHomeEntity;
         if (homeEntity != null) {
             if (homeEntity.page < homeEntity.num_pages) {
-                mRecycleView.setOnLoadMoreComplete();
+	/* modify by dragontec for bug 4264 start */
                 mFetchDataControl.fetchBanners(mBannerPk, ++homeEntity.page, true);
-            }
+            } else {
+				mRecycleView.setOnLoadMoreComplete();
+	/* modify by dragontec for bug 4264 end */
+			}
         }
     }
 

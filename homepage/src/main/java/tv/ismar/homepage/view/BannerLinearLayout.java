@@ -24,6 +24,9 @@ public class BannerLinearLayout extends LinearLayout {
     private View navigationLeft;
     private View navigationRight;
     private RecyclerViewTV recyclerViewTV;
+/*add by dragontec for bug 4275 start*/
+    private View headView;
+/*add by dragontec for bug 4275 end*/
 
     private boolean isDpadCenterClick = false;
 
@@ -50,6 +53,12 @@ public class BannerLinearLayout extends LinearLayout {
         this.recyclerViewTV = recyclerViewTV;
     }
 
+/*add by dragontec for bug 4275 start*/
+    public void setHeadView(View headView) {
+        this.headView = headView;
+    }
+/*add by dragontec for bug 4275 end*/
+
     public BannerLinearLayout(Context context) {
         super(context);
     }
@@ -67,7 +76,18 @@ public class BannerLinearLayout extends LinearLayout {
                 if (recyclerViewTV!=null&&!recyclerViewTV.cannotScrollBackward(-10)) {
                     navigationLeft.setVisibility(VISIBLE);
                 }else if (recyclerViewTV!=null){
-                    navigationLeft.setVisibility(INVISIBLE);
+/*modify by dragontec for bug 4275 start*/
+//                    navigationLeft.setVisibility(INVISIBLE);
+                    if (headView == null) {
+                        navigationLeft.setVisibility(INVISIBLE);
+                    } else {
+                        if (headView.getVisibility() == View.VISIBLE) {
+                            navigationLeft.setVisibility(INVISIBLE);
+                        } else {
+                            navigationLeft.setVisibility(VISIBLE);
+                        }
+                    }
+/*modify by dragontec for bug 4275 end*/
                 }
                 if(recyclerViewTV!=null&&!recyclerViewTV.cannotScrollForward(10)){
                     navigationRight.setVisibility(VISIBLE);

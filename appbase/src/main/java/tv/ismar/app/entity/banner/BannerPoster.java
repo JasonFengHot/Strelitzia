@@ -12,7 +12,9 @@ public class BannerPoster {
     public String poster_url;//海报横图
     public String vertical_url;//海报竖图
     public String title;//标题
-    public String introduction;//介绍
+	/*modify by dragontec for bug 4325 start*/
+    public String introduce;//介绍
+	/*modify by dragontec for bug 4325 end*/
     public String content_url;//详情页地址
     public String content_model;
     public int pk;//媒体id

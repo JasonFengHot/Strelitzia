@@ -62,11 +62,20 @@
                 android:layout_height="@dimen/guide_recycle_item_title_height"
                 android:background="@drawable/banner_subscrib_introduction_bg"
                 android:textColor="@color/_ffffff"
-                android:ellipsize="marquee"
+                android:ellipsize="end"
                 android:gravity="center"
                 android:singleLine="true"
                 android:layout_alignParentBottom="true"
                 android:textSize="@dimen/guide_video_title_size" />
+            <ImageView
+                android:id="@+id/guide_rt_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="@dimen/tv_play_recycleview_item_h"
+                android:layout_marginTop="@dimen/tv_play_recycleview_item_h"
+                />
         </RelativeLayout>
     </tv.ismar.homepage.banner.IsmartvLinearLayout>
 </LinearLayout>

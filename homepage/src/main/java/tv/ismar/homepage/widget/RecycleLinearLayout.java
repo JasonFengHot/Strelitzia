@@ -599,7 +599,7 @@ public class RecycleLinearLayout extends LinearLayout {
                     View v = getChildAt(i);
                     Rect rect = new Rect();
                     v.getGlobalVisibleRect(rect);
-                    if(rect.bottom == 0){
+                    if(rect.bottom <= 39){
                         if(v.getVisibility() == View.VISIBLE){
                             v.setVisibility(View.INVISIBLE);
                         }

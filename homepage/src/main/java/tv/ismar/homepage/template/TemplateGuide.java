@@ -48,7 +48,6 @@ import tv.ismar.app.core.cache.DownloadClient;
 import tv.ismar.app.entity.banner.HomeEntity;
 import tv.ismar.app.player.CallaPlay;
 import tv.ismar.app.util.HardwareUtils;
-import tv.ismar.homepage.HomeActivity;
 import tv.ismar.homepage.OnItemClickListener;
 import tv.ismar.homepage.OnItemSelectedListener;
 import tv.ismar.homepage.R;
@@ -57,9 +56,6 @@ import tv.ismar.homepage.control.FetchDataControl;
 import tv.ismar.homepage.control.GuideControl;
 import tv.ismar.homepage.view.BannerLinearLayout;
 import tv.ismar.homepage.widget.DaisyVideoView;
-	/*add by dragontec for bug 4077 start*/
-import tv.ismar.homepage.widget.RecycleLinearLayout;
-	/*add by dragontec for bug 4077 end*/
 import tv.ismar.library.exception.ExceptionUtils;
 
 import static android.view.MotionEvent.BUTTON_PRIMARY;
@@ -68,6 +64,9 @@ import static android.view.View.VISIBLE;
 import static tv.ismar.homepage.fragment.ChannelFragment.BANNER_KEY;
 import static tv.ismar.homepage.fragment.ChannelFragment.CHANNEL_KEY;
 import static tv.ismar.homepage.fragment.ChannelFragment.NAME_KEY;
+
+/*add by dragontec for bug 4077 start*/
+/*add by dragontec for bug 4077 end*/
 
 /**
  * @AUTHOR: xi @DATE: 2017/8/29 @DESC: 导视模版
@@ -198,11 +197,8 @@ public class TemplateGuide extends Template
                     mPlayerHandler.removeCallbacks(this);
                 }
                 if (this.daisyView != null) {
-                    Log.d(TAG, "daisyView = " + daisyView + ", is playing = "
-                            + daisyView.isPlaying() + ", stopPlayback call");
-                    if (this.daisyView.isPlaying()) {
-                        this.daisyView.stopPlayback();
-                    }
+                    Log.d(TAG, "daisyView = " + daisyView + ", release daisyView");
+                        this.daisyView.release(true);
                 }
                 mPlayerActionRunnable = null;
             }
@@ -295,14 +291,14 @@ public class TemplateGuide extends Template
             mHandler.removeMessages(START_PLAYBACK);
         }
 
-        if (mVideoView != null) {
-            if (mVideoView.isPlaying()) {
 /*modify by dragontec for bug 4065 start*/
+//        if (mVideoView != null) {
+//            if (mVideoView.isPlaying()) {
 //                mVideoView.stopPlayback();
-                sendStopPlayerMessage(mVideoView);
+//            }
+//        }
+        sendStopPlayerMessage(mVideoView);
 /*modify by dragontec for bug 4065 end*/
-            }
-        }
 
         if (mFetchDataControl != null) {
             mFetchDataControl.stop();
@@ -382,6 +378,9 @@ public class TemplateGuide extends Template
         mBannerLinearLayout.setNavigationLeft(navigationLeft);
         mBannerLinearLayout.setNavigationRight(navigationRight);
         mBannerLinearLayout.setRecyclerViewTV(mRecycleView);
+/*add by dragontec for bug 4275 start*/
+        mBannerLinearLayout.setHeadView(mHeadView);
+/*add by dragontec for bug 4275 end*/
 
 /*add by dragontec for bug 4065 start*/
         mVideoView.setManualReset(true);
@@ -505,7 +504,15 @@ public class TemplateGuide extends Template
             //            playGuideVideo((int)mVideoView.getTag());
             playCarousel();
             initCarousel();
-        }
+	/* modify by dragontec for bug 4264 start */
+			mRecycleView.setOnLoadMoreComplete();
+        } else {
+        	if (mRecycleView.isOnLoadMore()) {
+        		mFetchDataControl.mHomeEntity.page--;
+				mRecycleView.setOnLoadMoreComplete();
+			}
+	/* modify by dragontec for bug 4264 end */
+		}
     }
 
     @Override
@@ -514,9 +521,12 @@ public class TemplateGuide extends Template
         HomeEntity homeEntity = mFetchDataControl.mHomeEntity;
         if (homeEntity != null) {
             if (homeEntity.page < homeEntity.num_pages) {
-                mRecycleView.setOnLoadMoreComplete();
+	/* modify by dragontec for bug 4264 start */
                 mFetchDataControl.fetchBanners(mBannerPk, ++homeEntity.page, true);
-            }
+            } else {
+				mRecycleView.setOnLoadMoreComplete();
+	/* modify by dragontec for bug 4264 end */
+			}
         }
     }
 
@@ -793,9 +803,9 @@ public class TemplateGuide extends Template
         if (mVideoView.getVisibility() == View.GONE) {
             mVideoView.setVisibility(View.VISIBLE);
         }
-
-        if (mLoadingIg.getVisibility() == View.VISIBLE) {
-            mLoadingIg.setVisibility(View.GONE);
+        mLoadingIg.setImageResource(R.drawable.guide_video_loading);
+        if (mLoadingIg.getVisibility() != View.VISIBLE) {
+            mLoadingIg.setVisibility(View.VISIBLE);
         }
 
         mVideoViewLayout.setTag(mFetchDataControl.mCarousels.get(mCurrentCarouselIndex));
@@ -842,8 +852,8 @@ public class TemplateGuide extends Template
         Log.d(TAG, "current video path ====> " + videoPath);
         CallaPlay play = new CallaPlay();
         play.homepage_vod_trailer_play(videoPath, mChannel);
-        mLoadingIg.setImageResource(R.drawable.guide_video_loading);
-        mLoadingIg.setVisibility(View.VISIBLE);
+//        mLoadingIg.setImageResource(R.drawable.guide_video_loading);
+//        mLoadingIg.setVisibility(View.VISIBLE);
         stopPlayback();
         initCallback();
         mVideoView.setVideoPath(videoPath);
@@ -882,10 +892,20 @@ public class TemplateGuide extends Template
                 new MediaPlayer.OnPreparedListener() {
                     @Override
                     public void onPrepared(MediaPlayer mp) {
-                        if (mp != null && !mp.isPlaying()) {
-                            mp.start();
+/*modify by dragontec for bug 4327 start*/
+//                        if (mp != null && !mp.isPlaying()) {
+//                            mp.start();
+//                        }
+//                        mLoadingIg.setVisibility(View.GONE);
+                        synchronized (stLock) {
+                            if (mp != null && !mp.isPlaying()) {
+                                mp.start();
+                            }
+                            if (mLoadingIg != null) {
+                                mLoadingIg.setVisibility(View.GONE);
+                            }
                         }
-                        mLoadingIg.setVisibility(View.GONE);
+/*modify by dragontec for bug 4327 start*/
                     }
                 };
 

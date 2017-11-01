@@ -1,0 +1,20 @@
+http://res.tvxio.bestv.com.cn/media/upload/20160711/fscqyg160725_poster.jpg
+GET
+0
+HTTP/1.1 200 OK
+15
+Server: marco/1.8
+Date: Wed, 01 Nov 2017 05:33:58 GMT
+Content-Type: image/jpeg
+Content-Length: 53818
+Connection: keep-alive
+X-Source: C/200
+Last-Modified: Thu, 28 Jul 2016 03:18:19 GMT
+Accept-Ranges: bytes
+Expires: Sun, 28 Jan 2018 02:00:18 GMT
+Cache-Control: max-age=7776000
+Age: 185621
+X-Request-Id: ac2223b75c28f6b83dfc8baac6c031f7; 0ccc7f464903f55dce83b054ab65deee
+Via: S.mix-hz-fdi-172, T.101168.H.1, V.mix-hz-fdi-172, T.3543.H.1, M.ctn-zj-lna4-049
+OkHttp-Sent-Millis: 1509514438212
+OkHttp-Received-Millis: 1509514438231

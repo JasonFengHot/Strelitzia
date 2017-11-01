@@ -78,6 +78,7 @@ public class DoubleMdAdapter extends BaseRecycleAdapter<DoubleMdAdapter.DoubleMd
             } else {
                 Picasso.with(mContext).load(R.drawable.list_item_ppreview_bg).into(holder.mPosterIg);
             }
+            Picasso.with(mContext).load(VipMark.getInstance().getBannerIconMarkImage(poster.top_right_corner)).into(holder.mRtIconTv);
             Picasso.with(mContext).load(VipMark.getInstance().getBannerIconMarkImage(poster.top_left_corner)).into(holder.mLtIconTv);
             holder.mRbIconTv.setText(new DecimalFormat("0.0").format(poster.rating_average));
             holder.mRbIconTv.setVisibility((poster.rating_average==0) ? View.GONE:View.VISIBLE);
@@ -87,6 +88,13 @@ public class DoubleMdAdapter extends BaseRecycleAdapter<DoubleMdAdapter.DoubleMd
                 holder.mTitleTv.setVisibility(View.VISIBLE);
             }
             holder.mTitleTv.setText(poster.title);
+			/*add by dragontec for bug 4325 start*/
+            String focusStr = poster.title;
+            if(poster.introduce != null && !poster.introduce.equals("") && !poster.introduce.equals("null")){
+                focusStr = poster.introduce;
+            }
+            holder.mTitleTv.setTag(new String[]{poster.title,focusStr});
+			/*add by dragontec for bug 4325 end*/
         }
     }
 
@@ -101,6 +109,7 @@ public class DoubleMdAdapter extends BaseRecycleAdapter<DoubleMdAdapter.DoubleMd
         public ImageView mLtIconTv;//左上icon
         public TextView mRbIconTv;//右下icon
         public TextView mTitleTv;//标题
+        public ImageView mRtIconTv;
 
         public DoubleMdViewHolder(View itemView) {
             super(itemView, DoubleMdAdapter.this);
@@ -108,12 +117,19 @@ public class DoubleMdAdapter extends BaseRecycleAdapter<DoubleMdAdapter.DoubleMd
             mLtIconTv = (ImageView) itemView.findViewById(R.id.double_md_item_lt_icon);
             mRbIconTv = (TextView) itemView.findViewById(R.id.double_md_item_rb_icon);
             mTitleTv = (TextView) itemView.findViewById(R.id.double_md_item_title);
+            mRtIconTv= (ImageView) itemView.findViewById(R.id.guide_rt_icon);
         }
 
         @Override
         protected int getScaleLayoutId() {
             return R.id.double_md_ismartv_linear_layout;
         }
+		/*add by dragontec for bug 4325 start*/
+        @Override
+        protected int getTitleId() {
+            return R.id.double_md_item_title;
+        }
+		/*add by dragontec for bug 4325 end*/
     }
 
 }

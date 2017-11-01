@@ -32,13 +32,30 @@
                 android:clipChildren="false"
                 android:clipToPadding="false"
                 android:scaleType="fitXY" />
-            <TextView
-                android:id="@+id/center_item_title"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/center_title_height"
+                android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
-                android:textColor="#ffffff"
-                android:textSize="@dimen/center_title_size" />
+                android:gravity="center_vertical"
+                android:orientation="vertical">
+                <TextView
+                    android:id="@+id/center_item_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/center_title_height"
+                    android:textColor="#ffffff"
+                    android:singleLine="true"
+                    android:ellipsize="end"
+                    android:textSize="@dimen/center_title_size" />
+                <TextView
+                    android:id="@+id/center_item_introduction"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/center_introduction_height"
+                    android:textColor="#ffffff"
+                    android:textSize="@dimen/center_introduction_size"
+                    android:singleLine="true"
+                    android:visibility="gone"
+                    />
+            </LinearLayout>
         </RelativeLayout>
     </tv.ismar.homepage.banner.IsmartvLinearLayout>
     <View
