@@ -621,6 +621,7 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
 
                     @Override
                     public void onError(Throwable e) {
+                        mFilterItemList=null;
                         full_view.setVisibility(View.GONE);
                         filter_tab.setBackgroundResource(R.drawable.section_tab_selector);
                         super.onError(e);
