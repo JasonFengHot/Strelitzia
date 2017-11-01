@@ -166,7 +166,29 @@ public class WordSearchActivity extends BaseActivity implements View.OnClickList
     private View lay_focus;
     private int scroll = 0;
     private int dimension;
-
+    private String mCurrentKeyWords;
+    private String mCurrentType;
+    private OnNetConnectListener onNetConnectListener=new OnNetConnectListener() {
+        @Override
+        public void onNetConnect() {
+            //网络恢复后刷新数据
+            if(loading!=null&&loading.getVisibility()==View.VISIBLE){
+                loading.setVisibility(View.GONE);
+                if(tv_recommend!=null&&tv_recommend.getVisibility()==View.VISIBLE){
+                    fetchRecommend();
+                }else{
+                    fetchSearchResult(mCurrentKeyWords,mCurrentType,page);
+                }
+            }else{
+                if(today_hotword!=null&&today_hotword.getVisibility()==View.VISIBLE){
+                    fetchRecommendHotWords();
+                }else{
+                    fetchkeyWord(mCurrentKeyword);
+                }
+            }
+        }
+    };
+    private String mCurrentKeyword;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -179,6 +201,7 @@ public class WordSearchActivity extends BaseActivity implements View.OnClickList
          * 上传app启动日志
          */
         appstart();
+        setmOnNetConnectListener(onNetConnectListener);
     }
 
     @Override
@@ -1145,6 +1168,8 @@ public class WordSearchActivity extends BaseActivity implements View.OnClickList
      */
 
     public void fetchSearchResult(String keywords, final String type, int page) {
+        mCurrentKeyWords = keywords;
+        mCurrentType = type;
         AppConstant.purchase_entrance_keyword = keywords;
         if(type!=null)
         JasmineUtil.video_search(type, keywords);
@@ -1278,6 +1303,7 @@ public class WordSearchActivity extends BaseActivity implements View.OnClickList
     }
 
     private void fetchkeyWord(final String args) {
+        mCurrentKeyword = args;
         mSkyService.apiSearchSuggest(args)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
