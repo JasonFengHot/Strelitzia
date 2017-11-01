@@ -845,9 +845,9 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
         int pk=0;
         Rect rect=new Rect();
         v.getGlobalVisibleRect(rect);
-        if(rect.left<100||rect.left>=1576){
-            return;
-        }
+//        if(rect.left<100||rect.left>=1576){
+//            return;
+//        }
         if(type.equals("history")){
             if(postion<=historyLists.size()-1) {
                 HistoryFavoriteEntity history = historyLists.get(postion);
