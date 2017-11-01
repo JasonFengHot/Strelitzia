@@ -413,6 +413,7 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
                 if (i == sectionSize - 1) {
                     if (specialPos != null && position >= specialPos.get(i)) {
                         ((RadioButton) section_group.getChildAt(i + 1)).setChecked(true);
+                        tab_scroll.smoothScrollTo(0, (int) section_group.getChildAt(i + 1).getY());
                     }
                     break;
                 }
@@ -745,9 +746,10 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
                             filter_noresult_second_line = (LinearLayout) filter_noresult.findViewById(R.id.filter_noresult_second_line);
                             filter_noresult_first_line.removeAllViews();
                             filter_noresult_second_line.removeAllViews();
+                            int recommendCount=items.size()>=pagesize?pagesize:items.size();
                             LinearLayout.LayoutParams params=new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                             if(isVertical){
-                                for (int i = 0; i <5 ; i++) {
+                                for (int i = 0; i <recommendCount ; i++) {
                                     final FilterNoresultPoster item = items.get(i);
                                     if(item!=null){
                                         final View recommendView= View.inflate(FilterListActivity.this,R.layout.filter_item_vertical_poster,null);
@@ -792,7 +794,7 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
                                 params.leftMargin=getResources().getDimensionPixelOffset(R.dimen.filter_noresult_vertical_ml);
                                 filter_noresult_first_line.setLayoutParams(params);
                             }else{
-                                for (int i = 0; i <8 ; i++) {
+                                for (int i = 0; i <recommendCount ; i++) {
                                     final FilterNoresultPoster item = items.get(i);
                                     if(item!=null) {
                                         final View recommendView= View.inflate(FilterListActivity.this,R.layout.item_filter_noresult_poster,null);
@@ -850,7 +852,8 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
      * @param content_model
      * @param filterCondition
      */
-    private void fetchFilterResult(String content_model, String filterCondition,int page) {
+    private void fetchFilterResult(String content_model, final String filterCondition, int page) {
+
         mFilterCondition = filterCondition;
         mFilterPage = page;
         mSkyService.getFilterRequestHaveData(content_model,filterCondition,page)
@@ -866,26 +869,30 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
 
                     @Override
                     public void onNext(final ItemList itemList) {
-                        if(itemList==null||itemList.objects.size()==0){
-                            filterNoResult = true;
-                            filter_root_view.setShow_right_up(false);
-                            filter_root_view.setShow_right_down(false);
-                            if(noResultFetched){
-                                filter_noresult.setVisibility(View.VISIBLE);
+                        if (filter_tab != null && filter_tab.isChecked()) {
+                            if (itemList == null || itemList.objects.size() == 0) {
+                                Log.e("filterResult",filterCondition);
+                                filterNoResult = true;
+                                filter_root_view.setShow_right_up(false);
+                                filter_root_view.setShow_right_down(false);
+                                if (noResultFetched) {
+                                    filter_noresult.setVisibility(View.VISIBLE);
+                                    poster_recyclerview.setVisibility(View.GONE);
+                                } else {
+                                    filter_noresult.setVisibility(View.VISIBLE);
+                                    poster_recyclerview.setVisibility(View.GONE);
+                                    fetchFilterNoResult();
+                                }
                                 poster_recyclerview.setVisibility(View.GONE);
-                            }else{
-                                filter_noresult.setVisibility(View.VISIBLE);
-                                poster_recyclerview.setVisibility(View.GONE);
-                                fetchFilterNoResult();
+                            } else {
+                                Log.e("filterResultnone",filterCondition);
+                                filterNoResult = false;
+                                mFilterItemList.num_pages = itemList.num_pages;
+                                mFilterItemList.objects.addAll(itemList.objects);
+                                processResultData(mFilterItemList);
+                                filter_noresult.setVisibility(View.GONE);
+                                poster_recyclerview.setVisibility(View.VISIBLE);
                             }
-                            poster_recyclerview.setVisibility(View.GONE);
-                        }else {
-                            filterNoResult = false;
-                            mFilterItemList.num_pages=itemList.num_pages;
-                            mFilterItemList.objects.addAll(itemList.objects);
-                            processResultData(mFilterItemList);
-                            filter_noresult.setVisibility(View.GONE);
-                            poster_recyclerview.setVisibility(View.VISIBLE);
                         }
                     }
                 });
