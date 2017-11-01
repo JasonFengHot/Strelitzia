@@ -633,7 +633,6 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
             targetPosition=favoriteManager.findFirstCompletelyVisibleItemPosition()-3;
             if(targetPosition<=0) {
                 favoriteManager.smoothScrollToPosition(favoriteRecycler,null,0);
-                favoriteManager.scrollToPositionWithOffset(targetPosition, getResources().getDimensionPixelOffset(R.dimen.history_165));
             }else{
                 favoriteManager.scrollToPositionWithOffset(targetPosition, getResources().getDimensionPixelOffset(R.dimen.history_165));
                 arrowState();
@@ -832,9 +831,7 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
         Rect rect=new Rect();
         view.getGlobalVisibleRect(rect);
         if(hasFocus){
-            if(rect.left>=100&&rect.left<1576) {
-                JasmineUtil.scaleOut3(view);
-            }
+            JasmineUtil.scaleOut3(view);
         }else{
             JasmineUtil.scaleIn3(view);
         }
@@ -845,13 +842,7 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
     public void onlfItemClick(View v, int postion, String type) {
         PageIntent intent=new PageIntent();
         mDataCollectionProperties=new HashMap<>();
-        Log.i("hoverX","position: "+postion);
         int pk=0;
-        Rect rect=new Rect();
-        v.getGlobalVisibleRect(rect);
-//        if(rect.left<100||rect.left>=1576){
-//            return;
-//        }
         if(type.equals("history")){
             if(postion<=historyLists.size()-1) {
                 HistoryFavoriteEntity history = historyLists.get(postion);
@@ -936,21 +927,23 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
     public void OnItemOnhoverlistener(View v, MotionEvent event, int position, int recommend) {
         switch (event.getAction()){
             case MotionEvent.ACTION_HOVER_ENTER:
-                Rect rect = new Rect();
-                v.getGlobalVisibleRect(rect);
-                Log.i("hoverX",rect.left+"");
+                int[] location = new int[]{0, 0};
+                v.getLocationOnScreen(location);
+                int screenWidth = v.getResources().getDisplayMetrics().widthPixels;
+                int screenHeight = v.getResources().getDisplayMetrics().heightPixels;
                 if(!isEdit) {
                     if(recommend==0){
-                        if(rect.left>=100&&rect.left<1576){
+                        if (location[0] >= 0 && location[1] >= 0 && location[0] + v.getWidth() <= screenWidth &&location[1] + v.getHeight() <= screenHeight){
                             historyRecycler.setHovered(true);
-                            v.setFocusable(true);
+                            v.requestFocus();
                             v.requestFocusFromTouch();
                         }else{
                             historyLayoutManager.setScrollEnabled(false);
                         }
                     }else{
-                        if(rect.left>=100&&rect.left<1576){
+                        if (location[0] >= 0 && location[1] >= 0 && location[0] + v.getWidth() <= screenWidth &&location[1] + v.getHeight() <= screenHeight){
                             favoriteRecycler.setHovered(true);
+                            v.requestFocus();
                             v.requestFocusFromTouch();
                         }else{
                             favoriteManager.setScrollEnabled(false);

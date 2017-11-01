@@ -120,8 +120,13 @@ public class HistoryListAdapter extends RecyclerView.Adapter<HistoryListAdapter.
 
         holder.item_detail.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                itemClickListener.onlfItemClick(v,position,type);
+            public void onClick(View v) { int[] location = new int[]{0, 0};
+                v.getLocationOnScreen(location);
+                int screenWidth = v.getResources().getDisplayMetrics().widthPixels;
+                int screenHeight = v.getResources().getDisplayMetrics().heightPixels;
+                if (location[0] >= 0 && location[1] >= 0 && location[0] + v.getWidth() <= screenWidth &&location[1] + v.getHeight() <= screenHeight) {
+                    itemClickListener.onlfItemClick(v, position, type);
+                }
             }
         });
         holder.item_detail.setOnHoverListener(new View.OnHoverListener() {
