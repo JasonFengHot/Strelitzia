@@ -588,8 +588,9 @@ public class BaseActivity extends AppCompatActivity {
                         if (dialog != null && dialog.isShowing()) {
                             dialog.dismiss();
                         }
-                        /////////////网络连接
-                        String name = netInfo.getTypeName();
+                        if(mOnNetConnectListener!=null){
+                            mOnNetConnectListener.onNetConnect();
+                        }
 
                         if (netInfo.getType() == ConnectivityManager.TYPE_WIFI) {
                             /////WiFi网络
@@ -612,7 +613,6 @@ public class BaseActivity extends AppCompatActivity {
             }
         }
     }
-
     private OnNetConnectListener mOnNetConnectListener;
     public interface OnNetConnectListener{
         void onNetConnect();
