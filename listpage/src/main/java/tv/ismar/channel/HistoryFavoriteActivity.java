@@ -614,6 +614,7 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
             }
             startActivity(intent);
         }else if(id==R.id.favorite_right_arrow){
+            favoriteManager.setScrollEnabled(true);
             favorite_left_arrow.setVisibility(View.VISIBLE);
             targetPosition=favoriteManager.findFirstCompletelyVisibleItemPosition()+3;
             if(targetPosition+2>=favoriteLists.size()-1) {
@@ -628,10 +629,11 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
 //            targetPosition=favoriteManager.findLastCompletelyVisibleItemPosition()+3;
 //            favoriteManager.smoothScrollToPosition(favoriteRecycler,null,targetPosition);
         }else if(id==R.id.favorite_left_arrow){
+            favoriteManager.setScrollEnabled(true);
             targetPosition=favoriteManager.findFirstCompletelyVisibleItemPosition()-3;
             if(targetPosition<=0) {
-                targetPosition = 0;
                 favoriteManager.smoothScrollToPosition(favoriteRecycler,null,0);
+                favoriteManager.scrollToPositionWithOffset(targetPosition, getResources().getDimensionPixelOffset(R.dimen.history_165));
             }else{
                 favoriteManager.scrollToPositionWithOffset(targetPosition, getResources().getDimensionPixelOffset(R.dimen.history_165));
                 arrowState();
@@ -640,6 +642,7 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
                 favorite_right_arrow.setVisibility(View.VISIBLE);
             }
         }else if(id==R.id.history_left_arrow){
+            historyLayoutManager.setScrollEnabled(true);
             targetPosition=historyLayoutManager.findFirstCompletelyVisibleItemPosition()-3;
             if(targetPosition<=0){
                 historyLayoutManager.smoothScrollToPosition(historyRecycler,null,0);
@@ -649,6 +652,7 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
             }
             history_right_arrow.setVisibility(View.VISIBLE);
         }else if(id==R.id.history_right_arrow){
+            historyLayoutManager.setScrollEnabled(true);
             targetPosition=historyLayoutManager.findFirstCompletelyVisibleItemPosition()+3;
             if(historyLists.size()>0){
                 if(targetPosition+2>=historyLists.size()-1) {
