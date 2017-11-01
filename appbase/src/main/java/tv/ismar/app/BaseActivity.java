@@ -588,6 +588,9 @@ public class BaseActivity extends AppCompatActivity {
                     if (dialog != null && dialog.isShowing()){
                         dialog.dismiss();
                     }
+                    if(mOnNetConnectListener!=null){
+                        mOnNetConnectListener.onNetConnect();
+                    }
                     /////////////网络连接
                     String name = netInfo.getTypeName();
 
@@ -607,5 +610,14 @@ public class BaseActivity extends AppCompatActivity {
                 }
             }
         }
+    }
+
+    private OnNetConnectListener mOnNetConnectListener;
+    public interface OnNetConnectListener{
+        void onNetConnect();
+    }
+
+    public void setmOnNetConnectListener(OnNetConnectListener mOnNetConnectListener) {
+        this.mOnNetConnectListener = mOnNetConnectListener;
     }
 }
