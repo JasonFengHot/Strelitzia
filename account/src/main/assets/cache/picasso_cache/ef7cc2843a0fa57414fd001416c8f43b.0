@@ -1,0 +1,20 @@
+http://res.tvxio.bestv.com.cn/media/upload/20160711/maque160906_poster.jpg
+GET
+0
+HTTP/1.1 200 OK
+15
+Server: marco/1.8
+Date: Wed, 01 Nov 2017 05:33:59 GMT
+Content-Type: image/jpeg
+Content-Length: 53783
+Connection: keep-alive
+X-Source: C/200
+Last-Modified: Tue, 06 Sep 2016 01:46:37 GMT
+Accept-Ranges: bytes
+Expires: Tue, 16 Jan 2018 09:27:57 GMT
+Cache-Control: max-age=7776000
+Age: 1195562
+X-Request-Id: a55180fef8d3f0a7a97e6a36310961c3; d52d4e674f0c1e556aec8cb04d475b91
+Via: T.101164.M.1, S.mix-hz-fdi-164, V.mix-hz-fdi-168, T.3545.H.1, M.ctn-zj-lna4-049
+OkHttp-Sent-Millis: 1509514439372
+OkHttp-Received-Millis: 1509514439400

@@ -1,0 +1,22 @@
+http://pic0.qiyipic.com/image/20150515/8e/ba/v_109151967_m_601_480_270.jpg
+GET
+0
+HTTP/1.1 200 OK
+17
+Server: QWS
+Date: Wed, 01 Nov 2017 05:33:57 GMT
+Content-Type: image/jpeg
+Content-Length: 25434
+Connection: keep-alive
+Last-Modified: Fri, 15 May 2015 09:57:34 GMT
+Expires: Tue, 10 Jul 2018 08:32:32 GMT
+Cache-Control: max-age=31536000
+X-Cache: from 58.215.125.70
+X-Cache: from 127.0.0.1
+Age: 9838885
+Via: http/1.1 QTS (QTS [cHs f ])
+X-Cache: from 10.121.32.223
+X-Cache: MISS from 101.227.22.159
+Accept-Ranges: bytes
+OkHttp-Sent-Millis: 1509514437396
+OkHttp-Received-Millis: 1509514437404

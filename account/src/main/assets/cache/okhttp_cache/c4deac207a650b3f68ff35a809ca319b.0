@@ -1,0 +1,11 @@
+http://wx.api.tvxio.com/weixin4server/uploadclientip?client_ip=/192.168.57.101:10114&sn=an_3d8xxv0y&tvmode=Custom%20Tablet%20-%207.1.0%20-%20API%2025&macaddress=08-00-27-AD-9D-1C&token_check=1&device_token=__csWpX06UFb1nF7D-T8CvpKa4BpSIK8Ws2cnqrxf_VaB-HcJTWBGFkh_X2sD9bZvn
+GET
+0
+HTTP/1.1 200 OK
+6
+Server: nginx
+Date: Wed, 01 Nov 2017 05:33:51 GMT
+Content-Length: 0
+Connection: keep-alive
+OkHttp-Sent-Millis: 1509514429094
+OkHttp-Received-Millis: 1509514429121

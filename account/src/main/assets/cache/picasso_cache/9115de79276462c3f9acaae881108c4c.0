@@ -1,0 +1,20 @@
+http://res.tvxio.bestv.com.cn/media/upload/20160420/ceshi170418s.jpg
+GET
+0
+HTTP/1.1 200 OK
+15
+Server: marco/1.8
+Date: Wed, 01 Nov 2017 05:33:58 GMT
+Content-Type: image/jpeg
+Content-Length: 73569
+Connection: keep-alive
+X-Source: C/200
+Last-Modified: Tue, 18 Apr 2017 09:08:41 GMT
+Accept-Ranges: bytes
+Expires: Sat, 20 Jan 2018 08:29:43 GMT
+Cache-Control: max-age=7776000
+Age: 853455
+X-Request-Id: d39d753b5d743df03a48bb7d8571bbcc; a7193caaf32b26fe6d971d5458080a86
+Via: T.101171.M.1, S.mix-hz-fdi-171, V.mix-hz-fdi-170, T.3544.H.1, M.ctn-zj-lna4-049
+OkHttp-Sent-Millis: 1509514438363
+OkHttp-Received-Millis: 1509514438379

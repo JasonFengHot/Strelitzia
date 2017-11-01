@@ -1,0 +1,20 @@
+http://res.tvxio.bestv.com.cn/media/upload/20160711/dpis/league732.png
+GET
+0
+HTTP/1.1 200 OK
+15
+Server: marco/1.8
+Date: Wed, 01 Nov 2017 05:33:58 GMT
+Content-Type: image/png
+Content-Length: 4575
+Connection: keep-alive
+X-Source: C/200
+Last-Modified: Thu, 18 Aug 2016 09:28:55 GMT
+Accept-Ranges: bytes
+Expires: Wed, 24 Jan 2018 03:29:39 GMT
+Cache-Control: max-age=7776000
+Age: 525859
+X-Request-Id: 5a3773900031b45db88b4d28bfb1b2b3; 1b64826d70b9dba28197e6ef082422c4
+Via: T.101166.M.1, S.mix-hz-fdi-168, V.mix-hz-fdi-169, T.3550.H.1, M.ctn-zj-lna4-049
+OkHttp-Sent-Millis: 1509514438182
+OkHttp-Received-Millis: 1509514438209
