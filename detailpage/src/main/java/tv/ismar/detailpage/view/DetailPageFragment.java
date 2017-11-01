@@ -270,6 +270,7 @@ public class DetailPageFragment extends Fragment implements DetailPageContract.V
 
     @Override
     public void loadItem(ItemEntity itemEntity) {
+        mPresenter.bookmarkCheck(itemEntity.getPk());
         if(isLogin.equals("yes")&&mItemEntity.getExpense()!=null&&mRemandDay<=0) {
             Log.e("refresh","true");
             if (itemEntity.getContentModel().equals("sport")) {
@@ -780,5 +781,10 @@ public class DetailPageFragment extends Fragment implements DetailPageContract.V
                 popupWindow.dismiss();
             }
         });
+    }
+
+    @Override
+    public void notifyBookmarkCheck() {
+        mModel.notifyBookMarkStatus();
     }
 }

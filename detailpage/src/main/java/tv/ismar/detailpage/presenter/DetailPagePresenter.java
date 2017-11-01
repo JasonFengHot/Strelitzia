@@ -5,10 +5,6 @@ import android.text.TextUtils;
 
 import com.google.gson.GsonBuilder;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -31,7 +27,6 @@ import tv.ismar.app.core.DaisyUtils;
 import tv.ismar.app.core.PageIntent;
 import tv.ismar.app.db.FavoriteManager;
 import tv.ismar.app.entity.Favorite;
-import tv.ismar.app.entity.HistoryFavoriteEntity;
 import tv.ismar.app.network.SkyService;
 import tv.ismar.app.network.entity.ItemEntity;
 import tv.ismar.app.network.entity.PlayCheckEntity;
@@ -70,6 +65,8 @@ public class DetailPagePresenter implements DetailPageContract.Presenter {
 
     private DetailPageActivity detailPageActivity;
     private boolean isSubscribed = false;
+    public boolean isFavorite = false;
+
 
 
     public DetailPagePresenter(DetailPageActivity activity, DetailPageContract.View detailView, String contentModel) {
@@ -392,6 +389,30 @@ public class DetailPagePresenter implements DetailPageContract.Presenter {
                 });
     }
 
+    @Override
+    public void bookmarkCheck(int pk) {
+
+        VodApplication vodApplication = (VodApplication) detailPageActivity.getApplicationContext();
+        FavoriteManager favoriteManager = vodApplication.getModuleFavoriteManager();
+        String url = mItemEntity.getItem_url();
+        if (TextUtils.isEmpty(url)) {
+            url = IsmartvActivator.getInstance().getApiDomain() + "/api/item/" + mItemEntity.getPk() + "/";
+        }
+        Favorite favorite;
+        if (isLogin()) {
+            checkFavorite(mItemEntity.getPk());
+        } else {
+            favorite = favoriteManager.getFavoriteByUrl(url, "no");
+            if (favorite != null) {
+                isFavorite = true;
+                mDetailView.notifyBookmarkCheck();
+            } else {
+                isFavorite = false;
+                mDetailView.notifyBookmarkCheck();
+            }
+        }
+    }
+
     private void addFavorite() {
         VodApplication vodApplication = (VodApplication) detailPageActivity.getApplicationContext();
         FavoriteManager favoriteManager = vodApplication.getModuleFavoriteManager();
@@ -399,7 +420,7 @@ public class DetailPagePresenter implements DetailPageContract.Presenter {
         if (TextUtils.isEmpty(url)) {
             url = IsmartvActivator.getInstance().getApiDomain() + "/api/item/" + mItemEntity.getPk() + "/";
         }
-        if (isFavorite()) {
+        if (isFavorite) {
             String isnet = "";
             if (isLogin()) {
                 isnet = "yes";
@@ -408,6 +429,7 @@ public class DetailPagePresenter implements DetailPageContract.Presenter {
                 isnet = "no";
                 favoriteManager.deleteFavoriteByUrl(url, isnet);
             }
+            isFavorite = false;
             mDetailView.notifyBookmark(false, true);
         } else {
             DateFormat format=new SimpleDateFormat("MM-dd");
@@ -442,29 +464,39 @@ public class DetailPagePresenter implements DetailPageContract.Presenter {
                 }
                 favoriteManager.addFavorite(favorite, favorite.isnet);
             }
+            isFavorite = true;
             mDetailView.notifyBookmark(true, true);
         }
     }
 
 
-    public boolean isFavorite() {
-        VodApplication vodApplication = (VodApplication) detailPageActivity.getApplicationContext();
-        FavoriteManager favoriteManager = vodApplication.getModuleFavoriteManager();
-        String url = mItemEntity.getItem_url();
-        if (TextUtils.isEmpty(url)) {
-            url = IsmartvActivator.getInstance().getApiDomain() + "/api/item/" + mItemEntity.getPk() + "/";
-        }
-        Favorite favorite;
-        if (isLogin()) {
-            return checkIsFavorite(mItemEntity.getPk());
-        } else {
-            favorite = favoriteManager.getFavoriteByUrl(url, "no");
-            if (favorite != null) {
-                return true;
-            } else {
-                return false;
-            }
-        }
+    public void checkFavorite(int pk) {
+        SkyService skyService=SkyService.ServiceManager.getService();
+        skyService.checkBookmark(IsmartvActivator.getInstance().getDeviceToken(),IsmartvActivator.getInstance().getAuthToken(),pk).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<Integer>() {
+
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable throwable) {
+                        throwable.printStackTrace();
+                    }
+
+                    @Override
+                    public void onNext(Integer i) {
+                        if(i==1){
+                            isFavorite =true;
+                            mDetailView.notifyBookmarkCheck();
+                        }else{
+                            isFavorite =false;
+                            mDetailView.notifyBookmarkCheck();
+                        }
+                    }
+                });
 
     }
 
@@ -485,34 +517,6 @@ public class DetailPagePresenter implements DetailPageContract.Presenter {
     }
 
 
-    public boolean checkIsFavorite(int pk) {
-        final boolean[] isFavorite = new boolean[1];
-        SkyService skyService=SkyService.ServiceManager.getService();
-        skyService.checkBookmark(IsmartvActivator.getInstance().getDeviceToken(),IsmartvActivator.getInstance().getAuthToken(),pk).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<Integer>() {
-
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable throwable) {
-                        throwable.printStackTrace();
-                    }
-
-                    @Override
-                    public void onNext(Integer i) {
-                        if(i==1){
-                            isFavorite[0] =true;
-                        }else{
-                            isFavorite[0] =false;
-                        }
-                    }
-                });
-            return isFavorite[0];
-    }
 //    @Override
 //    public void fetchSubscribeStatus(int pk){
 //        if (subscribeStatusSubsc != null && !subscribeStatusSubsc.isUnsubscribed()) {

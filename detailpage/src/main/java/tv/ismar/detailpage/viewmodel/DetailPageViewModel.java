@@ -608,7 +608,7 @@ public class DetailPageViewModel extends BaseObservable {
     @Bindable
     public String getBookmarkText() {
 
-        return mPresenter.isFavorite() ? mContext.getString(R.string.video_favorite_) : mContext.getString(R.string.video_favorite);
+        return mPresenter.isFavorite ? mContext.getString(R.string.video_favorite_) : mContext.getString(R.string.video_favorite);
     }
 
 
@@ -679,6 +679,10 @@ public class DetailPageViewModel extends BaseObservable {
     public void notifySubscibeStatus(){
         notifyPropertyChanged(BR.subscribeText);
         notifyPropertyChanged(BR.subscribeTextVisibility);
+    }
+
+    public void notifyBookMarkStatus(){
+        notifyPropertyChanged(BR.bookmarkText);
     }
 
     @Bindable

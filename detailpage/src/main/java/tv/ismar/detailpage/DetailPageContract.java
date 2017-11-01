@@ -28,6 +28,8 @@ public interface DetailPageContract {
         void onError();
 
         void showSubscribeDialog(ResponseBody responseBody);
+
+        void notifyBookmarkCheck();
     }
 
 
@@ -53,6 +55,8 @@ public interface DetailPageContract {
         void handleEpisode();
 
         void handleSubscribe();
+
+        void bookmarkCheck(int pk);
 
 //        void fetchSubscribeStatus(int pk);
     }
