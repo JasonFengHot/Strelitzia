@@ -581,30 +581,34 @@ public class BaseActivity extends AppCompatActivity {
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
             if (action.equals(ConnectivityManager.CONNECTIVITY_ACTION)) {
+                try {
+                    ConnectivityManager mConnectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+                    NetworkInfo netInfo = mConnectivityManager.getActiveNetworkInfo();
+                    if (netInfo != null && netInfo.isAvailable()) {
+                        if (dialog != null && dialog.isShowing()) {
+                            dialog.dismiss();
+                        }
+                        /////////////网络连接
+                        String name = netInfo.getTypeName();
 
-                ConnectivityManager   mConnectivityManager = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
-                NetworkInfo netInfo = mConnectivityManager.getActiveNetworkInfo();
-                if(netInfo != null && netInfo.isAvailable()) {
-                    if (dialog != null && dialog.isShowing()){
-                        dialog.dismiss();
+                        if (netInfo.getType() == ConnectivityManager.TYPE_WIFI) {
+                            /////WiFi网络
+
+                        } else if (netInfo.getType() == ConnectivityManager.TYPE_ETHERNET) {
+                            /////有线网络
+
+                        } else if (netInfo.getType() == ConnectivityManager.TYPE_MOBILE) {
+                            /////////3g网络
+
+                        }
+                    } else {
+                        ////////网络断开
+                        showNoNetConnectDialog();
                     }
-                    /////////////网络连接
-                    String name = netInfo.getTypeName();
-
-                    if(netInfo.getType()==ConnectivityManager.TYPE_WIFI){
-                        /////WiFi网络
-
-                    }else if(netInfo.getType()==ConnectivityManager.TYPE_ETHERNET){
-                        /////有线网络
-
-                    }else if(netInfo.getType()==ConnectivityManager.TYPE_MOBILE){
-                        /////////3g网络
-
-                    }
-                } else {
-                    ////////网络断开
-                    showNoNetConnectDialog();
+                }catch (Exception e){
+                    
                 }
+
             }
         }
     }

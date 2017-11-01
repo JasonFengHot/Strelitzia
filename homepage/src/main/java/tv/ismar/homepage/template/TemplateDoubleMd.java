@@ -28,6 +28,7 @@ import java.util.ArrayList;
 
 import tv.ismar.app.BaseControl;
 import tv.ismar.app.core.PageIntent;
+import tv.ismar.app.core.VipMark;
 import tv.ismar.app.entity.banner.BannerPoster;
 import tv.ismar.app.entity.banner.BigImage;
 import tv.ismar.app.entity.banner.HomeEntity;
@@ -64,6 +65,7 @@ public class TemplateDoubleMd extends Template
   private ImageView mLtImage; // 左上角图标
   private ImageView mRbImage; // 右下角图标
   private TextView mImgeTitleTv; // 大图标题
+  private ImageView mRtImage;//右上图标
   private RecyclerViewTV mRecyclerView;
   private DoubleMdAdapter mAdapter;
   private FetchDataControl mFetchDataControl = null;
@@ -161,6 +163,7 @@ public class TemplateDoubleMd extends Template
     mLtImage = (ImageView) mHeadView.findViewById(R.id.double_md_image_lt_icon);
     mRbImage = (ImageView) mHeadView.findViewById(R.id.double_md_image_rb_icon);
     mImgeTitleTv = (TextView) mHeadView.findViewById(R.id.double_md_image_title);
+    mRtImage= (ImageView) mHeadView.findViewById(R.id.guide_rt_icon);
     mDoubleLayoutManager =
         new StaggeredGridLayoutManagerTV(2, StaggeredGridLayoutManager.HORIZONTAL);
     mRecyclerView.addItemDecoration(new ListSpacesItemDecoration(mContext.getResources().getDimensionPixelOffset(R.dimen.double_md_padding)));
@@ -251,6 +254,7 @@ public class TemplateDoubleMd extends Template
       } else {
         Picasso.with(mContext).load(R.drawable.list_item_ppreview_bg).into(mVerticalImg);
       }
+      Picasso.with(mContext).load(VipMark.getInstance().getBannerIconMarkImage(data.top_right_corner)).into(mRtImage);
       //        Picasso.with(mContext).load(data.poster_url).into(mLtImage);
       //        Picasso.with(mContext).load(data.poster_url).into(mRbImage);
       mImgeTitleTv.setText(data.title);

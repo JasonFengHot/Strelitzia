@@ -84,7 +84,6 @@
                     android:singleLine="true"
                     android:textColor="@color/_ffffff"
                     android:textSize="@dimen/text_size_30sp"/>
-
             </RelativeLayout>
 
         </tv.ismar.homepage.banner.IsmartvLinearLayout>

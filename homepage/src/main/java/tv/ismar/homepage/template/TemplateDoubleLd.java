@@ -70,6 +70,7 @@ public class TemplateDoubleLd extends Template
     private ImageView mLtImage; // 左上角图标
     private TextView mRbImage; // 右下角图标
     private TextView mIgTitleTv; // 大图标题
+    private ImageView mRtImage;//右上角图标
     private RecyclerViewTV mRecyclerView;
     private DoubleLdAdapter mAdapter;
     private FetchDataControl mFetchDataControl = null;
@@ -168,6 +169,7 @@ public class TemplateDoubleLd extends Template
         mLtImage = (ImageView) mHeadView.findViewById(R.id.double_ld_image_lt_icon);
         mRbImage = (TextView) mHeadView.findViewById(R.id.double_ld_image_rb_icon);
         mIgTitleTv = (TextView) mHeadView.findViewById(R.id.double_ld_image_title);
+        mRtImage= (ImageView) mHeadView.findViewById(R.id.guide_rt_icon);
         mDoubleLayoutManager =
                 new StaggeredGridLayoutManagerTV(2, StaggeredGridLayoutManager.HORIZONTAL);
         mRecyclerView.addItemDecoration(new ListSpacesItemDecoration(mContext.getResources().getDimensionPixelOffset(R.dimen.double_ld_padding)));
@@ -252,6 +254,7 @@ public class TemplateDoubleLd extends Template
             Picasso.with(mContext)
                     .load(VipMark.getInstance().getBannerIconMarkImage(data.top_left_corner))
                     .into(mLtImage);
+            Picasso.with(mContext).load(VipMark.getInstance().getBannerIconMarkImage(data.top_right_corner)).into(mRtImage);
             mRbImage.setText(new DecimalFormat("0.0").format(data.rating_average));
             mRbImage.setVisibility((data.rating_average == 0) ? View.GONE : View.VISIBLE);
             mIgTitleTv.setText(data.title);

@@ -78,7 +78,9 @@ public class DoubleLdAdapter extends BaseRecycleAdapter<DoubleLdAdapter.DoubleLd
             }
             holder.mTitleTv.setTag(new String[]{poster.title,focusStr});
 			/*add by dragontec for bug 4325 end*/
+            Picasso.with(mContext).load(VipMark.getInstance().getBannerIconMarkImage(poster.top_right_corner)).into(holder.mRtIconTv);
         }
+
     }
 
     @Override
@@ -106,6 +108,7 @@ public class DoubleLdAdapter extends BaseRecycleAdapter<DoubleLdAdapter.DoubleLd
         public ImageView mLtIconTv;//左上icon
         public TextView mRbIconTv;//右下icon
         public TextView mTitleTv;//标题
+        public ImageView mRtIconTv;
 
         public DoubleLdViewHolder(View itemView) {
             super(itemView, DoubleLdAdapter.this);
@@ -113,6 +116,7 @@ public class DoubleLdAdapter extends BaseRecycleAdapter<DoubleLdAdapter.DoubleLd
             mLtIconTv = (ImageView) itemView.findViewById(R.id.double_ld_item_lt_icon);
             mRbIconTv = (TextView) itemView.findViewById(R.id.double_ld_item_rb_icon);
             mTitleTv = (TextView) itemView.findViewById(R.id.double_ld_item_title);
+            mRtIconTv= (ImageView) itemView.findViewById(R.id.guide_rt_icon);
         }
 
         @Override

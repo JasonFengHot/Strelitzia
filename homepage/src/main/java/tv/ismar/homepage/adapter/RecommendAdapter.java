@@ -13,6 +13,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
+import tv.ismar.app.core.VipMark;
 import tv.ismar.app.entity.banner.BannerPoster;
 import tv.ismar.app.entity.banner.BannerRecommend;
 import tv.ismar.homepage.R;
@@ -49,6 +50,7 @@ public class RecommendAdapter extends BaseRecycleAdapter<RecommendAdapter.Recomm
         } else {
             Picasso.with(mContext).load(R.drawable.list_item_preview_bg).into(holder.mPoster);
         }
+        Picasso.with(mContext).load(VipMark.getInstance().getBannerIconMarkImage(poster.top_right_corner)).into(holder.mRtIconTv);
 		/*add by dragontec for bug 4325 start*/
         String focusStr = poster.title;
         if(poster.introduce != null && !poster.introduce.equals("") && !poster.introduce.equals("null")){
@@ -67,11 +69,13 @@ public class RecommendAdapter extends BaseRecycleAdapter<RecommendAdapter.Recomm
 
         public TextView mTitle;
         public ImageView mPoster;
+        public ImageView mRtIconTv;
 
         public RecommendViewHolder(View itemView) {
             super(itemView, RecommendAdapter.this);
             mTitle = (TextView) itemView.findViewById(R.id.recommend_item_tv);
             mPoster = (ImageView) itemView.findViewById(R.id.recommend_item_poster);
+            mRtIconTv= (ImageView) itemView.findViewById(R.id.guide_rt_icon);
         }
 
         @Override

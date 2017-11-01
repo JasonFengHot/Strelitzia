@@ -57,6 +57,7 @@ public class GuideAdapter extends BaseRecycleAdapter<GuideAdapter.GuideViewHolde
         Picasso.with(mContext).load(VipMark.getInstance().getBannerIconMarkImage(poster.top_left_corner)).into(holder.mLtIconTv);
         holder.mRbIconTv.setText(new DecimalFormat("0.0").format(poster.rating_average));
         holder.mRbIconTv.setVisibility((poster.rating_average==0) ? View.GONE:View.VISIBLE);
+        Picasso.with(mContext).load(VipMark.getInstance().getBannerIconMarkImage(poster.top_right_corner)).into(holder.mRtIconTv);
 
         if(!TextUtils.isEmpty(poster.vertical_url) && poster.vertical_url.equals("更多")){
             holder.mTitleTv.setVisibility(View.INVISIBLE);
@@ -89,6 +90,7 @@ public class GuideAdapter extends BaseRecycleAdapter<GuideAdapter.GuideViewHolde
         public TextView mRbIconTv;//右下icon
         public TextView mTitleTv;//标题
         public View mMarginLeftView;//左边距
+        public ImageView mRtIconTv;//右上icon
 
         public GuideViewHolder(View itemView) {
             super(itemView, GuideAdapter.this);
@@ -97,6 +99,7 @@ public class GuideAdapter extends BaseRecycleAdapter<GuideAdapter.GuideViewHolde
             mRbIconTv = (TextView) itemView.findViewById(R.id.guide_recycle_item_rb_icon);
             mTitleTv = (TextView) itemView.findViewById(R.id.guide_recycle_item_title);
             mMarginLeftView = itemView.findViewById(R.id.guide_margin_left);
+            mRtIconTv= (ImageView) itemView.findViewById(R.id.guide_rt_icon);
         }
 
         @Override
