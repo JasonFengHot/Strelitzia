@@ -1323,13 +1323,13 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
                                 lastFocusedView.requestFocus();
                             } else {
                                 View firstView = null;
-                                if(finalI==sectionSize-1&&mAllSectionItemList.getCount()-specialPos.get(finalI)<spanCount){
+                                if(finalI==sectionSize-1&&mAllSectionItemList.getCount()-specialPos.get(finalI)<=spanCount){
                                     firstView=mFocusGridLayoutManager.findViewByPosition(specialPos.get(finalI)+1);
                                 }else if(list_poster_recyclerview.getChildCount()>spanCount) {
                                     firstView = list_poster_recyclerview.getChildAt(spanCount);
-                                }
-                                if(list_poster_recyclerview.getChildAt(0) instanceof TextView){
-                                    firstView=list_poster_recyclerview.getChildAt(1);
+                                    if(list_poster_recyclerview.getChildAt(0) instanceof TextView){
+                                        firstView=list_poster_recyclerview.getChildAt(1);
+                                    }
                                 }
                                 if (firstView != null) {
                                     firstView.requestFocus();
