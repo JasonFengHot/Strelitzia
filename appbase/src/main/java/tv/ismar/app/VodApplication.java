@@ -478,7 +478,9 @@ public class VodApplication extends Application {
 //            return;
 //        }
 //        enabledStrictMode();
-        refWatcher = LeakCanary.install(this);
+/*delete by dragontec for bug 4205 start*/
+//        refWatcher = LeakCanary.install(this);
+/*delete by dragontec for bug 4205 end*/
     }
 
     private static void enabledStrictMode() {
@@ -489,10 +491,12 @@ public class VodApplication extends Application {
                 .build());
     }
 
-    public static RefWatcher getRefWatcher(Context context) {
-        VodApplication application = (VodApplication) context.getApplicationContext();
-        return application.refWatcher;
-    }
-
-    private RefWatcher refWatcher;
+/*delete by dragontec for bug 4205 start*/
+//    public static RefWatcher getRefWatcher(Context context) {
+//        VodApplication application = (VodApplication) context.getApplicationContext();
+//        return application.refWatcher;
+//    }
+//
+//    private RefWatcher refWatcher;
+/*delete by dragontec for bug 4205 end*/
 }

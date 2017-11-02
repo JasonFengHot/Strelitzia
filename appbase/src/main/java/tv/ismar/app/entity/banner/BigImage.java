@@ -11,7 +11,9 @@ public class BigImage {
     public String vertical_url;//竖图
     public String content_model;//类型
     public String title;//标题
-    public String introduction;//简介
+	/*modify by dragontec for bug 卖点文字不正确的问题 start*/
+    public String focus;//简介
+	/*modify by dragontec for bug 卖点文字不正确的问题 end*/
     public int rating_average;//评分
     public String content_url;//媒体地址
     public int pk;//媒体id

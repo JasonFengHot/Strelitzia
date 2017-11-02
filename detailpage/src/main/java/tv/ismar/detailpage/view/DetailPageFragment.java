@@ -182,7 +182,10 @@ public class DetailPageFragment extends Fragment implements DetailPageContract.V
             return;
         }
         mActivity = (BaseActivity) getActivity();
-        mDetailPagePresenter = new DetailPagePresenter((DetailPageActivity) getActivity(), this, mItemEntity.getContentModel());
+/*modify by dragontec for bug 4205 start*/
+//        mDetailPagePresenter = new DetailPagePresenter((DetailPageActivity) getActivity(), this, mItemEntity.getContentModel());
+        mDetailPagePresenter = new DetailPagePresenter((DetailPageActivity) mActivity, this, mItemEntity.getContentModel());
+/*modify by dragontec for bug 4205 end*/
         mModel = new DetailPageViewModel(mActivity, mDetailPagePresenter);
         mDetailPagePresenter.setItemEntity(mItemEntity);
         String source=getActivity().getIntent().getStringExtra("fromPage");
@@ -262,10 +265,39 @@ public class DetailPageFragment extends Fragment implements DetailPageContract.V
         super.onStop();
     }
 
+/*add by dragontec for bug 4205 start*/
+    @Override
+    public void onDestroyView() {
+        if (relRelImageViews != null) {
+            for (LabelImageView imageView : relRelImageViews) {
+                if (imageView != null) {
+                    imageView.setOnClickListener(null);
+                    imageView.setOnHoverListener(null);
+                }
+            }
+        }
+        relRelImageViews = null;
+        relTextViews = null;
+        relFocusTextViews = null;
+        mMovieBinding = null;
+        mEntertainmentBinding = null;
+        mNormalBinding = null;
+        super.onDestroyView();
+    }
+/*add by dragontec for bug 4205 end*/
+
     @Override
     public void onDestroy() {
         super.onDestroy();
         handler=null;
+/*add by dragontec for bug 4205 start*/
+        mActivity = null;
+        mModel = null;
+        mItemEntity = null;
+        relateItems = null;
+        mPresenter = null;
+        mDetailPagePresenter = null;
+/*add by dragontec for bug 4205 end*/
     }
 
     @Override

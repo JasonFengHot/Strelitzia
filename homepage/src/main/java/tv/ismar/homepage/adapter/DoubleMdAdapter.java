@@ -130,5 +130,4 @@ public class DoubleMdAdapter extends BaseRecycleAdapter<DoubleMdAdapter.DoubleMd
         }
 		/*add by dragontec for bug 4325 end*/
     }
-
 }

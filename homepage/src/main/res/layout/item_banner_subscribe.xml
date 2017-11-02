@@ -6,142 +6,141 @@
     android:layout_height="wrap_content"
     android:clipChildren="false"
     android:clipToPadding="false"
-    android:orientation="horizontal"
+    android:orientation="vertical"
     >
 
-    <Space
-        android:id="@+id/left_space"
-        android:layout_width="@dimen/space_banner_item_width"
-        android:layout_height="wrap_content"/>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/banner_item_dot_size"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:gravity="center">
+
+        <ImageView
+            android:id="@+id/banner_item_timeline"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/banner_item_line_h"
+            android:layout_centerVertical="true"
+            android:background="#333333"/>
+
+        <ImageView
+            android:id="@+id/banner_item_time_dot"
+            android:layout_width="@dimen/banner_item_dot_size"
+            android:layout_height="@dimen/banner_item_dot_size"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/space_banner_item_width"
+            android:src="@drawable/banner_item_timepoint"/>
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/publish_time"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/banner_subscribe_publish_time_h"
+        android:layout_marginLeft="@dimen/space_banner_item_width"
+        android:layout_marginTop="@dimen/banner_subscribe_publish_time_mt"
+        android:gravity="center"
+        android:textColor="@color/_cccccc"
+        android:textSize="@dimen/text_size_36sp"/>
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:clipChildren="false"
-        android:clipToPadding="false"
-        android:orientation="vertical">
+        android:orientation="horizontal">
 
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:clipChildren="false"
-            android:clipToPadding="false"
-            android:translationY="@dimen/banner_subscribe_time_line_translateY"
-            android:gravity="center">
+        <Space
+            android:id="@+id/left_space"
+            android:layout_width="@dimen/space_banner_item_width"
+            android:layout_height="wrap_content"/>
 
-            <ImageView
-                android:id="@+id/banner_item_timeline"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/banner_item_line_h"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="@dimen/banner_item_line_ml"
-                android:layout_marginRight="@dimen/banner_item_line_mr"
-                android:background="#333333"/>
 
-            <ImageView
+            <tv.ismar.homepage.banner.IsmartvLinearLayout
+                android:id="@+id/item_layout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:src="@drawable/banner_item_timepoint"/>
-        </RelativeLayout>
-
-        <TextView
-            android:id="@+id/publish_time"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/banner_subscribe_publish_time_h"
-            android:layout_marginTop="@dimen/banner_subscribe_publish_time_mt"
-            android:gravity="center"
-            android:textColor="@color/_cccccc"
-            android:textSize="@dimen/text_size_36sp"/>
-
-        <tv.ismar.homepage.banner.IsmartvLinearLayout
-            android:id="@+id/item_layout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/banner_subscribe_item_layout_mt"
-            android:background="#00000000"
-            android:clickable="true"
-            android:clipChildren="false"
-            android:clipToPadding="false"
-            android:focusable="true"
-            android:focusableInTouchMode="false"
-            android:foreground="@drawable/selector_item_banner_subscribe"
-            android:orientation="vertical">
+                android:layout_marginTop="@dimen/banner_subscribe_item_layout_mt"
+                android:background="#00000000"
+                android:clickable="true"
+                android:clipChildren="false"
+                android:clipToPadding="false"
+                android:focusable="true"
+                android:focusableInTouchMode="false"
+                android:foreground="@drawable/selector_item_banner_subscribe"
+                android:orientation="vertical">
 
 
-            <RelativeLayout
-                android:id="@+id/content_layout"
-                android:layout_width="@dimen/banner_subscribe_post_w"
-                android:layout_height="@dimen/banner_subscribe_post_h"
-                >
-
-
-
-                <ImageView
-                    android:id="@+id/image_view"
+                <RelativeLayout
+                    android:id="@+id/content_layout"
                     android:layout_width="@dimen/banner_subscribe_post_w"
                     android:layout_height="@dimen/banner_subscribe_post_h"
-                    android:clipChildren="false"
-                    android:clipToPadding="false"
+                    >
+
+
+
+                    <ImageView
+                        android:id="@+id/image_view"
+                        android:layout_width="@dimen/banner_subscribe_post_w"
+                        android:layout_height="@dimen/banner_subscribe_post_h"
+                        android:clipChildren="false"
+                        android:clipToPadding="false"
+                        />
+
+                    <TextView
+                        android:id="@+id/title"
+                        android:layout_width="@dimen/banner_subscribe_post_w"
+                        android:layout_height="@dimen/banner_subscribe_post_introduction_h"
+                        android:layout_alignParentBottom="true"
+                        android:background="@drawable/banner_subscrib_introduction_bg"
+                        android:ellipsize="marquee"
+                        android:gravity="center"
+                        android:singleLine="true"
+                        android:textColor="@color/_ffffff"
+                        android:textSize="@dimen/text_size_30sp"/>
+
+                    <ImageView
+                        android:id="@+id/banner_mark_lt"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentTop="true"
+                        android:layout_width="@dimen/banner_mark_lt_width"
+                        android:layout_height="@dimen/banner_mark_lt_width"/>
+
+                    <ImageView
+                        android:layout_marginTop="@dimen/banner_mark_rt_margin"
+                        android:layout_marginRight="@dimen/banner_mark_rt_margin"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentRight="true"
+                        android:id="@+id/banner_mark_rt"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+
+                    <TextView
+                        android:id="@+id/banner_mark_br"
+                        android:layout_width="@dimen/banner_mark_br_width"
+                        android:layout_height="@dimen/banner_mark_br_height"
+                        android:layout_alignParentRight="true"
+                        android:gravity="center"
+                        android:background="@drawable/banner_post_score_bg"
+                        android:layout_marginTop="@dimen/banner_mark_br_mt"
+                        android:textSize="@dimen/text_size_30sp"/>
+
+                </RelativeLayout>
+
+                <TextView
+                    android:id="@+id/order_title"
+                    android:layout_width="@dimen/banner_subscribe_post_w"
+                    android:layout_height="@dimen/banner_subscribe_post_title_h"
+                    android:background="@drawable/selector_item_banner_subscribe_text"
+                    android:focusable="false"
+                    android:focusableInTouchMode="false"
+                    android:gravity="center"
+                    android:textColor="@drawable/selector_banner_subscribe_order_text_color"
+                    android:textSize="@dimen/text_size_48sp"
                     />
 
-                <TextView
-                    android:id="@+id/title"
-                    android:layout_width="@dimen/banner_subscribe_post_w"
-                    android:layout_height="@dimen/banner_subscribe_post_introduction_h"
-                    android:layout_alignParentBottom="true"
-                    android:background="@drawable/banner_subscrib_introduction_bg"
-                    android:ellipsize="marquee"
-                    android:gravity="center"
-                    android:singleLine="true"
-                    android:textColor="@color/_ffffff"
-                    android:textSize="@dimen/text_size_30sp"/>
+            </tv.ismar.homepage.banner.IsmartvLinearLayout>
 
-                <ImageView
-                    android:id="@+id/banner_mark_lt"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentTop="true"
-                    android:layout_width="@dimen/banner_mark_lt_width"
-                    android:layout_height="@dimen/banner_mark_lt_width"/>
-
-                <ImageView
-                    android:layout_marginTop="@dimen/banner_mark_rt_margin"
-                    android:layout_marginRight="@dimen/banner_mark_rt_margin"
-                    android:layout_alignParentTop="true"
-                    android:layout_alignParentRight="true"
-                    android:id="@+id/banner_mark_rt"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
-
-                <TextView
-                    android:id="@+id/banner_mark_br"
-                    android:layout_width="@dimen/banner_mark_br_width"
-                    android:layout_height="@dimen/banner_mark_br_height"
-                    android:layout_alignParentRight="true"
-                    android:gravity="center"
-                    android:background="@drawable/banner_post_score_bg"
-                    android:layout_marginTop="@dimen/banner_mark_br_mt"
-                    android:textSize="@dimen/text_size_30sp"/>
-
-            </RelativeLayout>
-
-            <TextView
-                android:id="@+id/order_title"
-                android:layout_width="@dimen/banner_subscribe_post_w"
-                android:layout_height="@dimen/banner_subscribe_post_title_h"
-                android:background="@drawable/selector_item_banner_subscribe_text"
-                android:focusable="false"
-                android:focusableInTouchMode="false"
-                android:gravity="center"
-                android:textColor="@color/_cccccc"
-                android:textSize="@dimen/text_size_48sp"
-                />
-
-        </tv.ismar.homepage.banner.IsmartvLinearLayout>
+        <Space
+            android:layout_width="@dimen/space_banner_item_width"
+            android:layout_height="wrap_content"/>
     </LinearLayout>
-
-    <Space
-        android:layout_width="@dimen/space_banner_item_width"
-        android:layout_height="wrap_content"/>
 </LinearLayout>

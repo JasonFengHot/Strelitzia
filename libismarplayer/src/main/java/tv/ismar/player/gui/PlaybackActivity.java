@@ -95,6 +95,9 @@ public class PlaybackActivity extends BaseActivity {
     protected void onDestroy() {
         mHandler.removeMessages(0);
         mHandler=null;
+/*add by dragontec for bug 4205 start*/
+        playbackFragment = null;
+/*add by dragontec for bug 4205 end*/
         super.onDestroy();
     }
     // 移至PlaybackFragment

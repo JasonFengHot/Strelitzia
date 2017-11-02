@@ -32,15 +32,21 @@
                 android:clipToPadding="false"
                 android:scaleType="fitXY" />
             <LinearLayout
+                android:id="@+id/center_item_text_layout"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/center_text_layout_height"
+                android:paddingLeft="@dimen/center_text_layout_h_padding"
+                android:paddingRight="@dimen/center_text_layout_h_padding"
+                android:gravity="center"
                 android:layout_alignParentBottom="true"
-                android:gravity="center_vertical"
+                android:background="@drawable/banner_center_text_bg"
                 android:orientation="vertical">
                 <TextView
                     android:id="@+id/center_item_title"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/center_title_height"
+                    android:layout_marginTop="@dimen/center_title_margin"
+                    android:layout_marginBottom="@dimen/center_title_margin"
                     android:textColor="#ffffff"
                     android:singleLine="true"
                     android:ellipsize="end"
@@ -48,9 +54,10 @@
                 <TextView
                     android:id="@+id/center_item_introduction"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/center_introduction_height"
+                    android:layout_height="@dimen/center_introduction_focused_height"
                     android:textColor="#ffffff"
-                    android:textSize="@dimen/center_introduction_size"
+                    android:layout_marginTop="@dimen/divider_1dp"
+                    android:textSize="@dimen/center_introduction_focused_size"
                     android:singleLine="true"
                     android:visibility="gone"
                     />
