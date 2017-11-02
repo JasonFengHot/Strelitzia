@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -319,6 +320,10 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
         }
         edit_history.setFocusable(false);
         edit_history.setFocusableInTouchMode(false);
+        history_left_arrow.setVisibility(View.GONE);
+        history_right_arrow.setVisibility(View.GONE);
+        favorite_right_arrow.setVisibility(View.GONE);
+        favorite_left_arrow.setVisibility(View.GONE);
         super.onResume();
     }
 
@@ -425,8 +430,6 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
     }
 
     private void loadData(){
-        favorite_left_arrow.setVisibility(View.GONE);
-        history_left_arrow.setVisibility(View.GONE);
         if(historyLists.size()>0){
             no_data.setVisibility(View.GONE);
             history_relativelayout.setVisibility(View.VISIBLE);
@@ -833,6 +836,10 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
             if(rect.left>=100&&rect.left<1576) {
                 JasmineUtil.scaleOut3(view);
             }
+            history_left_arrow.setFocusable(false);
+            history_right_arrow.setFocusable(false);
+            favorite_right_arrow.setFocusable(false);
+            favorite_left_arrow.setFocusable(false);
         }else{
             JasmineUtil.scaleIn3(view);
         }
@@ -956,6 +963,9 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
                     }
                 }
                     break;
+            case MotionEvent.ACTION_HOVER_EXIT:
+                v.clearFocus();
+                break;
 
         }
     }
