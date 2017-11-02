@@ -176,7 +176,7 @@ public abstract class BaseViewHolder extends RecyclerView.ViewHolder implements
                     textView.setText(title);
                     textView.setEllipsize(TextUtils.TruncateAt.END);
                     textView.setMarqueeRepeatLimit(0);
-                    textView.setHorizontallyScrolling(false);
+                    textView.setHorizontallyScrolling(true);
                     textView.setSelected(false);
                 }
             }
