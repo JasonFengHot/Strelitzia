@@ -13,7 +13,9 @@ public class BannerCarousels {
     public int pause_time;//图片暂停时间
     public String title;//影片标题
     public String url;//详情页地址
-    public String introduction;//简介
+	/*modify by dragontec for bug 卖点文字不正确的问题 start*/
+    public String focus;//简介
+	/*modify by dragontec for bug 卖点文字不正确的问题 end*/
     public int pk;
     public boolean expense;
     public String model_name;
@@ -65,15 +67,15 @@ public class BannerCarousels {
     public void setUrl(String url) {
         this.url = url;
     }
-
-    public String getIntroduction() {
-        return introduction;
+	/*modify by dragontec for bug 卖点文字不正确的问题 start*/
+    public String getFocus() {
+        return focus;
     }
 
-    public void setIntroduction(String introduction) {
-        this.introduction = introduction;
+    public void setFocus(String focus) {
+        this.focus = focus;
     }
-
+	/*modify by dragontec for bug 卖点文字不正确的问题 end*/
     public int getPk() {
         return pk;
     }

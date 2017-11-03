@@ -312,8 +312,15 @@ public class HomeActivity extends BaseActivity
         /*add by dragontec for bug 3983 end*/
         unregisterReceiver(mTimeTickBroadcast);
         mTimeTickBroadcast = null;
-        RefWatcher refWatcher = VodApplication.getRefWatcher(this);
-        refWatcher.watch(this);
+/*add by dragontec for bug 4205 start*/
+        if (mVideoView != null) {
+            mVideoView.release(true);
+        }
+/*add by dragontec for bug 4205 end*/
+/*delete by dragontec for bug 4205 start*/
+//        RefWatcher refWatcher = VodApplication.getRefWatcher(this);
+//        refWatcher.watch(this);
+/*delete by dragontec for bug 4205 end*/
     }
 
     private void initServer(){

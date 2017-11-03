@@ -49,6 +49,7 @@ import okhttp3.Cache;
 import okhttp3.Dns;
 import okhttp3.OkHttpClient;
 import tv.ismar.account.IsmartvActivator;
+import tv.ismar.account.IsmartvDns;
 import tv.ismar.account.IsmartvHttpParamsInterceptor;
 import tv.ismar.account.IsmartvPlatform;
 import tv.ismar.account.statistics.LogEntity;
@@ -192,16 +193,7 @@ public class VodApplication extends Application {
         OkHttpClient client = new OkHttpClient.Builder()
                 .addInterceptor(new UserAgentInterceptor())
                 .addInterceptor(new HttpCacheInterceptor(getApplicationContext()))
-                .dns(new Dns() {
-                    @Override
-                    public List<InetAddress> lookup(String s) throws UnknownHostException {
-                        String ipAddress = IsmartvActivator.getHostByName(s);
-                        if (ipAddress.endsWith("0.0.0.0")) {
-                            throw new UnknownHostException("can't connect to internet");
-                        }
-                        return Dns.SYSTEM.lookup(ipAddress);
-                    }
-                })
+                .dns(new IsmartvDns())
                 .cache(cache)
                 .build();
 
@@ -218,16 +210,7 @@ public class VodApplication extends Application {
         OkHttpClient homepageClient = new OkHttpClient.Builder()
                 .addInterceptor(new UserAgentInterceptor())
                 .addInterceptor(new HttpCacheInterceptor(getApplicationContext()))
-                .dns(new Dns() {
-                    @Override
-                    public List<InetAddress> lookup(String s) throws UnknownHostException {
-                        String ipAddress = IsmartvActivator.getHostByName(s);
-                        if (ipAddress.endsWith("0.0.0.0")) {
-                            throw new UnknownHostException("can't connect to internet");
-                        }
-                        return Dns.SYSTEM.lookup(ipAddress);
-                    }
-                })
+                .dns(new IsmartvDns())
                 .cache(homepageCache)
                 .build();
 
@@ -478,7 +461,9 @@ public class VodApplication extends Application {
 //            return;
 //        }
 //        enabledStrictMode();
-        refWatcher = LeakCanary.install(this);
+/*delete by dragontec for bug 4205 start*/
+//        refWatcher = LeakCanary.install(this);
+/*delete by dragontec for bug 4205 end*/
     }
 
     private static void enabledStrictMode() {
@@ -489,10 +474,12 @@ public class VodApplication extends Application {
                 .build());
     }
 
-    public static RefWatcher getRefWatcher(Context context) {
-        VodApplication application = (VodApplication) context.getApplicationContext();
-        return application.refWatcher;
-    }
-
-    private RefWatcher refWatcher;
+/*delete by dragontec for bug 4205 start*/
+//    public static RefWatcher getRefWatcher(Context context) {
+//        VodApplication application = (VodApplication) context.getApplicationContext();
+//        return application.refWatcher;
+//    }
+//
+//    private RefWatcher refWatcher;
+/*delete by dragontec for bug 4205 end*/
 }

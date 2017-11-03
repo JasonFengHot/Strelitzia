@@ -347,6 +347,9 @@ public class PlayFinishedActivity extends BaseActivity implements View.OnClickLi
             case R.id.play_finished_cancel_btn:
                 setResult(EXIT_PLAY);
                 finish();
+/*add by dragontec for bug 4205 start*/
+                Runtime.getRuntime().gc();
+/*add by dragontec for bug 4205 end*/
                 break;
         }
     }
@@ -378,13 +381,41 @@ public class PlayFinishedActivity extends BaseActivity implements View.OnClickLi
             String userid = sharedPreferences.getString("username", "");
             LogUtils.video_exit_recommend(itemId, type, action, itemPk, clip, subitem, "finished", location, order, userid);
         }
+/*add by dragontec for bug 4205 start*/
+        play_finished_horizontal_recylerview.setLayoutManager(null);
+        play_finished_vertical_recylerview.setLayoutManager(null);
+        play_finished_horizontal_recylerview.removeAllViews();
+        play_finished_vertical_recylerview.removeAllViews();
+/*add by dragontec for bug 4205 end*/
         play_finished_horizontal_recylerview.setAdapter(null);
         play_finished_vertical_recylerview.setAdapter(null);
         play_finished_horizontal_recylerview=null;
         play_finished_vertical_recylerview=null;
-        playFinishedAdapter=null;
+/*add by dragontec for bug 4205 start*/
+        if (playFinishedAdapter != null) {
+            playFinishedAdapter.setItemClickListener(null);
+            playFinishedAdapter.setItemFocusedListener(null);
+            playFinishedAdapter = null;
+        }
+        if (play_finished_confirm_btn != null) {
+            play_finished_confirm_btn.setOnClickListener(null);
+            play_finished_confirm_btn.setOnHoverListener(null);
+            play_finished_confirm_btn.setOnKeyListener(null);
+            play_finished_confirm_btn = null;
+        }
+        if (play_finished_cancel_btn != null) {
+            play_finished_cancel_btn.setOnClickListener(null);
+            play_finished_cancel_btn.setOnHoverListener(null);
+            play_finished_cancel_btn.setOnKeyListener(null);
+            play_finished_cancel_btn = null;
+        }
+/*add by dragontec for bug 4205 end*/
         if (bitmapDecoder != null && bitmapDecoder.isAlive()) {
             bitmapDecoder.interrupt();
+/*add by dragontec for bug 4205 start*/
+            bitmapDecoder.removeAllCallback();
+            bitmapDecoder = null;
+/*add by dragontec for bug 4205 end*/
         }
 
     }

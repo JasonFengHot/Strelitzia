@@ -213,13 +213,13 @@ public class BannerMovieMixAdapter extends RecyclerView.Adapter<BannerMovieMixAd
         }else {
             holder.mLeftSpace.setVisibility(View.VISIBLE);
         }
-		/*add by dragontec for bug 4325 start*/
+		/*add by dragontec for bug 4325,卖点文字不正确的问题 start*/
         String focusStr = entity.getTitle();
-        if(entity.getIntroduction() != null && !entity.getIntroduction().equals("") && !entity.getIntroduction().equals("null")){
-            focusStr = entity.getIntroduction();
+        if(entity.getFocus() != null && !entity.getFocus().equals("") && !entity.getFocus().equals("null")){
+            focusStr = entity.getFocus();
         }
         holder.mTitle.setTag(new String[]{entity.getTitle(),focusStr});
-		/*add by dragontec for bug 4325 end*/
+		/*add by dragontec for bug 4325,卖点文字不正确的问题 end*/
     }
 
     @Override

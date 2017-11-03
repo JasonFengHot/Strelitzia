@@ -1,6 +1,7 @@
 package tv.ismar.homepage.adapter;
 
 import android.animation.ObjectAnimator;
+import android.content.res.Resources;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
@@ -10,6 +11,8 @@ import android.view.KeyEvent;
 /*add by dragontec for bug 4265 end*/
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 /*add by dragontec for bug 4265 start*/
@@ -159,10 +162,19 @@ public abstract class BaseViewHolder extends RecyclerView.ViewHolder implements
     }
 	/*add by dragontec for bug 4325 start*/
     private void updateTitleText(boolean hasFocus) {
-        View view = itemView.findViewById(getTitleId());
+		/*modify by dragontec for bug 卖点文字不正确的问题 start*/
+        View view = null;
+        if(this instanceof DoubleLdAdapter.DoubleLdViewHolder && getAdapterPosition() == 0){
+            view = itemView.findViewById(R.id.double_ld_image_title);
+        }else if(this instanceof DoubleMdAdapter.DoubleMdViewHolder && getAdapterPosition() == 0){
+            view = itemView.findViewById(R.id.double_md_image_title);
+        }else {
+            view = itemView.findViewById(getTitleId());
+        }
         if(view != null && view instanceof TextView) {
-            TextView textView = (TextView) itemView.findViewById(getTitleId());
-            Object tag = itemView.findViewById(getTitleId()).getTag();
+            TextView textView = (TextView) view;
+            Object tag = textView.getTag();
+			/*modify by dragontec for bug 卖点文字不正确的问题 end*/
             if (tag != null && tag instanceof String[] && ((String[]) tag).length == 2) {
                 String title = ((String[]) tag)[0];
                 String focusTitle = ((String[]) tag)[1];
@@ -189,28 +201,47 @@ public abstract class BaseViewHolder extends RecyclerView.ViewHolder implements
             ((CenterAdapter.CenterViewHolder) this).mIntroduction.setVisibility(hasFocus?View.VISIBLE:View.GONE);
             TextView title =  ((CenterAdapter.CenterViewHolder) this).mTitle;
             TextView introduction =  ((CenterAdapter.CenterViewHolder) this).mIntroduction;
+			/*modify by dragontec for bug 4355 start*/
+            LinearLayout textLayout =  ((CenterAdapter.CenterViewHolder) this).mTextLayout;
+            Resources res = title.getResources();
+            float density = res.getDisplayMetrics().density;
             if(hasFocus){
+                textLayout.setBackground(null);
+                textLayout.setBackgroundResource(R.drawable.banner_center_text_focused_bg);
+                textLayout.getLayoutParams().height = res.getDimensionPixelSize(R.dimen.center_text_layout_height_focused);
 				title.setVisibility(title.length() > 0 ? View.VISIBLE : View.GONE);
 				introduction.setVisibility(introduction.length() > 0 ? View.VISIBLE : View.GONE);
+
+                title.setTextSize(title.getResources().getDimensionPixelSize(R.dimen.center_title_focused_size)/density);
+                title.getLayoutParams().height = title.getResources().getDimensionPixelSize(R.dimen.center_title_focused_height);
+
+                ((LinearLayout.LayoutParams)title.getLayoutParams()).topMargin = res.getDimensionPixelSize(R.dimen.center_title_focused_margin);
+                ((LinearLayout.LayoutParams)title.getLayoutParams()).bottomMargin = 0;
+
+
                 title.setEllipsize(TextUtils.TruncateAt.MARQUEE);
                 title.setMarqueeRepeatLimit(-1);
                 title.setHorizontallyScrolling(true);
                 title.setSelected(true);
-				title.setTextSize(title.getResources().getDimensionPixelSize(R.dimen.center_title_focused_size) / title.getResources().getDisplayMetrics().density);
-				title.getLayoutParams().height = (int) (title.getResources().getDimensionPixelSize(R.dimen.center_title_focused_height) / title.getResources().getDisplayMetrics().density);
                 introduction.setEllipsize(TextUtils.TruncateAt.MARQUEE);
                 introduction.setMarqueeRepeatLimit(-1);
                 introduction.setHorizontallyScrolling(true);
                 introduction.setSelected(true);
             }else{
+                textLayout.setBackground(null);
+                textLayout.setBackgroundResource(R.drawable.banner_center_text_bg);
+                textLayout.getLayoutParams().height = res.getDimensionPixelSize(R.dimen.center_text_layout_height);
             	title.setVisibility(View.VISIBLE);
 				introduction.setVisibility(View.GONE);
                 title.setEllipsize(TextUtils.TruncateAt.END);
                 title.setMarqueeRepeatLimit(0);
                 title.setHorizontallyScrolling(false);
                 title.setSelected(false);
-				title.setTextSize(title.getResources().getDimensionPixelSize(R.dimen.center_title_size) / title.getResources().getDisplayMetrics().density);
-				title.getLayoutParams().height = (int) (title.getResources().getDimensionPixelSize(R.dimen.center_title_height) / title.getResources().getDisplayMetrics().density);
+				title.setTextSize(res.getDimensionPixelSize(R.dimen.center_title_size)/density);
+				title.getLayoutParams().height = res.getDimensionPixelSize(R.dimen.center_title_height);
+                ((LinearLayout.LayoutParams)title.getLayoutParams()).topMargin = res.getDimensionPixelSize(R.dimen.center_title_margin);
+                ((LinearLayout.LayoutParams)title.getLayoutParams()).bottomMargin = res.getDimensionPixelSize(R.dimen.center_title_margin);
+				/*modify by dragontec for bug 4355 end*/
                 introduction.setEllipsize(TextUtils.TruncateAt.END);
                 introduction.setMarqueeRepeatLimit(0);
                 introduction.setHorizontallyScrolling(false);

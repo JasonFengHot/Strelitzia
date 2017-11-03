@@ -1,0 +1,20 @@
+http://res.tvxio.bestv.com.cn/media/upload/20160711/qinaidegzb160914_poster.jpg
+GET
+0
+HTTP/1.1 200 OK
+15
+Server: marco/1.8
+Date: Fri, 03 Nov 2017 08:19:21 GMT
+Content-Type: image/jpeg
+Content-Length: 42750
+Connection: keep-alive
+X-Source: C/200
+Last-Modified: Wed, 14 Sep 2016 03:30:51 GMT
+Accept-Ranges: bytes
+Expires: Sun, 28 Jan 2018 04:57:12 GMT
+Cache-Control: max-age=7776000
+Age: 357729
+X-Request-Id: d829a0aa8cf84f2af24c7c4642333761; 116a9709e1d93497ac72b80a8424148d
+Via: S.mix-hz-fdi-168, T.101165.M.1, V.mix-hz-fdi-163, T.3543.H.1, M.ctn-zj-lna4-047
+OkHttp-Sent-Millis: 1509697161716
+OkHttp-Received-Millis: 1509697161742

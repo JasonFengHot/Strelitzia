@@ -143,16 +143,7 @@ public final class IsmartvActivator {
                 .readTimeout(DEFAULT_READ_TIMEOUT, TimeUnit.SECONDS)
                 .addInterceptor(interceptor)
                 .addInterceptor(new UserAgentInterceptor())
-                .dns(new Dns() {
-                    @Override
-                    public List<InetAddress> lookup(String hostName) throws UnknownHostException {
-                        String ipAddress = IsmartvActivator.getHostByName(hostName);
-                        if (ipAddress.endsWith("0.0.0.0")) {
-                            throw new UnknownHostException("can't connect to internet");
-                        }
-                        return Dns.SYSTEM.lookup(ipAddress);
-                    }
-                })
+                .dns(new IsmartvDns())
                 .build();
 
         SKY_Retrofit = new Retrofit.Builder()
@@ -691,7 +682,7 @@ public final class IsmartvActivator {
             ExecutorService executorService = Executors.newFixedThreadPool(processorCount * 2);
 
             for (final String file : getAllCacheFile()) {
-                executorService.execute(new Runnable() {
+                new Thread(new Runnable() {
                     @Override
                     public void run() {
                         try {
@@ -720,7 +711,7 @@ public final class IsmartvActivator {
                             e.printStackTrace();
                         }
                     }
-                });
+                }).start();
             }
         }
     }

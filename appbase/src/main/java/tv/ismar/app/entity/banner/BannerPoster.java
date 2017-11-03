@@ -27,6 +27,6 @@ public class BannerPoster {
     public String backgroundUrl;
     public String channel;
     public int style;
-    public String slug;
+    public String section_slug;
     public String image_url;
 }

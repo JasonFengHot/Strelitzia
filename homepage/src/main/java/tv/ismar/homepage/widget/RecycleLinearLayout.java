@@ -16,6 +16,7 @@ import com.daimajia.androidanimations.library.YoYo;
 
 import java.util.ArrayList;
 
+import tv.ismar.app.core.VodUserAgent;
 import tv.ismar.homepage.HomeActivity;
 import tv.ismar.homepage.R;
 
@@ -142,8 +143,12 @@ public class RecycleLinearLayout extends LinearLayout {
                 int bottom = lastPoint[1] + lastView.getHeight();
 			/*modify by dragontec for bug 4296 end*/
 			    int maxScrollByBottom = bottom - mScreenHeight;
-			    if(dy > maxScrollByBottom){
-			        dy = maxScrollByBottom;
+                if(dy -maxScrollByBottom> 10){
+                    if ("lcd_s3a01".equals(VodUserAgent.getModelName())) {
+                        dy=maxScrollByBottom+100;
+                    }else {
+                        dy=maxScrollByBottom;
+                    }
                 }
 				/*modify by dragontec for bug 4339 end*/
             }
@@ -693,8 +698,15 @@ public class RecycleLinearLayout extends LinearLayout {
                 lastView.getLocationOnScreen(lastPoint);
                 if (lastPoint[1] > 0) {
                     int bottom = lastPoint[1] + lastView.getHeight();
-                    if (bottom == screenHeight) {
-                        isScrollAtBottom = true;
+                    Log.i("bottomS3","lastPoint[1]: "+lastPoint[1]+"  height: "+lastView.getHeight()+"  bottom: "+bottom);
+                    if ("lcd_s3a01".equals(VodUserAgent.getModelName())) {
+                        if (bottom+100 == screenHeight) {
+                            isScrollAtBottom = true;
+                        }
+                    }else{
+                        if (bottom == screenHeight) {
+                            isScrollAtBottom = true;
+                        }
                     }
                 }
             }
@@ -721,4 +733,18 @@ public class RecycleLinearLayout extends LinearLayout {
         return childCount - i - 1;
     }
 /*add by dragontec for bug 4195 end*/
+	/*add by dragontec for bug 4338 start*/
+	public void focusOnFirstBanner() {
+		int[] location = new int[2];
+		for (int i = 0; i< getChildCount(); i++) {
+			View v = getChildAt(i);
+			v.getLocationOnScreen(location);
+			if (location[1] <= 0 && location[1] + v.getHeight() > 1) {
+				v.requestFocus();
+				v.requestFocusFromTouch();
+				break;
+			}
+		}
+	}
+	/*add by dragontec for bug 4338 start*/
 }

@@ -171,16 +171,20 @@ public class BannerSubscribeAdapter
 
         if (position == 0){
             holder.mLeftSpace.setVisibility(View.GONE);
+			/*add by dragontec for bug 4366 start*/
+            ((RelativeLayout.LayoutParams)holder.mTimeDot.getLayoutParams()).leftMargin = 0;
         }else {
             holder.mLeftSpace.setVisibility(View.VISIBLE);
+            ((RelativeLayout.LayoutParams)holder.mTimeDot.getLayoutParams()).leftMargin = mContext.getResources().getDimensionPixelSize(R.dimen.space_banner_item_width);
+			/*add by dragontec for bug 4366 end*/
         }
-		/*add by dragontec for bug 4325 start*/
+		/*add by dragontec for bug 4325,卖点文字不正确的问题 start*/
         String focusStr = entity.getTitle();
-        if(entity.getIntroduction() != null && !entity.getIntroduction().equals("") && !entity.getIntroduction().equals("null")){
-            focusStr = entity.getIntroduction();
+        if(entity.getFocus() != null && !entity.getFocus().equals("") && !entity.getFocus().equals("null")){
+            focusStr = entity.getFocus();
         }
         holder.mOrderTitle.setTag(new String[]{entity.getTitle(),focusStr});
-		/*add by dragontec for bug 4325 end*/
+		/*add by dragontec for bug 4325,卖点文字不正确的问题 end*/
     }
 
     private int getMovieItemId(String url) {
@@ -284,6 +288,9 @@ public class BannerSubscribeAdapter
         private View mItemView;
         private TextView mTitle;
         private ImageView mTimeLine;
+		/*add by dragontec for bug 4366 start*/
+        private ImageView mTimeDot;
+		/*add by dragontec for bug 4366 end*/
         private ImageView markLT;
         private TextView markRB;
 
@@ -302,6 +309,9 @@ public class BannerSubscribeAdapter
             mTitle = (TextView) itemView.findViewById(R.id.title);
             mLeftSpace = (Space)itemView.findViewById(R.id.left_space);
             mTimeLine = (ImageView)itemView.findViewById(R.id.banner_item_timeline);
+			/*add by dragontec for bug 4366 start*/
+            mTimeDot = (ImageView)itemView.findViewById(R.id.banner_item_time_dot);
+			/*add by dragontec for bug 4366 end*/
             markLT = (ImageView) itemView.findViewById(R.id.banner_mark_lt);
             markRB = (TextView)itemView.findViewById(R.id.banner_mark_br);
             markRT = (ImageView) itemView.findViewById(R.id.banner_mark_rt);

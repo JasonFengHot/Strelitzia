@@ -570,6 +570,11 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
 
 	public void onKeyDown(int keyCode, KeyEvent event) {
 		Log.d(TAG, "keydown: " + keyCode);
+		/*add by dragontec for bug 4338 start*/
+		if (!mLinearContainer.hasFocus()) {
+			mLinearContainer.focusOnFirstBanner();
+		}
+		/*add by dragontec for bug 4338 end*/
 //		if ("lcd_s3a01".equals(VodUserAgent.getModelName())) {
 //			if (keyCode == 707 || keyCode == 774 || keyCode == 253) {
 //				isneedpause = false;

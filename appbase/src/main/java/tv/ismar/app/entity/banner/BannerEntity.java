@@ -249,7 +249,9 @@ public class BannerEntity {
         private String content_model;
         private String vertical_url;
         private String title;
-        private String introduction;
+		/*modify by dragontec for bug 卖点文字不正确的问题 start*/
+        private String focus;
+		/*modify by dragontec for bug 卖点文字不正确的问题 end*/
         private int corner;
         private String poster_url;
         private String model_name;
@@ -333,15 +335,15 @@ public class BannerEntity {
         public void setTitle(String title) {
             this.title = title;
         }
-
-        public String getIntroduction() {
-            return introduction;
+		/*modify by dragontec for bug 卖点文字不正确的问题 start*/
+        public String getFocus() {
+            return focus;
         }
 
-        public void setIntroduction(String introduction) {
-            this.introduction = introduction;
+        public void setFocus(String focus) {
+            this.focus = focus;
         }
-
+		/*modify by dragontec for bug 卖点文字不正确的问题 end*/
         public int getCorner() {
             return corner;
         }

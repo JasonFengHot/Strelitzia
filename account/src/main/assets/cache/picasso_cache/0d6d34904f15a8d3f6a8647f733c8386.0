@@ -1,0 +1,20 @@
+http://res.tvxio.bestv.com.cn/img/vertical/p2198720290.jpg
+GET
+0
+HTTP/1.1 200 OK
+15
+Server: marco/1.8
+Date: Fri, 03 Nov 2017 08:19:21 GMT
+Content-Type: image/jpeg
+Content-Length: 113553
+Connection: keep-alive
+X-Source: C/200
+Last-Modified: Thu, 18 Jun 2015 15:17:19 GMT
+Accept-Ranges: bytes
+Expires: Sun, 14 Jan 2018 14:38:20 GMT
+Cache-Control: max-age=7776000
+Age: 1532461
+X-Request-Id: a5a514ce1658836b30ca70dd8c484fe7; 60bf52337653bb1d77601401c4bfc0d7
+Via: T.101166.M.1, S.mix-hz-fdi-171, V.mix-hz-fdi-168, T.3549.H.1, M.ctn-zj-lna4-047
+OkHttp-Sent-Millis: 1509697161390
+OkHttp-Received-Millis: 1509697161424

@@ -2115,6 +2115,26 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
 
     @Override
     public void onDestroy() {
+/*add by dragontec for bug 4205 start*/
+        if (mPlaybackService != null) {
+            mPlaybackService.setCallback(null);
+            mPlaybackService.setQiyiContainer(null);
+            mPlaybackService.setSurfaceView(null);
+        }
+        if (player_container != null) {
+            player_container.setOnHoverListener(null);
+            player_container.setOnClickListener(null);
+            player_container.removeAllViews();
+            player_container = null;
+        }
+        if (player_surface != null) {
+            player_surface.setOnHoverListener(null);
+            player_surface.setOnClickListener(null);
+            player_surface = null;
+        }
+        panel_layout = null;
+        mAdvertisement = null;
+/*add by dragontec for bug 4205 end*/
         mClient=null;
         super.onDestroy();
     }

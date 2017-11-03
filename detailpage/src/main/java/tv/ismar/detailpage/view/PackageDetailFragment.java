@@ -147,6 +147,23 @@ public class PackageDetailFragment extends BaseFragment {
         mSkyService = SkyService.ServiceManager.getService();
     }
 
+/*add by dragontec for bug 4205 start*/
+    @Override
+    public void onDestroy() {
+        mActivity = null;
+        relatedItems = null;
+        itemEntities = null;
+        mPageStatistics = null;
+        if (vod_payment_item_of_package_container != null) {
+            vod_payment_item_of_package_container.setAdapter(null);
+            vod_payment_item_of_package_container.removeAllViews();
+            vod_payment_item_of_package_container = null;
+        }
+        mSkyService = null;
+        super.onDestroy();
+    }
+/*add by dragontec for bug 4205 end*/
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
