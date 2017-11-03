@@ -305,7 +305,7 @@ public class TemplateConlumn extends Template
                 new PageIntent().toSubject(mContext,poster.content_model,poster.pk,poster.title,"homepage",poster.channel);
             }
         }else if(poster.model_name.equals("section")) {
-            new PageIntent().toListPage(mContext,poster.title,poster.channel,mFetchDataControl.mHomeEntity.style,poster.slug);
+            new PageIntent().toListPage(mContext,poster.title,poster.channel,poster.style,poster.slug);
         }
     }
 
