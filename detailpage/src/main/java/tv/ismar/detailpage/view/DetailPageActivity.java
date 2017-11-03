@@ -433,6 +433,12 @@ public class DetailPageActivity extends BaseActivity implements PlaybackService.
         unRegisterClosePlayerReceiver();
         mLoadingDialog=null;
         mClient=null;
+/*add by dragontec for bug 4205 start*/
+        mRunnable = null;
+        mPlaybackService = null;
+        detailPageFragment = null;
+        mPackageDetailFragment = null;
+/*add by dragontec for bug 4205 end*/
         super.onDestroy();
     }
     private ClosePlayerReceiver closePlayerReceiver;

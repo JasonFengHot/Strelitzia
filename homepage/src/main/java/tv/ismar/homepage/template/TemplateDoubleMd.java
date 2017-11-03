@@ -290,6 +290,13 @@ public class TemplateDoubleMd extends Template
       //        Picasso.with(mContext).load(data.poster_url).into(mLtImage);
       //        Picasso.with(mContext).load(data.poster_url).into(mRbImage);
       mImgeTitleTv.setText(data.title);
+		/*add by dragontec for bug 卖点文字不正确的问题 start*/
+      String focusStr = data.title;
+      if(data.focus != null && !data.focus.equals("") && !data.focus.equals("null")){
+        focusStr = data.focus;
+      }
+      mImgeTitleTv.setTag(new String[]{data.title,focusStr});
+	  /*add by dragontec for bug 卖点文字不正确的问题 end*/
     }
   }
 

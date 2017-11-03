@@ -8,6 +8,9 @@ import android.support.v4.view.ViewPager;
 import java.util.ArrayList;
 
 import retrofit2.adapter.rxjava.HttpException;
+/*add by dragontec for bug 4364 start*/
+import tv.ismar.account.IsmartvActivator;
+/*add by dragontec for bug 4364 end*/
 import tv.ismar.app.BaseActivity;
 import tv.ismar.app.ui.ToastTip;
 import tv.ismar.app.util.NetworkUtils;
@@ -63,6 +66,9 @@ public class HomeActivity extends BaseActivity {
         } else if (e instanceof HttpException) {
             HttpException httpException = (HttpException) e;
             if (httpException.code() == 401) {
+            	/*add by dragontec for bug 4364 start*/
+				IsmartvActivator.getInstance().removeUserInfo();
+				/*add by dragontec for bug 4364 end*/
                 showExpireAccessTokenPop();
             } else if (httpException.code() == 408) {
                 ToastTip.showToast(this, "网络连接超时，请重试");

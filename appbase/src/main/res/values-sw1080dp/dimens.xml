@@ -763,14 +763,19 @@
     <dimen name="center_poster_margin_top">25dp</dimen>
     <dimen name="center_poster_width">817dp</dimen>
     <dimen name="center_poster_height">459dp</dimen>
-    <dimen name="center_title_height">47dp</dimen>
-    <dimen name="center_title_focused_height">67dp</dimen>
+    <dimen name="center_text_layout_height">47dp</dimen>
+    <dimen name="center_text_layout_height_focused">103dp</dimen>
+    <dimen name="center_text_layout_h_padding">8dp</dimen>
+    <dimen name="center_title_height">43dp</dimen>
+    <dimen name="center_title_margin">2dp</dimen>
+    <dimen name="center_title_focused_margin">3dp</dimen>
+    <dimen name="center_title_focused_height">56dp</dimen>
     <dimen name="center_title_size">30sp</dimen>
     <dimen name="center_title_focused_size">40sp</dimen>
-    <dimen name="center_introduction_height">52dp</dimen>
-    <dimen name="center_introduction_size">30sp</dimen>
+    <dimen name="center_introduction_focused_height">43dp</dimen>
+    <dimen name="center_introduction_focused_size">30sp</dimen>
     <dimen name="center_padding">75dp</dimen>
-    <dimen name="center_padding_offset">452dp</dimen>
+    <dimen name="center_padding_offset">452dp</dimen >
     <!--更多模版-->
     <dimen name="more_btn_width">480dp</dimen>
     <dimen name="more_btn_height">100dp</dimen>

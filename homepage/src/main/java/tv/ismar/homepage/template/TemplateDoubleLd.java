@@ -292,6 +292,13 @@ public class TemplateDoubleLd extends Template
             mRbImage.setText(new DecimalFormat("0.0").format(data.rating_average));
             mRbImage.setVisibility((data.rating_average == 0) ? View.GONE : View.VISIBLE);
             mIgTitleTv.setText(data.title);
+			/*add by dragontec for bug 卖点文字不正确的问题 start*/
+            String focusStr = data.title;
+            if(data.focus != null && !data.focus.equals("") && !data.focus.equals("null")){
+                focusStr = data.focus;
+            }
+            mIgTitleTv.setTag(new String[]{data.title,focusStr});
+			/*add by dragontec for bug 卖点文字不正确的问题 end*/
         }
     }
 

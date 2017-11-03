@@ -721,4 +721,18 @@ public class RecycleLinearLayout extends LinearLayout {
         return childCount - i - 1;
     }
 /*add by dragontec for bug 4195 end*/
+	/*add by dragontec for bug 4338 start*/
+	public void focusOnFirstBanner() {
+		int[] location = new int[2];
+		for (int i = 0; i< getChildCount(); i++) {
+			View v = getChildAt(i);
+			v.getLocationOnScreen(location);
+			if (location[1] <= 0 && location[1] + v.getHeight() > 1) {
+				v.requestFocus();
+				v.requestFocusFromTouch();
+				break;
+			}
+		}
+	}
+	/*add by dragontec for bug 4338 start*/
 }

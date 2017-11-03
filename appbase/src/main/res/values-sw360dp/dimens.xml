@@ -690,7 +690,7 @@
 <dimen name="guide_recycle_item_rb_icon_padding_right">1.33dp</dimen>
 <dimen name="guide_recycle_item_rb_margin_bottom">2.67dp</dimen>
 
-<!--电视剧尺寸-->
+<!--电视剧尺�?-->
 <dimen name="tv_player_recycleview_margin_left">20.00dp</dimen>
 <dimen name="tv_player_recycleview_margin_right">33.33dp</dimen>
 <dimen name="tv_play_recycleview_item_padding">13.33dp</dimen>
@@ -763,12 +763,17 @@
 <dimen name="center_poster_margin_top">8.33dp</dimen>
 <dimen name="center_poster_width">272.33dp</dimen>
 <dimen name="center_poster_height">153.00dp</dimen>
-<dimen name="center_title_height">15.67dp</dimen>
-<dimen name="center_title_focused_height">22.33dp</dimen>
+<dimen name="center_text_layout_height">15.67dp</dimen>
+<dimen name="center_text_layout_height_focused">34.33dp</dimen>
+<dimen name="center_text_layout_h_padding">2.67dp</dimen>
+<dimen name="center_title_height">14.33dp</dimen>
+<dimen name="center_title_margin">0.67dp</dimen>
+<dimen name="center_title_focused_margin">1.00dp</dimen>
+<dimen name="center_title_focused_height">18.67dp</dimen>
 <dimen name="center_title_size">10.00sp</dimen>
 <dimen name="center_title_focused_size">13.33sp</dimen>
-<dimen name="center_introduction_height">17.33dp</dimen>
-<dimen name="center_introduction_size">10.00sp</dimen>
+<dimen name="center_introduction_focused_height">14.33dp</dimen>
+<dimen name="center_introduction_focused_size">10.00sp</dimen>
 <dimen name="center_padding">25.00dp</dimen>
 <dimen name="center_padding_offset">150.67dp</dimen>
 <!--更多模版-->
@@ -795,7 +800,7 @@
 <dimen name="msg_text_item_text_ts">12.00dp</dimen>
 <dimen name="msg_text_item_text_mb">6.67dp</dimen>
 
-<!--升级提示框-->
+<!--升级提示�?-->
 <dimen name="popup_update_w">356.33dp</dimen>
 <dimen name="popup_update_h">272.67dp</dimen>
 <dimen name="popup_update_mt">33.33dp</dimen>
@@ -810,7 +815,7 @@
 <dimen name="popup_update_btn_h">24.33dp</dimen>
 <dimen name="popup_update_btn_ml">27.00dp</dimen>
 
-<!--普通提示框-->
+<!--普�?�提示框-->
 <dimen name="popup_tip_w">356.33dp</dimen>
 <dimen name="popup_tip_h">203.00dp</dimen>
 <dimen name="popup_tip_ml">141.67dp</dimen>
@@ -825,7 +830,7 @@
 <dimen name="popup_tip_btn_ml">27.00dp</dimen>
 <dimen name="popup_tip_btn_mt">28.67dp</dimen>
 
-<!--吐司提示框-->
+<!--吐司提示�?-->
 <dimen name="toast_content_h">25.00dp</dimen>
 <dimen name="toast_content_w">323.67dp</dimen>
 <dimen name="toast_content_mt">307.33dp</dimen>

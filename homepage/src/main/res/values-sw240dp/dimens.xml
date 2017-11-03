@@ -806,11 +806,12 @@
 <dimen name="banner_item_line_h">0.44dp</dimen>
 <dimen name="banner_item_line_ml">-11.11dp</dimen>
 <dimen name="banner_item_line_mr">-11.11dp</dimen>
+<dimen name="banner_item_dot_size">3.56dp</dimen>
 <dimen name="banner_subscribe_publish_time_w">34.00dp</dimen>
 <dimen name="banner_subscribe_publish_time_h">11.56dp</dimen>
 <dimen name="banner_subscribe_publish_time_mt">1.11dp</dimen>
 <dimen name="banner_subscribe_item_layout_mt">4.22dp</dimen>
-<dimen name="banner_subscribe_time_line_translateY">-1.78dp</dimen>
+<dimen name="banner_subscribe_arrow_time_line_margin">2.00dp</dimen>
 <dimen name="banner_subscribe_post_w">86.22dp</dimen>
 <dimen name="banner_subscribe_post_h">48.67dp</dimen>
 <dimen name="banner_subscribe_post_introduction_h">10.44dp</dimen>
@@ -825,7 +826,7 @@
 <dimen name="banner_horizontal519_post_w">115.33dp</dimen>
 <dimen name="banner_horizontal519_post_h">64.89dp</dimen>
 <dimen name="banner_horizontal519_post_title_h">9.56dp</dimen>
-<dimen name="subscribe_banner_recycler_h">88.89dp</dimen>
+<dimen name="subscribe_banner_recycler_h">87.11dp</dimen>
 <dimen name="subscribe_banner_recycler_ml">11.11dp</dimen>
 <dimen name="subscribe_banner_recycler_mr">11.11dp</dimen>
 <dimen name="subscribe_banner_recycler_pl">11.11dp</dimen>

@@ -343,6 +343,9 @@ public class BaseActivity extends AppCompatActivity {
             } else if (e instanceof HttpException) {
                 HttpException httpException = (HttpException) e;
                 if (httpException.code() == 401) {
+                	/*add by dragontec for bug 4364 start*/
+                	IsmartvActivator.getInstance().removeUserInfo();
+                	/*add by dragontec for bug 4364 end*/
                     showExpireAccessTokenPop();
                 }else if(httpException.code() == 504){
                     ToastTip.showToast(BaseActivity.this,"服务器繁忙，请稍后再试");
