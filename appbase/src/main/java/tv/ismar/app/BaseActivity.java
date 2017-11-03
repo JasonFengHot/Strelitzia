@@ -22,6 +22,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.PopupWindow;
 
+import com.orhanobut.logger.Logger;
+
 import java.util.Stack;
 
 import cn.ismartv.truetime.TrueTime;
@@ -285,7 +287,7 @@ public class BaseActivity extends AppCompatActivity {
             return;
         }
         final String act = getCurrentActivityName(BaseActivity.this);
-        Log.i("onNoNet", "showNet!!!");
+        Logger.t("onNoNet").d( "showNet!!!");
         dialog = new NetErrorPopWindow(this);
         dialog.setMessage(getString(R.string.no_connectNet));
         dialog.setConfirmBtn(getString(R.string.setting_network));
@@ -339,6 +341,7 @@ public class BaseActivity extends AppCompatActivity {
             Log.i("onNoNet", "onerror" + NetworkUtils.isConnected(BaseActivity.this));
             if (!NetworkUtils.isConnected(BaseActivity.this) && !NetworkUtils.isWifi(BaseActivity.this)) {
                 Log.i("onNoNet", "" + NetworkUtils.isConnected(BaseActivity.this));
+
                 showNoNetConnectDelay();
             } else if (e instanceof HttpException) {
                 HttpException httpException = (HttpException) e;
@@ -348,7 +351,7 @@ public class BaseActivity extends AppCompatActivity {
                 	/*add by dragontec for bug 4364 end*/
                     showExpireAccessTokenPop();
                 }else if(httpException.code() == 504){
-                    ToastTip.showToast(BaseActivity.this,"服务器繁忙，请稍后再试");
+                    ToastTip.showToast(BaseActivity.this,"网络连接超时，请重试");
                 }else{
                     ToastTip.showToast(BaseActivity.this,"网络连接失败，请检查网络是否通畅");
                 }
@@ -534,6 +537,7 @@ public class BaseActivity extends AppCompatActivity {
         noNetConnectRunnable = new Runnable() {
             @Override
             public void run() {
+                Logger.t("showNoNetConnectDelay" ).d("showNoNetConnectDialog");
                 showNoNetConnectDialog();
             }
         };
@@ -607,6 +611,7 @@ public class BaseActivity extends AppCompatActivity {
                         }
                     } else {
                         ////////网络断开
+                        Logger.t("ConnectionChangeReceiver" ).d("showNoNetConnectDialog");
                         showNoNetConnectDialog();
                     }
                 }catch (Exception e){

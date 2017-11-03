@@ -4,7 +4,7 @@ GET
 HTTP/1.1 200 OK
 15
 Server: marco/1.8
-Date: Wed, 01 Nov 2017 05:34:07 GMT
+Date: Fri, 03 Nov 2017 08:19:27 GMT
 Content-Type: image/jpeg
 Content-Length: 26723
 Connection: keep-alive
@@ -13,8 +13,8 @@ Last-Modified: Wed, 02 Aug 2017 01:56:35 GMT
 Accept-Ranges: bytes
 Expires: Sun, 28 Jan 2018 02:30:16 GMT
 Cache-Control: max-age=7776000
-Age: 183831
-X-Request-Id: 2344726bab20c4a24cd9df819c38e060; 09161175efc9d47e65981346e92e1f90
-Via: S.mix-hz-fdi-165, T.101166.M.1, V.mix-hz-fdi-171, T.3543.H.1, M.ctn-zj-lna4-049
-OkHttp-Sent-Millis: 1509514447271
-OkHttp-Received-Millis: 1509514447302
+Age: 366551
+X-Request-Id: 2344726bab20c4a24cd9df819c38e060; 610e1f4ad73786ec86df91dd88241420
+Via: S.mix-hz-fdi-165, T.101166.M.1, V.mix-hz-fdi-171, T.3543.H.1, M.ctn-zj-lna4-047
+OkHttp-Sent-Millis: 1509697167764
+OkHttp-Received-Millis: 1509697167785

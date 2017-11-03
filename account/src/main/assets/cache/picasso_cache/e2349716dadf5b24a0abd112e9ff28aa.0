@@ -4,7 +4,7 @@ GET
 HTTP/1.1 200 OK
 17
 Server: QWS
-Date: Wed, 01 Nov 2017 05:33:57 GMT
+Date: Fri, 03 Nov 2017 08:19:20 GMT
 Content-Type: image/jpeg
 Content-Length: 19274
 Connection: keep-alive
@@ -13,10 +13,10 @@ Expires: Sat, 11 Aug 2018 13:10:51 GMT
 Cache-Control: max-age=31536000
 X-Cache: from 58.215.125.69
 X-Cache: from 127.0.0.1
-Age: 7057386
+Age: 7240109
 Via: http/1.1 QTS (QTS [cHs f ])
 X-Cache: from 10.121.32.223
-X-Cache: MISS from 101.227.22.159
+X-Cache: MISS from 101.227.22.162
 Accept-Ranges: bytes
-OkHttp-Sent-Millis: 1509514437446
-OkHttp-Received-Millis: 1509514437454
+OkHttp-Sent-Millis: 1509697160799
+OkHttp-Received-Millis: 1509697160809

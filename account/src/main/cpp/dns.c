@@ -34,10 +34,10 @@ int dns_server_count = 0;
 #define T_MX 15 //Mail server
 
 #define LOGV(...) __android_log_print(ANDROID_LOG_VERBOSE, "Dns-Parser", __VA_ARGS__)
-#define LOGD(...) __android_log_print(ANDROID_LOG_DEBUG , "ProjectName", __VA_ARGS__)
-#define LOGI(...) __android_log_print(ANDROID_LOG_INFO  , "ProjectName", __VA_ARGS__)
-#define LOGW(...) __android_log_print(ANDROID_LOG_WARN  , "ProjectName", __VA_ARGS__)
-#define LOGE(...) __android_log_print(ANDROID_LOG_ERROR  , "ProjectName", __VA_ARGS__)
+#define LOGD(...) __android_log_print(ANDROID_LOG_DEBUG , "Dns-Parser", __VA_ARGS__)
+#define LOGI(...) __android_log_print(ANDROID_LOG_INFO  , "Dns-Parser", __VA_ARGS__)
+#define LOGW(...) __android_log_print(ANDROID_LOG_WARN  , "Dns-Parser", __VA_ARGS__)
+#define LOGE(...) __android_log_print(ANDROID_LOG_ERROR  , "Dns-Parser", __VA_ARGS__)
 
 //Function Prototypes
 char *ngethostbyname(unsigned char *, int);

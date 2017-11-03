@@ -44,6 +44,7 @@ import retrofit2.http.Streaming;
 import retrofit2.http.Url;
 import rx.Observable;
 import tv.ismar.account.IsmartvActivator;
+import tv.ismar.account.IsmartvDns;
 import tv.ismar.account.IsmartvHttpLoggingInterceptor;
 import tv.ismar.app.VodApplication;
 import tv.ismar.app.core.OfflineCheckManager;
@@ -714,7 +715,7 @@ public interface SkyService {
             @Path("item_id") String item_id
     );
 
-    @GET("/api/tv/banner/{banner_name}/{page}/")
+    @GET("api/tv/banner/{banner_name}/{page}/")
     Observable<BannerEntity> apiTvBanner(
             @Path("banner_name") String banner,
             @Path("page") int page
@@ -835,20 +836,12 @@ public interface SkyService {
             final OkHttpClient mClient = new OkHttpClient.Builder()
                     .connectTimeout(DEFAULT_CONNECT_TIMEOUT, TimeUnit.SECONDS)
                     .readTimeout(DEFAULT_READ_TIMEOUT, TimeUnit.SECONDS)
+//                    .addInterceptor(new IsmartvHttpCheckInterceptor())
                     .addInterceptor(VodApplication.getHttpParamsInterceptor())
                     .addInterceptor(VodApplication.getModuleAppContext().getCacheInterceptor())
                     .addInterceptor(interceptor)
                     .addInterceptor(new UserAgentInterceptor())
-                    .dns(new Dns() {
-                        @Override
-                        public List<InetAddress> lookup(String hostName) throws UnknownHostException {
-                            String ipAddress = IsmartvActivator.getHostByName(hostName);
-                            if (ipAddress.endsWith("0.0.0.0")) {
-                                throw new UnknownHostException("can't connect to internet");
-                            }
-                            return Dns.SYSTEM.lookup(ipAddress);
-                        }
-                    })
+                    .dns(new IsmartvDns())
                     .cache(cache)
                     .sslSocketFactory(sc.getSocketFactory())
                     .build();
