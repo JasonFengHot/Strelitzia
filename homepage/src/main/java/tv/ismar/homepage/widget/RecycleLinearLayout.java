@@ -16,6 +16,7 @@ import com.daimajia.androidanimations.library.YoYo;
 
 import java.util.ArrayList;
 
+import tv.ismar.app.core.VodUserAgent;
 import tv.ismar.homepage.HomeActivity;
 import tv.ismar.homepage.R;
 
@@ -142,8 +143,12 @@ public class RecycleLinearLayout extends LinearLayout {
                 int bottom = lastPoint[1] + lastView.getHeight();
 			/*modify by dragontec for bug 4296 end*/
 			    int maxScrollByBottom = bottom - mScreenHeight;
-			    if(dy > maxScrollByBottom){
-			        dy = maxScrollByBottom;
+                if(dy -maxScrollByBottom> 10){
+                    if ("lcd_s3a01".equals(VodUserAgent.getModelName())) {
+                        dy=maxScrollByBottom+100;
+                    }else {
+                        dy=maxScrollByBottom;
+                    }
                 }
 				/*modify by dragontec for bug 4339 end*/
             }
