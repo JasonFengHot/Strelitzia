@@ -291,6 +291,7 @@ public class DetailPageFragment extends Fragment implements DetailPageContract.V
     @Override
     public void onDestroy() {
         super.onDestroy();
+        handler.removeCallbacksAndMessages(null);
         handler=null;
 /*add by dragontec for bug 4205 start*/
         mActivity = null;

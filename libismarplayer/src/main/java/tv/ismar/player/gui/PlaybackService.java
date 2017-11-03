@@ -655,12 +655,6 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
 //        builder.setSnToken(snToken);
 /*delete by dragontec for bug 4205 end*/
         if (Utils.isEmptyText(iqiyi)) {
-/*add by dragontec for bug 4205 start*/
-            if (mSurfaceView == null) {
-                LogUtils.i(TAG, "createPlayer mSurfaceView null return!");
-                return;
-            }
-/*add by dragontec for bug 4205 end*/
             // 片源为视云
             isSendlog=true;
 /*add by dragontec for bug 4205 start*/
@@ -672,9 +666,12 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
             if (mIsPreload) {
                 hlsPlayer = builder.buildPreloadPlayer();
             } else {
-                if (mSurfaceView == null) {
-                    throw new IllegalArgumentException("视云播放器，显示组件不能为空");
-                }
+/*add by dragontec for bug 4205 start*/
+				if (mSurfaceView == null) {
+					LogUtils.i(TAG, "createPlayer mSurfaceView null return!");
+					return;
+				}
+/*add by dragontec for bug 4205 end*/
                 builder.setSurfaceView(mSurfaceView);
                 hlsPlayer = builder.build();
             }
