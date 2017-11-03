@@ -4,9 +4,11 @@ import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.text.TextUtils;
 import android.util.Log;
 
 import java.io.IOException;
+import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.Arrays;
 import java.util.List;
@@ -84,7 +86,9 @@ public class HttpCacheInterceptor implements Interceptor {
                 request = request.newBuilder()
                         .cacheControl(CacheControl.FORCE_CACHE)
                         .build();
-                showToast();
+                if (e instanceof UnknownHostException){
+                    showToast();
+                }
                 return chain.proceed(request);
             }else {
                 throw e;

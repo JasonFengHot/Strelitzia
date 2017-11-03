@@ -16,6 +16,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -356,7 +357,10 @@ public class BaseActivity extends AppCompatActivity {
                     ToastTip.showToast(BaseActivity.this,"网络连接失败，请检查网络是否通畅");
                 }
             }else{
-                ToastTip.showToast(BaseActivity.this,"网络连接超时，请重试");
+//                if (e != null && !TextUtils.isEmpty(e.getMessage()) && e.getMessage().equals("Canceled")){
+//                }else {
+//                    ToastTip.showToast(BaseActivity.this,"网络连接超时，请重试");
+//                }
             }
         }
     }
