@@ -181,13 +181,11 @@ public abstract class BaseViewHolder extends RecyclerView.ViewHolder implements
                     textView.setText(focusTitle);
                     textView.setEllipsize(TextUtils.TruncateAt.MARQUEE);
                     textView.setMarqueeRepeatLimit(-1);
-                    textView.setHorizontallyScrolling(true);
                     textView.setSelected(true);
                 } else {
                     textView.setText(title);
                     textView.setEllipsize(TextUtils.TruncateAt.END);
                     textView.setMarqueeRepeatLimit(0);
-                    textView.setHorizontallyScrolling(false);
                     textView.setSelected(false);
                 }
             }
@@ -220,11 +218,9 @@ public abstract class BaseViewHolder extends RecyclerView.ViewHolder implements
 
                 title.setEllipsize(TextUtils.TruncateAt.MARQUEE);
                 title.setMarqueeRepeatLimit(-1);
-                title.setHorizontallyScrolling(true);
                 title.setSelected(true);
                 introduction.setEllipsize(TextUtils.TruncateAt.MARQUEE);
                 introduction.setMarqueeRepeatLimit(-1);
-                introduction.setHorizontallyScrolling(true);
                 introduction.setSelected(true);
             }else{
                 textLayout.setBackground(null);
@@ -234,7 +230,6 @@ public abstract class BaseViewHolder extends RecyclerView.ViewHolder implements
 				introduction.setVisibility(View.GONE);
                 title.setEllipsize(TextUtils.TruncateAt.END);
                 title.setMarqueeRepeatLimit(0);
-                title.setHorizontallyScrolling(false);
                 title.setSelected(false);
 				title.setTextSize(res.getDimensionPixelSize(R.dimen.center_title_size)/density);
 				title.getLayoutParams().height = res.getDimensionPixelSize(R.dimen.center_title_height);
@@ -243,7 +238,6 @@ public abstract class BaseViewHolder extends RecyclerView.ViewHolder implements
 				/*modify by dragontec for bug 4355 end*/
                 introduction.setEllipsize(TextUtils.TruncateAt.END);
                 introduction.setMarqueeRepeatLimit(0);
-                introduction.setHorizontallyScrolling(false);
                 introduction.setSelected(false);
             }
         }
