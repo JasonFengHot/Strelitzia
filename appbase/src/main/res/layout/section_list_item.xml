@@ -7,7 +7,7 @@
     android:focusableInTouchMode="true"
     >
 
-    <ImageView
+    <tv.ismar.app.widget.RecyclerImageView
         android:id="@+id/section_image"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

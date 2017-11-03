@@ -9,7 +9,7 @@ import android.databinding.ObservableField;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
+//import android.widget.ImageView;
 
 import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
@@ -34,6 +34,7 @@ import tv.ismar.app.entity.History;
 import tv.ismar.app.network.entity.ItemEntity;
 import tv.ismar.app.network.entity.PlayCheckEntity;
 import tv.ismar.app.util.Utils;
+import tv.ismar.app.widget.RecyclerImageView;
 import tv.ismar.detailpage.BR;
 import tv.ismar.detailpage.R;
 import tv.ismar.detailpage.presenter.DetailPagePresenter;
@@ -129,7 +130,7 @@ public class DetailPageViewModel extends BaseObservable {
     }
 
     @BindingAdapter({"imageUrl"})
-    public static void loadImage(ImageView view, String imageUrl) {
+    public static void loadImage(RecyclerImageView view, String imageUrl) {
         if(!"".equals(imageUrl)&&imageUrl!=null) {
             Picasso.with(view.getContext())
                     .load(imageUrl)
@@ -139,7 +140,7 @@ public class DetailPageViewModel extends BaseObservable {
     }
 
     @BindingAdapter({"vipMark"})
-    public static void vipMark(ImageView view, String imageUrl) {
+    public static void vipMark(RecyclerImageView view, String imageUrl) {
         Picasso.with(view.getContext())
                 .load(imageUrl).memoryPolicy(MemoryPolicy.NO_CACHE).memoryPolicy(MemoryPolicy.NO_STORE)
                 .rotate(90)

@@ -26,7 +26,7 @@
             android:visibility="gone"
             >
 
-            <ImageView
+            <tv.ismar.app.widget.RecyclerImageView
                 android:focusable="true"
                 android:clickable="true"
                 android:id="@+id/indicator_node_image"
@@ -57,7 +57,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content">
 
-            <ImageView
+            <tv.ismar.app.widget.RecyclerImageView
                 android:focusable="true"
                 android:clickable="true"
                 android:id="@+id/indicator_feedback_image"
@@ -89,7 +89,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content">
 
-            <ImageView
+            <tv.ismar.app.widget.RecyclerImageView
                 android:focusable="true"
                 android:clickable="true"
                 android:id="@+id/indicator_help_image"

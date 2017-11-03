@@ -9,7 +9,7 @@
         android:background="@drawable/login_hint_bg"
         android:layout_gravity="center"
         >
-            <ImageView
+            <tv.ismar.app.widget.RecyclerImageView
                 android:id="@+id/hint_image"
                 android:layout_width="@dimen/hint_101"
                 android:layout_height="@dimen/hint_101"

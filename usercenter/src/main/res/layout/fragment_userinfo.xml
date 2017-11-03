@@ -220,7 +220,7 @@
 
         </LinearLayout>
 
-        <ImageView
+        <tv.ismar.app.widget.RecyclerImageView
             android:id="@+id/tmp"
             android:layout_width="10dp"
             android:layout_height="wrap_content"

@@ -53,6 +53,11 @@ public class RecycleLinearLayout extends LinearLayout {
     private Object hideTopOutSideChildLock = new Object();
 	/*modify by dragontec for bug 4296 end*/
 
+	/*modify by dragontec for bug 4334 start*/
+	private final Object scrollStateLock = new Object();
+	private boolean isStartScroll = false;
+	/*modify by dragontec for bug 4334 end*/
+
     public RecycleLinearLayout(Context context) {
         super(context);
         initWindow(context);
@@ -118,10 +123,17 @@ public class RecycleLinearLayout extends LinearLayout {
 //            postInvalidate();
 			invalidate();
         } else {
-			//滚动完毕后确认数据请求
-			if (mOnScrollFinishedListener != null) {
-				mOnScrollFinishedListener.onScrollFinished();
+        	/*modify by dragontec for bug 4334 start*/
+        	synchronized (scrollStateLock) {
+        		if (isStartScroll) {
+					//滚动完毕后确认数据请求
+					isStartScroll = false;
+					if (mOnScrollListener != null) {
+						mOnScrollListener.onScrollFinished();
+					}
+				}
 			}
+			/*modify by dragontec for bug 4334 end*/
 		}
 /*modify by dragontec for bug 4200 end*/
         super.computeScroll();
@@ -153,17 +165,37 @@ public class RecycleLinearLayout extends LinearLayout {
 				/*modify by dragontec for bug 4339 end*/
             }
             if(dy != 0){
-                mOverScroller.startScroll(mOverScroller.getFinalX(), mOverScroller.getFinalY(), dx, dy, SCROLL_DURATION);
+				/*modify by dragontec for bug 4334 start*/
+				synchronized (scrollStateLock) {
+					if (mOnScrollListener != null) {
+						mOnScrollListener.onScrollWillStart();
+					}
+					isStartScroll = true;
+					Log.d(TAG, "startScroll dx: " + dx +", dy:" + dy);
+					mOverScroller.startScroll(mOverScroller.getFinalX(), mOverScroller.getFinalY(), dx, dy, SCROLL_DURATION);
+					invalidate();//保证computeScroll()执行
+				}
+				/*modify by dragontec for bug 4334 end*/
             }
             /*modify by dragontec for bug 4178 end*/
         }else{
             if(mOverScroller.getFinalY() + dy < 0){
                 dy = -mOverScroller.getFinalY();
             }
-            mOverScroller.startScroll(mOverScroller.getFinalX(), mOverScroller.getFinalY(), dx, dy, SCROLL_DURATION);
+            /*modify by dragontec for bug 4334 start*/
+			synchronized (scrollStateLock) {
+				if (mOnScrollListener != null) {
+					mOnScrollListener.onScrollWillStart();
+				}
+				isStartScroll = true;
+				Log.d(TAG, "startScroll dx: " + dx +", dy:" + dy);
+				mOverScroller.startScroll(mOverScroller.getFinalX(), mOverScroller.getFinalY(), dx, dy, SCROLL_DURATION);
+				invalidate();//保证computeScroll()执行
+			}
+			/*modify by dragontec for bug 4334 end*/
         }
 		/*modify by dragontec for bug 3983 end*/
-        invalidate();//保证computeScroll()执行
+
     }
 	/*modify by dragontec for bug 4296 start*/
     private int getFocusedChildPosition() {
@@ -281,9 +313,7 @@ public class RecycleLinearLayout extends LinearLayout {
             measureChildWithMargins(childView, widthMeasureSpec, 0, heightMeasureSpec, 0);
             mWidth = mWidth+childView.getMeasuredWidth();
             mHeight = mHeight+childView.getMeasuredHeight();
-            Log.i("onMeasure", "childWidth:"+childView.getMeasuredWidth()+"  childHeight:"+childView.getMeasuredHeight());
         }
-        Log.i("onMeasure", "mWidth:"+mWidth+"  mHeight:"+mHeight);
         setMeasuredDimension(mWidth, mHeight);
     }
 
@@ -552,7 +582,8 @@ public class RecycleLinearLayout extends LinearLayout {
                         int tag = (int) view.getTag(key);
                         boolean canScroll = tag >> 30 == 1;//1可滑动，0不可滑动
                         int position = (tag << 2) >> 2;
-                        if (view == mLastView) {
+                        /*modify by dragontec for bug 4334 start*/
+                        if (view == mLastView && isScrollAtBottom()) {
                             if (key == R.layout.banner_more) {
                                 YoYo.with(Techniques.VerticalShake).duration(1000).playOn(view);
                             }
@@ -565,6 +596,7 @@ public class RecycleLinearLayout extends LinearLayout {
                             //处理同excuteKeyEvent
                             return;
                         }
+                        /*modify by dragontec for bug 4334 end*/
                         mLastView = view;
                         boolean startTitleState = HomeActivity.isTitleHidden;
                         if (mPositionChangeListener != null) {
@@ -711,13 +743,16 @@ public class RecycleLinearLayout extends LinearLayout {
 /*add by dragontec for bug 4225, 4224, 4223 end*/
 
 /*modify by dragontec for bug 4200 start*/
-	public interface OnScrollFinishedListener {
+/*modify by dragontec for bug 4334 start*/
+	public interface OnScrollListener {
+		void onScrollWillStart();
 		void onScrollFinished();
 	}
-	private OnScrollFinishedListener mOnScrollFinishedListener;
-	public void setOnScrollFinishedListener(OnScrollFinishedListener onScrollFinishedListener) {
-		mOnScrollFinishedListener = onScrollFinishedListener;
+	private OnScrollListener mOnScrollListener;
+	public void setOnScrollListener(OnScrollListener onScrollListener) {
+		mOnScrollListener = onScrollListener;
 	}
+/*modify by dragontec for bug 4334 end*/
 /*modify by dragontec for bug 4200 end*/
 
 /*add by dragontec for bug 4195 start*/
@@ -739,5 +774,17 @@ public class RecycleLinearLayout extends LinearLayout {
 			}
 		}
 	}
-	/*add by dragontec for bug 4338 start*/
+	/*add by dragontec for bug 4338 end*/
+	/*add by dragontec for bug 4334 start*/
+	public int getCurrentBannerPos() {
+		return currentBannerPos;
+	}
+
+	public boolean isScrolling() {
+		if (mOverScroller != null) {
+			return mOverScroller.computeScrollOffset();
+		}
+		return false;
+	}
+	/*add by dragontec for bug 4334 end*/
 }

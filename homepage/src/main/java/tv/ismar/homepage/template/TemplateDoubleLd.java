@@ -14,7 +14,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.ImageView;
+//import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.daimajia.androidanimations.library.Techniques;
@@ -35,6 +35,7 @@ import tv.ismar.app.entity.banner.BannerPoster;
 import tv.ismar.app.entity.banner.BigImage;
 import tv.ismar.app.entity.banner.HomeEntity;
 import tv.ismar.app.widget.ListSpacesItemDecoration;
+import tv.ismar.app.widget.RecyclerImageView;
 import tv.ismar.homepage.HomeActivity;
 import tv.ismar.homepage.OnItemClickListener;
 import tv.ismar.homepage.R;
@@ -66,14 +67,14 @@ public class TemplateDoubleLd extends Template
         View.OnClickListener {
     private int mSelectItemPosition = 1; // 标题--选中海报位置
     private TextView mTitleTv; // banner标题;
-    private ImageView mVerticalImg; // 大图海报
-    private ImageView mLtImage; // 左上角图标
+    private RecyclerImageView mVerticalImg; // 大图海报
+    private RecyclerImageView mLtImage; // 左上角图标
     private TextView mRbImage; // 右下角图标
     private TextView mIgTitleTv; // 大图标题
 /*delete by dragontec for bug 4332 start*/
 //    private RecyclerViewTV mRecyclerView;
 /*delete by dragontec for bug 4332 start*/
-    private ImageView mRtImage;//右上角图标
+    private RecyclerImageView mRtImage;//右上角图标
     private DoubleLdAdapter mAdapter;
     private FetchDataControl mFetchDataControl = null;
     private BannerLinearLayout mBannerLinearLayout;
@@ -116,11 +117,13 @@ public class TemplateDoubleLd extends Template
         }
     }
 
-    public TemplateDoubleLd(Context context) {
-        super(context);
+	/*modify by dragontec for bug 4334 start*/
+    public TemplateDoubleLd(Context context, int position) {
+        super(context, position);
         mFetchDataControl = new FetchDataControl(context, this);
         mNavigationtHandler = new NavigationtHandler();
     }
+    /*modify by dragontec for bug 4334 end*/
 
     @Override
     public void onCreate() {
@@ -193,11 +196,11 @@ public class TemplateDoubleLd extends Template
 		/*modify by dragontec for bug 4221 end*/
 /*modify by dragontec for bug 4332 start*/
         mHeaderView = LayoutInflater.from(mContext).inflate(R.layout.banner_double_ld_head, null);
-        mVerticalImg = (ImageView) mHeaderView.findViewById(R.id.double_ld_image_poster);
-        mLtImage = (ImageView) mHeaderView.findViewById(R.id.double_ld_image_lt_icon);
+        mVerticalImg = (RecyclerImageView) mHeaderView.findViewById(R.id.double_ld_image_poster);
+        mLtImage = (RecyclerImageView) mHeaderView.findViewById(R.id.double_ld_image_lt_icon);
         mRbImage = (TextView) mHeaderView.findViewById(R.id.double_ld_image_rb_icon);
         mIgTitleTv = (TextView) mHeaderView.findViewById(R.id.double_ld_image_title);
-        mRtImage= (ImageView) mHeaderView.findViewById(R.id.guide_rt_icon);
+        mRtImage= (RecyclerImageView) mHeaderView.findViewById(R.id.guide_rt_icon);
 /*modify by dragontec for bug 4332 end*/
         mDoubleLayoutManager =
                 new StaggeredGridLayoutManagerTV(2, StaggeredGridLayoutManager.HORIZONTAL);
@@ -249,33 +252,54 @@ public class TemplateDoubleLd extends Template
         mName = bundle.getString(NAME_KEY);
         mChannel = bundle.getString(CHANNEL_KEY);
         mTitleCountTv.setText("00/00");
-/*modify by dragontec for bug 4200 start*/
+/*modify by dragontec for bug 4334 start*/
+		mFetchDataControl.fetchBanners(mBannerPk, 1, false);
     }
 
 	@Override
 	public void fetchData() {
 		hasAppeared = true;
-		mFetchDataControl.fetchBanners(mBannerPk, 1, false);
 	}
-/*modify by dragontec for bug 4200 end*/
+
+	@Override
+	public void fillData() {
+    	if (isNeedFillData) {
+			isNeedFillData = false;
+			initTitle();
+			initImage();
+			initRecycleView();
+		}
+	}
+
+/*modify by dragontec for bug 4334 end*/
+
+	/*modify by dragontec for bug 4334 start*/
+	private void initAdapter() {
+		if (mAdapter == null) {
+			mAdapter = new DoubleLdAdapter(mContext);
+			mAdapter.setOnItemClickListener(this);
+			/*modify by dragontec for bug 4332 start*/
+			mAdapter.setHeaderView(mHeaderView);
+			/*modify by dragontec for bug 4332 end*/
+		}
+	}
 
     private void initRecycleView() {
-        if (mAdapter == null) {
-            mAdapter = new DoubleLdAdapter(mContext, mFetchDataControl.mPoster);
-            mAdapter.setOnItemClickListener(this);
-/*modify by dragontec for bug 4332 start*/
-            mAdapter.setHeaderView(mHeaderView);
-/*modify by dragontec for bug 4332 end*/
-            mRecyclerView.setAdapter(mAdapter);
-	/*add by dragontec for bug 4077 start*/
-			checkFocus(mRecyclerView);
-	/*add by dragontec for bug 4077 end*/
-        } else {
-            int start = mFetchDataControl.mPoster.size() - mFetchDataControl.mHomeEntity.posters.size();
-            int end = mFetchDataControl.mPoster.size();
-            mAdapter.notifyItemRangeChanged(start, end);
-        }
+		if (mAdapter != null) {
+			if (mAdapter.getData() == null) {
+				mAdapter.setData(mFetchDataControl.mPoster);
+				mRecyclerView.setAdapter(mAdapter);
+				/*add by dragontec for bug 4077 start*/
+				checkFocus(mRecyclerView);
+				/*add by dragontec for bug 4077 end*/
+			} else {
+				int start = mFetchDataControl.mPoster.size() - mFetchDataControl.mHomeEntity.posters.size();
+				int end = mFetchDataControl.mPoster.size();
+				mAdapter.notifyItemRangeChanged(start, end);
+			}
+		}
     }
+    /*modify by dragontec for bug 4334 end*/
 
     private void initImage() {
         BigImage data = mFetchDataControl.mHomeEntity.bg_image;
@@ -305,9 +329,11 @@ public class TemplateDoubleLd extends Template
     @Override
     public void callBack(int flags, Object... args) {
         if (flags == FetchDataControl.FETCH_BANNERS_LIST_FLAG) { // 获取单个banner业务
-            initTitle();
-            initRecycleView();
-            initImage();
+			/*modify by dragontec for bug 4334 start*/
+			isNeedFillData = true;
+			initAdapter();
+			checkViewAppear();
+			/*modify by dragontec for bug 4334 end*/
 	/* modify by dragontec for bug 4264 start */
 			mRecyclerView.setOnLoadMoreComplete();
         } else {

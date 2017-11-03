@@ -12,7 +12,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
+//import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Space;
@@ -32,6 +32,7 @@ import java.util.regex.Pattern;
 
 import tv.ismar.app.core.VipMark;
 import tv.ismar.app.entity.banner.BannerEntity;
+import tv.ismar.app.widget.RecyclerImageView;
 import tv.ismar.homepage.R;
 import tv.ismar.searchpage.utils.JasmineUtil;
 
@@ -234,14 +235,14 @@ public class BannerMovieMixAdapter extends RecyclerView.Adapter<BannerMovieMixAd
 /*add by dragontec for bug 4265 end*/
 	{
 
-        private final ImageView markRT;
+        private final RecyclerImageView markRT;
         private Space mLeftSpace;
-        private ImageView mImageView;
+        private RecyclerImageView mImageView;
         private TextView mTitle;
         private View mItemView;
         private LinearLayout itemLayout;
         private RelativeLayout itemWrapper;
-        private ImageView markLT;
+        private RecyclerImageView markLT;
         private TextView markRB;
 
 
@@ -256,12 +257,12 @@ public class BannerMovieMixAdapter extends RecyclerView.Adapter<BannerMovieMixAd
 /*add by dragontec for bug 4265 start*/
 			mItemView.findViewById(R.id.item_layout).setOnKeyListener(this);
 /*add by dragontec for bug 4265 end*/
-            mImageView = (ImageView) itemView.findViewById(R.id.image_view);
+            mImageView = (RecyclerImageView) itemView.findViewById(R.id.image_view);
             mTitle = (TextView) itemView.findViewById(R.id.title);
             mLeftSpace = (Space)itemView.findViewById(R.id.left_space);
-            markLT = (ImageView) itemView.findViewById(R.id.banner_mark_lt);
+            markLT = (RecyclerImageView) itemView.findViewById(R.id.banner_mark_lt);
             markRB = (TextView)itemView.findViewById(R.id.banner_mark_br);
-            markRT = (ImageView) itemView.findViewById(R.id.banner_mark_rt);
+            markRT = (RecyclerImageView) itemView.findViewById(R.id.banner_mark_rt);
         }
 
         int getItemId(String url) {

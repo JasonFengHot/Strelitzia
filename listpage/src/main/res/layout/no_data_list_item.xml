@@ -19,13 +19,13 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-            <ImageView
+            <tv.ismar.app.widget.RecyclerImageView
                 android:id="@+id/item_image"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
 
                 />
-            <ImageView
+            <tv.ismar.app.widget.RecyclerImageView
                 android:id="@+id/vip_image"
                 android:layout_width="@dimen/history_100"
                 android:layout_height="@dimen/history_100"

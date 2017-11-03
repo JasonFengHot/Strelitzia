@@ -9,8 +9,9 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LinearInterpolator;
-import android.widget.ImageView;
+//import android.widget.ImageView;
 
+import tv.ismar.app.widget.RecyclerImageView;
 import tv.ismar.homepage.R;
 
 /**
@@ -18,7 +19,7 @@ import tv.ismar.homepage.R;
  */
 
 public class UpdateSlienceLoading extends Fragment {
-    private ImageView updateLoadingImg;
+    private RecyclerImageView updateLoadingImg;
 
     @Nullable
     @Override
@@ -29,7 +30,7 @@ public class UpdateSlienceLoading extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        updateLoadingImg = (ImageView) view.findViewById(R.id.update_loading_img);
+        updateLoadingImg = (RecyclerImageView) view.findViewById(R.id.update_loading_img);
         Animation operatingAnim = AnimationUtils.loadAnimation(getContext(), R.anim.qpp_update_tip);
         LinearInterpolator lin = new LinearInterpolator();
         operatingAnim.setInterpolator(lin);

@@ -2,9 +2,10 @@ package tv.ismar.player.adapter;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.ImageView;
+//import android.widget.ImageView;
 import android.widget.TextView;
 
+import tv.ismar.app.widget.RecyclerImageView;
 import tv.ismar.player.R;
 
 /**
@@ -13,10 +14,10 @@ import tv.ismar.player.R;
 
 public class EpisodeViewHolder extends RecyclerView.ViewHolder {
         TextView title;
-        ImageView play_select;
+        RecyclerImageView play_select;
         public EpisodeViewHolder(View itemView) {
             super(itemView);
             title= (TextView) itemView.findViewById(R.id.episode_pk);
-            play_select= (ImageView) itemView.findViewById(R.id.select_image);
+            play_select= (RecyclerImageView) itemView.findViewById(R.id.select_image);
         }
 }

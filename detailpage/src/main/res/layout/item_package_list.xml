@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
 >
 
-    <ImageView
+    <tv.ismar.app.widget.RecyclerImageView
         android:id="@+id/ItemdefaultImage"
         android:layout_width="@dimen/package_item_default_W"
         android:layout_height="@dimen/package_item_default_H"
@@ -14,7 +14,7 @@
 
         android:background="@drawable/selector_related_item"/>
 
-    <ImageView
+    <tv.ismar.app.widget.RecyclerImageView
         android:id="@+id/ItemImage"
         android:layout_width="@dimen/package_item_ItemImage_W"
         android:layout_height="@dimen/package_item_ItemImage_H"

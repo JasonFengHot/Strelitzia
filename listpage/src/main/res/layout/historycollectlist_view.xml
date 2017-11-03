@@ -19,7 +19,7 @@
         android:layout_marginTop="@dimen/history_top_textBl"
         android:textColor="#FFFFFF"
         android:textSize="@dimen/filmitem_portrait_detail_title_size" />
-    <!--<ImageView-->
+    <!--<tv.ismar.app.widget.RecyclerImageView-->
         <!--android:id="@+id/gridview_line"-->
         <!--android:layout_marginLeft="@dimen/gridview_line_ML"-->
         <!--android:layout_width="@dimen/gridview_main_gridview_line_W"-->
@@ -49,7 +49,7 @@
             />
 </LinearLayout>
 
-    <ImageView
+    <tv.ismar.app.widget.RecyclerImageView
             android:layout_marginLeft="@dimen/divider_blowhead_ML"
             android:layout_marginRight="@dimen/divider_blowhead_ML"
             android:layout_width="match_parent"
@@ -64,7 +64,7 @@
         android:orientation="horizontal"
          android:visibility="gone"
         >
-           <ImageView
+           <tv.ismar.app.widget.RecyclerImageView
             android:id="@+id/arrow_left"
             android:layout_width="@dimen/grid_view_main_arrow_left_W"
             android:layout_height="@dimen/grid_view_main_arrow_left_H"
@@ -83,7 +83,7 @@
              android:focusableInTouchMode="false">
         </tv.ismar.app.widget.ScrollableSectionList>
 
-        <ImageView
+        <tv.ismar.app.widget.RecyclerImageView
             android:id="@+id/arrow_right"
             android:layout_width="@dimen/grid_view_main_arrow_left_W"
             android:layout_height="@dimen/grid_view_main_arrow_left_H"

@@ -4,7 +4,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-    <ImageView
+    <tv.ismar.app.widget.RecyclerImageView
         android:layout_marginTop="@dimen/home_logo_margin_top"
         android:layout_marginLeft="@dimen/home_logo_margin_left"
         android:layout_width="@dimen/sakura_ismartv_icon_width"

@@ -67,14 +67,14 @@
                         android:layout_below="@id/detail_title"
                         android:layout_marginTop="@dimen/entertainment_detail_preview_img_mt">
 
-                        <ImageView
+                        <tv.ismar.app.widget.RecyclerImageView
                             android:id="@+id/detail_preview"
                             android:layout_width="@dimen/entertainment_detail_preview_img_w"
                             android:layout_height="@dimen/entertainment_detail_preview_img_h"
                             android:scaleType="centerCrop"
                             app:imageUrl="@{tasks.itemHorizontalUrl}"/>
 
-                        <ImageView
+                        <tv.ismar.app.widget.RecyclerImageView
                             android:id="@+id/detail_right_top_corner"
                             android:layout_width="@dimen/entertainment_detail_preview_img_w"
                             android:layout_height="@dimen/entertainment_detail_preview_img_h"
@@ -397,7 +397,7 @@
 
                     </LinearLayout>
 
-                    <ImageView
+                    <tv.ismar.app.widget.RecyclerImageView
                         android:id="@+id/source"
                         android:layout_width="@dimen/source_tag_w"
                         android:layout_height="@dimen/source_tag_h"
@@ -661,7 +661,7 @@
 
         </LinearLayout>
 
-        <ImageView
+        <tv.ismar.app.widget.RecyclerImageView
             android:id="@+id/tmp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

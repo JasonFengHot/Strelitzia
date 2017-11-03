@@ -16,7 +16,7 @@
         android:textColor="#FFFFFF"
         android:textSize="@dimen/text_size_24sp" />
 
-    <ImageView
+    <tv.ismar.app.widget.RecyclerImageView
         android:id="@+id/indicator_image"
         android:layout_width="match_parent"
         android:layout_height="@dimen/header_fragment_mine_indicator_h"

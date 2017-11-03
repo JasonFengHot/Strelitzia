@@ -5,7 +5,7 @@
     android:clipToPadding="false"
     android:clipChildren="false"
     >
-<ImageView
+<tv.ismar.app.widget.RecyclerImageView
     android:id="@+id/subject_bg"
     android:layout_width="match_parent"
     android:layout_height="match_parent" />
@@ -28,13 +28,13 @@
         android:clipChildren="false"
         android:paddingRight="@dimen/subject_movie_recycleview_pr"
         />
-    <ImageView
+    <tv.ismar.app.widget.RecyclerImageView
         android:id="@+id/left_layer_movie"
         android:layout_width="@dimen/subject_movie_layer_left_w"
         android:layout_height="match_parent"
         android:src="@drawable/left_layer_movie"
         android:visibility="invisible"/>
-    <ImageView
+    <tv.ismar.app.widget.RecyclerImageView
         android:id="@+id/right_layer_movie"
         android:layout_width="@dimen/subject_movie_layer_right_w"
         android:layout_height="match_parent"
@@ -44,7 +44,7 @@
 </FrameLayout>
 
 
-    <ImageView
+    <tv.ismar.app.widget.RecyclerImageView
         android:id="@+id/poster_focus"
         android:layout_width="@dimen/subject_movie_focus_w"
         android:layout_height="@dimen/subject_movie_focus_h"
@@ -71,13 +71,13 @@
             android:clipToPadding="false"
             android:clipChildren="false"
             />
-        <ImageView
+        <tv.ismar.app.widget.RecyclerImageView
             android:id="@+id/left_layer_tv"
             android:layout_width="@dimen/subject_tv_layer_left_w"
             android:layout_height="match_parent"
             android:src="@drawable/left_layer_tv"
             android:visibility="invisible"/>
-        <ImageView
+        <tv.ismar.app.widget.RecyclerImageView
             android:id="@+id/right_layer_tv"
             android:layout_width="@dimen/subject_tv_layer_right_w"
             android:layout_height="match_parent"
@@ -86,7 +86,7 @@
             android:visibility="invisible"/>
     </FrameLayout>
 
-    <ImageView
+    <tv.ismar.app.widget.RecyclerImageView
         android:id="@+id/tv_poster_focus"
         android:layout_width="@dimen/subject_tv_poster_w"
         android:layout_height="@dimen/subject_tv_poster_h"

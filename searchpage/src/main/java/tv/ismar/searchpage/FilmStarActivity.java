@@ -12,7 +12,7 @@ import android.view.View.OnFocusChangeListener;
 import android.view.View.OnHoverListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ImageView;
+//import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -37,6 +37,7 @@ import tv.ismar.app.models.SemantichObjectEntity;
 import tv.ismar.app.ui.HGridView;
 import tv.ismar.app.ui.adapter.HGridSearchAdapterImpl;
 import tv.ismar.app.util.DeviceUtils;
+import tv.ismar.app.widget.RecyclerImageView;
 import tv.ismar.searchpage.utils.JasmineUtil;
 import tv.ismar.searchpage.weight.MyDialog;
 
@@ -52,15 +53,15 @@ public class FilmStarActivity extends BaseActivity implements OnFocusChangeListe
     private LinearLayout indicatorListLayout;
     private HGridView vodHorizontalScrollView;
 
-    private ImageView contentArrowLeft;
-    private ImageView contentArrowRight;
+    private RecyclerImageView contentArrowLeft;
+    private RecyclerImageView contentArrowRight;
 
     private TextView actorView;
     private TextView directorView;
     private TextView areaView;
     private TextView descriptionView;
-    private ImageView indicatorArrowLeft;
-    private ImageView indicatorArrowRight;
+    private RecyclerImageView indicatorArrowLeft;
+    private RecyclerImageView indicatorArrowRight;
 
 
     //    private MessagePopWindow networkEorrorPopupWindow;
@@ -68,12 +69,12 @@ public class FilmStarActivity extends BaseActivity implements OnFocusChangeListe
     private View indicatorSelectedView;
 
     private TvHorizontalScrollView horizontalScrollView;
-    private ImageView dividerLine;
-    private ImageView focusTranslate;
+    private RecyclerImageView dividerLine;
+    private RecyclerImageView focusTranslate;
 
 //    private View currentFocuedIndicatorView;
 
-    private ImageView mContentBackgroundView;
+    private RecyclerImageView mContentBackgroundView;
     private MyDialog errorDialog;
     private String title;
     private HGridSearchAdapterImpl searchAdapter;
@@ -113,7 +114,7 @@ public class FilmStarActivity extends BaseActivity implements OnFocusChangeListe
     private void initViews() {
         filmStartitle = (TextView) findViewById(R.id.film_star_title_new);
         indicatorListLayout = (LinearLayout) findViewById(R.id.film_list_indicator_new);
-        focusTranslate = (ImageView) findViewById(R.id.focus_translate_new);
+        focusTranslate = (RecyclerImageView) findViewById(R.id.focus_translate_new);
 
         focusTranslate.setOnFocusChangeListener(new OnFocusChangeListener() {
             @Override
@@ -135,14 +136,14 @@ public class FilmStarActivity extends BaseActivity implements OnFocusChangeListe
         directorView = (TextView) findViewById(R.id.director_new);
         areaView = (TextView) findViewById(R.id.area_new);
         descriptionView = (TextView) findViewById(R.id.description_new);
-        contentArrowLeft = (ImageView) findViewById(R.id.content_arrow_left_new);
-        contentArrowRight = (ImageView) findViewById(R.id.content_arrow_right_new);
-        indicatorArrowLeft = (ImageView) findViewById(R.id.indicator_left_new);
-        indicatorArrowRight = (ImageView) findViewById(R.id.indicator_right_new);
+        contentArrowLeft = (RecyclerImageView) findViewById(R.id.content_arrow_left_new);
+        contentArrowRight = (RecyclerImageView) findViewById(R.id.content_arrow_right_new);
+        indicatorArrowLeft = (RecyclerImageView) findViewById(R.id.indicator_left_new);
+        indicatorArrowRight = (RecyclerImageView) findViewById(R.id.indicator_right_new);
         horizontalScrollView = (TvHorizontalScrollView) findViewById(R.id.scrollview_new);
         vodHorizontalScrollView = (HGridView) findViewById(R.id.vod_scrollview_new);
-        dividerLine = (ImageView) findViewById(R.id.divider_line_new);
-        mContentBackgroundView = (ImageView) findViewById(R.id.content_bg_new);
+        dividerLine = (RecyclerImageView) findViewById(R.id.divider_line_new);
+        mContentBackgroundView = (RecyclerImageView) findViewById(R.id.content_bg_new);
         contentArrowRight.setOnFocusChangeListener(this);
         contentArrowLeft.setOnFocusChangeListener(this);
         indicatorArrowLeft.setOnFocusChangeListener(this);
@@ -570,7 +571,7 @@ public class FilmStarActivity extends BaseActivity implements OnFocusChangeListe
     class OnIndicatorItemFocusedListener implements OnFocusChangeListener {
         @Override
         public void onFocusChange(View v, boolean hasFocus) {
-            ImageView bg = (ImageView) v.findViewById(R.id.indicator_bg_new);
+            RecyclerImageView bg = (RecyclerImageView) v.findViewById(R.id.indicator_bg_new);
             TextView textView = (TextView) v.findViewById(R.id.title_new);
             if (hasFocus) {
                 focusTranslate.setFocusable(false);

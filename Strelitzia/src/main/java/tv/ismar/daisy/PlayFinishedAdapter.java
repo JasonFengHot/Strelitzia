@@ -8,7 +8,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
+//import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.squareup.picasso.MemoryPolicy;
@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import tv.ismar.app.models.PlayfinishedRecommend;
 import tv.ismar.app.ui.adapter.OnItemClickListener;
 import tv.ismar.app.ui.adapter.OnItemFocusedListener;
+import tv.ismar.app.widget.RecyclerImageView;
 
 public class PlayFinishedAdapter extends RecyclerView.Adapter<PlayFinishedAdapter.PlayViewHolder>{
 
@@ -110,16 +111,16 @@ public class PlayFinishedAdapter extends RecyclerView.Adapter<PlayFinishedAdapte
 
 	public static class PlayViewHolder extends RecyclerView.ViewHolder{
 
-		private final ImageView item_horizontal_poster_image;
+		private final RecyclerImageView item_horizontal_poster_image;
 		private final TextView item_horizontal_poster_title;
-		private final ImageView item_vertical_poster_image;
+		private final RecyclerImageView item_vertical_poster_image;
 		private final TextView item_vertical_poster_title;
 
 		public PlayViewHolder(View itemView) {
 			super(itemView);
-			item_horizontal_poster_image = (ImageView) itemView.findViewById(R.id.item_horizontal_poster_image);
+			item_horizontal_poster_image = (RecyclerImageView) itemView.findViewById(R.id.item_horizontal_poster_image);
 			item_horizontal_poster_title = (TextView) itemView.findViewById(R.id.item_horizontal_poster_title);
-			item_vertical_poster_image = (ImageView) itemView.findViewById(R.id.item_vertical_poster_image);
+			item_vertical_poster_image = (RecyclerImageView) itemView.findViewById(R.id.item_vertical_poster_image);
 			item_vertical_poster_title = (TextView) itemView.findViewById(R.id.item_vertical_poster_title);
 		}
 

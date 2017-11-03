@@ -10,7 +10,7 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.ImageView;
+//import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -45,6 +45,7 @@ import tv.ismar.app.entity.HistoryFavoriteEntity;
 import tv.ismar.app.entity.Item;
 import tv.ismar.app.ui.HeadFragment;
 import tv.ismar.app.util.ActivityUtils;
+import tv.ismar.app.widget.RecyclerImageView;
 import tv.ismar.pay.LoginFragment;
 import tv.ismar.usercenter.R;
 import tv.ismar.usercenter.presenter.HelpPresenter;
@@ -456,7 +457,7 @@ public class UserCenterActivity extends BaseActivity implements LoginFragment.Lo
         @Override
         public boolean onHover(final View v, MotionEvent event) {
             isOnKeyDown = false;
-            ImageView textHoverImage = (ImageView) v.findViewById(R.id.text_select_bg);
+            RecyclerImageView textHoverImage = (RecyclerImageView) v.findViewById(R.id.text_select_bg);
             switch (event.getAction()) {
                 case MotionEvent.ACTION_HOVER_ENTER:
                 case MotionEvent.ACTION_HOVER_MOVE:
@@ -466,7 +467,7 @@ public class UserCenterActivity extends BaseActivity implements LoginFragment.Lo
                     }
 
                     if (lastHoveredView != null) {
-                        ImageView lastTextSelectImage = (ImageView) lastHoveredView.findViewById(R.id.text_select_bg);
+                        RecyclerImageView lastTextSelectImage = (RecyclerImageView) lastHoveredView.findViewById(R.id.text_select_bg);
                         lastTextSelectImage.setVisibility(View.INVISIBLE);
                     }
                     textHoverImage.setVisibility(View.VISIBLE);
@@ -493,21 +494,21 @@ public class UserCenterActivity extends BaseActivity implements LoginFragment.Lo
 
     private void changeViewState(View parentView, ViewState viewState) {
         TextView textView = (TextView) parentView.findViewById(R.id.indicator_text);
-        ImageView textSelectImage = (ImageView) parentView.findViewById(R.id.text_select_bg);
-        ImageView textFocusImage = (ImageView) parentView.findViewById(R.id.text_focus_bg);
+        RecyclerImageView textSelectImage = (RecyclerImageView) parentView.findViewById(R.id.text_select_bg);
+        RecyclerImageView textFocusImage = (RecyclerImageView) parentView.findViewById(R.id.text_focus_bg);
         switch (viewState) {
             case Select:
                 if (parentView.isEnabled()) {
                     if (lastSelectedView != null) {
-                        ImageView lastTextSelectImage = (ImageView) lastSelectedView.findViewById(R.id.text_select_bg);
-                        ImageView lastTextFocusImage = (ImageView) lastSelectedView.findViewById(R.id.text_focus_bg);
+                        RecyclerImageView lastTextSelectImage = (RecyclerImageView) lastSelectedView.findViewById(R.id.text_select_bg);
+                        RecyclerImageView lastTextFocusImage = (RecyclerImageView) lastSelectedView.findViewById(R.id.text_focus_bg);
 
                         lastTextSelectImage.setVisibility(View.INVISIBLE);
                         lastTextFocusImage.setVisibility(View.INVISIBLE);
                     }
 
                     if (lastHoveredView != null) {
-                        ImageView lastTextHoverImage = (ImageView) lastHoveredView.findViewById(R.id.text_select_bg);
+                        RecyclerImageView lastTextHoverImage = (RecyclerImageView) lastHoveredView.findViewById(R.id.text_select_bg);
                         lastTextHoverImage.setVisibility(View.INVISIBLE);
                     }
 
@@ -557,14 +558,16 @@ public class UserCenterActivity extends BaseActivity implements LoginFragment.Lo
 
     }
 
+    /*modify by dragontec for bug 4393 start*/
     @Override
-    public void onLogout() {
+    public void onLogout(boolean needShowToast) {
         changeViewState(indicatorView.get(2), ViewState.Enable);
         indicatorView.get(1).callOnClick();
         indicatorView.get(1).requestFocus();
         changeViewState(indicatorView.get(1), ViewState.Select);
         indicatorView.get(6).setVisibility(View.GONE);
     }
+    /*modify by dragontec for bug 4393 end*/
 
     @Override
     protected void onDestroy() {
@@ -584,7 +587,7 @@ public class UserCenterActivity extends BaseActivity implements LoginFragment.Lo
 
     public void clearTheLastHoveredVewState() {
         if (lastHoveredView != null) {
-            ImageView lastTextSelectImage = (ImageView) lastHoveredView.findViewById(R.id.text_select_bg);
+            RecyclerImageView lastTextSelectImage = (RecyclerImageView) lastHoveredView.findViewById(R.id.text_select_bg);
             lastTextSelectImage.setVisibility(View.INVISIBLE);
         }
 

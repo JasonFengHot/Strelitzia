@@ -28,12 +28,13 @@ import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.ImageView;
+//import android.widget.ImageView;
 
 import tv.ismar.app.R;
 import tv.ismar.app.core.DaisyUtils;
 import tv.ismar.app.core.ImageProcessor;
 import tv.ismar.app.core.ImageRequest;
+import tv.ismar.app.widget.RecyclerImageView;
 
 
 /**
@@ -57,7 +58,7 @@ import tv.ismar.app.core.ImageRequest;
  * 
  * @author Cyril Mottier
  */
-public class AsyncImageView extends ImageView implements ImageRequest.ImageRequestCallback {
+public class AsyncImageView extends RecyclerImageView implements ImageRequest.ImageRequestCallback {
 
     private static final String LOG_TAG = AsyncImageView.class.getSimpleName();
 

@@ -12,7 +12,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.ImageView;
+//import android.widget.ImageView;
 
 import com.squareup.picasso.Picasso;
 
@@ -22,6 +22,7 @@ import java.util.TimerTask;
 
 import tv.ismar.app.ad.Advertisement;
 import tv.ismar.app.network.entity.AdElementEntity;
+import tv.ismar.app.widget.RecyclerImageView;
 import tv.ismar.player.R;
 import tv.ismar.player.event.PlayerEvent;
 
@@ -39,7 +40,7 @@ public class AdImageDialog extends Dialog {
     private Advertisement advertisement;
     private int mCurrentAdIndex = 0;
     private int adIndex=0;
-    private ImageView imageView;
+    private RecyclerImageView imageView;
     private Button button;
 
     public AdImageDialog(Context context, int theme, List<AdElementEntity> advEntityList) {
@@ -58,7 +59,7 @@ public class AdImageDialog extends Dialog {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.player_pause_ad);
-        imageView = (ImageView) findViewById(R.id.player_pause_image);
+        imageView = (RecyclerImageView) findViewById(R.id.player_pause_image);
         button = (Button) findViewById(R.id.player_pause_close);
         button.setVisibility(View.GONE);
 

@@ -32,7 +32,7 @@
         android:layout_marginRight="@dimen/player_logo_image_mt"
         android:layout_marginTop="@dimen/player_logo_image_mt">
 
-        <ImageView
+        <tv.ismar.app.widget.RecyclerImageView
             android:id="@+id/player_logo_image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -116,7 +116,7 @@
         android:clipToPadding="false"
         android:visibility="gone">
 
-        <ImageView
+        <tv.ismar.app.widget.RecyclerImageView
             android:id="@+id/player_start"
             android:layout_width="@dimen/player_70"
             android:layout_height="@dimen/player_70"
@@ -196,21 +196,21 @@
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true">
 
-                <ImageView
+                <tv.ismar.app.widget.RecyclerImageView
                     android:id="@+id/player_previous"
                     android:layout_width="@dimen/player_icon_w"
                     android:layout_height="@dimen/player_icon_h"
                     android:clickable="true"
                     android:src="@drawable/selector_player_preview"/>
 
-                <!--<ImageView-->
+                <!--<tv.ismar.app.widget.RecyclerImageView-->
                     <!--android:id="@+id/player_start"-->
                     <!--android:layout_width="@dimen/player_icon_w"-->
                     <!--android:layout_height="@dimen/player_icon_h"-->
                     <!--android:layout_marginLeft="@dimen/player_icon_ml"-->
                     <!--android:clickable="true"/>-->
 
-                <ImageView
+                <tv.ismar.app.widget.RecyclerImageView
                     android:id="@+id/player_forward"
                     android:layout_width="@dimen/player_icon_w"
                     android:layout_height="@dimen/player_icon_h"
@@ -221,7 +221,7 @@
         </RelativeLayout>
     </LinearLayout>
 
-    <ImageView
+    <tv.ismar.app.widget.RecyclerImageView
         android:id="@+id/player_shadow"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -235,7 +235,7 @@
         android:orientation="horizontal"
         android:visibility="gone">
 
-        <ImageView
+        <tv.ismar.app.widget.RecyclerImageView
             android:id="@+id/player_buffer_img"
             android:layout_width="@dimen/player_loading_size"
             android:layout_height="@dimen/player_loading_size"

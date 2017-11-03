@@ -33,7 +33,7 @@
             android:gravity="center_horizontal"
             android:layout_marginTop="@dimen/today_word_tv_margin_top"
             android:textColor="#ffffff"/>
-    <ImageView
+    <tv.ismar.app.widget.RecyclerImageView
             android:id="@+id/iv_toggle"
             android:layout_width="@dimen/toggle_width"
             android:layout_height="match_parent"

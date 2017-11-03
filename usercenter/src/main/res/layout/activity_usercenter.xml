@@ -22,7 +22,7 @@
             android:layout_height="@dimen/usercenter_header_height"
             android:focusable="false" />
 
-        <ImageView
+        <tv.ismar.app.widget.RecyclerImageView
             android:layout_width="match_parent"
             android:layout_height="@dimen/usercenter_horizontal_divider_line_height"
             android:layout_marginLeft="@dimen/horizontal_divider_ml"
@@ -31,7 +31,7 @@
             android:scaleType="fitXY"
             android:src="@drawable/horizontal_divider_line" />
 
-        <ImageView
+        <tv.ismar.app.widget.RecyclerImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:focusable="true" />
@@ -50,7 +50,7 @@
                 android:orientation="vertical" />
 
 
-            <ImageView
+            <tv.ismar.app.widget.RecyclerImageView
                 android:layout_width="@dimen/usercenter_vertical_divider_line2_width"
                 android:layout_height="match_parent"
                 android:layout_marginTop="@dimen/usercenter_vertical_divider_line_mt"

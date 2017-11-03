@@ -119,7 +119,6 @@ public abstract class BaseViewHolder extends RecyclerView.ViewHolder implements
 
     @Override
     public boolean onHover(View v, MotionEvent event) {
-        Log.i("onHover", "ViewHolder action:"+event.getAction());
         switch (event.getAction()){
             case MotionEvent.ACTION_HOVER_ENTER://鼠标放置到view上时 9
 			/*delete by dragontec for bug 4169 start*/
@@ -188,7 +187,7 @@ public abstract class BaseViewHolder extends RecyclerView.ViewHolder implements
                     textView.setText(title);
                     textView.setEllipsize(TextUtils.TruncateAt.END);
                     textView.setMarqueeRepeatLimit(0);
-                    textView.setHorizontallyScrolling(true);
+                    textView.setHorizontallyScrolling(false);
                     textView.setSelected(false);
                 }
             }

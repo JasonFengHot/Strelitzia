@@ -11,7 +11,7 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
+//import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -35,6 +35,7 @@ import tv.ismar.app.ui.adapter.OnItemClickListener;
 import tv.ismar.app.ui.adapter.OnItemFocusedListener;
 import tv.ismar.app.util.BitmapDecoder;
 import tv.ismar.app.widget.MyRecyclerView;
+import tv.ismar.app.widget.RecyclerImageView;
 import tv.ismar.searchpage.utils.JasmineUtil;
 
 
@@ -69,7 +70,7 @@ public class PlayFinishedActivity extends BaseActivity implements View.OnClickLi
     private boolean backToPlay=false;
     private String to;
     private String frompage;
-    private ImageView play_exit_error_img;
+    private RecyclerImageView play_exit_error_img;
     private BitmapDecoder bitmapDecoder;
 
 
@@ -106,7 +107,7 @@ public class PlayFinishedActivity extends BaseActivity implements View.OnClickLi
         vertical_poster_focus = findViewById(R.id.vertical_poster_focus);
         horizontal_poster_focus = findViewById(R.id.horizontal_poster_focus);
         play_exit_error = findViewById(R.id.play_exit_error);
-        play_exit_error_img = (ImageView) findViewById(R.id.play_exit_error_img);
+        play_exit_error_img = (RecyclerImageView) findViewById(R.id.play_exit_error_img);
         play_finished_confirm_btn.setOnClickListener(this);
         play_finished_cancel_btn.setOnClickListener(this);
         play_finished_confirm_btn.setOnHoverListener(this);

@@ -7,7 +7,7 @@
     android:orientation="vertical">
 
 
-    <ImageView
+    <tv.ismar.app.widget.RecyclerImageView
         android:layout_width="match_parent"
         android:layout_height="@dimen/filmitem_portrait_filter_divider_h"
         android:layout_marginTop="@dimen/filter_divider_mt"
@@ -24,7 +24,7 @@
             android:layout_height="match_parent"
             android:visibility="invisible">
 
-            <ImageView
+            <tv.ismar.app.widget.RecyclerImageView
                 android:id="@+id/vod_payment_intro_unactive_background"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
@@ -49,7 +49,7 @@
                     android:textColor="#ffffffff"
                     android:textSize="@dimen/item_detail_btn_left_textsize"/>
 
-                <ImageView
+                <tv.ismar.app.widget.RecyclerImageView
                     android:layout_width="@dimen/package_detail_divider_W"
                     android:layout_height="@dimen/package_detail_divider_H"
                     android:layout_marginTop="@dimen/package_detail_divider_MT"
@@ -89,7 +89,7 @@
                 android:layout_marginTop="@dimen/vod_payment_package_posterAndBuyBotton_container_MT"
                 android:visibility="visible">
 
-                <ImageView
+                <tv.ismar.app.widget.RecyclerImageView
                     android:id="@+id/vod_payment_poster"
                     android:layout_width="@dimen/vod_payment_poster_W"
                     android:layout_height="@dimen/vod_payment_poster_H"
@@ -99,7 +99,7 @@
                     android:focusable="false"
                     android:padding="@dimen/item_detail_previewimgview_padding"
                     android:scaleType="fitXY"/>
-                <ImageView
+                <tv.ismar.app.widget.RecyclerImageView
                     android:id="@+id/isbuy_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -109,7 +109,7 @@
                     android:layout_marginTop="@dimen/item_detail_detailquality_margintop"
                     android:background="@drawable/package_buyed_bg"
                     android:visibility="gone"/>
-                <ImageView
+                <tv.ismar.app.widget.RecyclerImageView
                     android:id="@+id/quality_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -167,7 +167,7 @@
                 android:textColor="#ffffffff"
                 android:textSize="@dimen/item_detail_btn_left_textsize"/>
 
-            <ImageView
+            <tv.ismar.app.widget.RecyclerImageView
                 android:layout_width="@dimen/package_detail_divider_W"
                 android:layout_height="@dimen/package_detail_divider_H"
                 android:layout_marginLeft="@dimen/vod_payment_package_title_ML"
@@ -216,7 +216,7 @@
                 android:textColor="#FFBBBBBB"
                 android:textSize="@dimen/item_detail_related_video_label_textsize"/>
 
-            <ImageView
+            <tv.ismar.app.widget.RecyclerImageView
                 android:layout_width="@dimen/item_detail_related_divider_width"
                 android:layout_height="@dimen/item_detail_related_divider_height"
                 android:layout_marginBottom="@dimen/item_detail_related_divider_marginbottom"

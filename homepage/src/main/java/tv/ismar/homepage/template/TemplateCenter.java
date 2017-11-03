@@ -48,10 +48,12 @@ public class TemplateCenter extends Template
 /*delete by dragontec for bug 4332 end*/
     private String mBannerPk;
 
-    public TemplateCenter(Context context) {
-        super(context);
+	/*modify by dragontec for bug 4334 start*/
+    public TemplateCenter(Context context, int position) {
+        super(context, position);
         mFetchDataControl = new FetchDataControl(context, this);
     }
+    /*modify by dragontec for bug 4334 end*/
 
     @Override
     public void onCreate() {
@@ -128,15 +130,24 @@ public class TemplateCenter extends Template
     @Override
     public void initData(Bundle bundle) {
         mBannerPk = bundle.getString("banner");
-/*modify by dragontec for bug 4200 start*/
+/*modify by dragontec for bug 4334 start*/
+		mFetchDataControl.fetchBanners(mBannerPk, 1, false);
     }
 
 	@Override
 	public void fetchData() {
 		hasAppeared = true;
-		mFetchDataControl.fetchBanners(mBannerPk, 1, false);
 	}
-/*modify by dragontec for bug 4200 end*/
+
+	@Override
+	public void fillData() {
+		if (isNeedFillData) {
+			isNeedFillData = false;
+			initRecycle();
+		}
+	}
+
+/*modify by dragontec for bug 4334 end*/
 
     @Override
     protected void initListener(View view) {
@@ -151,37 +162,52 @@ public class TemplateCenter extends Template
         mCenterLayoutManager.setFocusSearchFailedListener(this);
     }
 
-    private void initRecycle() {
-        if (mAdapter == null) {
-            mAdapter = new CenterAdapter(mContext, mFetchDataControl.mCarousels);
-/*modify by dragontec for bug 4332 start*/
-            mRecyclerView.setAdapter(mAdapter);
-/*modify by dragontec for bug 4332 end*/
-            mCenterLayoutManager.scrollToPositionWithOffset(
-                    mFetchDataControl.mCarousels.size() * 100,
-                    mContext.getResources().getDimensionPixelOffset(R.dimen.center_padding_offset));
-            mAdapter.setOnItemClickListener(this);
+	/*modify by dragontec for bug 4334 start*/
+    private void initAdapter() {
+    	if (mAdapter == null) {
+			mAdapter = new CenterAdapter(mContext);
+			mAdapter.setOnItemClickListener(this);
 			/*modify by dragontec for bug 4277 start*/
-            mAdapter.setOnHoverListener(this);
+			mAdapter.setOnHoverListener(this);
+		}
+	}
+
+    private void initRecycle() {
+    	if (mAdapter != null) {
+    		if (mAdapter.getData() == null) {
+    			mAdapter.setData(mFetchDataControl.mCarousels);
+    			/*modify by dragontec for bug 4332 start*/
+				mRecyclerView.setAdapter(mAdapter);
+/*modify by dragontec for bug 4332 end*/
+				mCenterLayoutManager.scrollToPositionWithOffset(
+						mFetchDataControl.mCarousels.size() * 100,
+						mContext.getResources().getDimensionPixelOffset(R.dimen.center_padding_offset));
 			/*modify by dragontec for bug 4277 start*/
 		/*add by dragontec for bug 4077 start*/
 /*modify by dragontec for bug 4332 start*/
-			checkFocus(mRecyclerView, mFetchDataControl.mCarousels.size() * 100);
+				checkFocus(mRecyclerView, mFetchDataControl.mCarousels.size() * 100);
 /*modify by dragontec for bug 4332 end*/
 		/*add by dragontec for bug 4077 end*/
-        } else {
-            int start =
-                    mFetchDataControl.mCarousels.size() - mFetchDataControl.mHomeEntity.carousels.size();
-            int end = mFetchDataControl.mPoster.size();
-            mAdapter.notifyItemRangeChanged(start, end);
-        }
+			} else {
+				int start =
+						mFetchDataControl.mCarousels.size() - mFetchDataControl.mHomeEntity.carousels.size();
+				int end = mFetchDataControl.mPoster.size();
+				mAdapter.notifyItemRangeChanged(start, end);
+			}
+		}
     }
+    /*modify by dragontec for bug 4334 end*/
 
     @Override
     public void callBack(int flags, Object... args) {
 /*modify by dragontec for bug 4332 start*/
         if (flags == FetchDataControl.FETCH_BANNERS_LIST_FLAG) { // 获取单个banner业务
-            initRecycle();
+			/*modify by dragontec for bug 4334 start*/
+			isNeedFillData = true;
+			initAdapter();
+//            initRecycle();
+			checkViewAppear();
+			/*modify by dragontec for bug 4334 end*/
 	/* modify by dragontec for bug 4264 start */
 			mRecyclerView.setOnLoadMoreComplete();
         } else if (flags == FetchDataControl.FETCH_DATA_FAIL_FLAG) {

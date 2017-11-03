@@ -5,7 +5,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
+//import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
@@ -15,6 +15,7 @@ import java.util.List;
 
 import tv.ismar.app.core.VipMark;
 import tv.ismar.app.entity.banner.BannerPoster;
+import tv.ismar.app.widget.RecyclerImageView;
 import tv.ismar.homepage.R;
 
 /**
@@ -29,10 +30,29 @@ public class DoubleLdAdapter extends BaseRecycleAdapter<DoubleLdAdapter.DoubleLd
     private List<BannerPoster> mData;
     private View mHeaderView;
 
+	/*add by dragontec for bug 4334 start*/
+    public DoubleLdAdapter(Context context) {
+    	mContext = context;
+	}
+	/*add by dragontec for bug 4334 end*/
+
     public DoubleLdAdapter(Context context, List<BannerPoster> data){
         this.mContext = context;
         this.mData = data;
     }
+
+	/*add by dragontec for bug 4334 start*/
+    public void setData(List<BannerPoster> data) {
+    	if (mData == null) {
+			mData = data;
+			notifyDataSetChanged();
+		}
+	}
+
+	public List<BannerPoster> getData(){
+		return mData;
+	}
+	/*add by dragontec for bug 4334 end*/
 
     public void setHeaderView(View headerView) {
         mHeaderView = headerView;
@@ -51,33 +71,37 @@ public class DoubleLdAdapter extends BaseRecycleAdapter<DoubleLdAdapter.DoubleLd
     public void onBindViewHolder(DoubleLdViewHolder holder, int position) {
         holder.mPosition = position;
         if(position != 0){
-            BannerPoster poster = mData.get(position-1);
-            if (!TextUtils.isEmpty(poster.poster_url)) {
-                if(poster.poster_url.equals("更多")){
-                    Picasso.with(mContext).load(R.drawable.banner_horizontal_more).into(holder.mPosterIg);
-                } else {
-                    Picasso.with(mContext).load(poster.poster_url).into(holder.mPosterIg);
-                }
-            } else {
-                Picasso.with(mContext).load(R.drawable.list_item_preview_bg).into(holder.mPosterIg);
-            }
-            Picasso.with(mContext).load(VipMark.getInstance().getBannerIconMarkImage(poster.top_left_corner)).into(holder.mLtIconTv);
-            holder.mRbIconTv.setText(new DecimalFormat("0.0").format(poster.rating_average));
-            holder.mRbIconTv.setVisibility((poster.rating_average==0) ? View.GONE:View.VISIBLE);
-            if(!TextUtils.isEmpty(poster.poster_url) && poster.poster_url.equals("更多")){
-                holder.mTitleTv.setVisibility(View.INVISIBLE);
-            } else {
-                holder.mTitleTv.setVisibility(View.VISIBLE);
-            }
-            holder.mTitleTv.setText(poster.title);
-			/*add by dragontec for bug 4325 start*/
-            String focusStr = poster.title;
-            if(poster.focus != null && !poster.focus.equals("") && !poster.focus.equals("null")){
-                focusStr = poster.focus;
-            }
-            holder.mTitleTv.setTag(new String[]{poster.title,focusStr});
-			/*add by dragontec for bug 4325 end*/
-            Picasso.with(mContext).load(VipMark.getInstance().getBannerIconMarkImage(poster.top_right_corner)).into(holder.mRtIconTv);
+        	/*modify by dragontec for bug 4334 start*/
+        	if (mData != null) {
+				BannerPoster poster = mData.get(position - 1);
+				if (!TextUtils.isEmpty(poster.poster_url)) {
+					if (poster.poster_url.equals("更多")) {
+						Picasso.with(mContext).load(R.drawable.banner_horizontal_more).into(holder.mPosterIg);
+					} else {
+						Picasso.with(mContext).load(poster.poster_url).into(holder.mPosterIg);
+					}
+				} else {
+					Picasso.with(mContext).load(R.drawable.list_item_preview_bg).into(holder.mPosterIg);
+				}
+				Picasso.with(mContext).load(VipMark.getInstance().getBannerIconMarkImage(poster.top_left_corner)).into(holder.mLtIconTv);
+				holder.mRbIconTv.setText(new DecimalFormat("0.0").format(poster.rating_average));
+				holder.mRbIconTv.setVisibility((poster.rating_average == 0) ? View.GONE : View.VISIBLE);
+				if (!TextUtils.isEmpty(poster.poster_url) && poster.poster_url.equals("更多")) {
+					holder.mTitleTv.setVisibility(View.INVISIBLE);
+				} else {
+					holder.mTitleTv.setVisibility(View.VISIBLE);
+				}
+				holder.mTitleTv.setText(poster.title);
+				/*add by dragontec for bug 4325 start*/
+				String focusStr = poster.title;
+				if (poster.focus != null && !poster.focus.equals("") && !poster.focus.equals("null")) {
+					focusStr = poster.focus;
+				}
+				holder.mTitleTv.setTag(new String[]{poster.title, focusStr});
+				/*add by dragontec for bug 4325 end*/
+				Picasso.with(mContext).load(VipMark.getInstance().getBannerIconMarkImage(poster.top_right_corner)).into(holder.mRtIconTv);
+			}
+			/*add by dragontec for bug 4334 end*/
         }
 
     }
@@ -103,19 +127,19 @@ public class DoubleLdAdapter extends BaseRecycleAdapter<DoubleLdAdapter.DoubleLd
     }
 
     public class DoubleLdViewHolder extends BaseViewHolder{
-        public ImageView mPosterIg;//海报
-        public ImageView mLtIconTv;//左上icon
+        public RecyclerImageView mPosterIg;//海报
+        public RecyclerImageView mLtIconTv;//左上icon
         public TextView mRbIconTv;//右下icon
         public TextView mTitleTv;//标题
-        public ImageView mRtIconTv;
+        public RecyclerImageView mRtIconTv;
 
         public DoubleLdViewHolder(View itemView) {
             super(itemView, DoubleLdAdapter.this);
-            mPosterIg = (ImageView) itemView.findViewById(R.id.double_ld_item_poster);
-            mLtIconTv = (ImageView) itemView.findViewById(R.id.double_ld_item_lt_icon);
+            mPosterIg = (RecyclerImageView) itemView.findViewById(R.id.double_ld_item_poster);
+            mLtIconTv = (RecyclerImageView) itemView.findViewById(R.id.double_ld_item_lt_icon);
             mRbIconTv = (TextView) itemView.findViewById(R.id.double_ld_item_rb_icon);
             mTitleTv = (TextView) itemView.findViewById(R.id.double_ld_item_title);
-            mRtIconTv= (ImageView) itemView.findViewById(R.id.guide_rt_icon);
+            mRtIconTv= (RecyclerImageView) itemView.findViewById(R.id.guide_rt_icon);
         }
 
         @Override

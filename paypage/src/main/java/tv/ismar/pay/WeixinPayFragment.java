@@ -8,10 +8,11 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
+//import android.widget.ImageView;
 import android.widget.TextView;
 
 import tv.ismar.app.network.entity.ItemEntity;
+import tv.ismar.app.widget.RecyclerImageView;
 
 /**
  * Created by huibin on 2016/9/14.
@@ -19,7 +20,7 @@ import tv.ismar.app.network.entity.ItemEntity;
 public class WeixinPayFragment extends Fragment implements PaymentActivity.QrcodeCallback {
 
     private View contentView;
-    private ImageView qrcodeview;
+    private RecyclerImageView qrcodeview;
 
     private PaymentActivity paymentActivity;
     private TextView priceTv;
@@ -40,7 +41,7 @@ public class WeixinPayFragment extends Fragment implements PaymentActivity.Qrcod
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         contentView = inflater.inflate(R.layout.fragmet_weixinpay, null);
-        qrcodeview = (ImageView) contentView.findViewById(R.id.qrcodeview);
+        qrcodeview = (RecyclerImageView) contentView.findViewById(R.id.qrcodeview);
         priceTv = (TextView) contentView.findViewById(R.id.payinfo_price);
         expireTv = (TextView) contentView.findViewById(R.id.payinfo_exprice);
         return contentView;

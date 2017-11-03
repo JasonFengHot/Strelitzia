@@ -4,7 +4,7 @@ import android.app.Activity;
 import android.graphics.Bitmap;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.ImageView;
+//import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.squareup.picasso.MemoryPolicy;
@@ -12,6 +12,7 @@ import com.squareup.picasso.Picasso;
 
 import tv.ismar.app.core.VipMark;
 import tv.ismar.app.entity.FilterNoresultPoster;
+import tv.ismar.app.widget.RecyclerImageView;
 import tv.ismar.listpage.R;
 
 /**
@@ -22,7 +23,7 @@ public class PosterUtil {
 
     public static final int VERTICAL=0;
     public static final int HORIZONTAL=1;
-    public static void fillPoster(Activity context, int orientation, FilterNoresultPoster item, ImageView poster, ImageView vipmark, TextView beanscore, TextView title, TextView description){
+    public static void fillPoster(Activity context, int orientation, FilterNoresultPoster item, RecyclerImageView poster, RecyclerImageView vipmark, TextView beanscore, TextView title, TextView description){
         if(item!=null) {
             String posterUrl="";
             int previewId;

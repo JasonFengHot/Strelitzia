@@ -96,11 +96,13 @@ public class TemplateTvPlay extends Template
         }
     }
 
-    public TemplateTvPlay(Context context) {
-        super(context);
+	/*modify by dragontec for bug 4334 start*/
+    public TemplateTvPlay(Context context, int position) {
+        super(context, position);
         mFetchDataControl = new FetchDataControl(context, this);
         mNavigationtHandler = new NavigationtHandler();
     }
+    /*modify by dragontec for bug 4334 end*/
 
     @Override
     public void onCreate() {
@@ -210,16 +212,26 @@ public class TemplateTvPlay extends Template
         mBannerPk = bundle.getString("banner");
         mName = bundle.getString(NAME_KEY);
         mChannel = bundle.getString(CHANNEL_KEY);
-/*modify by dragontec for bug 4200 start*/
+/*modify by dragontec for bug 4334 start*/
 		mTitleCountTv.setText("00/00");
+		mFetchDataControl.fetchBanners(mBannerPk, 1, false);
     }
 
 	@Override
 	public void fetchData() {
 		hasAppeared = true;
-		mFetchDataControl.fetchBanners(mBannerPk, 1, false);
 	}
-/*modify by dragontec for bug 4200 end*/
+
+	@Override
+	public void fillData() {
+    	if (isNeedFillData) {
+			isNeedFillData = false;
+			initTitle();
+			initRecycle();
+		}
+	}
+
+/*modify by dragontec for bug 4334 end*/
 
     private void initTitle() {
         if (mSelectItemPosition > mFetchDataControl.mHomeEntity.count)
@@ -231,29 +243,42 @@ public class TemplateTvPlay extends Template
                         mFetchDataControl.mHomeEntity.count + ""));
     }
 
-    private void initRecycle() {
-        if (mAdapter == null) {
-            mAdapter = new TvPlayAdapter(mContext, mFetchDataControl.mPoster);
-            mAdapter.setMarginLeftEnable(true);
+	/*modify by dragontec for bug 4334 start*/
+    private void initAdapter() {
+    	if (mAdapter == null) {
+			mAdapter = new TvPlayAdapter(mContext);
+			mAdapter.setMarginLeftEnable(true);
 /*modify by dragontec for bug 4332 start*/
-            mRecyclerView.setAdapter(mAdapter);
-            mAdapter.setOnItemClickListener(this);
-	/*add by dragontec for bug 4077 start*/
-			checkFocus(mRecyclerView);
-	/*add by dragontec for bug 4077 end*/
+			mAdapter.setOnItemClickListener(this);
 /*modify by dragontec for bug 4332 end*/
-        } else {
-            int start = mFetchDataControl.mPoster.size() - mFetchDataControl.mHomeEntity.posters.size();
-            int end = mFetchDataControl.mPoster.size();
-            mAdapter.notifyItemRangeChanged(start, end);
-        }
+		}
+	}
+
+    private void initRecycle() {
+    	if (mAdapter != null) {
+    		if (mAdapter.getData() == null) {
+    			mAdapter.setData(mFetchDataControl.mPoster);
+    			mRecyclerView.setAdapter(mAdapter);
+	/*add by dragontec for bug 4077 start*/
+				checkFocus(mRecyclerView);
+	/*add by dragontec for bug 4077 end*/
+			} else {
+				int start = mFetchDataControl.mPoster.size() - mFetchDataControl.mHomeEntity.posters.size();
+				int end = mFetchDataControl.mPoster.size();
+				mAdapter.notifyItemRangeChanged(start, end);
+			}
+		}
     }
+    /*modify by dragontec for bug 4334 end*/
 
     @Override
     public void callBack(int flags, Object... args) {
         if (flags == FetchDataControl.FETCH_BANNERS_LIST_FLAG) { // 获取单个banner业务
-            initTitle();
-            initRecycle();
+			/*modify by dragontec for bug 4334 start*/
+			isNeedFillData = true;
+			initAdapter();
+            checkViewAppear();
+            /*modify by dragontec for bug 4334 end*/
 	/* modify by dragontec for bug 4264 start */
 /*modify by dragontec for bug 4332 start*/
 			mRecyclerView.setOnLoadMoreComplete();
@@ -327,7 +352,9 @@ public class TemplateTvPlay extends Template
                             mFetchDataControl.mHomeEntity.style,
                             mFetchDataControl.mHomeEntity.section_slug);
         } else {
-            mFetchDataControl.go2Detail(mAdapter.getmData().get(position));
+        	/*modify by dragontec for bug 4334 start*/
+            mFetchDataControl.go2Detail(mAdapter.getData().get(position));
+            /*modify by dragontec for bug 4334 end*/
         }
     }
 	

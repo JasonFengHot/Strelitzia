@@ -11,7 +11,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
+//import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Space;
 import android.widget.TextView;
@@ -28,6 +28,7 @@ import java.util.regex.Pattern;
 
 import tv.ismar.app.core.VipMark;
 import tv.ismar.app.entity.banner.BannerEntity;
+import tv.ismar.app.widget.RecyclerImageView;
 import tv.ismar.homepage.R;
 import tv.ismar.searchpage.utils.JasmineUtil;
 
@@ -280,18 +281,18 @@ public class BannerSubscribeAdapter
 	/*add by dragontec for bug 4265 end*/
 	{
 
-        private final ImageView markRT;
+        private final RecyclerImageView markRT;
         private  Space mLeftSpace;
-        private ImageView mImageView;
+        private RecyclerImageView mImageView;
         private TextView mOrderTitle;
         private TextView mPublishTime;
         private View mItemView;
         private TextView mTitle;
-        private ImageView mTimeLine;
+        private RecyclerImageView mTimeLine;
 		/*add by dragontec for bug 4366 start*/
-        private ImageView mTimeDot;
+        private RecyclerImageView mTimeDot;
 		/*add by dragontec for bug 4366 end*/
-        private ImageView markLT;
+        private RecyclerImageView markLT;
         private TextView markRB;
 
         public SubscribeViewHolder(View itemView) {
@@ -303,18 +304,18 @@ public class BannerSubscribeAdapter
 	/*add by dragontec for bug 4265 start*/
             mItemView.findViewById(R.id.item_layout).setOnKeyListener(this);
 	/*add by dragontec for bug 4265 end*/
-            mImageView = (ImageView) itemView.findViewById(R.id.image_view);
+            mImageView = (RecyclerImageView) itemView.findViewById(R.id.image_view);
             mOrderTitle = (TextView) itemView.findViewById(R.id.order_title);
             mPublishTime = (TextView) itemView.findViewById(R.id.publish_time);
             mTitle = (TextView) itemView.findViewById(R.id.title);
             mLeftSpace = (Space)itemView.findViewById(R.id.left_space);
-            mTimeLine = (ImageView)itemView.findViewById(R.id.banner_item_timeline);
+            mTimeLine = (RecyclerImageView)itemView.findViewById(R.id.banner_item_timeline);
 			/*add by dragontec for bug 4366 start*/
-            mTimeDot = (ImageView)itemView.findViewById(R.id.banner_item_time_dot);
+            mTimeDot = (RecyclerImageView)itemView.findViewById(R.id.banner_item_time_dot);
 			/*add by dragontec for bug 4366 end*/
-            markLT = (ImageView) itemView.findViewById(R.id.banner_mark_lt);
+            markLT = (RecyclerImageView) itemView.findViewById(R.id.banner_mark_lt);
             markRB = (TextView)itemView.findViewById(R.id.banner_mark_br);
-            markRT = (ImageView) itemView.findViewById(R.id.banner_mark_rt);
+            markRT = (RecyclerImageView) itemView.findViewById(R.id.banner_mark_rt);
         }
 
         @Override

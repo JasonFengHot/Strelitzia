@@ -24,7 +24,7 @@
         <RelativeLayout
             android:layout_width="@dimen/center_poster_width"
             android:layout_height="@dimen/center_poster_height">
-            <ImageView
+            <tv.ismar.app.widget.RecyclerImageView
                 android:id="@+id/center_item_poster"
                 android:layout_width="@dimen/center_poster_width"
                 android:layout_height="@dimen/center_poster_height"

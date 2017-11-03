@@ -6,7 +6,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-        <ImageView
+        <tv.ismar.app.widget.RecyclerImageView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="#333333"
@@ -23,7 +23,7 @@
         android:layout_marginLeft="@dimen/subscribe_659"
         android:layout_marginTop="@dimen/subscribe_144"
         />
-    <ImageView
+    <tv.ismar.app.widget.RecyclerImageView
         android:id="@+id/code_image"
         android:layout_width="@dimen/subscribe_512"
         android:layout_height="@dimen/subscribe_512"

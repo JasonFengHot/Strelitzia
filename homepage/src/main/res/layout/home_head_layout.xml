@@ -6,7 +6,7 @@
     android:gravity="center_vertical">
 
 
-    <ImageView
+    <tv.ismar.app.widget.RecyclerImageView
         android:layout_width="@dimen/guide_title_logo_width"
         android:layout_height="@dimen/guide_title_logo_height"
         android:layout_marginLeft="@dimen/guide_title_logo_margin_left"
@@ -53,7 +53,7 @@
                 android:textSize="@dimen/guide_title_text_size"
                 android:visibility="gone" />
 
-            <ImageView
+            <tv.ismar.app.widget.RecyclerImageView
                 android:id="@+id/person_collection_img"
                 android:layout_width="@dimen/guide_title_icon_size"
                 android:layout_height="@dimen/guide_title_icon_size"
@@ -105,7 +105,7 @@
                 android:layout_marginRight="@dimen/guide_title_icon_padding_text"
                 android:visibility="gone" />
 
-            <ImageView
+            <tv.ismar.app.widget.RecyclerImageView
                 android:id="@+id/person_center_img"
                 android:layout_width="@dimen/guide_title_icon_size"
                 android:layout_height="@dimen/guide_title_icon_size"

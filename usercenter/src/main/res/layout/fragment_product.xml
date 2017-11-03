@@ -43,7 +43,7 @@
             sakura:verticalSpace="@dimen/product_gridview_vertical_space" />
 
 
-        <ImageView
+        <tv.ismar.app.widget.RecyclerImageView
             android:id="@+id/tmp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

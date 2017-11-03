@@ -14,7 +14,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.ImageView;
+//import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.daimajia.androidanimations.library.Techniques;
@@ -33,6 +33,7 @@ import tv.ismar.app.entity.banner.BannerPoster;
 import tv.ismar.app.entity.banner.BigImage;
 import tv.ismar.app.entity.banner.HomeEntity;
 import tv.ismar.app.widget.ListSpacesItemDecoration;
+import tv.ismar.app.widget.RecyclerImageView;
 import tv.ismar.homepage.HomeActivity;
 import tv.ismar.homepage.OnItemClickListener;
 import tv.ismar.homepage.R;
@@ -61,11 +62,11 @@ public class TemplateDoubleMd extends Template
         View.OnClickListener,
         View.OnHoverListener {
   private TextView mTitleTv; // banner标题
-  private ImageView mVerticalImg; // 大图海报
-  private ImageView mLtImage; // 左上角图标
-  private ImageView mRbImage; // 右下角图标
+  private RecyclerImageView mVerticalImg; // 大图海报
+  private RecyclerImageView mLtImage; // 左上角图标
+  private RecyclerImageView mRbImage; // 右下角图标
   private TextView mImgeTitleTv; // 大图标题
-  private ImageView mRtImage;//右上图标
+  private RecyclerImageView mRtImage;//右上图标
 /*delete by dragontec for bug 4332 start*/
 //  private RecyclerViewTV mRecyclerView;
 /*delete by dragontec for bug 4332 end*/
@@ -110,8 +111,8 @@ public class TemplateDoubleMd extends Template
     }
   }
 
-  public TemplateDoubleMd(Context context) {
-    super(context);
+  public TemplateDoubleMd(Context context, int position) {
+    super(context, position);
     mFetchDataControl = new FetchDataControl(context, this);
     mNavigationtHandler = new NavigationtHandler();
   }
@@ -185,12 +186,12 @@ public class TemplateDoubleMd extends Template
 	/*modify by dragontec for bug 4221 end*/
 /*modify by dragontec for bug 4332 start*/
     mHeaderView = LayoutInflater.from(mContext).inflate(R.layout.banner_double_md_head, null);
-    mVerticalImg = (ImageView) mHeaderView.findViewById(R.id.double_md_image_poster);
-    mLtImage = (ImageView) mHeaderView.findViewById(R.id.double_md_image_lt_icon);
-    mRbImage = (ImageView) mHeaderView.findViewById(R.id.double_md_image_rb_icon);
+    mVerticalImg = (RecyclerImageView) mHeaderView.findViewById(R.id.double_md_image_poster);
+    mLtImage = (RecyclerImageView) mHeaderView.findViewById(R.id.double_md_image_lt_icon);
+    mRbImage = (RecyclerImageView) mHeaderView.findViewById(R.id.double_md_image_rb_icon);
     mImgeTitleTv = (TextView) mHeaderView.findViewById(R.id.double_md_image_title);
 /*modify by dragontec for bug 4332 end*/
-    mRtImage= (ImageView) mHeaderView.findViewById(R.id.guide_rt_icon);
+    mRtImage= (RecyclerImageView) mHeaderView.findViewById(R.id.guide_rt_icon);
     mDoubleLayoutManager =
         new StaggeredGridLayoutManagerTV(2, StaggeredGridLayoutManager.HORIZONTAL);
     mRecyclerView.addItemDecoration(new ListSpacesItemDecoration(mContext.getResources().getDimensionPixelOffset(R.dimen.double_md_padding)));
@@ -201,7 +202,9 @@ public class TemplateDoubleMd extends Template
     int selectedItemOffset =
         mContext.getResources().getDimensionPixelSize(R.dimen.banner_item_setSelectedItemOffset);
     mRecyclerView.setSelectedItemOffset(100, 100);
-    mRecyclerView.setAdapter(new DoubleMdAdapter(mContext, new ArrayList<BannerPoster>()));
+    /*delete by dragontec for bug 4334 start*/
+//    mRecyclerView.setAdapter(new DoubleMdAdapter(mContext, new ArrayList<BannerPoster>()));
+	/*delete by dragontec for bug 4334 end*/
     navigationLeft = view.findViewById(R.id.navigation_left);
     navigationRight = view.findViewById(R.id.navigation_right);
     mBannerLinearLayout = (BannerLinearLayout) view.findViewById(R.id.banner_layout);
@@ -232,15 +235,26 @@ public class TemplateDoubleMd extends Template
     mName = bundle.getString(NAME_KEY);
     mChannel = bundle.getString(CHANNEL_KEY);
     mTitleCountTv.setText("00/00");
-/*modify by dragontec for bug 4200 start*/
+/*modify by dragontec for bug 4334 start*/
+	  mFetchDataControl.fetchBanners(mBannerPk, 1, false);
   }
 
 	@Override
 	public void fetchData() {
 		hasAppeared = true;
-		mFetchDataControl.fetchBanners(mBannerPk, 1, false);
 	}
-/*modify by dragontec for bug 4200 end*/
+
+	@Override
+	public void fillData() {
+  		if (isNeedFillData) {
+			isNeedFillData= false;
+			initTitle();
+			initImage();
+			initRecycleView();
+		}
+	}
+
+/*modify by dragontec for bug 4334 end*/
 
   private void initTitle() {
     if (mSelectItemPosition > mFetchDataControl.mHomeEntity.count)
@@ -252,31 +266,33 @@ public class TemplateDoubleMd extends Template
             mFetchDataControl.mHomeEntity.count + ""));
   }
 
-  private void initRecycleView() {
-    if (mAdapter == null) {
-      mAdapter = new DoubleMdAdapter(mContext, mFetchDataControl.mPoster);
-      mAdapter.setOnItemClickListener(this);
+	/*modify by dragontec for bug 4334 start*/
+  private void initAdapter() {
+  	if (mAdapter == null) {
+		mAdapter = new DoubleMdAdapter(mContext);
+		mAdapter.setOnItemClickListener(this);
 /*modify by dragontec for bug 4332 start*/
-      mAdapter.setHeaderView(mHeaderView);
+		mAdapter.setHeaderView(mHeaderView);
 /*modify by dragontec for bug 4332 end*/
-      mRecyclerView.setAdapter(mAdapter);
-	/*add by dragontec for bug 4077 start*/
-		checkFocus(mRecyclerView);
-	/*add by dragontec for bug 4077 end*/
-    } else {
-      Log.i(
-          TAG,
-          "size:"
-              + mFetchDataControl.mHomeEntity.posters.size()
-              + " url:"
-              + mFetchDataControl.mHomeEntity.posters.get(
-                      mFetchDataControl.mHomeEntity.posters.size() - 1)
-                  .poster_url);
-      int start = mFetchDataControl.mPoster.size() - mFetchDataControl.mHomeEntity.posters.size();
-      int end = mFetchDataControl.mPoster.size();
-      mAdapter.notifyItemRangeChanged(start, end);
-    }
+	}
   }
+
+  private void initRecycleView() {
+  	if (mAdapter != null) {
+  		if (mAdapter.getData() == null) {
+  			mAdapter.setData(mFetchDataControl.mPoster);
+  			mRecyclerView.setAdapter(mAdapter);
+	/*add by dragontec for bug 4077 start*/
+			checkFocus(mRecyclerView);
+	/*add by dragontec for bug 4077 end*/
+		} else {
+			int start = mFetchDataControl.mPoster.size() - mFetchDataControl.mHomeEntity.posters.size();
+			int end = mFetchDataControl.mPoster.size();
+			mAdapter.notifyItemRangeChanged(start, end);
+		}
+	}
+  }
+  /*modify by dragontec for bug 4334 end*/
 
   private void initImage() {
     BigImage data = mFetchDataControl.mHomeEntity.bg_image;
@@ -303,9 +319,11 @@ public class TemplateDoubleMd extends Template
   @Override
   public void callBack(int flags, Object... args) {
     if (flags == FetchDataControl.FETCH_BANNERS_LIST_FLAG) { // 获取单个banner业务
-      initTitle();
-      initRecycleView();
-      initImage();
+		/*modify by dragontec for bug 4334 start*/
+		isNeedFillData = true;
+		initAdapter();
+      checkViewAppear();
+      /*modify by dragontec for bug 4334 end*/
 	/* modify by dragontec for bug 4264 start */
       mRecyclerView.setOnLoadMoreComplete();
     } else {

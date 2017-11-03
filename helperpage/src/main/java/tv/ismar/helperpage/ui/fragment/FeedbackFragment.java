@@ -14,7 +14,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
+//import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -38,6 +38,7 @@ import tv.ismar.app.network.entity.FeedBackEntity;
 import tv.ismar.app.network.entity.ProblemEntity;
 import tv.ismar.app.util.BitmapDecoder;
 import tv.ismar.app.widget.ModuleMessagePopWindow;
+import tv.ismar.app.widget.RecyclerImageView;
 import tv.ismar.helperpage.R;
 import tv.ismar.helperpage.core.FeedbackProblem;
 import tv.ismar.helperpage.ui.activity.HomeActivity;
@@ -66,10 +67,10 @@ public class FeedbackFragment extends Fragment implements RadioGroup.OnCheckedCh
     private SakuraEditText phoneNumberText;
     private SakuraEditText descriptioinText;
 
-    private ImageView arrowUp;
-    private ImageView arrowDown;
+    private RecyclerImageView arrowUp;
+    private RecyclerImageView arrowDown;
     private SkyService skyService;
-    private ImageView tmpImageView;
+    private RecyclerImageView tmpImageView;
 
     private String snCode;
 
@@ -128,10 +129,10 @@ public class FeedbackFragment extends Fragment implements RadioGroup.OnCheckedCh
         submitButton.setOnClickListener(this);
         phoneNumberText = (SakuraEditText) view.findViewById(R.id.phone_number_edit);
         descriptioinText = (SakuraEditText) view.findViewById(R.id.description_edit);
-        tmpImageView = (ImageView) view.findViewById(R.id.tmp);
+        tmpImageView = (RecyclerImageView) view.findViewById(R.id.tmp);
 
-        arrowUp = (ImageView) view.findViewById(R.id.arrow_up);
-        arrowDown = (ImageView) view.findViewById(R.id.arrow_down);
+        arrowUp = (RecyclerImageView) view.findViewById(R.id.arrow_up);
+        arrowDown = (RecyclerImageView) view.findViewById(R.id.arrow_down);
 
         arrowUp.setOnClickListener(this);
         arrowDown.setOnClickListener(this);

@@ -6,14 +6,14 @@
                 android:clipToPadding="false"
                 android:focusable="true"
                 >
-    <ImageView
+    <tv.ismar.app.widget.RecyclerImageView
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_alignParentBottom="true"
         android:background="@drawable/header_divider"
         android:visibility="gone"
         />
-    <ImageView
+    <tv.ismar.app.widget.RecyclerImageView
         android:id="@+id/orderlistitem_icon"
         android:layout_width="@dimen/purchaseFragment_item_image_width"
         android:layout_height="@dimen/purchaseFragment_item_image_height"

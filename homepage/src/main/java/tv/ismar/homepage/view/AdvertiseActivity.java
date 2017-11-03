@@ -13,7 +13,7 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
+//import android.widget.ImageView;
 import android.widget.SeekBar;
 
 import com.squareup.picasso.Callback;
@@ -31,6 +31,7 @@ import tv.ismar.app.ad.Advertisement;
 import tv.ismar.app.core.VipMark;
 import tv.ismar.app.db.AdvertiseTable;
 import tv.ismar.app.player.CallaPlay;
+import tv.ismar.app.widget.RecyclerImageView;
 import tv.ismar.homepage.HomeActivity;
 import tv.ismar.homepage.R;
 import tv.ismar.homepage.widget.DaisyVideoView;
@@ -48,7 +49,7 @@ public class AdvertiseActivity extends BaseActivity implements MediaPlayer.OnPre
     private static final int MSG_AD_COUNTDOWN = 0x01;
 
     private DaisyVideoView mVideoView;
-    private ImageView mPicImg;
+    private RecyclerImageView mPicImg;
     private SeekBar mSeekBar;
 
     private int currentImageAdCountDown = 0;
@@ -126,7 +127,7 @@ public class AdvertiseActivity extends BaseActivity implements MediaPlayer.OnPre
 
     private void initView(){
         mVideoView = (DaisyVideoView) findViewById(R.id.home_ad_video);
-        mPicImg = (ImageView) findViewById(R.id.home_ad_pic);
+        mPicImg = (RecyclerImageView) findViewById(R.id.home_ad_pic);
         mSeekBar = (SeekBar) findViewById(R.id.home_ad_seekbar);
         timeBtn= (Button) findViewById(R.id.home_ad_timer);
     }

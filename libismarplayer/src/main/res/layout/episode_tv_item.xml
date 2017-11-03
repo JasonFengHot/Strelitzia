@@ -7,7 +7,7 @@
     android:background="@drawable/episode_item_selector"
     android:id="@+id/episode_list_item"
     >
-    <ImageView
+    <tv.ismar.app.widget.RecyclerImageView
         android:id="@+id/select_image"
         android:layout_width="@dimen/player_38"
         android:layout_height="@dimen/player_38"

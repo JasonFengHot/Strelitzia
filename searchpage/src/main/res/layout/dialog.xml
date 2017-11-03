@@ -23,7 +23,7 @@
                 android:gravity="center"
                 android:text="网络异常！请检查网络！"/>
 
-        <ImageView
+        <tv.ismar.app.widget.RecyclerImageView
                 android:layout_width="@dimen/dialog_arrow_width"
                 android:layout_height="@dimen/dialog_arrow_height"
                 android:layout_marginTop="@dimen/dialog_arrow_margin_top"

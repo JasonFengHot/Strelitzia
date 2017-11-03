@@ -13,9 +13,8 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.widget.Button;
-import android.widget.ImageView;
+//import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -65,6 +64,7 @@ import tv.ismar.app.ui.adapter.OnItemFocusedListener;
 import tv.ismar.app.ui.adapter.OnItemKeyListener;
 import tv.ismar.app.ui.adapter.OnItemOnhoverlistener;
 import tv.ismar.app.entity.HistoryFavoriteEntity;
+import tv.ismar.app.widget.RecyclerImageView;
 import tv.ismar.listener.LfListItemClickListener;
 import tv.ismar.listpage.R;
 import tv.ismar.searchpage.utils.JasmineUtil;
@@ -88,7 +88,7 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
     private HistoryListAdapter favoritAdapter;
     private LinearLayout edit_history;
     private LinearLayout recommend_list;
-    private ImageView arrow_line1,arrow_line2;
+    private RecyclerImageView arrow_line1,arrow_line2;
     private TextView edit_text;
     private IsmartvLinearLayout delet_history,delete_favorite;
     private LinearLayout favorite_layout,list_layout;
@@ -103,8 +103,8 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
     private HistoryLinerlayoutMananger historyLayoutManager,favoriteManager;
     private GetFavoriteTask getFavoriteTask;
     private TextView favorite_title,history_title;
-    private ImageView first_line_image,second_line_image;
-    private ImageView edit_shadow;
+    private RecyclerImageView first_line_image,second_line_image;
+    private RecyclerImageView edit_shadow;
     private RelativeLayout empty;
     private Button history_left_arrow,history_right_arrow,favorite_left_arrow,favorite_right_arrow;
     private HashMap<String, Object> mDataCollectionProperties;
@@ -137,17 +137,17 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
         no_data= (LinearLayout) findViewById(R.id.no_data);
         delet_history= (IsmartvLinearLayout) findViewById(R.id.history_edit);
         favorite_title= (TextView) findViewById(R.id.favorite_lyout_title);
-        first_line_image= (ImageView) findViewById(R.id.first_line_delete_image);
+        first_line_image= (RecyclerImageView) findViewById(R.id.first_line_delete_image);
         recommend_list= (LinearLayout) findViewById(R.id.recommend_list);
         edit_text= (TextView) findViewById(R.id.edit_btn_text);
-        second_line_image= (ImageView) findViewById(R.id.second_line_delete_image);
+        second_line_image= (RecyclerImageView) findViewById(R.id.second_line_delete_image);
         history_title= (TextView) findViewById(R.id.history_layout_title);
         history_relativelayout= (RelativeLayout) findViewById(R.id.history_layout);
         favorite_relativeLayout= (RelativeLayout) findViewById(R.id.favorite_relateLayout);
         delete_favorite= (IsmartvLinearLayout) findViewById(R.id.favorite_edit);
-        edit_shadow= (ImageView) findViewById(R.id.edit_shadow);
-        arrow_line1= (ImageView) findViewById(R.id.arrow_line_1);
-        arrow_line2= (ImageView) findViewById(arrow_line_2);
+        edit_shadow= (RecyclerImageView) findViewById(R.id.edit_shadow);
+        arrow_line1= (RecyclerImageView) findViewById(R.id.arrow_line_1);
+        arrow_line2= (RecyclerImageView) findViewById(arrow_line_2);
         delet_history.setOnClickListener(this);
         delete_favorite.setOnClickListener(this);
         historyLayoutManager=new HistoryLinerlayoutMananger(this);
@@ -320,10 +320,6 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
         }
         edit_history.setFocusable(false);
         edit_history.setFocusableInTouchMode(false);
-        history_left_arrow.setVisibility(View.GONE);
-        history_right_arrow.setVisibility(View.GONE);
-        favorite_right_arrow.setVisibility(View.GONE);
-        favorite_left_arrow.setVisibility(View.GONE);
         super.onResume();
     }
 
@@ -430,6 +426,8 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
     }
 
     private void loadData(){
+        favorite_left_arrow.setVisibility(View.GONE);
+        history_left_arrow.setVisibility(View.GONE);
         if(historyLists.size()>0){
             no_data.setVisibility(View.GONE);
             history_relativelayout.setVisibility(View.VISIBLE);
@@ -791,8 +789,8 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
         for (int i=0;i<=3;i++) {
             View container = LayoutInflater.from(this).inflate(R.layout.no_data_list_item, null);
             container.setId(R.layout.no_data_list_item+i);
-            ImageView detail= (ImageView) container.findViewById(R.id.item_image);
-            ImageView vip= (ImageView) container.findViewById(vip_image);
+            RecyclerImageView detail= (RecyclerImageView) container.findViewById(R.id.item_image);
+            RecyclerImageView vip= (RecyclerImageView) container.findViewById(vip_image);
             IsmartvLinearLayout item= (IsmartvLinearLayout) container.findViewById(R.id.no_data_item);
             TextView focus= (TextView) container.findViewById(R.id.focus_title);
             TextView title= (TextView) container.findViewById(R.id.title);
@@ -836,10 +834,6 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
             if(rect.left>=100&&rect.left<1576) {
                 JasmineUtil.scaleOut3(view);
             }
-            history_left_arrow.setFocusable(false);
-            history_right_arrow.setFocusable(false);
-            favorite_right_arrow.setFocusable(false);
-            favorite_left_arrow.setFocusable(false);
         }else{
             JasmineUtil.scaleIn3(view);
         }
@@ -963,9 +957,6 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
                     }
                 }
                     break;
-            case MotionEvent.ACTION_HOVER_EXIT:
-                v.clearFocus();
-                break;
 
         }
     }

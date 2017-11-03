@@ -13,7 +13,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
+//import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -33,6 +33,7 @@ import tv.ismar.app.BaseFragment;
 import tv.ismar.app.core.PageIntent;
 import tv.ismar.app.core.Util;
 import tv.ismar.app.network.entity.AccountsOrdersEntity;
+import tv.ismar.app.widget.RecyclerImageView;
 import tv.ismar.library.exception.ExceptionUtils;
 import tv.ismar.usercenter.PurchaseHistoryContract;
 import tv.ismar.usercenter.R;
@@ -221,7 +222,7 @@ public class PurchaseHistoryFragment extends BaseFragment implements PurchaseHis
             TextView buydate_txt = (TextView) convertView.findViewById(R.id.orderlistitem_time);
             TextView orderlistitem_remainday = (TextView) convertView.findViewById(R.id.orderlistitem_remainday);
             TextView totalfee = (TextView) convertView.findViewById(R.id.orderlistitem_cost);
-            ImageView icon = (ImageView) convertView.findViewById(R.id.orderlistitem_icon);
+            RecyclerImageView icon = (RecyclerImageView) convertView.findViewById(R.id.orderlistitem_icon);
             TextView orderlistitem_paychannel = (TextView) convertView.findViewById(R.id.orderlistitem_paychannel);
             TextView purchaseExtra = (TextView) convertView.findViewById(R.id.purchase_extra);
             TextView mergeTxt = (TextView) convertView.findViewById(R.id.orderlistitem_merge);
@@ -268,7 +269,7 @@ public class PurchaseHistoryFragment extends BaseFragment implements PurchaseHis
                 params.addRule(RelativeLayout.BELOW, R.id.feedback_time + 5 * (i - 1));
             }
             mRecyclerView.addView(convertView,params);
-            ImageView imageView = new ImageView(mUserCenterActivity);
+            RecyclerImageView imageView = new RecyclerImageView(mUserCenterActivity);
             imageView.setBackgroundResource(R.color.history_divider);
             imageView.setId(R.id.feedback_time+i * 5);
             RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, 1);

@@ -9,25 +9,27 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
+//import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+
+import tv.ismar.app.widget.RecyclerImageView;
 
 /**
  * Created by huibin on 2016/9/14.
  */
 public class AlipayFragment extends Fragment implements PaymentActivity.QrcodeCallback, View.OnClickListener, View.OnHoverListener {
     private View contentView;
-    private ImageView qrcodeview;
+    private RecyclerImageView qrcodeview;
     private PaymentActivity paymentActivity;
     private String type;
     private TextView textViewLine1;
     private TextView textViewLine2;
     private TextView textViewLine3;
     private TextView textViewLine4;
-    private ImageView weixin,alipay;
+    private RecyclerImageView weixin,alipay;
     private ArrayList<String> list=new ArrayList<>();
 
     @Override
@@ -48,9 +50,9 @@ public class AlipayFragment extends Fragment implements PaymentActivity.QrcodeCa
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         contentView = inflater.inflate(R.layout.fragmet_alipay, null);
-        qrcodeview = (ImageView) contentView.findViewById(R.id.qrcodeview);
-        weixin= (ImageView) contentView.findViewById(R.id.weixin_icon);
-        alipay= (ImageView) contentView.findViewById(R.id.alipay_icon);
+        qrcodeview = (RecyclerImageView) contentView.findViewById(R.id.qrcodeview);
+        weixin= (RecyclerImageView) contentView.findViewById(R.id.weixin_icon);
+        alipay= (RecyclerImageView) contentView.findViewById(R.id.alipay_icon);
         textViewLine1 = (TextView) contentView.findViewById(R.id.text_line_1);
         textViewLine2 = (TextView) contentView.findViewById(R.id.text_line_2);
         textViewLine3 = (TextView) contentView.findViewById(R.id.text_line_3);

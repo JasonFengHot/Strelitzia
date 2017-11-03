@@ -17,11 +17,13 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
+//import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
+
+import tv.ismar.app.widget.RecyclerImageView;
 
 /**
  * Created by liucan on 2017/4/21.
@@ -46,7 +48,7 @@ public class LableImageSubject extends FrameLayout{
         private int livRateColor;
         private int livRateSize;
 
-        private ImageView imageView, vipImageView;
+        private RecyclerImageView imageView, vipImageView;
         private TextView textView, rateTextView;
 
         public static final int LEFTTOP = 0;
@@ -99,16 +101,16 @@ public class LableImageSubject extends FrameLayout{
 
         private void initView() {
             FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
-            imageView = new ImageView(mContext);
+            imageView = new RecyclerImageView(mContext);
             imageView.setLayoutParams(layoutParams);
-            imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            imageView.setScaleType(RecyclerImageView.ScaleType.CENTER_CROP);
             addView(imageView);
 
             FrameLayout.LayoutParams ltparams = new FrameLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
             ltparams.gravity = Gravity.LEFT | Gravity.TOP;
-            vipImageView = new ImageView(mContext);
+            vipImageView = new RecyclerImageView(mContext);
             vipImageView.setLayoutParams(ltparams);
-            vipImageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+            vipImageView.setScaleType(RecyclerImageView.ScaleType.FIT_CENTER);
             vipImageView.setVisibility(View.INVISIBLE);
             addView(vipImageView);
 

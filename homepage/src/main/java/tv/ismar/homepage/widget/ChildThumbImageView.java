@@ -3,14 +3,15 @@ package tv.ismar.homepage.widget;
 import android.content.Context;
 import android.graphics.Rect;
 import android.util.AttributeSet;
-import android.widget.ImageView;
+//import android.widget.ImageView;
 
+import tv.ismar.app.widget.RecyclerImageView;
 import tv.ismar.homepage.R;
 
 /**
  * Created by huaijie on 6/29/15.
  */
-public class ChildThumbImageView extends ImageView {
+public class ChildThumbImageView extends RecyclerImageView {
     public boolean isZoom;
 
     public ChildThumbImageView(Context context, AttributeSet attrs) {

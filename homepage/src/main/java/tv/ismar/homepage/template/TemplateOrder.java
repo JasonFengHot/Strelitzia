@@ -103,11 +103,13 @@ public class TemplateOrder extends Template
     private String channelName;
     private Subscription fetchSubscribeBanner;
 
-    public TemplateOrder(Context context) {
-        super(context);
+	/*modify by dragontec for bug 4334 start*/
+    public TemplateOrder(Context context, int position) {
+        super(context, position);
         mControl = new OrderControl(mContext, this);
         mNavigationtHandler = new NavigationtHandler();
     }
+    /*modify by dragontec for bug 4334 end*/
 
     @Override
     public void onCreate() {
@@ -379,21 +381,37 @@ public class TemplateOrder extends Template
         channelName = bundle.getString(ChannelFragment.CHANNEL_KEY);
         mTitleTv.setText(mBannerTitle);
         mTitleCountTv.setText("00/00");
-/*modify by dragontec for bug 4200 start*/
+/*modify by dragontec for bug 4334 start*/
+		fetchSubscribeBanner(mBannerName, 1);
     }
 
 	@Override
 	public void fetchData() {
 		hasAppeared = true;
-		fetchSubscribeBanner(mBannerName, 1);
 	}
-/*modify by dragontec for bug 4200 end*/
+
+	@Override
+	public void fillData() {
+		if (isNeedFillData) {
+			isNeedFillData = false;
+			fillSubscribeBanner();
+		}
+	}
+
+/*modify by dragontec for bug 4334 end*/
 
     @Override
     public void callBack(int flags, Object... args) {
         BannerEntity bannerEntity = (BannerEntity) args[0];
         if (flags == FETCH_BANNERS_LIST_FLAG) {
-            fillSubscribeBanner(bannerEntity);
+        	/*modify by dragontec for bug 4334 start*/
+        	if (subscribeAdapter == null) {
+        		initAdapter(bannerEntity);
+        		checkViewAppear();
+			} else {
+				subscribeAdapter.addDatas(bannerEntity);
+			}
+			/*modify by dragontec for bug 4334 end*/
         } else if (flags == FETCH_M_BANNERS_LIST_NEXTPAGE_FLAG) {
             subscribeAdapter.addDatas(bannerEntity);
         }
@@ -401,6 +419,11 @@ public class TemplateOrder extends Template
 
     private void fetchSubscribeBanner(String bannerName, final int pageNumber) {
         if (pageNumber != 1) {
+        	/*add by dragontec for bug 4334 start*/
+        	if (subscribeAdapter == null) {
+        		return;
+			}
+			/*add by dragontec for bug 4334 end*/
             int startIndex = (pageNumber - 1) * 33;
             int endIndex;
             if (pageNumber == subscribeAdapter.getTotalPageCount()) {
@@ -446,7 +469,11 @@ public class TemplateOrder extends Template
                             @Override
                             public void onNext(BannerEntity bannerEntity) {
                                 if (pageNumber == 1) {
-                                    fillSubscribeBanner(bannerEntity);
+                                	/*modify by dragontec for bug 4334 start*/
+									isNeedFillData = true;
+									initAdapter(bannerEntity);
+									checkViewAppear();
+									/*modify by dragontec for bug 4334 end*/
                                 } else {
 /*modify by dragontec for bug 4332 start*/
                                     int mSavePos = mRecyclerView.getSelectPostion();
@@ -458,48 +485,52 @@ public class TemplateOrder extends Template
                         });
     }
 
-    private void fillSubscribeBanner(final BannerEntity bannerEntity) {
-        subscribeAdapter = new BannerSubscribeAdapter(mContext, bannerEntity);
-        subscribeAdapter.setSubscribeClickListener(
-                new BannerSubscribeAdapter.OnBannerClickListener() {
-                    @Override
-                    public void onBannerClick(View view, int position) {
-                        if (position < bannerEntity.getCount()) {
-                            goToNextPage(view);
-                        } else {
-                        }
-                    }
-                });
+	/*modify by dragontec for bug 4334 start*/
+    private void initAdapter(final BannerEntity bannerEntity) {
+		subscribeAdapter = new BannerSubscribeAdapter(mContext, bannerEntity);
+		subscribeAdapter.setSubscribeClickListener(
+				new BannerSubscribeAdapter.OnBannerClickListener() {
+					@Override
+					public void onBannerClick(View view, int position) {
+						if (position < bannerEntity.getCount()) {
+							goToNextPage(view);
+						} else {
+						}
+					}
+				});
 /*modify by dragontec for bug 4332 start*/
-        subscribeAdapter.setSubscribeHoverListener(
-                new BannerSubscribeAdapter.OnBannerHoverListener() {
-                    @Override
+		subscribeAdapter.setSubscribeHoverListener(
+				new BannerSubscribeAdapter.OnBannerHoverListener() {
+					@Override
 /*modify by dragontec for bug 4057 start*/
 //                    public void onBannerHover(View view, int position, boolean hovered) {
-                    public void onBannerHover(View view, int position, boolean hovered, boolean isPrimary) {
+					public void onBannerHover(View view, int position, boolean hovered, boolean isPrimary) {
 /*modify by dragontec for bug 4057 end*/
-                        if (hovered) {
-                            //                    mLastFocusView = view;
+						if (hovered) {
+							//                    mLastFocusView = view;
 /*delete by dragontec for bug 4057 start*/
 //                            mHoverView.setFocusable(true);
 /*delete by dragontec for bug 4057 end*/
-                            mRecyclerView.setHovered(true);
-                            mTitleCountTv.setText(
-                                    String.format(
-                                            mContext.getString(R.string.home_item_title_count),
-                                            (position + 1) + "",
-                                            subscribeAdapter.getTatalItemCount() + ""));
-                        } else {
-                            mRecyclerView.setHovered(false);
+							mRecyclerView.setHovered(true);
+							mTitleCountTv.setText(
+									String.format(
+											mContext.getString(R.string.home_item_title_count),
+											(position + 1) + "",
+											subscribeAdapter.getTatalItemCount() + ""));
+						} else {
+							mRecyclerView.setHovered(false);
 /*modify by dragontec for bug 4057 start*/
 //                            mHoverView.requestFocus();
-                            if (!isPrimary) {
-                                view.clearFocus();
-                            }
+							if (!isPrimary) {
+								view.clearFocus();
+							}
 /*modify by dragontec for bug 4057 end*/
-                        }
-                    }
-                });
+						}
+					}
+				});
+	}
+
+    private void fillSubscribeBanner() {
         mRecyclerView.setAdapter(subscribeAdapter);
         mTitleCountTv.setText(
                 String.format(
@@ -511,6 +542,7 @@ public class TemplateOrder extends Template
 	/*add by dragontec for bug 4077 end*/
 /*modify by dragontec for bug 4332 end*/
     }
+    /*modify by dragontec for bug 4334 end*/
 
     private void showNavigation(boolean isHovered) {
         //        if (isHovered){

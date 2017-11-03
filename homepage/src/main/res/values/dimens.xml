@@ -693,7 +693,6 @@
     <dimen name="over_screen_height">1280dp</dimen>
     <!-- add by dragontec end-->
 
-    <dimen name="home_page_banner_arrow_w">1415dp</dimen>
-    <dimen name="home_page_banner_arrow_h">130dp</dimen>
+
     <dimen name="home_page_channlBanner_mt">-40dp</dimen>
 </resources>

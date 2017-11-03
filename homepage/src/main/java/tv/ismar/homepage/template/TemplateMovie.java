@@ -70,6 +70,9 @@ public class TemplateMovie extends Template implements View.OnClickListener, Vie
 
     private static final int NAVIGATION_LEFT = 0x0001;
     private static final int NAVIGATION_RIGHT = 0x0002;
+	/*add by dragontec for bug 4334 start*/
+    private BannerEntity firstPageEntity;
+    /*add by dragontec for bug 4334 end*/
 
     private NavigationtHandler mNavigationtHandler;
 
@@ -97,10 +100,12 @@ public class TemplateMovie extends Template implements View.OnClickListener, Vie
         }
     }
 
-    public TemplateMovie(Context context) {
-        super(context);
+	/*modify by dragontec for bug 4334 start*/
+    public TemplateMovie(Context context, int position) {
+        super(context, position);
         mNavigationtHandler = new NavigationtHandler();
     }
+    /*modify by dragontec for bug 4334 end*/
 
     @Override
     public void onCreate() {
@@ -270,18 +275,32 @@ public class TemplateMovie extends Template implements View.OnClickListener, Vie
         nameKey = bundle.getString(ChannelFragment.NAME_KEY);
         mTitleTv.setText(mBannerTitle);
         mTitleCountTv.setText("00/00");
-/*modify by dragontec for bug 4200 start*/
+/*modify by dragontec for bug 4334 start*/
+		fetchMovieBanner(mBannerName, 1);
     }
 
 	@Override
 	public void fetchData() {
 		hasAppeared = true;
-		fetchMovieBanner(mBannerName, 1);
 	}
-/*modify by dragontec for bug 4200 end*/
+
+	@Override
+	public void fillData() {
+		if (isNeedFillData) {
+			isNeedFillData = false;
+			fillMovieBanner();
+		}
+	}
+
+/*modify by dragontec for bug 4334 end*/
 
     private void fetchMovieBanner(String bannerName, final int pageNumber) {
         if (pageNumber != 1) {
+        	/*add by dragontec for bug 4334 start*/
+        	if (mMovieAdapter == null) {
+        		return;
+			}
+			/*add by dragontec for bug 4334 end*/
             int startIndex = (pageNumber - 1) * 33;
             int endIndex;
             if (pageNumber == mMovieAdapter.getTotalPageCount()) {
@@ -327,7 +346,11 @@ public class TemplateMovie extends Template implements View.OnClickListener, Vie
                             public void onNext(BannerEntity bannerEntity) {
                                 isMore = bannerEntity.is_more();
                                 if (pageNumber == 1) {
-                                    fillMovieBanner(bannerEntity);
+                                	/*modify by dragontec for bug 4334 start*/
+									isNeedFillData = true;
+									initAdapter(bannerEntity);
+									checkViewAppear();
+									/*modify by dragontec for bug 4334 end*/
                                 } else {
 /*modify by dragontec for bug 4332 start*/
                                     int mSavePos = mRecyclerView.getSelectPostion();
@@ -339,56 +362,60 @@ public class TemplateMovie extends Template implements View.OnClickListener, Vie
                         });
     }
 
-    private void fillMovieBanner(final BannerEntity bannerEntity) {
-        mMovieAdapter = new BannerMovieAdapter(mContext, bannerEntity);
-        mMovieAdapter.setSubscribeClickListener(
-                new BannerMovieAdapter.OnBannerClickListener() {
-                    @Override
-                    public void onBannerClick(View view, int position) {
-                        if (position < bannerEntity.getCount()) {
-                            goToNextPage(view);
-                        } else {
-                            Logger.t(TAG).d("more click: title -> %s, channel -> %s", nameKey, channelKey);
-                            new PageIntent()
-                                    .toListPage(
-                                            mContext,
-                                            bannerEntity.getChannel_title(),
-                                            bannerEntity.getChannel(),
-                                            bannerEntity.getStyle(),
-                                            bannerEntity.getSection_slug());
-                        }
-                    }
-                });
-        mMovieAdapter.setHoverListener(
-                new BannerMovieAdapter.OnBannerHoverListener() {
-                    @Override
+	/*modify by dragontec for bug 4334 start*/
+    private void initAdapter(final BannerEntity bannerEntity) {
+		mMovieAdapter = new BannerMovieAdapter(mContext, bannerEntity);
+		mMovieAdapter.setSubscribeClickListener(
+				new BannerMovieAdapter.OnBannerClickListener() {
+					@Override
+					public void onBannerClick(View view, int position) {
+						if (position < bannerEntity.getCount()) {
+							goToNextPage(view);
+						} else {
+							Logger.t(TAG).d("more click: title -> %s, channel -> %s", nameKey, channelKey);
+							new PageIntent()
+									.toListPage(
+											mContext,
+											bannerEntity.getChannel_title(),
+											bannerEntity.getChannel(),
+											bannerEntity.getStyle(),
+											bannerEntity.getSection_slug());
+						}
+					}
+				});
+		mMovieAdapter.setHoverListener(
+				new BannerMovieAdapter.OnBannerHoverListener() {
+					@Override
 /*modify by dragontec for bug 4057 start*/
 //                    public void onBannerHover(View view, int position, boolean hovered) {
-                    public void onBannerHover(View view, int position, boolean hovered, boolean isPrimary) {
+					public void onBannerHover(View view, int position, boolean hovered, boolean isPrimary) {
 /*modify by dragontec for bug 4057 end*/
-                        if (hovered) {
+						if (hovered) {
 /*modify by dragontec for bug 4332 start*/
-                            mRecyclerView.setHovered(true);
+							mRecyclerView.setHovered(true);
 /*modify by dragontec for bug 4332 end*/
-                            if(position<=mMovieAdapter.getTatalItemCount()-1)
-                            mTitleCountTv.setText(
-                                    String.format(
-                                            mContext.getString(R.string.home_item_title_count),
-                                            (1 + position) + "",
-                                            mMovieAdapter.getTatalItemCount() + ""));
-                        } else {
+							if(position<=mMovieAdapter.getTatalItemCount()-1)
+								mTitleCountTv.setText(
+										String.format(
+												mContext.getString(R.string.home_item_title_count),
+												(1 + position) + "",
+												mMovieAdapter.getTatalItemCount() + ""));
+						} else {
 /*modify by dragontec for bug 4332 start*/
-                            mRecyclerView.setHovered(false);
+							mRecyclerView.setHovered(false);
 /*modify by dragontec for bug 4332 end*/
 /*modify by dragontec for bug 4057 start*/
 //                            HomeActivity.mHoverView.requestFocus();
-                            if (!isPrimary) {
-                                view.clearFocus();
-                            }
+							if (!isPrimary) {
+								view.clearFocus();
+							}
 /*modify by dragontec for bug 4057 end*/
-                        }
-                    }
-                });
+						}
+					}
+				});
+	}
+
+    private void fillMovieBanner() {
 /*modify by dragontec for bug 4332 start*/
         mRecyclerView.setAdapter(mMovieAdapter);
         mTitleCountTv.setText(
@@ -401,6 +428,7 @@ public class TemplateMovie extends Template implements View.OnClickListener, Vie
 	/*add by dragontec for bug 4077 end*/
 /*modify by dragontec for bug 4332 end*/
     }
+    /*modify by dragontec for bug 4334 end*/
 
     @Override
     public void onClick(View v) {

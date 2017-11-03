@@ -13,7 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
+//import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.concurrent.TimeUnit;
@@ -31,6 +31,7 @@ import tv.ismar.app.BaseFragment;
 import tv.ismar.app.network.SkyService;
 import tv.ismar.app.network.entity.AccountsLoginEntity;
 import tv.ismar.app.widget.ModuleMessagePopWindow;
+import tv.ismar.app.widget.RecyclerImageView;
 import tv.ismar.statistics.AccountStatistics;
 
 /**
@@ -53,7 +54,7 @@ public class LoginFragment extends BaseFragment implements View.OnHoverListener 
 
     private String source = "";
 
-    private ImageView tmp;
+    private RecyclerImageView tmp;
     private boolean fragmentIsPause = false;
 
     private Subscription countDownSubscription;
@@ -152,7 +153,7 @@ public class LoginFragment extends BaseFragment implements View.OnHoverListener 
     }
 
     private void initView() {
-        tmp = (ImageView) contentView.findViewById(R.id.tmp);
+        tmp = (RecyclerImageView) contentView.findViewById(R.id.tmp);
         count_tip = (TextView) contentView.findViewById(R.id.pay_count_tip);
         edit_mobile = (EditText) contentView.findViewById(R.id.pay_edit_mobile);
         edit_identifycode = (EditText) contentView.findViewById(R.id.pay_edit_identifycode);

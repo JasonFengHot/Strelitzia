@@ -103,7 +103,7 @@
         android:layout_weight="1"
         />
 
-    <ImageView
+    <tv.ismar.app.widget.RecyclerImageView
         android:layout_gravity="center"
         android:src="@drawable/sakura_qr_code_img"
         android:layout_width="match_parent"

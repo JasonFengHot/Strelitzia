@@ -15,12 +15,12 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     >
-    <ImageView
+    <tv.ismar.app.widget.RecyclerImageView
         android:id="@+id/item_vertical_poster_img"
         android:layout_width="@dimen/item_vertical_poster_img_w"
         android:layout_height="@dimen/item_vertical_poster_img_h"
         />
-    <ImageView
+    <tv.ismar.app.widget.RecyclerImageView
         android:id="@+id/item_vertical_poster_vip"
         android:layout_width="@dimen/item_vertical_poster_vip_w"
         android:layout_height="@dimen/item_vertical_poster_vip_w" />

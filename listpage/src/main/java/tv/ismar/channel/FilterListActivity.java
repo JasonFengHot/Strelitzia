@@ -16,7 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CompoundButton;
-import android.widget.ImageView;
+//import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.RadioButton;
@@ -58,6 +58,7 @@ import tv.ismar.app.ui.adapter.OnItemFocusedListener;
 import tv.ismar.app.ui.adapter.OnItemKeyListener;
 //add by dragontec for bug 4310 end
 import tv.ismar.app.widget.MyRecyclerView;
+import tv.ismar.app.widget.RecyclerImageView;
 import tv.ismar.listpage.R;
 import tv.ismar.searchpage.utils.JasmineUtil;
 import tv.ismar.view.FilterConditionGroupView;
@@ -579,7 +580,6 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
     //防止recyclerview焦点乱跑
     long mDownTime=0;
     long mUpTime=0;
-    long mRightTime=0;
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
 /*add by dragontec for bug 4267 start*/
@@ -589,14 +589,14 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
             }
         }
 /*add by dragontec for bug 4267 end*/
-        //长按滑动 滑动时焦点不会乱跳，但是每隔200毫秒滑动一次
+        //长按滑动 滑动时焦点不会乱跳，但是每隔400毫秒滑动一次
         if (keyCode == 20) {
             long downTime =System.currentTimeMillis();
             if(mDownTime==0){
                 mDownTime=downTime;
                 return false;
             }
-            if(downTime-mDownTime>100){
+            if(downTime-mDownTime>200){
                 mDownTime=downTime;
                 return false;
             }
@@ -608,20 +608,8 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
                 mUpTime=upTime;
                 return false;
             }
-            if(upTime-mUpTime>100){
+            if(upTime-mUpTime>200){
                 mUpTime=upTime;
-                return false;
-            }
-            return true;
-        }
-        if (keyCode == 22) {
-            long rightTime =System.currentTimeMillis();
-            if(mRightTime==0){
-                mRightTime=rightTime;
-                return false;
-            }
-            if(rightTime-mRightTime>20){
-                mRightTime=rightTime;
                 return false;
             }
             return true;
@@ -782,7 +770,7 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
                                     if(item!=null){
                                         final View recommendView= View.inflate(FilterListActivity.this,R.layout.filter_item_vertical_poster,null);
                                         recommendView.setId(R.layout.filter_item_vertical_poster+i);
-                                        PosterUtil.fillPoster(FilterListActivity.this,0,item,(ImageView)recommendView.findViewById(R.id.item_vertical_poster_img),(ImageView)recommendView.findViewById(R.id.item_vertical_poster_vip),(TextView)recommendView.findViewById(R.id.item_vertical_poster_mark),(TextView)recommendView.findViewById(R.id.item_vertical_poster_title),null);
+                                        PosterUtil.fillPoster(FilterListActivity.this,0,item,(RecyclerImageView)recommendView.findViewById(R.id.item_vertical_poster_img),(RecyclerImageView)recommendView.findViewById(R.id.item_vertical_poster_vip),(TextView)recommendView.findViewById(R.id.item_vertical_poster_mark),(TextView)recommendView.findViewById(R.id.item_vertical_poster_title),null);
                                         recommendView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
                                             @Override
                                             public void onFocusChange(View v, boolean hasFocus) {
@@ -827,7 +815,7 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
                                     if(item!=null) {
                                         final View recommendView= View.inflate(FilterListActivity.this,R.layout.item_filter_noresult_poster,null);
                                         recommendView.setId(R.layout.item_filter_noresult_poster+i);
-                                        PosterUtil.fillPoster(FilterListActivity.this,1,item,(ImageView)recommendView.findViewById(R.id.item_filter_noresult_img),(ImageView)recommendView.findViewById(R.id.item_filter_noresult_vip),(TextView)recommendView.findViewById(R.id.item_filter_noresult_mark),(TextView)recommendView.findViewById(R.id.item_filter_noresult_title),(TextView)recommendView.findViewById(R.id.item_filter_noresult_descrip));
+                                        PosterUtil.fillPoster(FilterListActivity.this,1,item,(RecyclerImageView)recommendView.findViewById(R.id.item_filter_noresult_img),(RecyclerImageView)recommendView.findViewById(R.id.item_filter_noresult_vip),(TextView)recommendView.findViewById(R.id.item_filter_noresult_mark),(TextView)recommendView.findViewById(R.id.item_filter_noresult_title),(TextView)recommendView.findViewById(R.id.item_filter_noresult_descrip));
                                         recommendView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
                                             @Override
                                             public void onFocusChange(View v, boolean hasFocus) {
@@ -926,6 +914,20 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
                 });
     }
 
+	/*add by dragontec for bug 4398 start*/
+    private void checkFilterItemScroll(View v, int position, GridLayoutManager gridLayoutManager) {
+			if (v.getY() > getResources().getDimensionPixelOffset(R.dimen.filter_poster_start_scroll_length)) {
+				gridLayoutManager.scrollToPositionWithOffset(position, 0);
+			} else if (v.getY() < 0) {
+				if (isVertical) {
+					gridLayoutManager.scrollToPositionWithOffset(position, getResources().getDimensionPixelOffset(R.dimen.list_scroll_filter_offset_v));
+				} else {
+					gridLayoutManager.scrollToPositionWithOffset(position, getResources().getDimensionPixelOffset(R.dimen.list_scroll_filter_offset_h));
+				}
+			}
+	}
+	/*add by dragontec for bug 4398 end*/
+
     private void processResultData(final ItemList itemList) {
         if(filterPosterAdapter==null) {
             filterPosterAdapter=new FilterPosterAdapter(this,itemList,isVertical);
@@ -952,22 +954,27 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
 			filterPosterAdapter.setItemKeyListener(new OnItemKeyListener() {
 				@Override
 				public void onItemKeyListener(View v, int keyCode, KeyEvent event) {
+					/*modify by dragontec for bug 4398 start*/
 					if (event.getAction() == KeyEvent.ACTION_UP) {
 						int position = poster_recyclerview.getChildAdapterPosition(v);
 						if (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT || keyCode == KeyEvent.KEYCODE_DPAD_DOWN || keyCode == KeyEvent.KEYCODE_DPAD_LEFT || keyCode == KeyEvent.KEYCODE_DPAD_UP) {
 							if(!filter_root_view.horving) {
-								if (v.getY() > getResources().getDimensionPixelOffset(R.dimen.filter_poster_start_scroll_length)) {
-									mFilterFocusGridLayoutManager.scrollToPositionWithOffset(position, 0);
-								} else if (v.getY() < 0) {
-									if (isVertical) {
-										mFilterFocusGridLayoutManager.scrollToPositionWithOffset(position, getResources().getDimensionPixelOffset(R.dimen.list_scroll_filter_offset_v));
-									} else {
-										mFilterFocusGridLayoutManager.scrollToPositionWithOffset(position, getResources().getDimensionPixelOffset(R.dimen.list_scroll_filter_offset_h));
-									}
-								}
+								checkFilterItemScroll(v, position, mFilterFocusGridLayoutManager);
+							}
+						}
+					} else if (event.getAction() == KeyEvent.ACTION_DOWN) {
+						int position = poster_recyclerview.getChildAdapterPosition(v);
+						if (!filter_root_view.horving) {
+							int[] location = new int[]{0, 0};
+							v.getLocationOnScreen(location);
+							int screenWidth = v.getResources().getDisplayMetrics().widthPixels;
+							int screenHeight = v.getResources().getDisplayMetrics().heightPixels;
+							if (location[0] < 0 || location[1] < 0 || location[0] + v.getWidth() > screenWidth || location[1] + v.getHeight() > screenHeight) {
+								checkFilterItemScroll(v, position, mFilterFocusGridLayoutManager);
 							}
 						}
 					}
+					/*modify by dragontec for bug 4398 end*/
 				}
 			});
 			//add by dragontec for bug 4310 end
@@ -978,6 +985,19 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
                     if(hasFocus){
                         onKeyFocusView=view;
                         lastFocusedView = view;
+                        /*modify by dragontec for bug 4398 start*/
+						if (!poster_recyclerview.isScrolling()) {
+							if (!filter_root_view.horving) {
+								int[] location = new int[]{0, 0};
+								view.getLocationOnScreen(location);
+								int screenWidth = view.getResources().getDisplayMetrics().widthPixels;
+								int screenHeight = view.getResources().getDisplayMetrics().heightPixels;
+								if (location[0] < 0 || location[1] < 0 || location[0] + view.getWidth() > screenWidth || location[1] + view.getHeight() > screenHeight) {
+									checkFilterItemScroll(view, position, mFilterFocusGridLayoutManager);
+								}
+							}
+						}
+						/*modify by dragontec for bug 4398 end*/
 						//modify by dragontec for bug 4310 start
 //                        if(!filter_root_view.horving) {
 //                            if (view.getY() > getResources().getDimensionPixelOffset(R.dimen.filter_poster_start_scroll_length)) {
@@ -1336,13 +1356,13 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
                                 lastFocusedView.requestFocus();
                             } else {
                                 View firstView = null;
-                                if(finalI==sectionSize-1&&mAllSectionItemList.getCount()-specialPos.get(finalI)<=spanCount){
+                                if(finalI==sectionSize-1&&mAllSectionItemList.getCount()-specialPos.get(finalI)<spanCount){
                                     firstView=mFocusGridLayoutManager.findViewByPosition(specialPos.get(finalI)+1);
                                 }else if(list_poster_recyclerview.getChildCount()>spanCount) {
                                     firstView = list_poster_recyclerview.getChildAt(spanCount);
-                                    if(list_poster_recyclerview.getChildAt(0) instanceof TextView){
-                                        firstView=list_poster_recyclerview.getChildAt(1);
-                                    }
+                                }
+                                if(list_poster_recyclerview.getChildAt(0) instanceof TextView){
+                                    firstView=list_poster_recyclerview.getChildAt(1);
                                 }
                                 if (firstView != null) {
                                     firstView.requestFocus();

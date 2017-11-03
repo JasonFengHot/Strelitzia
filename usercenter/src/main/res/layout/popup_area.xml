@@ -6,7 +6,7 @@
               android:clipChildren="false"
               android:clipToPadding="false"
               android:orientation="vertical">
-    <ImageView
+    <tv.ismar.app.widget.RecyclerImageView
         android:id="@+id/transfocus"
         android:layout_width="@dimen/location_divider_width"
         android:layout_height="1px"
@@ -78,7 +78,7 @@
         />
 
     </LinearLayout>
-    <ImageView
+    <tv.ismar.app.widget.RecyclerImageView
         android:id="@+id/tmp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

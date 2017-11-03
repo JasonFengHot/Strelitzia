@@ -8,7 +8,7 @@ import android.graphics.Color;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
+//import android.widget.ImageView;
 import android.widget.TextView;
 
 import tv.ismar.app.R;
@@ -36,12 +36,12 @@ public class TelescopicWrap {
     }
 
     private TextView mTv;
-    private ImageView mIconv;
+    private RecyclerImageView mIconv;
     public void setTextView(TextView view){
         this.mTv = view;
     }
 
-    public void setIcon(ImageView view){
+    public void setIcon(RecyclerImageView view){
         this.mIconv = view;
     }
 

@@ -41,7 +41,7 @@
                 android:clipToPadding="false"
                 android:orientation="vertical"></RelativeLayout>
         </ScrollView>
-        <ImageView
+        <tv.ismar.app.widget.RecyclerImageView
             android:id="@+id/mainup_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

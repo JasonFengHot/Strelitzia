@@ -80,7 +80,7 @@
                     android:orientation="vertical">
 
 
-                    <ImageView
+                    <tv.ismar.app.widget.RecyclerImageView
                         android:layout_marginTop="@dimen/weather_icon_mt"
                         android:id="@+id/today_weather_icon1"
                         android:layout_width="@dimen/weather_icon"
@@ -127,7 +127,7 @@
                     android:gravity="center"
                     android:orientation="vertical">
 
-                    <ImageView
+                    <tv.ismar.app.widget.RecyclerImageView
                         android:layout_marginTop="@dimen/weather_icon_mt"
                         android:id="@+id/tomorrow_weather_icon1"
                         android:layout_width="@dimen/weather_icon"
@@ -171,7 +171,7 @@
 
             </LinearLayout>
 
-            <ImageView
+            <tv.ismar.app.widget.RecyclerImageView
                 android:id="@+id/transfocus"
                 android:layout_width="@dimen/location_divider_width"
                 android:layout_height="1px"
@@ -257,7 +257,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
-        <ImageView
+        <tv.ismar.app.widget.RecyclerImageView
             android:id="@+id/tmp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

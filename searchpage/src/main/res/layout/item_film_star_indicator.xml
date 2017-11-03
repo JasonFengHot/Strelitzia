@@ -18,7 +18,7 @@
         android:textColor="@color/word_nomal"
         android:textSize="@dimen/textSize_30sp"/>
 
-    <ImageView
+    <tv.ismar.app.widget.RecyclerImageView
         android:id="@+id/indicator_bg_new"
         android:layout_width="@dimen/indicator_bg_new_w"
         android:layout_height="@dimen/indicator_bg_new_h"

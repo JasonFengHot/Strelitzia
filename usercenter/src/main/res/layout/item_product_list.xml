@@ -6,7 +6,7 @@
     android:gravity="center"
     android:orientation="vertical">
 
-    <ImageView
+    <tv.ismar.app.widget.RecyclerImageView
         android:id="@+id/package_list_image"
         android:layout_width="@dimen/usercenter_storefragment_packagelist_item_image_width"
         android:layout_height="@dimen/usercenter_storefragment_packagelist_item_image_height"

@@ -11,13 +11,13 @@
             android:layout_marginLeft="@dimen/search_guide_iv_margin_left"
             >
 
-        <ImageView
+        <tv.ismar.app.widget.RecyclerImageView
                 android:layout_width="@dimen/search_guide_iv_width"
                 android:layout_height="@dimen/search_guide_iv_width"
                 android:layout_marginTop="@dimen/search_guide_iv1_top"
                 android:background="@drawable/round1"
                 />
-        <ImageView
+        <tv.ismar.app.widget.RecyclerImageView
                 android:layout_width="@dimen/search_guide_iv_width"
                 android:layout_height="@dimen/search_guide_iv_width"
                 android:layout_marginTop="@dimen/search_guide_iv2_top"

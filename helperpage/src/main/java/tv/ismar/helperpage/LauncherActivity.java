@@ -4,7 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.ImageView;
+//import android.widget.ImageView;
 
 import java.util.List;
 
@@ -13,6 +13,7 @@ import rx.schedulers.Schedulers;
 import tv.ismar.app.BaseActivity;
 import tv.ismar.app.network.SkyService;
 import tv.ismar.app.network.entity.ProblemEntity;
+import tv.ismar.app.widget.RecyclerImageView;
 import tv.ismar.helperpage.core.FeedbackProblem;
 import tv.ismar.helperpage.ui.activity.HomeActivity;
 
@@ -20,9 +21,9 @@ public class LauncherActivity extends BaseActivity implements View.OnClickListen
     private static final String TAG = "LauncherActivity";
 
 
-    private ImageView indicatorNode;
-    private ImageView indicatorFeedback;
-    private ImageView indicatorHelp;
+    private RecyclerImageView indicatorNode;
+    private RecyclerImageView indicatorFeedback;
+    private RecyclerImageView indicatorHelp;
     private SkyService skyService;
 
     @Override
@@ -34,9 +35,9 @@ public class LauncherActivity extends BaseActivity implements View.OnClickListen
     }
 
     private void initViews() {
-        indicatorNode = (ImageView) findViewById(R.id.indicator_node_image);
-        indicatorFeedback = (ImageView) findViewById(R.id.indicator_feedback_image);
-        indicatorHelp = (ImageView) findViewById(R.id.indicator_help_image);
+        indicatorNode = (RecyclerImageView) findViewById(R.id.indicator_node_image);
+        indicatorFeedback = (RecyclerImageView) findViewById(R.id.indicator_feedback_image);
+        indicatorHelp = (RecyclerImageView) findViewById(R.id.indicator_help_image);
 
         indicatorNode.setOnClickListener(this);
         indicatorFeedback.setOnClickListener(this);

@@ -67,7 +67,9 @@ public class HomeActivity extends BaseActivity {
             HttpException httpException = (HttpException) e;
             if (httpException.code() == 401) {
             	/*add by dragontec for bug 4364 start*/
-				IsmartvActivator.getInstance().removeUserInfo();
+            	/*modify by dragontec for bug 4393 start*/
+				IsmartvActivator.getInstance().removeUserInfo(false);
+				/*modify by dragontec for bug 4393 end*/
 				/*add by dragontec for bug 4364 end*/
                 showExpireAccessTokenPop();
             } else if (httpException.code() == 408) {

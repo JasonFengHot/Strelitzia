@@ -6,7 +6,7 @@
               android:gravity="center"
               android:orientation="horizontal">
 
-    <ImageView
+    <tv.ismar.app.widget.RecyclerImageView
         android:id="@+id/dialog_back_img"
         android:layout_width="@dimen/loading_size"
         android:layout_height="@dimen/loading_size"

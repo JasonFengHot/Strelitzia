@@ -9,7 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
-import android.widget.ImageView;
+//import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.gson.GsonBuilder;
@@ -24,6 +24,7 @@ import tv.ismar.app.core.Source;
 import tv.ismar.app.network.entity.ItemEntity;
 import tv.ismar.app.ui.HeadFragment;
 import tv.ismar.app.widget.LoadingDialog;
+import tv.ismar.app.widget.RecyclerImageView;
 import tv.ismar.app.widget.ZGridView;
 import tv.ismar.detailpage.R;
 import tv.ismar.statistics.EpisodePageStatistics;
@@ -40,8 +41,8 @@ public class EpisodeActivity extends BaseActivity implements View.OnHoverListene
     private List<ItemEntity> mItemEntityList;
 
     private ItemEntity mSubItem;
-    private ImageView mImageBackground;
-    private ImageView mDramaImageLabel;
+    private RecyclerImageView mImageBackground;
+    private RecyclerImageView mDramaImageLabel;
     private TextView mTvDramaName;
     private TextView mTvDramaAll;
     private TextView mTvDramaType;
@@ -113,8 +114,8 @@ public class EpisodeActivity extends BaseActivity implements View.OnHoverListene
     private void initViews() {
         tmp = findViewById(R.id.tmp);
         episode_zgridview = (ZGridView) findViewById(R.id.episode_zgridview);
-        mImageBackground = (ImageView) findViewById(R.id.image_daram_back);
-        mDramaImageLabel = (ImageView) findViewById(R.id.image_daram_label);
+        mImageBackground = (RecyclerImageView) findViewById(R.id.image_daram_back);
+        mDramaImageLabel = (RecyclerImageView) findViewById(R.id.image_daram_label);
         mTvDramaName = (TextView) findViewById(R.id.tv_drama_name);
         mTvDramaAll = (TextView) findViewById(R.id.tv_daram_all);
         mTvDramaType = (TextView) findViewById(R.id.tv_daram_type);

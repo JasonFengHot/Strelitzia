@@ -12,7 +12,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
+//import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -49,6 +49,7 @@ import tv.ismar.app.ui.adapter.OnItemClickListener;
 import tv.ismar.app.ui.adapter.OnItemFocusedListener;
 import tv.ismar.app.util.Utils;
 import tv.ismar.app.widget.MyRecyclerView;
+import tv.ismar.app.widget.RecyclerImageView;
 import tv.ismar.library.exception.ExceptionUtils;
 import tv.ismar.searchpage.utils.JasmineUtil;
 import tv.ismar.statistics.PurchaseStatistics;
@@ -73,12 +74,12 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnClickList
     private Button subject_btn_buy;
     private Button subject_btn_like;
     private SubjectMovieAdapter movieAdapter;
-    private ImageView left_layer_movie;
-    private ImageView right_layer_movie;
-    private ImageView left_layer_tv;
-    private ImageView right_layer_tv;
-    private ImageView tv_poster_focus;
-    private ImageView poster_focus;
+    private RecyclerImageView left_layer_movie;
+    private RecyclerImageView right_layer_movie;
+    private RecyclerImageView left_layer_tv;
+    private RecyclerImageView right_layer_tv;
+    private RecyclerImageView tv_poster_focus;
+    private RecyclerImageView poster_focus;
     private List<SubjectEntity.ObjectsBean> list;
     private SubjectTvAdapter tvAdapter;
     private String type;
@@ -87,7 +88,7 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnClickList
     private View subject_tv;
     private String isnet="no";
     private FavoriteManager mFavoriteManager;
-    private ImageView subject_bg;
+    private RecyclerImageView subject_bg;
     private View focusView;
     private boolean btn_buy_focused=false;
     private boolean btn_like_focused=false;
@@ -114,13 +115,13 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnClickList
         subject_description = (TextView) content.findViewById(R.id.subject_description);
         subject_btn_buy = (Button) content.findViewById(R.id.subject_btn_buy);
         subject_btn_like = (Button) content.findViewById(R.id.subject_btn_like);
-        left_layer_movie = (ImageView) content.findViewById(R.id.left_layer_movie);
-        right_layer_movie = (ImageView) content.findViewById(R.id.right_layer_movie);
-        poster_focus = (ImageView) content.findViewById(R.id.poster_focus);
-        left_layer_tv= (ImageView) content.findViewById(R.id.left_layer_tv);
-        right_layer_tv = (ImageView) content.findViewById(R.id.right_layer_tv);
-        tv_poster_focus= (ImageView) content.findViewById(R.id.tv_poster_focus);
-        subject_bg = (ImageView) content.findViewById(R.id.subject_bg);
+        left_layer_movie = (RecyclerImageView) content.findViewById(R.id.left_layer_movie);
+        right_layer_movie = (RecyclerImageView) content.findViewById(R.id.right_layer_movie);
+        poster_focus = (RecyclerImageView) content.findViewById(R.id.poster_focus);
+        left_layer_tv= (RecyclerImageView) content.findViewById(R.id.left_layer_tv);
+        right_layer_tv = (RecyclerImageView) content.findViewById(R.id.right_layer_tv);
+        tv_poster_focus= (RecyclerImageView) content.findViewById(R.id.tv_poster_focus);
+        subject_bg = (RecyclerImageView) content.findViewById(R.id.subject_bg);
     }
 
     @Override
