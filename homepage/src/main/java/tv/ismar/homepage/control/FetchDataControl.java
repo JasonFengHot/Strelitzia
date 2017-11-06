@@ -7,6 +7,7 @@ import com.orhanobut.logger.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import rx.Observer;
 import rx.Subscription;
@@ -92,7 +93,7 @@ public class FetchDataControl extends BaseControl{
 
                     @Override
                     public void onError(Throwable e) {
-                        Log.i("onError", "onError");
+                        Log.e("onError", "onError");
                     }
 
                     @Override
@@ -107,6 +108,7 @@ public class FetchDataControl extends BaseControl{
 
     /*获取频道列表*/
     public void fetchChannels() {
+        Log.e("onError", "time:" + System.currentTimeMillis());
         fetchChannels = SkyService.ServiceManager.getService().apiTvChannels()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -118,12 +120,14 @@ public class FetchDataControl extends BaseControl{
 
                     @Override
                     public void onError(Throwable e) {
+                        Log.e("onError", "time:" + System.currentTimeMillis());
                         e.printStackTrace();
 
                     }
 
                     @Override
                     public void onNext(ChannelEntity[] channelEntities) {
+                        Log.e("onError", "onNext");
                         if (mCallBack != null && channelEntities != null) {
                             mChannels = channelEntities;
                             mCallBack.callBack(FETCH_CHANNEL_TAB_FLAG, channelEntities);
