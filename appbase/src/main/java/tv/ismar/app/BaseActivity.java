@@ -25,6 +25,7 @@ import android.widget.PopupWindow;
 
 import com.orhanobut.logger.Logger;
 
+import java.net.UnknownHostException;
 import java.util.Stack;
 
 import cn.ismartv.truetime.TrueTime;
@@ -344,23 +345,24 @@ public class BaseActivity extends AppCompatActivity {
                 Log.i("onNoNet", "" + NetworkUtils.isConnected(BaseActivity.this));
 
                 showNoNetConnectDelay();
-            } else if (e instanceof HttpException) {
-                HttpException httpException = (HttpException) e;
-                if (httpException.code() == 401) {
-                	/*add by dragontec for bug 4364 start*/
-                	IsmartvActivator.getInstance().removeUserInfo();
-                	/*add by dragontec for bug 4364 end*/
-                    showExpireAccessTokenPop();
-                }else if(httpException.code() == 504){
-                    ToastTip.showToast(BaseActivity.this,"网络连接超时，请重试");
-                }else{
+            } else if (e instanceof HttpException|| e instanceof UnknownHostException) {
+                if (e instanceof UnknownHostException){
                     ToastTip.showToast(BaseActivity.this,"网络连接失败，请检查网络是否通畅");
+                }else{
+                    HttpException httpException = (HttpException) e;
+                    if (httpException.code() == 401) {
+                	/*add by dragontec for bug 4364 start*/
+                        IsmartvActivator.getInstance().removeUserInfo();
+                	/*add by dragontec for bug 4364 end*/
+                        showExpireAccessTokenPop();
+                    }else if(httpException.code() == 504){
+                        ToastTip.showToast(BaseActivity.this,"网络连接超时，请重试");
+                    }else{
+                        ToastTip.showToast(BaseActivity.this,"网络连接失败，请检查网络是否通畅");
+                    }
                 }
             }else{
-//                if (e != null && !TextUtils.isEmpty(e.getMessage()) && e.getMessage().equals("Canceled")){
-//                }else {
-//                    ToastTip.showToast(BaseActivity.this,"网络连接超时，请重试");
-//                }
+               ToastTip.showToast(BaseActivity.this,"网络连接失败，请检查网络是否通畅");
             }
         }
     }

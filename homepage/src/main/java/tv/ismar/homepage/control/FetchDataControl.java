@@ -3,17 +3,15 @@ package tv.ismar.homepage.control;
 import android.content.Context;
 import android.util.Log;
 
-import com.orhanobut.logger.Logger;
-
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import tv.ismar.account.IsmartvActivator;
+import tv.ismar.app.BaseActivity;
 import tv.ismar.app.BaseControl;
 import tv.ismar.app.entity.ChannelEntity;
 import tv.ismar.app.entity.GuideBanner;
@@ -22,6 +20,7 @@ import tv.ismar.app.entity.banner.BannerPoster;
 import tv.ismar.app.entity.banner.BannerRecommend;
 import tv.ismar.app.entity.banner.HomeEntity;
 import tv.ismar.app.network.SkyService;
+import tv.ismar.app.ui.ToastTip;
 
 /**
  * @AUTHOR: xi
@@ -50,7 +49,6 @@ public class FetchDataControl extends BaseControl{
 
     /*获取首页下banner列表*/
     public void fetchHomeBanners(){
-        Logger.t(TAG).d("FetchDataControl fetchHomeBanners");
         try {
             fetchHomeBanners = SkyService.ServiceManager.getService().getGuideBanners()
                     .subscribeOn(Schedulers.io())
@@ -62,13 +60,12 @@ public class FetchDataControl extends BaseControl{
 
                         @Override
                         public void onError(Throwable e) {
-                            e.printStackTrace();
-                            Log.i("onError", "onError");
+                            ToastTip.showToast(mContext,"网络连接失败，请检查网络是否通畅");
+                            forceFetchHomeBanners();
                         }
 
                         @Override
                         public void onNext(GuideBanner[] guideBanners) {
-                            Logger.t(TAG).d("FetchDataControl fetchHomeBanners onNext");
                             if (mCallBack != null && guideBanners != null && guideBanners.length > 0) {
                                 mGuideBanners = guideBanners;
                                 mCallBack.callBack(FETCH_HOME_BANNERS_FLAG, guideBanners);
@@ -80,8 +77,32 @@ public class FetchDataControl extends BaseControl{
         }
     }
 
+    public void forceFetchHomeBanners() {
+        fetchHomeBanners = SkyService.ServiceManager.getForceCacheService().getGuideBanners()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<GuideBanner[]>() {
+                    @Override
+                    public void onCompleted() {
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onNext(GuideBanner[] guideBanners) {
+                        if (mCallBack != null && guideBanners != null && guideBanners.length > 0) {
+                            mGuideBanners = guideBanners;
+                            mCallBack.callBack(FETCH_HOME_BANNERS_FLAG, guideBanners);
+                        }
+                    }
+                });
+    }
+
     /*获取指定频道下的banner*/
-    public void fetchChannelBanners(String channel){
+    public void fetchChannelBanners(final String channel) {
         fetchChannelBanners = SkyService.ServiceManager.getService().getChannelBanners(channel)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -93,7 +114,33 @@ public class FetchDataControl extends BaseControl{
 
                     @Override
                     public void onError(Throwable e) {
-                        Log.e("onError", "onError");
+                        ToastTip.showToast(mContext,"网络连接失败，请检查网络是否通畅");
+                        forceFetchChannelBanners(channel);
+                    }
+
+                    @Override
+                    public void onNext(GuideBanner[] guideBanners) {
+                        if (mCallBack != null && guideBanners != null) {
+                            mGuideBanners = guideBanners;
+                            mCallBack.callBack(FETCH_CHANNEL_BANNERS_FLAG, guideBanners);
+                        }
+                    }
+                });
+    }
+
+    public void forceFetchChannelBanners(String channel) {
+        fetchChannelBanners = SkyService.ServiceManager.getForceCacheService().getChannelBanners(channel)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<GuideBanner[]>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
                     }
 
                     @Override
@@ -108,7 +155,6 @@ public class FetchDataControl extends BaseControl{
 
     /*获取频道列表*/
     public void fetchChannels() {
-        Log.e("onError", "time:" + System.currentTimeMillis());
         fetchChannels = SkyService.ServiceManager.getService().apiTvChannels()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -120,14 +166,37 @@ public class FetchDataControl extends BaseControl{
 
                     @Override
                     public void onError(Throwable e) {
-                        Log.e("onError", "time:" + System.currentTimeMillis());
-                        e.printStackTrace();
-
+                        forceFetchChannels();
                     }
 
                     @Override
                     public void onNext(ChannelEntity[] channelEntities) {
-                        Log.e("onError", "onNext");
+                        if (mCallBack != null && channelEntities != null) {
+                            mChannels = channelEntities;
+                            mCallBack.callBack(FETCH_CHANNEL_TAB_FLAG, channelEntities);
+                        }
+                    }
+                });
+    }
+
+
+    public void forceFetchChannels() {
+        fetchChannels = SkyService.ServiceManager.getForceCacheService().apiTvChannels()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<ChannelEntity[]>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onNext(ChannelEntity[] channelEntities) {
                         if (mCallBack != null && channelEntities != null) {
                             mChannels = channelEntities;
                             mCallBack.callBack(FETCH_CHANNEL_TAB_FLAG, channelEntities);
@@ -203,7 +272,7 @@ public class FetchDataControl extends BaseControl{
      * @param page
      * @param loadMore 是否增量加载
      */
-    public synchronized void fetchBanners(String banner, int page, final boolean loadMore){
+    public synchronized void fetchBanners(final String banner, final int page, final boolean loadMore){
         fetchBanners = SkyService.ServiceManager.getService().getBanners(banner, page)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -217,13 +286,7 @@ public class FetchDataControl extends BaseControl{
 
                     @Override
                     public void onError(Throwable e) {
-                        e.printStackTrace();
-                        Log.i("onError", "onError");
-	/* add by dragontec for bug 4264 start */
-						if (mCallBack != null) {
-							mCallBack.callBack(FETCH_DATA_FAIL_FLAG);
-						}
-	/* add by dragontec for bug 4264 end */
+                        forceFetchBanners(banner, page, loadMore);
                     }
 
                     @Override
@@ -262,6 +325,68 @@ public class FetchDataControl extends BaseControl{
                                 }
 //                            }
                         }
+                });
+    }
+
+    public synchronized void forceFetchBanners(String banner, int page, final boolean loadMore){
+        fetchBanners = SkyService.ServiceManager.getForceCacheService().getBanners(banner, page)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<HomeEntity>() {
+                    @Override
+                    public void onCompleted() {
+	/* add by dragontec for bug 4264 start */
+                        Log.i("fetchBanners", "onCompleted");
+	/* add by dragontec for bug 4264 end */
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                        Log.i("onError", "onError");
+	/* add by dragontec for bug 4264 start */
+                        if (mCallBack != null) {
+                            mCallBack.callBack(FETCH_DATA_FAIL_FLAG);
+                        }
+	/* add by dragontec for bug 4264 end */
+                    }
+
+                    @Override
+                    public void onNext(HomeEntity homeEntities) {
+                        if(homeEntities != null){
+                            mHomeEntity = homeEntities;
+                            if(homeEntities.carousels != null){
+                                if(!loadMore){
+                                    mCarousels.clear();
+                                }
+                                mCarousels.addAll(homeEntities.carousels);
+                                if (!mCarousels.isEmpty() && mCarousels.size() > 5){
+                                    mCarousels = mCarousels.subList(0, 5);
+                                }
+                            }
+                            if(homeEntities.posters != null){
+                                if(!loadMore){
+                                    mPoster.clear();
+                                }
+                                mPoster.addAll(homeEntities.posters);
+                                if(mPoster.size()>=mHomeEntity.count-2 && mHomeEntity.is_more){//最后一页更多按钮
+                                    BannerPoster morePoster = new BannerPoster();
+                                    morePoster.poster_url = "更多";
+                                    morePoster.vertical_url = "更多";
+                                    morePoster.title = "";
+                                    mHomeEntity.posters.add(morePoster);
+                                    mPoster.add(morePoster);
+                                }
+                            }
+                        }
+//                            if(mHomeEntity!=null&&"template_recommend".equals(mHomeEntity.template)){
+//                                fetchHomeRecommend(mHomeEntity.url,mHomeEntity.is_more);
+//                            }else {
+                        if (mCallBack != null) {
+                            mCallBack.callBack(FETCH_BANNERS_LIST_FLAG, mHomeEntity);
+                        }
+//                            }
+                    }
                 });
     }
 

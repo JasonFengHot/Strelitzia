@@ -184,8 +184,9 @@ public class VodApplication extends Application {
     }
 
     private void initPicasso(){
+        int processorCount = Runtime.getRuntime().availableProcessors();
         /*图片加载线程池*/
-        ExecutorService executorService = Executors.newSingleThreadExecutor();
+        ExecutorService executorService = Executors.newFixedThreadPool(processorCount * 2);
 
         /*普通图片缓存HttpClient*/
         File cacheFile = new File(getCacheDir(), "picasso_cache");
