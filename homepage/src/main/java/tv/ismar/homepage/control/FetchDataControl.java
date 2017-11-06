@@ -53,14 +53,14 @@ public class FetchDataControl extends BaseControl{
             fetchHomeBanners = SkyService.ServiceManager.getService().getGuideBanners()
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Observer<GuideBanner[]>() {
+                    .subscribe(((BaseActivity)mContext).new BaseObserver<GuideBanner[]>() {
                         @Override
                         public void onCompleted() {
                         }
 
                         @Override
                         public void onError(Throwable e) {
-                            ToastTip.showToast(mContext,"网络连接失败，请检查网络是否通畅");
+                            super.onError(e);
                             forceFetchHomeBanners();
                         }
 
@@ -106,7 +106,7 @@ public class FetchDataControl extends BaseControl{
         fetchChannelBanners = SkyService.ServiceManager.getService().getChannelBanners(channel)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<GuideBanner[]>() {
+                .subscribe(((BaseActivity)mContext).new BaseObserver<GuideBanner[]>() {
                     @Override
                     public void onCompleted() {
 
@@ -114,7 +114,7 @@ public class FetchDataControl extends BaseControl{
 
                     @Override
                     public void onError(Throwable e) {
-                        ToastTip.showToast(mContext,"网络连接失败，请检查网络是否通畅");
+                        super.onError(e);
                         forceFetchChannelBanners(channel);
                     }
 
