@@ -558,7 +558,7 @@ public interface SkyService {
     Observable<GuideBanner[]> getGuideBanners(
     );
 
-    @GET("/api/new_dpi/")
+    @GET("api/new_dpi/")
     Observable<List<ConnerEntity>> getConner();
 
     @GET("api/tv/banners/{channel}/")
@@ -572,7 +572,7 @@ public interface SkyService {
             @Path("page") int page
     );
 
-    @GET("/api/tv/mbanner/{banner}/")
+    @GET("api/tv/mbanner/{banner}/")
     Observable<HomeEntity[]> getMBanners(
             @Path("banner") String banner,
             @Path("page") int page

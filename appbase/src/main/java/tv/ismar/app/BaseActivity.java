@@ -340,10 +340,7 @@ public class BaseActivity extends AppCompatActivity {
             if (!activityIsAlive) {
                 return;
             }
-            Log.i("onNoNet", "onerror" + NetworkUtils.isConnected(BaseActivity.this));
-            if (!NetworkUtils.isConnected(BaseActivity.this) && !NetworkUtils.isWifi(BaseActivity.this)) {
-                Log.i("onNoNet", "" + NetworkUtils.isConnected(BaseActivity.this));
-
+            if (!NetworkUtils.isConnected(BaseActivity.this)) {
                 showNoNetConnectDelay();
             } else if (e instanceof HttpException|| e instanceof UnknownHostException) {
                 if (e instanceof UnknownHostException){
@@ -543,7 +540,6 @@ public class BaseActivity extends AppCompatActivity {
         noNetConnectRunnable = new Runnable() {
             @Override
             public void run() {
-                Logger.t("showNoNetConnectDelay" ).d("showNoNetConnectDialog");
                 showNoNetConnectDialog();
             }
         };
@@ -617,7 +613,6 @@ public class BaseActivity extends AppCompatActivity {
                         }
                     } else {
                         ////////网络断开
-                        Logger.t("ConnectionChangeReceiver" ).d("showNoNetConnectDialog");
                         showNoNetConnectDialog();
                     }
                 }catch (Exception e){
