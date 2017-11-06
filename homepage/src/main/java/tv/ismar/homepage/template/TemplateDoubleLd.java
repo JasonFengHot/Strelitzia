@@ -305,9 +305,18 @@ public class TemplateDoubleLd extends Template
         BigImage data = mFetchDataControl.mHomeEntity.bg_image;
         if (data != null) {
             if (!TextUtils.isEmpty(data.poster_url)) {
-                Picasso.with(mContext).load(data.poster_url).into(mVerticalImg);
+/*modify by dragontec for bug 4336 start*/
+                Picasso.with(mContext).load(data.poster_url).
+                        error(R.drawable.template_title_item_horizontal_preview).
+                        placeholder(R.drawable.template_title_item_horizontal_preview).
+                        into(mVerticalImg);
+/*modify by dragontec for bug 4336 end*/
             } else {
-                Picasso.with(mContext).load(R.drawable.list_item_preview_bg).into(mVerticalImg);
+/*modify by dragontec for bug 4336 start*/
+                Picasso.with(mContext).
+                        load(R.drawable.template_title_item_horizontal_preview).
+                        into(mVerticalImg);
+/*modify by dragontec for bug 4336 end*/
             }
             Picasso.with(mContext)
                     .load(VipMark.getInstance().getBannerIconMarkImage(data.top_left_corner))

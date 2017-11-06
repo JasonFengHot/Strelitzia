@@ -140,8 +140,12 @@ public class BannerMovieAdapter extends RecyclerView.Adapter<BannerMovieAdapter.
             holder.mItemView.findViewById(R.id.item_layout).setBackgroundResource(android.R.color.transparent);
             holder.mTitle.setVisibility(View.VISIBLE);
             holder.itemWrapper.setVisibility(View.VISIBLE);
-            Picasso.with(mContext).load(targetImageUrl).placeholder(R.drawable.list_item_ppreview_bg)
-                    .error(R.drawable.list_item_ppreview_bg).into(holder.mImageView);
+/*modify by dragontec for bug 4336 start*/
+            Picasso.with(mContext).load(targetImageUrl).
+                    placeholder(R.drawable.template_title_item_vertical_preview).
+                    error(R.drawable.template_title_item_vertical_preview).
+                    into(holder.mImageView);
+/*modify by dragontec for bug 4336 end*/
         }
 
         Picasso.with(mContext).load(VipMark.getInstance().getBannerIconMarkImage(entity.getTop_left_corner())).into(holder.markLT);

@@ -642,21 +642,23 @@
 <dimen name="guide_title_react_padding">11.11dp</dimen>
 <dimen name="guide_title_react_width">185.19dp</dimen>
 <dimen name="guide_title_icon_padding_text">7.41dp</dimen>
-<dimen name="guide_title_time_size">35.56dp</dimen>
+<dimen name="guide_title_time_size">26.67sp</dimen>
 <dimen name="guide_title_logo_margin_top">8.15dp</dimen>
 <dimen name="guide_title_logo_margin_left">31.11dp</dimen>
 <dimen name="guide_title_time_margin_right">31.11dp</dimen>
-<dimen name="guide_title_time_margin_top">20.74dp</dimen>
+<dimen name="guide_title_time_width">71.11dp</dimen>
+<dimen name="guide_title_time_height">38.52dp</dimen>
 <dimen name="guide_title_histroy_margin_top">0.00dp</dimen>
 <dimen name="guide_title_person_center_margin_top">26.67dp</dimen>
 <dimen name="guide_title_person_center_margin_time">25.93dp</dimen>
 <dimen name="guide_title_history_margin_person_center">7.41dp</dimen>
+<dimen name="guide_title_margin_top">4.44dp</dimen>
 
 <!--频道title尺寸-->
 <dimen name="channel_title_size">46.67dp</dimen>
 <dimen name="channel_title_margin_left">71.11dp</dimen>
 <dimen name="channel_title_margin_right">7.41dp</dimen>
-<dimen name="channel_title_margin_top">11.85dp</dimen>
+<dimen name="channel_title_margin_top">74.07dp</dimen>
 <dimen name="channel_title_margin_bottom">12.59dp</dimen>
 <dimen name="channel_title_height">49.63dp</dimen>
 <dimen name="channel_no_title_height">44.44dp</dimen>
@@ -668,6 +670,7 @@
 <dimen name="guide_switch_container_height">368.89dp</dimen>
 <dimen name="guide_video_title_width">674.81dp</dimen>
 <dimen name="guide_video_title_height">31.85dp</dimen>
+<dimen name="guide_video_title_margin_left">3.70dp</dimen>
 <dimen name="guide_video_icon_width">207.41dp</dimen>
 <dimen name="guide_video_title_size">22.22sp</dimen>
 <dimen name="guide_navigation_width">31.11dp</dimen>
@@ -775,7 +778,6 @@
 <dimen name="center_introduction_focused_height">31.85dp</dimen>
 <dimen name="center_introduction_focused_size">22.22sp</dimen>
 <dimen name="center_padding">55.56dp</dimen>
-<dimen name="center_padding_offset">334.81dp</dimen>
 <!--更多模版-->
 <dimen name="more_btn_width">355.56dp</dimen>
 <dimen name="more_btn_height">74.07dp</dimen>

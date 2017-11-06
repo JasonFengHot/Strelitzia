@@ -22,6 +22,8 @@ import tv.ismar.homepage.R;
 import tv.ismar.homepage.adapter.CenterAdapter;
 import tv.ismar.homepage.control.FetchDataControl;
 import tv.ismar.homepage.view.BannerLinearLayout;
+import tv.ismar.homepage.widget.CenterRecyclerViewTV;
+
 import static android.view.MotionEvent.BUTTON_PRIMARY;
 
 /**
@@ -179,9 +181,11 @@ public class TemplateCenter extends Template
     			/*modify by dragontec for bug 4332 start*/
 				mRecyclerView.setAdapter(mAdapter);
 /*modify by dragontec for bug 4332 end*/
+/*modify by dragontec for bug 4365 start*/
 				mCenterLayoutManager.scrollToPositionWithOffset(
 						mFetchDataControl.mCarousels.size() * 100,
-						mContext.getResources().getDimensionPixelOffset(R.dimen.center_padding_offset));
+                        ((CenterRecyclerViewTV)mRecyclerView).getCenterOffset());
+/*modify by dragontec for bug 4365 end*/
 			/*modify by dragontec for bug 4277 start*/
 		/*add by dragontec for bug 4077 start*/
 /*modify by dragontec for bug 4332 start*/
@@ -305,17 +309,17 @@ public class TemplateCenter extends Template
 			setNeedCheckScrollEnd();
 /*add by dragontec for bug 4332 end*/
             mCenterLayoutManager.setCanScroll(true);
-/*modify by dragontec for bug 4332 start*/
-            mCenterLayoutManager.scrollToPositionWithOffset(mRecyclerView.findFirstVisibleItemPosition(),mContext.getResources().getDimensionPixelOffset(R.dimen.center_padding_offset));
-/*modify by dragontec for bug 4332 end*/
+/*modify by dragontec for bug 4332,4365 start*/
+            mCenterLayoutManager.scrollToPositionWithOffset(mRecyclerView.findFirstVisibleItemPosition(), ((CenterRecyclerViewTV)mRecyclerView).getCenterOffset());
+/*modify by dragontec for bug 4332,4365 end*/
         }else if(v.getId()==R.id.navigation_right){
 /*add by dragontec for bug 4332 start*/
 			setNeedCheckScrollEnd();
 /*add by dragontec for bug 4332 end*/
             mCenterLayoutManager.setCanScroll(true);
-/*modify by dragontec for bug 4332 start*/
-            mCenterLayoutManager.scrollToPositionWithOffset(mRecyclerView.findLastVisibleItemPosition(),mContext.getResources().getDimensionPixelOffset(R.dimen.center_padding_offset));
-/*modify by dragontec for bug 4332 end*/
+/*modify by dragontec for bug 4332,4365 start*/
+            mCenterLayoutManager.scrollToPositionWithOffset(mRecyclerView.findLastVisibleItemPosition(),((CenterRecyclerViewTV)mRecyclerView).getCenterOffset());
+/*modify by dragontec for bug 4332,4365 end*/
 
         }
     }

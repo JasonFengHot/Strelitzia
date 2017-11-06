@@ -916,9 +916,11 @@ public class TemplateGuide extends Template
             mVideoTitleTv.setVisibility(View.GONE);
         }
         final int pauseTime = mFetchDataControl.mCarousels.get(mCurrentCarouselIndex).getPause_time();
+/*modify by dragontec for bug 4336 start*/
         Picasso.with(mContext)
                 .load(url)
-                .error(R.drawable.list_item_preview_bg)
+                .placeholder(R.drawable.guide_video_loading)
+                .error(R.drawable.guide_video_loading)
                 .into(
                         mLoadingIg,
                         new Callback() {
@@ -937,6 +939,7 @@ public class TemplateGuide extends Template
                                 }
                             }
                         });
+/*modify by dragontec for bug 4336 end*/
     }
 
     private void playVideo(int delay) {

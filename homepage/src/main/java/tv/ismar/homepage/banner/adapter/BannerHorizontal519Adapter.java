@@ -135,8 +135,12 @@ public class BannerHorizontal519Adapter extends RecyclerView.Adapter<BannerHoriz
             holder.mItemView.findViewById(R.id.item_layout).setBackgroundResource(android.R.color.transparent);
             holder.mTitle.setVisibility(View.VISIBLE);
             holder.mItemView.findViewById(R.id.content_layout).setVisibility(View.VISIBLE);
-            Picasso.with(mContext).load(targetImageUrl).placeholder(R.drawable.list_item_preview_bg)
-                    .error(R.drawable.list_item_preview_bg).into(holder.mImageView);
+/*modify by dragontec for bug 4336 start*/
+            Picasso.with(mContext).load(targetImageUrl).
+                    placeholder(R.drawable.template_title_item_horizontal_preview).
+                    error(R.drawable.template_title_item_horizontal_preview).
+                    into(holder.mImageView);
+/*modify by dragontec for bug 4336 end*/
         }
 
         holder.mTitle.setText(entity.getTitle() + " ");

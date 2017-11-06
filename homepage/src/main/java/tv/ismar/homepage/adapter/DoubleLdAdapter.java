@@ -78,10 +78,19 @@ public class DoubleLdAdapter extends BaseRecycleAdapter<DoubleLdAdapter.DoubleLd
 					if (poster.poster_url.equals("更多")) {
 						Picasso.with(mContext).load(R.drawable.banner_horizontal_more).into(holder.mPosterIg);
 					} else {
-						Picasso.with(mContext).load(poster.poster_url).into(holder.mPosterIg);
+/*modify by dragontec for bug 4336 start*/
+						Picasso.with(mContext).load(poster.poster_url).
+                                error(R.drawable.template_title_item_horizontal_preview).
+                                placeholder(R.drawable.template_title_item_horizontal_preview).
+                                into(holder.mPosterIg);
+/*modify by dragontec for bug 4336 end*/
 					}
 				} else {
-					Picasso.with(mContext).load(R.drawable.list_item_preview_bg).into(holder.mPosterIg);
+/*modify by dragontec for bug 4336 start*/
+					Picasso.with(mContext).
+                            load(R.drawable.template_title_item_horizontal_preview).
+                            into(holder.mPosterIg);
+/*modify by dragontec for bug 4336 end*/
 				}
 				Picasso.with(mContext).load(VipMark.getInstance().getBannerIconMarkImage(poster.top_left_corner)).into(holder.mLtIconTv);
 				holder.mRbIconTv.setText(new DecimalFormat("0.0").format(poster.rating_average));

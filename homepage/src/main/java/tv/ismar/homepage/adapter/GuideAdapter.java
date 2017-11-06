@@ -70,10 +70,20 @@ public class GuideAdapter extends BaseRecycleAdapter<GuideAdapter.GuideViewHolde
 				if (poster.vertical_url.equals("更多")) {
 					Picasso.with(mContext).load(R.drawable.banner_vertical_more).into(holder.mPosterIg);
 				} else {
-					Picasso.with(mContext).load(poster.vertical_url).error(R.drawable.list_item_ppreview_bg).into(holder.mPosterIg);
+/*modify by dragontec for bug 4336 start*/
+					Picasso.with(mContext).
+                            load(poster.vertical_url).
+                            error(R.drawable.template_item_horizontal_preview).
+                            placeholder(R.drawable.template_item_horizontal_preview).
+                            into(holder.mPosterIg);
+/*modify by dragontec for bug 4336 end*/
 				}
 			} else {
-				Picasso.with(mContext).load(R.drawable.list_item_ppreview_bg).into(holder.mPosterIg);
+/*modify by dragontec for bug 4336 start*/
+				Picasso.with(mContext).
+                        load(R.drawable.template_item_horizontal_preview).
+                        into(holder.mPosterIg);
+/*modify by dragontec for bug 4336 end*/
 			}
 			Picasso.with(mContext).load(VipMark.getInstance().getBannerIconMarkImage(poster.top_left_corner)).into(holder.mLtIconTv);
 			holder.mRbIconTv.setText(new DecimalFormat("0.0").format(poster.rating_average));
