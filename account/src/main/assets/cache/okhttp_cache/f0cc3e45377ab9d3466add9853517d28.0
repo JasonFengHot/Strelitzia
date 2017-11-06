@@ -1,0 +1,11 @@
+http://sky.test.tvxio.com/v5_0/SKY2/touc/api/tv/banners/game/?token_check=1&device_token=___7dGSbnKf5DwYZ5so27huB_9MeafYb0SwEJNZ1DcZpwc72sNMtewM0jYplq-QQqh
+GET
+0
+HTTP/1.1 200 OK
+6
+Content-Type: application/json
+Date: Mon, 06 Nov 2017 09:30:11 GMT
+Transfer-Encoding: chunked
+Proxy-Connection: Keep-alive
+OkHttp-Sent-Millis: 1509960611949
+OkHttp-Received-Millis: 1509960611956
