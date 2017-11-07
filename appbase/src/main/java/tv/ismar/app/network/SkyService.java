@@ -558,7 +558,7 @@ public interface SkyService {
     Observable<GuideBanner[]> getGuideBanners(
     );
 
-    @GET("/api/new_dpi/")
+    @GET("api/new_dpi/")
     Observable<List<ConnerEntity>> getConner();
 
     @GET("api/tv/banners/{channel}/")
@@ -572,7 +572,7 @@ public interface SkyService {
             @Path("page") int page
     );
 
-    @GET("/api/tv/mbanner/{banner}/")
+    @GET("api/tv/mbanner/{banner}/")
     Observable<HomeEntity[]> getMBanners(
             @Path("banner") String banner,
             @Path("page") int page
@@ -790,6 +790,7 @@ public interface SkyService {
                 "1.1.1.6"   //爱奇艺购买域名
         };
         private final SkyService mSkyService;
+        private final SkyService mForceCacheSkyService;
         private final SkyService adSkyService;
         private final SkyService upgradeService;
         private final SkyService weatherService;
@@ -838,12 +839,20 @@ public interface SkyService {
                     .readTimeout(DEFAULT_READ_TIMEOUT, TimeUnit.SECONDS)
 //                    .addInterceptor(new IsmartvHttpCheckInterceptor())
                     .addInterceptor(VodApplication.getHttpParamsInterceptor())
-                    .addInterceptor(VodApplication.getModuleAppContext().getCacheInterceptor())
+//                    .addInterceptor(VodApplication.getModuleAppContext().getCacheInterceptor())
                     .addInterceptor(interceptor)
                     .addInterceptor(new UserAgentInterceptor())
                     .dns(new IsmartvDns())
                     .cache(cache)
                     .sslSocketFactory(sc.getSocketFactory())
+                    .build();
+
+            final OkHttpClient mForceClient = new OkHttpClient.Builder()
+                    .connectTimeout(DEFAULT_CONNECT_TIMEOUT, TimeUnit.SECONDS)
+                    .readTimeout(DEFAULT_READ_TIMEOUT, TimeUnit.SECONDS)
+//                    .addInterceptor(VodApplication.getHttpParamsInterceptor())
+                    .addInterceptor(new HttpForceCacheInterceptor())
+                    .cache(cache)
                     .build();
 
             Gson gson = new GsonBuilder()
@@ -860,6 +869,14 @@ public interface SkyService {
                     .client(mClient)
                     .build();
             mSkyService = retrofit.create(SkyService.class);
+
+            Retrofit forceCacheRetrofit = new Retrofit.Builder()
+                    .baseUrl(appendProtocol(domain[0]))
+                    .addConverterFactory(GsonConverterFactory.create(gson))
+                    .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                    .client(mForceClient)
+                    .build();
+            mForceCacheSkyService = forceCacheRetrofit.create(SkyService.class);
             //=============================================================================
 
 
@@ -989,6 +1006,11 @@ public interface SkyService {
         public static SkyService getService() {
 
             return getInstance().mSkyService;
+        }
+
+        public static SkyService getForceCacheService() {
+
+            return getInstance().mForceCacheSkyService;
         }
 
         public static SkyService getAdService() {

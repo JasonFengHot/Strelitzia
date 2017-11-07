@@ -10,7 +10,6 @@ import android.graphics.Bitmap;
 import android.os.StrictMode;
 import android.preference.PreferenceManager;
 import android.support.multidex.MultiDex;
-import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
 
@@ -19,8 +18,6 @@ import com.ismartv.lion.custom.ICallLog;
 import com.ismartv.lion.custom.Parse;
 import com.orhanobut.logger.LogLevel;
 import com.orhanobut.logger.Logger;
-import com.squareup.leakcanary.LeakCanary;
-import com.squareup.leakcanary.RefWatcher;
 import com.squareup.picasso.OkHttp3Downloader;
 import com.squareup.picasso.Picasso;
 
@@ -31,11 +28,8 @@ import org.json.JSONObject;
 import java.io.File;
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Method;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -46,7 +40,6 @@ import cn.ismartv.injectdb.library.ActiveAndroid;
 import cn.ismartv.injectdb.library.app.Application;
 import cn.ismartv.truetime.TrueTime;
 import okhttp3.Cache;
-import okhttp3.Dns;
 import okhttp3.OkHttpClient;
 import tv.ismar.account.IsmartvActivator;
 import tv.ismar.account.IsmartvDns;
@@ -82,7 +75,6 @@ import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 public class VodApplication extends Application {
     private static final String TAG = "VodApplication";
     private static IsmartvHttpParamsInterceptor mIsmartvHttpParamsInterceptor;
-    private HttpCacheInterceptor mHttpCacheInterceptor;
     public static final boolean DEBUG = true;
     private ArrayList<WeakReference<OnLowMemoryListener>> mLowMemoryListeners;
     private static VodApplication appInstance;
@@ -138,7 +130,7 @@ public class VodApplication extends Application {
         initConstants();
         initPicasso();
         File cacheFile = new File(VodApplication.getModuleAppContext().getCacheDir(), "");
-        HttpManager.getInstance().initialize(mIsmartvHttpParamsInterceptor, getCacheInterceptor(), cacheFile);
+        HttpManager.getInstance().initialize(mIsmartvHttpParamsInterceptor, new HttpCacheInterceptor(), cacheFile);
         VipMark.getInstance();
         new Thread(new Runnable() {
             @Override
@@ -184,15 +176,16 @@ public class VodApplication extends Application {
     }
 
     private void initPicasso(){
+        int processorCount = Runtime.getRuntime().availableProcessors();
         /*图片加载线程池*/
-        ExecutorService executorService = Executors.newSingleThreadExecutor();
+        ExecutorService executorService = Executors.newFixedThreadPool(processorCount * 2);
 
         /*普通图片缓存HttpClient*/
         File cacheFile = new File(getCacheDir(), "picasso_cache");
         Cache cache = new Cache(cacheFile, 1024 * 1024 * 100); //100Mb
         OkHttpClient client = new OkHttpClient.Builder()
                 .addInterceptor(new UserAgentInterceptor())
-                .addInterceptor(new HttpCacheInterceptor(getApplicationContext()))
+//                .addInterceptor(new HttpForceCacheInterceptor())
                 .dns(new IsmartvDns())
                 .cache(cache)
                 .build();
@@ -209,7 +202,7 @@ public class VodApplication extends Application {
         Cache homepageCache = new Cache(homepageCacheFile , 1024 * 1024 * 100); //100Mb
         OkHttpClient homepageClient = new OkHttpClient.Builder()
                 .addInterceptor(new UserAgentInterceptor())
-                .addInterceptor(new HttpCacheInterceptor(getApplicationContext()))
+//                .addInterceptor(new HttpForceCacheInterceptor())
                 .dns(new IsmartvDns())
                 .cache(homepageCache)
                 .build();
@@ -243,12 +236,6 @@ public class VodApplication extends Application {
         return mIsmartvHttpParamsInterceptor;
     }
 
-    public HttpCacheInterceptor getCacheInterceptor() {
-        if (mHttpCacheInterceptor == null) {
-            mHttpCacheInterceptor = new HttpCacheInterceptor(this);
-        }
-        return mHttpCacheInterceptor;
-    }
 
     public static VodApplication getModuleAppContext() {
         return appInstance;

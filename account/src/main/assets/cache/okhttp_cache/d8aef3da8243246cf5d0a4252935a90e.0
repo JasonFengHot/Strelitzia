@@ -1,17 +1,11 @@
-http://sky.test.tvxio.com/v5_0/YOGA/togs/api/tv/channels/?token_check=1&device_token=__Iqw-nrixJvVCT0WCP4R8KZUuRZ2Lqrc4RWE3qOqnCaC_K3POglQxRAYU-w8TNpHF
+http://sky.test.tvxio.com/v5_0/SKY2/touc/api/tv/channels/?token_check=1&device_token=___7dGSbnKf5DwYZ5so27huB_9MeafYb0SwEJNZ1DcZpwc72sNMtewM0jYplq-QQqh
 GET
 0
 HTTP/1.1 200 OK
-12
-Server: nginx
-Date: Fri, 03 Nov 2017 08:19:14 GMT
+6
 Content-Type: application/json
+Date: Mon, 06 Nov 2017 09:29:45 GMT
 Transfer-Encoding: chunked
-Connection: keep-alive
-Vary: X-User-Agent
-ETag: "8238da30a9b0f8ab71a797de2a5e190a"
-VKC-Vary: kind
-Allow: GET, POST, HEAD, OPTIONS
-Cache-Control: public, only-if-cached, max-age=2419200
-OkHttp-Sent-Millis: 1509697154389
-OkHttp-Received-Millis: 1509697154488
+Proxy-Connection: Keep-alive
+OkHttp-Sent-Millis: 1509960586119
+OkHttp-Received-Millis: 1509960586141
