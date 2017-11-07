@@ -115,6 +115,7 @@ public class HomeActivity extends BaseActivity
                 @Override
                 public void run() {
                     showLoginHint();
+                    registerConnectionReceiver();
                 }
             };
     private long currentTime = 0;

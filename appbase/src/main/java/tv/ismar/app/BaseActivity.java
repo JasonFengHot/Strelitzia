@@ -143,8 +143,14 @@ public class BaseActivity extends AppCompatActivity {
                 updateAgainHandler.postDelayed(updateAgainRunnable, 4000);
             }
         }
-
-        registerConnectionReceiver();
+        if (!this.getClass().getName().equals("tv.ismar.homepage.HomeActivity")){
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    registerConnectionReceiver();
+                }
+            },2000);
+        }
     }
 
     /**
@@ -159,9 +165,9 @@ public class BaseActivity extends AppCompatActivity {
 
     @Override
     protected void onPause() {
-        unregisterConnectionReceiver();
         activityIsAlive = false;
         try {
+            unregisterConnectionReceiver();
             unregisterReceiver(mUpdateReceiver);
         } catch (Exception e) {
             ExceptionUtils.sendProgramError(e);
@@ -573,7 +579,7 @@ public class BaseActivity extends AppCompatActivity {
 
     private ConnectionChangeReceiver connectionChangeReceiver;
 
-    private void registerConnectionReceiver() {
+    protected void registerConnectionReceiver() {
         IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
         connectionChangeReceiver = new ConnectionChangeReceiver();
         registerReceiver(connectionChangeReceiver, filter);
