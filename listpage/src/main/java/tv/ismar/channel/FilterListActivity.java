@@ -817,6 +817,9 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
                                         if(i==0){
                                             recommendView.setNextFocusLeftId(R.id.filter_tab);
                                         }
+                                        if(i==recommendCount-1){
+                                            recommendView.setNextFocusRightId(R.layout.filter_item_vertical_poster+i);
+                                        }
                                         filter_noresult_first_line.addView(recommendView);
                                     }
 
@@ -860,8 +863,14 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
                                         if(i==0||i==4){
                                             recommendView.setNextFocusLeftId(R.id.filter_tab);
                                         }
+                                        if(i==recommendCount-1){
+                                            recommendView.setNextFocusRightId(R.layout.item_filter_noresult_poster+i);
+                                        }
                                         if(i<4) {
                                             recommendView.setNextFocusUpId(R.layout.item_filter_noresult_poster+i);
+                                            if(recommendCount<=4){
+                                                recommendView.setNextFocusDownId(R.layout.item_filter_noresult_poster+i);
+                                            }
                                             filter_noresult_first_line.addView(recommendView);
                                         }else {
                                             recommendView.setNextFocusDownId(R.layout.item_filter_noresult_poster+i);
