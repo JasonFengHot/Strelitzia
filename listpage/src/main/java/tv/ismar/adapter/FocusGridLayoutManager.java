@@ -1,11 +1,9 @@
 package tv.ismar.adapter;
 
 import android.content.Context;
-import android.support.v4.widget.TextViewCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -13,8 +11,6 @@ import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 
 import java.util.ArrayList;
-
-import tv.ismar.listpage.R;
 
 /**
  * Created by admin on 2017/6/20.
@@ -31,6 +27,7 @@ public class FocusGridLayoutManager extends GridLayoutManager {
     private boolean scroll=false;
     private boolean isFavorite=false;
     private int nextPos;
+    private View nextView;
 
 
     public FocusGridLayoutManager(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
@@ -104,7 +101,7 @@ public class FocusGridLayoutManager extends GridLayoutManager {
                     scroll=true;
                 }
                 scrollToPositionWithOffset(nextPos, 0);
-                View nextView=findViewByPosition(nextPos +1);
+                nextView = findViewByPosition(nextPos +1);
                 return nextView;
             }
             if(index==getItemCount()-1){
@@ -125,7 +122,7 @@ public class FocusGridLayoutManager extends GridLayoutManager {
             }
         }else if(direction==View.FOCUS_LEFT){
             if(isFavorite&&index==0){
-                YoYo.with(Techniques.VerticalShake).duration(1000).playOn(focused);
+                YoYo.with(Techniques.HorizontalShake).duration(1000).playOn(focused);
                 return focused;
             }
         }
@@ -137,13 +134,14 @@ public class FocusGridLayoutManager extends GridLayoutManager {
         super.onLayoutChildren(recycler, state);
         if(scroll) {
             scroll = false;
-            if (mItemCount - nextPos < getSpanCount() && specialPos != null) {
+            if (mItemCount - nextPos -1<= getSpanCount() && specialPos != null) {
                 View view = findViewByPosition(specialPos.get(specialPos.size() - 1) + 1);
                 if (view != null) {
                     view.requestFocus();
                 }
             } else {
-                getChildAt(1).requestFocus();
+                if(nextView==null)
+                    findViewByPosition(findFirstCompletelyVisibleItemPosition()+1).requestFocus();
             }
         }
     }
