@@ -54,9 +54,7 @@ import tv.ismar.app.models.FilterConditions;
 import tv.ismar.app.network.entity.EventProperty;
 import tv.ismar.app.ui.adapter.OnItemClickListener;
 import tv.ismar.app.ui.adapter.OnItemFocusedListener;
-//add by dragontec for bug 4310 start
 import tv.ismar.app.ui.adapter.OnItemKeyListener;
-//add by dragontec for bug 4310 end
 import tv.ismar.app.widget.MyRecyclerView;
 import tv.ismar.listpage.R;
 import tv.ismar.searchpage.utils.JasmineUtil;
@@ -66,6 +64,9 @@ import tv.ismar.view.LocationRelativeLayout;
 
 import static android.widget.RelativeLayout.ALIGN_PARENT_BOTTOM;
 import static android.widget.RelativeLayout.ALIGN_PARENT_RIGHT;
+
+//add by dragontec for bug 4310 start
+//add by dragontec for bug 4310 end
 
 /**
  * Created by zhangjiqiang on 15-6-18.
@@ -395,7 +396,9 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
                     showData(lastVisiablePos,false);
                     for (int i = 0; i < sectionSize; i++) {
                         if (i == sectionSize - 1) {
-                            if(firstVisiablePos>=specialPos.get(i)){
+                            if(isVertical&&mFocusGridLayoutManager.findFirstCompletelyVisibleItemPosition()>=specialPos.get(i)){
+                                current_section_title.setText(sectionList.get(i).title);
+                            }else if(mFocusGridLayoutManager.findFirstCompletelyVisibleItemPosition()>specialPos.get(i)){
                                 current_section_title.setText(sectionList.get(i).title);
                             }
                             break;
@@ -530,6 +533,8 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
                         if(isFirst){
                             isFirst=false;
                         }
+                            listSectionEntity.setObjects(listSectionEntity.getObjects().subList(0,3));
+                            listSectionEntity.setCount(listSectionEntity.getObjects().size());
                         //将请求到的栏目数据替换之前占位的空数据
                         for (int i = 0; i <listSectionEntity.getObjects().size() ; i++) {
                             if(mAllSectionItemList.getCount()>specialPos.get(index)+i+1)
@@ -1336,12 +1341,12 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
                                 lastFocusedView.requestFocus();
                             } else {
                                 View firstView = null;
-                                if(finalI==sectionSize-1&&mAllSectionItemList.getCount()-specialPos.get(finalI)<=spanCount){
+                                if(finalI==sectionSize-1&&mAllSectionItemList.getCount()-specialPos.get(finalI)-1<=spanCount){
                                     firstView=mFocusGridLayoutManager.findViewByPosition(specialPos.get(finalI)+1);
                                 }else if(list_poster_recyclerview.getChildCount()>spanCount) {
                                     firstView = list_poster_recyclerview.getChildAt(spanCount);
-                                    if(list_poster_recyclerview.getChildAt(0) instanceof TextView){
-                                        firstView=list_poster_recyclerview.getChildAt(1);
+                                    if(mFocusGridLayoutManager.findViewByPosition(mFocusGridLayoutManager.findFirstCompletelyVisibleItemPosition()) instanceof TextView){
+                                        firstView=mFocusGridLayoutManager.findViewByPosition(mFocusGridLayoutManager.findFirstCompletelyVisibleItemPosition()+1);
                                     }
                                 }
                                 if (firstView != null) {
@@ -1363,7 +1368,8 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
         specialPos.add(0);
         totalItemCount = 0;
         for (int i = 0; i <sections.size() ; i++) {
-            totalItemCount +=sections.get(i).count;
+//            totalItemCount +=sections.get(i).count;
+            totalItemCount +=3;
             if(i!=sections.size()-1)
                 specialPos.add(totalItemCount+i+1);
         }
