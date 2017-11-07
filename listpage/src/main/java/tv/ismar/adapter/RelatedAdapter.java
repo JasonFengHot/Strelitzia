@@ -7,7 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
+//import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
@@ -22,6 +22,7 @@ import tv.ismar.app.core.VipMark;
 import tv.ismar.app.entity.Item;
 import tv.ismar.app.ui.view.AsyncImageView;
 import tv.ismar.app.ui.view.LabelImageView;
+import tv.ismar.app.widget.RecyclerImageView;
 import tv.ismar.listpage.R;
 
 
@@ -108,9 +109,9 @@ public class RelatedAdapter extends BaseAdapter implements AsyncImageView.OnImag
 //                ((LabelImageView) holder.previewImage).setFocustitle(mItemList.get(position).focus);
         }
         holder.title.setText(mItemList.get(position).title);
-        holder.qualityLabel = (ImageView) convertView.findViewById(R.id.list_item_quality_label);
+        holder.qualityLabel = (RecyclerImageView) convertView.findViewById(R.id.list_item_quality_label);
         holder.ItemBeanScore = (TextView) convertView.findViewById(R.id.ItemBeanScore);
-        holder.price = (ImageView) convertView.findViewById(R.id.expense_txt);
+        holder.price = (RecyclerImageView) convertView.findViewById(R.id.expense_txt);
         if (mItemList.get(position).bean_score > 0) {
             holder.ItemBeanScore.setText("" + mItemList.get(position).bean_score);
             holder.ItemBeanScore.setVisibility(View.VISIBLE);
@@ -132,9 +133,9 @@ public class RelatedAdapter extends BaseAdapter implements AsyncImageView.OnImag
     static class Holder {
         AsyncImageView previewImage;
         TextView title;
-        ImageView qualityLabel;
+        RecyclerImageView qualityLabel;
         TextView ItemBeanScore;
-        ImageView price;
+        RecyclerImageView price;
     }
 
     public void cancel() {

@@ -6,7 +6,7 @@
     android:background="#cc060917"
     >
 
-    <ImageView
+    <tv.ismar.app.widget.RecyclerImageView
         android:id="@+id/tmp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>

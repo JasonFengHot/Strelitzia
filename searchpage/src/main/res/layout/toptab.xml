@@ -28,7 +28,7 @@
                     android:gravity="center"
                     android:focusable="true"
                     android:textColor="#a6a6a6"/>
-            <ImageView
+            <tv.ismar.app.widget.RecyclerImageView
                     android:layout_width="@dimen/tab_iv_width"
                     android:layout_height="@dimen/poster_line_height"
                     android:layout_marginTop="@dimen/tab_iv_margin_top"
@@ -51,7 +51,7 @@
                     android:gravity="center"
                     android:focusable="true"
                     android:textColor="#a6a6a6"/>
-            <ImageView
+            <tv.ismar.app.widget.RecyclerImageView
                     android:layout_width="@dimen/tab_iv_width"
                     android:layout_height="@dimen/poster_line_height"
                     android:layout_marginTop="@dimen/tab_iv_margin_top"
@@ -73,7 +73,7 @@
                     android:textSize="@dimen/tab_tv_size"
                     android:gravity="center"
                     android:textColor="#a6a6a6"/>
-            <ImageView
+            <tv.ismar.app.widget.RecyclerImageView
                     android:layout_width="@dimen/tab_iv_width"
                     android:layout_height="@dimen/poster_line_height"
                     android:layout_marginTop="@dimen/tab_iv_margin_top"
@@ -96,7 +96,7 @@
                     android:textSize="@dimen/tab_tv_size"
                     android:gravity="center"
                     android:textColor="#a6a6a6"/>
-            <ImageView
+            <tv.ismar.app.widget.RecyclerImageView
 
                     android:layout_width="@dimen/tab_iv_width"
                     android:layout_height="@dimen/poster_line_height"
@@ -119,7 +119,7 @@
                     android:textSize="@dimen/tab_tv_size"
                     android:gravity="center"
                     android:textColor="#a6a6a6"/>
-            <ImageView
+            <tv.ismar.app.widget.RecyclerImageView
                     android:layout_width="@dimen/tab_iv_width"
                     android:layout_height="@dimen/poster_line_height"
                     android:layout_marginTop="@dimen/tab_iv_margin_top"
@@ -141,7 +141,7 @@
                     android:textSize="@dimen/tab_tv_size"
                     android:gravity="center"
                     android:textColor="#a6a6a6"/>
-            <ImageView
+            <tv.ismar.app.widget.RecyclerImageView
                     android:layout_width="@dimen/tab_iv_width"
                     android:layout_height="@dimen/poster_line_height"
                     android:layout_marginTop="@dimen/tab_iv_margin_top"
@@ -163,7 +163,7 @@
                     android:textSize="@dimen/tab_tv_size"
                     android:gravity="center"
                     android:textColor="#a6a6a6"/>
-            <ImageView
+            <tv.ismar.app.widget.RecyclerImageView
                     android:layout_width="@dimen/tab_iv_width"
                     android:layout_height="@dimen/poster_line_height"
                     android:layout_marginTop="@dimen/tab_iv_margin_top"
@@ -185,7 +185,7 @@
                     android:textSize="@dimen/tab_tv_size"
                     android:gravity="center"
                     android:textColor="#a6a6a6"/>
-            <ImageView
+            <tv.ismar.app.widget.RecyclerImageView
                     android:layout_width="@dimen/tab_iv_width"
                     android:layout_height="@dimen/poster_line_height"
                     android:layout_marginTop="@dimen/tab_iv_margin_top"
@@ -207,7 +207,7 @@
                     android:textSize="@dimen/tab_tv_size"
                     android:gravity="center"
                     android:textColor="#a6a6a6"/>
-            <ImageView
+            <tv.ismar.app.widget.RecyclerImageView
                     android:layout_width="@dimen/tab_iv_width"
                     android:layout_height="@dimen/poster_line_height"
                     android:layout_marginTop="@dimen/tab_iv_margin_top"
@@ -229,7 +229,7 @@
                     android:textSize="@dimen/tab_tv_size"
                     android:gravity="center"
                     android:textColor="#a6a6a6"/>
-            <ImageView
+            <tv.ismar.app.widget.RecyclerImageView
                     android:layout_width="@dimen/tab_iv_width"
                     android:layout_height="@dimen/poster_line_height"
                     android:layout_marginTop="@dimen/tab_iv_margin_top"
@@ -251,7 +251,7 @@
                     android:textSize="@dimen/tab_tv_size"
                     android:gravity="center"
                     android:textColor="#a6a6a6"/>
-            <ImageView
+            <tv.ismar.app.widget.RecyclerImageView
                     android:layout_width="@dimen/tab_iv_width"
                     android:layout_height="@dimen/poster_line_height"
                     android:layout_marginTop="@dimen/tab_iv_margin_top"
@@ -273,7 +273,7 @@
                     android:textSize="@dimen/tab_tv_size"
                     android:gravity="center"
                     android:textColor="#a6a6a6"/>
-            <ImageView
+            <tv.ismar.app.widget.RecyclerImageView
                     android:layout_width="@dimen/tab_iv_width"
                     android:layout_height="@dimen/poster_line_height"
                     android:layout_marginTop="@dimen/tab_iv_margin_top"

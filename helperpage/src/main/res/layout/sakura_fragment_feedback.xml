@@ -7,7 +7,7 @@
               android:padding="@dimen/layout_border_padding"
     >
 
-    <ImageView
+    <tv.ismar.app.widget.RecyclerImageView
         android:focusable="true"
         android:id="@+id/tmp"
         android:layout_width="wrap_content"
@@ -148,7 +148,7 @@
         android:orientation="horizontal"
         android:gravity="center">
 
-        <ImageView
+        <tv.ismar.app.widget.RecyclerImageView
             android:layout_marginRight="20dp"
             android:clickable="true"
             android:focusable="true"
@@ -159,7 +159,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
-        <ImageView
+        <tv.ismar.app.widget.RecyclerImageView
             android:layout_marginLeft="20dp"
             android:clickable="true"
             android:focusable="true"

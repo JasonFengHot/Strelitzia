@@ -26,14 +26,14 @@
         <RelativeLayout
             android:layout_width="@dimen/tv_play_poster_width"
             android:layout_height="@dimen/tv_play_poster_height">
-            <ImageView
+            <tv.ismar.app.widget.RecyclerImageView
                 android:id="@+id/tv_player_item_poster"
                 android:layout_width="@dimen/tv_play_poster_width"
                 android:layout_height="@dimen/tv_play_poster_height"
                 android:clipChildren="false"
                 android:clipToPadding="false"
                 android:scaleType="fitXY"/>
-            <ImageView
+            <tv.ismar.app.widget.RecyclerImageView
                 android:id="@+id/tv_player_item_lt_icon"
                 android:layout_gravity="left|top"
                 android:layout_width="@dimen/tv_play_poster_lt_size"
@@ -61,7 +61,7 @@
                 android:background="@drawable/banner_subscrib_introduction_bg"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/tv_play_poster_title_height" />
-            <ImageView
+            <tv.ismar.app.widget.RecyclerImageView
                 android:id="@+id/guide_rt_icon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

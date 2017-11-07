@@ -16,7 +16,7 @@ import android.view.View;
 import android.view.View.OnHoverListener;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
+//import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.gson.GsonBuilder;
@@ -52,6 +52,7 @@ import tv.ismar.app.network.entity.ChoosewayEntity;
 import tv.ismar.app.network.entity.GoodsRenewStatusEntity;
 import tv.ismar.app.network.entity.ItemEntity;
 import tv.ismar.app.network.entity.PayWhStatusEntity;
+import tv.ismar.app.widget.RecyclerImageView;
 import tv.ismar.pay.LoginFragment.LoginCallback;
 import tv.ismar.statistics.PurchaseStatistics;
 
@@ -96,7 +97,7 @@ public class PaymentActivity extends BaseActivity implements View.OnClickListene
     private Subscription accountsGoodsRenewStatusSub;
 //    private ImageView shadow;
     private boolean isdestory=false;
-    public ImageView tmp;
+    public RecyclerImageView tmp;
     public String uuid;
     private ArrayList<String> firstdescriptions=new ArrayList<>();
     private ArrayList<String> lastdescriptions=new ArrayList<>();
@@ -112,7 +113,7 @@ public class PaymentActivity extends BaseActivity implements View.OnClickListene
         Intent intent = getIntent();
         category = intent.getStringExtra(PageIntentInterface.EXTRA_PRODUCT_CATEGORY);
         setContentView(R.layout.activity_payment);
-        tmp = (ImageView) findViewById(R.id.tmp);
+        tmp = (RecyclerImageView) findViewById(R.id.tmp);
         aliPayBtn = (Button) findViewById(R.id.alipay);
         balancePayBtn = (Button) findViewById(R.id.balance_pay);
         firstChannelBtn= (Button) findViewById(R.id.weixin);

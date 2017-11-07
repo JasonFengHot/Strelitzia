@@ -9,7 +9,7 @@
         android:layout_width="@dimen/subject_tv_item_w"
         android:layout_height="@dimen/subject_tv_item_h"
         >
-        <ImageView
+        <tv.ismar.app.widget.RecyclerImageView
             android:id="@+id/movie_item_poster"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -28,7 +28,7 @@
             android:visibility="gone"
             />
 
-        <ImageView
+        <tv.ismar.app.widget.RecyclerImageView
             android:id="@+id/movie_item_mark"
             android:layout_width="@dimen/subject_item_mark_w"
             android:layout_height="@dimen/subject_item_mark_w"

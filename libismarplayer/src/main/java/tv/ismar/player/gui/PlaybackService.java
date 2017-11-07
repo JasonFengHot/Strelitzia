@@ -289,7 +289,14 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
         }
 /*add by dragontec for bug 4322 end*/
     }
-
+/*add by dragontec for bug 4405 start*/
+    public ServiceCallback getCallback()
+    {
+        synchronized (mAdLock) {
+            return serviceCallback;
+        }
+    }
+/*add by dragontec for bug 4405 end*/
     /**
      * @param detachView true：表示在播放器UI页面调用
      *                   false：表示在详情页调用
@@ -650,27 +657,45 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
         LogUtils.i(TAG, "createPlayer 1 : " + mIsPreload);
         String iqiyi = mClipEntity.getIqiyi_4_0();
         // 创建当前播放器
-        IsmartvPlayer.Builder builder = new IsmartvPlayer.Builder();
-        builder.setSnToken(snToken);
+/*delete by dragontec for bug 4205 start*/
+//        IsmartvPlayer.Builder builder = new IsmartvPlayer.Builder();
+//        builder.setSnToken(snToken);
+/*delete by dragontec for bug 4205 end*/
         if (Utils.isEmptyText(iqiyi)) {
             // 片源为视云
             isSendlog=true;
+/*add by dragontec for bug 4205 start*/
+            IsmartvPlayer.Builder builder = new IsmartvPlayer.Builder();
+            builder.setSnToken(snToken);
+/*add by dragontec for bug 4205 end*/
             builder.setPlayerMode(IsmartvPlayer.MODE_SMART_PLAYER);
             builder.setDeviceToken(deviceToken);
             if (mIsPreload) {
                 hlsPlayer = builder.buildPreloadPlayer();
             } else {
-                if (mSurfaceView == null) {
-                    throw new IllegalArgumentException("视云播放器，显示组件不能为空");
-                }
+/*add by dragontec for bug 4205 start*/
+				if (mSurfaceView == null) {
+					LogUtils.i(TAG, "createPlayer mSurfaceView null return!");
+					return;
+				}
+/*add by dragontec for bug 4205 end*/
                 builder.setSurfaceView(mSurfaceView);
                 hlsPlayer = builder.build();
             }
         } else {
-            isSendlog=false;
+/*modify by dragontec for bug 4205 start*/
+//            isSendlog=false;
+//            if (mQiyiContainer == null) {
+//                throw new IllegalArgumentException("奇艺播放器，显示组件不能为空");
+//            }
             if (mQiyiContainer == null) {
-                throw new IllegalArgumentException("奇艺播放器，显示组件不能为空");
+                LogUtils.i(TAG, "createPlayer mQiyiContainer null return!");
+                return;
             }
+            isSendlog=false;
+            IsmartvPlayer.Builder builder = new IsmartvPlayer.Builder();
+            builder.setSnToken(snToken);
+/*modify by dragontec for bug 4205 end*/
             builder.setPlayerMode(IsmartvPlayer.MODE_QIYI_PLAYER);
             builder.setQiyiContainer(mQiyiContainer);
             builder.setModelName(DeviceUtils.getModelName());

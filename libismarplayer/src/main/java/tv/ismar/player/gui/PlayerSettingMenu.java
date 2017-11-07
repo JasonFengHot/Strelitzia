@@ -14,7 +14,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.ImageView;
+//import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import tv.ismar.app.network.entity.ItemEntity;
+import tv.ismar.app.widget.RecyclerImageView;
 import tv.ismar.player.R;
 import tv.ismar.player.adapter.EpisodeAdapter;
 import tv.ismar.player.adapter.MenuListAdapter;
@@ -43,7 +44,7 @@ public class PlayerSettingMenu extends PopupWindow implements HorizontalEpisodeL
     private Context mContext;
     private EpisodeAdapter adapter;
     private List<ItemEntity> itemEntities=new ArrayList<>();
-    private ImageView arrow_left,arrow_right;
+    private RecyclerImageView arrow_left,arrow_right;
     private LinearLayout menu_layout;
     private HorizontalEpisodeList list;
     private RecyclerView menu_list;
@@ -51,7 +52,7 @@ public class PlayerSettingMenu extends PopupWindow implements HorizontalEpisodeL
     private RelativeLayout wheel;
     private TextView player_episode,setting;
     private LinearLayout list_layout,episode_layout,setting_layout;
-    private ImageView top_shape,bottom_shape;
+    private RecyclerImageView top_shape,bottom_shape;
     private int pk;
     private ArrayList<QuailtyEntity> quailtyList=new ArrayList<>();
     private int currentQuailty=0;
@@ -61,7 +62,7 @@ public class PlayerSettingMenu extends PopupWindow implements HorizontalEpisodeL
     private Animation episode_hide;
     private String contentMode="";
     public boolean wheelIsShow=false;
-    private ImageView bg;
+    private RecyclerImageView bg;
     public PlayerSettingMenu(Context context, List<ItemEntity> entities, int subitem, EpisodeOnclickListener episodeOnclickListener1, ArrayList<QuailtyEntity> quailist,int position,OnMenuListItmeClickListener listener1,String contentmode){
         mContext=context;
         pk=subitem;
@@ -79,8 +80,8 @@ public class PlayerSettingMenu extends PopupWindow implements HorizontalEpisodeL
         setHeight(height);
 //        setAnimationStyle(R.style.PopupAnimation);
         View contentView = LayoutInflater.from(context).inflate(R.layout.player_setting_menu, null);
-        arrow_left= (ImageView) contentView.findViewById(R.id.arrow_left);
-        arrow_right= (ImageView) contentView.findViewById(R.id.arrow_right);
+        arrow_left= (RecyclerImageView) contentView.findViewById(R.id.arrow_left);
+        arrow_right= (RecyclerImageView) contentView.findViewById(R.id.arrow_right);
         player_episode= (TextView) contentView.findViewById(R.id.player_episode);
         setting= (TextView) contentView.findViewById(R.id.player_setting);
         menu_layout= (LinearLayout) contentView.findViewById(R.id.menu_layout);
@@ -105,7 +106,7 @@ public class PlayerSettingMenu extends PopupWindow implements HorizontalEpisodeL
         setFocusable(true);
         menuHandler=new MenuHandler();
         episode_hide= AnimationUtils.loadAnimation(mContext,R.anim.episode_hide);
-        bg= (ImageView) contentView.findViewById(R.id.bg);
+        bg= (RecyclerImageView) contentView.findViewById(R.id.bg);
         bg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -151,8 +152,8 @@ public class PlayerSettingMenu extends PopupWindow implements HorizontalEpisodeL
         menu_select= (TextView) menuView.findViewById(R.id.menu_select);
         menu_list= (RecyclerView) menuView.findViewById(R.id.menu_list);
         menu_list.setLayoutManager(new LinearLayoutManager(mContext));
-        top_shape= (ImageView) menuView.findViewById(R.id.top_shape);
-        bottom_shape= (ImageView) menuView.findViewById(R.id.bottom_shape);
+        top_shape= (RecyclerImageView) menuView.findViewById(R.id.top_shape);
+        bottom_shape= (RecyclerImageView) menuView.findViewById(R.id.bottom_shape);
         MenuListAdapter listAdapter=new MenuListAdapter(mContext,quailtyList);
         listAdapter.setMenuOnFocuslistener(this);
         listAdapter.setOnMenuListItmeClickListener(menuListener);

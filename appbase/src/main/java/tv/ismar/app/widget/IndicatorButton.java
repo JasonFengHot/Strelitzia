@@ -12,7 +12,7 @@ import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
+//import android.widget.ImageView;
 import android.widget.TextView;
 
 import tv.ismar.app.R;
@@ -24,7 +24,7 @@ public class IndicatorButton extends FrameLayout {
 
     private static final String TAG = "LH/IndicatorButton";
 
-    private ImageView indicatorImage;
+    private RecyclerImageView indicatorImage;
     private TextView indicatorText;
 
     private Drawable indicatorDrawable;
@@ -84,10 +84,10 @@ public class IndicatorButton extends FrameLayout {
         layoutParams.gravity = Gravity.CENTER;
 
         // show background indicator
-        indicatorImage = new ImageView(context);
+        indicatorImage = new RecyclerImageView(context);
         indicatorImage.setTag(TAG_IMG);
         indicatorImage.setLayoutParams(layoutParams);
-        indicatorImage.setScaleType(ImageView.ScaleType.FIT_CENTER);
+        indicatorImage.setScaleType(RecyclerImageView.ScaleType.FIT_CENTER);
         indicatorImage.setFocusable(false);
         indicatorImage.setFocusableInTouchMode(false);
         addView(indicatorImage);

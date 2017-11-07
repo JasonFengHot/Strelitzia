@@ -57,7 +57,7 @@
                 jasmine:selectorRightPadding="@dimen/gridview_padding"
                 jasmine:selectorBottomPadding="@dimen/gridview_padding_bottom"
                 jasmine:scaleSize="1.1" />
-        <ImageView
+        <tv.ismar.app.widget.RecyclerImageView
                 android:id="@+id/iv_left_arrow"
                 android:layout_width="@dimen/left_arrow_width"
                 android:layout_height="@dimen/left_arrow_height"
@@ -67,7 +67,7 @@
                 android:focusable="false"
                 android:focusableInTouchMode="true"
                 android:background="@drawable/left_arrow_selector"/>
-        <ImageView
+        <tv.ismar.app.widget.RecyclerImageView
                 android:id="@+id/iv_right_arrow"
                 android:layout_width="@dimen/left_arrow_width"
                 android:layout_height="@dimen/left_arrow_height"
@@ -78,7 +78,7 @@
                 android:focusable="false"
                 android:focusableInTouchMode="true"
                 android:background="@drawable/right_arrow_selector"/>
-        <ImageView
+        <tv.ismar.app.widget.RecyclerImageView
                 android:id="@+id/iv_top_arrow"
                 android:layout_width="@dimen/top_arrow_width"
                 android:layout_height="@dimen/top_arrow_height"
@@ -88,7 +88,7 @@
                 android:focusable="false"
                 android:focusableInTouchMode="true"
                 android:background="@drawable/arrow_top_selector_search"/>
-        <ImageView
+        <tv.ismar.app.widget.RecyclerImageView
                 android:id="@+id/iv_down_arrow"
                 android:layout_width="@dimen/top_arrow_width"
                 android:layout_height="@dimen/top_arrow_height"

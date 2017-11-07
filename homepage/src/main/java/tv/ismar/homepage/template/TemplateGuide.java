@@ -15,7 +15,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.ImageView;
+//import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.blankj.utilcode.util.StringUtils;
@@ -48,6 +48,7 @@ import tv.ismar.app.core.cache.DownloadClient;
 import tv.ismar.app.entity.banner.HomeEntity;
 import tv.ismar.app.player.CallaPlay;
 import tv.ismar.app.util.HardwareUtils;
+import tv.ismar.app.widget.RecyclerImageView;
 import tv.ismar.homepage.HomeActivity;
 import tv.ismar.homepage.OnItemClickListener;
 import tv.ismar.homepage.OnItemSelectedListener;
@@ -89,7 +90,7 @@ public class TemplateGuide extends Template
     public FetchDataControl mFetchDataControl = null;
     public GuideControl mControl;
     private DaisyVideoView mVideoView; // 导视view
-    private ImageView mLoadingIg; // 加载提示logo
+    private RecyclerImageView mLoadingIg; // 加载提示logo
     private TextView mVideoTitleTv; // 导视标题
     private TextView mFirstIcon; // 第一个视频指示数字
     private TextView mSecondIcon;
@@ -144,6 +145,9 @@ public class TemplateGuide extends Template
 
     private static final int NAVIGATION_LEFT = 0x0001;
     private static final int NAVIGATION_RIGHT = 0x0002;
+	/*add by dragontec for bug 4334 start*/
+    private boolean isPlayed = false;
+    /*add by dragontec for bug 4334 end*/
 
     private NavigationtHandler mNavigationtHandler;
     private Transformation transformation;
@@ -248,12 +252,14 @@ public class TemplateGuide extends Template
     }
 /*add by dragontec for bug 4065 end*/
 
-    public TemplateGuide(Context context) {
-        super(context);
+	/*modify by dragontec for bug 4334 start*/
+    public TemplateGuide(Context context, int position) {
+        super(context, position);
         mFetchDataControl = new FetchDataControl(context, this);
         mControl = new GuideControl(mContext);
         mNavigationtHandler = new NavigationtHandler();
     }
+    /*modify by dragontec for bug 4334 end*/
 
     @Override
     public void onCreate() {
@@ -405,7 +411,7 @@ public class TemplateGuide extends Template
         //        mHeadView.findViewById(R.id.guide_head_ismartv_linearlayout).setFocusable(true);
         //        mHeadView.findViewById(R.id.guide_head_ismartv_linearlayout).requestFocus();
         mVideoView = (DaisyVideoView) view.findViewById(R.id.guide_daisy_video_view);
-        mLoadingIg = (ImageView) view.findViewById(R.id.guide_video_loading_image);
+        mLoadingIg = (RecyclerImageView) view.findViewById(R.id.guide_video_loading_image);
         mVideoTitleTv = (TextView) view.findViewById(R.id.guide_video_title);
         mFirstIcon = (TextView) view.findViewById(R.id.first_video_icon);
         mSecondIcon = (TextView) view.findViewById(R.id.second_video_icon);
@@ -447,15 +453,30 @@ public class TemplateGuide extends Template
         mBannerPk = bundle.getString(BANNER_KEY);
         mName = bundle.getString(NAME_KEY);
         mChannel = bundle.getString(CHANNEL_KEY);
-/*modify by dragontec for bug 4200 start*/
+/*modify by dragontec for bug 4334 start*/
+		mFetchDataControl.fetchBanners(mBannerPk, 1, false);
     }
 
 	@Override
 	public void fetchData() {
 		hasAppeared = true;
-		mFetchDataControl.fetchBanners(mBannerPk, 1, false);
 	}
-/*modify by dragontec for bug 4200 end*/
+
+	@Override
+	public void fillData() {
+    	Log.d(TAG, "fillData isDataInited = " + isDataInited);
+    	if (isNeedFillData) {
+			isNeedFillData = false;
+			initRecycleView();
+			if (!isPlayed) {
+				isPlayed = true;
+				playCarousel();
+				initCarousel();
+			}
+		}
+	}
+
+/*modify by dragontec for bug 4334 end*/
 
     @Override
     protected void initListener(View view) {
@@ -481,14 +502,7 @@ public class TemplateGuide extends Template
 		/*add by dragontec for bug 4242 end*/
         mLoadingIg.setOnFocusChangeListener(this);
         mLoadingIg.setOnHoverListener(this);
-        /*add by dragontec for bug 4338 start*/
-		mBannerLinearLayout.setFocusSearchFailedListener(new BannerLinearLayout.FocusSearchFailedListener() {
-			@Override
-			public View onFocusSearchFailed(View focused, int direction) {
-				return findNextUpDownFocus(direction, mBannerLinearLayout, focused);
-			}
-		});
-		/*add by dragontec for bug 4338 end*/
+
     }
 
     /*更改图标背景*/
@@ -542,38 +556,47 @@ public class TemplateGuide extends Template
         }
     }
 
+	/*modify by dragontec for bug 4334 start*/
+    private void initAdapter() {
+    	if (mAdapter == null) {
+			mAdapter = new GuideAdapter(mContext);
+			mAdapter.setMarginLeftEnable(true);
+			mAdapter.setOnItemClickListener(this);
+			mAdapter.setOnItemSelectedListener(this);
+		}
+	}
+
     /*初始化RecycleView*/
-    private void initRecycleView(HomeEntity homeEntity) {
-        if (homeEntity != null) {
-            if (mAdapter == null) {
-                mAdapter = new GuideAdapter(mContext, mFetchDataControl.mPoster);
-                mAdapter.setMarginLeftEnable(true);
-                mAdapter.setOnItemClickListener(this);
-                mAdapter.setOnItemSelectedListener(this);
+    private void initRecycleView() {
+    	if (mAdapter != null) {
+    		if (mAdapter.getData() == null) {
+    			mAdapter.setData(mFetchDataControl.mPoster);
 /*modify by dragontec for bug 4332 start*/
-                mRecyclerView.setAdapter(mAdapter);
+				mRecyclerView.setAdapter(mAdapter);
 /*modify by dragontec for bug 4332 end*/
-/*delete by dragontec for bug 4259 start*/
-//	/*add by dragontec for bug 4077 start*/
-//				checkFocus(mRecyclerView);
-//	/*add by dragontec for bug 4077 end*/
-/*delete by dragontec for bug 4259 end*/
-            } else {
-                int start = mFetchDataControl.mPoster.size() - mFetchDataControl.mHomeEntity.posters.size();
-                int end = mFetchDataControl.mPoster.size();
-                mAdapter.notifyItemRangeChanged(start, end);
-            }
-        }
+			} else {
+				int start = mFetchDataControl.mPoster.size() - mFetchDataControl.mHomeEntity.posters.size();
+				int end = mFetchDataControl.mPoster.size();
+				mAdapter.notifyItemRangeChanged(start, end);
+			}
+		}
+
     }
+    /*modify by dragontec for bug 4334 end*/
 
     @Override
     public void callBack(int flags, Object... args) { // 获取网络数据回调
         if (flags == FetchDataControl.FETCH_BANNERS_LIST_FLAG) { // 获取单个banner业务
-            HomeEntity homeEntity = (HomeEntity) args[0];
-            initRecycleView(homeEntity);
-            //            playGuideVideo((int)mVideoView.getTag());
-            playCarousel();
-            initCarousel();
+			/*modify by dragontec for bug 4334 start*/
+			isNeedFillData = true;
+			initAdapter();
+			checkViewAppear();
+//            HomeEntity homeEntity = (HomeEntity) args[0];
+//            initRecycleView(homeEntity);
+//            //            playGuideVideo((int)mVideoView.getTag());
+//            playCarousel();
+//            initCarousel();
+			/*modify by dragontec for bug 4334 end*/
 	/* modify by dragontec for bug 4264 start */
 /*modify by dragontec for bug 4332 start*/
 			mRecyclerView.setOnLoadMoreComplete();
@@ -707,7 +730,24 @@ public class TemplateGuide extends Template
         /*modify by dragontec for bug 4240 start*/
 			Log.d(TAG, "findLastCompletelyVisibleItemPosition = " + mGuideLayoutManager.findLastCompletelyVisibleItemPosition() + ", count = " + mAdapter.getItemCount());
 			if (mGuideLayoutManager.findLastCompletelyVisibleItemPosition() < mAdapter.getItemCount() - 1) {
-				int targetPosition = mGuideLayoutManager.findLastCompletelyVisibleItemPosition() + 10;
+				/*modify by dragontec for bug 4347 start*/
+                int targetPosition = 0;
+                Rect rectRecyclerView = new Rect();
+                mRecyclerView.getGlobalVisibleRect(rectRecyclerView);
+			    if(rectRecyclerView.left > 0){
+                    if(mAdapter.getItemCount() > 1) {
+                        View secondView = mRecyclerView.getChildAt(1);
+                        Rect rect = new Rect();
+                        secondView.getGlobalVisibleRect(rect);
+                        int delta = rect.left - rectRecyclerView.left - mRecyclerView.getResources().getDimensionPixelSize(R.dimen.history_50);
+                        setNeedCheckScrollEnd();
+                        mRecyclerView.smoothScrollBy(delta,0);
+                        return;
+                    }
+                }else{
+                    targetPosition = mGuideLayoutManager.findLastCompletelyVisibleItemPosition() + 5;
+                }
+				/*modify by dragontec for bug 4347 end*/
 				if (targetPosition >= mAdapter.getItemCount()) {
 					targetPosition = mAdapter.getItemCount() - 1;
 				}
@@ -876,9 +916,11 @@ public class TemplateGuide extends Template
             mVideoTitleTv.setVisibility(View.GONE);
         }
         final int pauseTime = mFetchDataControl.mCarousels.get(mCurrentCarouselIndex).getPause_time();
+/*modify by dragontec for bug 4336 start*/
         Picasso.with(mContext)
                 .load(url)
-                .error(R.drawable.list_item_preview_bg)
+                .placeholder(R.drawable.guide_video_loading)
+                .error(R.drawable.guide_video_loading)
                 .into(
                         mLoadingIg,
                         new Callback() {
@@ -897,6 +939,7 @@ public class TemplateGuide extends Template
                                 }
                             }
                         });
+/*modify by dragontec for bug 4336 end*/
     }
 
     private void playVideo(int delay) {

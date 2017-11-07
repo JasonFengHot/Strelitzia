@@ -6,7 +6,7 @@
                 android:layout_height="match_parent"
                 android:id="@+id/sport_bg"
     >
-    <ImageView
+    <tv.ismar.app.widget.RecyclerImageView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/bg_fragment"
@@ -20,7 +20,7 @@
         android:focusableInTouchMode="false"
         android:focusable="false"
         >
-        <ImageView
+        <tv.ismar.app.widget.RecyclerImageView
             android:id="@+id/up_image"
             android:layout_width="@dimen/sport_left_up_imageW"
             android:layout_height="@dimen/sport_left_up_imageH"
@@ -38,7 +38,7 @@
             app:vpItemSpace="20px"
             app:vpRowCount="6" />
 
-        <ImageView
+        <tv.ismar.app.widget.RecyclerImageView
             android:id="@+id/down_image"
             android:layout_width="@dimen/sport_left_up_imageW"
             android:layout_height="@dimen/sport_left_up_imageH"
@@ -65,14 +65,14 @@
             android:layout_height="@dimen/sport_right_rel_H"
             android:layout_marginLeft="@dimen/sport_right_rel_ML"
             >
-            <ImageView
+            <tv.ismar.app.widget.RecyclerImageView
                 android:id="@+id/detail_labelImage"
                 android:layout_width="@dimen/sport_right_rel_W"
                 android:layout_height="@dimen/sport_right_rel_H"
                 android:focusableInTouchMode="false"
                 android:focusable="false"
                 />
-            <ImageView
+            <tv.ismar.app.widget.RecyclerImageView
                 android:id="@+id/cp_title"
                 android:layout_width="@dimen/sport_right_image_title_W"
                 android:layout_height="@dimen/sport_right_image_title_W"

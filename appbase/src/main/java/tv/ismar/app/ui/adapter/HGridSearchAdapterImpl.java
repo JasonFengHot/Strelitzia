@@ -7,7 +7,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
+//import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -26,6 +26,7 @@ import tv.ismar.app.models.SemantichObjectEntity;
 import tv.ismar.app.ui.HGridView;
 import tv.ismar.app.ui.view.AsyncImageView;
 import tv.ismar.app.ui.view.LabelImageView;
+import tv.ismar.app.widget.RecyclerImageView;
 
 
 public class HGridSearchAdapterImpl extends HGridAdapter<SearchItemCollection> implements AsyncImageView.OnImageViewLoadListener {
@@ -107,7 +108,7 @@ public class HGridSearchAdapterImpl extends HGridAdapter<SearchItemCollection> i
             holder.title = (TextView) convertView.findViewById(R.id.filter_list_item_title);
             holder.previewImage = (AsyncImageView) convertView.findViewById(R.id.filter_list_item_preview_img);
             holder.ItemBeanScore = (TextView) convertView.findViewById(R.id.ItemBeanScore);
-            holder.expense_txt = (ImageView) convertView.findViewById(R.id.expense_txt);
+            holder.expense_txt = (RecyclerImageView) convertView.findViewById(R.id.expense_txt);
             convertView.setTag(holder);
         } else {
             holder = (Holder) convertView.getTag();
@@ -180,7 +181,7 @@ public class HGridSearchAdapterImpl extends HGridAdapter<SearchItemCollection> i
         AsyncImageView previewImage;
         TextView title;
         TextView ItemBeanScore;
-        ImageView expense_txt;
+        RecyclerImageView expense_txt;
     }
 
     @Override

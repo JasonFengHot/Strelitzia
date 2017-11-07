@@ -13,7 +13,7 @@
         android:layout_marginLeft="@dimen/episode_header_title_ml"
     />
 
-    <ImageView
+    <tv.ismar.app.widget.RecyclerImageView
         android:id="@+id/tmp"
         android:layout_width="match_parent"
         android:layout_height="@dimen/usercenter_horizontal_divider_line_height"
@@ -38,13 +38,13 @@
             android:layout_height="match_parent"
         >
 
-            <ImageView
+            <tv.ismar.app.widget.RecyclerImageView
                 android:id="@+id/image_daram_back"
                 android:layout_width="@dimen/drama_main_image_daram_back_W"
                 android:layout_height="@dimen/drama_main_image_daram_back_H"
                 android:focusable="false"/>
 
-            <ImageView
+            <tv.ismar.app.widget.RecyclerImageView
                 android:id="@+id/image_daram_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

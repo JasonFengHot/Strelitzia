@@ -4,7 +4,7 @@
     android:layout_height="match_parent">
 
 
-    <ImageView
+    <tv.ismar.app.widget.RecyclerImageView
         android:id="@+id/update_loading_img"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

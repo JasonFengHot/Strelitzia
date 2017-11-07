@@ -9,7 +9,7 @@ import android.view.View;
 import android.view.View.OnFocusChangeListener;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
+//import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -27,6 +27,7 @@ import tv.ismar.app.core.PlayCheckManager;
 import tv.ismar.app.core.Source;
 import tv.ismar.app.core.VipMark;
 import tv.ismar.app.network.entity.PayLayerPackageEntity;
+import tv.ismar.app.widget.RecyclerImageView;
 import tv.ismar.statistics.DetailPageStatistics;
 
 import static tv.ismar.app.AppConstant.Payment.PAYMENT_FAILURE_CODE;
@@ -40,11 +41,11 @@ import static tv.ismar.app.AppConstant.Payment.PAYMENT_SUCCESS_CODE;
 public class PayLayerPackageActivity extends BaseActivity implements View.OnHoverListener, OnFocusChangeListener, View.OnClickListener {
     private static final String TAG = "PayLayerPackageActivity";
 
-    private ImageView tmp;
+    private RecyclerImageView tmp;
     private TvHorizontalScrollView mTvHorizontalScrollView;
     private LinearLayout scrollViewLayout;
-    private ImageView leftArrow;
-    private ImageView rightArrow;
+    private RecyclerImageView leftArrow;
+    private RecyclerImageView rightArrow;
     private TextView title;
     private TextView price;
     private TextView duration;
@@ -81,12 +82,12 @@ public class PayLayerPackageActivity extends BaseActivity implements View.OnHove
     private void initViews() {
         mTvHorizontalScrollView = (TvHorizontalScrollView) findViewById(R.id.scroll_view);
         scrollViewLayout = (LinearLayout) findViewById(R.id.scroll_layout);
-        leftArrow = (ImageView) findViewById(R.id.left_arrow);
-        rightArrow = (ImageView) findViewById(R.id.right_arrow);
+        leftArrow = (RecyclerImageView) findViewById(R.id.left_arrow);
+        rightArrow = (RecyclerImageView) findViewById(R.id.right_arrow);
         mTvHorizontalScrollView.setLeftArrow(leftArrow);
         mTvHorizontalScrollView.setRightArrow(rightArrow);
         mTvHorizontalScrollView.setCoverOffset(20);
-        tmp = (ImageView) findViewById(R.id.tmp);
+        tmp = (RecyclerImageView) findViewById(R.id.tmp);
 
         title = (TextView) findViewById(R.id.title);
         price = (TextView) findViewById(R.id.price);
@@ -148,10 +149,10 @@ public class PayLayerPackageActivity extends BaseActivity implements View.OnHove
         for (int i = 0; i < packageEntity.getItem_list().size(); i++) {
             final PayLayerPackageEntity.Item_list itemList = packageEntity.getItem_list().get(i);
             RelativeLayout itemView = (RelativeLayout) LayoutInflater.from(this).inflate(R.layout.item_paylayerpackage, null);
-            ImageView imageView = (ImageView) itemView.findViewById(R.id.image);
+            RecyclerImageView imageView = (RecyclerImageView) itemView.findViewById(R.id.image);
             TextView itemTitle = (TextView) itemView.findViewById(R.id.title);
             itemTitle.setText(itemList.getTitle());
-            ImageView expense_txt = (ImageView) itemView.findViewById(R.id.expense_txt);
+            RecyclerImageView expense_txt = (RecyclerImageView) itemView.findViewById(R.id.expense_txt);
             if (!TextUtils.isEmpty(itemList.getCptitle())) {
                 String imageUrl = VipMark.getInstance().getImage(this, itemList.getPay_type(), itemList.getCpid());
                 Picasso.with(this).load(imageUrl).into(expense_txt);
@@ -201,8 +202,8 @@ public class PayLayerPackageActivity extends BaseActivity implements View.OnHove
         }
 
         if (scrollViewLayout.getChildCount() <= 4) {
-            mTvHorizontalScrollView.setLeftArrow(new ImageView(this));
-            mTvHorizontalScrollView.setRightArrow(new ImageView(this));
+            mTvHorizontalScrollView.setLeftArrow(new RecyclerImageView(this));
+            mTvHorizontalScrollView.setRightArrow(new RecyclerImageView(this));
         }
     }
 

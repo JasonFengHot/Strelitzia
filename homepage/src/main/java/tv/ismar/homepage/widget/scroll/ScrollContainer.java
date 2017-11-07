@@ -236,9 +236,7 @@ public abstract class ScrollContainer extends LinearLayout implements ScrollActi
             measureChildWithMargins(childView, widthMeasureSpec, 0, heightMeasureSpec, 0);
             mWidth = mWidth+childView.getMeasuredWidth();
             mHeight = mHeight+childView.getMeasuredHeight();
-            Log.i("onMeasure", "childWidth:"+childView.getMeasuredWidth()+"  childHeight:"+childView.getMeasuredHeight());
         }
-        Log.i("onMeasure", "mWidth:"+mWidth+"  mHeight:"+mHeight);
         setMeasuredDimension(mWidth, mHeight);
     }
 

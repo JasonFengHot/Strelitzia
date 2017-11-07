@@ -13,7 +13,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
+//import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -47,6 +47,7 @@ import tv.ismar.app.util.DeviceUtils;
 import tv.ismar.app.util.SPUtils;
 import tv.ismar.app.util.SystemFileUtil;
 import tv.ismar.app.util.Utils;
+import tv.ismar.app.widget.RecyclerImageView;
 import tv.ismar.detailpage.R;
 import tv.ismar.library.exception.ExceptionUtils;
 import tv.ismar.statistics.DetailPageStatistics;
@@ -69,15 +70,15 @@ public class PackageDetailFragment extends BaseFragment {
     private TextView vod_payment_pacakge_title;
     private TextView vod_payment_packageDescribe_content;
     private LinearLayout mRelatedVideoContainer;
-    private ImageView vod_payment_poster;
+    private RecyclerImageView vod_payment_poster;
     private TextView vod_payment_price;
     private TextView vod_payment_duration;
     private Button vod_payment_item_more;
     private Button vod_payment_buyButton;
     private RelativeLayout detail_left_container;
     private LinearLayout detail_right_container;
-    private ImageView isbuy_label;
-    private ImageView mDetailQualityLabel;
+    private RecyclerImageView isbuy_label;
+    private RecyclerImageView mDetailQualityLabel;
 
     private RecyclerViewTV vod_payment_item_of_package_container;
 
@@ -179,14 +180,14 @@ public class PackageDetailFragment extends BaseFragment {
     }
 
     private void initView() {
-        isbuy_label = (ImageView) rootView.findViewById(R.id.isbuy_label);
+        isbuy_label = (RecyclerImageView) rootView.findViewById(R.id.isbuy_label);
         detail_left_container = (RelativeLayout) rootView.findViewById(R.id.detail_left_container);
         detail_right_container = (LinearLayout) rootView.findViewById(R.id.detail_right_container);
         vod_payment_pacakge_title = (TextView) rootView.findViewById(R.id.vod_payment_pacakge_title);
         vod_payment_packageDescribe_content = (TextView) rootView.findViewById(R.id.vod_payment_packageDescribe_content);
         mRelatedVideoContainer = (LinearLayout) rootView.findViewById(R.id.related_video_container);
         vod_payment_item_of_package_container = (RecyclerViewTV) rootView.findViewById(R.id.vod_payment_item_of_package_container);
-        vod_payment_poster = (ImageView) rootView.findViewById(R.id.vod_payment_poster);
+        vod_payment_poster = (RecyclerImageView) rootView.findViewById(R.id.vod_payment_poster);
         vod_payment_price = (TextView) rootView.findViewById(R.id.vod_payment_price);
         vod_payment_duration = (TextView) rootView.findViewById(R.id.vod_payment_duration);
         vod_payment_buyButton = (Button) rootView.findViewById(R.id.vod_payment_buyButton);
@@ -305,9 +306,9 @@ public class PackageDetailFragment extends BaseFragment {
                     getResources().getDimensionPixelSize(R.dimen.item_detail_related_H));
             relatedHolder.setLayoutParams(layoutParams);
             TextView titleView = (TextView) relatedHolder.findViewById(R.id.related_title);
-            ImageView imgView = (ImageView) relatedHolder.findViewById(R.id.related_preview_img);
+            RecyclerImageView imgView = (RecyclerImageView) relatedHolder.findViewById(R.id.related_preview_img);
             TextView focusView = (TextView) relatedHolder.findViewById(R.id.related_focus);
-            ImageView qualityLabel = (ImageView) relatedHolder.findViewById(R.id.related_quality_label);
+            RecyclerImageView qualityLabel = (RecyclerImageView) relatedHolder.findViewById(R.id.related_quality_label);
             TextView related_price_txt = (TextView) relatedHolder.findViewById(R.id.related_price_txt);
             if (relatedItem.getExpense() != null) {
                 related_price_txt.setVisibility(View.VISIBLE);
@@ -362,13 +363,13 @@ public class PackageDetailFragment extends BaseFragment {
     }
 
     private class PackageItemViewHolder extends RecyclerView.ViewHolder {
-        private ImageView mImageView;
+        private RecyclerImageView mImageView;
         private TextView mTextView;
 
         public PackageItemViewHolder(View itemView) {
             super(itemView);
-            mImageView = (ImageView) itemView.findViewById(R.id.ItemImage);
-            final ImageView ItemdefaultImage = (ImageView) itemView.findViewById(R.id.ItemdefaultImage);
+            mImageView = (RecyclerImageView) itemView.findViewById(R.id.ItemImage);
+            final RecyclerImageView ItemdefaultImage = (RecyclerImageView) itemView.findViewById(R.id.ItemdefaultImage);
             mTextView = (TextView) itemView.findViewById(R.id.ItemText);
             ItemdefaultImage.setTag(itemView.getTag());
             ItemdefaultImage.setOnHoverListener(new View.OnHoverListener() {

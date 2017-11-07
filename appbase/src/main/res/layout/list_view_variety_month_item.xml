@@ -38,7 +38,7 @@
         android:paddingTop="@dimen/variety_dramalist_gridview_month_item_pt"
         android:paddingBottom="@dimen/variety_dramalist_gridview_month_item_pb"/>
 
-    <ImageView
+    <tv.ismar.app.widget.RecyclerImageView
         android:layout_width="@dimen/gridview_item_quality_img_H"
         android:layout_height="@dimen/gridview_item_quality_img_W"
         android:layout_alignTop="@id/list_item_preview_img"
@@ -63,7 +63,7 @@
         android:textSize="@dimen/gridview_item_ItemBeanScore_textsize"
         android:visibility="gone"/>
 
-    <ImageView
+    <tv.ismar.app.widget.RecyclerImageView
         android:id="@+id/expense_txt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -71,6 +71,6 @@
         android:layout_alignBottom="@id/list_item_preview_img"
         android:layout_alignParentLeft="true"
         android:visibility="gone">
-    </ImageView>
+    </tv.ismar.app.widget.RecyclerImageView>
 
 </RelativeLayout>

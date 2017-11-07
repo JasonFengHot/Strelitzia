@@ -3,14 +3,15 @@
     android:id="@+id/home_head_layout"
     android:layout_width="match_parent"
     android:layout_height="@dimen/guide_title_height"
+    android:layout_marginTop="@dimen/guide_title_margin_top"
     android:gravity="center_vertical">
 
 
-    <ImageView
+    <tv.ismar.app.widget.RecyclerImageView
         android:layout_width="@dimen/guide_title_logo_width"
         android:layout_height="@dimen/guide_title_logo_height"
+        android:layout_centerVertical="true"
         android:layout_marginLeft="@dimen/guide_title_logo_margin_left"
-        android:layout_marginTop="@dimen/guide_title_logo_margin_top"
         android:scaleType="fitXY"
         android:src="@drawable/baishi_logo"/>
 
@@ -27,6 +28,7 @@
         android:clipToPadding="false"
         android:background="#00000000"
         android:layout_marginRight="@dimen/homepage_history_mr"
+        android:layout_centerVertical="true"
         android:gravity="center">
 
         <RelativeLayout
@@ -53,7 +55,7 @@
                 android:textSize="@dimen/guide_title_text_size"
                 android:visibility="gone" />
 
-            <ImageView
+            <tv.ismar.app.widget.RecyclerImageView
                 android:id="@+id/person_collection_img"
                 android:layout_width="@dimen/guide_title_icon_size"
                 android:layout_height="@dimen/guide_title_icon_size"
@@ -73,6 +75,7 @@
         android:focusable="true"
         android:nextFocusRight="@id/center_rect_layout"
         android:nextFocusLeft="@id/collection_rect_layout"
+        android:layout_centerVertical="true"
         android:background="#00000000"
         android:clipChildren="false"
         android:clipToPadding="false"
@@ -105,7 +108,7 @@
                 android:layout_marginRight="@dimen/guide_title_icon_padding_text"
                 android:visibility="gone" />
 
-            <ImageView
+            <tv.ismar.app.widget.RecyclerImageView
                 android:id="@+id/person_center_img"
                 android:layout_width="@dimen/guide_title_icon_size"
                 android:layout_height="@dimen/guide_title_icon_size"
@@ -119,11 +122,12 @@
 
     <TextView
         android:id="@+id/guide_title_time_tv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/guide_title_time_width"
+        android:layout_height="@dimen/guide_title_time_height"
         android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:gravity="center"
         android:layout_marginRight="@dimen/guide_title_time_margin_right"
-        android:layout_marginTop="@dimen/guide_title_time_margin_top"
         android:textColor="#ffffff"
         android:textSize="@dimen/guide_title_time_size" />
 </RelativeLayout>

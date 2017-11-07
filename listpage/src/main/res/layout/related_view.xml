@@ -21,13 +21,13 @@
         android:textColor="@color/_ffffff"
         android:textSize="@dimen/text_size_48sp" />
 
-    <ImageView
+    <tv.ismar.app.widget.RecyclerImageView
         android:layout_width="@dimen/related_view_img_W"
         android:layout_height="@dimen/related_view_img_H"
         android:src="@drawable/related_watermark"
         android:visibility="gone" />
     </LinearLayout>
-    <ImageView
+    <tv.ismar.app.widget.RecyclerImageView
         android:layout_marginLeft="@dimen/divider_blowhead_ML"
         android:layout_marginRight="@dimen/listportait_shaw_left"
         android:layout_width="match_parent"
@@ -38,7 +38,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/gridview_channel_panel_height"
         android:orientation="horizontal" >
-       <!--<ImageView-->
+       <!--<tv.ismar.app.widget.RecyclerImageView-->
             <!--android:id="@+id/arrow_left"-->
             <!--android:layout_width="@dimen/grid_view_main_arrow_left_W"-->
             <!--android:layout_height="@dimen/grid_view_main_arrow_left_H"-->
@@ -46,7 +46,7 @@
             <!--android:background="@drawable/arrow_left_selector"-->
             <!--android:layout_marginLeft="@dimen/related_view_tabs_marginleft"-->
             <!--android:visibility="invisible" />-->
-        <ImageView
+        <tv.ismar.app.widget.RecyclerImageView
             android:id="@+id/arrow_left"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
@@ -65,14 +65,14 @@
             android:scrollbars="none" >
         </tv.ismar.view.RelateScrollableSectionList>
 
-        <!--<ImageView-->
+        <!--<tv.ismar.app.widget.RecyclerImageView-->
             <!--android:id="@+id/arrow_right"-->
             <!--android:layout_width="@dimen/grid_view_main_arrow_left_W"-->
             <!--android:layout_height="@dimen/grid_view_main_arrow_left_H"-->
             <!--android:layout_marginTop="@dimen/grid_view_main_arrow_left_marginT"-->
             <!--android:background="@drawable/arrow_right_selector"-->
             <!--android:visibility="invisible" />-->
-        <ImageView
+        <tv.ismar.app.widget.RecyclerImageView
             android:id="@+id/arrow_right"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"

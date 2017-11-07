@@ -19,7 +19,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
+//import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
@@ -59,6 +59,7 @@ import tv.ismar.app.util.SPUtils;
 import tv.ismar.app.util.SystemFileUtil;
 import tv.ismar.app.util.Utils;
 import tv.ismar.app.widget.LabelImageView;
+import tv.ismar.app.widget.RecyclerImageView;
 import tv.ismar.detailpage.DetailPageContract;
 import tv.ismar.detailpage.R;
 import tv.ismar.detailpage.databinding.FragmentDetailpageEntertainmentSharpBinding;
@@ -273,6 +274,7 @@ public class DetailPageFragment extends Fragment implements DetailPageContract.V
                 if (imageView != null) {
                     imageView.setOnClickListener(null);
                     imageView.setOnHoverListener(null);
+                    imageView.setOnFocusChangeListener(null);
                 }
             }
         }
@@ -289,6 +291,7 @@ public class DetailPageFragment extends Fragment implements DetailPageContract.V
     @Override
     public void onDestroy() {
         super.onDestroy();
+        handler.removeCallbacksAndMessages(null);
         handler=null;
 /*add by dragontec for bug 4205 start*/
         mActivity = null;
@@ -358,11 +361,17 @@ public class DetailPageFragment extends Fragment implements DetailPageContract.V
                 itemView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
                     @Override
                     public void onFocusChange(View v, boolean hasFocus) {
-                        if (hasFocus) {
-                            relTextViews[finalI].setSelected(true);
-                        } else {
-                            relTextViews[finalI].setSelected(false);
+/*add by dragontec for bug 4205 start*/
+                        if (relTextViews != null && relTextViews[finalI] != null) {
+/*add by dragontec for bug 4205 end*/
+                            if (hasFocus) {
+                                relTextViews[finalI].setSelected(true);
+                            } else {
+                                relTextViews[finalI].setSelected(false);
+                            }
+/*add by dragontec for bug 4205 start*/
                         }
+/*add by dragontec for bug 4205 end*/
                     }
                 });
 //                relRelImageViews[i].setOnFocusChangeListener(new View.OnFocusChangeListener() {
@@ -387,11 +396,17 @@ public class DetailPageFragment extends Fragment implements DetailPageContract.V
                     @Override
                     public void onFocusChange(View v, boolean hasFocus) {
                         int position = (int) v.getTag();
-                        if (hasFocus) {
-                            relTextViews[position].setSelected(true);
-                        } else {
-                            relTextViews[position].setSelected(false);
+/*add by dragontec for bug 4205 start*/
+                        if (relTextViews != null && relTextViews[position] != null) {
+/*add by dragontec for bug 4205 end*/
+                            if (hasFocus) {
+                                relTextViews[position].setSelected(true);
+                            } else {
+                                relTextViews[position].setSelected(false);
+                            }
+/*add by dragontec for bug 4205 start*/
                         }
+/*add by dragontec for bug 4205 end*/
                     }
                 });
             }
@@ -802,7 +817,7 @@ public class DetailPageFragment extends Fragment implements DetailPageContract.V
         popupWindow.setContentView(contentView);
         popupWindow.setBackgroundDrawable(getResources().getDrawable(R.drawable.transparent));
         popupWindow.showAtLocation(getView(), Gravity.CENTER, 0, 0);
-        final ImageView code = (ImageView) contentView.findViewById(R.id.code_image);
+        final RecyclerImageView code = (RecyclerImageView) contentView.findViewById(R.id.code_image);
         Bitmap bitmap = BitmapFactory.decodeStream(responseBody.byteStream());
         BitmapDrawable bd = new BitmapDrawable(bitmap);
         code.setBackground(bd);

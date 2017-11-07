@@ -8,7 +8,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnHoverListener;
 import android.view.ViewGroup;
-import android.widget.ImageView;
+//import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -26,6 +26,7 @@ import tv.ismar.app.core.PageIntentInterface;
 import tv.ismar.app.core.Source;
 import tv.ismar.app.network.entity.PayLayerVipEntity;
 import tv.ismar.app.network.entity.SubjectPayLayerEntity;
+import tv.ismar.app.widget.RecyclerImageView;
 import tv.ismar.statistics.DetailPageStatistics;
 import tv.ismar.statistics.PurchaseStatistics;
 
@@ -38,11 +39,11 @@ import static tv.ismar.app.AppConstant.Payment.PAYMENT_SUCCESS_CODE;
  */
 public class PayLayerVipActivity extends BaseActivity implements OnHoverListener, View.OnFocusChangeListener {
     private static final String TAG = "PayLayerVipActivity";
-    private ImageView tmp;
+    private RecyclerImageView tmp;
     private TvHorizontalScrollView mTvHorizontalScrollView;
     private LinearLayout scrollViewLayout;
-    private ImageView leftArrow;
-    private ImageView rightArrow;
+    private RecyclerImageView leftArrow;
+    private RecyclerImageView rightArrow;
     private TextView vipDescriptionTextView;
     private DetailPageStatistics mPageStatistics;
     private int itemId;
@@ -87,12 +88,12 @@ public class PayLayerVipActivity extends BaseActivity implements OnHoverListener
     private void initViews() {
         mTvHorizontalScrollView = (TvHorizontalScrollView) findViewById(R.id.scroll_view);
         scrollViewLayout = (LinearLayout) findViewById(R.id.scroll_layout);
-        leftArrow = (ImageView) findViewById(R.id.left_arrow);
-        rightArrow = (ImageView) findViewById(R.id.right_arrow);
+        leftArrow = (RecyclerImageView) findViewById(R.id.left_arrow);
+        rightArrow = (RecyclerImageView) findViewById(R.id.right_arrow);
         mTvHorizontalScrollView.setLeftArrow(leftArrow);
         mTvHorizontalScrollView.setRightArrow(rightArrow);
         mTvHorizontalScrollView.setCoverOffset(10);
-        tmp = (ImageView) findViewById(R.id.tmp);
+        tmp = (RecyclerImageView) findViewById(R.id.tmp);
         vipDescriptionTextView = (TextView) findViewById(R.id.vip_description);
 
         leftArrow.setOnClickListener(new View.OnClickListener() {
@@ -177,8 +178,8 @@ public class PayLayerVipActivity extends BaseActivity implements OnHoverListener
         layoutParams.setMargins(margin, 0, margin, 0);
         for (final PayLayerVipEntity.Vip_list vipList : payLayerVipEntity.getVip_list()) {
             RelativeLayout itemView = (RelativeLayout) LayoutInflater.from(this).inflate(R.layout.item_paylayervip, null);
-            ImageView imageView = (ImageView) itemView.findViewById(R.id.image);
-            ImageView lable= (ImageView) itemView.findViewById(R.id.lable_image);
+            RecyclerImageView imageView = (RecyclerImageView) itemView.findViewById(R.id.image);
+            RecyclerImageView lable= (RecyclerImageView) itemView.findViewById(R.id.lable_image);
             if (TextUtils.isEmpty(vipList.getVertical_url())) {
                 Picasso.with(this).load(R.drawable.error_ver).memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE).into(imageView);
             } else {
@@ -216,8 +217,8 @@ public class PayLayerVipActivity extends BaseActivity implements OnHoverListener
         scrollViewLayout.getChildAt(0).requestFocus();
         scrollViewLayout.getChildAt(0).requestFocusFromTouch();
         if (scrollViewLayout.getChildCount() <= 4) {
-            mTvHorizontalScrollView.setLeftArrow(new ImageView(this));
-            mTvHorizontalScrollView.setRightArrow(new ImageView(this));
+            mTvHorizontalScrollView.setLeftArrow(new RecyclerImageView(this));
+            mTvHorizontalScrollView.setRightArrow(new RecyclerImageView(this));
         }
     }
 

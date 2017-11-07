@@ -7,7 +7,7 @@
     android:orientation="vertical" >
 
 
-    <ImageView
+    <tv.ismar.app.widget.RecyclerImageView
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_marginLeft="@dimen/divider_blowhead_ML"
@@ -37,7 +37,7 @@
                 android:focusableInTouchMode="false"
                 android:scrollbars="none" >
             </tv.ismar.app.widget.ScrollableSectionList>
-            <ImageView
+            <tv.ismar.app.widget.RecyclerImageView
                 android:id="@+id/shade_left"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
@@ -46,7 +46,7 @@
                 android:scaleType="fitCenter"
                 android:src="@drawable/shade_arrow_left"
                 android:visibility="invisible" />
-            <ImageView
+            <tv.ismar.app.widget.RecyclerImageView
                 android:id="@+id/arrow_left"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
@@ -55,7 +55,7 @@
                 android:scaleType="fitCenter"
                 android:src="@drawable/section_list_arrow_left"
                 android:visibility="invisible" />
-            <ImageView
+            <tv.ismar.app.widget.RecyclerImageView
                 android:id="@+id/shade_arrow_right"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
@@ -64,7 +64,7 @@
                 android:layout_gravity="right"
                 android:scaleType="fitCenter"
                 android:src="@drawable/shade_arrow_right" />
-            <ImageView
+            <tv.ismar.app.widget.RecyclerImageView
                 android:id="@+id/arrow_right"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"

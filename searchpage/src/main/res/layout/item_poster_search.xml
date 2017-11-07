@@ -11,7 +11,7 @@
             android:id="@+id/item_container"
             android:layout_width="@dimen/container_width"
             android:layout_height="@dimen/container_height">
-        <ImageView
+        <tv.ismar.app.widget.RecyclerImageView
                 android:id="@+id/iv_poster"
                 android:layout_width="@dimen/poster_width"
                 android:layout_height="@dimen/poster_height"

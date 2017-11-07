@@ -4,12 +4,14 @@ import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
-import android.widget.ImageView;
+
+import tv.ismar.app.widget.RecyclerImageView;
+//import android.widget.ImageView;
 
 /**
  * Created by huaijie on 2015/4/8.
  */
-public class IconImageView extends ImageView {
+public class IconImageView extends RecyclerImageView {
     private boolean selected = false;
 
 

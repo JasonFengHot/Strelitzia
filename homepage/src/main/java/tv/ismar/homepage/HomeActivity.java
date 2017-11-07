@@ -46,6 +46,7 @@ import tv.ismar.app.network.SkyService;
 import tv.ismar.app.player.CallaPlay;
 import tv.ismar.app.ui.ToastTip;
 import tv.ismar.app.util.BitmapDecoder;
+import tv.ismar.app.widget.RecyclerImageView;
 import tv.ismar.app.widget.TelescopicWrap;
 import tv.ismar.homepage.control.FetchDataControl;
 import tv.ismar.homepage.control.HomeControl;
@@ -104,11 +105,11 @@ public class HomeActivity extends BaseActivity
     private TimeTickBroadcast mTimeTickBroadcast = null;
 
 /*add by dragontec for bug 4230 start*/
-    private ImageView mPersonCollectionImg;
-    private ImageView mPersonCenterImg;
+    private RecyclerImageView mPersonCollectionImg;
+    private RecyclerImageView mPersonCenterImg;
 /*add by dragontec for bug 4230 end*/
 
-    private ImageView left_image, right_image; // 导航左右遮罩
+    private RecyclerImageView left_image, right_image; // 导航左右遮罩
     private Runnable mRunnable =
             new Runnable() {
                 @Override
@@ -151,7 +152,7 @@ public class HomeActivity extends BaseActivity
 /*add by dragontec for bug 4259 end*/
 
     private DaisyVideoView mVideoView;
-    private ImageView mPicImg;
+    private RecyclerImageView mPicImg;
     private SeekBar mSeekBar;
 
     private int currentImageAdCountDown = 0;
@@ -217,6 +218,7 @@ public class HomeActivity extends BaseActivity
 	/*add by dragontec for bug 4294 start*/
     private LinearLayout mHeadLayout;
 	/*add by dragontec for bug 4294 end*/
+    private boolean isKeyDown = false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -251,6 +253,7 @@ public class HomeActivity extends BaseActivity
     protected void onResume() {
         super.onResume();
         mTimeTv.setText(mHomeControl.getNowTime());
+        isKeyDown = false;
         if (mLastSelectedIndex == 0) {
             mChannelTab.setDefaultSelection(1);
         }
@@ -371,19 +374,19 @@ public class HomeActivity extends BaseActivity
         mPersonCenterTel.setTextView(mPersonCenterTv);
         mHoverView.setFocusableInTouchMode(true);
         mHoverView.setFocusable(true);
-        right_image = (ImageView) findViewById(R.id.guide_tab_right);
-        left_image = (ImageView) findViewById(R.id.guide_tab_left);
+        right_image = (RecyclerImageView) findViewById(R.id.guide_tab_right);
+        left_image = (RecyclerImageView) findViewById(R.id.guide_tab_left);
         mChannelTab.leftbtn = left_image;
         mChannelTab.rightbtn = right_image;
 
 /*add by dragontec for bug 4230 start*/
-        mPersonCollectionImg = (ImageView) findViewById(R.id.person_collection_img);
-        mPersonCenterImg = (ImageView) findViewById(R.id.person_center_img);
+        mPersonCollectionImg = (RecyclerImageView) findViewById(R.id.person_collection_img);
+        mPersonCenterImg = (RecyclerImageView) findViewById(R.id.person_center_img);
 /*add by dragontec for bug 4230 end*/
 
         //广告
         mVideoView = (DaisyVideoView) findViewById(R.id.home_ad_video);
-        mPicImg = (ImageView) findViewById(R.id.home_ad_pic);
+        mPicImg = (RecyclerImageView) findViewById(R.id.home_ad_pic);
         mSeekBar = (SeekBar) findViewById(R.id.home_ad_seekbar);
         timeBtn= (Button) findViewById(R.id.home_ad_timer);
 
@@ -543,6 +546,15 @@ public class HomeActivity extends BaseActivity
             }
         }
 /*add by dragontec for bug 4259 end*/
+        if(event.getAction() == KeyEvent.ACTION_DOWN){
+            isKeyDown = true;
+        }else  if(event.getAction() == KeyEvent.ACTION_UP){
+            if(isKeyDown){
+                isKeyDown = false;
+            }else{
+                return true;
+            }
+        }
 /*add by dragontec for bug 4225, 4224, 4223 start*/
         if (event.getKeyCode() == KeyEvent.KEYCODE_BACK
                 && event.getAction() == KeyEvent.ACTION_UP) {
@@ -678,7 +690,15 @@ public class HomeActivity extends BaseActivity
                         }
                     } else if (v.getId() == R.id.collection_rect_layout || v.getId() == R.id.center_rect_layout) {
                         //do nothing
-                    } else {
+					/*modify by dragontec for bug 4350 start*/
+                    } else if (v == banner_arrow_up || v == banner_arrow_down) {
+                    	float margin = v.getResources().getDimensionPixelSize(R.dimen.home_page_banner_arrow_hover_margin) / v.getResources().getDisplayMetrics().density;
+                    	if (event.getX() >= margin && event.getX() <= v.getResources().getDisplayMetrics().widthPixels - margin) {
+                    		v.requestFocusFromTouch();
+                    		v.requestFocus();
+						}
+					} else {
+                    /*modify by dragontec for bug 4350 end*/
                         v.requestFocusFromTouch();
                         v.requestFocus();
                     }
@@ -703,6 +723,19 @@ public class HomeActivity extends BaseActivity
                 }
 /*add by dragontec for bug 4057 end*/
                 break;
+            /*modify by dragontec for bug 4350 start*/
+			case MotionEvent.ACTION_HOVER_MOVE:
+				if (v == banner_arrow_up || v == banner_arrow_down) {
+					float margin = v.getResources().getDimensionPixelSize(R.dimen.home_page_banner_arrow_hover_margin) / v.getResources().getDisplayMetrics().density;
+					if (event.getX() >= margin && event.getX() <= v.getResources().getDisplayMetrics().widthPixels - margin) {
+						v.requestFocusFromTouch();
+						v.requestFocus();
+					} else {
+						v.clearFocus();
+					}
+				}
+				break;
+			/*modify by dragontec for bug 4350 end*/
         }
         return false;
     }
@@ -756,9 +789,41 @@ public class HomeActivity extends BaseActivity
                     default: // 其他频道
                         if (position - 2 < 0) return;
                         if (mFetchDataControl.mChannels[position - 2].getChannel().equals("comic")) {
-                            setBackground(R.drawable.juvenile_bg);
+							/*add by dragontec for bug 4346 start*/
+                            setBackground(R.drawable.channel_child_bg);
+                            right_image.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    right_image.setBackground(null);
+                                    right_image.setBackgroundResource(R.drawable.guide_right_child_arrow);
+                                }
+                            });
+                            left_image.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    left_image.setBackground(null);
+                                    left_image.setBackgroundResource(R.drawable.guide_left_child_arrow);
+                                }
+                            });
+							/*add by dragontec for bug 4346 end*/
                         } else {
                             setBackground(R.drawable.homepage_background);
+							/*add by dragontec for bug 4346 start*/
+                            right_image.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    right_image.setBackground(null);
+                                    right_image.setBackgroundResource(R.drawable.guide_right_arrow);
+                                }
+                            });
+                            left_image.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    left_image.setBackground(null);
+                                    left_image.setBackgroundResource(R.drawable.guide_left_arrow);
+                                }
+                            });
+							/*add by dragontec for bug 4346 end*/
                         }
                         channelFragment.setChannel(
                                 mFetchDataControl.mChannels[position - 2].getName(),
@@ -789,7 +854,9 @@ public class HomeActivity extends BaseActivity
     }
 
     private boolean isScrollerAtTop() {
-        boolean isScrollerAtTop = false;
+		/*modify by dragontec for bug 4376 start*/	
+        boolean isScrollerAtTop = true;
+		/*modify by dragontec for bug 4376 end*/	
         ChannelFragment channelFragment = getChannelFragment();
         if (channelFragment != null) {
             isScrollerAtTop = channelFragment.isScrollerAtTop();
@@ -1124,7 +1191,9 @@ public class HomeActivity extends BaseActivity
         setBackground(R.drawable.homepage_background);
         ad_layout.setVisibility(View.GONE);
         home_layout.setVisibility(View.VISIBLE);
-        banner_arrow_down.setBackgroundResource(R.drawable.poster_arrow_down_vselector);
+        /*modify by dragontec for bug 4350 start*/
+        banner_arrow_down.setBackgroundResource(R.drawable.homepage_arrow_down_selector);
+        /*modify by dragontec for bug 4350 end*/
         initServer();
         new Handler().postDelayed(mRunnable, 1000);
 

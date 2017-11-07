@@ -16,7 +16,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.HorizontalScrollView;
-import android.widget.ImageView;
+//import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
@@ -42,6 +42,7 @@ import tv.ismar.app.ui.ToastTip;
 import tv.ismar.app.util.DeviceUtils;
 import tv.ismar.app.util.NetworkUtils;
 import tv.ismar.app.util.SystemFileUtil;
+import tv.ismar.app.widget.RecyclerImageView;
 import tv.ismar.library.exception.ExceptionUtils;
 import tv.ismar.searchpage.adapter.KeyboardAdapter;
 import tv.ismar.searchpage.adapter.PosterAdapter;
@@ -75,8 +76,8 @@ public class WordSearchActivity extends BaseActivity implements View.OnClickList
     private View clickView;
     private List<String> hotWordsList;
     private KeyboardAdapter keyboardAdapter;
-    private ImageView iv_left_arrow;
-    private ImageView iv_right_arrow;
+    private RecyclerImageView iv_left_arrow;
+    private RecyclerImageView iv_right_arrow;
     private HorizontalScrollView scrowview;
     private LinearLayout top_tabs;
     private ZGridView poster_gridview;
@@ -85,7 +86,7 @@ public class WordSearchActivity extends BaseActivity implements View.OnClickList
     private int selectedTab = -1;
     private LinearLayout ll_hotwords;
     private int selectdHotWord = -1;
-    private ImageView iv_toggle;
+    private RecyclerImageView iv_toggle;
     private String[] tags;
     private PosterAdapter posterAdapter;
     private View rl_search_subject;
@@ -109,8 +110,8 @@ public class WordSearchActivity extends BaseActivity implements View.OnClickList
     private View rl_recognize_hotword;
     private int count;
     private long lastClicktime = 0;
-    private ImageView iv_top_arrow;
-    private ImageView iv_down_arrow;
+    private RecyclerImageView iv_top_arrow;
+    private RecyclerImageView iv_down_arrow;
     private View junp_view;
     private MediaPlayer mediaPlayer;
     private android.os.Handler handler = new android.os.Handler() {
@@ -445,7 +446,7 @@ public class WordSearchActivity extends BaseActivity implements View.OnClickList
         t9_keyboard = (ZGridView) findViewById(R.id.t9_keyboard);
         search_keyboard = findViewById(R.id.search_keyboard);
         loading = findViewById(R.id.loading);
-        ImageView progress_view= (ImageView) findViewById(R.id.progress_view);
+        RecyclerImageView progress_view= (RecyclerImageView) findViewById(R.id.progress_view);
         AnimationDrawable animationDrawable= (AnimationDrawable) progress_view.getBackground();
         if(animationDrawable!=null){
             animationDrawable.start();
@@ -462,7 +463,7 @@ public class WordSearchActivity extends BaseActivity implements View.OnClickList
 
         et_input = (EditText) findViewById(R.id.et_input);
         keyboard = (ZGridView) findViewById(R.id.keyboard);
-        iv_toggle = (ImageView) findViewById(R.id.iv_toggle);
+        iv_toggle = (RecyclerImageView) findViewById(R.id.iv_toggle);
         iv_toggle.setOnClickListener(this);
         iv_toggle.setOnHoverListener(this);
         tv_search_all = (TextView) findViewById(R.id.tv_search_all);
@@ -578,10 +579,10 @@ public class WordSearchActivity extends BaseActivity implements View.OnClickList
         );
         search_guide = findViewById(R.id.search_guide);
 
-        iv_left_arrow = (ImageView) findViewById(R.id.iv_left_arrow);
-        iv_right_arrow = (ImageView) findViewById(R.id.iv_right_arrow);
-        iv_top_arrow = (ImageView) findViewById(R.id.iv_top_arrow);
-        iv_down_arrow = (ImageView) findViewById(R.id.iv_down_arrow);
+        iv_left_arrow = (RecyclerImageView) findViewById(R.id.iv_left_arrow);
+        iv_right_arrow = (RecyclerImageView) findViewById(R.id.iv_right_arrow);
+        iv_top_arrow = (RecyclerImageView) findViewById(R.id.iv_top_arrow);
+        iv_down_arrow = (RecyclerImageView) findViewById(R.id.iv_down_arrow);
         iv_left_arrow.setOnHoverListener(this);
         iv_down_arrow.setOnHoverListener(this);
         iv_top_arrow.setOnHoverListener(this);

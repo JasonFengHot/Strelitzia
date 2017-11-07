@@ -5,7 +5,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
+//import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
@@ -15,6 +15,7 @@ import java.util.List;
 
 import tv.ismar.app.core.VipMark;
 import tv.ismar.app.entity.banner.BannerPoster;
+import tv.ismar.app.widget.RecyclerImageView;
 import tv.ismar.homepage.R;
 
 /**
@@ -28,10 +29,29 @@ public class GuideAdapter extends BaseRecycleAdapter<GuideAdapter.GuideViewHolde
     private List<BannerPoster> mData;
     private boolean mMarginLeftEnable = false;
 
+	/*add by dragontec for bug 4334 start*/
+    public GuideAdapter(Context context) {
+    	mContext = context;
+	}
+	/*add by dragontec for bug 4334 end*/
+
     public GuideAdapter(Context context, List<BannerPoster> data){
         this.mContext = context;
         this.mData = data;
     }
+
+	/*add by dragontec for bug 4334 start*/
+    public void setData(List<BannerPoster> data){
+    	if (mData == null) {
+			mData = data;
+			notifyDataSetChanged();
+		}
+	}
+
+	public List<BannerPoster> getData() {
+    	return mData;
+	}
+	/*add by dragontec for bug 4334 end*/
 
     @Override
     public GuideViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -43,37 +63,51 @@ public class GuideAdapter extends BaseRecycleAdapter<GuideAdapter.GuideViewHolde
     public void onBindViewHolder(GuideViewHolder holder, int position) {
         holder.mMarginLeftView.setVisibility(mMarginLeftEnable?View.VISIBLE:View.GONE);
 //        if(position==0) holder.mMarginLeftView.setVisibility(View.GONE);
-        BannerPoster poster = mData.get(position);
-        if (!TextUtils.isEmpty(poster.vertical_url)) {
-            if(poster.vertical_url.equals("更多")){
-                Picasso.with(mContext).load(R.drawable.banner_vertical_more).into(holder.mPosterIg);
-            } else {
-                Picasso.with(mContext).load(poster.vertical_url).error(R.drawable.list_item_ppreview_bg).into(holder.mPosterIg);
-            }
-        } else {
-            Picasso.with(mContext).load(R.drawable.list_item_ppreview_bg).into(holder.mPosterIg);
-        }
-        Picasso.with(mContext).load(VipMark.getInstance().getBannerIconMarkImage(poster.top_left_corner)).into(holder.mLtIconTv);
-        holder.mRbIconTv.setText(new DecimalFormat("0.0").format(poster.rating_average));
-        holder.mRbIconTv.setVisibility((poster.rating_average==0) ? View.GONE:View.VISIBLE);
-        Picasso.with(mContext).load(VipMark.getInstance().getBannerIconMarkImage(poster.top_right_corner)).into(holder.mRtIconTv);
+		/*modify by dragontec for bug 4334 start*/
+		if (mData != null) {
+			BannerPoster poster = mData.get(position);
+			if (!TextUtils.isEmpty(poster.vertical_url)) {
+				if (poster.vertical_url.equals("更多")) {
+					Picasso.with(mContext).load(R.drawable.banner_vertical_more).into(holder.mPosterIg);
+				} else {
+/*modify by dragontec for bug 4336,4407 start*/
+					Picasso.with(mContext).
+                            load(poster.vertical_url).
+                            error(R.drawable.template_item_vertical_preview).
+                            placeholder(R.drawable.template_item_vertical_preview).
+                            into(holder.mPosterIg);
+/*modify by dragontec for bug 4336,4407 end*/
+				}
+			} else {
+/*modify by dragontec for bug 4336,4407 start*/
+				Picasso.with(mContext).
+                        load(R.drawable.template_item_vertical_preview).
+                        into(holder.mPosterIg);
+/*modify by dragontec for bug 4336,4407 end*/
+			}
+			Picasso.with(mContext).load(VipMark.getInstance().getBannerIconMarkImage(poster.top_left_corner)).into(holder.mLtIconTv);
+			holder.mRbIconTv.setText(new DecimalFormat("0.0").format(poster.rating_average));
+			holder.mRbIconTv.setVisibility((poster.rating_average == 0) ? View.GONE : View.VISIBLE);
+			Picasso.with(mContext).load(VipMark.getInstance().getBannerIconMarkImage(poster.top_right_corner)).into(holder.mRtIconTv);
 
-        if(!TextUtils.isEmpty(poster.vertical_url) && poster.vertical_url.equals("更多")){
-            holder.mTitleTv.setVisibility(View.INVISIBLE);
-        } else {
-            holder.mTitleTv.setVisibility(View.VISIBLE);
-        }
-		/*add by dragontec for bug 4325 start*/
-        String title = poster.title;
-        holder.mTitleTv.setText(title);
-        holder.mPosition = position;
-		
-        String focusStr = title;
-        if(poster.focus != null && !poster.focus.equals("") && !poster.focus.equals("null")){
-            focusStr = poster.focus;
-        }
-        holder.mTitleTv.setTag(new String[]{title,focusStr});
-		/*add by dragontec for bug 4325 end*/
+			if (!TextUtils.isEmpty(poster.vertical_url) && poster.vertical_url.equals("更多")) {
+				holder.mTitleTv.setVisibility(View.INVISIBLE);
+			} else {
+				holder.mTitleTv.setVisibility(View.VISIBLE);
+			}
+			/*add by dragontec for bug 4325 start*/
+			String title = poster.title;
+			holder.mTitleTv.setText(title);
+			holder.mPosition = position;
+
+			String focusStr = title;
+			if (poster.focus != null && !poster.focus.equals("") && !poster.focus.equals("null")) {
+				focusStr = poster.focus;
+			}
+			holder.mTitleTv.setTag(new String[]{title, focusStr});
+			/*add by dragontec for bug 4325 end*/
+		}
+		/*modify by dragontec for bug 4334 end*/
     }
 
     @Override
@@ -86,21 +120,21 @@ public class GuideAdapter extends BaseRecycleAdapter<GuideAdapter.GuideViewHolde
     }
 
     public class GuideViewHolder extends BaseViewHolder {
-        public ImageView mPosterIg;//海报
-        public ImageView mLtIconTv;//左上icon
+        public RecyclerImageView mPosterIg;//海报
+        public RecyclerImageView mLtIconTv;//左上icon
         public TextView mRbIconTv;//右下icon
         public TextView mTitleTv;//标题
         public View mMarginLeftView;//左边距
-        public ImageView mRtIconTv;//右上icon
+        public RecyclerImageView mRtIconTv;//右上icon
 
         public GuideViewHolder(View itemView) {
             super(itemView, GuideAdapter.this);
-            mPosterIg = (ImageView) itemView.findViewById(R.id.guide_recycle_item_poster);
-            mLtIconTv = (ImageView) itemView.findViewById(R.id.guide_recycle_item_lt_icon);
+            mPosterIg = (RecyclerImageView) itemView.findViewById(R.id.guide_recycle_item_poster);
+            mLtIconTv = (RecyclerImageView) itemView.findViewById(R.id.guide_recycle_item_lt_icon);
             mRbIconTv = (TextView) itemView.findViewById(R.id.guide_recycle_item_rb_icon);
             mTitleTv = (TextView) itemView.findViewById(R.id.guide_recycle_item_title);
             mMarginLeftView = itemView.findViewById(R.id.guide_margin_left);
-            mRtIconTv= (ImageView) itemView.findViewById(R.id.guide_rt_icon);
+            mRtIconTv= (RecyclerImageView) itemView.findViewById(R.id.guide_rt_icon);
         }
 
         @Override

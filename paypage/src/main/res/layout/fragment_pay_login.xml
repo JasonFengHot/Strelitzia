@@ -118,7 +118,7 @@
         android:textColor="#FFF8F8FF"
         android:textSize="@dimen/text_size_36sp" />
 
-    <ImageView
+    <tv.ismar.app.widget.RecyclerImageView
         android:id="@+id/tmp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

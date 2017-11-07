@@ -7,7 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
+//import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -25,6 +25,7 @@ import tv.ismar.app.entity.ItemCollection;
 import tv.ismar.app.ui.HGridView;
 import tv.ismar.app.ui.view.AsyncImageView;
 import tv.ismar.app.ui.view.LabelImageView;
+import tv.ismar.app.widget.RecyclerImageView;
 
 public class HGridAdapterImpl extends HGridAdapter<ItemCollection> implements AsyncImageView.OnImageViewLoadListener {
 	
@@ -119,9 +120,9 @@ public class HGridAdapterImpl extends HGridAdapter<ItemCollection> implements As
 			holder = new Holder();
 			holder.title = (TextView) convertView.findViewById(R.id.list_item_title);
 			holder.previewImage = (LabelImageView) convertView.findViewById(R.id.list_item_preview_img);
-			holder.qualityLabel = (ImageView) convertView.findViewById(R.id.list_item_quality_label);
+			holder.qualityLabel = (RecyclerImageView) convertView.findViewById(R.id.list_item_quality_label);
 			holder.listLayout = (RelativeLayout)convertView.findViewById(R.id.list_item_layout);
-			holder.price = (ImageView) convertView.findViewById(R.id.expense_txt);
+			holder.price = (RecyclerImageView) convertView.findViewById(R.id.expense_txt);
 			holder.ItemBeanScore = (TextView)convertView.findViewById(R.id.ItemBeanScore);
 			convertView.setTag(holder);
 		} else {
@@ -274,8 +275,8 @@ public class HGridAdapterImpl extends HGridAdapter<ItemCollection> implements As
 		static class Holder {
 		LabelImageView previewImage;
 		TextView title;
-		ImageView price;
-		ImageView qualityLabel;
+		RecyclerImageView price;
+		RecyclerImageView qualityLabel;
 		RelativeLayout listLayout;
 		TextView ItemBeanScore;
 	}

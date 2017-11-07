@@ -4,7 +4,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <ImageView
+    <tv.ismar.app.widget.RecyclerImageView
         android:id="@+id/bg"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -65,7 +65,7 @@
         android:layout_below="@+id/player_episode"
         android:layout_marginTop="@dimen/player_24"
         >
-        <ImageView
+        <tv.ismar.app.widget.RecyclerImageView
             android:id="@+id/arrow_left"
             android:layout_width="@dimen/player_42"
             android:layout_height="@dimen/player_72"
@@ -83,7 +83,7 @@
             app:heRowCount="7"
             >
         </tv.ismar.player.widget.HorizontalEpisodeList>
-        <ImageView
+        <tv.ismar.app.widget.RecyclerImageView
             android:id="@+id/arrow_right"
             android:layout_width="@dimen/player_42"
             android:layout_height="@dimen/player_72"

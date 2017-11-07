@@ -19,9 +19,11 @@ public class TemplateMore extends Template implements View.OnClickListener, View
   private String mTitle; // 标题
   private int mStyle; // 竖版或横版
 
-  public TemplateMore(Context context) {
-    super(context);
+	/*modify by dragontec for bug 4334 start*/
+  public TemplateMore(Context context, int position) {
+    super(context, position);
   }
+  /*modify by dragontec for bug 4334 end*/
 
   @Override
   public void getView(View view) {
@@ -84,7 +86,13 @@ public class TemplateMore extends Template implements View.OnClickListener, View
 	public void fetchData() {
 		//do nothing
 	}
-/*modify by dragontec for bug 4200 end*/
+	/*modify by dragontec for bug 4200 end*/
+	/*modify by dragontec for bug 4334 start*/
+	@Override
+	public void fillData() {
+		//do nothing
+	}
+	/*modify by dragontec for bug 4334 end*/
 
   @Override
   public void onClick(View v) {

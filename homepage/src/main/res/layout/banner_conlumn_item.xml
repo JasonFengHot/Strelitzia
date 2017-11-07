@@ -23,7 +23,7 @@
         <RelativeLayout
             android:layout_width="@dimen/column_item_width"
             android:layout_height="@dimen/column_item_height">
-            <ImageView
+            <tv.ismar.app.widget.RecyclerImageView
                 android:id="@+id/conlumn_item_poster"
                 android:layout_width="@dimen/column_item_width"
                 android:layout_height="@dimen/column_item_height"

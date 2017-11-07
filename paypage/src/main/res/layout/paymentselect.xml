@@ -16,7 +16,7 @@
         <include layout="@layout/pay_top_panel"/>
         <!-- sperate line -->
 
-        <ImageView
+        <tv.ismar.app.widget.RecyclerImageView
             android:id="@+id/hseparate_view"
             android:layout_width="match_parent"
             android:layout_height="@dimen/pay_paymentselect_hseparate_height"
@@ -36,7 +36,7 @@
             <include layout="@layout/pay_channel"/>
             <!-- qrcode view -->
 
-            <ImageView
+            <tv.ismar.app.widget.RecyclerImageView
                 android:id="@+id/vseparate_view"
                 android:layout_width="@dimen/pay_paymentselect_vseparate_width"
                 android:layout_height="match_parent"
@@ -69,7 +69,7 @@
         </LinearLayout>
 
     </LinearLayout>
-    <ImageView
+    <tv.ismar.app.widget.RecyclerImageView
         android:id="@+id/payment_shadow_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

@@ -5,7 +5,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
+//import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
@@ -15,6 +15,7 @@ import java.util.List;
 
 import tv.ismar.app.core.VipMark;
 import tv.ismar.app.entity.banner.BannerPoster;
+import tv.ismar.app.widget.RecyclerImageView;
 import tv.ismar.homepage.R;
 
 /**
@@ -29,14 +30,31 @@ public class TvPlayAdapter extends BaseRecycleAdapter<TvPlayAdapter.TvPlayerView
     private List<BannerPoster> mData;
     private boolean mMarginLeftEnable = false;
 
+	/*add by dragontec for bug 4334 start*/
+    public TvPlayAdapter(Context context) {
+    	mContext = context;
+	}
+	/*add by dragontec for bug 4334 end*/
+
     public TvPlayAdapter(Context context, List<BannerPoster> data){
         this.mContext = context;
         this.mData = data;
     }
 
-    public List<BannerPoster> getmData() {
+	/*add by dragontec for bug 4334 start*/
+    public void setData(List<BannerPoster> data){
+    	if (mData == null) {
+    		mData = data;
+    		notifyDataSetChanged();
+		}
+	}
+	/*add by dragontec for bug 4334 end*/
+
+	/*modify by dragontec for bug 4334 start*/
+    public List<BannerPoster> getData() {
         return mData;
     }
+    /*modify by dragontec for bug 4334 end*/
 
     @Override
     public TvPlayAdapter.TvPlayerViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -53,10 +71,19 @@ public class TvPlayAdapter extends BaseRecycleAdapter<TvPlayAdapter.TvPlayerView
              if(poster.poster_url.equals("更多")){
                  Picasso.with(mContext).load(R.drawable.banner_horizontal_more).into(holder.mPosterIg);
              } else {
-                 Picasso.with(mContext).load(poster.poster_url).into(holder.mPosterIg);
+/*modify by dragontec for bug 4336 start*/
+                 Picasso.with(mContext).load(poster.poster_url).
+                         error(R.drawable.template_title_item_horizontal_preview).
+                         placeholder(R.drawable.template_title_item_horizontal_preview).
+                         into(holder.mPosterIg);
+/*modify by dragontec for bug 4336 end*/
              }
         } else {
-            Picasso.with(mContext).load(R.drawable.list_item_preview_bg).into(holder.mPosterIg);
+/*modify by dragontec for bug 4336 start*/
+            Picasso.with(mContext).
+                    load(R.drawable.template_title_item_horizontal_preview).
+                    into(holder.mPosterIg);
+/*modify by dragontec for bug 4336 end*/
         }
         Picasso.with(mContext).load(VipMark.getInstance().getBannerIconMarkImage(poster.top_right_corner)).into(holder.mRtIconTv);
         Picasso.with(mContext).load(VipMark.getInstance().getBannerIconMarkImage(poster.top_left_corner)).into(holder.mLtIconTv);
@@ -87,21 +114,21 @@ public class TvPlayAdapter extends BaseRecycleAdapter<TvPlayAdapter.TvPlayerView
     }
 
     public class TvPlayerViewHolder extends BaseViewHolder{
-        public ImageView mPosterIg;//海报
-        public ImageView mLtIconTv;//左上icon
+        public RecyclerImageView mPosterIg;//海报
+        public RecyclerImageView mLtIconTv;//左上icon
         public TextView mRbIconTv;//右下icon
         public TextView mTitleTv;//标题
         public View mMarginLeftView;//左边距
-        public ImageView mRtIconTv;
+        public RecyclerImageView mRtIconTv;
 
         public TvPlayerViewHolder(View itemView) {
             super(itemView, TvPlayAdapter.this);
-            mPosterIg = (ImageView) itemView.findViewById(R.id.tv_player_item_poster);
-            mLtIconTv = (ImageView) itemView.findViewById(R.id.tv_player_item_lt_icon);
+            mPosterIg = (RecyclerImageView) itemView.findViewById(R.id.tv_player_item_poster);
+            mLtIconTv = (RecyclerImageView) itemView.findViewById(R.id.tv_player_item_lt_icon);
             mRbIconTv = (TextView) itemView.findViewById(R.id.tv_player_item_rb_icon);
             mTitleTv = (TextView) itemView.findViewById(R.id.tv_player_item_title);
             mMarginLeftView = itemView.findViewById(R.id.tv_player_margin_left);
-            mRtIconTv= (ImageView) itemView.findViewById(R.id.guide_rt_icon);
+            mRtIconTv= (RecyclerImageView) itemView.findViewById(R.id.guide_rt_icon);
         }
 
         @Override

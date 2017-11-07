@@ -8,7 +8,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
+//import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.squareup.picasso.MemoryPolicy;
@@ -21,6 +21,7 @@ import tv.ismar.app.ui.adapter.OnItemClickListener;
 import tv.ismar.app.ui.adapter.OnItemFocusedListener;
 import tv.ismar.app.entity.HistoryFavoriteEntity;
 import tv.ismar.app.ui.adapter.OnItemOnhoverlistener;
+import tv.ismar.app.widget.RecyclerImageView;
 import tv.ismar.listpage.R;
 
 /**
@@ -124,17 +125,17 @@ public class HistoryFavoriteListAdapter extends RecyclerView.Adapter<HistoryFavo
     }
 
     public static class listViewholder extends RecyclerView.ViewHolder{
-        private ImageView item_detail_image,vip_image,marking_bg,delete_bg;
+        private RecyclerImageView item_detail_image,vip_image,marking_bg,delete_bg;
         private TextView marking,intro,title;
         public listViewholder(View itemView) {
             super(itemView);
-            item_detail_image= (ImageView) itemView.findViewById(R.id.item_detail_image);
-            vip_image= (ImageView) itemView.findViewById(R.id.vip_image);
+            item_detail_image= (RecyclerImageView) itemView.findViewById(R.id.item_detail_image);
+            vip_image= (RecyclerImageView) itemView.findViewById(R.id.vip_image);
             marking= (TextView) itemView.findViewById(R.id.marking);
-            marking_bg= (ImageView) itemView.findViewById(R.id.marking_bg);
+            marking_bg= (RecyclerImageView) itemView.findViewById(R.id.marking_bg);
             intro= (TextView) itemView.findViewById(R.id.intro);
             title= (TextView) itemView.findViewById(R.id.focus_title);
-            delete_bg= (ImageView) itemView.findViewById(R.id.edit_bg);
+            delete_bg= (RecyclerImageView) itemView.findViewById(R.id.edit_bg);
         }
     }
 }

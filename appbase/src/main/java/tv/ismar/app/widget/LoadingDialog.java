@@ -5,7 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.drawable.AnimationDrawable;
 import android.view.View;
-import android.widget.ImageView;
+//import android.widget.ImageView;
 import android.widget.TextView;
 
 import tv.ismar.app.R;
@@ -13,7 +13,7 @@ import tv.ismar.app.R;
 public class LoadingDialog extends Dialog implements DialogInterface.OnDismissListener {
     private Context mContext;
     private TextView tipTextView;
-    private ImageView dialog_back_img;
+    private RecyclerImageView dialog_back_img;
     private AnimationDrawable animationDrawable;
 
     public LoadingDialog(Context context, int theme) {
@@ -24,7 +24,7 @@ public class LoadingDialog extends Dialog implements DialogInterface.OnDismissLi
         setCancelable(true);
         tipTextView = (TextView) findViewById(R.id.tipTextView);// 提示文字
 
-        dialog_back_img = (ImageView) findViewById(R.id.dialog_back_img);
+        dialog_back_img = (RecyclerImageView) findViewById(R.id.dialog_back_img);
         dialog_back_img.setBackgroundResource(R.drawable.module_loading);
         animationDrawable = (AnimationDrawable) dialog_back_img.getBackground();
         setOnDismissListener(this);

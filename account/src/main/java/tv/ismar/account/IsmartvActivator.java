@@ -625,15 +625,17 @@ public final class IsmartvActivator {
         return mSharedPreferences.getString("isp", "");
     }
 
-    public void removeUserInfo() {
+    /*modify by dragontec for bug 4393 start*/
+    public void removeUserInfo(boolean needShowToast) {
         mSharedPreferences.edit().putString("auth_token", "").commit();
         mSharedPreferences.edit().putString("zuser_token", "").commit();
         mSharedPreferences.edit().putString("username", "").commit();
 
         for (AccountChangeCallback callback : mAccountChangeCallbacks) {
-            callback.onLogout();
+            callback.onLogout(needShowToast);
         }
     }
+    /*modify by dragontec for bug 4393 end*/
 
     public String getUsername() {
         return mSharedPreferences.getString("username", "");
@@ -662,7 +664,9 @@ public final class IsmartvActivator {
 
 
     public interface AccountChangeCallback {
-        void onLogout();
+		/*modify by dragontec for bug 4393 start*/
+        void onLogout(boolean needShowToast);
+        /*modify by dragontec for bug 4393 end*/
     }
 
     private List<AccountChangeCallback> mAccountChangeCallbacks = new ArrayList<>();

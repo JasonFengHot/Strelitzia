@@ -14,13 +14,13 @@
         android:layout_height="wrap_content"
         android:background="@drawable/selector_item">
 
-        <ImageView
+        <tv.ismar.app.widget.RecyclerImageView
             android:id="@+id/image"
             android:layout_width="@dimen/paylayervip_img_width"
             android:layout_height="@dimen/paylayervip_img_height"
             />
 
-        <ImageView
+        <tv.ismar.app.widget.RecyclerImageView
             android:id="@+id/expense_txt"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

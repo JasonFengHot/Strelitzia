@@ -8,7 +8,7 @@ import android.view.View;
 import android.view.View.OnHoverListener;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
+//import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -17,6 +17,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import tv.ismar.app.BaseActivity;
 import tv.ismar.app.network.entity.AgreementEntity;
+import tv.ismar.app.widget.RecyclerImageView;
 
 /**
  * Created by huibin on 17-2-15.
@@ -29,7 +30,7 @@ public class RenewalAgreementActivity extends BaseActivity
     private LinearLayout agreementLayout;
 
     private Button agreementBtn;
-    private ImageView tmp;
+    private RecyclerImageView tmp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,7 +41,7 @@ public class RenewalAgreementActivity extends BaseActivity
         agreementBtn.setOnClickListener(this);
         fetchRenewalAgreement("renew");
         agreementBtn.setOnHoverListener(this);
-        tmp = (ImageView)findViewById(R.id.tmp);
+        tmp = (RecyclerImageView)findViewById(R.id.tmp);
     }
 
     @Override

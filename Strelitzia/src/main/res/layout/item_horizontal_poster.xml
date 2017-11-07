@@ -17,7 +17,7 @@
         android:paddingBottom="@dimen/item_horizontal_mb"
         android:orientation="vertical"
         >
-    <ImageView
+    <tv.ismar.app.widget.RecyclerImageView
         android:id="@+id/item_horizontal_poster_image"
         android:layout_width="@dimen/item_horizontal_poster_w"
         android:layout_height="@dimen/item_horizontal_poster_h"

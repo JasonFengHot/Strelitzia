@@ -98,10 +98,12 @@ public class TemplateBigSmallLd extends Template
         }
     }
 
-    public TemplateBigSmallLd(Context context) {
-        super(context);
+	/*modify by dragontec for bug 4334 start*/
+    public TemplateBigSmallLd(Context context, int position) {
+        super(context, position);
         mNavigationtHandler = new NavigationtHandler();
     }
+    /*modify by dragontec for bug 4334 end*/
 
     @Override
     public void onCreate() {
@@ -279,18 +281,31 @@ public class TemplateBigSmallLd extends Template
         nameKey = bundle.getString(ChannelFragment.NAME_KEY);
         mTitleTv.setText(mBannerTitle);
         mTitleCountTv.setText("00/00");
-/*modify by dragontec for bug 4200 start*/
+/*modify by dragontec for bug 4334 start*/
+		fetchMovieMixBanner(mBannerName, 1);
     }
 
 	@Override
 	public void fetchData() {
 		hasAppeared = true;
-		fetchMovieMixBanner(mBannerName, 1);
 	}
-/*modify by dragontec for bug 4200 end*/
+
+	@Override
+	public void fillData() {
+    	if (isNeedFillData) {
+			isNeedFillData = false;
+			fillMovieMixBanner();
+		}
+	}
+/*modify by dragontec for bug 4334 end*/
 
     private void fetchMovieMixBanner(String bannerName, final int pageNumber) {
         if (pageNumber != 1) {
+        	/*add by dragontec for bug 4334 start*/
+        	if (adapter == null) {
+        		return;
+			}
+			/*add by dragontec for bug 4334 end*/
             int startIndex = (pageNumber - 1) * 33;
             int endIndex;
             if (pageNumber == adapter.getTotalPageCount()) {
@@ -336,7 +351,11 @@ public class TemplateBigSmallLd extends Template
                             public void onNext(BannerEntity bannerEntity) {
                                 isMore = bannerEntity.is_more();
                                 if (pageNumber == 1) {
-                                    fillMovieMixBanner(bannerEntity);
+                                	/*modify by dragontec for bug 4334 start*/
+									isNeedFillData = true;
+									initAdapter(bannerEntity);
+									checkViewAppear();
+									/*modify by dragontec for bug 4334 end*/
                                 } else {
 /*modify by dragontec for bug 4332 start*/
                                     int mSavePos = mRecyclerView.getSelectPostion();
@@ -348,53 +367,57 @@ public class TemplateBigSmallLd extends Template
                         });
     }
 
-    private void fillMovieMixBanner(final BannerEntity bannerEntity) {
-        adapter = new BannerMovieMixAdapter(mContext, bannerEntity);
-        adapter.setSubscribeClickListener(
-                new BannerMovieMixAdapter.OnBannerClickListener() {
-                    @Override
-                    public void onBannerClick(View view, int position) {
-                        if (bannerEntity.is_more() && position < bannerEntity.getCount() - 1) {
-                            goToNextPage(view);
-                        } else {
-                            Logger.t(TAG).d("more click: title -> %s, channel -> %s", nameKey, channelName);
-                            new PageIntent()
-                                    .toListPage(
-                                            mContext,
-                                            bannerEntity.getChannel_title(),
-                                            bannerEntity.getChannel(),
-                                            bannerEntity.getStyle(),
-                                            bannerEntity.getSection_slug());
-                        }
-                    }
-                });
-        adapter.setHoverListener(
-                new BannerMovieMixAdapter.OnBannerHoverListener() {
-                    @Override
+	/*modify by dragontec for bug 4334 start*/
+    private void initAdapter(final BannerEntity bannerEntity) {
+		adapter = new BannerMovieMixAdapter(mContext, bannerEntity);
+		adapter.setSubscribeClickListener(
+				new BannerMovieMixAdapter.OnBannerClickListener() {
+					@Override
+					public void onBannerClick(View view, int position) {
+						if (bannerEntity.is_more() && position < bannerEntity.getCount() - 1) {
+							goToNextPage(view);
+						} else {
+							Logger.t(TAG).d("more click: title -> %s, channel -> %s", nameKey, channelName);
+							new PageIntent()
+									.toListPage(
+											mContext,
+											bannerEntity.getChannel_title(),
+											bannerEntity.getChannel(),
+											bannerEntity.getStyle(),
+											bannerEntity.getSection_slug());
+						}
+					}
+				});
+		adapter.setHoverListener(
+				new BannerMovieMixAdapter.OnBannerHoverListener() {
+					@Override
 /*modify by dragontec for bug 4057 start*/
 //                    public void onBannerHover(View view, int position, boolean hovered) {
-                    public void onBannerHover(View view, int position, boolean hovered, boolean isPrimary) {
+					public void onBannerHover(View view, int position, boolean hovered, boolean isPrimary) {
 /*modify by dragontec for bug 4057 end*/
 /*modify by dragontec for bug 4332 start*/
-                        if (hovered) {
-                            mRecyclerView.setHovered(true);
-                            mTitleCountTv.setText(
-                                    String.format(
-                                            mContext.getString(R.string.home_item_title_count),
-                                            (1 + position) + "",
-                                            adapter.getTatalItemCount() + ""));
-                        } else {
-                            mRecyclerView.setHovered(false);
+						if (hovered) {
+							mRecyclerView.setHovered(true);
+							mTitleCountTv.setText(
+									String.format(
+											mContext.getString(R.string.home_item_title_count),
+											(1 + position) + "",
+											adapter.getTatalItemCount() + ""));
+						} else {
+							mRecyclerView.setHovered(false);
 /*modify by dragontec for bug 4057 start*/
 //                            HomeActivity.mHoverView.requestFocus();
-                            if (!isPrimary) {
-                                view.clearFocus();
-                            }
+							if (!isPrimary) {
+								view.clearFocus();
+							}
 /*modify by dragontec for bug 4057 end*/
-                        }
+						}
 /*modify by dragontec for bug 4332 end*/
-                    }
-                });
+					}
+				});
+	}
+
+    private void fillMovieMixBanner() {
 /*modify by dragontec for bug 4332 start*/
         mRecyclerView.setAdapter(adapter);
         mTitleCountTv.setText(
@@ -407,6 +430,7 @@ public class TemplateBigSmallLd extends Template
 	/*add by dragontec for bug 4077 end*/
 /*modify by dragontec for bug 4332 end*/
     }
+    /*modify by dragontec for bug 4334 end*/
 
     @Override
     public void onClick(View v) {

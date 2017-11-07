@@ -7,7 +7,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
+//import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -24,6 +24,7 @@ import tv.ismar.app.core.PageIntent;
 import tv.ismar.app.core.PageIntentInterface.PaymentInfo;
 import tv.ismar.app.core.PageIntentInterface.ProductCategory;
 import tv.ismar.app.network.entity.PayLayerEntity;
+import tv.ismar.app.widget.RecyclerImageView;
 
 import static tv.ismar.app.AppConstant.Payment.PAYMENT_FAILURE_CODE;
 import static tv.ismar.app.AppConstant.Payment.PAYMENT_REQUEST_CODE;
@@ -36,11 +37,11 @@ import static tv.ismar.app.core.PageIntentInterface.PAYVIP;
  * Created by huaijie on 4/11/16.
  */
 public class PayActivity extends BaseActivity implements View.OnHoverListener, View.OnFocusChangeListener {
-    private ImageView leftArrow;
-    private ImageView rightArrow;
+    private RecyclerImageView leftArrow;
+    private RecyclerImageView rightArrow;
     private LinearLayout scrollViewLayout;
     private TvHorizontalScrollView mTvHorizontalScrollView;
-    private ImageView tmp;
+    private RecyclerImageView tmp;
     private int mItemId;
     private Subscription paylayerSub;
 
@@ -58,9 +59,9 @@ public class PayActivity extends BaseActivity implements View.OnHoverListener, V
     }
 
     private void initViews() {
-        leftArrow = (ImageView) findViewById(R.id.left_arrow);
-        rightArrow = (ImageView) findViewById(R.id.right_arrow);
-        tmp = (ImageView) findViewById(R.id.tmp);
+        leftArrow = (RecyclerImageView) findViewById(R.id.left_arrow);
+        rightArrow = (RecyclerImageView) findViewById(R.id.right_arrow);
+        tmp = (RecyclerImageView) findViewById(R.id.tmp);
         scrollViewLayout = (LinearLayout) findViewById(R.id.pay_scrollview);
         mTvHorizontalScrollView = (TvHorizontalScrollView) findViewById(R.id.tvhorizontalscrollview);
         mTvHorizontalScrollView.setLeftArrow(leftArrow);
@@ -129,7 +130,7 @@ public class PayActivity extends BaseActivity implements View.OnHoverListener, V
         final PayLayerEntity.Expense_item expenseItem = payLayerEntity.getExpense_item();
         if (expenseItem != null) {
             RelativeLayout item = (RelativeLayout) LayoutInflater.from(this).inflate(R.layout.item_newvip_pay, null);
-            ImageView imageView = (ImageView) item.findViewById(R.id.item_newvip_pay_img);
+            RecyclerImageView imageView = (RecyclerImageView) item.findViewById(R.id.item_newvip_pay_img);
             if (TextUtils.isEmpty(expenseItem.getVertical_url())) {
                 Picasso.with(this).load(R.drawable.error_ver).fit().fit().into(imageView);
             } else {
@@ -154,7 +155,7 @@ public class PayActivity extends BaseActivity implements View.OnHoverListener, V
         final PayLayerEntity.Package newVipPackage = payLayerEntity.getPkage();
         if (newVipPackage != null) {
             RelativeLayout item = (RelativeLayout) LayoutInflater.from(this).inflate(R.layout.item_newvip_pay, null);
-            ImageView imageView = (ImageView) item.findViewById(R.id.item_newvip_pay_img);
+            RecyclerImageView imageView = (RecyclerImageView) item.findViewById(R.id.item_newvip_pay_img);
             if (TextUtils.isEmpty(newVipPackage.getVertical_url())) {
                 Picasso.with(this).load(R.drawable.error_ver).fit().into(imageView);
             } else {

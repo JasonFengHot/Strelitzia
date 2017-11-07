@@ -93,11 +93,13 @@ public class TemplateRecommend extends Template
     }
   }
 
-  public TemplateRecommend(Context context) {
-    super(context);
+	/*modify by dragontec for bug 4334 start*/
+  public TemplateRecommend(Context context, int position) {
+    super(context, position);
     mFetchDataControl = new FetchDataControl(context, this);
     mNavigationtHandler = new NavigationtHandler();
   }
+  /*modify by dragontec for bug 4334 end*/
 
   @Override
   public void onCreate() {}
@@ -186,16 +188,25 @@ public class TemplateRecommend extends Template
       mBannerPk = bundle.getString(BANNER_KEY);
       mName = bundle.getString(NAME_KEY);
       mChannel = bundle.getString(CHANNEL_KEY);
-/*modify by dragontec for bug 4200 start*/
+/*modify by dragontec for bug 4334 start*/
+	  mFetchDataControl.fetchBanners(mBannerPk, 1, false);
   }
 
 	@Override
 	public void fetchData() {
 		hasAppeared = true;
-		mFetchDataControl.fetchBanners(mBannerPk, 1, false);
 //		mFetchDataControl.fetchHomeRecommend(false);
 	}
-/*modify by dragontec for bug 4200 end*/
+
+	@Override
+	public void fillData() {
+		if (isNeedFillData) {
+			isNeedFillData = false;
+			initRecycleView();
+		}
+	}
+
+/*modify by dragontec for bug 4334 end*/
 
   @Override
   protected void initListener(View view) {
@@ -213,25 +224,40 @@ public class TemplateRecommend extends Template
   @Override
   public void callBack(int flags, Object... args) {
     if (flags == FetchDataControl.FETCH_BANNERS_LIST_FLAG) { // 获取推荐列表
-      HomeEntity homeEntity = (HomeEntity) args[0];
-      initRecycleView(homeEntity.posters);
+		/*modify by dragontec for bug 4334 start*/
+		isNeedFillData  = true;
+//      HomeEntity homeEntity = (HomeEntity) args[0];
+//      initRecycleView(homeEntity.posters);
+		initAdapter();
+		checkViewAppear();
+		/*modify by dragontec for bug 4334 end*/
     }
   }
 
-  private void initRecycleView(List<BannerPoster> recommends) {
-    if (mAdapter == null) {
-      mAdapter = new RecommendAdapter(mContext, recommends);
-      mRecyclerView.setAdapter(mAdapter);
-      mAdapter.setOnItemClickListener(this);
-	/*add by dragontec for bug 4077 start*/
-		checkFocus(mRecyclerView);
-	/*add by dragontec for bug 4077 end*/
-    } else {
-      int start = mFetchDataControl.mPoster.size() - mFetchDataControl.mHomeEntity.posters.size();
-      int end = mFetchDataControl.mPoster.size();
-      mAdapter.notifyItemRangeChanged(start, end);
-    }
+	/*modify by dragontec for bug 4334 start*/
+  private void initAdapter() {
+  	if (mAdapter == null) {
+  		mAdapter = new RecommendAdapter(mContext);
+		mAdapter.setOnItemClickListener(this);
+	}
   }
+
+  private void initRecycleView() {
+  	if (mAdapter != null) {
+  		if (mAdapter.getData() == null) {
+  			mAdapter.setData(mFetchDataControl.mHomeEntity.posters);
+			mRecyclerView.setAdapter(mAdapter);
+	/*add by dragontec for bug 4077 start*/
+			checkFocus(mRecyclerView);
+	/*add by dragontec for bug 4077 end*/
+		} else {
+			int start = mFetchDataControl.mPoster.size() - mFetchDataControl.mHomeEntity.posters.size();
+			int end = mFetchDataControl.mPoster.size();
+			mAdapter.notifyItemRangeChanged(start, end);
+		}
+	}
+  }
+  /*modify by dragontec for bug 4334 end*/
 
   @Override
   public View onFocusSearchFailed(

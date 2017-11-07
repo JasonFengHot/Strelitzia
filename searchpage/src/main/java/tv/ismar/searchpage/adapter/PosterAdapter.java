@@ -4,7 +4,7 @@ import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
+//import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.squareup.picasso.MemoryPolicy;
@@ -14,6 +14,7 @@ import com.squareup.picasso.Transformation;
 import java.util.List;
 
 import tv.ismar.app.models.VodObjectEntity;
+import tv.ismar.app.widget.RecyclerImageView;
 import tv.ismar.searchpage.R;
 import tv.ismar.searchpage.model.Expense;
 import tv.ismar.searchpage.weight.ItemContainer;
@@ -60,7 +61,7 @@ public class PosterAdapter extends BaseAdapter {
         if (convertView == null) {
             convertView = View.inflate(mContext, R.layout.item_poster_search, null);
             viewHolder = new ViewHolder();
-            viewHolder.iv_poster = (ImageView) convertView.findViewById(R.id.iv_poster);
+            viewHolder.iv_poster = (RecyclerImageView) convertView.findViewById(R.id.iv_poster);
             viewHolder.ItemBeanScore = (TextView) convertView.findViewById(R.id.ItemBeanScore);
             viewHolder.expense_txt = (RotateTextView) convertView.findViewById(R.id.expense_txt);
             viewHolder.poster_title = (TextView) convertView.findViewById(R.id.poster_title);
@@ -148,7 +149,7 @@ public class PosterAdapter extends BaseAdapter {
     }
 
     public static class ViewHolder {
-        ImageView iv_poster;
+        RecyclerImageView iv_poster;
         TextView ItemBeanScore;
         RotateTextView expense_txt;
         TextView poster_title;

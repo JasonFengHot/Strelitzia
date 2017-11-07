@@ -6,12 +6,13 @@ import android.databinding.Bindable;
 import android.databinding.BindingAdapter;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.ImageView;
+//import android.widget.ImageView;
 
 import com.squareup.picasso.Picasso;
 
 import tv.ismar.account.IsmartvActivator;
 import tv.ismar.app.network.entity.WeatherEntity;
+import tv.ismar.app.widget.RecyclerImageView;
 import tv.ismar.usercenter.BR;
 import tv.ismar.usercenter.presenter.LocationPresenter;
 
@@ -115,7 +116,7 @@ public class LocationViewModel extends BaseObservable {
     }
 
     @BindingAdapter({"weatherIcon"})
-    public static void loadImage(ImageView view, String imageUrl) {
+    public static void loadImage(RecyclerImageView view, String imageUrl) {
         Picasso.with(view.getContext())
                 .load(imageUrl)
                 .into(view);

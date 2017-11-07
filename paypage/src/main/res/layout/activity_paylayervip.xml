@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@drawable/newvip_bg">
 
-    <ImageView
+    <tv.ismar.app.widget.RecyclerImageView
         android:id="@+id/tmp"
         android:layout_width="1dp"
         android:layout_height="1dp"
@@ -50,7 +50,7 @@
                 android:layout_height="wrap_content"
             >
 
-                <ImageView
+                <tv.ismar.app.widget.RecyclerImageView
                     android:id="@+id/left_arrow"
                     android:layout_width="@dimen/paylayervip_width"
                     android:layout_height="@dimen/paylayervip_height"
@@ -76,7 +76,7 @@
 
                 </cn.ismartv.tvhorizontalscrollview.TvHorizontalScrollView>
 
-                <ImageView
+                <tv.ismar.app.widget.RecyclerImageView
                     android:id="@+id/right_arrow"
                     android:layout_width="@dimen/paylayervip_width"
                     android:layout_height="@dimen/paylayervip_height"

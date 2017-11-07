@@ -10,7 +10,7 @@ import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
+//import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -19,6 +19,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import tv.ismar.app.network.SkyService;
 import tv.ismar.app.network.entity.ExplainEntity;
+import tv.ismar.app.widget.RecyclerImageView;
 
 /**
  * Created by liucan on 2017/7/20.
@@ -29,7 +30,7 @@ public class MmContinuousPayFragment extends Fragment implements View.OnClickLis
     private TextView line_1,line_2,line_3,line_4,line_5;
     private TextView agreementTextView;
     private PaymentActivity paymentActivity;
-    private ImageView qrcodeview;
+    private RecyclerImageView qrcodeview;
     private SkyService skyService;
 
     @Override
@@ -48,7 +49,7 @@ public class MmContinuousPayFragment extends Fragment implements View.OnClickLis
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        qrcodeview = (ImageView) view.findViewById(R.id.qrcodeview);
+        qrcodeview = (RecyclerImageView) view.findViewById(R.id.qrcodeview);
         line_1= (TextView) view.findViewById(R.id.text_line_1);
         line_2= (TextView) view.findViewById(R.id.text_line_2);
         line_3= (TextView) view.findViewById(R.id.text_line_3);

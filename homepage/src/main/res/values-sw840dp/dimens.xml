@@ -872,5 +872,8 @@
 <dimen name="over_screen_height">995.56dp</dimen>
 <dimen name="banner_mark_rt_margin">7.78dp</dimen>
 <dimen name="banner_bottom_margin">77.78dp</dimen>
+<dimen name="home_page_banner_arrow_w">1493.33dp</dimen>
+<dimen name="home_page_banner_arrow_h">118.22dp</dimen>
+<dimen name="home_page_banner_arrow_hover_margin">311.11dp</dimen>
 <!-- add by dragontec end-->
 </resources>

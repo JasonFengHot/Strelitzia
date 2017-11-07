@@ -10,7 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
+//import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.squareup.picasso.MemoryPolicy;
@@ -23,6 +23,7 @@ import tv.ismar.app.BaseFragment;
 import tv.ismar.app.core.PageIntent;
 import tv.ismar.app.network.entity.YouHuiDingGouEntity;
 import tv.ismar.app.ui.ZGridView;
+import tv.ismar.app.widget.RecyclerImageView;
 import tv.ismar.usercenter.ProductContract;
 import tv.ismar.usercenter.R;
 import tv.ismar.usercenter.databinding.FragmentProductBinding;
@@ -202,7 +203,7 @@ public class ProductFragment extends BaseFragment implements ProductContract.Vie
             if (convertView == null) {
                 productViewHolder = new ProductViewHolder();
                 convertView = LayoutInflater.from(mContext).inflate(R.layout.item_product_list, null);
-                productViewHolder.imageView = (ImageView) convertView.findViewById(R.id.package_list_image);
+                productViewHolder.imageView = (RecyclerImageView) convertView.findViewById(R.id.package_list_image);
                 productViewHolder.textView = (TextView) convertView.findViewById(R.id.package_list_title);
                 convertView.setTag(productViewHolder);
 
@@ -241,7 +242,7 @@ public class ProductFragment extends BaseFragment implements ProductContract.Vie
         }
 
         private class ProductViewHolder {
-            ImageView imageView;
+            RecyclerImageView imageView;
             TextView textView;
         }
     }

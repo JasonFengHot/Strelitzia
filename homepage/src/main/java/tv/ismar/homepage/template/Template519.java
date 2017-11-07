@@ -99,11 +99,13 @@ public class Template519 extends Template implements View.OnClickListener, View.
     }
 
 
-    public Template519(Context context) {
-        super(context);
+	/*modify by dragontec for bug 4334 start*/
+    public Template519(Context context, int position) {
+        super(context, position);
         Logger.t(TAG).d("Template519 construct");
         mNavigationtHandler = new NavigationtHandler();
     }
+    /*modify by dragontec for bug 4334 end*/
 
     @Override
     public void onCreate() {
@@ -278,18 +280,31 @@ public class Template519 extends Template implements View.OnClickListener, View.
         nameKey = bundle.getString(ChannelFragment.NAME_KEY);
         mTitleTv.setText(mBannerTitle);
         mTitleCountTv.setText("00/00");
-/*modify by dragontec for bug 4200 start*/
+/*modify by dragontec for bug 4334 start*/
+		fetchHorizontal519Banner(mBannerName, 1);
     }
 
 	@Override
 	public void fetchData() {
 		hasAppeared = true;
-		fetchHorizontal519Banner(mBannerName, 1);
 	}
-/*modify by dragontec for bug 4200 end*/
+
+	@Override
+	public void fillData() {
+		if (isNeedFillData) {
+			isNeedFillData = false;
+			fillHorizontal519Banner();
+		}
+	}
+/*modify by dragontec for bug 4334 end*/
 
     private void fetchHorizontal519Banner(String bannerName, final int pageNumber) {
         if (pageNumber != 1) {
+        	/*add by dragontec for bug 4334 start*/
+        	if (mHorizontal519Adapter == null) {
+        		return;
+			}
+			/*add by dragontec for bug 4334 end*/
             int startIndex = (pageNumber - 1) * 33;
             int endIndex;
             if (pageNumber == mHorizontal519Adapter.getTotalPageCount()) {
@@ -339,7 +354,12 @@ public class Template519 extends Template implements View.OnClickListener, View.
                                 //                        fillHorizontal519Banner(posterBeanList);
 
                                 if (pageNumber == 1) {
-                                    fillHorizontal519Banner(bannerEntity);
+                                	/*modify by dragontec for bug 4334 start*/
+									isNeedFillData = true;
+									initAdapter(bannerEntity);
+                                	checkViewAppear();
+//                                    fillHorizontal519Banner(bannerEntity);
+									/*modify by dragontec for bug 4334 end*/
                                 } else {
 /*modify by dragontec for bug 4332 start*/
                                     int mSavePos = mRecyclerView.getSelectPostion();
@@ -351,63 +371,67 @@ public class Template519 extends Template implements View.OnClickListener, View.
                         });
     }
 
-    private void fillHorizontal519Banner(final BannerEntity bannerEntity) {
-        mHorizontal519Adapter = new BannerHorizontal519Adapter(mContext, bannerEntity);
-        mHorizontal519Adapter.setHoverListener(
-                new BannerHorizontal519Adapter.OnBannerHoverListener() {
-                    @Override
+	/*modify by dragontec for bug 4334 start*/
+    private void initAdapter(final BannerEntity bannerEntity) {
+		mHorizontal519Adapter = new BannerHorizontal519Adapter(mContext, bannerEntity);
+		mHorizontal519Adapter.setHoverListener(
+				new BannerHorizontal519Adapter.OnBannerHoverListener() {
+					@Override
 /*modify by dragontec for bug 4057 start*/
 //                    public void onBannerHover(View view, int position, boolean hovered) {
-                    public void onBannerHover(View view, int position, boolean hovered, boolean isPrimary) {
+					public void onBannerHover(View view, int position, boolean hovered, boolean isPrimary) {
 /*modify by dragontec for bug 4057 end*/
-                        //                Log.d(TAG, view + " : " + hovered);
-                        if (hovered) {
+						//                Log.d(TAG, view + " : " + hovered);
+						if (hovered) {
 /*modify by dragontec for bug 4332 start*/
-                            mRecyclerView.setHovered(true);
+							mRecyclerView.setHovered(true);
 /*modify by dragontec for bug 4332 end*/
-                            if(position<mHorizontal519Adapter.getTatalItemCount())
-                            mTitleCountTv.setText(
-                                    String.format(
-                                            mContext.getString(R.string.home_item_title_count),
-                                            (1 + position) + "",
-                                            mHorizontal519Adapter.getTatalItemCount() + ""));
-                        } else {
+							if(position<mHorizontal519Adapter.getTatalItemCount())
+								mTitleCountTv.setText(
+										String.format(
+												mContext.getString(R.string.home_item_title_count),
+												(1 + position) + "",
+												mHorizontal519Adapter.getTatalItemCount() + ""));
+						} else {
 /*modify by dragontec for bug 4332 start*/
-                            mRecyclerView.setHovered(false);
+							mRecyclerView.setHovered(false);
 /*modify by dragontec for bug 4332 end*/
 /*modify by dragontec for bug 4057 start*/
 //                            HomeActivity.mHoverView.requestFocus();
-                            if (!isPrimary) {
-                                view.clearFocus();
-                            }
+							if (!isPrimary) {
+								view.clearFocus();
+							}
 /*modify by dragontec for bug 4057 end*/
-                            //                    Log.d(TAG, view + " : " + hovered);
-                            //                    Log.d(TAG, "view id: " + view.getId());
-                            //                    HomeActivity.mHoverView.setNextFocusUpId(view.getId());
-                            //                    HomeActivity.mHoverView.setNextFocusDownId(view.getId());
-                            //                    HomeActivity.mHoverView.setNextFocusRightId(view.getId());
-                            //                    HomeActivity.mHoverView.setNextFocusLeftId(view.getId());
-                        }
-                    }
-                });
-        mHorizontal519Adapter.setBannerClickListener(
-                new BannerHorizontal519Adapter.OnBannerClickListener() {
-                    @Override
-                    public void onBannerClick(View view, int position) {
-                        if (position < bannerEntity.getCount()) {
-                            goToNextPage(view);
-                        } else {
-                            Logger.t(TAG).d("more click: title -> %s, channel -> %s", nameKey, channelName);
-                            new PageIntent()
-                                    .toListPage(
-                                            mContext,
-                                            bannerEntity.getChannel_title(),
-                                            bannerEntity.getChannel(),
-                                            bannerEntity.getStyle(),
-                                            bannerEntity.getSection_slug());
-                        }
-                    }
-                });
+							//                    Log.d(TAG, view + " : " + hovered);
+							//                    Log.d(TAG, "view id: " + view.getId());
+							//                    HomeActivity.mHoverView.setNextFocusUpId(view.getId());
+							//                    HomeActivity.mHoverView.setNextFocusDownId(view.getId());
+							//                    HomeActivity.mHoverView.setNextFocusRightId(view.getId());
+							//                    HomeActivity.mHoverView.setNextFocusLeftId(view.getId());
+						}
+					}
+				});
+		mHorizontal519Adapter.setBannerClickListener(
+				new BannerHorizontal519Adapter.OnBannerClickListener() {
+					@Override
+					public void onBannerClick(View view, int position) {
+						if (position < bannerEntity.getCount()) {
+							goToNextPage(view);
+						} else {
+							Logger.t(TAG).d("more click: title -> %s, channel -> %s", nameKey, channelName);
+							new PageIntent()
+									.toListPage(
+											mContext,
+											bannerEntity.getChannel_title(),
+											bannerEntity.getChannel(),
+											bannerEntity.getStyle(),
+											bannerEntity.getSection_slug());
+						}
+					}
+				});
+	}
+
+    private void fillHorizontal519Banner() {
 /*modify by dragontec for bug 4332 start*/
         mRecyclerView.setAdapter(mHorizontal519Adapter);
 /*modify by dragontec for bug 4332 end*/
@@ -422,6 +446,7 @@ public class Template519 extends Template implements View.OnClickListener, View.
 /*modify by dragontec for bug 4332 end*/
 	/*add by dragontec for bug 4077 end*/
     }
+    /*modify by dragontec for bug 4334 end*/
 
     @Override
     public void onClick(View v) {

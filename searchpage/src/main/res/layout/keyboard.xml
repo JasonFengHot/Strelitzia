@@ -7,7 +7,7 @@
     android:clipToPadding="false"
     android:background="#455996">
 
-    <ImageView
+    <tv.ismar.app.widget.RecyclerImageView
             android:layout_width="@dimen/search_icon_width"
             android:layout_height="@dimen/search_icon_height"
             android:layout_marginLeft="@dimen/search_icon_margin_left"
@@ -27,7 +27,7 @@
             android:singleLine="true"
             android:textSize="@dimen/edittext_size"
             />
-    <ImageView
+    <tv.ismar.app.widget.RecyclerImageView
             android:layout_width="@dimen/edittext_divider_width"
             android:layout_height="wrap_content"
             android:src="@drawable/divider1"

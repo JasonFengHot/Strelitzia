@@ -35,6 +35,7 @@ import tv.ismar.app.entity.banner.BannerEntity;
 /*add by dragontec for bug 4338 start*/
 import tv.ismar.homepage.R;
 /*add by dragontec for bug 4338 end*/
+import tv.ismar.homepage.fragment.ChannelFragment;
 import tv.ismar.homepage.view.BannerLinearLayout;
 import tv.ismar.homepage.widget.RecycleLinearLayout;
 
@@ -71,13 +72,19 @@ public abstract class Template {
 /*add by dragontec for bug 4331 start*/
 	public boolean isLastView = false;
 /*add by dragontec for bug 4331 end*/
+	/*add by dragontec for bug 4334 start*/
+	private int mPosition = -1;
+	/*add by dragontec for bug 4334 end*/
 
-    public Template(Context context) {
+	/*modify by dragontec for bug 4334 start*/
+    public Template(Context context, int position) {
         this.mContext = context;
 	/*add by dragontec for bug 4077 start*/
 		handler = new Handler();
 	/*add by dragontec for bug 4077 end*/
+		mPosition = position;
     }
+    /*modify by dragontec for bug 4334 end*/
 
     /*在adapter中调用*/
     public Template setView(View view, Bundle bundle) {
@@ -112,6 +119,14 @@ public abstract class Template {
 
 	/*add by dragontec for bug 4200 start*/
 	public abstract void fetchData();
+
+	/*add by dragontec for bug 4334 start*/
+	protected boolean isDataInited = false;
+	protected boolean isNeedFillData = false;
+	private final Object mCheckViewLock = new Object();
+	private int[] location = new int[2];
+	public abstract void fillData();
+	/*add by dragontec for bug 4334 end*/
 	/*add by dragontec for bug 4200 end*/
 
     protected void initListener(View view) {
@@ -162,6 +177,16 @@ public abstract class Template {
 				}
 			});
 		}
+		/*add by dragontec for bug 4338 start*/
+		if (mParentView != null && mParentView instanceof BannerLinearLayout) {
+			((BannerLinearLayout)mParentView).setFocusSearchFailedListener(new BannerLinearLayout.FocusSearchFailedListener() {
+				@Override
+				public View onFocusSearchFailed(View focused, int direction) {
+					return findNextUpDownFocus(direction, (BannerLinearLayout)mParentView, focused);
+				}
+			});
+		}
+		/*add by dragontec for bug 4338 end*/
 /*add by dragontec for bug 4332 emd*/
     }
 
@@ -337,18 +362,29 @@ public abstract class Template {
 	/*add by dragontec for bug 4077 end*/
 
 	/*add by dragontec for bug 4200 start*/
-	public void checkViewAppear() {
+	/*modify by dragontec for bug 4334 start*/
+	public boolean checkViewAppear() {
+		boolean ret = true;
 		//等view第一次显示出画面的是以进行数据取得
-		if (!hasAppeared && mParentView != null) {
-			Rect rect = new Rect();
-			if (mParentView.getGlobalVisibleRect(rect)) {
-				int screenHeight = mParentView.getResources().getDisplayMetrics().heightPixels;
-				if (rect.top < screenHeight) {
-					fetchData();
+		synchronized (mCheckViewLock) {
+			if (isNeedFillData && mParentView != null) {
+				if (mPosition < ChannelFragment.LOAD_BANNERS_COUNT) {
+					fillData();
+				} else {
+					mParentView.getLocationOnScreen(location);
+					if (location[1] + mParentView.getHeight() >= 0) {
+						if (location[1] >= mParentView.getResources().getDisplayMetrics().heightPixels + 1) {
+							ret = false;
+						} else {
+							fillData();
+						}
+					}
 				}
 			}
 		}
+		return ret;
 	}
+	/*modify by dragontec for bug 4334 end*/
 	/*add by dragontec for bug 4200 end*/
 
     /*add by dragontec for bug 4221 start*/
@@ -365,7 +401,9 @@ public abstract class Template {
                 if(lastView != null && lastView instanceof BannerLinearLayout) {
 					BannerLinearLayout bannerLinearLayout = (BannerLinearLayout)lastView;
 					View headView = bannerLinearLayout.findViewById(R.id.banner_guide_head);
-					if (headView != null) {
+					/*modify by dragontec for bug 4391 start*/
+					if (headView != null && headView.getVisibility() == View.VISIBLE) {
+					/*modify by dragontec for bug 4391 end*/
 						Rect rect = new Rect();
 						int[] location = new int[2];
 						focused.getGlobalVisibleRect(rect);
@@ -387,19 +425,23 @@ public abstract class Template {
 							int[] location = new int[2];
 							focused.getGlobalVisibleRect(rect);
 							int middleX = rect.left + (focused.getWidth() / 2);
-							for (int i = ((RecyclerViewTV) recycleView).findLastVisibleItemPosition(); i >= ((RecyclerViewTV) recycleView).findFirstVisibleItemPosition(); i--) {
-								RecyclerView.ViewHolder viewHolder = ((RecyclerViewTV) recycleView).findViewHolderForAdapterPosition(i);
-								if (viewHolder != null) {
-									View item = viewHolder.itemView;
-									item.getLocationOnScreen(location);
-									if (middleX >= location[0] && middleX <= location[0] + item.getWidth()) {
-										nextFocus = item;
+							/*modify by dragontec for bug 4334 start*/
+							if (((RecyclerViewTV) recycleView).getChildCount() > 0) {
+								for (int i = ((RecyclerViewTV) recycleView).findLastVisibleItemPosition(); i >= ((RecyclerViewTV) recycleView).findFirstVisibleItemPosition(); i--) {
+									RecyclerView.ViewHolder viewHolder = ((RecyclerViewTV) recycleView).findViewHolderForAdapterPosition(i);
+									if (viewHolder != null) {
+										View item = viewHolder.itemView;
+										item.getLocationOnScreen(location);
+										if (middleX >= location[0] && middleX <= location[0] + item.getWidth()) {
+											nextFocus = item;
+											break;
+										}
+									} else {
 										break;
 									}
-								} else {
-									break;
 								}
 							}
+							/*modify by dragontec for bug 4334 end*/
 							if (nextFocus == null) {
 								nextFocus = recycleView;
 							}
@@ -419,7 +461,9 @@ public abstract class Template {
 				if(nextView != null && nextView instanceof BannerLinearLayout) {
 					BannerLinearLayout bannerLinearLayout = (BannerLinearLayout)nextView;
 					View headView = bannerLinearLayout.findViewById(R.id.banner_guide_head);
-					if (headView != null) {
+					/*modify by dragontec for bug 4391 start*/
+					if (headView != null && headView.getVisibility() == View.VISIBLE) {
+					/*modify by dragontec for bug 4391 end*/
 						Rect rect = new Rect();
 						int[] location = new int[2];
 						focused.getGlobalVisibleRect(rect);
@@ -429,7 +473,6 @@ public abstract class Template {
 							nextFocus = headView;
 							return nextFocus;
 						}
-
 					}
 					View recycleView = bannerLinearLayout.findViewWithTag("recycleView");
 					if (recycleView != null && recycleView instanceof RecyclerViewTV) {
@@ -441,19 +484,23 @@ public abstract class Template {
 							int[] location = new int[2];
 							focused.getGlobalVisibleRect(rect);
 							int middleX = rect.left + (focused.getWidth() / 2);
-							for (int i = ((RecyclerViewTV) recycleView).findFirstVisibleItemPosition(); i <= ((RecyclerViewTV) recycleView).findLastVisibleItemPosition(); i++) {
-								RecyclerView.ViewHolder viewHolder = ((RecyclerViewTV) recycleView).findViewHolderForAdapterPosition(i);
-								if (viewHolder != null) {
-									View item = viewHolder.itemView;
-									item.getLocationOnScreen(location);
-									if (middleX >= location[0] && middleX <= location[0] + item.getWidth()) {
-										nextFocus = item;
+							/*modify by dragontec for bug 4334 start*/
+							if (((RecyclerViewTV) recycleView).getChildCount() > 0) {
+								for (int i = ((RecyclerViewTV) recycleView).findFirstVisibleItemPosition(); i <= ((RecyclerViewTV) recycleView).findLastVisibleItemPosition(); i++) {
+									RecyclerView.ViewHolder viewHolder = ((RecyclerViewTV) recycleView).findViewHolderForAdapterPosition(i);
+									if (viewHolder != null) {
+										View item = viewHolder.itemView;
+										item.getLocationOnScreen(location);
+										if (middleX >= location[0] && middleX <= location[0] + item.getWidth()) {
+											nextFocus = item;
+											break;
+										}
+									} else {
 										break;
 									}
-								} else {
-									break;
 								}
 							}
+							/*modify by dragontec for bug 4334 end*/
 							if (nextFocus == null) {
 								nextFocus = recycleView;
 							}
@@ -518,21 +565,31 @@ public abstract class Template {
 /*add by dragontec for bug 4332 start*/
 	public void checkNavigationButtonVisibility() {
 		if (mRecyclerView != null) {
+			/*modify by dragontec for bug 4334 start*/
 			if (navigationLeft != null) {
-				if (mRecyclerView.cannotScrollBackward(-1) && (mHeadView == null || mHeadView.getVisibility() == View.VISIBLE)) {
-					navigationLeft.setVisibility(View.INVISIBLE);
+				if (mRecyclerView.getChildCount() > 0) {
+					if (mRecyclerView.cannotScrollBackward(-1) && (mHeadView == null || mHeadView.getVisibility() == View.VISIBLE)) {
+						navigationLeft.setVisibility(View.INVISIBLE);
+					} else {
+						navigationLeft.setVisibility(View.VISIBLE);
+					}
 				} else {
-					navigationLeft.setVisibility(View.VISIBLE);
+					navigationLeft.setVisibility(View.INVISIBLE);
 				}
 			}
 			if (navigationRight != null) {
-				if (mRecyclerView.cannotScrollForward(1)) {
-					navigationRight.setVisibility(View.INVISIBLE);
+				if (mRecyclerView.getChildCount() > 0) {
+					if (mRecyclerView.cannotScrollForward(1)) {
+						navigationRight.setVisibility(View.INVISIBLE);
+					} else {
+						navigationRight.setVisibility(View.VISIBLE);
+					}
 				} else {
-					navigationRight.setVisibility(View.VISIBLE);
+					navigationRight.setVisibility(View.INVISIBLE);
 				}
 			}
 		}
+		/*modify by dragontec for bug 4334 end*/
 	}
 
 	public void dismissNavigationButton() {
@@ -559,14 +616,8 @@ public abstract class Template {
 		int middleX = rect.left + (focused.getWidth() / 2);
 		switch (direction) {
 			case View.FOCUS_DOWN: {
-				if (mHeadView != null) {
-					mHeadView.getLocationOnScreen(location);
-					if (middleX >= location[0] && middleX <= location[0] + mHeadView.getWidth()) {
-						item = mHeadView;
-					}
-					break;
-				}
-				if (mRecyclerView != null) {
+				/*modify by dragontec for bug 4334 start*/
+				if (mRecyclerView != null && mRecyclerView.getChildCount() > 0) {
 					for (int i = mRecyclerView.findFirstVisibleItemPosition(); i <= mRecyclerView.findLastVisibleItemPosition(); i++) {
 						RecyclerView.ViewHolder viewHolder = mRecyclerView.findViewHolderForAdapterPosition(i);
 						if (viewHolder != null) {
@@ -580,18 +631,24 @@ public abstract class Template {
 							break;
 						}
 					}
+				} else {
+					item = mParentView;
 				}
-				break;
-			}
-			case View.FOCUS_UP: {
-				if (mHeadView != null) {
+				/*modify by dragontec for bug 4334 end*/
+				/*modify by dragontec for bug 4391 start*/
+				if (mHeadView != null && mHeadView.getVisibility() == View.VISIBLE) {
 					mHeadView.getLocationOnScreen(location);
 					if (middleX >= location[0] && middleX <= location[0] + mHeadView.getWidth()) {
 						item = mHeadView;
 					}
 					break;
 				}
-				if (mRecyclerView != null) {
+				/*modify by dragontec for bug 4391 end*/
+				break;
+			}
+			case View.FOCUS_UP: {
+				/*modify by dragontec for bug 4334 start*/
+				if (mRecyclerView != null && mRecyclerView.getChildCount() > 0) {
 					for (int i = mRecyclerView.findLastVisibleItemPosition(); i >= mRecyclerView.findFirstVisibleItemPosition(); i--) {
 						RecyclerView.ViewHolder viewHolder = mRecyclerView.findViewHolderForAdapterPosition(i);
 						if (viewHolder != null) {
@@ -608,7 +665,19 @@ public abstract class Template {
 					if (item == null) {
 						item = mRecyclerView;
 					}
+				} else {
+					item = mParentView;
 				}
+				/*modify by dragontec for bug 4334 end*/
+				/*modify by dragontec for bug 4391 start*/
+				if (mHeadView != null  && mHeadView.getVisibility() == View.VISIBLE) {
+					mHeadView.getLocationOnScreen(location);
+					if (middleX >= location[0] && middleX <= location[0] + mHeadView.getWidth()) {
+						item = mHeadView;
+					}
+					break;
+				}
+				/*modify by dragontec for bug 4391 end*/
 				break;
 			}
 		}

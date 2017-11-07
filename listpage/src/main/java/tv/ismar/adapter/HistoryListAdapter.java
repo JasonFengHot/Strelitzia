@@ -9,7 +9,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
+//import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -23,6 +23,7 @@ import tv.ismar.app.ui.adapter.OnItemFocusedListener;
 import tv.ismar.app.ui.adapter.OnItemKeyListener;
 import tv.ismar.app.ui.adapter.OnItemOnhoverlistener;
 import tv.ismar.app.entity.HistoryFavoriteEntity;
+import tv.ismar.app.widget.RecyclerImageView;
 import tv.ismar.listener.LfListItemClickListener;
 import tv.ismar.listpage.R;
 import tv.ismar.view.IsmartvLinearLayout;
@@ -168,22 +169,22 @@ public class HistoryListAdapter extends RecyclerView.Adapter<HistoryListAdapter.
     }
 
     public static class HistoryViewholder extends RecyclerView.ViewHolder{
-        ImageView item_time_node;
-        ImageView item_detail_image;
+        RecyclerImageView item_time_node;
+        RecyclerImageView item_detail_image;
         TextView item_time;
         TextView item_title;
         IsmartvLinearLayout item_detail;
         RelativeLayout item_title_layout;
-        ImageView more;
+        RecyclerImageView more;
 
         public HistoryViewholder(View itemView) {
             super(itemView);
             item_time= (TextView) itemView.findViewById(R.id.item_time);
-            item_detail_image= (ImageView) itemView.findViewById(R.id.item_detail_image);
-            item_time_node= (ImageView) itemView.findViewById(R.id.item_time_node);
+            item_detail_image= (RecyclerImageView) itemView.findViewById(R.id.item_detail_image);
+            item_time_node= (RecyclerImageView) itemView.findViewById(R.id.item_time_node);
             item_title= (TextView) itemView.findViewById(R.id.item_title);
             item_detail= (IsmartvLinearLayout) itemView.findViewById(R.id.item_detail);
-            more= (ImageView) itemView.findViewById(R.id.more);
+            more= (RecyclerImageView) itemView.findViewById(R.id.more);
             item_title_layout= (RelativeLayout) itemView.findViewById(R.id.item_title_layout);
         }
     }

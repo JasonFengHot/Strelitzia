@@ -97,11 +97,13 @@ public class TemplateConlumn extends Template
     }
 
 
-    public TemplateConlumn(Context context) {
-        super(context);
+	/*modify by dragontec for bug 4334 start*/
+    public TemplateConlumn(Context context, int position) {
+        super(context, position);
         mFetchDataControl = new FetchDataControl(context, this);
         mNavigationtHandler = new NavigationtHandler();
     }
+    /*modify by dragontec for bug 4334 end*/
 
     @Override
     public void onCreate() {
@@ -193,15 +195,24 @@ public class TemplateConlumn extends Template
         mBannerPk = bundle.getString(ChannelFragment.BANNER_KEY);
         mName = bundle.getString(NAME_KEY);
         mChannel = bundle.getString(CHANNEL_KEY);
-/*modify by dragontec for bug 4200 start*/
+/*modify by dragontec for bug 4334 start*/
+		mFetchDataControl.fetchBanners(mBannerPk, 1, false);
     }
 
 	@Override
 	public void fetchData() {
 		hasAppeared = true;
-		mFetchDataControl.fetchBanners(mBannerPk, 1, false);
 	}
-/*modify by dragontec for bug 4200 end*/
+
+	@Override
+	public void fillData() {
+    	if (isNeedFillData) {
+			isNeedFillData = false;
+			initRecycleView();
+		}
+	}
+
+/*modify by dragontec for bug 4334 end*/
 
     @Override
     protected void initListener(View view) {
@@ -219,7 +230,11 @@ public class TemplateConlumn extends Template
     @Override
     public void callBack(int flags, Object... args) {
         if (flags == FetchDataControl.FETCH_BANNERS_LIST_FLAG) { // 获取单个banner业务
-            initRecycleView(mFetchDataControl.mPoster);
+			/*modify by dragontec for bug 4334 start*/
+			isNeedFillData = true;
+			initAdapter();
+            checkViewAppear();
+            /*modify by dragontec for bug 4334 end*/
 	/* modify by dragontec for bug 4264 start */
 			mRecyclerView.setOnLoadMoreComplete();
         } else if (flags == FetchDataControl.FETCH_DATA_FAIL_FLAG) {
@@ -231,20 +246,30 @@ public class TemplateConlumn extends Template
 		}
     }
 
-    private void initRecycleView(List<BannerPoster> posters) {
-        if (mAdapter == null) {
-            mAdapter = new ConlumnAdapter(mContext, posters);
-            mRecyclerView.setAdapter(mAdapter);
-            mAdapter.setOnItemClickListener(this);
+	/*modify by dragontec for bug 4334 start*/
+    private void initAdapter() {
+    	if (mAdapter == null) {
+			mAdapter = new ConlumnAdapter(mContext);
+			mAdapter.setOnItemClickListener(this);
+		}
+	}
+
+	private void initRecycleView() {
+    	if (mAdapter != null) {
+    		if (mAdapter.getData() == null) {
+    			mAdapter.setData(mFetchDataControl.mPoster);
+    			mRecyclerView.setAdapter(mAdapter);
 	/*add by dragontec for bug 4077 start*/
-			checkFocus(mRecyclerView);
+				checkFocus(mRecyclerView);
 	/*add by dragontec for bug 4077 end*/
-        } else {
-            int start = mFetchDataControl.mPoster.size() - mFetchDataControl.mHomeEntity.posters.size();
-            int end = mFetchDataControl.mPoster.size();
-            mAdapter.notifyItemRangeChanged(start, end);
-        }
-    }
+			} else {
+				int start = mFetchDataControl.mPoster.size() - mFetchDataControl.mHomeEntity.posters.size();
+				int end = mFetchDataControl.mPoster.size();
+				mAdapter.notifyItemRangeChanged(start, end);
+			}
+		}
+	}
+	/*modify by dragontec for bug 4334 end*/
 
     @Override
     public void onLoadMoreItems() {

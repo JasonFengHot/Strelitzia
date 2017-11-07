@@ -8,7 +8,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         >
-        <ImageView
+        <tv.ismar.app.widget.RecyclerImageView
             android:id="@+id/qrcodeview"
             android:layout_width="@dimen/pay_475"
             android:layout_height="@dimen/pay_475"
@@ -39,12 +39,12 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             >
-            <ImageView
+            <tv.ismar.app.widget.RecyclerImageView
                 android:layout_width="@dimen/pay_119"
                 android:layout_height="@dimen/pay_119"
                 android:background="@drawable/weixin_icon"
                 />
-            <ImageView
+            <tv.ismar.app.widget.RecyclerImageView
                 android:layout_width="@dimen/pay_119"
                 android:layout_height="@dimen/pay_119"
                 android:background="@drawable/alipay_icon"

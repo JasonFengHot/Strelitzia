@@ -122,11 +122,13 @@ public class BannerLinearLayout extends LinearLayout {
 	@Override
 	public View focusSearch(View focused, int direction) {
 		View result = null;
-		if (focused.getId() == R.id.guide_head_ismartv_linearlayout) {
+		/*modify by dragontec for bug 4391 start*/
+//		if (focused.getId() == R.id.guide_head_ismartv_linearlayout) {
 			if (mFocusSearchFailedListener != null) {
 				result = mFocusSearchFailedListener.onFocusSearchFailed(focused, direction);
 			}
-		}
+//		}
+		/*modify by dragontec for bug 4391 start*/
 		return result != null ? result : super.focusSearch(focused, direction);
 	}
 

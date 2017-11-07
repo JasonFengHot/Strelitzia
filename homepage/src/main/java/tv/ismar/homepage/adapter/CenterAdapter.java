@@ -5,7 +5,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
+//import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -17,6 +17,7 @@ import java.util.List;
 
 import tv.ismar.app.entity.banner.BannerCarousels;
 import tv.ismar.app.widget.MyRecyclerView;
+import tv.ismar.app.widget.RecyclerImageView;
 import tv.ismar.homepage.R;
 
 import tv.ismar.homepage.banner.IsmartvLinearLayout;
@@ -32,10 +33,29 @@ public class CenterAdapter extends BaseRecycleAdapter<CenterAdapter.CenterViewHo
     private Context mContext;
     private List<BannerCarousels> mData;
 
+    /*add by dragontec for bug 4334 start*/
+    public CenterAdapter(Context context) {
+    	mContext = context;
+	}
+	/*add by dragontec for bug 4334 end*/
+
     public CenterAdapter(Context context, List<BannerCarousels> data){
         this.mContext = context;
         this.mData = data;
     }
+
+	/*add by dragontec for bug 4334 start*/
+    public void setData(List<BannerCarousels> data) {
+    	if (mData == null) {
+    		mData = data;
+			notifyDataSetChanged();
+		}
+	}
+
+	public List<BannerCarousels> getData() {
+    	return mData;
+	}
+	/*add by dragontec for bug 4334 end*/
 
     @Override
     public CenterViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -45,26 +65,39 @@ public class CenterAdapter extends BaseRecycleAdapter<CenterAdapter.CenterViewHo
 
     @Override
     public void onBindViewHolder(CenterViewHolder holder, int position) {
-        BannerCarousels carousels = mData.get(position%mData.size());
-        holder.mTitle.setText(carousels.title);
-	/*add by dragontec for bug 4316,卖点文字不正确的问题 start*/
-        holder.mIntroduction.setText(carousels.getFocus());
-	/*add by dragontec for bug 4316,卖点文字不正确的问题 end*/
-		/*add by dragontec for bug 4307,4277 start*/
-        holder.mLayout.setFocusableInTouchMode(false);
-		/*add by dragontec for bug 4307,4277 end*/
-        if (!TextUtils.isEmpty(carousels.video_image)) {
-            Picasso.with(mContext).load(carousels.video_image).into(holder.mPosterIg);
-        } else {
-            Picasso.with(mContext).load(R.drawable.list_item_preview_bg).into(holder.mPosterIg);
-        }
-		/*add by dragontec for bug 4325,卖点文字不正确的问题 start*/
-        String focusStr = carousels.title;
-        if(carousels.getFocus() != null && !carousels.getFocus().equals("") && !carousels.getFocus().equals("null")){
-            focusStr = carousels.getFocus();
-        }
-        holder.mTitle.setTag(new String[]{carousels.title,focusStr});
-		/*add by dragontec for bug 4325,卖点文字不正确的问题 end*/
+    	/*modify by dragontec for bug 4334 start*/
+    	if (mData != null) {
+			BannerCarousels carousels = mData.get(position % mData.size());
+			holder.mTitle.setText(carousels.title);
+			/*add by dragontec for bug 4316,卖点文字不正确的问题 start*/
+			holder.mIntroduction.setText(carousels.getFocus());
+			/*add by dragontec for bug 4316,卖点文字不正确的问题 end*/
+			/*add by dragontec for bug 4307,4277 start*/
+			holder.mLayout.setFocusableInTouchMode(false);
+			/*add by dragontec for bug 4307,4277 end*/
+			if (!TextUtils.isEmpty(carousels.video_image)) {
+/*modify by dragontec for bug 4336 start*/
+				Picasso.with(mContext).load(carousels.video_image).
+                        placeholder(R.drawable.template_center_item_preview).
+                        error(R.drawable.template_center_item_preview).
+                        into(holder.mPosterIg);
+/*modify by dragontec for bug 4336 end*/
+			} else {
+/*modify by dragontec for bug 4336 start*/
+				Picasso.with(mContext).
+                        load(R.drawable.template_center_item_preview).
+                        into(holder.mPosterIg);
+/*modify by dragontec for bug 4336 end*/
+			}
+			/*add by dragontec for bug 4325,卖点文字不正确的问题 start*/
+			String focusStr = carousels.title;
+			if (carousels.getFocus() != null && !carousels.getFocus().equals("") && !carousels.getFocus().equals("null")) {
+				focusStr = carousels.getFocus();
+			}
+			holder.mTitle.setTag(new String[]{carousels.title, focusStr});
+			/*add by dragontec for bug 4325,卖点文字不正确的问题 end*/
+		}
+		/*modify by dragontec for bug 4334 end*/
     }
 
     @Override
@@ -81,7 +114,7 @@ public class CenterAdapter extends BaseRecycleAdapter<CenterAdapter.CenterViewHo
 		/*add by dragontec for bug 4316 start*/
         public TextView mIntroduction;
 		/*add by dragontec for bug 4316 end*/
-        public ImageView mPosterIg;
+        public RecyclerImageView mPosterIg;
 		/*add by dragontec for bug 4307,4277 start*/
         public IsmartvLinearLayout mLayout;
 		/*add by dragontec for bug 4307,4277 end*/
@@ -95,7 +128,7 @@ public class CenterAdapter extends BaseRecycleAdapter<CenterAdapter.CenterViewHo
 			/*add by dragontec for bug 4316 start*/
 			mIntroduction = (TextView) itemView.findViewById(R.id.center_item_introduction);
 			/*add by dragontec for bug 4316 end*/
-            mPosterIg = (ImageView) itemView.findViewById(R.id.center_item_poster);
+            mPosterIg = (RecyclerImageView) itemView.findViewById(R.id.center_item_poster);
 			/*add by dragontec for bug 4307,4277 start*/
             mLayout = (IsmartvLinearLayout) itemView.findViewById(R.id.center_ismartv_linear_layout);
 			/*add by dragontec for bug 4307,4277 end*/

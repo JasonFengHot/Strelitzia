@@ -287,7 +287,9 @@ public class UserInfoFragment extends BaseFragment implements UserInfoContract.V
                     @Override
                     public void confirmClick(View view) {
                         dialog.dismiss();
-                        IsmartvActivator.getInstance().removeUserInfo();
+                        /*modify by dragontec for bug 4393 start*/
+                        IsmartvActivator.getInstance().removeUserInfo(true);
+                        /*modify by dragontec for bug 4393 end*/
                       //  HttpManager.getInstance().setAccessToken(null);
                     }
                 },
@@ -307,18 +309,22 @@ public class UserInfoFragment extends BaseFragment implements UserInfoContract.V
         ToastTip.showToast(getActivity(),getString(R.string.exit_account_message_text));
     }
 
+	/*modify by dragontec for bug 4393 start*/
     @Override
-    public void onLogout() {
+    public void onLogout(boolean needShowToast) {
         if (mUserCenterActivity.isExpireAccessToken) {
             mUserCenterActivity.isExpireAccessToken = false;
         } else {
-            showExitAccountMessagePop();
+        	if (needShowToast) {
+				showExitAccountMessagePop();
+			}
         }
 
         mPresenter.fetchBalance();
         mPresenter.fetchPrivilege();
         mViewModel.refresh();
     }
+    /*modify by dragontec for bug 4393 end*/
 
     @Override
     public boolean onHover(View v, MotionEvent event) {

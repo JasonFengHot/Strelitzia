@@ -7,11 +7,12 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
+//import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -35,6 +36,7 @@ import tv.ismar.app.ui.adapter.OnItemClickListener;
 import tv.ismar.app.ui.adapter.OnItemFocusedListener;
 import tv.ismar.app.util.BitmapDecoder;
 import tv.ismar.app.widget.MyRecyclerView;
+import tv.ismar.app.widget.RecyclerImageView;
 import tv.ismar.searchpage.utils.JasmineUtil;
 
 
@@ -69,7 +71,7 @@ public class PlayFinishedActivity extends BaseActivity implements View.OnClickLi
     private boolean backToPlay=false;
     private String to;
     private String frompage;
-    private ImageView play_exit_error_img;
+    private RecyclerImageView play_exit_error_img;
     private BitmapDecoder bitmapDecoder;
 
 
@@ -106,7 +108,7 @@ public class PlayFinishedActivity extends BaseActivity implements View.OnClickLi
         vertical_poster_focus = findViewById(R.id.vertical_poster_focus);
         horizontal_poster_focus = findViewById(R.id.horizontal_poster_focus);
         play_exit_error = findViewById(R.id.play_exit_error);
-        play_exit_error_img = (ImageView) findViewById(R.id.play_exit_error_img);
+        play_exit_error_img = (RecyclerImageView) findViewById(R.id.play_exit_error_img);
         play_finished_confirm_btn.setOnClickListener(this);
         play_finished_cancel_btn.setOnClickListener(this);
         play_finished_confirm_btn.setOnHoverListener(this);
@@ -209,25 +211,51 @@ public class PlayFinishedActivity extends BaseActivity implements View.OnClickLi
 
                         @Override
                         public void onError(Throwable e) {
-                            type="exit_unknown";
-                            bitmapDecoder.decode(PlayFinishedActivity.this, R.drawable.play_exit_error, new BitmapDecoder.Callback() {
-                                @Override
-                                public void onSuccess(BitmapDrawable bitmapDrawable) {
-                                    play_exit_error_img.setBackgroundDrawable(bitmapDrawable);
+/*add by dragontec for bug 4406 start*/
+                            try {
+                                if (!isFinishing()) {
+                                    type = "exit_unknown";
+                                    if (bitmapDecoder != null) {
+                                        bitmapDecoder.decode(PlayFinishedActivity.this, R.drawable.play_exit_error, new BitmapDecoder.Callback() {
+                                            @Override
+                                            public void onSuccess(BitmapDrawable bitmapDrawable) {
+                                                if (!isFinishing() && play_exit_error_img != null) {
+                                                    play_exit_error_img.setBackgroundDrawable(bitmapDrawable);
+                                                }
+                                            }
+                                        });
+                                    }
+                                    if (play_exit_error != null) {
+                                        play_exit_error.setVisibility(View.VISIBLE);
+                                    }
+                                    if (play_finished_cancel_btn != null) {
+                                        play_finished_cancel_btn.setNextFocusUpId(R.id.play_finished_cancel_btn);
+                                    }
+                                    if (play_finished_confirm_btn != null) {
+                                        play_finished_confirm_btn.setNextFocusUpId(R.id.play_finished_confirm_btn);
+                                    }
                                 }
-                            });
-                            play_exit_error.setVisibility(View.VISIBLE);
-                            play_finished_cancel_btn.setNextFocusUpId(R.id.play_finished_cancel_btn);
-                            play_finished_confirm_btn.setNextFocusUpId(R.id.play_finished_confirm_btn);
+                            } catch (Exception e1) {
+                                Log.e(PlayFinishedActivity.class.toString(), "catch onerror exception " + e1.toString());
+                            }
+/*add by dragontec for bug 4406 end*/
                         }
 
                         @Override
                         public void onNext(PlayRecommend playRecommend) {
-                            if (playRecommend != null) {
-                                if (TextUtils.isEmpty(playRecommend.getRecommend_title()))
-                                    play_finished_title.setText(playRecommend.getRecommend_title());
-                                processData(playRecommend.getRecommend_items());
+/*add by dragontec for bug 4406 start*/
+                            try {
+                                if (!isFinishing()) {
+                                    if (playRecommend != null && play_finished_title != null) {
+                                        if (TextUtils.isEmpty(playRecommend.getRecommend_title()))
+                                            play_finished_title.setText(playRecommend.getRecommend_title());
+                                        processData(playRecommend.getRecommend_items());
+                                    }
+                                }
+                            } catch (Exception e1) {
+                                Log.e(PlayFinishedActivity.class.toString(), "catch onnext exception " + e1.toString());
                             }
+/*add by dragontec for bug 4406 end*/
                         }
                     });
         }

@@ -6,7 +6,7 @@
                 android:orientation="vertical">
 
 
-    <ImageView
+    <tv.ismar.app.widget.RecyclerImageView
             android:id="@+id/progress_view"
             android:layout_width="@dimen/loading_progress_width"
             android:layout_height="@dimen/loading_progress_height"
@@ -15,7 +15,7 @@
             android:layout_marginLeft="@dimen/loading_progress_margin_left"
             />
 
-    <ImageView
+    <tv.ismar.app.widget.RecyclerImageView
             android:layout_width="@dimen/loading_iv_width"
             android:layout_height="@dimen/loading_iv_height"
             android:layout_below="@id/progress_view"

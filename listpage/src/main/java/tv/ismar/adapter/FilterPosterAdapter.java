@@ -15,7 +15,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
+//import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.squareup.picasso.MemoryPolicy;
@@ -29,6 +29,7 @@ import tv.ismar.app.ui.adapter.OnItemFocusedListener;
 //add by dragontec for bug 4310 start
 import tv.ismar.app.ui.adapter.OnItemKeyListener;
 //add by dragontec for bug 4310 end
+import tv.ismar.app.widget.RecyclerImageView;
 import tv.ismar.listpage.R;
 
 /**
@@ -249,13 +250,13 @@ public class FilterPosterAdapter extends RecyclerView.Adapter<FilterPosterAdapte
 
     public static class FilterPosterHolder extends RecyclerView.ViewHolder{
 
-        ImageView item_vertical_poster_img;
-        ImageView item_vertical_poster_vip;
+        RecyclerImageView item_vertical_poster_img;
+        RecyclerImageView item_vertical_poster_vip;
         TextView item_vertical_poster_mark;
         TextView item_vertical_poster_title;
         View item_vertical_title_bg;
-        ImageView item_horizontal_poster_img;
-        ImageView item_horizontal_poster_vip;
+        RecyclerImageView item_horizontal_poster_img;
+        RecyclerImageView item_horizontal_poster_vip;
         TextView item_horizontal_poster_mark;
         TextView item_horizontal_poster_des;
         TextView item_horizontal_poster_title;
@@ -264,14 +265,14 @@ public class FilterPosterAdapter extends RecyclerView.Adapter<FilterPosterAdapte
         public FilterPosterHolder(View itemView) {
             super(itemView);
             if(mIsVertical) {
-                item_vertical_poster_img = (ImageView) itemView.findViewById(R.id.item_vertical_poster_img);
-                item_vertical_poster_vip = (ImageView) itemView.findViewById(R.id.item_vertical_poster_vip);
+                item_vertical_poster_img = (RecyclerImageView) itemView.findViewById(R.id.item_vertical_poster_img);
+                item_vertical_poster_vip = (RecyclerImageView) itemView.findViewById(R.id.item_vertical_poster_vip);
                 item_vertical_poster_mark = (TextView) itemView.findViewById(R.id.item_vertical_poster_mark);
                 item_vertical_poster_title = (TextView) itemView.findViewById(R.id.item_vertical_poster_title);
                 item_vertical_title_bg=itemView.findViewById(R.id.item_vertical_title_bg);
             }else {
-                item_horizontal_poster_img = (ImageView) itemView.findViewById(R.id.item_horizontal_poster_img);
-                item_horizontal_poster_vip = (ImageView) itemView.findViewById(R.id.item_horizontal_poster_vip);
+                item_horizontal_poster_img = (RecyclerImageView) itemView.findViewById(R.id.item_horizontal_poster_img);
+                item_horizontal_poster_vip = (RecyclerImageView) itemView.findViewById(R.id.item_horizontal_poster_vip);
                 item_horizontal_poster_mark = (TextView) itemView.findViewById(R.id.item_horizontal_poster_mark);
                 item_horizontal_poster_des = (TextView) itemView.findViewById(R.id.item_horizontal_poster_des);
                 item_horizontal_poster_title = (TextView) itemView.findViewById(R.id.item_horizontal_poster_title);

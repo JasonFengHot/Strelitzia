@@ -19,7 +19,7 @@
             android:layout_centerInParent="true"
             android:visibility="gone" />
 
-        <ImageView
+        <tv.ismar.app.widget.RecyclerImageView
             android:id="@+id/home_ad_pic"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -89,7 +89,7 @@
                     android:clipChildren="false"
                     android:focusable="false"
                     />
-                <ImageView
+                <tv.ismar.app.widget.RecyclerImageView
                     android:id="@+id/guide_tab_left"
                     android:layout_width="@dimen/banner_navigation_width"
                     android:layout_height="@dimen/item_detail_detailquality_width"
@@ -97,7 +97,7 @@
                     android:layout_alignParentBottom="true"
                     android:layout_marginBottom="@dimen/location_divider_margin_left"
                     />
-                <ImageView
+                <tv.ismar.app.widget.RecyclerImageView
                     android:id="@+id/guide_tab_right"
                     android:layout_width="@dimen/banner_navigation_width"
                     android:layout_height="@dimen/item_detail_detailquality_width"
@@ -121,7 +121,7 @@
         android:id="@+id/banner_arrow_up"
         android:layout_width="@dimen/home_page_banner_arrow_w"
         android:layout_height="@dimen/home_page_banner_arrow_h"
-        android:background="@drawable/poster_arrow_up_selector"
+        android:background="@drawable/homepage_arrow_up_selector"
         android:layout_centerHorizontal="true"
         android:layout_alignParentTop="true"
         android:visibility="gone"/>

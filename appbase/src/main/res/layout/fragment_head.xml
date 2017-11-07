@@ -12,11 +12,11 @@
         android:background="@drawable/baishi_logo"/>
     <TextView
         android:id="@+id/guide_title_time_tv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/guide_title_time_width"
+        android:layout_height="@dimen/guide_title_time_height"
         android:textColor="#ffffff"
+        android:layout_centerVertical="true"
         android:textSize="@dimen/guide_title_time_size"
         android:layout_alignParentRight="true"
-        android:layout_marginRight="@dimen/guide_title_time_margin_right"
-        android:layout_marginTop="@dimen/guide_title_time_margin_top" />
+        android:layout_marginRight="@dimen/guide_title_time_margin_right" />
 </RelativeLayout>

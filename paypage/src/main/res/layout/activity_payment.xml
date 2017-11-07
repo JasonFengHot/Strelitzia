@@ -40,7 +40,7 @@
 
     </LinearLayout>
 
-    <ImageView
+    <tv.ismar.app.widget.RecyclerImageView
         android:layout_width="match_parent"
         android:layout_height="@dimen/payment_h_divider"
         android:layout_marginLeft="@dimen/payment_divider_margin"
@@ -121,7 +121,7 @@
                 />
         </RelativeLayout>
 
-        <!--<ImageView-->
+        <!--<tv.ismar.app.widget.RecyclerImageView-->
             <!--android:id="@+id/shadow"-->
             <!--android:layout_width="@dimen/payment_h_divider"-->
             <!--android:layout_height="wrap_content"-->
@@ -138,7 +138,7 @@
 
     </LinearLayout>
 
-    <ImageView
+    <tv.ismar.app.widget.RecyclerImageView
         android:id="@+id/tmp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

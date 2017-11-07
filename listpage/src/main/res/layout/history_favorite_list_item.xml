@@ -13,14 +13,14 @@
         android:clipChildren="false"
         >
 
-        <ImageView
+        <tv.ismar.app.widget.RecyclerImageView
             android:layout_width="@dimen/history_492"
             android:layout_height="@dimen/history_2"
             android:layout_marginTop="@dimen/history_7"
             android:background="@color/_333333"
             android:layout_marginLeft="@dimen/history_32"
             />
-        <ImageView
+        <tv.ismar.app.widget.RecyclerImageView
             android:id="@+id/item_time_node"
             android:layout_width="@dimen/history_16"
             android:layout_height="@dimen/history_16"
@@ -52,14 +52,14 @@
             android:clipToPadding="false"
             android:layout_marginLeft="@dimen/history_32"
             >
-            <ImageView
+            <tv.ismar.app.widget.RecyclerImageView
                 android:id="@+id/more"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@drawable/more"
                 android:visibility="gone"
                 />
-             <ImageView
+             <tv.ismar.app.widget.RecyclerImageView
                 android:id="@+id/item_detail_image"
                 android:layout_width="@dimen/history_432"
                 android:layout_height="@dimen/history_243"
@@ -70,7 +70,7 @@
                 android:layout_height="@dimen/history_63"
                 android:layout_below="@+id/item_detail_image"
                 >
-                <ImageView
+                <tv.ismar.app.widget.RecyclerImageView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="#000000"

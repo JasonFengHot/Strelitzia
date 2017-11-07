@@ -12,7 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ImageView;
+//import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,6 +42,7 @@ import tv.ismar.app.network.entity.EventProperty;
 import tv.ismar.app.ui.ZGridView;
 import tv.ismar.app.util.BitmapDecoder;
 import tv.ismar.app.widget.LoadingDialog;
+import tv.ismar.app.widget.RecyclerImageView;
 import tv.ismar.app.widget.ScrollableSectionList;
 import tv.ismar.listpage.R;
 import tv.ismar.view.RelateScrollableSectionList;
@@ -70,8 +71,8 @@ public class RelatedActivity extends BaseActivity implements RelateScrollableSec
 
     private GetRelatedTask mGetRelatedTask;
     private GetRelatedItemByInfo mGetRelatedItemByInfoTask;
-    private ImageView arrow_left;
-    private ImageView arrow_right;
+    private RecyclerImageView arrow_left;
+    private RecyclerImageView arrow_right;
     private HashMap<String, Object> mDataCollectionProperties = new HashMap<String, Object>();
 
     private String mSection;
@@ -109,8 +110,8 @@ public class RelatedActivity extends BaseActivity implements RelateScrollableSec
                 }
             }
         });
-        arrow_left = (ImageView) findViewById(R.id.arrow_left);
-        arrow_right = (ImageView) findViewById(R.id.arrow_right);
+        arrow_left = (RecyclerImageView) findViewById(R.id.arrow_left);
+        arrow_right = (RecyclerImageView) findViewById(R.id.arrow_right);
     }
 
     @SuppressWarnings({"unchecked"})

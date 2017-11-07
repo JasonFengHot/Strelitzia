@@ -349,7 +349,7 @@ public class BaseActivity extends AppCompatActivity {
                     HttpException httpException = (HttpException) e;
                     if (httpException.code() == 401) {
                 	/*add by dragontec for bug 4364 start*/
-                        IsmartvActivator.getInstance().removeUserInfo();
+                        IsmartvActivator.getInstance().removeUserInfo(false);
                 	/*add by dragontec for bug 4364 end*/
                         showExpireAccessTokenPop();
                     }else if(httpException.code() == 504){

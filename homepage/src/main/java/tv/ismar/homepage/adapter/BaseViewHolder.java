@@ -25,6 +25,7 @@ import tv.ismar.homepage.OnItemClickListener;
 import tv.ismar.homepage.OnItemHoverListener;
 import tv.ismar.homepage.OnItemSelectedListener;
 import tv.ismar.homepage.R;
+import tv.ismar.homepage.widget.CenterRecyclerViewTV;
 
 import static android.view.View.SCALE_X;
 import static android.view.View.SCALE_Y;
@@ -119,7 +120,6 @@ public abstract class BaseViewHolder extends RecyclerView.ViewHolder implements
 
     @Override
     public boolean onHover(View v, MotionEvent event) {
-        Log.i("onHover", "ViewHolder action:"+event.getAction());
         switch (event.getAction()){
             case MotionEvent.ACTION_HOVER_ENTER://鼠标放置到view上时 9
 			/*delete by dragontec for bug 4169 start*/
@@ -182,13 +182,11 @@ public abstract class BaseViewHolder extends RecyclerView.ViewHolder implements
                     textView.setText(focusTitle);
                     textView.setEllipsize(TextUtils.TruncateAt.MARQUEE);
                     textView.setMarqueeRepeatLimit(-1);
-                    textView.setHorizontallyScrolling(true);
                     textView.setSelected(true);
                 } else {
                     textView.setText(title);
                     textView.setEllipsize(TextUtils.TruncateAt.END);
                     textView.setMarqueeRepeatLimit(0);
-                    textView.setHorizontallyScrolling(true);
                     textView.setSelected(false);
                 }
             }
@@ -221,11 +219,9 @@ public abstract class BaseViewHolder extends RecyclerView.ViewHolder implements
 
                 title.setEllipsize(TextUtils.TruncateAt.MARQUEE);
                 title.setMarqueeRepeatLimit(-1);
-                title.setHorizontallyScrolling(true);
                 title.setSelected(true);
                 introduction.setEllipsize(TextUtils.TruncateAt.MARQUEE);
                 introduction.setMarqueeRepeatLimit(-1);
-                introduction.setHorizontallyScrolling(true);
                 introduction.setSelected(true);
             }else{
                 textLayout.setBackground(null);
@@ -235,7 +231,6 @@ public abstract class BaseViewHolder extends RecyclerView.ViewHolder implements
 				introduction.setVisibility(View.GONE);
                 title.setEllipsize(TextUtils.TruncateAt.END);
                 title.setMarqueeRepeatLimit(0);
-                title.setHorizontallyScrolling(false);
                 title.setSelected(false);
 				title.setTextSize(res.getDimensionPixelSize(R.dimen.center_title_size)/density);
 				title.getLayoutParams().height = res.getDimensionPixelSize(R.dimen.center_title_height);
@@ -244,7 +239,6 @@ public abstract class BaseViewHolder extends RecyclerView.ViewHolder implements
 				/*modify by dragontec for bug 4355 end*/
                 introduction.setEllipsize(TextUtils.TruncateAt.END);
                 introduction.setMarqueeRepeatLimit(0);
-                introduction.setHorizontallyScrolling(false);
                 introduction.setSelected(false);
             }
         }
@@ -269,7 +263,9 @@ public abstract class BaseViewHolder extends RecyclerView.ViewHolder implements
 										if (keyCode == KeyEvent.KEYCODE_DPAD_LEFT) {
 											int position = ((RecyclerViewTV)mRecyclerView).findFirstVisibleItemPosition();
 											((LinearLayoutManagerTV) mRecyclerView.getLayoutManager()).setCanScroll(true);
-											((LinearLayoutManagerTV) mRecyclerView.getLayoutManager()).scrollToPositionWithOffset( ((RecyclerViewTV)mRecyclerView).findFirstVisibleItemPosition(), v.getContext().getResources().getDimensionPixelOffset(R.dimen.center_padding_offset));
+											/*modify by dragontec for bug 4365 start*/
+											((LinearLayoutManagerTV) mRecyclerView.getLayoutManager()).scrollToPositionWithOffset( ((RecyclerViewTV)mRecyclerView).findFirstVisibleItemPosition(), ((CenterRecyclerViewTV) mRecyclerView).getCenterOffset());
+											/*modify by dragontec for bug 4365 end*/
 											if (mSelectedListener != null) {
 												mSelectedListener.onItemSelect(v, position);
 											}
@@ -277,7 +273,9 @@ public abstract class BaseViewHolder extends RecyclerView.ViewHolder implements
 										if (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT) {
 											int position = ((RecyclerViewTV)mRecyclerView).findFirstVisibleItemPosition();
 											((LinearLayoutManagerTV) mRecyclerView.getLayoutManager()).setCanScroll(true);
-											((LinearLayoutManagerTV) mRecyclerView.getLayoutManager()).scrollToPositionWithOffset( ((RecyclerViewTV)mRecyclerView).findLastVisibleItemPosition(), v.getContext().getResources().getDimensionPixelOffset(R.dimen.center_padding_offset));
+											/*modify by dragontec for bug 4365 start*/
+											((LinearLayoutManagerTV) mRecyclerView.getLayoutManager()).scrollToPositionWithOffset( ((RecyclerViewTV)mRecyclerView).findLastVisibleItemPosition(), ((CenterRecyclerViewTV) mRecyclerView).getCenterOffset());
+											/*modify by dragontec for bug 4365 end*/
 											if (mSelectedListener != null) {
 												mSelectedListener.onItemSelect(v, position);
 											}

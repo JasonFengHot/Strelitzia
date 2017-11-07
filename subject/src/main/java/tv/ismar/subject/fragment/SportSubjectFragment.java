@@ -18,7 +18,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
+//import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
@@ -57,6 +57,7 @@ import tv.ismar.app.network.entity.EventProperty;
 import tv.ismar.app.network.entity.PlayCheckEntity;
 import tv.ismar.app.ui.ToastTip;
 import tv.ismar.app.widget.LoadingDialog;
+import tv.ismar.app.widget.RecyclerImageView;
 import tv.ismar.library.exception.ExceptionUtils;
 import tv.ismar.subject.R;
 import tv.ismar.subject.Utils.LableImageSubject;
@@ -75,10 +76,10 @@ public class SportSubjectFragment extends Fragment implements View.OnHoverListen
     private Button buy,play,subscribe;
     private SkyService skyService;
     private LinearLayout relate_list;
-    private ImageView detail_labelImage;
+    private RecyclerImageView detail_labelImage;
     private Subscription playCheckSubsc;
     private TextView price,hasbuy;
-    private ImageView cp_title,up_arrow,down_arrow,bg;
+    private RecyclerImageView cp_title,up_arrow,down_arrow,bg;
     private LableImageSubject relate_image1,relate_image2,relate_image3;
     private TextView relate_text1,relate_text2,relate_text3;
     private TextView game_time,title;
@@ -122,12 +123,12 @@ public class SportSubjectFragment extends Fragment implements View.OnHoverListen
         divider= (TextView) view.findViewById(R.id.sport_subject_divider);
         mVerticalPagerView = (VerticalPagerView) view.findViewById(R.id.sport_list);
         price= (TextView) view.findViewById(R.id.price);
-        bg= (ImageView) view.findViewById(R.id.bg_fragment);
+        bg= (RecyclerImageView) view.findViewById(R.id.bg_fragment);
         game_time= (TextView) view.findViewById(R.id.game_time);
         title= (TextView) view.findViewById(R.id.title);
         hasbuy= (TextView) view.findViewById(R.id.havebuy);
-        up_arrow= (ImageView) view.findViewById(R.id.up_image);
-        down_arrow= (ImageView) view.findViewById(R.id.down_image);
+        up_arrow= (RecyclerImageView) view.findViewById(R.id.up_image);
+        down_arrow= (RecyclerImageView) view.findViewById(R.id.down_image);
         arrowListent();
         relate_list= (LinearLayout) view.findViewById(R.id.relate_list);
         relate_image1= (LableImageSubject) view.findViewById(R.id.relate_list_1_image);
@@ -148,8 +149,8 @@ public class SportSubjectFragment extends Fragment implements View.OnHoverListen
         play.setOnHoverListener(this);
         subscribe.setOnHoverListener(this);
 
-        cp_title= (ImageView) view.findViewById(R.id.cp_title);
-        detail_labelImage= (ImageView) view.findViewById(R.id.detail_labelImage);
+        cp_title= (RecyclerImageView) view.findViewById(R.id.cp_title);
+        detail_labelImage= (RecyclerImageView) view.findViewById(R.id.detail_labelImage);
         skyService=SkyService.ServiceManager.getService();
         mVerticalPagerView.setOnItemActionListener(this);
         getData();
@@ -636,7 +637,7 @@ public class SportSubjectFragment extends Fragment implements View.OnHoverListen
         popupWindow.setBackgroundDrawable(getResources().getDrawable(R.drawable.transparent));
         View rootview = LayoutInflater.from(getActivity()).inflate(R.layout.sport_subject_fragment, null);
         popupWindow.showAtLocation(rootview, Gravity.CENTER, 0, 0);
-        final ImageView code = (ImageView) contentView.findViewById(R.id.code_image);
+        final RecyclerImageView code = (RecyclerImageView) contentView.findViewById(R.id.code_image);
         skyService.getSubscribeImage(pk, type).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread()).subscribe(((BaseActivity) getActivity()).new BaseObserver<ResponseBody>() {
             @Override

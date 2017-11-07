@@ -10,12 +10,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 /*add by dragontec for bug 4065 start*/
-import android.os.Handler;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 /*add by dragontec for bug 4065 end*/
-
-import android.widget.LinearLayout;
 
 import com.orhanobut.logger.Logger;
 
@@ -49,7 +46,7 @@ import tv.ismar.library.util.StringUtils;
  */
 public class ChannelFragment extends BaseFragment implements BaseControl.ControlCallBack
 	/*add by dragontec for bug 3983,4077,4200 start*/
-		, RecycleLinearLayout.OnDataFinishedListener, RecycleLinearLayout.OnPositionChangedListener, RecycleLinearLayout.OnScrollFinishedListener
+		, RecycleLinearLayout.OnDataFinishedListener, RecycleLinearLayout.OnPositionChangedListener, RecycleLinearLayout.OnScrollListener
 	/*add by dragontec for bug 3983,4077,4200 end*/
 {
     private static final String TAG = "ChannelFragment";
@@ -62,7 +59,7 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
     public static final String MORE_TITLE_FLAG = "title";
     public static final String MORE_CHANNEL_FLAG = "channel";
     public static final String MORE_STYLE_FLAG = "style";
-	private static final int LOAD_BANNERS_COUNT = 5;
+	public static final int LOAD_BANNERS_COUNT = 5;
 	/*add by dragontec for bug 4248,4334 start*/
 	private static final int APPEND_LOAD_BANNERS_COUNT = 3;
 	/*add by dragontec for bug 4248,4334 end*/
@@ -96,6 +93,10 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
 	private Handler mAniHandler = null;
 	private AniFinishRunnable mAniFinishRunnable = null;
 /*add by dragontec for bug 4065 end*/
+
+	/*add by dragontec for bug 4334 start*/
+	private CheckViewAppearRunnable mCheckViewAppearRunnable = null;
+	/*add by dragontec for bug 4334 end*/
 
 	@Override
     public void onAttach(Context context) {
@@ -264,7 +265,7 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
 			mLinearContainer.setOnDataFinishedListener(this);
 		/*add by dragontec for bug 4077 end*/
 		/*add by dragontec for bug 4200 start*/
-			mLinearContainer.setOnScrollFinishedListener(this);
+			mLinearContainer.setOnScrollListener(this);
 		/*add by dragontec for bug 4200 end*/
 		}
 	}
@@ -272,7 +273,7 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
 	private void unInitListener() {
 		if (mLinearContainer != null) {
 		/*add by dragontec for bug 4200 start*/
-			mLinearContainer.setOnScrollFinishedListener(null);
+			mLinearContainer.setOnScrollListener(null);
 		/*add by dragontec for bug 4200 end*/
 			mLinearContainer.setOnPositionChangedListener(null);
 			mLinearContainer.setOnDataFinishedListener(null);
@@ -362,14 +363,16 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
 			/*modify by dragontec for bug 4331 end*/
 			}
 		}
-		/*add by dragontec for bug 4200 start*/
-		synchronized (templateDataLock) {
-			for (Template template :
-					mTemplates) {
-				template.fetchData();
-			}
-		}
-		/*add by dragontec for bug 4200 end*/
+		/*delete by dragontec for bug 4334 start*/
+//		/*add by dragontec for bug 4200 start*/
+//		synchronized (templateDataLock) {
+//			for (Template template :
+//					mTemplates) {
+//				template.fetchData();
+//			}
+//		}
+//		/*add by dragontec for bug 4200 end*/
+		/*delete by dragontec for bug 4334 end*/
 		//        mLinearContainer.initView();
 	}
 
@@ -417,52 +420,54 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
 		bundle.putString(TEMPLATE_KEY, template);
 		bundle.putString(CHANNEL_KEY, mChannel);
 		bundle.putString(NAME_KEY, mName);
+		/*modify by dragontec for bug 4334 start*/
 		if (template.equals("template_guide")) { // 导视
 			layoutId = R.layout.banner_guide;
 			bannerView = createView(R.layout.banner_guide);
-			templateObject = new TemplateGuide(getContext()).setView(bannerView, bundle);
+			templateObject = new TemplateGuide(getContext(), position).setView(bannerView, bundle);
 		} else if (template.equals("template_order")) { // 订阅模版
 			layoutId = R.layout.banner_order;
 			bannerView = createView(R.layout.banner_order);
-			templateObject = new TemplateOrder(getContext()).setView(bannerView, bundle);
+			templateObject = new TemplateOrder(getContext(), position).setView(bannerView, bundle);
 		} else if (template.equals("template_movie")) { // 电影模版
 			layoutId = R.layout.banner_movie;
 			bannerView = createView(R.layout.banner_movie);
-			templateObject = new TemplateMovie(getContext()).setView(bannerView, bundle);
+			templateObject = new TemplateMovie(getContext(), position).setView(bannerView, bundle);
 		} else if (template.equals("template_teleplay")) { // 电视剧模版
 			layoutId = R.layout.banner_tv_player;
 			bannerView = createView(R.layout.banner_tv_player);
-			templateObject = new TemplateTvPlay(getContext()).setView(bannerView, bundle);
+			templateObject = new TemplateTvPlay(getContext(), position).setView(bannerView, bundle);
 		} else if (template.equals("template_519")) { // 519横图模版
 			layoutId = R.layout.banner_519;
 			bannerView = createView(R.layout.banner_519);
-			templateObject = new Template519(getContext()).setView(bannerView, bundle);
+			templateObject = new Template519(getContext(), position).setView(bannerView, bundle);
 		} else if (template.equals("template_conlumn")) { // 栏目模版
 			layoutId = R.layout.banner_conlumn;
 			bannerView = createView(R.layout.banner_conlumn);
-			templateObject = new TemplateConlumn(getContext()).setView(bannerView, bundle);
+			templateObject = new TemplateConlumn(getContext(), position).setView(bannerView, bundle);
 		} else if (template.equals("template_recommend")) { // 推荐模版
 			canScroll = false;
 			layoutId = R.layout.banner_recommend;
 			bannerView = createView(R.layout.banner_recommend);
-			templateObject = new TemplateRecommend(getContext()).setView(bannerView, bundle);
+			templateObject = new TemplateRecommend(getContext(), position).setView(bannerView, bundle);
 		} else if (template.equals("template_big_small_ld")) { // 大横小竖模版
 			layoutId = R.layout.banner_big_small_ld;
 			bannerView = createView(R.layout.banner_big_small_ld);
-			templateObject = new TemplateBigSmallLd(getContext()).setView(bannerView, bundle);
+			templateObject = new TemplateBigSmallLd(getContext(), position).setView(bannerView, bundle);
 		} else if (template.equals("template_double_md")) { // 竖版双行模版
 			layoutId = R.layout.banner_double_md;
 			bannerView = createView(R.layout.banner_double_md);
-			templateObject = new TemplateDoubleMd(getContext()).setView(bannerView, bundle);
+			templateObject = new TemplateDoubleMd(getContext(), position).setView(bannerView, bundle);
 		} else if (template.equals("template_double_ld")) { // 横版双行模版
 			layoutId = R.layout.banner_double_ld;
 			bannerView = createView(R.layout.banner_double_ld);
-			templateObject = new TemplateDoubleLd(getContext()).setView(bannerView, bundle);
+			templateObject = new TemplateDoubleLd(getContext(), position).setView(bannerView, bundle);
 		} else if (template.equals("template_teleplay_first")) { // 电视剧首行居中模版
 			layoutId = R.layout.banner_center;
 			bannerView = createView(R.layout.banner_center);
-			templateObject = new TemplateCenter(getContext()).setView(bannerView, bundle);
+			templateObject = new TemplateCenter(getContext(), position).setView(bannerView, bundle);
 		}
+		/*modify by dragontec for bug 4334 end*/
 
 		if (bannerView != null && templateObject != null) {
 			int tag = createTag(position, canScroll);
@@ -498,7 +503,9 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
         bannerView.setTag(R.layout.banner_more);
         bannerView.setTag(R.layout.banner_more, createTag(position, true));
 
-        Template templateObject = new TemplateMore(getContext()).setView(bannerView, bundle);
+        /*modify by dragontec for bug 4334 start*/
+        Template templateObject = new TemplateMore(getContext(), position).setView(bannerView, bundle);
+        /*modify by dragontec for bug 4334 end*/
 		synchronized (templateDataLock) {
 			if (mTemplates != null) {
 				mTemplates.add(templateObject);
@@ -571,8 +578,10 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
 	public void onKeyDown(int keyCode, KeyEvent event) {
 		Log.d(TAG, "keydown: " + keyCode);
 		/*add by dragontec for bug 4338 start*/
-		if (!mLinearContainer.hasFocus()) {
-			mLinearContainer.focusOnFirstBanner();
+		if (mLinearContainer != null && !mLinearContainer.hasFocus()) {
+			if (!mLinearContainer.isScrolling()) {
+				mLinearContainer.focusOnFirstBanner();
+			}
 		}
 		/*add by dragontec for bug 4338 end*/
 //		if ("lcd_s3a01".equals(VodUserAgent.getModelName())) {
@@ -673,6 +682,16 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
 /*add by dragontec for bug 4225, 4224, 4223 end*/
 
 /*add by dragontec for bug 4200 start*/
+/*add by dragontec for bug 4334 start*/
+	@Override
+	public void onScrollWillStart() {
+		if (mCheckViewAppearRunnable != null) {
+			mAniHandler.removeCallbacks(mCheckViewAppearRunnable);
+			mCheckViewAppearRunnable = null;
+		}
+	}
+/*add by dragontec for bug 4334 end*/
+
 	@Override
 	public void onScrollFinished() {
 /*add by dragontec for bug 4225, 4224, 4223 start*/
@@ -680,15 +699,53 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
 			((HomeActivity)getActivity()).actionScrollerMoveToBottom(mLinearContainer.isScrollAtBottom());
 		}
 /*add by dragontec for bug 4225, 4224, 4223 end*/
-		synchronized (templateDataLock) {
-			if (mTemplates != null) {
-				for (Template template :
-						mTemplates) {
-					template.checkViewAppear();
+		/*modify by dragontec for bug 4334 start*/
+		if (mCheckViewAppearRunnable != null) {
+			mAniHandler.removeCallbacks(mCheckViewAppearRunnable);
+			mCheckViewAppearRunnable = null;
+		}
+		mCheckViewAppearRunnable = new CheckViewAppearRunnable();
+		mAniHandler.postDelayed(mCheckViewAppearRunnable, 800);
+		/*modify by dragontec for bug 4334 end*/
+	}
+
+	/*add by dragontec for bug 4334 start*/
+	private class CheckViewAppearRunnable implements Runnable {
+
+		@Override
+		public void run() {
+			synchronized (templateDataLock) {
+				if (mTemplates != null) {
+					if (mLinearContainer != null) {
+						int i = mLinearContainer.getCurrentBannerPos();
+						int[] location = new int[2];
+						mLinearContainer.getChildAt(i).getLocationOnScreen(location);
+						while (i != 0 && location[1] > 0) {
+							i--;
+							mLinearContainer.getChildAt(i).getLocationOnScreen(location);
+						}
+						for (; i < mTemplates.size(); i++) {
+							if (mLinearContainer != null && mLinearContainer.isScrolling()) {
+								break;
+							}
+							if (!mTemplates.get(i).checkViewAppear()) {
+								break;
+							}
+						}
+					} else {
+						for (Template template :
+								mTemplates) {
+							if (!template.checkViewAppear()) {
+								break;
+							}
+						}
+					}
 				}
 			}
+			mAniHandler.removeCallbacks(this);
 		}
 	}
+	/*add by dragontec for bug 4334 end*/
 /*add by dragontec for bug 4200 end*/
 
 /*add by dragontec for bug 4259 start*/

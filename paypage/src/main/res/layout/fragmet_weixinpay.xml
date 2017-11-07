@@ -5,7 +5,7 @@
               android:orientation="horizontal">
 
 
-    <ImageView
+    <tv.ismar.app.widget.RecyclerImageView
         android:id="@+id/qrcodeview"
         android:layout_width="@dimen/qrcode_width"
         android:layout_height="@dimen/qrcode_height"
