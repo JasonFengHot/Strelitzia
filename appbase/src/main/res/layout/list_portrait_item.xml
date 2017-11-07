@@ -11,7 +11,7 @@
         android:layout_width="@dimen/list_item_preview_img_w"
         android:layout_height="@dimen/list_item_preview_img_h"
         android:id="@+id/list_item_preview_img"
-        android:background="@drawable/list_item_ppreview_bg"
+        android:background="@drawable/item_vertical_preview"
         android:layout_alignParentTop="true"
         android:scaleType="fitXY" 
         android:paddingTop="@dimen/gridview_item_image_PaddingT"

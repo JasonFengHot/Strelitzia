@@ -1,3 +1,4 @@
+/*modify by dragontec for bug 4362 start*/
 package tv.ismar.homepage.template;
 
 import android.content.Context;
@@ -71,14 +72,12 @@ public class TemplateDoubleMd extends Template
 //  private RecyclerViewTV mRecyclerView;
 /*delete by dragontec for bug 4332 end*/
   private DoubleMdAdapter mAdapter;
-  private FetchDataControl mFetchDataControl = null;
   private int mSelectItemPosition = 1; // 标题--选中海报位置
   private BannerLinearLayout mBannerLinearLayout;
 	/*modify by dragontec for bug 4332 start*/
   private View mHeaderView; // recylview头view
 	/*modify by dragontec for bug 4332 end*/
   private StaggeredGridLayoutManagerTV mDoubleLayoutManager;
-  private String mBannerPk; // banner标记
   private String mName; // 频道名称（中文）
   private String mChannel; // 频道名称（英文）
 
@@ -111,9 +110,8 @@ public class TemplateDoubleMd extends Template
     }
   }
 
-  public TemplateDoubleMd(Context context, int position) {
-    super(context, position);
-    mFetchDataControl = new FetchDataControl(context, this);
+  public TemplateDoubleMd(Context context, int position, FetchDataControl fetchDataControl) {
+    super(context, position, fetchDataControl);
     mNavigationtHandler = new NavigationtHandler();
   }
 
@@ -130,9 +128,6 @@ public class TemplateDoubleMd extends Template
 
   @Override
   public void onPause() {
-    if (mFetchDataControl != null){
-      mFetchDataControl.stop();
-    }
 	/*add by dragontec for bug 4077 start*/
 	  super.onPause();
 	/*add by dragontec for bug 4077 end*/
@@ -151,14 +146,9 @@ public class TemplateDoubleMd extends Template
   @Override
   public void onDestroy() {
 /*add by dragontec for bug 4205 start*/
-    if (mFetchDataControl != null) {
-      mFetchDataControl.clear();
-    }
     if (mAdapter != null) {
       mAdapter.setHeaderView(null);
-      mAdapter.setOnHoverListener(null);
       mAdapter.setOnItemClickListener(null);
-      mAdapter.setOnItemSelectedListener(null);
     }
     if (mRecyclerView != null) {
       mRecyclerView.setLayoutManager(null);
@@ -174,6 +164,7 @@ public class TemplateDoubleMd extends Template
     if (mNavigationtHandler != null){
       mNavigationtHandler = null;
     }
+	  super.onDestroy();
   }
 
   @Override
@@ -221,8 +212,8 @@ public class TemplateDoubleMd extends Template
     super.initListener(view);
     navigationLeft.setOnClickListener(this);
     navigationRight.setOnClickListener(this);
-    navigationRight.setOnHoverListener(this);
-    navigationLeft.setOnHoverListener(this);
+//    navigationRight.setOnHoverListener(this);
+//    navigationLeft.setOnHoverListener(this);
     mRecyclerView.setPagingableListener(this);
     mRecyclerView.setOnItemFocusChangeListener(this);
     mDoubleLayoutManager.setFocusSearchFailedListener(this);
@@ -230,13 +221,17 @@ public class TemplateDoubleMd extends Template
 
   @Override
   public void initData(Bundle bundle) {
+  	initAdapter();
     mTitleTv.setText(bundle.getString(TITLE_KEY));
     mBannerPk = bundle.getString(BANNER_KEY);
     mName = bundle.getString(NAME_KEY);
     mChannel = bundle.getString(CHANNEL_KEY);
     mTitleCountTv.setText("00/00");
 /*modify by dragontec for bug 4334 start*/
-	  mFetchDataControl.fetchBanners(mBannerPk, 1, false);
+	if (mFetchControl.getHomeEntity(mBannerPk) != null) {
+		isNeedFillData = true;
+		checkViewAppear();
+	}
   }
 
 	@Override
@@ -257,13 +252,15 @@ public class TemplateDoubleMd extends Template
 /*modify by dragontec for bug 4334 end*/
 
   private void initTitle() {
-    if (mSelectItemPosition > mFetchDataControl.mHomeEntity.count)
-      mSelectItemPosition = mFetchDataControl.mHomeEntity.count;
-    mTitleCountTv.setText(
-        String.format(
-            mContext.getString(R.string.home_item_title_count),
-            mSelectItemPosition + "",
-            mFetchDataControl.mHomeEntity.count + ""));
+  	if (mFetchControl.getHomeEntity(mBannerPk) != null) {
+		if (mSelectItemPosition > mFetchControl.getHomeEntity(mBannerPk).count)
+			mSelectItemPosition = mFetchControl.getHomeEntity(mBannerPk).count;
+		mTitleCountTv.setText(
+				String.format(
+						mContext.getString(R.string.home_item_title_count),
+						mSelectItemPosition + "",
+						mFetchControl.getHomeEntity(mBannerPk).count + ""));
+	}
   }
 
 	/*modify by dragontec for bug 4334 start*/
@@ -280,14 +277,16 @@ public class TemplateDoubleMd extends Template
   private void initRecycleView() {
   	if (mAdapter != null) {
   		if (mAdapter.getData() == null) {
-  			mAdapter.setData(mFetchDataControl.mPoster);
-  			mRecyclerView.setAdapter(mAdapter);
+  			if (mFetchControl.mPosterMap.get(mBannerPk) != null) {
+				mAdapter.setData(mFetchControl.mPosterMap.get(mBannerPk));
+				mRecyclerView.setAdapter(mAdapter);
 	/*add by dragontec for bug 4077 start*/
-			checkFocus(mRecyclerView);
+				checkFocus(mRecyclerView);
 	/*add by dragontec for bug 4077 end*/
+			}
 		} else {
-			int start = mFetchDataControl.mPoster.size() - mFetchDataControl.mHomeEntity.posters.size();
-			int end = mFetchDataControl.mPoster.size();
+			int start = mFetchControl.mPosterMap.get(mBannerPk).size() - mFetchControl.getHomeEntity(mBannerPk).posters.size();
+			int end = mFetchControl.mPosterMap.get(mBannerPk).size();
 			mAdapter.notifyItemRangeChanged(start, end);
 		}
 	}
@@ -295,7 +294,7 @@ public class TemplateDoubleMd extends Template
   /*modify by dragontec for bug 4334 end*/
 
   private void initImage() {
-    BigImage data = mFetchDataControl.mHomeEntity.bg_image;
+    BigImage data = mFetchControl.getHomeEntity(mBannerPk).bg_image;
     if (data != null) {
       if (!TextUtils.isEmpty(data.vertical_url)) {
 /*modify by dragontec for bug 4336 start*/
@@ -325,24 +324,29 @@ public class TemplateDoubleMd extends Template
     }
   }
 
-  @Override
-  public void callBack(int flags, Object... args) {
-    if (flags == FetchDataControl.FETCH_BANNERS_LIST_FLAG) { // 获取单个banner业务
-		/*modify by dragontec for bug 4334 start*/
-		isNeedFillData = true;
-		initAdapter();
-      checkViewAppear();
-      /*modify by dragontec for bug 4334 end*/
-	/* modify by dragontec for bug 4264 start */
-      mRecyclerView.setOnLoadMoreComplete();
-    } else {
-    	if (mRecyclerView.isOnLoadMore()) {
-			mFetchDataControl.mHomeEntity.page--;
-			mRecyclerView.setOnLoadMoreComplete();
-		}
-	/* modify by dragontec for bug 4264 end */
-	}
-  }
+//  @Override
+//  public void callBack(int flags, Object... args) {
+//  	switch (flags) {
+//		case FetchDataControl.FETCH_BANNERS_LIST_FLAG:
+//		{
+//			/*modify by dragontec for bug 4334 start*/
+//			isNeedFillData = true;
+//			initAdapter();
+//			checkViewAppear();
+//      		/*modify by dragontec for bug 4334 end*/
+//			mRecyclerView.setOnLoadMoreComplete();
+//		}
+//		break;
+//		case FetchDataControl.FETCH_DATA_FAIL_FLAG:
+//		{
+//			if (mRecyclerView.isOnLoadMore()) {
+//				mFetchControl.getHomeEntity(mBannerPk).page--;
+//				mRecyclerView.setOnLoadMoreComplete();
+//			}
+//		}
+//		break;
+//	}
+//  }
 
   @Override
   public void onItemFocusGain(View itemView, int position) {
@@ -353,17 +357,17 @@ public class TemplateDoubleMd extends Template
   @Override
   public void onItemClick(View view, int position) {
     if (position == 0) { // 第一张大图
-      mFetchDataControl.go2Detail(mFetchDataControl.mHomeEntity.bg_image);
-    } else if (mFetchDataControl.mHomeEntity.is_more && position == mAdapter.getItemCount() - 1) {
+      mFetchControl.go2Detail(mFetchControl.getHomeEntity(mBannerPk).bg_image);
+    } else if (mFetchControl.getHomeEntity(mBannerPk).is_more && position == mAdapter.getItemCount() - 1) {
       new PageIntent()
           .toListPage(
               mContext,
-              mFetchDataControl.mHomeEntity.channel_title,
-              mFetchDataControl.mHomeEntity.channel,
-              mFetchDataControl.mHomeEntity.style,
-                  mFetchDataControl.mHomeEntity.section_slug);
+              mFetchControl.getHomeEntity(mBannerPk).channel_title,
+              mFetchControl.getHomeEntity(mBannerPk).channel,
+              mFetchControl.getHomeEntity(mBannerPk).style,
+                  mFetchControl.getHomeEntity(mBannerPk).section_slug);
     } else {
-      mFetchDataControl.go2Detail(mAdapter.getmData().get(position - 1));
+		mFetchControl.go2Detail(mAdapter.getmData().get(position - 1));
     }
   }
 
@@ -425,11 +429,11 @@ public class TemplateDoubleMd extends Template
   @Override
   public void onLoadMoreItems() {
     Log.i(TAG, "onLoadMoreItems");
-    HomeEntity homeEntity = mFetchDataControl.mHomeEntity;
+    HomeEntity homeEntity = mFetchControl.getHomeEntity(mBannerPk);
     if (homeEntity != null) {
       if (homeEntity.page < homeEntity.num_pages) {
 	/* modify by dragontec for bug 4264 start */
-        mFetchDataControl.fetchBanners(mBannerPk, ++homeEntity.page, true);
+		  mFetchControl.fetchBanners(mBannerPk, ++homeEntity.page, true);
       } else {
       	mRecyclerView.setOnLoadMoreComplete();
 	/* modify by dragontec for bug 4264 end */
@@ -462,10 +466,10 @@ public class TemplateDoubleMd extends Template
       mDoubleLayoutManager.findLastCompletelyVisibleItemPositions(positions);
       mDoubleLayoutManager.setCanScroll(true);
       mRecyclerView.loadMore();
-      if (positions[1] <= mFetchDataControl.mHomeEntity.count) {
+      if (positions[1] <= mFetchControl.getHomeEntity(mBannerPk).count) {
         int targetPosition = positions[1] + 12;
-        if (targetPosition >= mFetchDataControl.mHomeEntity.count) {
-          targetPosition = mFetchDataControl.mHomeEntity.count;
+        if (targetPosition >= mFetchControl.getHomeEntity(mBannerPk).count) {
+          targetPosition = mFetchControl.getHomeEntity(mBannerPk).count;
         }
         mSelectItemPosition = targetPosition;
 /*add by dragontec for bug 4332 start*/
@@ -477,7 +481,7 @@ public class TemplateDoubleMd extends Template
         }
         mNavigationtHandler.sendEmptyMessageDelayed(NAVIGATION_RIGHT, 500);
 			/*delete by dragontec for bug 4303 start*/
-//        if (targetPosition == mFetchDataControl.mHomeEntity.count)
+//        if (targetPosition == mFetchControl.getHomeEntity(mBannerPk).count)
 //          YoYo.with(Techniques.HorizontalShake)
 //              .duration(1000)
 //              .playOn(
@@ -518,3 +522,4 @@ public class TemplateDoubleMd extends Template
     return false;
   }
 }
+/*modify by dragontec for bug 4362 end*/

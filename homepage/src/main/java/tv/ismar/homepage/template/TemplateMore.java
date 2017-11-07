@@ -62,8 +62,12 @@ public class TemplateMore extends Template implements View.OnClickListener, View
   @Override
   public void onStop() {}
 
+	/*modify by dragontec for bug 4362 start*/
   @Override
-  public void onDestroy() {}
+  public void onDestroy() {
+	  super.onDestroy();
+  }
+  /*modify by dragontec for bug 4362 end*/
 
   @Override
   public void initData(Bundle bundle) {
@@ -143,5 +147,12 @@ public class TemplateMore extends Template implements View.OnClickListener, View
       mButton.setHovered(false);
     }
   }
+
+	/*modify by dragontec for bug 4362 start*/
+	@Override
+	public void callBack(int flags, Object... args) {
+
+	}
+	/*modify by dragontec for bug 4362 end*/
   /*add by dragontec for bug 4221 end*/
 }

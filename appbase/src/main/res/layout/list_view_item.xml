@@ -12,7 +12,7 @@
         android:layout_width="@dimen/filter_list_item_title_w"
         android:layout_height="@dimen/filter_list_item_preview_img_h"
         android:id="@+id/list_item_preview_img"
-        android:background="@drawable/list_item_preview_bg"
+        android:background="@drawable/item_horizontal_preview"
         android:layout_alignParentTop="true"
         labelimage:focuspaddingtop="0.7"
         labelimage:focustextsize="@dimen/h3_text_size"

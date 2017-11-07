@@ -68,14 +68,18 @@ public class SubjectTvAdapter extends RecyclerView.Adapter<MovieViewHolder> {
         holder.movie_item_title.setText(item.getTitle());
         String poster_url=item.getPoster_url();
         if(poster_url!=null&&!"".equals(poster_url)) {
+/*modify by dragontec for bug 4336 start*/
             Picasso.with(mContext).load(poster_url)
                     .memoryPolicy(MemoryPolicy.NO_CACHE)
                     .memoryPolicy(MemoryPolicy.NO_STORE)
-                    .placeholder(R.drawable.list_item_preview_bg)
-                    .error(R.drawable.list_item_preview_bg)
+                    .placeholder(R.drawable.item_horizontal_preview)
+                    .error(R.drawable.item_horizontal_preview)
                     .into(holder.movie_item_poster);
+/*modify by dragontec for bug 4336 end*/
         }else{
-            holder.movie_item_poster.setImageResource(R.drawable.list_item_preview_bg);
+/*modify by dragontec for bug 4336 start*/
+            holder.movie_item_poster.setImageResource(R.drawable.item_horizontal_preview);
+/*modify by dragontec for bug 4336 end*/
         }
         if(item.getExpense()!=null){
             Picasso.with(mContext).load(VipMark.getInstance().getImage((Activity) mContext,item.getExpense().pay_type,item.getExpense().cpid)).memoryPolicy(MemoryPolicy.NO_STORE).memoryPolicy(MemoryPolicy.NO_CACHE).into(holder.movie_item_mark);

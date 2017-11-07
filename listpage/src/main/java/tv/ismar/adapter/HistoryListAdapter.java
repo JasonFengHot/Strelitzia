@@ -73,9 +73,13 @@ public class HistoryListAdapter extends RecyclerView.Adapter<HistoryListAdapter.
         HistoryFavoriteEntity item = items.get(position);
          if(item.getType()!=2){
                 if(item.getAdlet_url()!=null&&!item.getAdlet_url().isEmpty()) {
-                    Picasso.with(mContext).load(item.getAdlet_url()).error(R.drawable.list_item_preview_bg).into(holder.item_detail_image);
+/*modify by dragontec for bug 4336 start*/
+                    Picasso.with(mContext).load(item.getAdlet_url()).placeholder(R.drawable.item_horizontal_preview).error(R.drawable.item_horizontal_preview).into(holder.item_detail_image);
+/*modify by dragontec for bug 4336 end*/
                 }else{
-                    Picasso.with(mContext).load(R.drawable.list_item_preview_bg).into(holder.item_detail_image);
+/*modify by dragontec for bug 4336 start*/
+                    Picasso.with(mContext).load(R.drawable.item_horizontal_preview).into(holder.item_detail_image);
+/*modify by dragontec for bug 4336 end*/
                 }
                  holder.item_title.setText(item.getTitle());
                  holder.item_title.setVisibility(View.VISIBLE);

@@ -65,7 +65,9 @@ public class GuideAdapter extends BaseRecycleAdapter<GuideAdapter.GuideViewHolde
 //        if(position==0) holder.mMarginLeftView.setVisibility(View.GONE);
 		/*modify by dragontec for bug 4334 start*/
 		if (mData != null) {
-			BannerPoster poster = mData.get(position);
+			/*modify by dragontec for bug 4362 start*/
+			BannerPoster poster = mData.get(holder.getAdapterPosition());
+			/*modify by dragontec for bug 4362 end*/
 			if (!TextUtils.isEmpty(poster.vertical_url)) {
 				if (poster.vertical_url.equals("更多")) {
 					Picasso.with(mContext).load(R.drawable.banner_vertical_more).into(holder.mPosterIg);
@@ -98,7 +100,9 @@ public class GuideAdapter extends BaseRecycleAdapter<GuideAdapter.GuideViewHolde
 			/*add by dragontec for bug 4325 start*/
 			String title = poster.title;
 			holder.mTitleTv.setText(title);
-			holder.mPosition = position;
+			/*modify by dragontec for bug 4362 start*/
+			holder.mPosition = holder.getAdapterPosition();
+			/*modify by dragontec for bug 4362 end*/
 
 			String focusStr = title;
 			if (poster.focus != null && !poster.focus.equals("") && !poster.focus.equals("null")) {

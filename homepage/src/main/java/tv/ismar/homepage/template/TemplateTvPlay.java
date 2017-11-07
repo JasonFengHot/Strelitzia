@@ -1,3 +1,4 @@
+/*modify by dragontec for bug 4362 start*/
 package tv.ismar.homepage.template;
 
 import android.content.Context;
@@ -51,7 +52,6 @@ public class TemplateTvPlay extends Template
         View.OnHoverListener,
         View.OnClickListener {
     private int mSelectItemPosition = 1; // 标题--选中海报位置
-    private FetchDataControl mFetchDataControl = null; // 抓网络数据类
     private TextView mTitleTv; // banner标题
 /*delete by dragontec for bug 4332 start*/
 //    private RecyclerViewTV mRecycleView;
@@ -63,7 +63,6 @@ public class TemplateTvPlay extends Template
 //    private View navigationLeft;
 //    private View navigationRight;
 /*delete by dragontec for bug 4332 end*/
-    private String mBannerPk;
     private String mName; // 频道名称（中文）
     private String mChannel; // 频道名称（英文）
 
@@ -97,9 +96,8 @@ public class TemplateTvPlay extends Template
     }
 
 	/*modify by dragontec for bug 4334 start*/
-    public TemplateTvPlay(Context context, int position) {
-        super(context, position);
-        mFetchDataControl = new FetchDataControl(context, this);
+    public TemplateTvPlay(Context context, int position, FetchDataControl fetchDataControl) {
+        super(context, position, fetchDataControl);
         mNavigationtHandler = new NavigationtHandler();
     }
     /*modify by dragontec for bug 4334 end*/
@@ -119,9 +117,6 @@ public class TemplateTvPlay extends Template
 
     @Override
     public void onPause() {
-        if (mFetchDataControl != null) {
-            mFetchDataControl.stop();
-        }
 	/*add by dragontec for bug 4077 start*/
 		super.onPause();
 	/*add by dragontec for bug 4077 end*/
@@ -140,13 +135,8 @@ public class TemplateTvPlay extends Template
     @Override
     public void onDestroy() {
 /*add by dragontec for bug 4205 start*/
-        if (mFetchDataControl != null) {
-            mFetchDataControl.clear();
-        }
         if (mAdapter != null) {
-            mAdapter.setOnHoverListener(null);
             mAdapter.setOnItemClickListener(null);
-            mAdapter.setOnItemSelectedListener(null);
         }
         if (mRecyclerView != null) {
             mRecyclerView.setLayoutManager(null);
@@ -162,6 +152,7 @@ public class TemplateTvPlay extends Template
         if (mNavigationtHandler != null){
             mNavigationtHandler = null;
         }
+		super.onDestroy();
     }
 
     @Override
@@ -197,8 +188,8 @@ public class TemplateTvPlay extends Template
 /*add by dragontec for bug 4332 end*/
         navigationLeft.setOnClickListener(this);
         navigationRight.setOnClickListener(this);
-        navigationRight.setOnHoverListener(this);
-        navigationLeft.setOnHoverListener(this);
+//        navigationRight.setOnHoverListener(this);
+//        navigationLeft.setOnHoverListener(this);
 /*modify by dragontec for bug 4332 start*/
         mRecyclerView.setPagingableListener(this);
         mRecyclerView.setOnItemFocusChangeListener(this);
@@ -208,13 +199,17 @@ public class TemplateTvPlay extends Template
 
     @Override
     public void initData(Bundle bundle) {
+    	initAdapter();
         mTitleTv.setText(bundle.getString("title"));
         mBannerPk = bundle.getString("banner");
         mName = bundle.getString(NAME_KEY);
         mChannel = bundle.getString(CHANNEL_KEY);
 /*modify by dragontec for bug 4334 start*/
 		mTitleCountTv.setText("00/00");
-		mFetchDataControl.fetchBanners(mBannerPk, 1, false);
+		if (mFetchControl.getHomeEntity(mBannerPk) != null) {
+			isNeedFillData = true;
+			checkViewAppear();
+		}
     }
 
 	@Override
@@ -234,13 +229,15 @@ public class TemplateTvPlay extends Template
 /*modify by dragontec for bug 4334 end*/
 
     private void initTitle() {
-        if (mSelectItemPosition > mFetchDataControl.mHomeEntity.count)
-            mSelectItemPosition = mFetchDataControl.mHomeEntity.count;
-        mTitleCountTv.setText(
-                String.format(
-                        mContext.getString(R.string.home_item_title_count),
-                        mSelectItemPosition + "",
-                        mFetchDataControl.mHomeEntity.count + ""));
+    	if (mFetchControl.getHomeEntity(mBannerPk) != null) {
+			if (mSelectItemPosition > mFetchControl.getHomeEntity(mBannerPk).count)
+				mSelectItemPosition = mFetchControl.getHomeEntity(mBannerPk).count;
+			mTitleCountTv.setText(
+					String.format(
+							mContext.getString(R.string.home_item_title_count),
+							mSelectItemPosition + "",
+							mFetchControl.getHomeEntity(mBannerPk).count + ""));
+		}
     }
 
 	/*modify by dragontec for bug 4334 start*/
@@ -257,47 +254,47 @@ public class TemplateTvPlay extends Template
     private void initRecycle() {
     	if (mAdapter != null) {
     		if (mAdapter.getData() == null) {
-    			mAdapter.setData(mFetchDataControl.mPoster);
+    			mAdapter.setData(mFetchControl.mPosterMap.get(mBannerPk));
     			mRecyclerView.setAdapter(mAdapter);
 	/*add by dragontec for bug 4077 start*/
 				checkFocus(mRecyclerView);
 	/*add by dragontec for bug 4077 end*/
 			} else {
-				int start = mFetchDataControl.mPoster.size() - mFetchDataControl.mHomeEntity.posters.size();
-				int end = mFetchDataControl.mPoster.size();
+				int start = mFetchControl.mPosterMap.get(mBannerPk).size() - mFetchControl.getHomeEntity(mBannerPk).posters.size();
+				int end = mFetchControl.mPosterMap.get(mBannerPk).size();
 				mAdapter.notifyItemRangeChanged(start, end);
 			}
 		}
     }
     /*modify by dragontec for bug 4334 end*/
 
-    @Override
-    public void callBack(int flags, Object... args) {
-        if (flags == FetchDataControl.FETCH_BANNERS_LIST_FLAG) { // 获取单个banner业务
-			/*modify by dragontec for bug 4334 start*/
-			isNeedFillData = true;
-			initAdapter();
-            checkViewAppear();
-            /*modify by dragontec for bug 4334 end*/
-	/* modify by dragontec for bug 4264 start */
-/*modify by dragontec for bug 4332 start*/
-			mRecyclerView.setOnLoadMoreComplete();
-        } else if (flags == FetchDataControl.FETCH_DATA_FAIL_FLAG) {
-			mFetchDataControl.mHomeEntity.page--;
-			mRecyclerView.setOnLoadMoreComplete();
-/*modify by dragontec for bug 4332 end*/
-	/* modify by dragontec for bug 4264 end */
-		}
-    }
+//    @Override
+//    public void callBack(int flags, Object... args) {
+//        if (flags == FetchDataControl.FETCH_BANNERS_LIST_FLAG) { // 获取单个banner业务
+//			/*modify by dragontec for bug 4334 start*/
+//			isNeedFillData = true;
+//			initAdapter();
+//            checkViewAppear();
+//            /*modify by dragontec for bug 4334 end*/
+//	/* modify by dragontec for bug 4264 start */
+///*modify by dragontec for bug 4332 start*/
+//			mRecyclerView.setOnLoadMoreComplete();
+//        } else if (flags == FetchDataControl.FETCH_DATA_FAIL_FLAG) {
+//			mFetchControl.getHomeEntity(mBannerPk).page--;
+//			mRecyclerView.setOnLoadMoreComplete();
+///*modify by dragontec for bug 4332 end*/
+//	/* modify by dragontec for bug 4264 end */
+//		}
+//    }
 
     @Override
     public void onLoadMoreItems() { // 加载更多数据
         Log.i(TAG, "onLoadMoreItems");
-        HomeEntity homeEntity = mFetchDataControl.mHomeEntity;
+        HomeEntity homeEntity = mFetchControl.getHomeEntity(mBannerPk);
         if (homeEntity != null) {
             if (homeEntity.page < homeEntity.num_pages) {
 	/* modify by dragontec for bug 4264 start */
-                mFetchDataControl.fetchBanners(mBannerPk, ++homeEntity.page, true);
+                mFetchControl.fetchBanners(mBannerPk, ++homeEntity.page, true);
             } else {
 /*modify by dragontec for bug 4332 start*/
 				mRecyclerView.setOnLoadMoreComplete();
@@ -343,17 +340,17 @@ public class TemplateTvPlay extends Template
 
     @Override
     public void onItemClick(View view, int position) {
-        if (mFetchDataControl.mHomeEntity.is_more && position == mAdapter.getItemCount() - 1) {
+        if (mFetchControl.getHomeEntity(mBannerPk).is_more && position == mAdapter.getItemCount() - 1) {
             new PageIntent()
                     .toListPage(
                             mContext,
-                            mFetchDataControl.mHomeEntity.channel_title,
-                            mFetchDataControl.mHomeEntity.channel,
-                            mFetchDataControl.mHomeEntity.style,
-                            mFetchDataControl.mHomeEntity.section_slug);
+                            mFetchControl.getHomeEntity(mBannerPk).channel_title,
+                            mFetchControl.getHomeEntity(mBannerPk).channel,
+                            mFetchControl.getHomeEntity(mBannerPk).style,
+                            mFetchControl.getHomeEntity(mBannerPk).section_slug);
         } else {
         	/*modify by dragontec for bug 4334 start*/
-            mFetchDataControl.go2Detail(mAdapter.getData().get(position));
+			mFetchControl.go2Detail(mAdapter.getData().get(position));
             /*modify by dragontec for bug 4334 end*/
         }
     }
@@ -423,10 +420,10 @@ public class TemplateTvPlay extends Template
             mRecyclerView.loadMore();
 /*modify by dragontec for bug 4332 end*/
             if (mTvPlayerLayoutManager.findLastCompletelyVisibleItemPosition()
-                    <= mFetchDataControl.mHomeEntity.count) {
+                    <= mFetchControl.getHomeEntity(mBannerPk).count) {
                 int targetPosition = mTvPlayerLayoutManager.findLastCompletelyVisibleItemPosition() + 4;
-                if (targetPosition >= mFetchDataControl.mHomeEntity.count) {
-                    targetPosition = mFetchDataControl.mHomeEntity.count;
+                if (targetPosition >= mFetchControl.getHomeEntity(mBannerPk).count) {
+                    targetPosition = mFetchControl.getHomeEntity(mBannerPk).count;
                 }
                 mSelectItemPosition = targetPosition;
 /*add by dragontec for bug 4332 start*/
@@ -440,7 +437,7 @@ public class TemplateTvPlay extends Template
                 }
                 mNavigationtHandler.sendEmptyMessageDelayed(NAVIGATION_RIGHT, 500);
 			/*delete by dragontec for bug 4303 start*/
-//                if (targetPosition == mFetchDataControl.mHomeEntity.count)
+//                if (targetPosition == mFetchControl.getHomeEntity(mBannerPk).count)
 //                    YoYo.with(Techniques.HorizontalShake)
 //                            .duration(1000)
 //                            .playOn(
@@ -453,3 +450,4 @@ public class TemplateTvPlay extends Template
         }
     }
 }
+/*modify by dragontec for bug 4362 end*/

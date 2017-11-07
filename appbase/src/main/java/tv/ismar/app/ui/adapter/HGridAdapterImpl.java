@@ -200,26 +200,30 @@ public class HGridAdapterImpl extends HGridAdapter<ItemCollection> implements As
                     }
 						if (isPortrait) {
 							if(item.list_url.equals("http://res.tvxio.bestv.com.cn/media/upload/20160321/36c8886fd5b4163ae48534a72ec3a555.png")){
+/*modify by dragontec for bug 4336 start*/
 								Picasso.with(mContext)
 										.load(item.adlet_url)
-										.error(R.drawable.list_item_ppreview_bg)
-										.placeholder(R.drawable.list_item_ppreview_bg)
+										.error(R.drawable.item_vertical_preview)
+										.placeholder(R.drawable.item_vertical_preview)
 										.transform(mTransformation)
 										.config(Bitmap.Config.RGB_565)
 										.into(holder.previewImage);
+/*modify by dragontec for bug 4336 end*/
 
 							}else {
 								holder.previewImage.setUrl(item.list_url);
 							}
 						} else {
 							if(item.adlet_url.equals("http://res.tvxio.bestv.com.cn/media/upload/20160504/5eae6db53f065ff0269dfc71fb28a4ec.png")){
+/*modify by dragontec for bug 4336 start*/
 								Picasso.with(mContext)
 										.load(item.list_url)
-										.error(R.drawable.list_item_preview_bg)
-										.placeholder(R.drawable.list_item_preview_bg)
+										.error(R.drawable.item_horizontal_preview)
+										.placeholder(R.drawable.item_horizontal_preview)
 										.transform(mTransformation)
 										.config(Bitmap.Config.RGB_565)
 										.into(holder.previewImage);
+/*modify by dragontec for bug 4336 end*/
 							}else {
 								holder.previewImage.setUrl(item.adlet_url);
 							}

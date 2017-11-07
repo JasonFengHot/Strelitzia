@@ -66,9 +66,6 @@ import tv.ismar.view.LocationRelativeLayout;
 import static android.widget.RelativeLayout.ALIGN_PARENT_BOTTOM;
 import static android.widget.RelativeLayout.ALIGN_PARENT_RIGHT;
 
-//add by dragontec for bug 4310 start
-//add by dragontec for bug 4310 end
-
 /**
  * Created by zhangjiqiang on 15-6-18.
  */

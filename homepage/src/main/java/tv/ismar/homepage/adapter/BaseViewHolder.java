@@ -95,11 +95,16 @@ public abstract class BaseViewHolder extends RecyclerView.ViewHolder implements
             scaleToNormal(v.findViewById(getScaleLayoutId()));
         }
 		/*add by dragontec for bug 4325,4316 start*/
-		if (!(this instanceof CenterAdapter.CenterViewHolder)) {
-			updateTitleText(hasFocus);
-		}else{
+		/*modify by dragontec for bug 4362 start*/
+		if (this instanceof CenterAdapter.CenterViewHolder) {
 			updateForCenter(hasFocus);
+		} else if (this instanceof SubscribeAdapter.SubscribeViewHolder) {
+			updateOrderTitle(hasFocus);
+			updateTitleText(hasFocus);
+		} else {
+			updateTitleText(hasFocus);
 		}
+		/*modify by dragontec for bug 4362 end*/
 		/*add by dragontec for bug 4325,4316 end*/
     }
 
@@ -160,6 +165,22 @@ public abstract class BaseViewHolder extends RecyclerView.ViewHolder implements
         }
         return false;
     }
+
+	/*add by dragontec for bug 4362 start*/
+    private void updateOrderTitle(boolean hasFocus) {
+    	View view = itemView.findViewById(((SubscribeAdapter.SubscribeViewHolder)this).getOrderTitleId());
+    	if (view != null) {
+			if (hasFocus) {
+				view.setSelected(true);
+				view.setBackgroundResource(R.color._ff9c3c);
+			} else {
+				view.setSelected(false);
+				view.setBackgroundResource(R.color._333333);
+			}
+		}
+	}
+	/*add by dragontec for bug 4362 end*/
+
 	/*add by dragontec for bug 4325 start*/
     private void updateTitleText(boolean hasFocus) {
 		/*modify by dragontec for bug 卖点文字不正确的问题 start*/

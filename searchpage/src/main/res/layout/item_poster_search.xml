@@ -15,7 +15,7 @@
                 android:id="@+id/iv_poster"
                 android:layout_width="@dimen/poster_width"
                 android:layout_height="@dimen/poster_height"
-                android:background="@drawable/vertical_preview_bg"
+                android:background="@drawable/item_vertical_preview"
                 android:layout_marginTop="@dimen/poster_margin_top"/>
         <TextView
                 android:id="@+id/ItemBeanScore"

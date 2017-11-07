@@ -61,6 +61,7 @@
                             android:layout_width="@dimen/movie_detail_preview_img_w"
                             android:layout_height="@dimen/movie_detail_preview_img_h"
                             android:scaleType="centerCrop"
+                            android:background="@drawable/item_vertical_preview"
                             app:imageUrl="@{tasks.itemPostUrl}"/>
 
                         <tv.ismar.app.widget.RecyclerImageView

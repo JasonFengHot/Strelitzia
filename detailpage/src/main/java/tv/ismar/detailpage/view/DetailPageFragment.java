@@ -6,6 +6,7 @@ import android.databinding.DataBindingUtil;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -615,8 +616,14 @@ public class DetailPageFragment extends Fragment implements DetailPageContract.V
         View contentView;
         String content_model = itemEntity.getContentModel();
         mHeadTitle = getModelType(content_model);
+/*modify by dragontec for bug 4336 start*/
+        Drawable placeHoldDrawable = null;
+/*modify by dragontec for bug 4336 end*/
         if ((("variety".equals(content_model) && mItemEntity.getExpense() == null)) || ("entertainment".equals(content_model) && mItemEntity.getExpense() == null)) {
             relViews = 4;
+/*modify by dragontec for bug 4336 start*/
+            placeHoldDrawable = getResources().getDrawable(R.drawable.item_horizontal_preview);
+/*modify by dragontec for bug 4336 end*/
             mEntertainmentBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_detailpage_entertainment_sharp, container, false);
             mEntertainmentBinding.setTasks(mModel);
             mEntertainmentBinding.setActionHandler(mPresenter);
@@ -633,6 +640,9 @@ public class DetailPageFragment extends Fragment implements DetailPageContract.V
             subscribeBtnView = mEntertainmentBinding.subscribeStatusBtn;
         } else if ("movie".equals(content_model)) {
             relViews = 6;
+/*modify by dragontec for bug 4336 start*/
+            placeHoldDrawable = getResources().getDrawable(R.drawable.item_vertical_preview);
+/*modify by dragontec for bug 4336 end*/
             mMovieBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_detailpage_movie_sharp, container, false);
             mMovieBinding.setTasks(mModel);
             mMovieBinding.setActionHandler(mPresenter);
@@ -648,6 +658,9 @@ public class DetailPageFragment extends Fragment implements DetailPageContract.V
             subscribeBtnView = mMovieBinding.subscribeStatusBtn;
         } else {
             relViews = 4;
+/*modify by dragontec for bug 4336 start*/
+            placeHoldDrawable = getResources().getDrawable(R.drawable.item_horizontal_preview);
+/*modify by dragontec for bug 4336 end*/
             relFocusTextViews = new TextView[relViews];
             mNormalBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_detailpage_normal_sharp, container, false);
             mNormalBinding.setTasks(mModel);
@@ -705,6 +718,11 @@ public class DetailPageFragment extends Fragment implements DetailPageContract.V
         for (int i = 0; i < relViews; i++) {
             relRelImageViews[i] = (LabelImageView) contentView.findViewById(mRelImageViewIds[i]);
             relRelImageViews[i].setVisibility(View.VISIBLE);
+/*modify by dragontec for bug 4336 start*/
+            if (placeHoldDrawable != null) {
+                relRelImageViews[i].setLivErrorDrawable(placeHoldDrawable);
+            }
+/*modify by dragontec for bug 4336 end*/
             relTextViews[i] = (TextView) contentView.findViewById(mRelTextViewIds[i]);
             if (!(content_model.equals("variety") && itemEntity.getExpense() == null) &&
                     !(content_model.equals("entertainment") && itemEntity.getExpense() == null)

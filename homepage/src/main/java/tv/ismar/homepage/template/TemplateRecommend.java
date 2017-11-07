@@ -1,3 +1,4 @@
+/*modify by dragontec for bug 4362 start*/
 package tv.ismar.homepage.template;
 
 import android.content.Context;
@@ -54,13 +55,11 @@ public class TemplateRecommend extends Template
 /*delete by dragontec for bug 4332 end*/
   private LinearLayoutManagerTV mRecommendLayoutManager;
   private RecommendAdapter mAdapter;
-  private FetchDataControl mFetchDataControl = null;
   private BannerLinearLayout mBannerLinearLayout;
 /*delete by dragontec for bug 4332 start*/
 //  private View navigationLeft;
 //  private View navigationRight;
 /*delete by dragontec for bug 4332 end*/
-    private String mBannerPk; // banner标记
     private String mName; // 频道名称（中文）
     private String mChannel; // 频道名称（英文）
 
@@ -94,9 +93,8 @@ public class TemplateRecommend extends Template
   }
 
 	/*modify by dragontec for bug 4334 start*/
-  public TemplateRecommend(Context context, int position) {
-    super(context, position);
-    mFetchDataControl = new FetchDataControl(context, this);
+  public TemplateRecommend(Context context, int position, FetchDataControl fetchDataControl) {
+    super(context, position, fetchDataControl);
     mNavigationtHandler = new NavigationtHandler();
   }
   /*modify by dragontec for bug 4334 end*/
@@ -114,9 +112,6 @@ public class TemplateRecommend extends Template
 
   @Override
   public void onPause() {
-    if (mFetchDataControl != null){
-      mFetchDataControl.stop();
-    }
 	/*add by dragontec for bug 4077 start*/
 	  super.onPause();
 	/*add by dragontec for bug 4077 end*/
@@ -135,13 +130,8 @@ public class TemplateRecommend extends Template
   @Override
   public void onDestroy() {
 /*add by dragontec for bug 4205 start*/
-    if (mFetchDataControl != null) {
-      mFetchDataControl.clear();
-    }
     if (mAdapter != null) {
-      mAdapter.setOnHoverListener(null);
       mAdapter.setOnItemClickListener(null);
-      mAdapter.setOnItemSelectedListener(null);
     }
     if (mRecyclerView != null) {
       mRecyclerView.setLayoutManager(null);
@@ -157,6 +147,7 @@ public class TemplateRecommend extends Template
     if (mNavigationtHandler != null){
       mNavigationtHandler = null;
     }
+	  super.onDestroy();
   }
 
   @Override
@@ -185,11 +176,15 @@ public class TemplateRecommend extends Template
 
   @Override
   public void initData(Bundle bundle) {
+  	initAdapter();
       mBannerPk = bundle.getString(BANNER_KEY);
       mName = bundle.getString(NAME_KEY);
       mChannel = bundle.getString(CHANNEL_KEY);
 /*modify by dragontec for bug 4334 start*/
-	  mFetchDataControl.fetchBanners(mBannerPk, 1, false);
+	if (mFetchControl.getHomeEntity(mBannerPk) != null) {
+		isNeedFillData = true;
+		checkViewAppear();
+	}
   }
 
 	@Override
@@ -215,24 +210,24 @@ public class TemplateRecommend extends Template
 /*add by dragontec for bug 4332 end*/
     navigationLeft.setOnClickListener(this);
     navigationRight.setOnClickListener(this);
-    navigationRight.setOnHoverListener(this);
-    navigationLeft.setOnHoverListener(this);
+//    navigationRight.setOnHoverListener(this);
+//    navigationLeft.setOnHoverListener(this);
     mRecyclerView.setPagingableListener(this);
     mRecommendLayoutManager.setFocusSearchFailedListener(this);
   }
 
-  @Override
-  public void callBack(int flags, Object... args) {
-    if (flags == FetchDataControl.FETCH_BANNERS_LIST_FLAG) { // 获取推荐列表
-		/*modify by dragontec for bug 4334 start*/
-		isNeedFillData  = true;
-//      HomeEntity homeEntity = (HomeEntity) args[0];
-//      initRecycleView(homeEntity.posters);
-		initAdapter();
-		checkViewAppear();
-		/*modify by dragontec for bug 4334 end*/
-    }
-  }
+//  @Override
+//  public void callBack(int flags, Object... args) {
+//    if (flags == FetchDataControl.FETCH_BANNERS_LIST_FLAG) { // 获取推荐列表
+//		/*modify by dragontec for bug 4334 start*/
+//		isNeedFillData  = true;
+////      HomeEntity homeEntity = (HomeEntity) args[0];
+////      initRecycleView(homeEntity.posters);
+//		initAdapter();
+//		checkViewAppear();
+//		/*modify by dragontec for bug 4334 end*/
+//    }
+//  }
 
 	/*modify by dragontec for bug 4334 start*/
   private void initAdapter() {
@@ -245,14 +240,14 @@ public class TemplateRecommend extends Template
   private void initRecycleView() {
   	if (mAdapter != null) {
   		if (mAdapter.getData() == null) {
-  			mAdapter.setData(mFetchDataControl.mHomeEntity.posters);
+  			mAdapter.setData(mFetchControl.mPosterMap.get(mBannerPk));
 			mRecyclerView.setAdapter(mAdapter);
 	/*add by dragontec for bug 4077 start*/
 			checkFocus(mRecyclerView);
 	/*add by dragontec for bug 4077 end*/
 		} else {
-			int start = mFetchDataControl.mPoster.size() - mFetchDataControl.mHomeEntity.posters.size();
-			int end = mFetchDataControl.mPoster.size();
+			int start = mFetchControl.mPosterMap.get(mBannerPk).size() - mFetchControl.getHomeEntity(mBannerPk).posters.size();
+			int end = mFetchControl.mPosterMap.get(mBannerPk).size();
 			mAdapter.notifyItemRangeChanged(start, end);
 		}
 	}
@@ -292,10 +287,10 @@ public class TemplateRecommend extends Template
 
   @Override
   public void onItemClick(View view, int position) {
-    if(mFetchDataControl.mPoster!=null) {
-      BannerPoster bannerRecommend = mFetchDataControl.mPoster.get(position);
+    if(mFetchControl.mPosterMap.get(mBannerPk)!=null) {
+      BannerPoster bannerRecommend = mFetchControl.mPosterMap.get(mBannerPk).get(position);
       if (bannerRecommend != null) {
-        mFetchDataControl.go2Detail(bannerRecommend.pk,bannerRecommend.model_name,bannerRecommend.content_model,bannerRecommend.content_url,bannerRecommend.title,null,null,null);
+        mFetchControl.go2Detail(bannerRecommend.pk,bannerRecommend.model_name,bannerRecommend.content_model,bannerRecommend.content_url,bannerRecommend.title,null,null,null);
       }
     }
   }
@@ -321,10 +316,10 @@ public class TemplateRecommend extends Template
       mRecommendLayoutManager.setCanScroll(true);
       mRecyclerView.loadMore();
       if (mRecommendLayoutManager.findLastCompletelyVisibleItemPosition()
-          <= mFetchDataControl.mHomeEntity.count) {
+          <= mFetchControl.getHomeEntity(mBannerPk).count) {
         int targetPosition = mRecommendLayoutManager.findLastCompletelyVisibleItemPosition() + 4;
-        if (targetPosition >= mFetchDataControl.mHomeEntity.count) {
-          targetPosition = mFetchDataControl.mHomeEntity.count;
+        if (targetPosition >= mFetchControl.getHomeEntity(mBannerPk).count) {
+          targetPosition = mFetchControl.getHomeEntity(mBannerPk).count;
         }
 /*add by dragontec for bug 4332 start*/
 		  setNeedCheckScrollEnd();
@@ -337,7 +332,7 @@ public class TemplateRecommend extends Template
 
 			/*delete by dragontec for bug 4303 start*/
 //        try {
-//          if (targetPosition == mFetchDataControl.mHomeEntity.count)
+//          if (targetPosition == mFetchControl.getHomeEntity(mBannerPk).count)
 //            YoYo.with(Techniques.HorizontalShake)
 //                    .duration(1000)
 //                    .playOn(
@@ -380,3 +375,4 @@ public class TemplateRecommend extends Template
     return false;
   }
 }
+/*modify by dragontec for bug 4362 end*/
