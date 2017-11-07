@@ -67,9 +67,18 @@ public class ConlumnAdapter extends BaseRecycleAdapter<ConlumnAdapter.ConlumnVie
 			holder.mPosition = position;
 			holder.mTitle.setText(poster.title);
 			if (!TextUtils.isEmpty(poster.image_url)) {
-				Picasso.with(mContext).load(poster.image_url).error(R.drawable.list_item_preview_bg).into(holder.mPoster);
+/*modify by dragontec for bug 4336 start*/
+				Picasso.with(mContext).load(poster.image_url).
+                        error(R.drawable.template_item_horizontal_preview).
+                        placeholder(R.drawable.template_item_horizontal_preview).
+                        into(holder.mPoster);
+/*modify by dragontec for bug 4336 end*/
 			} else {
-				Picasso.with(mContext).load(R.drawable.list_item_preview_bg).into(holder.mPoster);
+/*modify by dragontec for bug 4336 start*/
+				Picasso.with(mContext).
+                        load(R.drawable.template_item_horizontal_preview).
+                        into(holder.mPoster);
+/*modify by dragontec for bug 4336 end*/
 			}
 			/*add by dragontec for bug 4325 start*/
 			String focusStr = poster.title;

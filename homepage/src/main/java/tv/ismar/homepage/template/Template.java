@@ -372,7 +372,7 @@ public abstract class Template {
 					fillData();
 				} else {
 					mParentView.getLocationOnScreen(location);
-					if (location[1] + mParentView.getHeight() > 1) {
+					if (location[1] + mParentView.getHeight() >= 0) {
 						if (location[1] >= mParentView.getResources().getDisplayMetrics().heightPixels + 1) {
 							ret = false;
 						} else {

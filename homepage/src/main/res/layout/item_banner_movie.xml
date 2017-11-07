@@ -81,7 +81,7 @@
                     android:layout_height="@dimen/banner_movie_post_title_h"
                     android:layout_alignParentBottom="true"
                     android:background="@drawable/banner_subscrib_introduction_bg"
-                    android:ellipsize="marquee"
+                    android:ellipsize="end"
                     android:gravity="center"
                     android:singleLine="true"
                     android:textColor="@color/_ffffff"

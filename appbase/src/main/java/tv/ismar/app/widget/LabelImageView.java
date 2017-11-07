@@ -102,6 +102,7 @@ public class LabelImageView extends FrameLayout {
     private void initView() {
         FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
         imageView = new RecyclerImageView(mContext);
+        imageView.isNeedQuickRelease = true;
         imageView.setLayoutParams(layoutParams);
         imageView.setScaleType(RecyclerImageView.ScaleType.CENTER_CROP);
         addView(imageView);
@@ -109,6 +110,7 @@ public class LabelImageView extends FrameLayout {
         FrameLayout.LayoutParams ltparams = new FrameLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
         ltparams.gravity = Gravity.LEFT | Gravity.TOP;
         vipImageView = new RecyclerImageView(mContext);
+        vipImageView.isNeedQuickRelease = true;
         vipImageView.setLayoutParams(ltparams);
         vipImageView.setScaleType(RecyclerImageView.ScaleType.FIT_CENTER);
         vipImageView.setVisibility(View.INVISIBLE);

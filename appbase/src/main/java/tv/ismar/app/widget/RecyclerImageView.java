@@ -12,6 +12,8 @@ import android.widget.ImageView;
 
 public class RecyclerImageView extends ImageView {
 
+    public boolean isNeedQuickRelease = false;
+
     public RecyclerImageView(Context context) {
         super(context);
     }
@@ -27,7 +29,9 @@ public class RecyclerImageView extends ImageView {
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        setImageDrawable(null);
+        if(isNeedQuickRelease) {
+            setImageDrawable(null);
+        }
     }
 }
 /*add by dragontec for bug 4205 end*/

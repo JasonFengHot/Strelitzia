@@ -717,7 +717,14 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
 			synchronized (templateDataLock) {
 				if (mTemplates != null) {
 					if (mLinearContainer != null) {
-						for (int i = mLinearContainer.getCurrentBannerPos(); i < mTemplates.size(); i++) {
+						int i = mLinearContainer.getCurrentBannerPos();
+						int[] location = new int[2];
+						mLinearContainer.getChildAt(i).getLocationOnScreen(location);
+						while (i != 0 && location[1] > 0) {
+							i--;
+							mLinearContainer.getChildAt(i).getLocationOnScreen(location);
+						}
+						for (; i < mTemplates.size(); i++) {
 							if (mLinearContainer != null && mLinearContainer.isScrolling()) {
 								break;
 							}

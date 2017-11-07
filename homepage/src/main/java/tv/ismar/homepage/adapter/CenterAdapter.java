@@ -76,9 +76,18 @@ public class CenterAdapter extends BaseRecycleAdapter<CenterAdapter.CenterViewHo
 			holder.mLayout.setFocusableInTouchMode(false);
 			/*add by dragontec for bug 4307,4277 end*/
 			if (!TextUtils.isEmpty(carousels.video_image)) {
-				Picasso.with(mContext).load(carousels.video_image).into(holder.mPosterIg);
+/*modify by dragontec for bug 4336 start*/
+				Picasso.with(mContext).load(carousels.video_image).
+                        placeholder(R.drawable.template_center_item_preview).
+                        error(R.drawable.template_center_item_preview).
+                        into(holder.mPosterIg);
+/*modify by dragontec for bug 4336 end*/
 			} else {
-				Picasso.with(mContext).load(R.drawable.list_item_preview_bg).into(holder.mPosterIg);
+/*modify by dragontec for bug 4336 start*/
+				Picasso.with(mContext).
+                        load(R.drawable.template_center_item_preview).
+                        into(holder.mPosterIg);
+/*modify by dragontec for bug 4336 end*/
 			}
 			/*add by dragontec for bug 4325,卖点文字不正确的问题 start*/
 			String focusStr = carousels.title;

@@ -332,6 +332,9 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
     @Override
     public void onConnected(PlaybackService service) {
         mPlaybackService = service;
+		/*add by dragontec for bug 4405 start*/
+        this.releasePlayService(true);
+		/*add by dragontec for bug 4405 end*/
         mPlaybackService.setCallback(this);
         mPlaybackService.setSurfaceView(player_surface);
         mPlaybackService.setQiyiContainer(player_container);
@@ -2117,11 +2120,9 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
     @Override
     public void onDestroy() {
 /*add by dragontec for bug 4205 start*/
-        if (mPlaybackService != null) {
-            mPlaybackService.setCallback(null);
-            mPlaybackService.setQiyiContainer(null);
-            mPlaybackService.setSurfaceView(null);
-        }
+		/*add by dragontec for bug 4405 start*/
+        releasePlayService(false);
+		/*add by dragontec for bug 4405 end*/
         if (player_container != null) {
             player_container.setOnHoverListener(null);
             player_container.setOnClickListener(null);
@@ -2139,4 +2140,18 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
         mClient=null;
         super.onDestroy();
     }
+	/*add by dragontec for bug 4405 start*/
+    private void releasePlayService(boolean isDirect)
+    {
+        if (mPlaybackService != null) {
+            PlaybackService.ServiceCallback cb = mPlaybackService.getCallback();
+            if(isDirect || (cb != null && cb == this))
+            {
+                mPlaybackService.setCallback(null);
+                mPlaybackService.setQiyiContainer(null);
+                mPlaybackService.setSurfaceView(null);
+            }
+        }
+    }
+	/*add by dragontec for bug 4405 end*/
 }

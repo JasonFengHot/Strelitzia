@@ -128,8 +128,12 @@ public class BannerSubscribeAdapter
             holder.mItemView.findViewById(R.id.content_layout).setVisibility(View.VISIBLE);
             holder.mOrderTitle.setVisibility(View.VISIBLE);
 
-            Picasso.with(mContext).load(targetImageUrl).placeholder(R.drawable.list_item_preview_bg)
-                    .error(R.drawable.list_item_preview_bg).into(holder.mImageView);
+/*modify by dragontec for bug 4336 start*/
+            Picasso.with(mContext).load(targetImageUrl).
+                    placeholder(R.drawable.template_title_item_horizontal_preview).
+                    error(R.drawable.template_title_item_horizontal_preview).
+                    into(holder.mImageView);
+/*modify by dragontec for bug 4336 start*/
         }
         if (position == 0) {
             RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) holder.mTimeLine.getLayoutParams();
@@ -414,13 +418,11 @@ public class BannerSubscribeAdapter
                         textView.setText(focusTitle);
                         textView.setEllipsize(TextUtils.TruncateAt.MARQUEE);
                         textView.setMarqueeRepeatLimit(-1);
-                        textView.setHorizontallyScrolling(true);
                         textView.setSelected(true);
                     } else {
                         textView.setText(title);
                         textView.setEllipsize(TextUtils.TruncateAt.END);
                         textView.setMarqueeRepeatLimit(0);
-                        textView.setHorizontallyScrolling(false);
                         textView.setSelected(false);
                     }
                 }

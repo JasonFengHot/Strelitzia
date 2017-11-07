@@ -289,7 +289,14 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
         }
 /*add by dragontec for bug 4322 end*/
     }
-
+/*add by dragontec for bug 4405 start*/
+    public ServiceCallback getCallback()
+    {
+        synchronized (mAdLock) {
+            return serviceCallback;
+        }
+    }
+/*add by dragontec for bug 4405 end*/
     /**
      * @param detachView true：表示在播放器UI页面调用
      *                   false：表示在详情页调用

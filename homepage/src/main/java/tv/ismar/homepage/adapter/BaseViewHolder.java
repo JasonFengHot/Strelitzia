@@ -25,6 +25,7 @@ import tv.ismar.homepage.OnItemClickListener;
 import tv.ismar.homepage.OnItemHoverListener;
 import tv.ismar.homepage.OnItemSelectedListener;
 import tv.ismar.homepage.R;
+import tv.ismar.homepage.widget.CenterRecyclerViewTV;
 
 import static android.view.View.SCALE_X;
 import static android.view.View.SCALE_Y;
@@ -262,7 +263,9 @@ public abstract class BaseViewHolder extends RecyclerView.ViewHolder implements
 										if (keyCode == KeyEvent.KEYCODE_DPAD_LEFT) {
 											int position = ((RecyclerViewTV)mRecyclerView).findFirstVisibleItemPosition();
 											((LinearLayoutManagerTV) mRecyclerView.getLayoutManager()).setCanScroll(true);
-											((LinearLayoutManagerTV) mRecyclerView.getLayoutManager()).scrollToPositionWithOffset( ((RecyclerViewTV)mRecyclerView).findFirstVisibleItemPosition(), v.getContext().getResources().getDimensionPixelOffset(R.dimen.center_padding_offset));
+											/*modify by dragontec for bug 4365 start*/
+											((LinearLayoutManagerTV) mRecyclerView.getLayoutManager()).scrollToPositionWithOffset( ((RecyclerViewTV)mRecyclerView).findFirstVisibleItemPosition(), ((CenterRecyclerViewTV) mRecyclerView).getCenterOffset());
+											/*modify by dragontec for bug 4365 end*/
 											if (mSelectedListener != null) {
 												mSelectedListener.onItemSelect(v, position);
 											}
@@ -270,7 +273,9 @@ public abstract class BaseViewHolder extends RecyclerView.ViewHolder implements
 										if (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT) {
 											int position = ((RecyclerViewTV)mRecyclerView).findFirstVisibleItemPosition();
 											((LinearLayoutManagerTV) mRecyclerView.getLayoutManager()).setCanScroll(true);
-											((LinearLayoutManagerTV) mRecyclerView.getLayoutManager()).scrollToPositionWithOffset( ((RecyclerViewTV)mRecyclerView).findLastVisibleItemPosition(), v.getContext().getResources().getDimensionPixelOffset(R.dimen.center_padding_offset));
+											/*modify by dragontec for bug 4365 start*/
+											((LinearLayoutManagerTV) mRecyclerView.getLayoutManager()).scrollToPositionWithOffset( ((RecyclerViewTV)mRecyclerView).findLastVisibleItemPosition(), ((CenterRecyclerViewTV) mRecyclerView).getCenterOffset());
+											/*modify by dragontec for bug 4365 end*/
 											if (mSelectedListener != null) {
 												mSelectedListener.onItemSelect(v, position);
 											}

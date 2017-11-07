@@ -191,14 +191,16 @@ public class RecyclerViewTV extends RecyclerView implements PrvInterface {
         final int parentTop = getPaddingTop();
         final int parentRight = getWidth() - getPaddingRight();
         final int parentBottom = getHeight() - getPaddingBottom();
-
-        final int childLeft = child.getLeft() + rect.left;
+		/*modify by dragontec for bug 4365 start*/
+        final int childLeft = child.getLeft() + rect.left - getCenterSpace();
+		/*modify by dragontec for bug 4365 end*/
         final int childTop = child.getTop() + rect.top;
 
 //        final int childLeft = child.getLeft() + rect.left - child.getScrollX();
 //        final int childTop = child.getTop() + rect.top - child.getScrollY();
-
-        final int childRight = childLeft + rect.width();
+		/*modify by dragontec for bug 4365 start*/
+        final int childRight = childLeft + rect.width() + getCenterSpace() * 2;
+		/*modify by dragontec for bug 4365 end*/
         final int childBottom = childTop + rect.height();
 
         final int offScreenLeft = Math.min(0, childLeft - parentLeft - mSelectedItemOffsetStart);
@@ -340,7 +342,12 @@ public class RecyclerViewTV extends RecyclerView implements PrvInterface {
         // LinearLayoutManager --> scrollBy --> mOrientationHelper.offsetChildren(-scrolled);
         super.smoothScrollBy(dx, dy);
     }
-
+	/*modify by dragontec for bug 4365 start*/
+    public int getCenterSpace() {
+        //implement in child class
+        return 0;
+    }
+	/*modify by dragontec for bug 4365 end*/
     public int getSelectedItemOffsetStart() {
         return mSelectedItemOffsetStart;
     }
