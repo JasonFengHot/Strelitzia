@@ -1,4 +1,3 @@
-/*modify by dragontec for bug 4362 start*/
 package tv.ismar.homepage.template;
 
 import android.content.Context;
@@ -29,6 +28,7 @@ import tv.ismar.homepage.R;
 import tv.ismar.homepage.adapter.Horizontal519Adapter;
 import tv.ismar.homepage.adapter.TvPlayAdapter;
 import tv.ismar.homepage.control.FetchDataControl;
+import tv.ismar.homepage.fragment.ChannelFragment;
 import tv.ismar.homepage.view.BannerLinearLayout;
 	/*add by dragontec for bug 4077 start*/
 import tv.ismar.homepage.widget.RecycleLinearLayout;
@@ -69,7 +69,7 @@ public class Template519 extends Template
 
 	private static final int NAVIGATION_LEFT = 0x0001;
 	private static final int NAVIGATION_RIGHT = 0x0002;
-
+    private int locationY=0;
 	/*modify by dragontec for bug 4334 start*/
 	public Template519(Context context, int position, FetchDataControl fetchDataControl) {
 		super(context, position, fetchDataControl);
@@ -167,9 +167,11 @@ public class Template519 extends Template
 		initAdapter();
 		mTitleTv.setText(bundle.getString("title"));
 		mBannerPk = bundle.getString("banner");
-		mName = bundle.getString(NAME_KEY);
+		mName = bundle.getString("title");
 		mChannel = bundle.getString(CHANNEL_KEY);
-/*modify by dragontec for bug 4334 start*/
+        locationY=bundle.getInt(ChannelFragment.BANNER_LOCATION,0);
+
+		/*modify by dragontec for bug 4334 start*/
 		mTitleCountTv.setText("00/00");
 		if (mFetchControl.getHomeEntity(mBannerPk)!= null) {
 			isNeedFillData = true;
@@ -312,7 +314,8 @@ public class Template519 extends Template
 			mFetchControl.go2Detail(mFetchControl.mPosterMap.get(mBannerPk).get(position));
             /*modify by dragontec for bug 4334 end*/
 		}
-	}
+		mFetchControl.launcher_vod_click(mChannel,mBannerPk,mName,locationY+","+(position+1));
+    }
 
 	/*modify by dragontec for bug 4277 start*/
 	@Override

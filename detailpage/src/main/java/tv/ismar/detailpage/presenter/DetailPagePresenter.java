@@ -398,20 +398,29 @@ public class DetailPagePresenter implements DetailPageContract.Presenter {
         if (TextUtils.isEmpty(url)) {
             url = IsmartvActivator.getInstance().getApiDomain() + "/api/item/" + mItemEntity.getPk() + "/";
         }
-        Favorite favorite;
+        Favorite favoriteNet,favorite;
         if (isLogin()) {
            // checkFavorite(mItemEntity.getPk());
-            favorite = favoriteManager.getFavoriteByUrl(url, "yes");
+            favoriteNet = favoriteManager.getFavoriteByUrl(url, "yes");
+            favorite = favoriteManager.getFavoriteByUrl(url, "no");
+            if(favoriteNet!=null||favorite!=null){
+                isFavorite = true;
+                mDetailView.notifyBookmarkCheck();
+            }else{
+                isFavorite = false;
+                mDetailView.notifyBookmarkCheck();
+            }
         } else {
             favorite = favoriteManager.getFavoriteByUrl(url, "no");
+            if (favorite != null) {
+                isFavorite = true;
+                mDetailView.notifyBookmarkCheck();
+            }else{
+                isFavorite = false;
+                mDetailView.notifyBookmarkCheck();
+            }
         }
-        if (favorite != null) {
-            isFavorite = true;
-            mDetailView.notifyBookmarkCheck();
-        } else {
-            isFavorite = false;
-            mDetailView.notifyBookmarkCheck();
-        }
+
 
     }
 

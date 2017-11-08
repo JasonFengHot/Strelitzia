@@ -42,6 +42,7 @@ import tv.ismar.homepage.OnItemClickListener;
 import tv.ismar.homepage.R;
 import tv.ismar.homepage.adapter.DoubleLdAdapter;
 import tv.ismar.homepage.control.FetchDataControl;
+import tv.ismar.homepage.fragment.ChannelFragment;
 import tv.ismar.homepage.view.BannerLinearLayout;
 	/*add by dragontec for bug 4077 start*/
 import tv.ismar.homepage.widget.RecycleLinearLayout;
@@ -88,6 +89,7 @@ public class TemplateDoubleLd extends Template
     private StaggeredGridLayoutManagerTV mDoubleLayoutManager;
     private String mName; // 频道名称（中文）
     private String mChannel; // 频道名称（英文）
+    private int locationY;
 
     private static final int NAVIGATION_LEFT = 0x0001;
     private static final int NAVIGATION_RIGHT = 0x0002;
@@ -242,8 +244,9 @@ public class TemplateDoubleLd extends Template
     	initAdapter();
         mTitleTv.setText(bundle.getString(TITLE_KEY));
         mBannerPk = bundle.getString(BANNER_KEY);
-        mName = bundle.getString(NAME_KEY);
+        mName = bundle.getString("title");
         mChannel = bundle.getString(CHANNEL_KEY);
+        locationY=bundle.getInt(ChannelFragment.BANNER_LOCATION,0);
         mTitleCountTv.setText("00/00");
 /*modify by dragontec for bug 4334 start*/
 		if (mFetchControl.getHomeEntity(mBannerPk) != null) {
@@ -381,6 +384,12 @@ public class TemplateDoubleLd extends Template
         } else {
             mFetchControl.go2Detail(mAdapter.getmData().get(position - 1));
         }
+        int Y=locationY;
+        if(position==0||position%2!=0){
+            Y=locationY-1;
+        }
+        int locationX=(position+1)/2+1;
+        mFetchControl.launcher_vod_click(mChannel,mBannerPk,mName,Y+","+locationX);
     }
 
     @Override

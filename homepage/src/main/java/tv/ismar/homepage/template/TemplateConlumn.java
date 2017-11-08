@@ -65,7 +65,7 @@ public class TemplateConlumn extends Template
 /*delete by dragontec for bug 4332 end*/
     private String mName; // 频道名称（中文）
     private String mChannel; // 频道名称（英文）
-
+    private int locationY;
     private static final int NAVIGATION_LEFT = 0x0001;
     private static final int NAVIGATION_RIGHT = 0x0002;
 
@@ -185,8 +185,9 @@ public class TemplateConlumn extends Template
     public void initData(Bundle bundle) {
     	initAdapter();
         mBannerPk = bundle.getString(ChannelFragment.BANNER_KEY);
-        mName = bundle.getString(NAME_KEY);
+        mName = bundle.getString("title");
         mChannel = bundle.getString(CHANNEL_KEY);
+        locationY=bundle.getInt(ChannelFragment.BANNER_LOCATION,0);
 /*modify by dragontec for bug 4334 start*/
 		if (mFetchControl.getHomeEntity(mBannerPk)!= null) {
 			isNeedFillData = true;
@@ -362,6 +363,7 @@ public class TemplateConlumn extends Template
         }else if(poster.model_name.equals("section")) {
             new PageIntent().toListPage(mContext,poster.channel_title,poster.channel,poster.style,poster.section_slug);
         }
+        mFetchControl.launcher_vod_click(mChannel,mBannerPk,mName,locationY+","+(position+1));
     }
 
     @Override

@@ -28,6 +28,7 @@ import tv.ismar.homepage.OnItemHoverListener;
 import tv.ismar.homepage.R;
 import tv.ismar.homepage.adapter.TvPlayAdapter;
 import tv.ismar.homepage.control.FetchDataControl;
+import tv.ismar.homepage.fragment.ChannelFragment;
 import tv.ismar.homepage.view.BannerLinearLayout;
 	/*add by dragontec for bug 4077 start*/
 import tv.ismar.homepage.widget.RecycleLinearLayout;
@@ -65,7 +66,7 @@ public class TemplateTvPlay extends Template
 /*delete by dragontec for bug 4332 end*/
     private String mName; // 频道名称（中文）
     private String mChannel; // 频道名称（英文）
-
+    private int locationY=0;
     private static final int NAVIGATION_LEFT = 0x0001;
     private static final int NAVIGATION_RIGHT = 0x0002;
 
@@ -202,8 +203,9 @@ public class TemplateTvPlay extends Template
     	initAdapter();
         mTitleTv.setText(bundle.getString("title"));
         mBannerPk = bundle.getString("banner");
-        mName = bundle.getString(NAME_KEY);
+        mName = bundle.getString("title");
         mChannel = bundle.getString(CHANNEL_KEY);
+        locationY=bundle.getInt(ChannelFragment.BANNER_LOCATION,0);
 /*modify by dragontec for bug 4334 start*/
 		mTitleCountTv.setText("00/00");
 		if (mFetchControl.getHomeEntity(mBannerPk) != null) {
@@ -363,6 +365,8 @@ public class TemplateTvPlay extends Template
 			mFetchControl.go2Detail(mAdapter.getData().get(position));
             /*modify by dragontec for bug 4334 end*/
         }
+        Log.i("LocationTest"," tvplay: "+locationY+","+(position+1));
+        mFetchControl.launcher_vod_click(mChannel,mBannerPk,mName,locationY+","+(position+1));
     }
 	
 	/*modify by dragontec for bug 4277 start*/

@@ -59,6 +59,7 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
     public static final String MORE_TITLE_FLAG = "title";
     public static final String MORE_CHANNEL_FLAG = "channel";
     public static final String MORE_STYLE_FLAG = "style";
+    public static final String BANNER_LOCATION="location";
 	public static final int LOAD_BANNERS_COUNT = 5;
 	/*add by dragontec for bug 4248,4334 start*/
 	private static final int APPEND_LOAD_BANNERS_COUNT = 3;
@@ -421,7 +422,7 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
 		}
 	}
 	/*modify by dragontec for bug 4362 end*/
-
+	private int locationY=2;
 	private void addBannerView(int position, GuideBanner guideBanner) {
 		if (position <= lastLoadedPostion) {
 			return;
@@ -444,46 +445,68 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
 		if (template.equals("template_guide")) { // 导视
 			layoutId = R.layout.banner_guide;
 			bannerView = createView(R.layout.banner_guide);
+			locationY=locationY+1;
+			bundle.putInt(BANNER_LOCATION,locationY);
 			templateObject = new TemplateGuide(getContext(), position, mControl).setView(bannerView, bundle);
 		} else if (template.equals("template_order")) { // 订阅模版
 			layoutId = R.layout.banner_order;
 			bannerView = createView(R.layout.banner_order);
+			locationY=locationY+1;
+			bundle.putInt(BANNER_LOCATION,locationY);
 			templateObject = new TemplateOrder(getContext(), position, mControl).setView(bannerView, bundle);
 		} else if (template.equals("template_movie")) { // 电影模版
 			layoutId = R.layout.banner_movie;
+			locationY=locationY+1;
+			bundle.putInt(BANNER_LOCATION,locationY);
 			bannerView = createView(R.layout.banner_movie);
 			templateObject = new TemplateMovie(getContext(), position, mControl).setView(bannerView, bundle);
 		} else if (template.equals("template_teleplay")) { // 电视剧模版
 			layoutId = R.layout.banner_tv_player;
+			locationY=locationY+1;
+			bundle.putInt(BANNER_LOCATION,locationY);
 			bannerView = createView(R.layout.banner_tv_player);
 			templateObject = new TemplateTvPlay(getContext(), position, mControl).setView(bannerView, bundle);
 		} else if (template.equals("template_519")) { // 519横图模版
 			layoutId = R.layout.banner_519;
+			locationY=locationY+1;
+			bundle.putInt(BANNER_LOCATION,locationY);
 			bannerView = createView(R.layout.banner_519);
 			templateObject = new Template519(getContext(), position, mControl).setView(bannerView, bundle);
 		} else if (template.equals("template_conlumn")) { // 栏目模版
 			layoutId = R.layout.banner_conlumn;
+			locationY=locationY+1;
+			bundle.putInt(BANNER_LOCATION,locationY);
 			bannerView = createView(R.layout.banner_conlumn);
 			templateObject = new TemplateConlumn(getContext(), position, mControl).setView(bannerView, bundle);
 		} else if (template.equals("template_recommend")) { // 推荐模版
 			canScroll = false;
+			locationY=locationY+1;
+			bundle.putInt(BANNER_LOCATION,locationY);
 			layoutId = R.layout.banner_recommend;
 			bannerView = createView(R.layout.banner_recommend);
 			templateObject = new TemplateRecommend(getContext(), position, mControl).setView(bannerView, bundle);
 		} else if (template.equals("template_big_small_ld")) { // 大横小竖模版
 			layoutId = R.layout.banner_big_small_ld;
+			locationY=locationY+1;
+			bundle.putInt(BANNER_LOCATION,locationY);
 			bannerView = createView(R.layout.banner_big_small_ld);
 			templateObject = new TemplateBigSmallLd(getContext(), position, mControl).setView(bannerView, bundle);
 		} else if (template.equals("template_double_md")) { // 竖版双行模版
 			layoutId = R.layout.banner_double_md;
 			bannerView = createView(R.layout.banner_double_md);
+			locationY=locationY+2;
+			bundle.putInt(BANNER_LOCATION,locationY);
 			templateObject = new TemplateDoubleMd(getContext(), position, mControl).setView(bannerView, bundle);
 		} else if (template.equals("template_double_ld")) { // 横版双行模版
 			layoutId = R.layout.banner_double_ld;
+			locationY=locationY+2;
+			bundle.putInt(BANNER_LOCATION,locationY);
 			bannerView = createView(R.layout.banner_double_ld);
 			templateObject = new TemplateDoubleLd(getContext(), position, mControl).setView(bannerView, bundle);
 		} else if (template.equals("template_teleplay_first")) { // 电视剧首行居中模版
 			layoutId = R.layout.banner_center;
+			locationY=locationY+1;
+			bundle.putInt(BANNER_LOCATION,locationY);
 			bannerView = createView(R.layout.banner_center);
 			templateObject = new TemplateCenter(getContext(), position, mControl).setView(bannerView, bundle);
 		}
