@@ -158,11 +158,15 @@ public class ListPosterAdapter extends RecyclerView.Adapter<ListPosterAdapter.Fi
                         holder.item_vertical_title_bg.setVisibility(View.INVISIBLE);
                     }
                     if (!TextUtils.isEmpty(item.getVertical_url())) {
-                        Picasso.with(mContext).load(item.getVertical_url()).error(R.drawable.list_item_ppreview_bg).placeholder(R.drawable.list_item_ppreview_bg).memoryPolicy(MemoryPolicy.NO_STORE).memoryPolicy(MemoryPolicy.NO_CACHE).config(Bitmap.Config.RGB_565).
+/*modify by dragontec for bug 4336 start*/
+                        Picasso.with(mContext).load(item.getVertical_url()).error(R.drawable.item_vertical_preview).placeholder(R.drawable.item_vertical_preview).memoryPolicy(MemoryPolicy.NO_STORE).memoryPolicy(MemoryPolicy.NO_CACHE).config(Bitmap.Config.RGB_565).
                                 into(holder.item_vertical_poster_img);
+/*modify by dragontec for bug 4336 end*/
                     } else {
-                        Picasso.with(mContext).load(R.drawable.list_item_ppreview_bg).error(R.drawable.list_item_ppreview_bg).placeholder(R.drawable.list_item_ppreview_bg).memoryPolicy(MemoryPolicy.NO_STORE).memoryPolicy(MemoryPolicy.NO_CACHE).config(Bitmap.Config.RGB_565).
+/*modify by dragontec for bug 4336 start*/
+                        Picasso.with(mContext).load(R.drawable.item_vertical_preview).memoryPolicy(MemoryPolicy.NO_STORE).memoryPolicy(MemoryPolicy.NO_CACHE).config(Bitmap.Config.RGB_565).
                                 into(holder.item_vertical_poster_img);
+/*modify by dragontec for bug 4336 end*/
                     }
                     if (item.isExpense()) {
                         Picasso.with(mContext).load(VipMark.getInstance().getImage((Activity) mContext, item.getExpense_info().getPay_type(), item.getExpense_info().getCpid())).memoryPolicy(MemoryPolicy.NO_STORE).memoryPolicy(MemoryPolicy.NO_CACHE).into(holder.item_vertical_poster_vip);
@@ -211,11 +215,15 @@ public class ListPosterAdapter extends RecyclerView.Adapter<ListPosterAdapter.Fi
                         holder.item_horizontal_poster_des.setVisibility(View.INVISIBLE);
                     }
                     if (!TextUtils.isEmpty(item.getPoster_url())) {
-                        Picasso.with(mContext).load(item.getPoster_url()).error(R.drawable.list_item_preview_bg).placeholder(R.drawable.list_item_preview_bg).memoryPolicy(MemoryPolicy.NO_STORE).memoryPolicy(MemoryPolicy.NO_CACHE).config(Bitmap.Config.RGB_565)
+/*modify by dragontec for bug 4336 start*/
+                        Picasso.with(mContext).load(item.getPoster_url()).error(R.drawable.item_horizontal_preview).placeholder(R.drawable.item_horizontal_preview).memoryPolicy(MemoryPolicy.NO_STORE).memoryPolicy(MemoryPolicy.NO_CACHE).config(Bitmap.Config.RGB_565)
                                 .into(holder.item_horizontal_poster_img);
+/*modify by dragontec for bug 4336 end*/
                     }else{
-                        Picasso.with(mContext).load(R.drawable.list_item_preview_bg).error(R.drawable.list_item_preview_bg).placeholder(R.drawable.list_item_preview_bg).memoryPolicy(MemoryPolicy.NO_STORE).memoryPolicy(MemoryPolicy.NO_CACHE).config(Bitmap.Config.RGB_565)
+/*modify by dragontec for bug 4336 start*/
+                        Picasso.with(mContext).load(R.drawable.item_horizontal_preview).memoryPolicy(MemoryPolicy.NO_STORE).memoryPolicy(MemoryPolicy.NO_CACHE).config(Bitmap.Config.RGB_565)
                                 .into(holder.item_horizontal_poster_img);
+/*modify by dragontec for bug 4336 end*/
                     }
                     if (item.isExpense()) {
                         Picasso.with(mContext).load(VipMark.getInstance().getImage((Activity) mContext, item.getExpense_info().getPay_type(), item.getExpense_info().getCpid())).memoryPolicy(MemoryPolicy.NO_STORE).memoryPolicy(MemoryPolicy.NO_CACHE).into(holder.item_horizontal_poster_vip);

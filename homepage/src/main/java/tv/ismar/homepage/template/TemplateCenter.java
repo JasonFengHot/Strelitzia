@@ -1,3 +1,4 @@
+/*modify by dragontec for bug 4362 start*/
 package tv.ismar.homepage.template;
 
 import android.content.Context;
@@ -30,14 +31,12 @@ import static android.view.MotionEvent.BUTTON_PRIMARY;
  * @AUTHOR: xi @DATE: 2017/9/5 @DESC: 居中模版
  */
 public class TemplateCenter extends Template
-        implements BaseControl.ControlCallBack,
-        RecyclerViewTV.PagingableListener,
+        implements RecyclerViewTV.PagingableListener,
         LinearLayoutManagerTV.FocusSearchFailedListener,
         OnItemClickListener,
 		/*modify by dragontec for bug 4277 start*/
         View.OnHoverListener, View.OnClickListener, OnItemHoverListener {
 		/*modify by dragontec for bug 4277 end*/
-    public FetchDataControl mFetchDataControl = null;
 /*delete by dragontec for bug 4332 start*/
 //    private RecyclerViewTV mRecycleView; // 海报recycleview
 /*delete by dragontec for bug 4332 end*/
@@ -48,12 +47,10 @@ public class TemplateCenter extends Template
 //    private View navigationLeft;
 //    private View navigationRight;
 /*delete by dragontec for bug 4332 end*/
-    private String mBannerPk;
 
 	/*modify by dragontec for bug 4334 start*/
-    public TemplateCenter(Context context, int position) {
-        super(context, position);
-        mFetchDataControl = new FetchDataControl(context, this);
+    public TemplateCenter(Context context, int position, FetchDataControl fetchDataControl) {
+        super(context, position, fetchDataControl);
     }
     /*modify by dragontec for bug 4334 end*/
 
@@ -72,9 +69,6 @@ public class TemplateCenter extends Template
 
     @Override
     public void onPause() {
-        if (mFetchDataControl != null){
-            mFetchDataControl.stop();
-        }
 	/*add by dragontec for bug 4077 start*/
 		super.onPause();
 	/*add by dragontec for bug 4077 end*/
@@ -87,12 +81,9 @@ public class TemplateCenter extends Template
     @Override
     public void onDestroy() {
 /*add by dragontec for bug 4205 start*/
-        if (mFetchDataControl != null) {
-            mFetchDataControl.clear();
-        }
         if (mAdapter != null) {
             mAdapter.setOnItemSelectedListener(null);
-            mAdapter.setOnHoverListener(null);
+            mAdapter.setOnItemHoverListener(null);
             mAdapter.setOnItemClickListener(null);
         }
         if (mRecyclerView != null) {
@@ -106,6 +97,7 @@ public class TemplateCenter extends Template
             mBannerLinearLayout.setHeadView(null);
         }
 /*add by dragontec for bug 4205 end*/
+		super.onDestroy();
     }
 
     @Override
@@ -131,9 +123,13 @@ public class TemplateCenter extends Template
 
     @Override
     public void initData(Bundle bundle) {
+    	initAdapter();
         mBannerPk = bundle.getString("banner");
 /*modify by dragontec for bug 4334 start*/
-		mFetchDataControl.fetchBanners(mBannerPk, 1, false);
+		if (mFetchControl.getHomeEntity(mBannerPk)!= null) {
+			isNeedFillData = true;
+			checkViewAppear();
+		}
     }
 
 	@Override
@@ -154,8 +150,8 @@ public class TemplateCenter extends Template
     @Override
     protected void initListener(View view) {
         super.initListener(view);
-        navigationRight.setOnHoverListener(this);
-        navigationLeft.setOnHoverListener(this);
+//        navigationRight.setOnHoverListener(this);
+//        navigationLeft.setOnHoverListener(this);
         navigationLeft.setOnClickListener(this);
         navigationRight.setOnClickListener(this);
 /*modify by dragontec for bug 4332 start*/
@@ -170,68 +166,102 @@ public class TemplateCenter extends Template
 			mAdapter = new CenterAdapter(mContext);
 			mAdapter.setOnItemClickListener(this);
 			/*modify by dragontec for bug 4277 start*/
-			mAdapter.setOnHoverListener(this);
+			mAdapter.setOnItemHoverListener(this);
 		}
 	}
 
     private void initRecycle() {
     	if (mAdapter != null) {
     		if (mAdapter.getData() == null) {
-    			mAdapter.setData(mFetchDataControl.mCarousels);
+    			if (mFetchControl.mCarouselsMap.get(mBannerPk) != null) {
+					mAdapter.setData(mFetchControl.mCarouselsMap.get(mBannerPk));
     			/*modify by dragontec for bug 4332 start*/
-				mRecyclerView.setAdapter(mAdapter);
+					mRecyclerView.setAdapter(mAdapter);
 /*modify by dragontec for bug 4332 end*/
 /*modify by dragontec for bug 4365 start*/
-				mCenterLayoutManager.scrollToPositionWithOffset(
-						mFetchDataControl.mCarousels.size() * 100,
-                        ((CenterRecyclerViewTV)mRecyclerView).getCenterOffset());
+					mCenterLayoutManager.scrollToPositionWithOffset(
+							mFetchControl.mCarouselsMap.get(mBannerPk).size() * 100,
+							((CenterRecyclerViewTV)mRecyclerView).getCenterOffset());
 /*modify by dragontec for bug 4365 end*/
 			/*modify by dragontec for bug 4277 start*/
 		/*add by dragontec for bug 4077 start*/
 /*modify by dragontec for bug 4332 start*/
-				checkFocus(mRecyclerView, mFetchDataControl.mCarousels.size() * 100);
+					checkFocus(mRecyclerView, mFetchControl.mCarouselsMap.get(mBannerPk).size() * 100);
 /*modify by dragontec for bug 4332 end*/
 		/*add by dragontec for bug 4077 end*/
+				}
 			} else {
 				int start =
-						mFetchDataControl.mCarousels.size() - mFetchDataControl.mHomeEntity.carousels.size();
-				int end = mFetchDataControl.mPoster.size();
+						mFetchControl.mCarouselsMap.get(mBannerPk).size() - mFetchControl.getHomeEntity(mBannerPk).carousels.size();
+				int end = mFetchControl.mCarouselsMap.get(mBannerPk).size();
 				mAdapter.notifyItemRangeChanged(start, end);
 			}
 		}
     }
     /*modify by dragontec for bug 4334 end*/
 
-    @Override
-    public void callBack(int flags, Object... args) {
-/*modify by dragontec for bug 4332 start*/
-        if (flags == FetchDataControl.FETCH_BANNERS_LIST_FLAG) { // 获取单个banner业务
-			/*modify by dragontec for bug 4334 start*/
-			isNeedFillData = true;
-			initAdapter();
-//            initRecycle();
-			checkViewAppear();
-			/*modify by dragontec for bug 4334 end*/
-	/* modify by dragontec for bug 4264 start */
-			mRecyclerView.setOnLoadMoreComplete();
-        } else if (flags == FetchDataControl.FETCH_DATA_FAIL_FLAG) {
-        	if (mRecyclerView.isOnLoadMore()) {
-				mFetchDataControl.mHomeEntity.page--;
-				mRecyclerView.setOnLoadMoreComplete();
-			}
-	/* modify by dragontec for bug 4264 end */
-		}
-/*modify by dragontec for bug 4332 end*/
-    }
+//    @Override
+//    public void callBack(int flags, Object... args) {
+//    	switch (flags) {
+//			case FetchDataControl.FETCH_M_BANNERS_LIST_FLAG: {
+//				if (args != null && args instanceof String[]) {
+//					String[] banners = (String[]) args;
+//					for (String banner :
+//							banners) {
+//						if (banner == null || banner.isEmpty()) {
+//							continue;
+//						}
+//						if (banner.equals(mBannerPk)) {
+//							isNeedFillData = true;
+//							initAdapter();
+//							checkViewAppear();
+//							mRecyclerView.setOnLoadMoreComplete();
+//							break;
+//						}
+//					}
+//				}
+//			}
+//			break;
+//			case FetchDataControl.FETCH_BANNERS_LIST_FLAG: {
+//				/*modify by dragontec for bug 4334 start*/
+//				isNeedFillData = true;
+//				initAdapter();
+////            initRecycle();
+//				checkViewAppear();
+//			/*modify by dragontec for bug 4334 end*/
+//	/* modify by dragontec for bug 4264 start */
+//				mRecyclerView.setOnLoadMoreComplete();
+//			}
+//			break;
+//			case FetchDataControl.FETCH_DATA_FAIL_FLAG: {
+//				if (mRecyclerView.isOnLoadMore()) {
+//					mFetchDataControl.mHomeEntity.page--;
+//					mRecyclerView.setOnLoadMoreComplete();
+//				}
+//			}
+//			break;
+//		}
+///*modify by dragontec for bug 4332 start*/
+//        if (flags == FetchDataControl.FETCH_BANNERS_LIST_FLAG) { // 获取单个banner业务
+//
+//        } else if (flags == FetchDataControl.FETCH_DATA_FAIL_FLAG) {
+//        	if (mRecyclerView.isOnLoadMore()) {
+//				mFetchDataControl.mHomeEntity.page--;
+//				mRecyclerView.setOnLoadMoreComplete();
+//			}
+//	/* modify by dragontec for bug 4264 end */
+//		}
+///*modify by dragontec for bug 4332 end*/
+//    }
 
     @Override
     public void onLoadMoreItems() {
         Log.i(TAG, "onLoadMoreItems");
-        HomeEntity homeEntity = mFetchDataControl.mHomeEntity;
+        HomeEntity homeEntity = mFetchControl.getHomeEntity(mBannerPk);
         if (homeEntity != null) {
             if (homeEntity.page < homeEntity.num_pages) {
 	/* modify by dragontec for bug 4264 start */
-                mFetchDataControl.fetchBanners(mBannerPk, ++homeEntity.page, true);
+				mFetchControl.fetchBanners(mBannerPk, ++homeEntity.page, true);
             } else {
 /*modify by dragontec for bug 4332 start*/
 				mRecyclerView.setOnLoadMoreComplete();
@@ -272,7 +302,7 @@ public class TemplateCenter extends Template
     public void onItemClick(View view, int position) {
 		/*add by dragontec for bug 4307,4277 start*/
         if(view.hasFocus()) {
-            mFetchDataControl.go2Detail(mFetchDataControl.mCarousels.get(position));
+			mFetchControl.go2Detail(mFetchControl.mCarouselsMap.get(mBannerPk).get(position));
         }
 		/*add by dragontec for bug 4307,4277 end*/
     }
@@ -337,3 +367,4 @@ public class TemplateCenter extends Template
     }
 	/*add by dragontec for bug 4277 end*/
 }
+/*modify by dragontec for bug 4362 end*/

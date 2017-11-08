@@ -130,7 +130,9 @@ public class PayActivity extends BaseActivity implements View.OnHoverListener, V
         final PayLayerEntity.Expense_item expenseItem = payLayerEntity.getExpense_item();
         if (expenseItem != null) {
             RelativeLayout item = (RelativeLayout) LayoutInflater.from(this).inflate(R.layout.item_newvip_pay, null);
-            RecyclerImageView imageView = (RecyclerImageView) item.findViewById(R.id.item_newvip_pay_img);
+            /*modify by dragontec for bug 4403 start*/
+			ForegroundImageView imageView = (ForegroundImageView) item.findViewById(R.id.item_newvip_pay_img);
+			/*modify by dragontec for bug 4403 end*/
             if (TextUtils.isEmpty(expenseItem.getVertical_url())) {
                 Picasso.with(this).load(R.drawable.error_ver).fit().fit().into(imageView);
             } else {
@@ -155,7 +157,9 @@ public class PayActivity extends BaseActivity implements View.OnHoverListener, V
         final PayLayerEntity.Package newVipPackage = payLayerEntity.getPkage();
         if (newVipPackage != null) {
             RelativeLayout item = (RelativeLayout) LayoutInflater.from(this).inflate(R.layout.item_newvip_pay, null);
-            RecyclerImageView imageView = (RecyclerImageView) item.findViewById(R.id.item_newvip_pay_img);
+            /*modify by dragontec for bug 4403 start*/
+			ForegroundImageView imageView = (ForegroundImageView) item.findViewById(R.id.item_newvip_pay_img);
+			/*modify by dragontec for bug 4403 end*/
             if (TextUtils.isEmpty(newVipPackage.getVertical_url())) {
                 Picasso.with(this).load(R.drawable.error_ver).fit().into(imageView);
             } else {

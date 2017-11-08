@@ -213,9 +213,13 @@ public class ProductFragment extends BaseFragment implements ProductContract.Vie
 
             productViewHolder.textView.setText(mObjects.get(position).getTitle());
             if (mObjects.get(position).getPoster_url().trim().length() == 0) {
-                Picasso.with(mContext).load(R.drawable.list_item_preview_bg).into(productViewHolder.imageView);
+/*modify by dragontec for bug 4336 start*/
+                Picasso.with(mContext).load(R.drawable.item_horizontal_preview).into(productViewHolder.imageView);
+/*modify by dragontec for bug 4336 end*/
             } else {
-                Picasso.with(mContext).load(mObjects.get(position).getPoster_url()).memoryPolicy(MemoryPolicy.NO_STORE).config(Bitmap.Config.RGB_565).into(productViewHolder.imageView);
+/*modify by dragontec for bug 4336 start*/
+                Picasso.with(mContext).load(mObjects.get(position).getPoster_url()).error(R.drawable.item_horizontal_preview).placeholder(R.drawable.item_horizontal_preview).memoryPolicy(MemoryPolicy.NO_STORE).config(Bitmap.Config.RGB_565).into(productViewHolder.imageView);
+/*modify by dragontec for bug 4336 end*/
             }
 
 

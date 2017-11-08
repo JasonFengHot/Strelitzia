@@ -132,23 +132,27 @@ public class HGridSearchAdapterImpl extends HGridAdapter<SearchItemCollection> i
                 final SemantichObjectEntity item = mList.get(sectionIndex).objects.get(indexOfCurrentSection);
                 if (item != null) {
                     if (!TextUtils.isEmpty(item.getVertical_url())) {
+/*modify by dragontec for bug 4336 start*/
                 Picasso.with(mContext)
                         .load(item.getVertical_url())
                         .memoryPolicy(MemoryPolicy.NO_STORE)
                         .memoryPolicy(MemoryPolicy.NO_CACHE)
-                        .error(R.drawable.list_item_ppreview_bg)
-                        .placeholder(R.drawable.list_item_ppreview_bg)
+                        .error(R.drawable.item_vertical_preview)
+                        .placeholder(R.drawable.item_vertical_preview)
                         .transform(mTransformation)
                         .into(holder.previewImage);
+/*modify by dragontec for bug 4336 end*/
                 } else {
+/*modify by dragontec for bug 4336 start*/
                 Picasso.with(mContext)
                         .load(item.getPoster_url())
                         .memoryPolicy(MemoryPolicy.NO_STORE)
                         .memoryPolicy(MemoryPolicy.NO_CACHE)
-                        .error(R.drawable.list_item_ppreview_bg)
-                        .placeholder(R.drawable.list_item_ppreview_bg)
+                        .error(R.drawable.item_vertical_preview)
+                        .placeholder(R.drawable.item_vertical_preview)
                         .transform(mTransformation)
                         .into(holder.previewImage);
+/*modify by dragontec for bug 4336 end*/
             }
                     holder.title.setText(item.getTitle());
                     if (Float.valueOf(item.getBean_score()==null?"0":item.getBean_score()) > 0) {

@@ -27,6 +27,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import tv.ismar.app.BaseActivity;
+/*add by dragontec for bug 4362 start*/
+import tv.ismar.app.BaseControl;
+/*add by dragontec for bug 4362 end*/
 import tv.ismar.app.core.PageIntent;
 import tv.ismar.app.core.Source;
 import tv.ismar.app.entity.banner.BannerCarousels;
@@ -35,6 +38,9 @@ import tv.ismar.app.entity.banner.BannerEntity;
 /*add by dragontec for bug 4338 start*/
 import tv.ismar.homepage.R;
 /*add by dragontec for bug 4338 end*/
+/*add by dragontec for bug 4362 start*/
+import tv.ismar.homepage.control.FetchDataControl;
+/*add by dragontec for bug 4362 end*/
 import tv.ismar.homepage.fragment.ChannelFragment;
 import tv.ismar.homepage.view.BannerLinearLayout;
 import tv.ismar.homepage.widget.RecycleLinearLayout;
@@ -44,13 +50,14 @@ import static android.view.MotionEvent.BUTTON_PRIMARY;
 /*add by dragontec for bug 4332 end*/
 	/*add by dragontec for bug 4077 end*/
 
+/*modify by dragontec for bug 4362 start*/
 /**
  * @AUTHOR: xi @DATE: 2017/8/29 @DESC: 模版基类(只负责模版约束，其他的一律不能加，不能参杂任何业务)
  */
-public abstract class Template {
-    protected final String TAG = this.getClass().getSimpleName();
-    protected Context mContext;
-    protected TextView mTitleCountTv; // 标题数量view
+public abstract class Template implements BaseControl.ControlCallBack {
+	protected final String TAG = this.getClass().getSimpleName();
+	protected Context mContext;
+	protected TextView mTitleCountTv; // 标题数量view
 	/*add by dragontec for bug 4077 start*/
 	protected View mParentView;
 	protected Handler handler;
@@ -69,53 +76,61 @@ public abstract class Template {
 	private boolean checkScrollEnd = false;
 /*add by dragontec for bug 4332 end*/
 
-/*add by dragontec for bug 4331 start*/
+	/*add by dragontec for bug 4331 start*/
 	public boolean isLastView = false;
-/*add by dragontec for bug 4331 end*/
+	/*add by dragontec for bug 4331 end*/
 	/*add by dragontec for bug 4334 start*/
-	private int mPosition = -1;
+	protected int mPosition = -1;
 	/*add by dragontec for bug 4334 end*/
+	protected FetchDataControl mFetchControl;
+	protected String mBannerPk;
 
 	/*modify by dragontec for bug 4334 start*/
-    public Template(Context context, int position) {
-        this.mContext = context;
+	public Template(Context context, int position) {
+		this.mContext = context;
 	/*add by dragontec for bug 4077 start*/
 		handler = new Handler();
 	/*add by dragontec for bug 4077 end*/
 		mPosition = position;
-    }
-    /*modify by dragontec for bug 4334 end*/
+	}
+	/*modify by dragontec for bug 4334 end*/
+	public Template(Context context, int position, FetchDataControl fetchDataControl) {
+		mContext = context;
+		handler = new Handler();
+		mPosition = position;
+		mFetchControl = fetchDataControl;
+	}
 
-    /*在adapter中调用*/
-    public Template setView(View view, Bundle bundle) {
+	/*在adapter中调用*/
+	public Template setView(View view, Bundle bundle) {
 	/*add by dragontec for bug 4077 start*/
 		mParentView = view;
 	/*add by dragontec for bug 4077 end*/
-        getView(view);
-        initListener(view);
-        initData(bundle);
-        return this;
-    }
+		getView(view);
+		initListener(view);
+		initData(bundle);
+		return this;
+	}
 
-    /*设置数量view*/
-    public Template setTitleCountView(TextView view) {
-        mTitleCountTv = view;
-        return this;
-    }
+	/*设置数量view*/
+	public Template setTitleCountView(TextView view) {
+		mTitleCountTv = view;
+		return this;
+	}
 
-    /**
-     * 获取view
-     *
-     * @param view 视图
-     */
-    public abstract void getView(View view);
+	/**
+	 * 获取view
+	 *
+	 * @param view 视图
+	 */
+	public abstract void getView(View view);
 
-    /**
-     * 处理数据
-     *
-     * @param bundle
-     */
-    public abstract void initData(Bundle bundle);
+	/**
+	 * 处理数据
+	 *
+	 * @param bundle
+	 */
+	public abstract void initData(Bundle bundle);
 
 	/*add by dragontec for bug 4200 start*/
 	public abstract void fetchData();
@@ -129,10 +144,10 @@ public abstract class Template {
 	/*add by dragontec for bug 4334 end*/
 	/*add by dragontec for bug 4200 end*/
 
-    protected void initListener(View view) {
+	protected void initListener(View view) {
 /*add by dragontec for bug 4332 start*/
-    	if (mHoverView != null) {
-    		mHoverView.setOnHoverListener(new View.OnHoverListener() {
+		if (mHoverView != null) {
+			mHoverView.setOnHoverListener(new View.OnHoverListener() {
 				@Override
 				public boolean onHover(View v, MotionEvent event) {
 					switch (event.getAction()) {
@@ -159,7 +174,7 @@ public abstract class Template {
 			});
 		}
 		if (mRecyclerView != null) {
-    		mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+			mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
 				@Override
 				public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
 					synchronized (mLock) {
@@ -186,123 +201,165 @@ public abstract class Template {
 				}
 			});
 		}
+		if (navigationLeft != null) {
+			navigationLeft.setOnHoverListener(new View.OnHoverListener() {
+				@Override
+				public boolean onHover(View v, MotionEvent event) {
+					switch (event.getAction()) {
+						case MotionEvent.ACTION_HOVER_ENTER: {
+							v.requestFocus();
+							v.requestFocusFromTouch();
+						}
+						break;
+						case MotionEvent.ACTION_HOVER_EXIT: {
+							if (event.getButtonState() != MotionEvent.BUTTON_PRIMARY) {
+								v.clearFocus();
+								dismissNavigationButton();
+							}
+						}
+					}
+					return false;
+				}
+			});
+		}
+		if (navigationRight != null) {
+			navigationRight.setOnHoverListener(new View.OnHoverListener() {
+				@Override
+				public boolean onHover(View v, MotionEvent event) {
+					switch (event.getAction()) {
+						case MotionEvent.ACTION_HOVER_ENTER: {
+							v.requestFocus();
+							v.requestFocusFromTouch();
+						}
+						break;
+						case MotionEvent.ACTION_HOVER_EXIT: {
+							if (event.getButtonState() != MotionEvent.BUTTON_PRIMARY) {
+								v.clearFocus();
+								dismissNavigationButton();
+							}
+						}
+					}
+					return false;
+				}
+			});
+		}
 		/*add by dragontec for bug 4338 end*/
 /*add by dragontec for bug 4332 emd*/
-    }
+	}
 
-    public void goToNextPage(View view) {
-        String modelName = "item";
-        String contentModel = null;
-        int itemPk = -1;
-        String url = null;
-        String title = null;
+	public void goToNextPage(View view) {
+		String modelName = "item";
+		String contentModel = null;
+		int itemPk = -1;
+		String url = null;
+		String title = null;
 
-        Object tag = view.getTag();
-        if (tag == null) {
-            return;
-        } else {
-            if (tag instanceof BannerEntity.PosterBean) {
-                BannerEntity.PosterBean bean = (BannerEntity.PosterBean) tag;
-                contentModel = bean.getContent_model();
-                url = bean.getUrl();
-                itemPk = bean.getPk();
-                title = bean.getTitle();
-            } else if (tag instanceof BannerCarousels) {
-                BannerCarousels bean = (BannerCarousels) tag;
-                contentModel = bean.getContent_model();
-                url = bean.getUrl();
-                itemPk = bean.getPk();
-                title = bean.getTitle();
-            }
-        }
+		Object tag = view.getTag();
+		if (tag == null) {
+			return;
+		} else {
+			if (tag instanceof BannerEntity.PosterBean) {
+				BannerEntity.PosterBean bean = (BannerEntity.PosterBean) tag;
+				contentModel = bean.getContent_model();
+				url = bean.getUrl();
+				itemPk = bean.getPk();
+				title = bean.getTitle();
+			} else if (tag instanceof BannerCarousels) {
+				BannerCarousels bean = (BannerCarousels) tag;
+				contentModel = bean.getContent_model();
+				url = bean.getUrl();
+				itemPk = bean.getPk();
+				title = bean.getTitle();
+			}
+		}
 
-        Intent intent = new Intent();
-        if (modelName.contains("item")) {
-            if (!TextUtils.isEmpty(contentModel) && contentModel.contains("gather")) {
-                PageIntent subjectIntent = new PageIntent();
-                subjectIntent.toSubject(
-                        mContext, contentModel, itemPk, title, BaseActivity.baseChannel, "");
-            } else {
-                PageIntent pageIntent = new PageIntent();
-                pageIntent.toDetailPage(mContext, "homepage", itemPk);
-            }
-        } else if (modelName.contains("topic")) {
-            intent.putExtra("url", url);
-            intent.setAction("tv.ismar.daisy.Topic");
-            mContext.startActivity(intent);
-        } else if (modelName.contains("section")) {
-            intent.putExtra("title", title);
-            intent.putExtra("itemlistUrl", url);
-            intent.putExtra("lableString", title);
-            intent.putExtra("pk", itemPk);
-            intent.setAction("tv.ismar.daisy.packagelist");
-            mContext.startActivity(intent);
-        } else if (modelName.contains("package")) {
-            intent.setAction("tv.ismar.daisy.packageitem");
-            intent.putExtra("url", url);
-        } else if (modelName.contains("clip")) {
-            PageIntent pageIntent = new PageIntent();
-            pageIntent.toPlayPage(mContext, itemPk, -1, Source.HOMEPAGE);
-        } else if (modelName.contains("ismartv")) {
-            //            toIsmartvShop(mode_name, app_id, backgroundUrl, nameId, title);
-        } else {
-            if (contentModel.contains("gather")) {
-                PageIntent intent1 = new PageIntent();
-                intent1.toSubject(mContext, contentModel, itemPk, title, BaseActivity.baseChannel, "");
-            } else {
-                PageIntent pageIntent = new PageIntent();
-                pageIntent.toDetailPage(mContext, "homepage", itemPk);
-            }
-        }
-    }
+		Intent intent = new Intent();
+		if (modelName.contains("item")) {
+			if (!TextUtils.isEmpty(contentModel) && contentModel.contains("gather")) {
+				PageIntent subjectIntent = new PageIntent();
+				subjectIntent.toSubject(
+						mContext, contentModel, itemPk, title, BaseActivity.baseChannel, "");
+			} else {
+				PageIntent pageIntent = new PageIntent();
+				pageIntent.toDetailPage(mContext, "homepage", itemPk);
+			}
+		} else if (modelName.contains("topic")) {
+			intent.putExtra("url", url);
+			intent.setAction("tv.ismar.daisy.Topic");
+			mContext.startActivity(intent);
+		} else if (modelName.contains("section")) {
+			intent.putExtra("title", title);
+			intent.putExtra("itemlistUrl", url);
+			intent.putExtra("lableString", title);
+			intent.putExtra("pk", itemPk);
+			intent.setAction("tv.ismar.daisy.packagelist");
+			mContext.startActivity(intent);
+		} else if (modelName.contains("package")) {
+			intent.setAction("tv.ismar.daisy.packageitem");
+			intent.putExtra("url", url);
+		} else if (modelName.contains("clip")) {
+			PageIntent pageIntent = new PageIntent();
+			pageIntent.toPlayPage(mContext, itemPk, -1, Source.HOMEPAGE);
+		} else if (modelName.contains("ismartv")) {
+			//            toIsmartvShop(mode_name, app_id, backgroundUrl, nameId, title);
+		} else {
+			if (contentModel.contains("gather")) {
+				PageIntent intent1 = new PageIntent();
+				intent1.toSubject(mContext, contentModel, itemPk, title, BaseActivity.baseChannel, "");
+			} else {
+				PageIntent pageIntent = new PageIntent();
+				pageIntent.toDetailPage(mContext, "homepage", itemPk);
+			}
+		}
+	}
 
-    int getPostItemId(String url) {
-        int id = 0;
-        try {
-            Pattern p = Pattern.compile("/(\\d+)/?$");
-            Matcher m = p.matcher(url);
-            if (m.find()) {
-                String idStr = m.group(1);
-                if (idStr != null) {
-                    id = Integer.parseInt(idStr);
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return id;
-    }
+	int getPostItemId(String url) {
+		int id = 0;
+		try {
+			Pattern p = Pattern.compile("/(\\d+)/?$");
+			Matcher m = p.matcher(url);
+			if (m.find()) {
+				String idStr = m.group(1);
+				if (idStr != null) {
+					id = Integer.parseInt(idStr);
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return id;
+	}
 
-    private void toIsmartvShop(
-            String modename, String app_id, String backgroudUrl, String nameId, String title) {
-        Intent appIntent = new Intent();
-        try {
-            if (modename.equals("ismartvgatherapp")) {
-                appIntent.setAction("com.boxmate.tv.subjectdetail");
-                appIntent.putExtra("title", title);
-                appIntent.putExtra("nameId", nameId);
-                appIntent.putExtra("backgroundUrl", backgroudUrl);
-            } else if (modename.equals("ismartvhomepageapp")) {
-                appIntent.setAction("android.intent.action.mainAty");
-                appIntent.putExtra("type", 3);
-            } else if (modename.equals("ismartvdetailapp")) {
-                appIntent.setAction("com.boxmate.tv.detail");
-                appIntent.putExtra("app_id", app_id);
-            }
-            mContext.startActivity(appIntent);
-        } catch (Exception e) {
+	private void toIsmartvShop(
+			String modename, String app_id, String backgroudUrl, String nameId, String title) {
+		Intent appIntent = new Intent();
+		try {
+			if (modename.equals("ismartvgatherapp")) {
+				appIntent.setAction("com.boxmate.tv.subjectdetail");
+				appIntent.putExtra("title", title);
+				appIntent.putExtra("nameId", nameId);
+				appIntent.putExtra("backgroundUrl", backgroudUrl);
+			} else if (modename.equals("ismartvhomepageapp")) {
+				appIntent.setAction("android.intent.action.mainAty");
+				appIntent.putExtra("type", 3);
+			} else if (modename.equals("ismartvdetailapp")) {
+				appIntent.setAction("com.boxmate.tv.detail");
+				appIntent.putExtra("app_id", app_id);
+			}
+			mContext.startActivity(appIntent);
+		} catch (Exception e) {
 
-        }
-    }
+		}
+	}
 
-    public abstract void onCreate();
+	public abstract void onCreate();
 
-    public abstract void onStart();
+	public abstract void onStart();
 
-    public abstract void onResume();
+	public abstract void onResume();
 
 	/*modify by dragontec for bug 4077 start*/
-    public void onPause() {
+	public void onPause() {
 		if (mCheckFocusRunnable != null) {
 			handler.removeCallbacks(mCheckFocusRunnable);
 			mCheckFocusRunnable = null;
@@ -310,9 +367,16 @@ public abstract class Template {
 	}
 	/*modify by dragontec for bug 4077 start*/
 
-    public abstract void onStop();
+	public abstract void onStop();
 
-    public abstract void onDestroy();
+	public void onDestroy() {
+		mParentView = null;
+		if (mFetchControl != null) {
+			mFetchControl = null;
+		}
+		handler.removeCallbacksAndMessages(null);
+		handler = null;
+	}
 
 	/*add by dragontec for bug 4077 start*/
 	protected void checkFocus(RecyclerViewTV recyclerViewTV) {
@@ -324,18 +388,18 @@ public abstract class Template {
 		handler.postDelayed(mCheckFocusRunnable, 200);
 	}
 
-    protected void checkFocus(RecyclerViewTV recyclerViewTV, int select) {
-        if (mCheckFocusRunnable != null) {
-            handler.removeCallbacks(mCheckFocusRunnable);
-            mCheckFocusRunnable = null;
-        }
-        mCheckFocusRunnable = new CheckFocusRunnable(recyclerViewTV);
-        mCheckFocusRunnable.setDefaultSelect(select);
-        handler.postDelayed(mCheckFocusRunnable, 200);
-    }
+	protected void checkFocus(RecyclerViewTV recyclerViewTV, int select) {
+		if (mCheckFocusRunnable != null) {
+			handler.removeCallbacks(mCheckFocusRunnable);
+			mCheckFocusRunnable = null;
+		}
+		mCheckFocusRunnable = new CheckFocusRunnable(recyclerViewTV);
+		mCheckFocusRunnable.setDefaultSelect(select);
+		handler.postDelayed(mCheckFocusRunnable, 200);
+	}
 
 	protected class CheckFocusRunnable implements Runnable {
-	    private int defaultSelect = 0;
+		private int defaultSelect = 0;
 
 		private RecyclerViewTV mRecyclerViewTV;
 
@@ -344,8 +408,8 @@ public abstract class Template {
 		}
 
 		public void setDefaultSelect(int select) {
-            defaultSelect = select;
-        }
+			defaultSelect = select;
+		}
 
 		@Override
 		public void run() {
@@ -387,18 +451,18 @@ public abstract class Template {
 	/*modify by dragontec for bug 4334 end*/
 	/*add by dragontec for bug 4200 end*/
 
-    /*add by dragontec for bug 4221 start*/
+	/*add by dragontec for bug 4221 start*/
     /*modify by dragontec for bug 4338 start*/
-    protected View findNextUpDownFocus(int focusDirection, ViewGroup mBannerLinearLayout, View focused) {
-    	View nextFocus = null;
-        if(focusDirection == View.FOCUS_UP){
-            int key = (int) mBannerLinearLayout.getTag();
-            int tag = (int) mBannerLinearLayout.getTag(key);
+	protected View findNextUpDownFocus(int focusDirection, ViewGroup mBannerLinearLayout, View focused) {
+		View nextFocus = null;
+		if(focusDirection == View.FOCUS_UP){
+			int key = (int) mBannerLinearLayout.getTag();
+			int tag = (int) mBannerLinearLayout.getTag(key);
 //                            boolean canScroll = tag>>30==1;//1可滑动，0不可滑动
-            int position = (tag<<2)>>2;
-            if(position > 0){
-            	View lastView = ((ViewGroup)mBannerLinearLayout.getParent()).getChildAt(position - 1);
-                if(lastView != null && lastView instanceof BannerLinearLayout) {
+			int position = (tag<<2)>>2;
+			if(position > 0){
+				View lastView = ((ViewGroup)mBannerLinearLayout.getParent()).getChildAt(position - 1);
+				if(lastView != null && lastView instanceof BannerLinearLayout) {
 					BannerLinearLayout bannerLinearLayout = (BannerLinearLayout)lastView;
 					View headView = bannerLinearLayout.findViewById(R.id.banner_guide_head);
 					/*modify by dragontec for bug 4391 start*/
@@ -415,12 +479,12 @@ public abstract class Template {
 						}
 
 					}
-                    View recycleView = bannerLinearLayout.findViewWithTag("recycleView");
-                    if (recycleView != null && recycleView instanceof RecyclerViewTV) {
+					View recycleView = bannerLinearLayout.findViewWithTag("recycleView");
+					if (recycleView != null && recycleView instanceof RecyclerViewTV) {
 						/*modify by dragontec for bug 4270 start*/
-                        if(((RecyclerViewTV) recycleView).isSelectedItemAtCentered()){
+						if(((RecyclerViewTV) recycleView).isSelectedItemAtCentered()){
 							nextFocus = ((RecyclerViewTV) recycleView).getLastFocusChild();
-                        }else{
+						}else{
 							Rect rect = new Rect();
 							int[] location = new int[2];
 							focused.getGlobalVisibleRect(rect);
@@ -445,12 +509,12 @@ public abstract class Template {
 							if (nextFocus == null) {
 								nextFocus = recycleView;
 							}
-                        }
+						}
 						/*modify by dragontec for bug 4270 end*/
-                    }
-                }
-            }
-        }else if(focusDirection == View.FOCUS_DOWN) {
+					}
+				}
+			}
+		}else if(focusDirection == View.FOCUS_DOWN) {
 			int key = (int) mBannerLinearLayout.getTag();
 			int tag = (int) mBannerLinearLayout.getTag(key);
 //                            boolean canScroll = tag>>30==1;//1可滑动，0不可滑动
@@ -511,58 +575,58 @@ public abstract class Template {
 				}
 			}
 		}
-        return nextFocus;
-    }
+		return nextFocus;
+	}
     /*modify by dragontec for bug 4338 end*/
 
-    protected View findMoreUpFocus(ViewGroup mBannerLinearLayout) {
-        int key = (int) mBannerLinearLayout.getTag();
-        int tag = (int) mBannerLinearLayout.getTag(key);
+	protected View findMoreUpFocus(ViewGroup mBannerLinearLayout) {
+		int key = (int) mBannerLinearLayout.getTag();
+		int tag = (int) mBannerLinearLayout.getTag(key);
 //                            boolean canScroll = tag>>30==1;//1可滑动，0不可滑动
-        int position = (tag<<2)>>2;
-        ViewGroup viewGroup = ((ViewGroup)mBannerLinearLayout.getParent());
-        if(position > 0 && viewGroup.getChildCount() > 1){
-            BannerLinearLayout bannerLinearLayout = (BannerLinearLayout)viewGroup.getChildAt(viewGroup.getChildCount()- 2);
-            if(bannerLinearLayout != null) {
-                View recycleView = bannerLinearLayout.findViewWithTag("recycleView");
-                if (recycleView != null && recycleView instanceof RecyclerViewTV) {
+		int position = (tag<<2)>>2;
+		ViewGroup viewGroup = ((ViewGroup)mBannerLinearLayout.getParent());
+		if(position > 0 && viewGroup.getChildCount() > 1){
+			BannerLinearLayout bannerLinearLayout = (BannerLinearLayout)viewGroup.getChildAt(viewGroup.getChildCount()- 2);
+			if(bannerLinearLayout != null) {
+				View recycleView = bannerLinearLayout.findViewWithTag("recycleView");
+				if (recycleView != null && recycleView instanceof RecyclerViewTV) {
 					/*modify by dragontec for bug 4270 start*/
-                    RecyclerViewTV mRecyclerViewTV = (RecyclerViewTV) recycleView;
-                    int middle = mBannerLinearLayout.getContext().getResources().getDisplayMetrics().widthPixels/2;
-                    View  targetFocus = null;
-                    int maxY = 0;
-                    for (int i = 0; i < mRecyclerViewTV.getChildCount(); i++) {
-                        View view = mRecyclerViewTV.getChildAt(i);
-                        Rect rect = new Rect();
-                        view.getGlobalVisibleRect(rect);
-                        if(rect.left < middle && rect.right> middle){
-                            if(rect.top > maxY){
-                                maxY = rect.top;
-                                targetFocus = view;
-                            }
-                        }
-                    }
-                    if(((RecyclerViewTV) recycleView).isSelectedItemAtCentered() || targetFocus == null){
-                        targetFocus = ((RecyclerViewTV) recycleView).getLastFocusChild();
-                    }
+					RecyclerViewTV mRecyclerViewTV = (RecyclerViewTV) recycleView;
+					int middle = mBannerLinearLayout.getContext().getResources().getDisplayMetrics().widthPixels/2;
+					View  targetFocus = null;
+					int maxY = 0;
+					for (int i = 0; i < mRecyclerViewTV.getChildCount(); i++) {
+						View view = mRecyclerViewTV.getChildAt(i);
+						Rect rect = new Rect();
+						view.getGlobalVisibleRect(rect);
+						if(rect.left < middle && rect.right> middle){
+							if(rect.top > maxY){
+								maxY = rect.top;
+								targetFocus = view;
+							}
+						}
+					}
+					if(((RecyclerViewTV) recycleView).isSelectedItemAtCentered() || targetFocus == null){
+						targetFocus = ((RecyclerViewTV) recycleView).getLastFocusChild();
+					}
 					/*modify by dragontec for bug 4270 end*/
-                    return targetFocus;
-                }
-            }
-        }
-        return null;
-    }
+					return targetFocus;
+				}
+			}
+		}
+		return null;
+	}
     /*add by dragontec for bug 4221 end*/
 
-/*add by dragontec for bug 4249 start*/
-    public void requestFocus() {
-        if (mParentView != null) {
-            mParentView.requestFocus();
-        }
-    }
+	/*add by dragontec for bug 4249 start*/
+	public void requestFocus() {
+		if (mParentView != null) {
+			mParentView.requestFocus();
+		}
+	}
 /*add by dragontec for bug 4249 end*/
 
-/*add by dragontec for bug 4332 start*/
+	/*add by dragontec for bug 4332 start*/
 	public void checkNavigationButtonVisibility() {
 		if (mRecyclerView != null) {
 			/*modify by dragontec for bug 4334 start*/
@@ -606,7 +670,7 @@ public abstract class Template {
 			checkScrollEnd = true;
 		}
 	}
-/*add by dragontec for bug 4332 end*/
+	/*add by dragontec for bug 4332 end*/
 /*add by dragontec for bug 4338 start*/
 	public View findNearestItemForPosition(View focused, int direction) {
 		View item = null;
@@ -685,4 +749,50 @@ public abstract class Template {
 		return item;
 	}
 /*modify by dragontec for bug 4338 end*/
+
+
+	@Override
+	public void callBack(int flags, Object... args) {
+		switch (flags) {
+			case FetchDataControl.FETCH_M_BANNERS_LIST_FLAG: {
+				if (args != null && args instanceof String[]) {
+					String[] banners = (String[]) args;
+					for (String banner :
+							banners) {
+						if (banner == null || banner.isEmpty()) {
+							continue;
+						}
+						if (banner.equals(mBannerPk)) {
+							isNeedFillData = true;
+							checkViewAppear();
+							mRecyclerView.setOnLoadMoreComplete();
+							break;
+						}
+					}
+				}
+			}
+			break;
+			case FetchDataControl.FETCH_BANNERS_LIST_FLAG: {
+				if (args != null && args[0] != null && args[0] instanceof String) {
+					String banner = (String) args[0];
+					if (banner.equals(mBannerPk)) {
+						isNeedFillData = true;
+						checkViewAppear();
+						mRecyclerView.setOnLoadMoreComplete();
+					}
+				}
+			}
+			break;
+			case FetchDataControl.FETCH_DATA_FAIL_FLAG: {
+				if (mRecyclerView.isOnLoadMore()) {
+					if (mFetchControl.getHomeEntity(mBannerPk) != null) {
+						mFetchControl.getHomeEntity(mBannerPk).page--;
+					}
+					mRecyclerView.setOnLoadMoreComplete();
+				}
+			}
+			break;
+		}
+	}
 }
+/*modify by dragontec for bug 4362 end*/

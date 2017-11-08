@@ -254,9 +254,13 @@ public class PackageDetailFragment extends BaseFragment {
                 vod_payment_item_of_package_container.setOnItemClickListener(PackageItemClickListener);
             }
 
+/*modify by dragontec for bug 4336 start*/
             Picasso.with(getContext())
                     .load(mItemEntity.getAdletUrl())
+                    .placeholder(R.drawable.item_horizontal_preview)
+                    .error(R.drawable.item_horizontal_preview)
                     .into(vod_payment_poster);
+/*modify by dragontec for bug 4336 end*/
 
             fetchRelated(mItemEntity.getPk());
             if (itemEntities != null && !itemEntities.isEmpty()) {
@@ -319,7 +323,9 @@ public class PackageDetailFragment extends BaseFragment {
             } else if (relatedItem.getQuality() == 4 || relatedItem.getQuality() == 5) {
                 qualityLabel.setImageResource(R.drawable.label_uhd_small);
             }
-            Picasso.with(getContext()).load(relatedItem.getAdletUrl()).into(imgView);
+/*modify by dragontec for bug 4336 start*/
+            Picasso.with(getContext()).load(relatedItem.getAdletUrl()).placeholder(R.drawable.item_horizontal_preview).error(R.drawable.item_horizontal_preview).into(imgView);
+/*modify by dragontec for bug 4336 end*/
             titleView.setText(relatedItem.getTitle());
             focusView.setText(relatedItem.getFocus());
             relatedHolder.setTag(relatedItem);
@@ -353,7 +359,9 @@ public class PackageDetailFragment extends BaseFragment {
         public void onBindViewHolder(PackageItemViewHolder holder, int position) {
             ItemEntity item = mObjects.get(position);
             holder.mTextView.setText(item.getTitle());
-            Picasso.with(mContext).load(item.getAdletUrl()).error(R.drawable.error_hor).into(holder.mImageView);
+/*modify by dragontec for bug 4336 start*/
+            Picasso.with(mContext).load(item.getAdletUrl()).placeholder(R.drawable.item_horizontal_preview).error(R.drawable.item_horizontal_preview).into(holder.mImageView);
+/*modify by dragontec for bug 4336 end*/
         }
 
         @Override

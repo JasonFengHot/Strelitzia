@@ -658,9 +658,8 @@
 <dimen name="channel_title_size">14.00dp</dimen>
 <dimen name="channel_title_margin_left">21.33dp</dimen>
 <dimen name="channel_title_margin_right">2.22dp</dimen>
-<dimen name="channel_title_margin_top">22.22dp</dimen>
 <dimen name="channel_title_margin_bottom">3.78dp</dimen>
-<dimen name="channel_title_height">14.89dp</dimen>
+<dimen name="channel_title_height">22.22dp</dimen>
 <dimen name="channel_no_title_height">13.33dp</dimen>
 
 <!--导视尺寸-->

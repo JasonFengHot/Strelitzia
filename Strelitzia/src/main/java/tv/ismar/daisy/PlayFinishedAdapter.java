@@ -82,10 +82,14 @@ public class PlayFinishedAdapter extends RecyclerView.Adapter<PlayFinishedAdapte
 		if(mIsVertical){
 			holder.item_vertical_poster_title.setText(item.getTitle());
 			if(!TextUtils.isEmpty(item.getVertical_url())){
-				Picasso.with(mContext).load(item.getVertical_url()).placeholder(R.drawable.list_item_ppreview_bg)
-						.error(R.drawable.list_item_ppreview_bg).memoryPolicy(MemoryPolicy.NO_STORE).memoryPolicy(MemoryPolicy.NO_CACHE).config(Bitmap.Config.RGB_565).into(holder.item_vertical_poster_image);
+/*modify by dragontec for bug 4336 start*/
+				Picasso.with(mContext).load(item.getVertical_url()).placeholder(R.drawable.item_vertical_preview)
+						.error(R.drawable.item_vertical_preview).memoryPolicy(MemoryPolicy.NO_STORE).memoryPolicy(MemoryPolicy.NO_CACHE).config(Bitmap.Config.RGB_565).into(holder.item_vertical_poster_image);
+/*modify by dragontec for bug 4336 end*/
 			}else{
-				holder.item_vertical_poster_image.setImageResource(R.drawable.list_item_ppreview_bg);
+/*modify by dragontec for bug 4336 start*/
+				holder.item_vertical_poster_image.setImageResource(R.drawable.item_vertical_preview);
+/*modify by dragontec for bug 4336 end*/
 			}
 		}else {
 			holder.item_horizontal_poster_title.setText(item.getTitle());
@@ -95,11 +99,15 @@ public class PlayFinishedAdapter extends RecyclerView.Adapter<PlayFinishedAdapte
 				holder.item_horizontal_poster_title.setGravity(Gravity.CENTER_VERTICAL);
 			}
 			if (!TextUtils.isEmpty(item.getPoster_url())) {
-				Picasso.with(mContext).load(item.getPoster_url()).placeholder(R.drawable.list_item_preview_bg)
-						.error(R.drawable.list_item_preview_bg).memoryPolicy(MemoryPolicy.NO_STORE).memoryPolicy(MemoryPolicy.NO_CACHE).config(Bitmap.Config.RGB_565).into(holder.item_horizontal_poster_image);
+/*modify by dragontec for bug 4336 start*/
+				Picasso.with(mContext).load(item.getPoster_url()).placeholder(R.drawable.item_horizontal_preview)
+						.error(R.drawable.item_horizontal_preview).memoryPolicy(MemoryPolicy.NO_STORE).memoryPolicy(MemoryPolicy.NO_CACHE).config(Bitmap.Config.RGB_565).into(holder.item_horizontal_poster_image);
+/*modify by dragontec for bug 4336 end*/
 
 			}else{
-				holder.item_horizontal_poster_image.setImageResource(R.drawable.list_item_preview_bg);
+/*modify by dragontec for bug 4336 start*/
+				holder.item_horizontal_poster_image.setImageResource(R.drawable.item_horizontal_preview);
+/*modify by dragontec for bug 4336 end*/
 			}
 		}
 	}

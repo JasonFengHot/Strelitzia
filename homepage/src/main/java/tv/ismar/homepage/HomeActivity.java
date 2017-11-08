@@ -52,6 +52,9 @@ import tv.ismar.homepage.control.FetchDataControl;
 import tv.ismar.homepage.control.HomeControl;
 import tv.ismar.homepage.fragment.ChannelFragment;
 import tv.ismar.homepage.view.AdvertiseActivity;
+/*add by dragontec for bug 4350 start*/
+import tv.ismar.homepage.view.HomePageArrowButton;
+/*add by dragontec for bug 4350 end*/
 import tv.ismar.homepage.widget.DaisyVideoView;
 import tv.ismar.homepage.widget.HomeRootRelativeLayout;
 import tv.ismar.homepage.widget.HorizontalTabView;
@@ -126,8 +129,10 @@ public class HomeActivity extends BaseActivity
     private ValueAnimator mTitleMoveInAnimator;
     private boolean isAnimationPlaying;
     /*add by dragontec for bug 3983 end*/
-    public Button banner_arrow_up;
-    public Button banner_arrow_down;
+    /*modify by dragontec for bug 4350 start*/
+    public HomePageArrowButton banner_arrow_up;
+    public HomePageArrowButton banner_arrow_down;
+    /*modify by dragontec for bug 4350 end*/
 
     //广告
     private static final int MSG_AD_COUNTDOWN = 0x01;
@@ -393,8 +398,10 @@ public class HomeActivity extends BaseActivity
 
         banner_arrow_up = findView(R.id.banner_arrow_up);
         banner_arrow_down = findView(R.id.banner_arrow_down);
-        banner_arrow_up.setOnHoverListener(this);
-        banner_arrow_down.setOnHoverListener(this);
+        /*modify by dragontec for bug 4350 start*/
+//        banner_arrow_up.setOnHoverListener(this);
+//        banner_arrow_down.setOnHoverListener(this);
+		/*modify by dragontec for bug 4350 end*/
         mHoverView.setUpArrow(banner_arrow_up);
         mHoverView.setDownArrow(banner_arrow_down);
         mHoverView.setShowUp(false);

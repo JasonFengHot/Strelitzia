@@ -198,9 +198,11 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
     public void onDestroy() {
         Log.d(TAG, "onDestroy");
 /*add by dragontec for bug 4205 start*/
-        if (mControl != null) {
-			mControl.clear();
-		}
+		/*delete by dragontec for bug 4362 start*/
+//        if (mControl != null) {
+//			mControl.clear();
+//		}
+		/*delete by dragontec for bug 4362 send*/
 		if (mLinearContainer != null){
 			mLinearContainer.resetArrowUp();
 			mLinearContainer.resetArrowDown();
@@ -223,7 +225,12 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
 				mTemplates.clear();
 			}
 		}
-        mControl = null;
+		/*modify by dragontec for bug 4362 start*/
+		if (mControl != null) {
+			mControl.clear();
+			mControl = null;
+		}
+		/*modify by dragontec for bug 4362 end*/
         super.onDestroy();
     }
 
@@ -303,31 +310,46 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
 
     @Override
     public void callBack(int flags, Object... args) {
+    	/*modify by dragontec for bug 4362 start*/
 /*modify by dragontec for bug 4065 start*/
-//        GuideBanner[] banners = (GuideBanner[]) args;
-//		/*modify by dragontec for bug 4178 start*/
-//        mLinearContainer.setDataSize(banners.length);
-//		/*modify by dragontec for bug 4178 end*/
-//        initBanner(banners);
-		synchronized (mAniLock) {
-			GuideBanner[] banners = (GuideBanner[]) args;
+		switch (flags) {
+			case BaseControl.FETCH_HOME_BANNERS_FLAG:
+			case BaseControl.FETCH_CHANNEL_BANNERS_FLAG: {
+				synchronized (mAniLock) {
+					GuideBanner[] banners = (GuideBanner[]) args;
 			/*modify by dragontec for bug 4178 start*/
-			if (banners != null) {
-				mLinearContainer.setDataSize(banners.length);
-			} else {
-				mLinearContainer.setDataSize(0);
-			}
+					if (banners != null) {
+						mLinearContainer.setDataSize(banners.length);
+					} else {
+						mLinearContainer.setDataSize(0);
+					}
 			/*modify by dragontec for bug 4178 end*/
-			synchronized (bannerDataLock) {
-                mGuideBanners = banners;
+					synchronized (bannerDataLock) {
+						mGuideBanners = banners;
+					}
+					if (mDoingFragmentFlipAni) {
+						mNeedAddBanner = true;
+					} else {
+						initBanner(mGuideBanners);
+					}
+				}
 			}
-            if (mDoingFragmentFlipAni) {
-                mNeedAddBanner = true;
-            } else {
-                initBanner(mGuideBanners);
-            }
-        }
+			break;
+			case BaseControl.FETCH_DATA_FAIL_FLAG:
+			case BaseControl.FETCH_BANNERS_LIST_FLAG:
+			case BaseControl.FETCH_M_BANNERS_LIST_FLAG: {
+				synchronized (templateDataLock) {
+					for (Template template:
+						 mTemplates) {
+						template.callBack(flags, args);
+					}
+				}
+			}
+			break;
+		}
+
 /*modify by dragontec for bug 4065 end*/
+	/*modify by dragontec for bug 4362 end*/
     }
 
 	/*modify by dragontec for bug 4077 start*/
@@ -348,9 +370,14 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
 			lastLoadedPostion = -1;
 			mLinearContainer.removeAllViews();
 			int size = data.length > LOAD_BANNERS_COUNT ? LOAD_BANNERS_COUNT : data.length;
+			/*modify by dragontec for bug 4362 start*/
+			String[] bannersStr = new String[size];
 			for (int position = 0; position < size; position++) {
+				bannersStr[position] = data[position].page_banner_pk;
 				addBannerView(position, data[position]);
 			}
+			mControl.fetchMBanners(bannersStr, 1);
+			/*modify by dragontec for bug 4362 end*/
 			/*modify by dragontec for bug 4331 start*/
 			if (lastLoadedPostion == data.length - 1) {
 				if (!mChannel.equals("homepage")) {//首页频道最后不添加更多banner
@@ -376,32 +403,15 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
 		//        mLinearContainer.initView();
 	}
 
-	private void appendBanner(int position) {
-		GuideBanner[] data;
-		synchronized (bannerDataLock) {
-			data = mGuideBanners;
-		}
+	/*modify by dragontec for bug 4362 start*/
+	private void appendBanner(int position, GuideBanner data) {
 		synchronized (layoutLock) {
 			if (data != null) {
-				if (position < data.length) {
-					addBannerView(position, data[position]);
-				}
-				Log.d(TAG, "lastLoadedPostion = " + lastLoadedPostion + ", data.length = " + data.length);
-
-			/*modify by dragontec for bug 4331 start*/
-				if (lastLoadedPostion == data.length - 1) {
-					if (!mChannel.equals("homepage")) {//首页频道最后不添加更多banner
-						addMoreView(data.length);
-					} else {
-						synchronized (templateDataLock) {
-							mTemplates.get(lastLoadedPostion).isLastView = true;
-						}
-					}
-			/*modify by dragontec for bug 4331 end*/
-				}
+				addBannerView(position, data);
 			}
 		}
 	}
+	/*modify by dragontec for bug 4362 end*/
 
 	private void addBannerView(int position, GuideBanner guideBanner) {
 		if (position <= lastLoadedPostion) {
@@ -421,52 +431,54 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
 		bundle.putString(CHANNEL_KEY, mChannel);
 		bundle.putString(NAME_KEY, mName);
 		/*modify by dragontec for bug 4334 start*/
+		/*modify by dragontec for bug 4362 start*/
 		if (template.equals("template_guide")) { // 导视
 			layoutId = R.layout.banner_guide;
 			bannerView = createView(R.layout.banner_guide);
-			templateObject = new TemplateGuide(getContext(), position).setView(bannerView, bundle);
+			templateObject = new TemplateGuide(getContext(), position, mControl).setView(bannerView, bundle);
 		} else if (template.equals("template_order")) { // 订阅模版
 			layoutId = R.layout.banner_order;
 			bannerView = createView(R.layout.banner_order);
-			templateObject = new TemplateOrder(getContext(), position).setView(bannerView, bundle);
+			templateObject = new TemplateOrder(getContext(), position, mControl).setView(bannerView, bundle);
 		} else if (template.equals("template_movie")) { // 电影模版
 			layoutId = R.layout.banner_movie;
 			bannerView = createView(R.layout.banner_movie);
-			templateObject = new TemplateMovie(getContext(), position).setView(bannerView, bundle);
+			templateObject = new TemplateMovie(getContext(), position, mControl).setView(bannerView, bundle);
 		} else if (template.equals("template_teleplay")) { // 电视剧模版
 			layoutId = R.layout.banner_tv_player;
 			bannerView = createView(R.layout.banner_tv_player);
-			templateObject = new TemplateTvPlay(getContext(), position).setView(bannerView, bundle);
+			templateObject = new TemplateTvPlay(getContext(), position, mControl).setView(bannerView, bundle);
 		} else if (template.equals("template_519")) { // 519横图模版
 			layoutId = R.layout.banner_519;
 			bannerView = createView(R.layout.banner_519);
-			templateObject = new Template519(getContext(), position).setView(bannerView, bundle);
+			templateObject = new Template519(getContext(), position, mControl).setView(bannerView, bundle);
 		} else if (template.equals("template_conlumn")) { // 栏目模版
 			layoutId = R.layout.banner_conlumn;
 			bannerView = createView(R.layout.banner_conlumn);
-			templateObject = new TemplateConlumn(getContext(), position).setView(bannerView, bundle);
+			templateObject = new TemplateConlumn(getContext(), position, mControl).setView(bannerView, bundle);
 		} else if (template.equals("template_recommend")) { // 推荐模版
 			canScroll = false;
 			layoutId = R.layout.banner_recommend;
 			bannerView = createView(R.layout.banner_recommend);
-			templateObject = new TemplateRecommend(getContext(), position).setView(bannerView, bundle);
+			templateObject = new TemplateRecommend(getContext(), position, mControl).setView(bannerView, bundle);
 		} else if (template.equals("template_big_small_ld")) { // 大横小竖模版
 			layoutId = R.layout.banner_big_small_ld;
 			bannerView = createView(R.layout.banner_big_small_ld);
-			templateObject = new TemplateBigSmallLd(getContext(), position).setView(bannerView, bundle);
+			templateObject = new TemplateBigSmallLd(getContext(), position, mControl).setView(bannerView, bundle);
 		} else if (template.equals("template_double_md")) { // 竖版双行模版
 			layoutId = R.layout.banner_double_md;
 			bannerView = createView(R.layout.banner_double_md);
-			templateObject = new TemplateDoubleMd(getContext(), position).setView(bannerView, bundle);
+			templateObject = new TemplateDoubleMd(getContext(), position, mControl).setView(bannerView, bundle);
 		} else if (template.equals("template_double_ld")) { // 横版双行模版
 			layoutId = R.layout.banner_double_ld;
 			bannerView = createView(R.layout.banner_double_ld);
-			templateObject = new TemplateDoubleLd(getContext(), position).setView(bannerView, bundle);
+			templateObject = new TemplateDoubleLd(getContext(), position, mControl).setView(bannerView, bundle);
 		} else if (template.equals("template_teleplay_first")) { // 电视剧首行居中模版
 			layoutId = R.layout.banner_center;
 			bannerView = createView(R.layout.banner_center);
-			templateObject = new TemplateCenter(getContext(), position).setView(bannerView, bundle);
+			templateObject = new TemplateCenter(getContext(), position, mControl).setView(bannerView, bundle);
 		}
+		/*modify by dragontec for bug 4362 end*/
 		/*modify by dragontec for bug 4334 end*/
 
 		if (bannerView != null && templateObject != null) {
@@ -559,17 +571,51 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
 		}
 		Log.d(TAG, "last = " + last);
 		if (position > last - RecycleLinearLayout.BANNER_LOAD_AIMING_OFF) {
+			/*modify by dragontec for bug 4362 start*/
 				/*modify by dragontec for bug 4248 start*/
-				int number = position + RecycleLinearLayout.BANNER_LOAD_AIMING_OFF - last + (APPEND_LOAD_BANNERS_COUNT - 1);
+			int number = position + RecycleLinearLayout.BANNER_LOAD_AIMING_OFF - last + (APPEND_LOAD_BANNERS_COUNT - 1);
 				/*modify by dragontec for bug 4248 end*/
-				for (int i = 0; i < number; i++) {
-					appendBanner(last + i + 1);
+			String[] strings = new String[number];
+			GuideBanner[] datas;
+			synchronized (bannerDataLock) {
+				datas = mGuideBanners;
+			}
+			for (int i = 0; i < number; i++) {
+				if (datas  == null || last + i + 1 >= datas.length) {
+					break;
 				}
+				GuideBanner data = datas[last + i + 1];
+				strings[i] = data.page_banner_pk;
+				appendBanner(last + i + 1, data);
+			}
+			/*modify by dragontec for bug 4331 start*/
+			if (lastLoadedPostion == datas.length - 1) {
+				if (!mChannel.equals("homepage")) {//首页频道最后不添加更多banner
+					addMoreView(datas.length);
+				} else {
+					synchronized (templateDataLock) {
+						mTemplates.get(lastLoadedPostion).isLastView = true;
+					}
+				}
+			}
+			/*modify by dragontec for bug 4331 end*/
+			mControl.fetchMBanners(strings, 1);
+			/*modify by dragontec for bug 4362 end*/
 		}
 		/*modify by dragontec for bug 4335 start*/
-		View lastView = mLinearContainer.getChildAt(mLinearContainer.getChildCount() - 1);
-		if(!mLinearContainer.hasMore() && lastView != null){
-			lastView.setPadding(lastView.getPaddingLeft(),lastView.getPaddingTop(),lastView.getPaddingRight(),getResources().getDimensionPixelSize(R.dimen.banner_bottom_margin));
+		if(mLinearContainer != null && mLinearContainer.getChildCount() > 0) {
+			for (int i = 0; i < mLinearContainer.getChildCount(); i++) {
+				View itemView = mLinearContainer.getChildAt(i);
+				if(i == mLinearContainer.getChildCount() - 1 && !mLinearContainer.hasMore()){
+					if(itemView.getPaddingBottom() != getResources().getDimensionPixelSize(R.dimen.banner_bottom_margin)) {
+						itemView.setPadding(itemView.getPaddingLeft(), itemView.getPaddingTop(), itemView.getPaddingRight(), getResources().getDimensionPixelSize(R.dimen.banner_bottom_margin));
+					}
+				}else{
+					if(itemView.getPaddingBottom() != 0) {
+						itemView.setPadding(itemView.getPaddingLeft(), itemView.getPaddingTop(), itemView.getPaddingRight(), 0);
+					}
+				}
+			}
 		}
 		/*modify by dragontec for bug 4335 end*/
 	}
@@ -714,35 +760,44 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
 
 		@Override
 		public void run() {
-			synchronized (templateDataLock) {
-				if (mTemplates != null) {
-					if (mLinearContainer != null) {
-						int i = mLinearContainer.getCurrentBannerPos();
-						int[] location = new int[2];
-						mLinearContainer.getChildAt(i).getLocationOnScreen(location);
-						while (i != 0 && location[1] > 0) {
-							i--;
-							mLinearContainer.getChildAt(i).getLocationOnScreen(location);
-						}
-						for (; i < mTemplates.size(); i++) {
-							if (mLinearContainer != null && mLinearContainer.isScrolling()) {
-								break;
+		/*modify by dragontec for bug 4408 end*/
+			try {
+				synchronized (templateDataLock) {
+					if (mTemplates != null) {
+						if (mLinearContainer != null) {
+							int i = mLinearContainer.getCurrentBannerPos();
+							int[] location = new int[2];
+							View childView = mLinearContainer.getChildAt(i);
+							if(childView != null){
+								childView.getLocationOnScreen(location);
+								while (i != 0 && location[1] > 0) {
+									i--;
+									childView.getLocationOnScreen(location);
+								}
+								for (; i < mTemplates.size(); i++) {
+									if (mLinearContainer != null && mLinearContainer.isScrolling()) {
+										break;
+									}
+									if (!mTemplates.get(i).checkViewAppear()) {
+										break;
+									}
+								}
 							}
-							if (!mTemplates.get(i).checkViewAppear()) {
-								break;
-							}
-						}
-					} else {
-						for (Template template :
-								mTemplates) {
-							if (!template.checkViewAppear()) {
-								break;
+						} else {
+							for (Template template :
+									mTemplates) {
+								if (!template.checkViewAppear()) {
+									break;
+								}
 							}
 						}
 					}
 				}
+				mAniHandler.removeCallbacks(this);
+			}catch (Exception e){
+				e.printStackTrace();
 			}
-			mAniHandler.removeCallbacks(this);
+			/*modify by dragontec for bug 4408 end*/
 		}
 	}
 	/*add by dragontec for bug 4334 end*/

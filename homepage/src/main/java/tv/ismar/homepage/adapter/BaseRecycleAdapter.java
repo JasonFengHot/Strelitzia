@@ -65,7 +65,9 @@ public abstract class BaseRecycleAdapter<VH extends RecyclerView.ViewHolder> ext
         this.mSelectedListener = listener;
     }
 
-    public void setOnHoverListener(OnItemHoverListener listener){
+	/*modify by dragontec for bug 4362 start*/
+    public void setOnItemHoverListener(OnItemHoverListener listener){
         this.mHoverListener = listener;
     }
+    /*modify by dragontec for bug 4362 end*/
 }

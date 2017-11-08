@@ -1,3 +1,4 @@
+/*modify by dragontec for bug 4362 start*/
 package tv.ismar.homepage.template;
 
 import android.content.Context;
@@ -87,7 +88,6 @@ public class TemplateGuide extends Template
         View.OnClickListener {
     private static final int CAROUSEL_NEXT = 0x0001;
     private static final int START_PLAYBACK = 0x0002;
-    public FetchDataControl mFetchDataControl = null;
     public GuideControl mControl;
     private DaisyVideoView mVideoView; // 导视view
     private RecyclerImageView mLoadingIg; // 加载提示logo
@@ -118,7 +118,6 @@ public class TemplateGuide extends Template
 	/*delete by dragontec for bug 4332 start*/
 //    private View mHeadView; // recylview头view
 	/*delete by dragontec for bug 4332 end*/
-    private String mBannerPk; // banner标记
     private String mName; // 频道名称（中文）
     private String mChannel; // 频道名称（英文）
     private MediaPlayer.OnCompletionListener mOnCompletionListener;
@@ -253,9 +252,8 @@ public class TemplateGuide extends Template
 /*add by dragontec for bug 4065 end*/
 
 	/*modify by dragontec for bug 4334 start*/
-    public TemplateGuide(Context context, int position) {
-        super(context, position);
-        mFetchDataControl = new FetchDataControl(context, this);
+    public TemplateGuide(Context context, int position, FetchDataControl fetchDataControl) {
+        super(context, position, fetchDataControl);
         mControl = new GuideControl(mContext);
         mNavigationtHandler = new NavigationtHandler();
     }
@@ -274,8 +272,7 @@ public class TemplateGuide extends Template
         {
             stopVideoViewNormal();
 /*add by dragontec for bug 4065 end*/
-
-            if (!mFetchDataControl.mCarousels.isEmpty()) {
+			if (mFetchControl.mCarouselsMap.get(mBannerPk) != null && !mFetchControl.mCarouselsMap.get(mBannerPk).isEmpty()) {
                 if (videoViewIsVisibility()){
                     playCarousel();
                     initCarousel();
@@ -319,10 +316,6 @@ public class TemplateGuide extends Template
         sendStopPlayerMessage(mVideoView);
 /*modify by dragontec for bug 4065 end*/
 
-        if (mFetchDataControl != null) {
-            mFetchDataControl.stop();
-        }
-
         if (playSubscription != null && !playSubscription.isUnsubscribed()) {
             playSubscription.unsubscribe();
         }
@@ -343,9 +336,6 @@ public class TemplateGuide extends Template
     @Override
     public void onDestroy() {
 /*add by dragontec for bug 4205 start*/
-        if (mFetchDataControl != null) {
-            mFetchDataControl.clear();
-        }
         if (mVideoView != null) {
             mVideoView.setOnFocusChangeListener(null);
             mVideoView.setOnCompletionListener(null);
@@ -356,7 +346,6 @@ public class TemplateGuide extends Template
             mGuideLayoutManager.setFocusSearchFailedListener(null);
         }
         if (mAdapter != null) {
-            mAdapter.setOnHoverListener(null);
             mAdapter.setOnItemClickListener(null);
             mAdapter.setOnItemSelectedListener(null);
         }
@@ -402,6 +391,7 @@ public class TemplateGuide extends Template
         if (mNavigationtHandler != null){
             mNavigationtHandler = null;
         }
+		super.onDestroy();
 
     }
 
@@ -450,11 +440,15 @@ public class TemplateGuide extends Template
 
     @Override
     public void initData(Bundle bundle) {
+    	initAdapter();
         mBannerPk = bundle.getString(BANNER_KEY);
         mName = bundle.getString(NAME_KEY);
         mChannel = bundle.getString(CHANNEL_KEY);
 /*modify by dragontec for bug 4334 start*/
-		mFetchDataControl.fetchBanners(mBannerPk, 1, false);
+		if (mFetchControl.getHomeEntity(mBannerPk) != null) {
+			isNeedFillData = true;
+			checkViewAppear();
+		}
     }
 
 	@Override
@@ -485,8 +479,8 @@ public class TemplateGuide extends Template
 /*add by dragontec for bug 4332 end*/
         navigationLeft.setOnClickListener(this);
         navigationRight.setOnClickListener(this);
-        navigationRight.setOnHoverListener(this);
-        navigationLeft.setOnHoverListener(this);
+//        navigationRight.setOnHoverListener(this);
+//        navigationLeft.setOnHoverListener(this);
         //        mVideoView.setOnCompletionListener(this);
         //        mVideoView.setOnErrorListener(this);
         //        mVideoView.setOnPreparedListener(this);
@@ -542,7 +536,7 @@ public class TemplateGuide extends Template
         mThirdIcon.setVisibility(View.GONE);
         mFourIcon.setVisibility(View.GONE);
         mFiveIcon.setVisibility(View.GONE);
-        int size = mFetchDataControl.mCarousels.size();
+        int size = mFetchControl.mCarouselsMap.get(mBannerPk).size();
         if (size >= 3) {
             mFirstIcon.setVisibility(View.VISIBLE);
             mSecondIcon.setVisibility(View.VISIBLE);
@@ -570,13 +564,15 @@ public class TemplateGuide extends Template
     private void initRecycleView() {
     	if (mAdapter != null) {
     		if (mAdapter.getData() == null) {
-    			mAdapter.setData(mFetchDataControl.mPoster);
+    			if (mFetchControl.mPosterMap.get(mBannerPk) != null) {
+					mAdapter.setData(mFetchControl.mPosterMap.get(mBannerPk));
 /*modify by dragontec for bug 4332 start*/
-				mRecyclerView.setAdapter(mAdapter);
+					mRecyclerView.setAdapter(mAdapter);
 /*modify by dragontec for bug 4332 end*/
+				}
 			} else {
-				int start = mFetchDataControl.mPoster.size() - mFetchDataControl.mHomeEntity.posters.size();
-				int end = mFetchDataControl.mPoster.size();
+				int start = mFetchControl.mPosterMap.get(mBannerPk).size() - mFetchControl.getHomeEntity(mBannerPk).posters.size();
+				int end = mFetchControl.mPosterMap.get(mBannerPk).size();
 				mAdapter.notifyItemRangeChanged(start, end);
 			}
 		}
@@ -584,40 +580,34 @@ public class TemplateGuide extends Template
     }
     /*modify by dragontec for bug 4334 end*/
 
-    @Override
-    public void callBack(int flags, Object... args) { // 获取网络数据回调
-        if (flags == FetchDataControl.FETCH_BANNERS_LIST_FLAG) { // 获取单个banner业务
-			/*modify by dragontec for bug 4334 start*/
-			isNeedFillData = true;
-			initAdapter();
-			checkViewAppear();
-//            HomeEntity homeEntity = (HomeEntity) args[0];
-//            initRecycleView(homeEntity);
-//            //            playGuideVideo((int)mVideoView.getTag());
-//            playCarousel();
-//            initCarousel();
-			/*modify by dragontec for bug 4334 end*/
-	/* modify by dragontec for bug 4264 start */
-/*modify by dragontec for bug 4332 start*/
-			mRecyclerView.setOnLoadMoreComplete();
-        } else {
-        	if (mRecyclerView.isOnLoadMore()) {
-        		mFetchDataControl.mHomeEntity.page--;
-				mRecyclerView.setOnLoadMoreComplete();
-			}
-/*modify by dragontec for bug 4332 end*/
-	/* modify by dragontec for bug 4264 end */
-		}
-    }
+//    @Override
+//    public void callBack(int flags, Object... args) { // 获取网络数据回调
+//		switch (flags) {
+//			case FetchDataControl.FETCH_BANNERS_LIST_FLAG: {
+//				isNeedFillData = true;
+//				initAdapter();
+//				checkViewAppear();
+//				mRecyclerView.setOnLoadMoreComplete();
+//			}
+//			break;
+//			case FetchDataControl.FETCH_DATA_FAIL_FLAG: {
+//				if (mRecyclerView.isOnLoadMore()) {
+//					mFetchControl.getHomeEntity(mBannerPk).page--;
+//					mRecyclerView.setOnLoadMoreComplete();
+//				}
+//			}
+//			break;
+//		}
+//    }
 
     @Override
     public void onLoadMoreItems() {
         Log.i(TAG, "onLoadMoreItems");
-        HomeEntity homeEntity = mFetchDataControl.mHomeEntity;
+        HomeEntity homeEntity = mFetchControl.getHomeEntity(mBannerPk);
         if (homeEntity != null) {
             if (homeEntity.page < homeEntity.num_pages) {
 	/* modify by dragontec for bug 4264 start */
-                mFetchDataControl.fetchBanners(mBannerPk, ++homeEntity.page, true);
+                mFetchControl.fetchBanners(mBannerPk, ++homeEntity.page, true);
             } else {
 /*modify by dragontec for bug 4332 start*/
 				mRecyclerView.setOnLoadMoreComplete();
@@ -629,16 +619,16 @@ public class TemplateGuide extends Template
 
     @Override
     public void onItemClick(View view, int position) { // item点击事件
-        if (position == mFetchDataControl.mHomeEntity.count - 1) {
+        if (position == mFetchControl.getHomeEntity(mBannerPk).count - 1) {
             new PageIntent()
                     .toListPage(
                             mContext,
-                            mFetchDataControl.mHomeEntity.channel_title,
-                            mFetchDataControl.mHomeEntity.channel,
-                            mFetchDataControl.mHomeEntity.style,
-                            mFetchDataControl.mHomeEntity.section_slug);
+                            mFetchControl.getHomeEntity(mBannerPk).channel_title,
+                            mFetchControl.getHomeEntity(mBannerPk).channel,
+                            mFetchControl.getHomeEntity(mBannerPk).style,
+                            mFetchControl.getHomeEntity(mBannerPk).section_slug);
         } else {
-            mControl.go2Detail(mFetchDataControl.mHomeEntity.posters.get(position));
+            mControl.go2Detail(mFetchControl.getHomeEntity(mBannerPk).posters.get(position));
         }
     }
 
@@ -798,8 +788,8 @@ public class TemplateGuide extends Template
     }
 
     private void playCarousel() {
-        Log.d(TAG, "carousel size: " + mFetchDataControl.mCarousels.size());
-        if (mCurrentCarouselIndex == mFetchDataControl.mCarousels.size() - 1) {
+        Log.d(TAG, "carousel size: " + mFetchControl.mCarouselsMap.get(mBannerPk).size());
+        if (mCurrentCarouselIndex == mFetchControl.mCarouselsMap.get(mBannerPk).size() - 1) {
             mCurrentCarouselIndex = 0;
         } else {
             mCurrentCarouselIndex = mCurrentCarouselIndex + 1;
@@ -808,7 +798,7 @@ public class TemplateGuide extends Template
         changeCarouselIcon(mCurrentCarouselIndex);
 
         Logger.t(TAG).d("play carousel position: " + mCurrentCarouselIndex);
-        String videoUrl = mFetchDataControl.mCarousels.get(mCurrentCarouselIndex).getVideo_url();
+        String videoUrl = mFetchControl.mCarouselsMap.get(mBannerPk).get(mCurrentCarouselIndex).getVideo_url();
         if (playSubscription != null && !playSubscription.isUnsubscribed()){
             playSubscription.unsubscribe();
         }
@@ -905,17 +895,17 @@ public class TemplateGuide extends Template
             mLoadingIg.setVisibility(View.VISIBLE);
         }
 
-        mVideoViewLayout.setTag(mFetchDataControl.mCarousels.get(mCurrentCarouselIndex));
+        mVideoViewLayout.setTag(mFetchControl.mCarouselsMap.get(mBannerPk).get(mCurrentCarouselIndex));
 
-        final String url = mFetchDataControl.mCarousels.get(mCurrentCarouselIndex).getVideo_image();
-        String tilte = mFetchDataControl.mCarousels.get(mCurrentCarouselIndex).getTitle();
+        final String url = mFetchControl.mCarouselsMap.get(mBannerPk).get(mCurrentCarouselIndex).getVideo_image();
+        String tilte = mFetchControl.mCarouselsMap.get(mBannerPk).get(mCurrentCarouselIndex).getTitle();
         if (!StringUtils.isEmpty(tilte)) {
             mVideoTitleTv.setVisibility(View.VISIBLE);
             mVideoTitleTv.setText(tilte);
         } else {
             mVideoTitleTv.setVisibility(View.GONE);
         }
-        final int pauseTime = mFetchDataControl.mCarousels.get(mCurrentCarouselIndex).getPause_time();
+        final int pauseTime = mFetchControl.mCarouselsMap.get(mBannerPk).get(mCurrentCarouselIndex).getPause_time();
 /*modify by dragontec for bug 4336 start*/
         Picasso.with(mContext)
                 .load(url)
@@ -951,9 +941,9 @@ public class TemplateGuide extends Template
             mLoadingIg.setVisibility(View.VISIBLE);
         }
 
-        mVideoViewLayout.setTag(mFetchDataControl.mCarousels.get(mCurrentCarouselIndex));
+        mVideoViewLayout.setTag(mFetchControl.mCarouselsMap.get(mBannerPk).get(mCurrentCarouselIndex));
 
-        String title = mFetchDataControl.mCarousels.get(mCurrentCarouselIndex).getTitle();
+        String title = mFetchControl.mCarouselsMap.get(mBannerPk).get(mCurrentCarouselIndex).getTitle();
         if (!StringUtils.isEmpty(title)) {
             mVideoTitleTv.setVisibility(View.VISIBLE);
             mVideoTitleTv.setText(title);
@@ -976,14 +966,14 @@ public class TemplateGuide extends Template
             videoPath =
                     CacheManager.getInstance()
                             .doRequest(
-                                    mFetchDataControl.mCarousels.get(mCurrentCarouselIndex).getVideo_url(),
+                                    mFetchControl.mCarouselsMap.get(mBannerPk).get(mCurrentCarouselIndex).getVideo_url(),
                                     videoName,
                                     DownloadClient.StoreType.Internal);
         } else {
             videoPath =
                     CacheManager.getInstance()
                             .doRequest(
-                                    mFetchDataControl.mCarousels.get(mCurrentCarouselIndex).getVideo_url(),
+                                    mFetchControl.mCarouselsMap.get(mBannerPk).get(mCurrentCarouselIndex).getVideo_url(),
                                     videoName,
                                     DownloadClient.StoreType.External);
         }
@@ -1172,3 +1162,4 @@ public class TemplateGuide extends Template
 
     }
 }
+/*modify by dragontec for bug 4362 end*/

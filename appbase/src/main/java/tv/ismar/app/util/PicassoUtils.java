@@ -16,9 +16,13 @@ import tv.ismar.app.widget.RecyclerImageView;
 public class PicassoUtils {
     public static void load(final Context context, String path, final RecyclerImageView target) {
         if (TextUtils.isEmpty(path)) {
-            Picasso.with(context).load(R.drawable.default_recommend_bg).memoryPolicy(MemoryPolicy.NO_STORE).into(target);
+/*modify by dragontec for bug 4336 start*/
+            Picasso.with(context).load(R.drawable.item_horizontal_preview).memoryPolicy(MemoryPolicy.NO_STORE).into(target);
+/*modify by dragontec for bug 4336 end*/
         } else {
-            Picasso.with(context).load(path).error(R.drawable.default_recommend_bg).memoryPolicy(MemoryPolicy.NO_STORE).into(target);
+/*modify by dragontec for bug 4336 start*/
+            Picasso.with(context).load(path).error(R.drawable.item_horizontal_preview).placeholder(R.drawable.item_horizontal_preview).memoryPolicy(MemoryPolicy.NO_STORE).into(target);
+/*modify by dragontec for bug 4336 end*/
         }
 
     }

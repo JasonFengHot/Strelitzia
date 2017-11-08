@@ -96,12 +96,14 @@ public class RelatedAdapter extends BaseAdapter implements AsyncImageView.OnImag
             holder.previewImage.setUrl(mItemList.get(position).adlet_url);
         } else {
             if (mItemList.get(position).list_url.equals("http://res.tvxio.bestv.com.cn/media/upload/20160321/36c8886fd5b4163ae48534a72ec3a555.png")) {
+/*modify by dragontec for bug 4336 start*/
                 Picasso.with(mContext)
                         .load(mItemList.get(position).adlet_url)
-                        .error(R.drawable.list_item_ppreview_bg)
-                        .placeholder(null)
+                        .error(R.drawable.item_vertical_preview)
+                        .placeholder(R.drawable.item_vertical_preview)
                         .transform(mTransformation)
                         .into(holder.previewImage);
+/*modify by dragontec for bug 4336 end*/
             } else {
                 holder.previewImage.setUrl(mItemList.get(position).list_url);
             }

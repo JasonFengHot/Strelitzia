@@ -96,14 +96,16 @@ public class PosterAdapter extends BaseAdapter {
                         }
 
                 }
+/*modify by dragontec for bug 4336 start*/
                 Picasso.with(mContext)
                         .load(objectsEntity.getList_url())
                         .memoryPolicy(MemoryPolicy.NO_STORE)
                         .memoryPolicy(MemoryPolicy.NO_CACHE)
-                        .error(R.drawable.vertical_preview_bg)
-                        .placeholder(R.drawable.vertical_preview_bg)
+                        .error(R.drawable.item_vertical_preview)
+                        .placeholder(R.drawable.item_vertical_preview)
                         .transform(mTransformation)
                         .into(viewHolder.iv_poster);
+/*modify by dragontec for bug 4336 end*/
             } else {
                 if(objectsEntity.getBean_score()>0) {
                     viewHolder.ItemBeanScore.setText(objectsEntity.getBean_score() + "");
@@ -126,14 +128,16 @@ public class PosterAdapter extends BaseAdapter {
 
                 }
 //
+/*modify by dragontec for bug 4336 start*/
                 Picasso.with(mContext)
                         .load(objectsEntity.getAdlet_url())
                         .memoryPolicy(MemoryPolicy.NO_STORE)
                         .memoryPolicy(MemoryPolicy.NO_CACHE)
-                        .error(R.drawable.vertical_preview_bg)
-                        .placeholder(R.drawable.vertical_preview_bg)
+                        .error(R.drawable.item_vertical_preview)
+                        .placeholder(R.drawable.item_vertical_preview)
                         .transform(mTransformation)
                         .into(viewHolder.iv_poster);
+/*modify by dragontec for bug 4336 end*/
             }
 
         }

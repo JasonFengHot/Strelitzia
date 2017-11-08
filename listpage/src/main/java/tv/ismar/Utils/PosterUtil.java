@@ -29,10 +29,14 @@ public class PosterUtil {
             int previewId;
             if(orientation==VERTICAL){
                 posterUrl=item.getVertical_url();
-                previewId=R.drawable.list_item_ppreview_bg;
+/*modify by dragontec for bug 4336 start*/
+                previewId=R.drawable.item_vertical_preview;
+/*modify by dragontec for bug 4336 end*/
             }else{
                 posterUrl=item.getPoster_url();
-                previewId=R.drawable.list_item_preview_bg;
+/*modify by dragontec for bug 4336 start*/
+                previewId=R.drawable.item_horizontal_preview;
+/*modify by dragontec for bug 4336 end*/
             }
             if (!TextUtils.isEmpty(posterUrl) && posterUrl != null)
                 Picasso.with(context).load(posterUrl).error(previewId).placeholder(previewId).memoryPolicy(MemoryPolicy.NO_STORE).memoryPolicy(MemoryPolicy.NO_CACHE).config(Bitmap.Config.RGB_565).
