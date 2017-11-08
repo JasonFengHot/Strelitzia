@@ -64,16 +64,16 @@ public class LocalHistoryManager implements HistoryManager {
             throw new RuntimeException("url cannot be null");
         }
         History history = null;
-        if (mHistories == null) {
-            mHistories = new ArrayList<History>();
-        } else {
-            for (History h : mHistories) {
-                if (url.equals(h.url)) {
-                    history = h;
-                    break;
-                }
-            }
-        }
+//        if (mHistories == null) {
+//            mHistories = new ArrayList<History>();
+//        } else {
+//            for (History h : mHistories) {
+//                if (url.equals(h.url)) {
+//                    history = h;
+//                    break;
+//                }
+//            }
+//        }
         if (history == null) {
             history = mDBHelper.queryHistoryByUrl(url, isnet);
             if (history != null) {
@@ -118,6 +118,7 @@ public class LocalHistoryManager implements HistoryManager {
             h.cptitle = history.cptitle;
             h.paytype = history.paytype;
             h.add_time=history.add_time;
+            h.model_name=history.model_name;
             mDBHelper.updateHistory(h);
         } else {
             ContentValues cv = new ContentValues();
@@ -139,6 +140,7 @@ public class LocalHistoryManager implements HistoryManager {
             cv.put(DBFields.FavoriteTable.CPTITLE, history.cptitle);
             cv.put(DBFields.FavoriteTable.PAYTYPE, history.paytype);
             cv.put(DBFields.HistroyTable.HISTORY_TIME,history.add_time);
+            cv.put(DBFields.HistroyTable.MODEL_NAME,history.model_name);
             long result = mDBHelper.insert(cv, DBFields.HistroyTable.TABLE_NAME, mTotalEntriesLimit);
             mHistories = mDBHelper.getAllHistories(isnet);
         }

@@ -374,10 +374,8 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnClickList
                     DateFormat format=new SimpleDateFormat("MM-dd");
                     format.setTimeZone(TimeZone.getTimeZone("Asia/Shanghai"));
                     long time= TrueTime.now().getTime();
-                    Calendar calendar = Calendar.getInstance();
-                    calendar.setTimeInMillis(time);
                     Favorite favorite = new Favorite();
-                    favorite.time=format.format(calendar.getTime());
+                    favorite.time=time;
                     favorite.title = mSubjectEntity.getTitle();
                     String adlet_url = mSubjectEntity.getAdlet_url();
                     if (adlet_url != null) {

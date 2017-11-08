@@ -31,6 +31,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.io.Serializable;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -310,14 +311,14 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
         BaseActivity.baseChannel="";
         BaseActivity.baseSection="";
 
-        if(IsmartvActivator.getInstance().isLogin()){
-            //登录，网络获取
-            getHistoryByNet();
-        }else{
+//        if(IsmartvActivator.getInstance().isLogin()){
+//            //登录，网络获取
+//            getHistoryByNet();
+//        }else{
             //没有登录，取本地设备信息
             mGetHistoryTask = new GetHistoryTask();
             mGetHistoryTask.execute();
-        }
+//        }
         edit_history.setFocusable(false);
         edit_history.setFocusableInTouchMode(false);
         super.onResume();
@@ -402,7 +403,8 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
                     }else{
                         historyFavoriteEntity.setShowDate(false);
                     }
-                    historyFavoriteEntity.setDate(date.getString(i));
+                    SimpleDateFormat sdf = new SimpleDateFormat("MM-dd");
+                    historyFavoriteEntity.setDate(sdf.parse(date.getString(i)).getTime());
                     if(i<3) {
                         lists.add(historyFavoriteEntity);
                         if(type==FAVORITE){
@@ -420,6 +422,8 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
                 }
             }
         } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
             e.printStackTrace();
         }
         return lists;
@@ -994,7 +998,25 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
         @Override
         protected Void doInBackground(Void... params) {
             try {
-                ArrayList<History> mHistories = DaisyUtils.getHistoryManager(HistoryFavoriteActivity.this).getAllHistories("no");
+                ArrayList<History> mHistories=new ArrayList<>();
+                if(IsmartvActivator.getInstance().isLogin()){
+                    mHistories= DaisyUtils.getHistoryManager(HistoryFavoriteActivity.this).getAllHistories("yes");
+                    ArrayList<History> localhistory= DaisyUtils.getHistoryManager(HistoryFavoriteActivity.this).getAllHistories("no");
+                    for (int i=0;i<localhistory.size();i++){
+                        for (int j=0;j<mHistories.size();j++){
+                            if(i>=0) {
+                                if (localhistory.get(i).url.equals(mHistories.get(j).url)) {
+                                    localhistory.remove(i);
+                                    i--;
+                                }
+                            }
+                        }
+                    }
+                    mHistories.addAll(localhistory);
+                }else{
+                    mHistories= DaisyUtils.getHistoryManager(HistoryFavoriteActivity.this).getAllHistories("no");
+                }
+
                 Log.i("listSize","HistorySize: "+mHistories.size()+"");
                 if(mHistories.size()>0) {
                     Collections.sort(mHistories);
@@ -1023,7 +1045,22 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
 
         @Override
         protected Void doInBackground(Void... params) {
-            ArrayList<Favorite> favorites = DaisyUtils.getFavoriteManager(HistoryFavoriteActivity.this).getAllFavorites("no");
+            ArrayList<Favorite> favorites=new ArrayList<>();
+            if(IsmartvActivator.getInstance().isLogin()){
+                favorites= DaisyUtils.getFavoriteManager(HistoryFavoriteActivity.this).getAllFavorites("yes");
+                ArrayList<Favorite> localfavorite=DaisyUtils.getFavoriteManager(HistoryFavoriteActivity.this).getAllFavorites("no");
+                for(int i=0;i<localfavorite.size();i++){
+                    for(int j=0;j<favorites.size();j++){
+                        if(localfavorite.get(i).url.equals(favorites.get(j).url)){
+                            localfavorite.remove(i);
+                        }
+                    }
+                }
+                favorites.addAll(localfavorite);
+            }else{
+                favorites= DaisyUtils.getFavoriteManager(HistoryFavoriteActivity.this).getAllFavorites("no");
+            }
+
             Log.i("listSize","Favorite: "+favorites.size()+"");
             for (Favorite favorite : favorites) {
                 HistoryFavoriteEntity item = getFavoriteItem(favorite);
@@ -1047,7 +1084,14 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
                     if (i == 0) {
                         item.setShowDate(true);
                     } else {
-                        if (item.getDate().equals(list.get(i - 1).getDate())) {
+//                        DateFormat format=new SimpleDateFormat("MM-dd");
+//                        format.setTimeZone(TimeZone.getTimeZone("Asia/Shanghai"));
+//                        long time=item.getDate();
+//                        Calendar calendar = Calendar.getInstance();
+//                        calendar.setTimeInMillis(time);
+//                         format.format(calendar.getTime());
+                        Log.i("favoriteTime",(int)(item.getDate()/100000)+"");
+                        if ((int)(item.getDate()/100000)==((int) (list.get(i - 1).getDate()/100000))) {
                             item.setShowDate(false);
                         } else {
                             item.setShowDate(true);
@@ -1074,13 +1118,11 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
         item.setQuality(history.quality);
         item.setTitle(history.title);
         item.setUrl(history.url);
-        if(history.add_time==null){
+        if(history.add_time==0){
             DateFormat format=new SimpleDateFormat("MM-dd");
             format.setTimeZone(TimeZone.getTimeZone("Asia/Shanghai"));
             long time= TrueTime.now().getTime();
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTimeInMillis(time);
-            history.add_time=format.format(calendar.getTime());
+            history.add_time=time;
         }
         item.setDate(history.add_time);
         item.setType(1);
@@ -1110,13 +1152,11 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
         item.setQuality(favorite.quality);
         item.setTitle(favorite.title);
         item.setUrl(favorite.url);
-        if(favorite.time==null){
+        if(favorite.time==0){
             DateFormat format=new SimpleDateFormat("MM-dd");
             format.setTimeZone(TimeZone.getTimeZone("Asia/Shanghai"));
             long time= TrueTime.now().getTime();
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTimeInMillis(time);
-            favorite.time=format.format(calendar.getTime());
+            favorite.time=time;
         }
         item.setDate(favorite.time);
         item.setType(1);

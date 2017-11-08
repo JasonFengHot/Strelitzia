@@ -73,6 +73,15 @@ public class ItemEntity {
     private String detail_url_old;
     private String poster_url_old;
     private String top_right_corner;
+    private String model_name;
+
+    public String getModel_name() {
+        return model_name;
+    }
+
+    public void setModel_name(String model_name) {
+        this.model_name = model_name;
+    }
 
     public String getTop_right_corner() {
         return top_right_corner;

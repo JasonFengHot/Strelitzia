@@ -17,8 +17,13 @@ import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 import com.squareup.picasso.Picasso;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.List;
+import java.util.TimeZone;
 
+import cn.ismartv.truetime.TrueTime;
 import tv.ismar.app.ui.adapter.OnItemFocusedListener;
 import tv.ismar.app.ui.adapter.OnItemKeyListener;
 import tv.ismar.app.ui.adapter.OnItemOnhoverlistener;
@@ -83,8 +88,13 @@ public class HistoryListAdapter extends RecyclerView.Adapter<HistoryListAdapter.
                  holder.item_detail_image.setVisibility(View.VISIBLE);
                  holder.more.setVisibility(View.GONE);
                  holder.item_time_node.setVisibility(View.VISIBLE);
-            if(item.getDate()!=null&&item.getDate().contains("-")){
-                String[] date=item.getDate().split("-");
+             DateFormat format=new SimpleDateFormat("MM-dd");
+             format.setTimeZone(TimeZone.getTimeZone("Asia/Shanghai"));
+             Calendar calendar = Calendar.getInstance();
+             calendar.setTimeInMillis(item.getDate());
+             String time=format.format(calendar.getTime());
+            if(item.getDate()!=0&&time.contains("-")){
+                String[] date=time.split("-");
                 if(item.isShowDate()){
                     holder.item_time.setText(date[0]+"月"+date[1]+"日");
                     holder.item_time_node.setVisibility(View.VISIBLE);

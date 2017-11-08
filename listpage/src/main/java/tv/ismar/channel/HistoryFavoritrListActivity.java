@@ -31,6 +31,8 @@ import tv.ismar.app.core.DaisyUtils;
 import tv.ismar.app.core.PageIntent;
 import tv.ismar.app.core.SimpleRestClient;
 import tv.ismar.app.core.Source;
+import tv.ismar.app.entity.Favorite;
+import tv.ismar.app.entity.History;
 import tv.ismar.app.network.SkyService;
 import tv.ismar.app.ui.ToastTip;
 import tv.ismar.app.ui.adapter.OnItemClickListener;
@@ -231,7 +233,7 @@ public class HistoryFavoritrListActivity extends BaseActivity implements OnItemC
                 if(entity.getContent_model().contains("gather")){
                     intent.toSubject(this,entity.getContent_model(),pk,entity.getTitle(),"favorite","");
                 }else {
-                    intent.toDetailPage(this, "history", pk);
+                    intent.toDetailPage(this, "favorite", pk);
                 }
             }
         }
@@ -253,34 +255,54 @@ public class HistoryFavoritrListActivity extends BaseActivity implements OnItemC
                 },200);
             }
         }else{
-            if(!modelName.equals("subitem")){
-               item_pk=0;
-            }
-            removeSub = skyService.apiHistoryRemove(pk, item_pk).subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new BaseObserver<ResponseBody>() {
-                        @Override
-                        public void onCompleted() {
+            History history=DaisyUtils.getHistoryManager(this).getHistoryByUrl(mlists.get(position).getUrl(),"yes");
+            if(history!=null){
+                if(modelName!=null&&!modelName.equals("subitem")){
+                    item_pk=0;
+                }
+                removeSub = skyService.apiHistoryRemove(pk, item_pk).subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new BaseObserver<ResponseBody>() {
+                            @Override
+                            public void onCompleted() {
 
-                        }
-
-                        @Override
-                        public void onNext(ResponseBody responseBody) {
-                            mlists.remove(position);
-                            adapter.notifyDataSetChanged();
-                            if(mlists.size()==0){
-                                clearAll.setVisibility(View.GONE);
-                            }else{
-                                new Handler().postDelayed(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        if(recyclerView.getChildAt(0)!=null)
-                                            recyclerView.getChildAt(0).requestFocusFromTouch();
-                                    }
-                                },200);
                             }
+
+                            @Override
+                            public void onNext(ResponseBody responseBody) {
+                                DaisyUtils.getHistoryManager(HistoryFavoritrListActivity.this).deleteHistory(mlists.get(position).getUrl(),"yes");
+                                mlists.remove(position);
+                                adapter.notifyDataSetChanged();
+                                if(mlists.size()==0){
+                                    clearAll.setVisibility(View.GONE);
+                                }else{
+                                    new Handler().postDelayed(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            if(recyclerView.getChildAt(0)!=null)
+                                                recyclerView.getChildAt(0).requestFocusFromTouch();
+                                        }
+                                    },200);
+                                }
+                            }
+                        });
+            }else{
+                DaisyUtils.getHistoryManager(HistoryFavoritrListActivity.this).deleteHistory(mlists.get(position).getUrl(),"no");
+                mlists.remove(position);
+                adapter.notifyDataSetChanged();
+                if(mlists.size()==0){
+                    clearAll.setVisibility(View.GONE);
+                }else{
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            if(recyclerView.getChildAt(0)!=null)
+                                recyclerView.getChildAt(0).requestFocusFromTouch();
                         }
-                    });
+                    },200);
+                }
+            }
+
         }
     }
     private void deleteBookmark(int pk, final int position){
@@ -300,36 +322,56 @@ public class HistoryFavoritrListActivity extends BaseActivity implements OnItemC
                 },200);
             }
         }else {
-            removeSub = skyService.apiBookmarksRemove(pk+"").subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new BaseObserver<ResponseBody>() {
+            Favorite favorite=DaisyUtils.getFavoriteManager(this).getFavoriteByUrl(mlists.get(position).getUrl(),"yes");
+            if(favorite==null){
+                DaisyUtils.getFavoriteManager(HistoryFavoritrListActivity.this).deleteFavoriteByUrl(mlists.get(position).getUrl(),"no");
+                mlists.remove(position);
+                adapter.notifyDataSetChanged();
+                if(mlists.size()==0){
+                    clearAll.setVisibility(View.GONE);
+                }else{
+                    new Handler().postDelayed(new Runnable() {
                         @Override
-                        public void onCompleted() {
-
+                        public void run() {
+                            if(recyclerView.getChildAt(0)!=null)
+                                recyclerView.getChildAt(0).requestFocusFromTouch();
                         }
+                    },200);
+                }
+            }else {
+                removeSub = skyService.apiBookmarksRemove(pk + "").subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new BaseObserver<ResponseBody>() {
+                            @Override
+                            public void onCompleted() {
 
-                        @Override
-                        public void onNext(ResponseBody responseBody) {
-                            mlists.remove(position);
-                            adapter.notifyDataSetChanged();
-                            if(mlists.size()==0){
-                                clearAll.setVisibility(View.GONE);
-                            }else{
-                                new Handler().postDelayed(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        if(recyclerView.getChildAt(0)!=null)
-                                        recyclerView.getChildAt(0).requestFocusFromTouch();
-                                    }
-                                },200);
                             }
-                        }
-                    });
+
+                            @Override
+                            public void onNext(ResponseBody responseBody) {
+                                DaisyUtils.getFavoriteManager(HistoryFavoritrListActivity.this).deleteFavoriteByUrl(mlists.get(position).getUrl(), "yes");
+                                mlists.remove(position);
+                                adapter.notifyDataSetChanged();
+                                if (mlists.size() == 0) {
+                                    clearAll.setVisibility(View.GONE);
+                                } else {
+                                    new Handler().postDelayed(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            if (recyclerView.getChildAt(0) != null)
+                                                recyclerView.getChildAt(0).requestFocusFromTouch();
+                                        }
+                                    }, 200);
+                                }
+                            }
+                        });
+            }
         }
     }
     private void emptyHistories(){
         if(!IsmartvActivator.getInstance().isLogin()){
             DaisyUtils.getHistoryManager(this).deleteAll("no");
+            DaisyUtils.getHistoryManager(this).deleteAll("yes");
             mlists.clear();
             adapter.notifyDataSetChanged();
             clearAll.setVisibility(View.GONE);
@@ -337,7 +379,6 @@ public class HistoryFavoritrListActivity extends BaseActivity implements OnItemC
                 pop.dismiss();
             ToastTip.showToast(this,"您已清空所有历史记录");
         }else {
-            DaisyUtils.getHistoryManager(this).deleteAll("no");
             removeSub = skyService.emptyHistory(IsmartvActivator.getInstance().getDeviceToken()).subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new BaseObserver<ResponseBody>() {
@@ -349,6 +390,7 @@ public class HistoryFavoritrListActivity extends BaseActivity implements OnItemC
                         @Override
                         public void onNext(ResponseBody responseBody) {
                             DaisyUtils.getHistoryManager(HistoryFavoritrListActivity.this).deleteAll("no");
+                            DaisyUtils.getHistoryManager(HistoryFavoritrListActivity.this).deleteAll("yes");
                             mlists.clear();
                             adapter.notifyDataSetChanged();
                             clearAll.setVisibility(View.GONE);
@@ -362,6 +404,7 @@ public class HistoryFavoritrListActivity extends BaseActivity implements OnItemC
     private void emptyFavorite(){
         if(!IsmartvActivator.getInstance().isLogin()){
             DaisyUtils.getFavoriteManager(this).deleteAll("no");
+            DaisyUtils.getFavoriteManager(this).deleteAll("yes");
             clearAll.setVisibility(View.GONE);
             mlists.clear();
             adapter.notifyDataSetChanged();
@@ -369,7 +412,6 @@ public class HistoryFavoritrListActivity extends BaseActivity implements OnItemC
                 pop.dismiss();
             ToastTip.showToast(this,"您已清空所有收藏记录");
         }else {
-            DaisyUtils.getFavoriteManager(this).deleteAll("no");
             removeSub=skyService.emptyBookmarks(IsmartvActivator.getInstance().getDeviceToken())
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -382,6 +424,7 @@ public class HistoryFavoritrListActivity extends BaseActivity implements OnItemC
                         @Override
                         public void onNext(ResponseBody responseBody) {
                             DaisyUtils.getFavoriteManager(HistoryFavoritrListActivity.this).deleteAll("no");
+                            DaisyUtils.getFavoriteManager(HistoryFavoritrListActivity.this).deleteAll("yes");
                             mlists.clear();
                             adapter.notifyDataSetChanged();
                             clearAll.setVisibility(View.GONE);

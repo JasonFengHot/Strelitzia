@@ -36,10 +36,10 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String CREATE_HISTORY_TABLE = "CREATE TABLE IF NOT EXISTS 'history_table' " +
             "('_id' INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, 'title' TEXT NOT NULL, 'url' TEXT NOT NULL, 'adlet_url' TEXT, " +
             "'last_played_time' INTEGER DEFAULT(0), 'last_position' INTEGER DEFAULT(0), 'content_model' TEXT NOT NULL, 'quality' INTEGER DEFAULT(1), " +
-            "'last_quality' INTEGER DEFAULT(1), 'is_complex' INTEGER DEFAULT(0), 'is_continue' INTEGER DEFAULT(0), 'sub_url' TEXT,'isnet' TEXT NOT NULL,'price' INTEGER DEFAULT(0),'cpid' INTEGER DEFAULT(1),'cpname' TEXT,'cptitle' TEXT,'paytype' INTEGER DEFAULT(1),'history_time' TEXT)";
+            "'last_quality' INTEGER DEFAULT(1), 'is_complex' INTEGER DEFAULT(0), 'is_continue' INTEGER DEFAULT(0), 'sub_url' TEXT,'isnet' TEXT NOT NULL,'price' INTEGER DEFAULT(0),'cpid' INTEGER DEFAULT(1),'cpname' TEXT,'cptitle' TEXT,'paytype' INTEGER DEFAULT(1),'history_time' INTEGER DEFAULT(0),'model_name' TEXT)";
     private static final String CREATE_FAVORITE_TABLE = "CREATE TABLE IF NOT EXISTS 'favorite_table' " +
             "('_id' INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, 'title' TEXT NOT NULL, 'url' TEXT NOT NULL, 'content_model' TEXT, " +
-            "'adlet_url' TEXT, 'quality' INTEGER DEFAULT(1), 'is_complex' INTEGER DEFAULT(0),'isnet' TEXT NOT NULL,'cpid' INTEGER DEFAULT(1),'cpname' TEXT,'cptitle' TEXT,'paytype' INTEGER DEFAULT(1),'favorite_time' TEXT)";
+            "'adlet_url' TEXT, 'quality' INTEGER DEFAULT(1), 'is_complex' INTEGER DEFAULT(0),'isnet' TEXT NOT NULL,'cpid' INTEGER DEFAULT(1),'cpname' TEXT,'cptitle' TEXT,'paytype' INTEGER DEFAULT(1),'favorite_time' INTEGER DEFAULT(0))";
     private static final String CREATE_QUALITY_TABLE = "CREATE TABLE IF NOT EXISTS 'quality_table' " +
             "('_id' INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, 'url' TEXT NOT NULL,  'quality' INTEGER DEFAULT(1))";
 
@@ -68,6 +68,7 @@ public class DBHelper extends SQLiteOpenHelper {
             public static final String CPTITLE = "cptitle";
             public static final String PAYTYPE = "paytype";
             public static final String HISTORY_TIME ="history_time";
+            public static final String MODEL_NAME="model_name";
         }
 
         public static interface FavoriteTable extends BaseColumns {
@@ -119,8 +120,9 @@ public class DBHelper extends SQLiteOpenHelper {
 //            db.execSQL(CREATE_HISTORY_TABLE);
 //            db.execSQL(CREATE_FAVORITE_TABLE);
 //            db.execSQL(CREATE_QUALITY_TABLE);
-            db.execSQL("Alter table "+ DBFields.HistroyTable.TABLE_NAME+" add column "+ DBFields.HistroyTable.HISTORY_TIME+" TEXT ");
-            db.execSQL("Alter table "+ DBFields.FavoriteTable.TABLE_NAME+" add column "+ DBFields.FavoriteTable.FAVORITE_TIME+" TEXT ");
+            db.execSQL("Alter table "+ DBFields.HistroyTable.TABLE_NAME+" add column "+ DBFields.HistroyTable.HISTORY_TIME+" INTEGER DEFAULT(0) ");
+            db.execSQL("Alter table "+ DBFields.FavoriteTable.TABLE_NAME+" add column "+ DBFields.FavoriteTable.FAVORITE_TIME+" INTEGER DEFAULT(0) ");
+            db.execSQL("Alter table "+ DBFields.HistroyTable.TABLE_NAME+" add column "+ DBFields.HistroyTable.MODEL_NAME+" TEXT ");
         }
     }
 
@@ -143,7 +145,6 @@ public class DBHelper extends SQLiteOpenHelper {
         }
         return historyList;
     }
-
     /**
      * Use to query all favorite record.
      *
@@ -153,7 +154,7 @@ public class DBHelper extends SQLiteOpenHelper {
         isnet="no";
         //Cursor cur = db.query(DBFields.FavoriteTable.TABLE_NAME, null, DBFields.FavoriteTable.URL + " = ? and " + DBFields.FavoriteTable.ISNET + "= ?", new String[]{url,isnet}, null, null, " _id desc");
         ArrayList<Favorite> favoriteList = new ArrayList<Favorite>();
-        Cursor cur = db.query(DBFields.FavoriteTable.TABLE_NAME, null, DBFields.FavoriteTable.ISNET + "= ?", new String[]{isnet}, null, null, " _id desc");
+        Cursor cur = db.query(DBFields.FavoriteTable.TABLE_NAME, null, DBFields.FavoriteTable.ISNET + "= ?", new String[]{isnet}, null, null, " favorite_time desc");
         if (cur != null) {
             if (cur.moveToFirst()) {
                 do {
@@ -165,7 +166,6 @@ public class DBHelper extends SQLiteOpenHelper {
         }
         return favoriteList;
     }
-
     /**
      * Only use to insert a new row to given table. Generally, you do not need to use this method directly.
      *
@@ -224,6 +224,7 @@ public class DBHelper extends SQLiteOpenHelper {
         cv.put(DBFields.HistroyTable.CPTITLE, history.cptitle);
         cv.put(DBFields.HistroyTable.PAYTYPE, history.paytype);
         cv.put(DBFields.HistroyTable.HISTORY_TIME,history.add_time);
+        cv.put(DBFields.HistroyTable.MODEL_NAME,history.model_name);
         db.update(DBFields.HistroyTable.TABLE_NAME, cv, "_id = ?", new String[]{String.valueOf(history.id)});
     }
 

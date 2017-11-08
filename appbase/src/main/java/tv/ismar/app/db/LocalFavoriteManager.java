@@ -56,16 +56,16 @@ public class LocalFavoriteManager implements FavoriteManager {
             throw new RuntimeException("url cannot be null");
         }
         Favorite favorite = null;
-        if (mFavorites == null) {
-            mFavorites = new ArrayList<>();
-        } else {
-            for (Favorite f : mFavorites) {
-                if (f!=null&&f.url!=null&&f.url.contains(url)) {
-                    favorite = f;
-                    break;
-                }
-            }
-        }
+//        if (mFavorites == null) {
+//            mFavorites = new ArrayList<>();
+//        } else {
+//            for (Favorite f : mFavorites) {
+//                if (f!=null&&f.url!=null&&f.url.contains(url)) {
+//                    favorite = f;
+//                    break;
+//                }
+//            }
+//        }
         if (favorite == null) {
             favorite = mDBHelper.queryFavoriteByUrl(url, isnet);
             if (favorite != null) {

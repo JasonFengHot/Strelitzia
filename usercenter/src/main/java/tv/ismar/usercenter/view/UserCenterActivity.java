@@ -22,6 +22,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -396,8 +397,8 @@ public class UserCenterActivity extends BaseActivity implements LoginFragment.Lo
         indicatorView.get(1).requestFocus();
         changeViewState(indicatorView.get(1), ViewState.Select);
         indicatorView.get(6).setVisibility(View.VISIBLE);
-//        fetchFavorite();
-//        getHistoryByNet();
+        fetchFavorite();
+        getHistoryByNet();
     }
 
     private View.OnFocusChangeListener indicatorOnFocusListener = new View.OnFocusChangeListener() {
@@ -699,28 +700,17 @@ public class UserCenterActivity extends BaseActivity implements LoginFragment.Lo
 
 
     private void addFavorite(HistoryFavoriteEntity mItem) {
-        if (isFavorite(mItem)) {
-            String url = IsmartvActivator.getInstance().getApiDomain() + "/api/item/" + mItem.getPk() + "/";
-            // DaisyUtils.getFavoriteManager(getContext())
-            // .deleteFavoriteByUrl(url,"yes");
-        } else {
-            String url = IsmartvActivator.getInstance().getApiDomain() + "/api/item/" + mItem.getPk() + "/";
-            Favorite favorite = new Favorite();
-            favorite.title = mItem.getTitle();
-            favorite.adlet_url = mItem.getAdlet_url();
-            favorite.content_model = mItem.getContent_model();
-            favorite.url = url;
-            favorite.quality = mItem.getQuality();
-            favorite.is_complex = mItem.getIs_complex();
-            favorite.isnet = "yes";
-            DateFormat format=new SimpleDateFormat("MM-dd");
-            format.setTimeZone(TimeZone.getTimeZone("Asia/Shanghai"));
-            long time= TrueTime.now().getTime();
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTimeInMillis(time);
-            favorite.time=format.format(calendar.getTime());
-            DaisyUtils.getFavoriteManager(this).addFavorite(favorite, favorite.isnet);
-        }
+          String url = IsmartvActivator.getInstance().getApiDomain() + "/api/item/" + mItem.getPk() + "/";
+          Favorite favorite = new Favorite();
+          favorite.title = mItem.getTitle();
+          favorite.adlet_url = mItem.getAdlet_url();
+          favorite.content_model = mItem.getContent_model();
+          favorite.url = url;
+          favorite.quality = mItem.getQuality();
+          favorite.is_complex = mItem.getIs_complex();
+          favorite.isnet = "yes";
+          favorite.time=mItem.getDate();
+          DaisyUtils.getFavoriteManager(this).addFavorite(favorite, favorite.isnet);
     }
 
 
@@ -776,15 +766,14 @@ public class UserCenterActivity extends BaseActivity implements LoginFragment.Lo
                 JSONArray element=info.getJSONArray(date.getString(i));
                 for(int j=0;j<element.length();j++){
                     HistoryFavoriteEntity historyFavoriteEntity=new GsonBuilder().create().fromJson(element.get(j).toString(),HistoryFavoriteEntity.class);
-                    historyFavoriteEntity.setDate(date.getString(i));
+                    SimpleDateFormat sdf = new SimpleDateFormat("MM-dd");
+                    historyFavoriteEntity.setDate(sdf.parse(date.getString(i)).getTime());
                     lists.add(historyFavoriteEntity);
                 }
             }
-            if(lists.size()>0) {
-                HistoryFavoriteEntity end = new HistoryFavoriteEntity();
-                lists.add(end);
-            }
         } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
             e.printStackTrace();
         }
         return lists;
@@ -798,11 +787,12 @@ public class UserCenterActivity extends BaseActivity implements LoginFragment.Lo
         history.is_complex = item.getIs_complex();
         history.last_position = item.getOffset();
         history.last_quality = item.getQuality();
+        history.add_time=item.getDate();
+        history.model_name=item.getModel_name();
         if ("subitem".equals(item.getModel_name())) {
-            history.sub_url = item.getUrl();
             history.url = IsmartvActivator.getInstance().getApiDomain() + "/api/item/" + item.getItem_pk() + "/";
         } else {
-            history.url = item.getUrl();
+            history.url = IsmartvActivator.getInstance().getApiDomain() + "/api/item/" + item.getPk() + "/";
         }
 
         history.is_continue = true;

@@ -1283,11 +1283,17 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
         if (historyManager == null) {
             historyManager = VodApplication.getModuleAppContext().getModuleHistoryManager();
         }
+        long time=0;
         DateFormat format=new SimpleDateFormat("MM-dd");
         format.setTimeZone(TimeZone.getTimeZone("Asia/Shanghai"));
-        long time= TrueTime.now().getTime();
         Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(time);
+        calendar.setTimeInMillis(TrueTime.now().getTime());
+        String date=format.format(calendar.getTime());
+        try {
+            time= format.parse(date).getTime();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         History history = new History();
         history.title = mItemEntity.getTitle();
         ItemEntity.Expense expense = mItemEntity.getExpense();
@@ -1303,12 +1309,15 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
         history.content_model = mItemEntity.getContentModel();
         history.is_complex = mItemEntity.getIsComplex();
         history.last_position = last_position;
-        history.add_time=format.format(calendar.getTime());
+        history.add_time=time;
+        history.model_name=mItemEntity.getModel_name();
         ClipEntity.Quality quality = mCurrentQuality;
         if (quality != null) {
             history.last_quality = quality.getValue();
         }
-        history.url = Utils.getItemUrl(itemPk);
+        String url = "/api/item/" + itemPk + "/";
+        String apiDomain = IsmartvActivator.getInstance().getApiDomain();
+        history.url = apiDomain+url;
         if (subItemPk > 0) {
             history.sub_url = Utils.getSubItemUrl(subItemPk);
         }

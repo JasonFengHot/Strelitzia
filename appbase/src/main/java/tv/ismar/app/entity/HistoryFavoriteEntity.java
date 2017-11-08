@@ -82,7 +82,7 @@ public class HistoryFavoriteEntity implements Serializable{
 
     private double bean_score;
     private String url;
-    private String date;
+    private long date;
     private boolean showDate;
     private int type;  //1表示正常item，2表示更多按钮
 
@@ -118,11 +118,11 @@ public class HistoryFavoriteEntity implements Serializable{
         this.expense = expense;
     }
 
-    public String getDate() {
+    public long getDate() {
         return date;
     }
 
-    public void setDate(String date) {
+    public void setDate(long date) {
         this.date = date;
     }
 

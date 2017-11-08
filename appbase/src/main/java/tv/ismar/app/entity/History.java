@@ -30,7 +30,8 @@ public class History implements Serializable, Comparable<History> {
     public String cpname;
     public String cptitle;
     public int paytype;
-    public String add_time;
+    public long add_time;
+    public String model_name;
 
     public History() {
         super();
@@ -39,7 +40,7 @@ public class History implements Serializable, Comparable<History> {
 
     public History(long id, String title, String url, String adlet_url,
                    String content_model, int quality, int last_quality,
-                   boolean is_complex, boolean is_continue, long last_played_time, long last_position, String sub_url, String isNet, int price, int cpid, String cpname, String cptitle, int paytype,String add_time) {
+                   boolean is_complex, boolean is_continue, long last_played_time, long last_position, String sub_url, String isNet, int price, int cpid, String cpname, String cptitle, int paytype,long add_time,String model_name) {
         super();
         this.id = id;
         this.userid = IsmartvActivator.getInstance().getDeviceToken();
@@ -61,6 +62,7 @@ public class History implements Serializable, Comparable<History> {
         this.cptitle = cptitle;
         this.paytype = paytype;
         this.add_time=add_time;
+        this.model_name=model_name;
     }
 
 
@@ -83,7 +85,8 @@ public class History implements Serializable, Comparable<History> {
         cpname = c.getString(c.getColumnIndex(DBFields.HistroyTable.CPNAME));
         cptitle = c.getString(c.getColumnIndex(DBFields.HistroyTable.CPTITLE));
         paytype = c.getInt(c.getColumnIndex(DBFields.HistroyTable.PAYTYPE));
-        add_time=c.getString(c.getColumnIndex(DBFields.HistroyTable.HISTORY_TIME));
+        add_time=c.getLong(c.getColumnIndex(DBFields.HistroyTable.HISTORY_TIME));
+        model_name=c.getString(c.getColumnIndex(DBFields.HistroyTable.MODEL_NAME));
     }
 
 
@@ -92,7 +95,7 @@ public class History implements Serializable, Comparable<History> {
      */
     @Override
     public int compareTo(History another) {
-        return (int) (another.last_played_time - this.last_played_time);
+        return (int) (this.add_time - another.add_time);
     }
 
 

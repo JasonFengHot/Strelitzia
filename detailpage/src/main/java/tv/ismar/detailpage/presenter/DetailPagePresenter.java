@@ -400,17 +400,19 @@ public class DetailPagePresenter implements DetailPageContract.Presenter {
         }
         Favorite favorite;
         if (isLogin()) {
-            checkFavorite(mItemEntity.getPk());
+           // checkFavorite(mItemEntity.getPk());
+            favorite = favoriteManager.getFavoriteByUrl(url, "yes");
         } else {
             favorite = favoriteManager.getFavoriteByUrl(url, "no");
-            if (favorite != null) {
-                isFavorite = true;
-                mDetailView.notifyBookmarkCheck();
-            } else {
-                isFavorite = false;
-                mDetailView.notifyBookmarkCheck();
-            }
         }
+        if (favorite != null) {
+            isFavorite = true;
+            mDetailView.notifyBookmarkCheck();
+        } else {
+            isFavorite = false;
+            mDetailView.notifyBookmarkCheck();
+        }
+
     }
 
     private void addFavorite() {
@@ -432,13 +434,19 @@ public class DetailPagePresenter implements DetailPageContract.Presenter {
             isFavorite = false;
             mDetailView.notifyBookmark(false, true);
         } else {
+            long time=0;
             DateFormat format=new SimpleDateFormat("MM-dd");
             format.setTimeZone(TimeZone.getTimeZone("Asia/Shanghai"));
-            long time= TrueTime.now().getTime();
             Calendar calendar = Calendar.getInstance();
-            calendar.setTimeInMillis(time);
+            calendar.setTimeInMillis(TrueTime.now().getTime());
+            String date=format.format(calendar.getTime());
+            try {
+                time= format.parse(date).getTime();
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
             Favorite favorite = new Favorite();
-            favorite.time=format.format(calendar.getTime());
+            favorite.time=time;
             favorite.title = mItemEntity.getTitle();
             favorite.adlet_url = mItemEntity.getAdletUrl();
             favorite.content_model = mItemEntity.getContentModel();
@@ -455,6 +463,11 @@ public class DetailPagePresenter implements DetailPageContract.Presenter {
             if (isLogin()) {
                 favorite.isnet = "yes";
                 createBookmarks(String.valueOf(mItemEntity.getPk()));
+                ArrayList<Favorite> favorites = DaisyUtils.getFavoriteManager(mDetailView.getActivity()).getAllFavorites("yes");
+                if (favorites.size() > 49) {
+                    favoriteManager.deleteFavoriteByUrl(favorites.get(favorites.size() - 1).url, "no");
+                }
+                favoriteManager.addFavorite(favorite, favorite.isnet);
             } else {
                 favorite.isnet = "no";
                 ArrayList<Favorite> favorites = DaisyUtils.getFavoriteManager(mDetailView.getActivity()).getAllFavorites("no");
