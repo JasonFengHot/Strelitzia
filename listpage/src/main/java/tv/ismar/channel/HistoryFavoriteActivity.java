@@ -1051,8 +1051,11 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
                 ArrayList<Favorite> localfavorite=DaisyUtils.getFavoriteManager(HistoryFavoriteActivity.this).getAllFavorites("no");
                 for(int i=0;i<localfavorite.size();i++){
                     for(int j=0;j<favorites.size();j++){
-                        if(localfavorite.get(i).url.equals(favorites.get(j).url)){
-                            localfavorite.remove(i);
+                        if(i>=0) {
+                            if (localfavorite.get(i).url.equals(favorites.get(j).url)) {
+                                localfavorite.remove(i);
+                                i--;
+                            }
                         }
                     }
                 }
