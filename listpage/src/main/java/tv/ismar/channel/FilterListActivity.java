@@ -1395,8 +1395,7 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
         specialPos.add(0);
         totalItemCount = 0;
         for (int i = 0; i <sections.size() ; i++) {
-//            totalItemCount +=sections.get(i).count;
-            totalItemCount +=3;
+            totalItemCount +=sections.get(i).count;
             if(i!=sections.size()-1)
                 specialPos.add(totalItemCount+i+1);
         }
