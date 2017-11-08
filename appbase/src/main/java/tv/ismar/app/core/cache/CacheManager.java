@@ -108,6 +108,19 @@ public class CacheManager {
         }
     }
 
+/*add by dragontec for bug 4415 start*/
+    public void stopRequest(String url) {
+        if (url != null) {
+            if (mFutureMap != null) {
+                Future future = mFutureMap.get(url);
+                if (future != null && !future.isCancelled()) {
+                    future.cancel(true);
+                }
+            }
+        }
+    }
+/*add by dragontec for bug 4415 end*/
+
     // new Delete cannot delete a row data
     private void resetDownload(DownloadTable downloadTable) {
         if (downloadTable == null) {

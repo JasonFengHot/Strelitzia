@@ -34,12 +34,14 @@
                 android:id="@+id/conlumn_item_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_centerHorizontal="true"
+                android:layout_alignParentRight="true"
+                android:gravity="center_vertical|right"
+                android:layout_marginRight="@dimen/column_item_text_margin_right"
+                android:layout_centerVertical="true"
                 android:singleLine="true"
                 android:ellipsize="end"
                 android:visibility="gone"
-                android:textSize="@dimen/text_size_30sp"/>
+                android:textSize="@dimen/text_size_50sp"/>
         </RelativeLayout>
     </tv.ismar.homepage.banner.IsmartvLinearLayout>
 </LinearLayout>

@@ -256,7 +256,15 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
 					if (direction == View.FOCUS_DOWN) {
 						synchronized (templateDataLock) {
 							if (mTemplates != null && mTemplates.size() > 0) {
-								return mTemplates.get(0).findNearestItemForPosition(focused, direction);
+								/*modify by dragontec for bug 4412 start*/
+								int i = 0;
+								View view;
+								do {
+									view = mTemplates.get(i).findNearestItemForPosition(focused, direction);
+									i++;
+								} while (view == null && i < mTemplates.size());
+								return view;
+								/*modify by dragontec for bug 4412 end*/
 							}
 						}
 					}
@@ -401,6 +409,7 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
 //		/*add by dragontec for bug 4200 end*/
 		/*delete by dragontec for bug 4334 end*/
 		//        mLinearContainer.initView();
+		mLinearContainer.checkDownButton();
 	}
 
 	/*modify by dragontec for bug 4362 start*/
@@ -487,6 +496,9 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
 			bannerView.setTag(layoutId, tag);
 			synchronized (templateDataLock) {
 				if (mTemplates != null) {
+					/*modify by dragontec for bug 4412 start*/
+					templateObject.setVisibility(View.GONE);
+					/*modify by dragontec for bug 4412 end*/
 					mTemplates.add(templateObject);
 				}
 			}
@@ -761,42 +773,44 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
 		@Override
 		public void run() {
 		/*modify by dragontec for bug 4408 end*/
-			try {
-				synchronized (templateDataLock) {
-					if (mTemplates != null) {
-						if (mLinearContainer != null) {
-							int i = mLinearContainer.getCurrentBannerPos();
-							int[] location = new int[2];
-							View childView = mLinearContainer.getChildAt(i);
-							if(childView != null){
-								childView.getLocationOnScreen(location);
-								while (i != 0 && location[1] > 0) {
-									i--;
-									childView.getLocationOnScreen(location);
-								}
-								for (; i < mTemplates.size(); i++) {
-									if (mLinearContainer != null && mLinearContainer.isScrolling()) {
-										break;
-									}
-									if (!mTemplates.get(i).checkViewAppear()) {
-										break;
-									}
-								}
-							}
-						} else {
-							for (Template template :
-									mTemplates) {
-								if (!template.checkViewAppear()) {
-									break;
-								}
-							}
-						}
-					}
-				}
-				mAniHandler.removeCallbacks(this);
-			}catch (Exception e){
-				e.printStackTrace();
-			}
+		/*delete by dragontec for bug 4412 start*/
+//			try {
+//				synchronized (templateDataLock) {
+//					if (mTemplates != null) {
+//						if (mLinearContainer != null) {
+//							int i = mLinearContainer.getCurrentBannerPos();
+//							int[] location = new int[2];
+//							View childView = mLinearContainer.getChildAt(i);
+//							if(childView != null){
+//								childView.getLocationOnScreen(location);
+//								while (i != 0 && location[1] > 0) {
+//									i--;
+//									childView.getLocationOnScreen(location);
+//								}
+//								for (; i < mTemplates.size(); i++) {
+//									if (mLinearContainer != null && mLinearContainer.isScrolling()) {
+//										break;
+//									}
+//									if (!mTemplates.get(i).checkViewAppear()) {
+//										break;
+//									}
+//								}
+//							}
+//						} else {
+//							for (Template template :
+//									mTemplates) {
+//								if (!template.checkViewAppear()) {
+//									break;
+//								}
+//							}
+//						}
+//					}
+//				}
+//				mAniHandler.removeCallbacks(this);
+//			}catch (Exception e){
+//				e.printStackTrace();
+//			}
+			/*delete by dragontec for bug 4412 end*/
 			/*modify by dragontec for bug 4408 end*/
 		}
 	}

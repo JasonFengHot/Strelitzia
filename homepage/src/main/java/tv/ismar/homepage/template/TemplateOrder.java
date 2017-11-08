@@ -233,6 +233,11 @@ public class TemplateOrder extends Template
 			if (mAdapter.getData() == null) {
 				if (mFetchControl.getHomeEntity(mBannerPk) != null) {
 					mAdapter.setData(mFetchControl.getHomeEntity(mBannerPk).posters);
+					/*modify by dragontec for bug 4412 start*/
+					if (mAdapter.getItemCount() > 0) {
+						setVisibility(VISIBLE);
+					}
+					/*modify by dragontec for bug 4412 end*/
 					mRecyclerView.setAdapter(mAdapter);
 	/*add by dragontec for bug 4077 start*/
 					checkFocus(mRecyclerView);
@@ -240,6 +245,11 @@ public class TemplateOrder extends Template
 				}
 			} else {
 				mAdapter.getData().addAll(mFetchControl.getHomeEntity(mBannerPk).posters);
+				/*modify by dragontec for bug 4412 start*/
+				if (mAdapter.getItemCount() > 0) {
+					setVisibility(VISIBLE);
+				}
+				/*modify by dragontec for bug 4412 end*/
 				int start = mAdapter.getData().size() - mFetchControl.getHomeEntity(mBannerPk).posters.size();
 				int end = mAdapter.getData().size();
 				mAdapter.notifyItemRangeChanged(start, end);

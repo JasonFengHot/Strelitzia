@@ -56,51 +56,54 @@ public class Horizontal519Adapter extends BaseRecycleAdapter<Horizontal519Adapte
 
 	@Override
 	public void onBindViewHolder(Horizontal519ViewHolder holder, int position) {
-		BannerPoster poster = mData.get(position);
+		holder.mPosition = position;
+		if (mData != null) {
+			BannerPoster poster = mData.get(position);
 
-		String title = poster.title;
-		String imageUrl = poster.poster_url;
-		String targetImageUrl = TextUtils.isEmpty(imageUrl) ? null : imageUrl;
+			String title = poster.title;
+			String imageUrl = poster.poster_url;
+			String targetImageUrl = TextUtils.isEmpty(imageUrl) ? null : imageUrl;
 
-		if ("更多".equals(title)){
-			holder.mItemView.findViewById(R.id.item_layout).setBackgroundResource(R.drawable.banner_horizontal_more);
-			holder.mTitle.setVisibility(View.INVISIBLE);
-			holder.mItemView.findViewById(R.id.content_layout).setVisibility(View.INVISIBLE);
-		}else {
-			holder.mItemView.findViewById(R.id.item_layout).setBackgroundResource(android.R.color.transparent);
-			holder.mTitle.setVisibility(View.VISIBLE);
-			holder.mItemView.findViewById(R.id.content_layout).setVisibility(View.VISIBLE);
+			if (!TextUtils.isEmpty(poster.vertical_url) && poster.vertical_url.equals("更多")) {
+				holder.mItemView.findViewById(R.id.item_layout).setBackgroundResource(R.drawable.banner_horizontal_more);
+				holder.mTitle.setVisibility(View.INVISIBLE);
+				holder.mItemView.findViewById(R.id.content_layout).setVisibility(View.INVISIBLE);
+			} else {
+				holder.mItemView.findViewById(R.id.item_layout).setBackgroundResource(android.R.color.transparent);
+				holder.mTitle.setVisibility(View.VISIBLE);
+				holder.mItemView.findViewById(R.id.content_layout).setVisibility(View.VISIBLE);
 /*modify by dragontec for bug 4336 start*/
-			Picasso.with(mContext).load(targetImageUrl).placeholder(R.drawable.template_title_item_horizontal_preview)
-					.error(R.drawable.template_title_item_horizontal_preview).into(holder.mImageView);
+				Picasso.with(mContext).load(targetImageUrl).placeholder(R.drawable.template_title_item_horizontal_preview)
+						.error(R.drawable.template_title_item_horizontal_preview).into(holder.mImageView);
 /*modify by dragontec for bug 4336 end*/
+			}
+
+			holder.mTitle.setText(title + " ");
+			holder.mItemView.findViewById(R.id.item_layout).setTag(poster);
+			holder.mItemView.findViewById(R.id.item_layout).setTag(R.id.banner_item_position, position);
+
+			Picasso.with(mContext).load(VipMark.getInstance().getBannerIconMarkImage(poster.top_left_corner)).into(holder.markLT);
+			Picasso.with(mContext).load(VipMark.getInstance().getBannerIconMarkImage(poster.top_right_corner)).into(holder.markRT);
+
+			if (poster.rating_average != 0) {
+				holder.markRB.setText(new DecimalFormat("0.0").format(poster.rating_average));
+				holder.markRB.setVisibility(View.VISIBLE);
+			} else {
+				holder.markRB.setVisibility(View.INVISIBLE);
+			}
+
+
+			if (position == 0) {
+				holder.mLeftSpace.setVisibility(View.GONE);
+			} else {
+				holder.mLeftSpace.setVisibility(View.VISIBLE);
+			}
+			String focusStr = title;
+			if (poster.focus != null && !poster.focus.equals("") && !poster.focus.equals("null")) {
+				focusStr = poster.focus;
+			}
+			holder.mTitle.setTag(new String[]{title, focusStr});
 		}
-
-		holder.mTitle.setText(title + " ");
-		holder.mItemView.findViewById(R.id.item_layout).setTag(poster);
-		holder.mItemView.findViewById(R.id.item_layout).setTag(R.id.banner_item_position, position);
-
-		Picasso.with(mContext).load(VipMark.getInstance().getBannerIconMarkImage(poster.top_left_corner)).into(holder.markLT);
-		Picasso.with(mContext).load(VipMark.getInstance().getBannerIconMarkImage(poster.top_right_corner)).into(holder.markRT);
-
-		if (poster.rating_average != 0){
-			holder.markRB.setText(new DecimalFormat("0.0").format(poster.rating_average));
-			holder.markRB.setVisibility(View.VISIBLE);
-		}else {
-			holder.markRB.setVisibility(View.INVISIBLE);
-		}
-
-
-		if (position == 0) {
-			holder.mLeftSpace.setVisibility(View.GONE);
-		} else {
-			holder.mLeftSpace.setVisibility(View.VISIBLE);
-		}
-		String focusStr = title;
-		if(poster.focus != null && !poster.focus.equals("") && !poster.focus.equals("null")){
-			focusStr = poster.focus;
-		}
-		holder.mTitle.setTag(new String[]{title,focusStr});
 	}
 
 	@Override

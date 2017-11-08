@@ -57,6 +57,7 @@ public class MovieAdapter extends BaseRecycleAdapter<MovieAdapter.MovieViewHolde
 
 	@Override
 	public void onBindViewHolder(MovieViewHolder holder, int position) {
+		holder.mPosition = position;
 		if (mData != null) {
 			BannerPoster entity = mData.get(position);
 
@@ -70,7 +71,7 @@ public class MovieAdapter extends BaseRecycleAdapter<MovieAdapter.MovieViewHolde
 			holder.mItemView.findViewById(R.id.item_layout).setTag(entity);
 			holder.mItemView.findViewById(R.id.item_layout).setTag(R.id.banner_item_position, position);
 
-			if ("更多".equals(title)) {
+			if (!TextUtils.isEmpty(entity.vertical_url) && entity.vertical_url.equals("更多")) {
 				holder.mItemView.findViewById(R.id.item_layout).setBackgroundResource(R.drawable.banner_vertical_more);
 				holder.mTitle.setVisibility(View.INVISIBLE);
 				holder.itemWrapper.setVisibility(View.INVISIBLE);

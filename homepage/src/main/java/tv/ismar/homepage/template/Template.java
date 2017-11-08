@@ -432,18 +432,20 @@ public abstract class Template implements BaseControl.ControlCallBack {
 		//等view第一次显示出画面的是以进行数据取得
 		synchronized (mCheckViewLock) {
 			if (isNeedFillData && mParentView != null) {
-				if (mPosition < ChannelFragment.LOAD_BANNERS_COUNT) {
+				/*modify by dragontec for bug 4412 start*/
+//				if (mPosition < ChannelFragment.LOAD_BANNERS_COUNT) {
 					fillData();
-				} else {
-					mParentView.getLocationOnScreen(location);
-					if (location[1] + mParentView.getHeight() >= 0) {
-						if (location[1] >= mParentView.getResources().getDisplayMetrics().heightPixels + 1) {
-							ret = false;
-						} else {
-							fillData();
-						}
-					}
-				}
+//				} else {
+//					mParentView.getLocationOnScreen(location);
+//					if (location[1] + mParentView.getHeight() >= 0) {
+//						if (location[1] >= mParentView.getResources().getDisplayMetrics().heightPixels + 1) {
+//							ret = false;
+//						} else {
+//							fillData();
+//						}
+//					}
+//				}
+				/*modify by dragontec for bug 4412 end*/
 			}
 		}
 		return ret;
@@ -461,7 +463,14 @@ public abstract class Template implements BaseControl.ControlCallBack {
 //                            boolean canScroll = tag>>30==1;//1可滑动，0不可滑动
 			int position = (tag<<2)>>2;
 			if(position > 0){
-				View lastView = ((ViewGroup)mBannerLinearLayout.getParent()).getChildAt(position - 1);
+				/*modify by dragontec for bug 4412 start*/
+				int last = position - 1;
+				View lastView;
+				do {
+					lastView = ((ViewGroup)mBannerLinearLayout.getParent()).getChildAt(last);
+					last--;
+				} while ((lastView == null || lastView.getVisibility() == View.GONE) && last >= 0);
+				/*modify by dragontec for bug 4412 end*/
 				if(lastView != null && lastView instanceof BannerLinearLayout) {
 					BannerLinearLayout bannerLinearLayout = (BannerLinearLayout)lastView;
 					View headView = bannerLinearLayout.findViewById(R.id.banner_guide_head);
@@ -521,7 +530,14 @@ public abstract class Template implements BaseControl.ControlCallBack {
 			int position = (tag << 2) >> 2;
 			int count = ((ViewGroup) mBannerLinearLayout.getParent()).getChildCount();
 			if (position < count - 1) {
-				View nextView = ((ViewGroup)mBannerLinearLayout.getParent()).getChildAt(position + 1);
+				/*modify by dragontec for bug 4412 start*/
+				int next = position + 1;
+				View nextView;
+				do {
+					nextView = ((ViewGroup)mBannerLinearLayout.getParent()).getChildAt(next);
+					next++;
+				} while ((nextView == null || nextView.getVisibility() == View.GONE) && next < count);
+				/*modify by dragontec for bug 4412 end*/
 				if(nextView != null && nextView instanceof BannerLinearLayout) {
 					BannerLinearLayout bannerLinearLayout = (BannerLinearLayout)nextView;
 					View headView = bannerLinearLayout.findViewById(R.id.banner_guide_head);
@@ -794,5 +810,24 @@ public abstract class Template implements BaseControl.ControlCallBack {
 			break;
 		}
 	}
+	/*add by dragontec for bug 4412 start*/
+	public void setVisibility(int visibility) {
+		if (mParentView != null) {
+//			View title = mParentView.findViewById(R.id.banner_title_tv);
+//			if (title != null) {
+//				title.setVisibility(visibility);
+//			}
+//			View titleCount = mParentView.findViewById(R.id.banner_title_count);
+//			if (titleCount != null) {
+//				titleCount.setVisibility(visibility);
+//			}
+//			View recyclerLayout = mParentView.findViewById(R.id.recycler_layout);
+//			if (recyclerLayout != null) {
+//				recyclerLayout.setVisibility(visibility);
+//			}
+			mParentView.setVisibility(visibility);
+		}
+	}
+	/*add by dragontec for bug 4412 end*/
 }
 /*modify by dragontec for bug 4362 end*/

@@ -25,6 +25,9 @@ import tv.ismar.homepage.control.FetchDataControl;
 import tv.ismar.homepage.view.BannerLinearLayout;
 
 import static android.view.MotionEvent.BUTTON_PRIMARY;
+/*add by dragontec for bug 4412 start*/
+import static android.view.View.VISIBLE;
+/*add by dragontec for bug 4412 end*/
 import static tv.ismar.homepage.fragment.ChannelFragment.CHANNEL_KEY;
 import static tv.ismar.homepage.fragment.ChannelFragment.NAME_KEY;
 
@@ -208,6 +211,11 @@ public class TemplateMovie extends Template
 			if (mAdapter.getData() == null) {
 				if (mFetchControl.getHomeEntity(mBannerPk) != null) {
 					mAdapter.setData(mFetchControl.getHomeEntity(mBannerPk).posters);
+					/*modify by dragontec for bug 4412 start*/
+					if (mAdapter.getItemCount() > 0) {
+						setVisibility(VISIBLE);
+					}
+					/*modify by dragontec for bug 4412 end*/
 					mRecyclerView.setAdapter(mAdapter);
 	/*add by dragontec for bug 4077 start*/
 					checkFocus(mRecyclerView);
@@ -215,6 +223,11 @@ public class TemplateMovie extends Template
 				}
 			} else {
 				mAdapter.getData().addAll(mFetchControl.getHomeEntity(mBannerPk).posters);
+				/*modify by dragontec for bug 4412 start*/
+				if (mAdapter.getItemCount() > 0) {
+					setVisibility(VISIBLE);
+				}
+				/*modify by dragontec for bug 4412 end*/
 				int start = mAdapter.getData().size() - mFetchControl.getHomeEntity(mBannerPk).posters.size();
 				int end = mAdapter.getData().size();
 				mAdapter.notifyItemRangeChanged(start, end);

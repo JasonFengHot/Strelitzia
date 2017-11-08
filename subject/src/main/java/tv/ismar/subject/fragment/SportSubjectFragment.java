@@ -291,8 +291,12 @@ public class SportSubjectFragment extends Fragment implements View.OnHoverListen
             play.setTextColor(getResources().getColor(R.color._999999));
         }
         String[] titles=objects.title.split("-");
-        game_time.setText(titles[0]);
-        title.setText(titles[1]);
+		/*add by dragontec for bug 4417 start*/
+        if(titles != null && titles.length > 1) {
+            game_time.setText(titles[0]);
+            title.setText(titles[1]);
+        }
+		/*add by dragontec for bug 4417 end*/
         relateHandler.removeCallbacks(runnable);
         relateHandler.postDelayed(runnable,500);
     }

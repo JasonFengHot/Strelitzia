@@ -765,6 +765,11 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
 
     @Override
     public void updatePlayerStatus(PlaybackService.PlayerStatus status, Object args) {
+		/*modify by dragontec for bug 4418 start*/
+        if(getActivity() == null || !isAdded() || getActivity().isFinishing()){
+            return;
+        }
+		/*modify by dragontec for bug 4418 end*/
         if (status == PlaybackService.PlayerStatus.RESPONSE_ERROR) {
             Throwable throwable = (Throwable) args;
             BaseActivity baseActivity = ((BaseActivity) getActivity());
@@ -1282,10 +1287,12 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
         }
     }
     private void playPauseVideo() {
+		/*modify by dragontec for bug 4418 start*/
         if (mIsExiting || mPlaybackService.isPlayingAd() || mPlaybackService == null || mPlaybackService.getMediaPlayer() == null
-                || mPlaybackService.getItemEntity().getLiveVideo() || !mPlaybackService.isPlayerPrepared()) {
+                || mPlaybackService.getItemEntity().getLiveVideo() || !mPlaybackService.isPlayerPrepared()){
             return;
         }
+		/*modify by dragontec for bug 4418 end*/
         if (mPlaybackService.getMediaPlayer().isPlaying()) {
             mIsOnPaused = true;
             mPlaybackService.pausePlayer();
@@ -1334,10 +1341,14 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
                 mPlaybackService.logVideoExit(mCurrentPosition, "finish");
                 ItemEntity.Expense expense = mPlaybackService.getItemEntity().getExpense();
                 PageIntentInterface.ProductCategory mode = null;
-                if (1 == expense.getJump_to()) {
-                    mode = PageIntentInterface.ProductCategory.item;
+				/*modify by dragontec for bug 4420 start*/
+                if(expense != null){
+                    if (1 == expense.getJump_to()) {
+                        mode = PageIntentInterface.ProductCategory.item;
+                    }
+                    toPayPage(mPlaybackService.getItemEntity().getPk(), expense.getJump_to(), expense.getCpid(), mode);
                 }
-                toPayPage(mPlaybackService.getItemEntity().getPk(), expense.getJump_to(), expense.getCpid(), mode);
+				/*modify by dragontec for bug 4420 end*/
                 break;
             case EVENT_PLAY_EXIT:
                 mIsClickKefu = true;
@@ -2060,6 +2071,10 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
                     timerStop();
                     mPlaybackService.addHistory(mCurrentPosition, true);
                     baseActivity.showNoNetConnectDialog(null);
+                } else {
+/*add by dragontec for bug 4413 start*/
+                    mPlaybackService.pausePlayer();
+/*add by dragontec for bug 4413 end*/
                 }
             } else if (baseActivity.isNoNetDialogShowing() && NetworkUtils.isConnected(context)) {
                 if(!baseActivity.isFinishing())

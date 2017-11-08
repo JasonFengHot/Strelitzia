@@ -34,4 +34,7 @@ public class BannerPoster {
 	public Date order_date;
 	public String display_order_date;
 	/*add by dragontec for bug 4362 end*/
+	/*add by dragontec for bug 4422 start*/
+	public boolean display_title;
+	/*add by dragontec for bug 4422 end*/
 }

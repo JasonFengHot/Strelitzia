@@ -33,6 +33,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Vector;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.HttpUrl;
@@ -150,6 +151,10 @@ public class TemplateGuide extends Template
 
     private NavigationtHandler mNavigationtHandler;
     private Transformation transformation;
+
+/*add by dragontec for bug 4415 start*/
+    private Vector<String> mDownloadUrlVector = new Vector<>();
+/*add by dragontec for bug 4415 end*/
 
     private class NavigationtHandler extends Handler {
         @Override
@@ -331,7 +336,25 @@ public class TemplateGuide extends Template
         if (mNavigationtHandler.hasMessages(NAVIGATION_RIGHT)){
             mNavigationtHandler.removeMessages(NAVIGATION_RIGHT);
         }
+
+/*add by dragontec for bug 4415 start*/
+        stopRequestDownload();
+/*add by dragontec for bug 4415 end*/
     }
+
+/*add by dragontec for bug 4415 start*/
+    private void stopRequestDownload() {
+        if (mDownloadUrlVector != null) {
+            for (String downloadUrl : mDownloadUrlVector) {
+                if (downloadUrl != null) {
+                    Log.d(TAG, "stopRequestDownload remove download url = " + downloadUrl);
+                    CacheManager.getInstance().stopRequest(downloadUrl);
+                }
+            }
+            mDownloadUrlVector.clear();
+        }
+    }
+/*add by dragontec for bug 4415 end*/
 
     @Override
     public void onDestroy() {
@@ -463,7 +486,6 @@ public class TemplateGuide extends Template
 			isNeedFillData = false;
 			initRecycleView();
 			if (!isPlayed) {
-				isPlayed = true;
 				playCarousel();
 				initCarousel();
 			}
@@ -566,11 +588,21 @@ public class TemplateGuide extends Template
     		if (mAdapter.getData() == null) {
     			if (mFetchControl.mPosterMap.get(mBannerPk) != null) {
 					mAdapter.setData(mFetchControl.mPosterMap.get(mBannerPk));
+					/*modify by dragontec for bug 4412 start*/
+					if (mAdapter.getItemCount() > 0) {
+						setVisibility(VISIBLE);
+					}
+					/*modify by dragontec for bug 4412 end*/
 /*modify by dragontec for bug 4332 start*/
 					mRecyclerView.setAdapter(mAdapter);
 /*modify by dragontec for bug 4332 end*/
 				}
 			} else {
+    			/*modify by dragontec for bug 4412 start*/
+				if (mAdapter.getItemCount() > 0) {
+					setVisibility(VISIBLE);
+				}
+				/*modify by dragontec for bug 4412 end*/
 				int start = mFetchControl.mPosterMap.get(mBannerPk).size() - mFetchControl.getHomeEntity(mBannerPk).posters.size();
 				int end = mFetchControl.mPosterMap.get(mBannerPk).size();
 				mAdapter.notifyItemRangeChanged(start, end);
@@ -788,7 +820,10 @@ public class TemplateGuide extends Template
     }
 
     private void playCarousel() {
-        Log.d(TAG, "carousel size: " + mFetchControl.mCarouselsMap.get(mBannerPk).size());
+    	if (mFetchControl.mCarouselsMap.get(mBannerPk) == null) {
+    		return;
+		}
+		isPlayed = true;
         if (mCurrentCarouselIndex == mFetchControl.mCarouselsMap.get(mBannerPk).size() - 1) {
             mCurrentCarouselIndex = 0;
         } else {
@@ -906,30 +941,58 @@ public class TemplateGuide extends Template
             mVideoTitleTv.setVisibility(View.GONE);
         }
         final int pauseTime = mFetchControl.mCarouselsMap.get(mBannerPk).get(mCurrentCarouselIndex).getPause_time();
-/*modify by dragontec for bug 4336 start*/
-        Picasso.with(mContext)
-                .load(url)
-                .placeholder(R.drawable.guide_video_loading)
-                .error(R.drawable.guide_video_loading)
-                .into(
-                        mLoadingIg,
-                        new Callback() {
+ 		/*modify by dragontec for bug 4428 start*/
+        if(url == null || url.equals("")){
+            Picasso.with(mContext)
+                    .load(R.drawable.guide_video_loading)
+                    .placeholder(R.drawable.guide_video_loading)
+                    .error(R.drawable.guide_video_loading)
+                    .into(
+                            mLoadingIg,
+                            new Callback() {
 
-                            @Override
-                            public void onSuccess() {
-                                if (mHandler!= null){
-                                    mHandler.sendEmptyMessageDelayed(CAROUSEL_NEXT, pauseTime * 1000);
+                                @Override
+                                public void onSuccess() {
+                                    if (mHandler!= null){
+                                        mHandler.sendEmptyMessageDelayed(CAROUSEL_NEXT, pauseTime * 1000);
+                                    }
                                 }
-                            }
 
-                            @Override
-                            public void onError(Exception e) {
-                                if (mHandler != null){
-                                    mHandler.sendEmptyMessageDelayed(CAROUSEL_NEXT, pauseTime * 1000);
+                                @Override
+                                public void onError(Exception e) {
+                                    if (mHandler != null){
+                                        mHandler.sendEmptyMessageDelayed(CAROUSEL_NEXT, pauseTime * 1000);
+                                    }
                                 }
-                            }
-                        });
-/*modify by dragontec for bug 4336 end*/
+                            });
+        }else{
+			/*modify by dragontec for bug 4428 end*/
+            /*modify by dragontec for bug 4336 start*/
+            Picasso.with(mContext)
+                    .load(url)
+                    .placeholder(R.drawable.guide_video_loading)
+                    .error(R.drawable.guide_video_loading)
+                    .into(
+                            mLoadingIg,
+                            new Callback() {
+
+                                @Override
+                                public void onSuccess() {
+                                    if (mHandler!= null){
+                                        mHandler.sendEmptyMessageDelayed(CAROUSEL_NEXT, pauseTime * 1000);
+                                    }
+                                }
+
+                                @Override
+                                public void onError(Exception e) {
+                                    if (mHandler != null){
+                                        mHandler.sendEmptyMessageDelayed(CAROUSEL_NEXT, pauseTime * 1000);
+                                    }
+                                }
+                            });
+        /*modify by dragontec for bug 4336 end*/
+        }
+
     }
 
     private void playVideo(int delay) {
@@ -969,6 +1032,13 @@ public class TemplateGuide extends Template
                                     mFetchControl.mCarouselsMap.get(mBannerPk).get(mCurrentCarouselIndex).getVideo_url(),
                                     videoName,
                                     DownloadClient.StoreType.Internal);
+/*add by dragontec for bug 4415 start*/
+            Log.d(TAG, "startPlayback do request result url = " + videoPath);
+            if (!videoPath.startsWith("file://") && !mDownloadUrlVector.contains(videoPath)) {
+                Log.d(TAG, "startPlayback add to download url = " + videoPath);
+                mDownloadUrlVector.add(videoPath);
+            }
+/*add by dragontec for bug 4415 end*/
         } else {
             videoPath =
                     CacheManager.getInstance()
@@ -976,6 +1046,13 @@ public class TemplateGuide extends Template
                                     mFetchControl.mCarouselsMap.get(mBannerPk).get(mCurrentCarouselIndex).getVideo_url(),
                                     videoName,
                                     DownloadClient.StoreType.External);
+/*add by dragontec for bug 4415 start*/
+            Log.d(TAG, "startPlayback do request result url = " + videoPath);
+            if (!videoPath.startsWith("file://") && !mDownloadUrlVector.contains(videoPath)) {
+                Log.d(TAG, "startPlayback add to download url = " + videoPath);
+                mDownloadUrlVector.add(videoPath);
+            }
+/*add by dragontec for bug 4415 end*/
         }
 
         if (videoPath.startsWith("http://")) {

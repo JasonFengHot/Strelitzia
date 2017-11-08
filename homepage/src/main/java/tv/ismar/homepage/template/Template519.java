@@ -222,12 +222,22 @@ public class Template519 extends Template
 				if (mFetchControl.getHomeEntity(mBannerPk) != null) {
 					Log.d(TAG, "fill adapter");
 					mAdapter.setData(mFetchControl.mPosterMap.get(mBannerPk));
+					/*modify by dragontec for bug 4412 start*/
+					if (mAdapter.getItemCount() > 0) {
+						setVisibility(VISIBLE);
+					}
+					/*modify by dragontec for bug 4412 end*/
 					mRecyclerView.setAdapter(mAdapter);
 	/*add by dragontec for bug 4077 start*/
 					checkFocus(mRecyclerView);
 	/*add by dragontec for bug 4077 end*/
 				}
 			} else {
+				/*modify by dragontec for bug 4412 start*/
+				if (mAdapter.getItemCount() > 0) {
+					setVisibility(VISIBLE);
+				}
+				/*modify by dragontec for bug 4412 end*/
 				int start = mFetchControl.mPosterMap.get(mBannerPk).size() - mFetchControl.getHomeEntity(mBannerPk).posters.size();
 				int end = mFetchControl.mPosterMap.get(mBannerPk).size();
 				mAdapter.notifyItemRangeChanged(start, end);
@@ -259,10 +269,10 @@ public class Template519 extends Template
 			View focused, int focusDirection, RecyclerView.Recycler recycler, RecyclerView.State state) {
 		if (focusDirection == View.FOCUS_RIGHT || focusDirection == View.FOCUS_LEFT) {
 /*modify by dragontec for bug 4332 start*/
-			if (mRecyclerView.getChildAt(0).findViewById(R.id.tv_player_ismartv_linear_layout) == focused
+			if (mRecyclerView.getChildAt(0).findViewById(R.id.item_layout) == focused
 					|| mRecyclerView
 					.getChildAt(mRecyclerView.getChildCount() - 1)
-					.findViewById(R.id.tv_player_ismartv_linear_layout)
+					.findViewById(R.id.item_layout)
 					== focused) {
 				YoYo.with(Techniques.HorizontalShake).duration(1000).playOn(focused);
 			}

@@ -65,6 +65,9 @@ public class ConlumnAdapter extends BaseRecycleAdapter<ConlumnAdapter.ConlumnVie
 			BannerPoster poster = mData.get(position);
 			Log.d("ConlumnAdapter", "position:" + position);
 			holder.mPosition = position;
+			/*add by dragontec for bug 4422 start*/
+			holder.mTitle.setVisibility(poster.display_title ? View.VISIBLE : View.GONE);
+			/*add by dragontec for bug 4422 end*/
 			holder.mTitle.setText(poster.title);
 			if (!TextUtils.isEmpty(poster.image_url)) {
 /*modify by dragontec for bug 4336 start*/
