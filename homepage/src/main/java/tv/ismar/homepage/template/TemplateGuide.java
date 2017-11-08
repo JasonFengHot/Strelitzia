@@ -57,6 +57,7 @@ import tv.ismar.homepage.R;
 import tv.ismar.homepage.adapter.GuideAdapter;
 import tv.ismar.homepage.control.FetchDataControl;
 import tv.ismar.homepage.control.GuideControl;
+import tv.ismar.homepage.fragment.ChannelFragment;
 import tv.ismar.homepage.view.BannerLinearLayout;
 import tv.ismar.homepage.widget.DaisyVideoView;
 	/*add by dragontec for bug 4077 start*/
@@ -120,6 +121,7 @@ public class TemplateGuide extends Template
 	/*delete by dragontec for bug 4332 end*/
     private String mName; // 频道名称（中文）
     private String mChannel; // 频道名称（英文）
+    private int locationY;
     private MediaPlayer.OnCompletionListener mOnCompletionListener;
     private MediaPlayer.OnErrorListener mVideoOnErrorListener;
     private MediaPlayer.OnPreparedListener mOnPreparedListener;
@@ -442,8 +444,9 @@ public class TemplateGuide extends Template
     public void initData(Bundle bundle) {
     	initAdapter();
         mBannerPk = bundle.getString(BANNER_KEY);
-        mName = bundle.getString(NAME_KEY);
+        mName = bundle.getString("title");
         mChannel = bundle.getString(CHANNEL_KEY);
+        locationY=bundle.getInt(ChannelFragment.BANNER_LOCATION,0);
 /*modify by dragontec for bug 4334 start*/
 		if (mFetchControl.getHomeEntity(mBannerPk) != null) {
 			isNeedFillData = true;
@@ -630,6 +633,7 @@ public class TemplateGuide extends Template
         } else {
             mControl.go2Detail(mFetchControl.getHomeEntity(mBannerPk).posters.get(position));
         }
+        mFetchControl.launcher_vod_click(mChannel,mBannerPk,mName,locationY+","+(position+1));
     }
 
     @Override
@@ -756,6 +760,7 @@ public class TemplateGuide extends Template
         } else if (i == R.id.guide_head_ismartv_linearlayout) {
             Log.d(TAG, "onClick goToNextPage");
             goToNextPage(v);
+            mFetchControl.launcher_vod_click(mChannel,mBannerPk,mName,locationY+","+1);
         }
     }
 

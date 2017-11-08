@@ -799,7 +799,7 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
             TextView focus= (TextView) container.findViewById(R.id.focus_title);
             TextView title= (TextView) container.findViewById(R.id.title);
             final VideoEntity.Objects object=videoEntity.getObjects().get(i);
-
+            item.setOnHoverListener(this);
             Picasso.with(this).load(object.getImage()).into(detail);
             title.setText(object.getTitle());
             item.setOnClickListener(new View.OnClickListener() {

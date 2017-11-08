@@ -29,6 +29,7 @@ import tv.ismar.homepage.OnItemClickListener;
 import tv.ismar.homepage.R;
 import tv.ismar.homepage.adapter.RecommendAdapter;
 import tv.ismar.homepage.control.FetchDataControl;
+import tv.ismar.homepage.fragment.ChannelFragment;
 import tv.ismar.homepage.view.BannerLinearLayout;
 	/*add by dragontec for bug 4077 start*/
 import tv.ismar.homepage.widget.RecycleLinearLayout;
@@ -62,7 +63,7 @@ public class TemplateRecommend extends Template
 /*delete by dragontec for bug 4332 end*/
     private String mName; // 频道名称（中文）
     private String mChannel; // 频道名称（英文）
-
+    private int locationY;
   private static final int NAVIGATION_LEFT = 0x0001;
   private static final int NAVIGATION_RIGHT = 0x0002;
 
@@ -178,8 +179,9 @@ public class TemplateRecommend extends Template
   public void initData(Bundle bundle) {
   	initAdapter();
       mBannerPk = bundle.getString(BANNER_KEY);
-      mName = bundle.getString(NAME_KEY);
+      mName = bundle.getString("title");
       mChannel = bundle.getString(CHANNEL_KEY);
+      locationY=bundle.getInt(ChannelFragment.BANNER_LOCATION,0);
 /*modify by dragontec for bug 4334 start*/
 	if (mFetchControl.getHomeEntity(mBannerPk) != null) {
 		isNeedFillData = true;
@@ -291,6 +293,7 @@ public class TemplateRecommend extends Template
       BannerPoster bannerRecommend = mFetchControl.mPosterMap.get(mBannerPk).get(position);
       if (bannerRecommend != null) {
         mFetchControl.go2Detail(bannerRecommend.pk,bannerRecommend.model_name,bannerRecommend.content_model,bannerRecommend.content_url,bannerRecommend.title,null,null,null);
+        mFetchControl.launcher_vod_click(mChannel,mBannerPk,mName,locationY+","+(position+1));
       }
     }
   }

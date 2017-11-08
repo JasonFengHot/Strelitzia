@@ -17,6 +17,7 @@ import rx.schedulers.Schedulers;
 import tv.ismar.account.IsmartvActivator;
 import tv.ismar.app.BaseActivity;
 import tv.ismar.app.BaseControl;
+import tv.ismar.app.core.client.NetworkUtils;
 import tv.ismar.app.entity.ChannelEntity;
 import tv.ismar.app.entity.GuideBanner;
 import tv.ismar.app.entity.banner.BannerCarousels;
@@ -497,5 +498,14 @@ public class FetchDataControl extends BaseControl{
         if (fetchBanners != null && !fetchBanners.isUnsubscribed()) {
             fetchBanners.unsubscribe();
         }
+    }
+    public void launcher_vod_click(String type, String pk, String title, String position) {
+        HashMap<String, Object> tempMap = new HashMap<String, Object>();
+        tempMap.put("type", type);
+        tempMap.put("pk", pk);
+        tempMap.put("title", title);
+        tempMap.put("location", position);
+        new NetworkUtils.DataCollectionTask().execute(NetworkUtils.LAUNCHER_VOD_CLICK, tempMap);
+
     }
 }

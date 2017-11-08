@@ -22,10 +22,15 @@ import tv.ismar.homepage.OnItemHoverListener;
 import tv.ismar.homepage.R;
 import tv.ismar.homepage.adapter.CenterAdapter;
 import tv.ismar.homepage.control.FetchDataControl;
+import tv.ismar.homepage.fragment.ChannelFragment;
 import tv.ismar.homepage.view.BannerLinearLayout;
 import tv.ismar.homepage.widget.CenterRecyclerViewTV;
 
 import static android.view.MotionEvent.BUTTON_PRIMARY;
+import static tv.ismar.homepage.fragment.ChannelFragment.BANNER_KEY;
+import static tv.ismar.homepage.fragment.ChannelFragment.CHANNEL_KEY;
+import static tv.ismar.homepage.fragment.ChannelFragment.NAME_KEY;
+import static tv.ismar.homepage.fragment.ChannelFragment.TITLE_KEY;
 
 /**
  * @AUTHOR: xi @DATE: 2017/9/5 @DESC: 居中模版
@@ -43,6 +48,9 @@ public class TemplateCenter extends Template
     private LinearLayoutManagerTV mCenterLayoutManager;
     private CenterAdapter mAdapter;
     private BannerLinearLayout mBannerLinearLayout;
+    private String mName; // 频道名称（中文）
+    private String mChannel; // 频道名称（英文）
+    private int locationY;
 /*delete by dragontec for bug 4332 start*/
 //    private View navigationLeft;
 //    private View navigationRight;
@@ -124,7 +132,10 @@ public class TemplateCenter extends Template
     @Override
     public void initData(Bundle bundle) {
     	initAdapter();
-        mBannerPk = bundle.getString("banner");
+        mBannerPk = bundle.getString(BANNER_KEY);
+        mName = bundle.getString("title");
+        mChannel = bundle.getString(CHANNEL_KEY);
+        locationY=bundle.getInt(ChannelFragment.BANNER_LOCATION,0);
 /*modify by dragontec for bug 4334 start*/
 		if (mFetchControl.getHomeEntity(mBannerPk)!= null) {
 			isNeedFillData = true;
@@ -303,6 +314,7 @@ public class TemplateCenter extends Template
 		/*add by dragontec for bug 4307,4277 start*/
         if(view.hasFocus()) {
 			mFetchControl.go2Detail(mFetchControl.mCarouselsMap.get(mBannerPk).get(position));
+            mFetchControl.launcher_vod_click(mChannel,mBannerPk,mName,locationY+","+(position+1));
         }
 		/*add by dragontec for bug 4307,4277 end*/
     }
