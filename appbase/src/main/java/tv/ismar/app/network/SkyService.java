@@ -900,7 +900,7 @@ public interface SkyService {
              */
             Retrofit upgradeRetrofit = new Retrofit.Builder()
                     .baseUrl(appendProtocol(domain[2]))
-                                   .baseUrl(appendProtocol("http://updatetest.tvxio.com/"))
+                    //               .baseUrl(appendProtocol("http://124.42.65.66/"))
                     .addConverterFactory(GsonConverterFactory.create(gson))
                     .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                     .client(mClient)
