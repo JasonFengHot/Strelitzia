@@ -356,7 +356,7 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
                     } else {
                         filter_root_view.setShow_right_up(true);
                     }
-                    if(filterPosterAdapter!=null&&mFilterFocusGridLayoutManager.findLastVisibleItemPosition()==filterPosterAdapter.getItemCount()-1){
+                    if(filterPosterAdapter!=null&&mFilterFocusGridLayoutManager.findLastCompletelyVisibleItemPosition()==filterPosterAdapter.getItemCount()-1){
                         filter_root_view.setShow_right_down(false);
                     }else{
                         filter_root_view.setShow_right_down(true);
@@ -382,7 +382,7 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
                     }else{
                         filter_root_view.setShow_right_up(true);
                     }
-                    if (lastVisiablePos == mAllSectionItemList.getCount()-1) {
+                    if (mFocusGridLayoutManager.findLastCompletelyVisibleItemPosition() == mAllSectionItemList.getCount()-1) {
                         filter_root_view.setShow_right_down(false);
                     } else {
                         filter_root_view.setShow_right_down(true);
@@ -1188,6 +1188,9 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
                 } else {
                     if (isVertical) {
                         nextPos = mFocusGridLayoutManager.findLastVisibleItemPosition() + 1;
+                        if(nextPos>mAllSectionItemList.getCount()-1){
+                            nextPos=mFocusGridLayoutManager.findLastVisibleItemPosition();
+                        }
                         if (specialPos.contains(nextPos)) {
                             mFocusGridLayoutManager.scrollToPositionWithOffset(nextPos, 0);
                         } else {
