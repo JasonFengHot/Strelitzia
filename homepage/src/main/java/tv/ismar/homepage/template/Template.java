@@ -699,19 +699,29 @@ public abstract class Template implements BaseControl.ControlCallBack {
 				/*modify by dragontec for bug 4334 start*/
 				if (mParentView.getVisibility() != View.GONE) {
 					if (mRecyclerView != null && mRecyclerView.getChildCount() > 0) {
-						for (int i = mRecyclerView.findFirstVisibleItemPosition(); i <= mRecyclerView.findLastVisibleItemPosition(); i++) {
-							RecyclerView.ViewHolder viewHolder = mRecyclerView.findViewHolderForAdapterPosition(i);
-							if (viewHolder != null) {
-								View view = viewHolder.itemView;
-								view.getLocationOnScreen(location);
-								if (middleX >= location[0] && middleX <= location[0] + view.getWidth()) {
-									item = view;
+						/*modify by dragontec for bug 4409 start*/
+						if (mRecyclerView.isSelectedItemAtCentered()) {
+							item = mRecyclerView.getLastFocusChild();
+							if (item == null) {
+								int position = mRecyclerView.getFirstCompletelyVisiblePosition();
+								item = mRecyclerView.findViewHolderForAdapterPosition(position).itemView;
+							}
+						} else {
+							for (int i = mRecyclerView.findFirstVisibleItemPosition(); i <= mRecyclerView.findLastVisibleItemPosition(); i++) {
+								RecyclerView.ViewHolder viewHolder = mRecyclerView.findViewHolderForAdapterPosition(i);
+								if (viewHolder != null) {
+									View view = viewHolder.itemView;
+									view.getLocationOnScreen(location);
+									if (middleX >= location[0] && middleX <= location[0] + view.getWidth()) {
+										item = view;
+										break;
+									}
+								} else {
 									break;
 								}
-							} else {
-								break;
 							}
 						}
+						/*modify by dragontec for bug 4409 end*/
 					} else {
 						item = mParentView;
 					}
@@ -732,19 +742,29 @@ public abstract class Template implements BaseControl.ControlCallBack {
 				/*modify by dragontec for bug 4334 start*/
 				if (mParentView.getVisibility() != View.GONE) {
 					if (mRecyclerView != null && mRecyclerView.getChildCount() > 0) {
-						for (int i = mRecyclerView.findLastVisibleItemPosition(); i >= mRecyclerView.findFirstVisibleItemPosition(); i--) {
-							RecyclerView.ViewHolder viewHolder = mRecyclerView.findViewHolderForAdapterPosition(i);
-							if (viewHolder != null) {
-								View view = viewHolder.itemView;
-								view.getLocationOnScreen(location);
-								if (middleX >= location[0] && middleX <= location[0] + view.getWidth()) {
-									item = view;
+						/*modify by dragontec for bug 4409 start*/
+						if (mRecyclerView.isSelectedItemAtCentered()) {
+							item = mRecyclerView.getLastFocusChild();
+							if (item == null) {
+								int position = mRecyclerView.getFirstCompletelyVisiblePosition();
+								item = mRecyclerView.findViewHolderForAdapterPosition(position).itemView;
+							}
+						} else {
+							for (int i = mRecyclerView.findLastVisibleItemPosition(); i >= mRecyclerView.findFirstVisibleItemPosition(); i--) {
+								RecyclerView.ViewHolder viewHolder = mRecyclerView.findViewHolderForAdapterPosition(i);
+								if (viewHolder != null) {
+									View view = viewHolder.itemView;
+									view.getLocationOnScreen(location);
+									if (middleX >= location[0] && middleX <= location[0] + view.getWidth()) {
+										item = view;
+										break;
+									}
+								} else {
 									break;
 								}
-							} else {
-								break;
 							}
 						}
+						/*modify by dragontec for bug 4409 end*/
 						if (item == null) {
 							item = mRecyclerView;
 						}

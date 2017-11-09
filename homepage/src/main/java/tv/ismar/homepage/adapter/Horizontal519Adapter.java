@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.Space;
 import android.widget.TextView;
 
+import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
 
 import java.text.DecimalFormat;
@@ -73,8 +74,13 @@ public class Horizontal519Adapter extends BaseRecycleAdapter<Horizontal519Adapte
 				holder.mTitle.setVisibility(View.VISIBLE);
 				holder.mItemView.findViewById(R.id.content_layout).setVisibility(View.VISIBLE);
 /*modify by dragontec for bug 4336 start*/
-				Picasso.with(mContext).load(targetImageUrl).placeholder(R.drawable.template_title_item_horizontal_preview)
-						.error(R.drawable.template_title_item_horizontal_preview).into(holder.mImageView);
+				Picasso.with(mContext).load(targetImageUrl).
+/*add by dragontec for bug 4205 start*/
+						memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE).
+/*add by dragontec for bug 4205 end*/
+						placeholder(R.drawable.template_title_item_horizontal_preview).
+						error(R.drawable.template_title_item_horizontal_preview).
+						into(holder.mImageView);
 /*modify by dragontec for bug 4336 end*/
 			}
 

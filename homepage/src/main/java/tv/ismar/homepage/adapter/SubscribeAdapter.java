@@ -10,6 +10,7 @@ import android.widget.RelativeLayout;
 import android.widget.Space;
 import android.widget.TextView;
 
+import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
 
 import java.text.DecimalFormat;
@@ -74,8 +75,13 @@ public class SubscribeAdapter extends BaseRecycleAdapter<SubscribeAdapter.Subscr
 				holder.mOrderTitle.setVisibility(View.VISIBLE);
 
 /*modify by dragontec for bug 4336 start*/
-				Picasso.with(mContext).load(targetImageUrl).placeholder(R.drawable.template_title_item_horizontal_preview)
-						.error(R.drawable.template_title_item_horizontal_preview).into(holder.mImageView);
+				Picasso.with(mContext).load(targetImageUrl).
+						placeholder(R.drawable.template_title_item_horizontal_preview).
+/*add by dragontec for bug 4205 start*/
+						memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE).
+/*add by dragontec for bug 4205 end*/
+						error(R.drawable.template_title_item_horizontal_preview).
+						into(holder.mImageView);
 /*modify by dragontec for bug 4336 end*/
 			}
 			if (position == 0) {

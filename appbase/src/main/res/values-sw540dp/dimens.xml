@@ -633,26 +633,29 @@
 <!--首页 begin-->
 <!--标题尺寸-->
 <dimen name="guide_title_react_offset">62.50dp</dimen>
-<dimen name="guide_title_height">51.00dp</dimen>
+<dimen name="guide_title_height">54.00dp</dimen>
 <dimen name="guide_title_logo_width">325.00dp</dimen>
 <dimen name="guide_title_logo_height">31.00dp</dimen>
-<dimen name="guide_title_text_size">15.00dp</dimen>
+<dimen name="guide_title_text_size">12.00sp</dimen>
 <dimen name="guide_title_icon_size">18.00dp</dimen>
-<dimen name="guide_title_react_height">51.00dp</dimen>
+<dimen name="guide_title_react_height">40.00dp</dimen>
+<dimen name="guide_title_react_text_width">50.00dp</dimen>
+<dimen name="guide_title_react_text_ml">11.50dp</dimen>
+<dimen name="guide_title_react_text_mr">2.50dp</dimen>
+<dimen name="guide_title_react_icon_mr">11.50dp</dimen>
 <dimen name="guide_title_react_padding">7.50dp</dimen>
-<dimen name="guide_title_react_width">125.00dp</dimen>
+<dimen name="guide_title_react_width">103.50dp</dimen>
 <dimen name="guide_title_icon_padding_text">5.00dp</dimen>
 <dimen name="guide_title_time_size">18.00sp</dimen>
 <dimen name="guide_title_logo_margin_top">5.50dp</dimen>
 <dimen name="guide_title_logo_margin_left">21.00dp</dimen>
-<dimen name="guide_title_time_margin_right">21.00dp</dimen>
+<dimen name="guide_title_time_margin_right">18.00dp</dimen>
 <dimen name="guide_title_time_width">48.00dp</dimen>
 <dimen name="guide_title_time_height">26.00dp</dimen>
 <dimen name="guide_title_histroy_margin_top">0.00dp</dimen>
 <dimen name="guide_title_person_center_margin_top">18.00dp</dimen>
 <dimen name="guide_title_person_center_margin_time">17.50dp</dimen>
 <dimen name="guide_title_history_margin_person_center">5.00dp</dimen>
-<dimen name="guide_title_margin_top">3.00dp</dimen>
 
 <!--频道title尺寸-->
 <dimen name="channel_title_size">31.50dp</dimen>

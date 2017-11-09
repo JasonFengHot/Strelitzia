@@ -318,6 +318,9 @@ public class TemplateDoubleLd extends Template
             if (!TextUtils.isEmpty(data.poster_url)) {
 /*modify by dragontec for bug 4336 start*/
                 Picasso.with(mContext).load(data.poster_url).
+/*add by dragontec for bug 4205 start*/
+                        memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE).
+/*add by dragontec for bug 4205 end*/
                         error(R.drawable.template_title_item_horizontal_preview).
                         placeholder(R.drawable.template_title_item_horizontal_preview).
                         into(mVerticalImg);

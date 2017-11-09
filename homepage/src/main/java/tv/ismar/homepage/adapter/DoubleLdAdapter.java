@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 //import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
 
 import java.text.DecimalFormat;
@@ -80,6 +81,9 @@ public class DoubleLdAdapter extends BaseRecycleAdapter<DoubleLdAdapter.DoubleLd
 					} else {
 /*modify by dragontec for bug 4336 start*/
 						Picasso.with(mContext).load(poster.poster_url).
+/*add by dragontec for bug 4205 start*/
+                                memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE).
+/*add by dragontec for bug 4205 end*/
                                 error(R.drawable.template_title_item_horizontal_preview).
                                 placeholder(R.drawable.template_title_item_horizontal_preview).
                                 into(holder.mPosterIg);

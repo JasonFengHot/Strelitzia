@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 //import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
 
 import java.text.DecimalFormat;
@@ -96,6 +97,9 @@ public class DoubleMdAdapter extends BaseRecycleAdapter<DoubleMdAdapter.DoubleMd
 					} else {
 /*modify by dragontec for bug 4336 start*/
 						Picasso.with(mContext).load(poster.vertical_url).
+/*add by dragontec for bug 4205 start*/
+                                memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE).
+/*add by dragontec for bug 42051 end*/
                                 error(R.drawable.template_title_item_vertical_preview).
                                 placeholder(R.drawable.template_title_item_vertical_preview).
                                 into(holder.mPosterIg);

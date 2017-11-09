@@ -81,6 +81,9 @@ public class CenterAdapter extends BaseRecycleAdapter<CenterAdapter.CenterViewHo
 			if (!TextUtils.isEmpty(carousels.video_image)) {
 /*modify by dragontec for bug 4336 start*/
 				Picasso.with(mContext).load(carousels.video_image).
+/*add by dragontec for bug 4205 start*/
+                        memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE).
+/*add by dragontec for bug 4205 end*/
                         placeholder(R.drawable.template_center_item_preview).
                         error(R.drawable.template_center_item_preview).
                         into(holder.mPosterIg);

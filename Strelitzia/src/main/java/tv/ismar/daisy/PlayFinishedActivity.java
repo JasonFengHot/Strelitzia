@@ -375,9 +375,6 @@ public class PlayFinishedActivity extends BaseActivity implements View.OnClickLi
             case R.id.play_finished_cancel_btn:
                 setResult(EXIT_PLAY);
                 finish();
-/*add by dragontec for bug 4205 start*/
-                Runtime.getRuntime().gc();
-/*add by dragontec for bug 4205 end*/
                 break;
         }
     }

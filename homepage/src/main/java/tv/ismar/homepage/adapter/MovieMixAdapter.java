@@ -11,6 +11,7 @@ import android.widget.RelativeLayout;
 import android.widget.Space;
 import android.widget.TextView;
 
+import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
 
 import java.text.DecimalFormat;
@@ -128,8 +129,13 @@ public class MovieMixAdapter extends BaseRecycleAdapter<MovieMixAdapter.MovieMix
 					holder.mTitle.setVisibility(View.VISIBLE);
 					holder.itemWrapper.setVisibility(View.VISIBLE);
 /*modify by dragontec for bug 4336 start*/
-					Picasso.with(mContext).load(targetImageUrl).placeholder(R.drawable.template_title_item_vertical_preview)
-							.error(R.drawable.template_title_item_vertical_preview).into(holder.mImageView);
+					Picasso.with(mContext).load(targetImageUrl).
+/*add by dragontec for bug 4205 start*/
+							memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE).
+/*add by dragontec for bug 4205 end*/
+							placeholder(R.drawable.template_title_item_vertical_preview).
+							error(R.drawable.template_title_item_vertical_preview).
+							into(holder.mImageView);
 /*modify by dragontec for bug 4336 end*/
 				}
 

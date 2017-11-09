@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 //import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import tv.ismar.app.R;
@@ -75,8 +76,18 @@ public class TelescopicWrap {
                 public void onAnimationStart(Animator animation) {
                     mTv.setVisibility(View.VISIBLE);
                     mTv.setWidth(0);
+					/*add by dragontec for bug 4368 start*/
+                    ((LinearLayout.LayoutParams)mIconv.getLayoutParams()).rightMargin = mIconv.getResources().getDimensionPixelSize(R.dimen.guide_title_react_icon_mr);
+					/*add by dragontec for bug 4368 end*/
                     super.onAnimationStart(animation);
                 }
+				/*add by dragontec for bug 4368 start*/
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    super.onAnimationEnd(animation);
+                    mTv.getLayoutParams().width = mTv.getResources().getDimensionPixelSize(R.dimen.guide_title_react_text_width);
+                }
+				/*add by dragontec for bug 4368 end*/
             });
             openAnimator.setDuration(100);
             openAnimator.start();
@@ -94,6 +105,9 @@ public class TelescopicWrap {
                 public void onAnimationEnd(Animator animation) {
                     mLayout.setBackgroundColor(Color.parseColor("#00000000"));
                     mTv.setVisibility(View.GONE);
+					/*add by dragontec for bug 4368 start*/
+                    ((LinearLayout.LayoutParams)mIconv.getLayoutParams()).rightMargin = 0;
+					/*add by dragontec for bug 4368 start*/
                 }
             });
             closeAnimator.setDuration(100);

@@ -78,6 +78,9 @@ public class HistoryFavoriteListAdapter extends RecyclerView.Adapter<HistoryFavo
             if (!TextUtils.isEmpty(item.getAdlet_url())) {
 /*modify by dragontec for bug 4336 start*/
                 Picasso.with(mContext).load(item.getAdlet_url()).
+/*modify by dragontec for bug 4205 start*/
+                        memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE).
+/*modify by dragontec for bug 4205 end*/
                         error(R.drawable.item_horizontal_preview).
                         placeholder(R.drawable.item_horizontal_preview).
                         into(holder.item_detail_image);

@@ -10,6 +10,7 @@ import android.widget.BaseAdapter;
 //import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 
@@ -99,6 +100,9 @@ public class RelatedAdapter extends BaseAdapter implements AsyncImageView.OnImag
 /*modify by dragontec for bug 4336 start*/
                 Picasso.with(mContext)
                         .load(mItemList.get(position).adlet_url)
+/*add by dragontec for bug 4205 start*/
+                        .memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE)
+/*add by dragontec for bug 4205 end*/
                         .error(R.drawable.item_vertical_preview)
                         .placeholder(R.drawable.item_vertical_preview)
                         .transform(mTransformation)

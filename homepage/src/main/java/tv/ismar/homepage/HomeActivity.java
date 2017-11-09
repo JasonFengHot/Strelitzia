@@ -389,7 +389,10 @@ public class HomeActivity extends BaseActivity
         mPersonCollectionImg = (RecyclerImageView) findViewById(R.id.person_collection_img);
         mPersonCenterImg = (RecyclerImageView) findViewById(R.id.person_center_img);
 /*add by dragontec for bug 4230 end*/
-
+		/*add by dragontec for bug 4368 start*/
+        mCollectionTel.setIcon(mPersonCollectionImg);
+        mPersonCenterTel.setIcon(mPersonCenterImg);
+		/*add by dragontec for bug 4368 end*/
         //广告
         mVideoView = (DaisyVideoView) findViewById(R.id.home_ad_video);
         mPicImg = (RecyclerImageView) findViewById(R.id.home_ad_pic);

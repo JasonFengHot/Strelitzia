@@ -3,7 +3,6 @@
     android:id="@+id/home_head_layout"
     android:layout_width="match_parent"
     android:layout_height="@dimen/guide_title_height"
-    android:layout_marginTop="@dimen/guide_title_margin_top"
     android:gravity="center_vertical">
 
 
@@ -31,11 +30,10 @@
         android:layout_centerVertical="true"
         android:gravity="center">
 
-        <RelativeLayout
+        <LinearLayout
             android:id="@+id/collection_layout"
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/guide_title_react_height"
-            android:layout_alignParentRight="true"
+            android:layout_height="match_parent"
             android:gravity="center"
             android:clipChildren="false"
             android:clipToPadding="false"
@@ -43,15 +41,13 @@
 
             <TextView
                 android:id="@+id/collection_tv"
-                android:layout_width="wrap_content"
+                android:layout_width="@dimen/guide_title_react_text_width"
                 android:layout_height="wrap_content"
-                android:layout_toLeftOf="@+id/person_collection_img"
                 android:singleLine="true"
                 android:text="历史收藏"
-                android:layout_marginRight="@dimen/guide_title_icon_padding_text"
-                android:layout_marginTop="@dimen/guide_title_react_padding"
-                android:layout_marginBottom="@dimen/guide_title_react_padding"
-                android:layout_marginLeft="@dimen/guide_title_react_padding"
+                android:layout_marginRight="@dimen/guide_title_react_text_mr"
+                android:layout_marginLeft="@dimen/guide_title_react_text_ml"
+                android:textColor="@color/_ffffff"
                 android:textSize="@dimen/guide_title_text_size"
                 android:visibility="gone" />
 
@@ -59,12 +55,9 @@
                 android:id="@+id/person_collection_img"
                 android:layout_width="@dimen/guide_title_icon_size"
                 android:layout_height="@dimen/guide_title_icon_size"
-                android:layout_alignParentRight="true"
-                android:layout_marginTop="@dimen/guide_title_react_padding"
-                android:layout_marginBottom="@dimen/guide_title_react_padding"
-                android:layout_marginRight="@dimen/guide_title_react_padding"
+                android:layout_marginRight="@dimen/guide_title_react_icon_mr"
                 android:src="@drawable/history_icon" />
-        </RelativeLayout>
+        </LinearLayout>
     </RelativeLayout>
 
     <RelativeLayout
@@ -80,14 +73,12 @@
         android:clipChildren="false"
         android:clipToPadding="false"
         android:gravity="center"
-        android:layout_marginRight="@dimen/homepage_center_mr"
         >
 
-        <RelativeLayout
+        <LinearLayout
             android:id="@+id/center_layout"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_alignParentRight="true"
             android:gravity="center"
             android:clipChildren="false"
             android:clipToPadding="false"
@@ -96,28 +87,23 @@
 
             <TextView
                 android:id="@+id/center_tv"
-                android:layout_width="wrap_content"
+                android:layout_width="@dimen/guide_title_react_text_width"
                 android:layout_height="wrap_content"
-                android:layout_toLeftOf="@+id/person_center_img"
                 android:singleLine="true"
                 android:text="个人中心"
+                android:textColor="@color/_ffffff"
                 android:textSize="@dimen/guide_title_text_size"
-                android:layout_marginTop="@dimen/guide_title_react_padding"
-                android:layout_marginBottom="@dimen/guide_title_react_padding"
-                android:layout_marginLeft="@dimen/guide_title_react_padding"
-                android:layout_marginRight="@dimen/guide_title_icon_padding_text"
+                android:layout_marginLeft="@dimen/guide_title_react_text_ml"
+                android:layout_marginRight="@dimen/guide_title_react_text_mr"
                 android:visibility="gone" />
 
             <tv.ismar.app.widget.RecyclerImageView
                 android:id="@+id/person_center_img"
                 android:layout_width="@dimen/guide_title_icon_size"
                 android:layout_height="@dimen/guide_title_icon_size"
-                android:layout_marginTop="@dimen/guide_title_react_padding"
-                android:layout_marginBottom="@dimen/guide_title_react_padding"
-                android:layout_marginRight="@dimen/guide_title_react_padding"
-                android:layout_alignParentRight="true"
+                android:layout_marginRight="@dimen/guide_title_react_icon_mr"
                 android:src="@drawable/person_center" />
-        </RelativeLayout>
+        </LinearLayout>
     </RelativeLayout>
 
     <TextView

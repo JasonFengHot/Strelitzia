@@ -71,7 +71,7 @@ import static android.widget.RelativeLayout.ALIGN_PARENT_RIGHT;
  */
 public class FilterListActivity extends BaseActivity implements View.OnClickListener, View.OnHoverListener {
 
-    private static final long CLICK_BLOCK_TIME = 500;
+    private static final long CLICK_BLOCK_TIME = 1000;
     private TextView filter_title;
     private RadioButton filter_tab;
     private LinearLayout filter_checked_conditiion;
