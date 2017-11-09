@@ -1343,25 +1343,31 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
     }
 
     private void sendHistory(HashMap<String, Object> history) {
-        Call<ResponseBody> call = HttpManager.getDomainService(SkyService.class).sendPlayHistory(history);
-        call.enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                String result = null;
-                try {
-                    result = response.body().string();
-                } catch (Exception e) {
-                    ExceptionUtils.sendProgramError(e);
-                    e.printStackTrace();
-                }
-                LogUtils.i(TAG, "SendHistory : " + result);
-            }
+        SkyService.ServiceManager.getService().sendPlayHistory(history)
+                .subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.io())
+                .subscribe(new Observer<ResponseBody>() {
+                    @Override
+                    public void onCompleted() {
 
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                t.printStackTrace();
-            }
-        });
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onNext(ResponseBody responseBody) {
+                        try {
+                            String result = responseBody.string();
+                            Log.i(TAG, "SendHistory : " + result);
+                        } catch (IOException e) {
+                            ExceptionUtils.sendProgramError(e);
+                            e.printStackTrace();
+                        }
+                    }
+                });
     }
 
     // audio focus 相关
