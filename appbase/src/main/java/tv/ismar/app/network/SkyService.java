@@ -375,7 +375,7 @@ public interface SkyService {
 
     @FormUrlEncoded
     @POST("api/histories/create/")
-    Call<ResponseBody> sendPlayHistory(
+    Observable<ResponseBody> sendPlayHistory(
             @FieldMap HashMap<String, Object> paramsMap
     );
 
