@@ -463,6 +463,7 @@ public class DaisyVideoView extends SurfaceView implements MediaPlayerControl {
 				mVideoHeight = mp.getVideoHeight();
 				if (mVideoWidth != 0 && mVideoHeight != 0) {
 					getHolder().setFixedSize(mVideoWidth, mVideoHeight);
+					if (!"lcd_s3a01".equals(VodUserAgent.getModelName()))
 					requestLayout();
 				}
 /*add by dragontec start*/
