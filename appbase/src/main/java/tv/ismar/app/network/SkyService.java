@@ -724,7 +724,7 @@ public interface SkyService {
     );
 
 
-    @GET("accounts/sports/adapter/")
+    @GET("accounts/sports/subscribe/")
     Observable<ResponseBody> getSubscribeImage(
             @Query("item_id") int pk,
             @Query("type") String type
