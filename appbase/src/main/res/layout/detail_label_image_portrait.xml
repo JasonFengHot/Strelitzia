@@ -10,7 +10,7 @@
         android:layout_width="200dp"
         android:layout_height="300dp"
         app:livContentPadding="21dp"
-        app:livErrorDrawable="@mipmap/img_error_vertical"
+        app:livErrorDrawable="@drawable/img_error_vertical"
         app:livLabelBackColor="@color/color_label_image_text_back"
         app:livLabelColor="@color/module_color_white"
         app:livLabelSize="@dimen/h3_size"
