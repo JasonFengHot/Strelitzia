@@ -1,12 +1,13 @@
 package tv.ismar.app.entity;
 
 import android.database.Cursor;
+import android.support.annotation.NonNull;
 
 import java.io.Serializable;
 
 import tv.ismar.app.db.DBHelper.DBFields;
 
-public class Favorite implements Serializable {
+public class Favorite implements Serializable,Comparable<Favorite>{
 
     private static final long serialVersionUID = -3481459533007774584L;
 
@@ -63,4 +64,8 @@ public class Favorite implements Serializable {
         time=c.getLong(c.getColumnIndex(DBFields.FavoriteTable.FAVORITE_TIME));
     }
 
+    @Override
+    public int compareTo(@NonNull Favorite another) {
+        return (int) (another.time-this.time);
+    }
 }

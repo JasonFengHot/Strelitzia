@@ -154,7 +154,7 @@ public class DBHelper extends SQLiteOpenHelper {
         isnet="no";
         //Cursor cur = db.query(DBFields.FavoriteTable.TABLE_NAME, null, DBFields.FavoriteTable.URL + " = ? and " + DBFields.FavoriteTable.ISNET + "= ?", new String[]{url,isnet}, null, null, " _id desc");
         ArrayList<Favorite> favoriteList = new ArrayList<Favorite>();
-        Cursor cur = db.query(DBFields.FavoriteTable.TABLE_NAME, null, DBFields.FavoriteTable.ISNET + "= ?", new String[]{isnet}, null, null, " favorite_time desc");
+        Cursor cur = db.query(DBFields.FavoriteTable.TABLE_NAME, null, DBFields.FavoriteTable.ISNET + "= ?", new String[]{isnet}, null, null, " _id desc");
         if (cur != null) {
             if (cur.moveToFirst()) {
                 do {
