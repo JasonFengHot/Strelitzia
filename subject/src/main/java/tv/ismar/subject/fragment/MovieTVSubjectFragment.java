@@ -20,6 +20,7 @@ import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -371,9 +372,17 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnClickList
             try {
                 if (!isFavorite()) {
                     String url = IsmartvActivator.getInstance().getApiDomain() + "/api/item/" + id + "/";
+                    long time=0;
                     DateFormat format=new SimpleDateFormat("MM-dd");
                     format.setTimeZone(TimeZone.getTimeZone("Asia/Shanghai"));
-                    long time= TrueTime.now().getTime();
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.setTimeInMillis(TrueTime.now().getTime());
+                    String date=format.format(calendar.getTime());
+                    try {
+                        time= format.parse(date).getTime();
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
                     Favorite favorite = new Favorite();
                     favorite.time=time;
                     favorite.title = mSubjectEntity.getTitle();
@@ -392,17 +401,19 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnClickList
                     favorite.quality = 0;
                     favorite.is_complex = true;
                     favorite.isnet = isnet;
-                    ArrayList<Favorite> favorites = DaisyUtils.getFavoriteManager(getActivity().getApplicationContext()).getAllFavorites("no");
+                    ArrayList<Favorite> favorites=new ArrayList<>();
+                    if ("yes".equals(isnet)) {
+                        createFavoriteByNet(id);
+                        favorites = DaisyUtils.getFavoriteManager(getActivity().getApplicationContext()).getAllFavorites("yes");
+                    }else{
+                        favorites = DaisyUtils.getFavoriteManager(getActivity().getApplicationContext()).getAllFavorites("no");
+                        subject_btn_like.setBackgroundResource(R.drawable.liked_btn_selector);
+                        showToast("收藏成功");
+                    }
                     if (favorites.size() > 49) {
                         mFavoriteManager.deleteFavoriteByUrl(favorites.get(favorites.size() - 1).url, "no");
                     }
                     mFavoriteManager.addFavorite(favorite, isnet);
-                    if ("yes".equals(isnet)) {
-                        createFavoriteByNet(id);
-                    }else{
-                        subject_btn_like.setBackgroundResource(R.drawable.liked_btn_selector);
-                        showToast("收藏成功");
-                    }
                 } else {
                     String url = IsmartvActivator.getInstance().getApiDomain() + "/api/item/" + id + "/";
                     if (IsmartvActivator.getInstance().isLogin()) {

@@ -438,8 +438,8 @@ public class DetailPagePresenter implements DetailPageContract.Presenter {
                 deleteFavoriteByNet();
             } else {
                 isnet = "no";
-                favoriteManager.deleteFavoriteByUrl(url, isnet);
             }
+            favoriteManager.deleteFavoriteByUrl(url, isnet);
             isFavorite = false;
             mDetailView.notifyBookmark(false, true);
         } else {
@@ -482,7 +482,6 @@ public class DetailPagePresenter implements DetailPageContract.Presenter {
                 ArrayList<Favorite> favorites = DaisyUtils.getFavoriteManager(mDetailView.getActivity()).getAllFavorites("no");
                 if (favorites.size() > 49) {
                     favoriteManager.deleteFavoriteByUrl(favorites.get(favorites.size() - 1).url, "no");
-
                 }
                 favoriteManager.addFavorite(favorite, favorite.isnet);
             }
