@@ -660,7 +660,7 @@ public class FetchDataControl extends BaseControl{
         tempMap.put("pk", pk);
         tempMap.put("title", title);
         tempMap.put("location", position);
-        new NetworkUtils.DataCollectionTask().execute(NetworkUtils.LAUNCHER_VOD_CLICK, tempMap);
+        new NetworkUtils.DataCollectionTask().execute(NetworkUtils.HOMEPAGE_VOD_CLICK, tempMap);
 
     }
 }
