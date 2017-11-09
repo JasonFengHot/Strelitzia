@@ -48,18 +48,46 @@ public class LocationRelativeLayout extends RelativeLayout {
 
     public void setShow_left_up(boolean show_left_up) {
         this.show_left_up = show_left_up;
+        if(horving){
+            if(show_left_up) {
+                arrow_up_left.setVisibility(View.VISIBLE);
+            }else{
+                arrow_up_left.setVisibility(View.GONE);
+            }
+        }
     }
 
     public void setShow_left_down(boolean show_left_down) {
         this.show_left_down = show_left_down;
+        if(horving){
+            if(show_left_down) {
+                arrow_down_left.setVisibility(View.VISIBLE);
+            }else{
+                arrow_down_left.setVisibility(View.GONE);
+            }
+        }
     }
 
     public void setShow_right_up(boolean show_right_up) {
         this.show_right_up = show_right_up;
+        if(horving){
+            if(show_right_up) {
+                arrow_up_right.setVisibility(View.VISIBLE);
+            }else{
+                arrow_up_right.setVisibility(View.GONE);
+            }
+        }
     }
 
     public void setShow_right_down(boolean show_right_down) {
         this.show_right_down = show_right_down;
+        if(horving){
+            if(show_right_down) {
+                arrow_down_right.setVisibility(View.VISIBLE);
+            }else{
+                arrow_down_right.setVisibility(View.GONE);
+            }
+        }
     }
 
     public LocationRelativeLayout(Context context) {
