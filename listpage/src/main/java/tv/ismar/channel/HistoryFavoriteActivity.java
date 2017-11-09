@@ -1063,11 +1063,13 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
             }else{
                 favorites= DaisyUtils.getFavoriteManager(HistoryFavoriteActivity.this).getAllFavorites("no");
             }
-
-            Log.i("listSize","Favorite: "+favorites.size()+"");
-            for (Favorite favorite : favorites) {
-                HistoryFavoriteEntity item = getFavoriteItem(favorite);
-                allfavoriteLists.add(item);
+            if(favorites.size()>0) {
+                Collections.sort(favorites);
+                for (Favorite favorite : favorites) {
+                    Log.i("listSize", "FavoriteTime: " +favorite.time);
+                    HistoryFavoriteEntity item = getFavoriteItem(favorite);
+                    allfavoriteLists.add(item);
+                }
             }
             srotHistoryFavoriteList(allfavoriteLists,favoriteLists);
             return null;
@@ -1122,9 +1124,17 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
         item.setTitle(history.title);
         item.setUrl(history.url);
         if(history.add_time==0){
+            long time=0;
             DateFormat format=new SimpleDateFormat("MM-dd");
             format.setTimeZone(TimeZone.getTimeZone("Asia/Shanghai"));
-            long time= TrueTime.now().getTime();
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTimeInMillis(TrueTime.now().getTime());
+            String date=format.format(calendar.getTime());
+            try {
+                time= format.parse(date).getTime();
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
             history.add_time=time;
         }
         item.setDate(history.add_time);
@@ -1156,9 +1166,17 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
         item.setTitle(favorite.title);
         item.setUrl(favorite.url);
         if(favorite.time==0){
+            long time=0;
             DateFormat format=new SimpleDateFormat("MM-dd");
             format.setTimeZone(TimeZone.getTimeZone("Asia/Shanghai"));
-            long time= TrueTime.now().getTime();
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTimeInMillis(TrueTime.now().getTime());
+            String date=format.format(calendar.getTime());
+            try {
+                time= format.parse(date).getTime();
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
             favorite.time=time;
         }
         item.setDate(favorite.time);
