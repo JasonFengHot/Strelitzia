@@ -66,6 +66,9 @@ public class CenterAdapter extends BaseRecycleAdapter<CenterAdapter.CenterViewHo
     @Override
     public void onBindViewHolder(CenterViewHolder holder, int position) {
     	/*modify by dragontec for bug 4334 start*/
+    	/*modify by dragontec for bug 4430 start*/
+    	holder.mPosition = position % mData.size();
+    	/*modify by dragontec for bug 4430 end*/
     	if (mData != null) {
 			BannerCarousels carousels = mData.get(position % mData.size());
 			holder.mTitle.setText(carousels.title);

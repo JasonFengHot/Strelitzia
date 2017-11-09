@@ -92,6 +92,13 @@ public class ConlumnAdapter extends BaseRecycleAdapter<ConlumnAdapter.ConlumnVie
 			/*add by dragontec for bug 4325 end*/
 		}
 		/*add by dragontec for bug 4334 end*/
+		/*add by dragontec for bug 4434 start*/
+		if(position == 0){
+            holder.leftSpace.setVisibility(View.GONE);
+        }else{
+            holder.leftSpace.setVisibility(View.VISIBLE);
+        }
+		/*add by dragontec for bug 4434 end*/
     }
 
     @Override
@@ -102,11 +109,13 @@ public class ConlumnAdapter extends BaseRecycleAdapter<ConlumnAdapter.ConlumnVie
     public class ConlumnViewHolder extends BaseViewHolder{
         public TextView mTitle;
         public RecyclerImageView mPoster;
+        public View leftSpace;
 
         public ConlumnViewHolder(View itemView) {
             super(itemView, ConlumnAdapter.this);
             mTitle = (TextView) itemView.findViewById(R.id.conlumn_item_tv);
             mPoster = (RecyclerImageView) itemView.findViewById(R.id.conlumn_item_poster);
+            leftSpace = itemView.findViewById(R.id.left_space);
         }
 
         @Override

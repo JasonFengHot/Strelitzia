@@ -6,6 +6,7 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 /**
  * Created by admin on 2017/10/22.
@@ -113,9 +114,12 @@ public class HomeRootRelativeLayout extends RelativeLayout {
 	public View focusSearch(View focused, int direction) {
     	View result = null;
     	try {
-			if (focused.getParent().getParent() instanceof HorizontalTabView) {
+			if (focused instanceof TextView && focused.getParent().getParent() instanceof HorizontalTabView) {
 				if (mFocusSearchFailedListener != null) {
 					result = mFocusSearchFailedListener.onFocusSearchFailed(focused, direction);
+					if (result == null && direction == FOCUS_DOWN) {
+						result = focused;
+					}
 				}
 			}
 		} catch (NullPointerException e) {

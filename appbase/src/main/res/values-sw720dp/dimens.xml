@@ -710,8 +710,11 @@
 <dimen name="column_recyleview_height">96.00dp</dimen>
 <dimen name="column_item_width">256.00dp</dimen>
 <dimen name="column_item_height">96.00dp</dimen>
-<dimen name="column_item_padding">26.67dp</dimen>
-<dimen name="column_item_margin_left">40.00dp</dimen>
+<dimen name="column_item_padding">13.33dp</dimen>
+<dimen name="column_banner_recycler_ml">33.33dp</dimen>
+<dimen name="column_banner_recycler_mr">33.33dp</dimen>
+<dimen name="column_banner_recycler_pl">33.33dp</dimen>
+<dimen name="column_banner_recycler_pr">33.33dp</dimen>
 <dimen name="column_item_text_margin_right">20.00dp</dimen>
 
 <dimen name="column_item_margin_top">5.33dp</dimen>

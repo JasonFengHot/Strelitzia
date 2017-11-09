@@ -323,17 +323,17 @@ public class HorizontalTabView extends HorizontalScrollView
                 if (keyCode == KeyEvent.KEYCODE_DPAD_DOWN || keyCode == KeyEvent.KEYCODE_DPAD_UP) {
                     tag=true;
                     Log.d(TAG, "KeyEvent.KEYCODE_DPAD_DOWN || keyCode == KeyEvent.KEYCODE_DPAD_UP");
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            TextView itemView = (TextView) v;
-                            int position = (int) itemView.getTag();
-                            if (position == mSelectedIndex){
-                                itemView.setTextColor(textSelectColor);
-                                itemView.setBackgroundResource(android.R.color.transparent);
-                            }
-                        }
-                    }, 50);
+//                    new Handler().postDelayed(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            TextView itemView = (TextView) v;
+//                            int position = (int) itemView.getTag();
+//                            if (position == mSelectedIndex){
+//                                itemView.setTextColor(textSelectColor);
+//                                itemView.setBackgroundResource(android.R.color.transparent);
+//                            }
+//                        }
+//                    }, 50);
                 }
 /*delete by dragontec for bug 4354 start*/
                 else if (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT){

@@ -130,17 +130,21 @@ public class TemplateGuide extends Template
             new Handler() {
                 @Override
                 public void handleMessage(Message msg) {
-                    switch (msg.what) {
-                        case START_PLAYBACK:
-                            // 如果视频没有下载完，播放图片
-                            if (!startPlayback()) {
-                                playImage();
-                            }
-                            break;
-                        case CAROUSEL_NEXT:
-                            playCarousel();
-                            break;
-                    }
+					try {
+						switch (msg.what) {
+							case START_PLAYBACK:
+								// 如果视频没有下载完，播放图片
+								if (!startPlayback()) {
+									playImage();
+								}
+								break;
+							case CAROUSEL_NEXT:
+								playCarousel();
+								break;
+						}
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
                 }
             };
 
@@ -825,9 +829,11 @@ public class TemplateGuide extends Template
     }
 
     private void playCarousel() {
-    	if (mFetchControl.mCarouselsMap.get(mBannerPk) == null) {
+    	//修正无海报数据时不显示的问题
+    	if (mFetchControl.mCarouselsMap.get(mBannerPk) == null || mFetchControl.mCarouselsMap.get(mBannerPk).size() == 0) {
     		return;
 		}
+		setVisibility(VISIBLE);
 		isPlayed = true;
         if (mCurrentCarouselIndex == mFetchControl.mCarouselsMap.get(mBannerPk).size() - 1) {
             mCurrentCarouselIndex = 0;
@@ -1025,7 +1031,9 @@ public class TemplateGuide extends Template
     // 视频播放
     private boolean startPlayback() {
         Log.d(TAG, "startPlayback is invoke...");
-
+		if (mVideoView == null) {
+			return false;
+		}
         mVideoView.setFocusable(false);
         mVideoView.setFocusableInTouchMode(false);
         String videoName = mChannel + "_" + mCurrentCarouselIndex + ".mp4";
