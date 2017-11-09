@@ -44,7 +44,7 @@ dependencies {
     compile dependencies.appCompat
     compile dependencies.support_v4
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile project(':ismartv_library-1.0.0')
+    compile project(':ismartv_library')
     compile project(':utilcode-1.8.2')
     compile 'com.orhanobut:logger:1.15'
     compile 'io.reactivex:rxandroid:1.2.1'
