@@ -56,13 +56,14 @@ public class SubscribeAdapter extends BaseRecycleAdapter<SubscribeAdapter.Subscr
 
 	@Override
 	public void onBindViewHolder(SubscribeViewHolder holder, int position) {
+		holder.mPosition = position;
 		if (mData != null) {
 			BannerPoster entity = mData.get(position);
 			String title = entity.title;
 
 			String imageUrl = entity.poster_url;
 			String targetImageUrl = TextUtils.isEmpty(imageUrl) ? null : imageUrl;
-			if ("更多".equals(title)){
+			if (!TextUtils.isEmpty(entity.vertical_url) && entity.vertical_url.equals("更多")){
 				holder.mItemView.findViewById(R.id.item_layout).setBackgroundResource(R.drawable.banner_horizontal_more);
 				holder.mItemView.findViewById(R.id.content_layout).setVisibility(View.INVISIBLE);
 				holder.mOrderTitle.setVisibility(View.INVISIBLE);

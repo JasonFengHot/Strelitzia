@@ -64,6 +64,7 @@ public class MovieMixAdapter extends BaseRecycleAdapter<MovieMixAdapter.MovieMix
 
 	@Override
 	public void onBindViewHolder(MovieMixViewHolder holder, int position) {
+		holder.mPosition = position;
 		if (position == 0){
 			ViewGroup.LayoutParams itemLayoutParams = holder.itemLayout.getLayoutParams();
 			itemLayoutParams.width = bigWidth;
@@ -118,7 +119,7 @@ public class MovieMixAdapter extends BaseRecycleAdapter<MovieMixAdapter.MovieMix
 						.error(R.drawable.template_title_item_horizontal_preview).into(holder.mImageView);
 /*modify by dragontec for bug 4336 end*/
 			} else {
-				if ("更多".equals(title)) {
+				if (!TextUtils.isEmpty(entity.vertical_url) && entity.vertical_url.equals("更多")) {
 					holder.mItemView.findViewById(R.id.item_layout).setBackgroundResource(R.drawable.banner_vertical_more);
 					holder.mTitle.setVisibility(View.INVISIBLE);
 					holder.itemWrapper.setVisibility(View.INVISIBLE);

@@ -26,6 +26,9 @@ import tv.ismar.homepage.fragment.ChannelFragment;
 import tv.ismar.homepage.view.BannerLinearLayout;
 
 import static android.view.MotionEvent.BUTTON_PRIMARY;
+/*add by dragontec for bug 4412 start*/
+import static android.view.View.VISIBLE;
+/*add by dragontec for bug 4412 end*/
 import static tv.ismar.homepage.fragment.ChannelFragment.CHANNEL_KEY;
 import static tv.ismar.homepage.fragment.ChannelFragment.NAME_KEY;
 
@@ -210,6 +213,11 @@ public class TemplateMovie extends Template
 			if (mAdapter.getData() == null) {
 				if (mFetchControl.getHomeEntity(mBannerPk) != null) {
 					mAdapter.setData(mFetchControl.getHomeEntity(mBannerPk).posters);
+					/*modify by dragontec for bug 4412 start*/
+					if (mAdapter.getItemCount() > 0) {
+						setVisibility(VISIBLE);
+					}
+					/*modify by dragontec for bug 4412 end*/
 					mRecyclerView.setAdapter(mAdapter);
 	/*add by dragontec for bug 4077 start*/
 					checkFocus(mRecyclerView);
@@ -217,9 +225,14 @@ public class TemplateMovie extends Template
 				}
 			} else {
 				mAdapter.getData().addAll(mFetchControl.getHomeEntity(mBannerPk).posters);
+				/*modify by dragontec for bug 4412 start*/
+				if (mAdapter.getItemCount() > 0) {
+					setVisibility(VISIBLE);
+				}
+				/*modify by dragontec for bug 4412 end*/
 				int start = mAdapter.getData().size() - mFetchControl.getHomeEntity(mBannerPk).posters.size();
 				int end = mAdapter.getData().size();
-				mAdapter.notifyItemRangeChanged(start, end);
+				mAdapter.notifyItemRangeInserted(start, end - start + 1);
 			}
 		}
 	}
@@ -342,13 +355,14 @@ public class TemplateMovie extends Template
 			if (mMovieLayoutManager.findFirstCompletelyVisibleItemPosition() - 1 >= 0) { // 向左滑动
 				int targetPosition = mMovieLayoutManager.findFirstCompletelyVisibleItemPosition() - 4;
 				if (targetPosition <= 0) targetPosition = 0;
-				mSelectItemPosition = targetPosition;
+				mSelectItemPosition = targetPosition + 1;
 /*add by dragontec for bug 4332 start*/
 				setNeedCheckScrollEnd();
 /*add by dragontec for bug 4332 end*/
 /*modify by dragontec for bug 4332 start*/
 				mMovieLayoutManager.smoothScrollToPosition(mRecyclerView, null, targetPosition);
 /*modify by dragontec for bug 4332 end*/
+				initTitle();
 			}
 		} else if (i == R.id.navigation_right) { // 向右滑动
 			mMovieLayoutManager.setCanScroll(true);
@@ -358,18 +372,21 @@ public class TemplateMovie extends Template
 			if (mMovieLayoutManager.findLastCompletelyVisibleItemPosition()
 					<= mFetchControl.getHomeEntity(mBannerPk).count) {
 				int targetPosition = mMovieLayoutManager.findLastCompletelyVisibleItemPosition() + 4;
-				if (targetPosition >= mFetchControl.getHomeEntity(mBannerPk).count) {
-					targetPosition = mFetchControl.getHomeEntity(mBannerPk).count;
+				if (targetPosition > mFetchControl.getHomeEntity(mBannerPk).count - 1) {
+					targetPosition = mFetchControl.getHomeEntity(mBannerPk).count - 1;
+					if (mFetchControl.getHomeEntity(mBannerPk).is_more) {
+						targetPosition++;
+					}
 				}
-				mSelectItemPosition = targetPosition;
+				mSelectItemPosition = targetPosition + 1;
 /*add by dragontec for bug 4332 start*/
 				setNeedCheckScrollEnd();
 /*add by dragontec for bug 4332 end*/
 /*modify by dragontec for bug 4332 start*/
 				mMovieLayoutManager.smoothScrollToPosition(mRecyclerView, null, targetPosition);
 /*modify by dragontec for bug 4332 end*/
+				initTitle();
 			}
-			initTitle();
 		}
 	}
 }

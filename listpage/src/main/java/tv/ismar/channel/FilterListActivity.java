@@ -71,6 +71,7 @@ import static android.widget.RelativeLayout.ALIGN_PARENT_RIGHT;
  */
 public class FilterListActivity extends BaseActivity implements View.OnClickListener, View.OnHoverListener {
 
+    private static final long CLICK_BLOCK_TIME = 500;
     private TextView filter_title;
     private RadioButton filter_tab;
     private LinearLayout filter_checked_conditiion;
@@ -135,6 +136,7 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
     private String section="";
     private int firstInSection=-1;
     private View onKeyFocusView;
+    private long lastClickTime = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -1115,6 +1117,11 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
     @Override
     public void onClick(View v) {
         try {
+            long current = System.currentTimeMillis();
+            if(current - lastClickTime < CLICK_BLOCK_TIME){
+                return;
+            }
+            lastClickTime = current;
             int i = v.getId();
             if (i == R.id.filter_tab) {
                 current_section_title.setVisibility(View.INVISIBLE);

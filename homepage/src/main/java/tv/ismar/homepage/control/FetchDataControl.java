@@ -35,7 +35,7 @@ import tv.ismar.app.ui.ToastTip;
 
 public class FetchDataControl extends BaseControl{
 
-    public HomeEntity mHomeEntity = new HomeEntity();//包含非完整的carousel和poster数据（每次请求接口的数据）
+//    public HomeEntity mHomeEntity = new HomeEntity();//包含非完整的carousel和poster数据（每次请求接口的数据）
 	/*add by dragontec for bug 4362 start*/
 	private Map<String, HomeEntity> mHomeEntities = new HashMap<>();
 	private final Object mDataLock = new Object();
@@ -51,9 +51,13 @@ public class FetchDataControl extends BaseControl{
     private Subscription fetchHomeBanners;
     private Subscription fetchChannelBanners;
     private Subscription fetchChannels;
-    private Subscription fetchMBanners;
+	/*modify by dragontec for bug 4412 start*/
+    private List<Subscription> fetchMBanners = new ArrayList<>();
+//    private Subscription fetchMBanners;
     private Subscription fetchHomeRecommend;
-    private Subscription fetchBanners;
+    private Map<String, List<Subscription>> fetchBanners = new HashMap<>();
+//    private Subscription fetchBanners;
+	/*modify by dragontec for bug 4412 end*/
 
     public FetchDataControl(Context context, ControlCallBack callBack) {
         super(context, callBack);
@@ -247,7 +251,8 @@ public class FetchDataControl extends BaseControl{
 			return;
 		}
 		Log.d(TAG, "fetchMBanners("+ bannersStr.toString() + ", page = " + page + ")");
-        fetchMBanners = SkyService.ServiceManager.getService().getMBanners(bannersStr.toString(), page)
+		/*modify by dragontec for bug 4412 start*/
+		Subscription fetchMBanner = SkyService.ServiceManager.getService().getMBanners(bannersStr.toString(), page)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<HomeEntity[]>() {
@@ -309,6 +314,10 @@ public class FetchDataControl extends BaseControl{
                         }
                     }
                 });
+		if (fetchMBanner != null) {
+			fetchMBanners.add(fetchMBanner);
+		}
+		/*modify by dragontec for bug 4412 end*/
     }
     /*modify by dragontec for bug 4362 end*/
 
@@ -333,7 +342,8 @@ public class FetchDataControl extends BaseControl{
             return;
         }
         Log.d(TAG, "fetchMBanners("+ bannersStr.toString() + ", page = " + page + ")");
-        fetchMBanners = SkyService.ServiceManager.getForceCacheService().getMBanners(bannersStr.toString(), page)
+		/*modify by dragontec for bug 4412 start*/
+        Subscription fetchMBanner = SkyService.ServiceManager.getService().getMBanners(bannersStr.toString(), page)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<HomeEntity[]>() {
@@ -399,6 +409,10 @@ public class FetchDataControl extends BaseControl{
                         }
                     }
                 });
+        if (fetchMBanner != null) {
+            fetchMBanners.add(fetchMBanner);
+        }
+		/*modify by dragontec for bug 4412 end*/
     }
 
     /**
@@ -442,7 +456,17 @@ public class FetchDataControl extends BaseControl{
      * @param loadMore 是否增量加载
      */
     public synchronized void fetchBanners(final String banner, final int page, final boolean loadMore){
-        fetchBanners = SkyService.ServiceManager.getService().getBanners(banner, page)
+    	/*modify by dragontec for bug 4412 start*/
+    	List<Subscription> list = null;
+    	if (fetchBanners != null) {
+    		list = fetchBanners.get(banner);
+		}
+		if (list == null) {
+    		list = new ArrayList<>();
+    		fetchBanners.put(banner, list);
+		}
+
+        Subscription fetchBanner = SkyService.ServiceManager.getService().getBanners(banner, page)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<HomeEntity>() {
@@ -478,7 +502,7 @@ public class FetchDataControl extends BaseControl{
 										posters.clear();
                                     }
 									posters.addAll(homeEntity.posters);
-                                    if(posters.size()>=mHomeEntity.count-2 && mHomeEntity.is_more){//最后一页更多按钮
+                                    if(posters.size()>=homeEntity.count-2 && homeEntity.is_more){//最后一页更多按钮
                                         BannerPoster morePoster = new BannerPoster();
                                         morePoster.poster_url = "更多";
                                         morePoster.vertical_url = "更多";
@@ -493,12 +517,26 @@ public class FetchDataControl extends BaseControl{
 							}
                         }
                 });
+		if (fetchBanner != null) {
+			list.add(fetchBanner);
+		}
+    	/*modify by dragontec for bug 4412 end*/
     }
     /*modify by dragontec for bug 4362 end*/
 
 	/*modify by dragontec for bug 4362 start*/
     public synchronized void forceFetchBanners(final String banner, int page, final boolean loadMore){
-        fetchBanners = SkyService.ServiceManager.getForceCacheService().getBanners(banner, page)
+    	/*modify by dragontec for bug 4412 start*/
+		List<Subscription> list = null;
+		if (fetchBanners != null) {
+			list = fetchBanners.get(banner);
+		}
+		if (list == null) {
+			list = new ArrayList<>();
+			fetchBanners.put(banner, list);
+		}
+
+        Subscription fetchBanner = SkyService.ServiceManager.getForceCacheService().getBanners(banner, page)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<HomeEntity>() {
@@ -540,7 +578,7 @@ public class FetchDataControl extends BaseControl{
 									posters.clear();
 								}
 								posters.addAll(homeEntity.posters);
-								if(posters.size()>=mHomeEntity.count-2 && mHomeEntity.is_more){//最后一页更多按钮
+								if(posters.size()>=homeEntity.count-2 && homeEntity.is_more){//最后一页更多按钮
 									BannerPoster morePoster = new BannerPoster();
 									morePoster.poster_url = "更多";
 									morePoster.vertical_url = "更多";
@@ -559,30 +597,62 @@ public class FetchDataControl extends BaseControl{
 //                            }
                     }
                 });
+		if (fetchBanner != null) {
+			list.add(fetchBanner);
+		}
+		/*modify by dragontec for bug 4412 end*/
     }
     /*modify by dragontec for bug 4362 end*/
 
     public void stop() {
+    	/*modify by dragontec for bug 4412 start*/
         if (fetchHomeBanners != null && !fetchHomeBanners.isUnsubscribed()) {
             fetchHomeBanners.unsubscribe();
+			fetchHomeBanners = null;
         }
 
         if (fetchChannelBanners != null && !fetchChannelBanners.isUnsubscribed()) {
             fetchChannelBanners.unsubscribe();
+            fetchChannelBanners = null;
         }
         if (fetchChannels != null && !fetchChannels.isUnsubscribed()) {
             fetchChannels.unsubscribe();
+			fetchChannels = null;
         }
-        if (fetchMBanners != null && !fetchMBanners.isUnsubscribed()) {
-            fetchMBanners.unsubscribe();
-        }
+		if (fetchMBanners != null && !fetchMBanners.isEmpty()) {
+			for (Subscription subscription :
+					fetchMBanners) {
+				if (!subscription.isUnsubscribed()) {
+					subscription.isUnsubscribed();
+				}
+			}
+			fetchMBanners.clear();
+		}
+//        if (fetchMBanners != null && !fetchMBanners.isUnsubscribed()) {
+//            fetchMBanners.unsubscribe();
+//        }
 
         if (fetchHomeRecommend != null && !fetchHomeRecommend.isUnsubscribed()) {
             fetchHomeRecommend.unsubscribe();
+			fetchHomeRecommend = null;
         }
-        if (fetchBanners != null && !fetchBanners.isUnsubscribed()) {
-            fetchBanners.unsubscribe();
-        }
+
+        if (fetchBanners != null && !fetchBanners.isEmpty()) {
+			for (List<Subscription> list :
+					fetchBanners.values()) {
+				for (Subscription subscription :
+						list) {
+					if (!subscription.isUnsubscribed()) {
+						subscription.isUnsubscribed();
+					}
+				}
+				list.clear();
+			}
+		}
+//        if (fetchBanners != null && !fetchBanners.isUnsubscribed()) {
+//            fetchBanners.unsubscribe();
+//        }
+		/*modify by dragontec for bug 4412 end*/
     }
     public void launcher_vod_click(String type, String pk, String title, String position) {
         HashMap<String, Object> tempMap = new HashMap<String, Object>();

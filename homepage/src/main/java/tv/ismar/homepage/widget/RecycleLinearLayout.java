@@ -147,7 +147,17 @@ public class RecycleLinearLayout extends LinearLayout {
             /*modify by dragontec for bug 4178 start*/
 			/*modify by dragontec for bug 4296 start*/
 			/*modify by dragontec for bug 4339 start*/
-            View lastView = getChildAt(getChildCount() - 1);
+			/*modify by dragontec for bug 4412 start*/
+			int i = getChildCount() - 1;
+			View lastView;
+			do {
+				lastView = getChildAt(i);
+				i--;
+			} while ((lastView == null || lastView.getVisibility() == GONE) && i >= 0);
+			if (lastView == null) {
+				return;
+			}
+			/*modify by dragontec for bug 4412 en*/
             int[] lastPoint = new int[2];
             lastView.getLocationOnScreen(lastPoint);
 			if(dataSize <= getChildCount() && lastPoint[1] > 0) {
@@ -275,14 +285,6 @@ public class RecycleLinearLayout extends LinearLayout {
             view.getLocationOnScreen(location);
             Log.i(TAG, "top:"+location[1]);
             Log.i(TAG, "margin:"+mContext.getResources().getDimensionPixelOffset(R.dimen.banner_margin_top));
-			/*modify by dragontec for bug 4296 start*/
-            for (int i = 0; i < getChildCount(); i++) {
-                View v = getChildAt(i);
-                if(v.getVisibility() != View.VISIBLE){
-                    v.setVisibility(View.VISIBLE);
-                }
-            }
-			/*modify by dragontec for bug 4296 end*/
 			/*modify by dragontec for bug 4149 start*/
 			if (location[1] != 0) {
 				smoothScrollBy(0, location[1] - mContext.getResources().getDimensionPixelOffset(R.dimen.banner_margin_top));
@@ -440,73 +442,92 @@ public class RecycleLinearLayout extends LinearLayout {
 		int plusHeight = 0;
 		for (int i = currentBannerPos; i >= 0; i--) {
 			View v = getChildAt(i);
-			int layoutId = (int) v.getTag();
-			int positionTag = (int) v.getTag(layoutId);
-			boolean canScroll = positionTag >> 30 == 1;
-			//不滑动的banner需要特殊处理，当前top不是此banner下方一个的时候需要显示一次下方的banner
-			if (i == 1) {
-                if (!canScroll) {
-                    if (i != currentBannerPos - 1) {
-                        Log.d(TAG, "findFirstViewOnLastPage find view[" + (i + 1) +"]");
-                        view = getChildAt(i + 1);
-                    }
-                    break;
-                }
-            }
-			int[] location = new int[]{0, 0};
-			v.getLocationOnScreen(location);
-			Log.d(TAG, "findFirstViewOnLastPage view[" + i + "] x = " + location[0] + " y = " + location[1]);
-			/*modify by dragontec for bug 4339 start 可能由于dimen四舍五入导致的顶部的view scroll 到 -1 的位置*/
-			if (location[1] < -1) {
-			/*modify by dragontec for bug 4339 end*/
-				getBottom = true;
-			}
-			if (getBottom) {
-				plusHeight += v.getHeight();
-			}
-			int height = mScreenHeight;
-			if (i == 0) {
-				height = mScreenHeight - getResources().getDimensionPixelSize(R.dimen.banner_margin_top);
-			}
-			if (plusHeight > height) {
-				if (i != currentBannerPos - 1) {
-					Log.d(TAG, "findFirstViewOnLastPage find view[" + (i + 1) +"]");
-					view = getChildAt(i + 1);
-				} else {
-					Log.d(TAG, "findFirstViewOnLastPage find view[" + i +"]");
-					view = v;
+			/*modify by dragontec for bug 4412 start*/
+			if (v.getVisibility() == VISIBLE) {
+				int layoutId = (int) v.getTag();
+				int positionTag = (int) v.getTag(layoutId);
+				boolean canScroll = positionTag >> 30 == 1;
+				//不滑动的banner需要特殊处理，当前top不是此banner下方一个的时候需要显示一次下方的banner
+				if (i == 1) {
+					if (!canScroll) {
+						if (i != currentBannerPos - 1) {
+							Log.d(TAG, "findFirstViewOnLastPage find view[" + (i + 1) + "]");
+							view = getChildAt(i + 1);
+						}
+						break;
+					}
 				}
-				break;
-			} else if (plusHeight == height){
-				Log.d(TAG, "findFirstViewOnLastPage find view[" + i +"]");
-				view = v;
-				break;
+				int[] location = new int[]{0, 0};
+				v.getLocationOnScreen(location);
+				Log.d(TAG, "findFirstViewOnLastPage view[" + i + "] x = " + location[0] + " y = " + location[1]);
+			/*modify by dragontec for bug 4339 start 可能由于dimen四舍五入导致的顶部的view scroll 到 -1 的位置*/
+				if (location[1] < -1) {
+			/*modify by dragontec for bug 4339 end*/
+					getBottom = true;
+				}
+				if (getBottom) {
+					plusHeight += v.getHeight();
+				}
+				int height = mScreenHeight;
+				if (i == 0) {
+					height = mScreenHeight - getResources().getDimensionPixelSize(R.dimen.banner_margin_top);
+				}
+				if (plusHeight > height) {
+					if (i != currentBannerPos - 1) {
+						Log.d(TAG, "findFirstViewOnLastPage find view[" + (i + 1) + "]");
+						view = getChildAt(i + 1);
+					} else {
+						Log.d(TAG, "findFirstViewOnLastPage find view[" + i + "]");
+						view = v;
+					}
+					break;
+				} else if (plusHeight == height) {
+					Log.d(TAG, "findFirstViewOnLastPage find view[" + i + "]");
+					view = v;
+					break;
+				}
 			}
+			/*modify by dragontec for bug 4412 end*/
 		}
 		Log.d(TAG, "findFirstViewOnLastPage view = " + view);
 		if (view == null) {
-			view = getChildAt(0);
+			/*modify by dragontec for bug 4412 start*/
+			int i = 0;
+			do {
+				view = getChildAt(i);
+				i++;
+			} while ((view == null || view.getVisibility() != VISIBLE) && i < getChildCount());
+			/*modify by dragontec for bug 4412 end*/
 		}
 		return view;
 	}
 
     private View findFirstViewOnNextPage() {
 		View view = null;
-		Rect rect = new Rect();
 		for (int i = currentBannerPos; i < getChildCount(); i++) {
 			View v = getChildAt(i);
-			int[] location = new int[]{0, 0};
-			v.getLocationOnScreen(location);
-			Log.d(TAG, "findFirstViewOnNextPage view[" + i + "] x = " + location[0] + " y = " + location[1]);
-			if (location[1] >= mScreenHeight || location[1] + v.getHeight() > mScreenHeight) {
-				Log.d(TAG, "findFirstViewOnNextPage find view[" + i +"]");
-				view = v;
-				break;
+			/*modify by dragontec for bug 4412 start*/
+			if (v.getVisibility() == VISIBLE) {
+				int[] location = new int[]{0, 0};
+				v.getLocationOnScreen(location);
+				Log.d(TAG, "findFirstViewOnNextPage view[" + i + "] x = " + location[0] + " y = " + location[1]);
+				if (location[1] >= mScreenHeight || location[1] + v.getHeight() > mScreenHeight) {
+					Log.d(TAG, "findFirstViewOnNextPage find view[" + i + "]");
+					view = v;
+					break;
+				}
 			}
+			/*modify by dragontec for bug 4412 end*/
 		}
 		Log.d(TAG, "findFirstViewOnNextPage view = " + view);
 		if (view == null) {
-			view = getChildAt(getChildCount() - 1);
+			/*modify by dragontec for bug 4412 start*/
+			int i = getChildCount() - 1;
+			do {
+				view = getChildAt(i);
+				i--;
+			} while ((view == null || view.getVisibility() != View.VISIBLE) && i >= 0);
+			/*modify by dragontec for bug 4412 end*/
 		}
 		return view;
 	}
@@ -724,23 +745,35 @@ public class RecycleLinearLayout extends LinearLayout {
             int currY = mOverScroller.getCurrY();
             int screenHeight = mScreenHeight;
 			/*modify by dragontec for bug 4339 start*/
-            View lastView = getChildAt(getChildCount() - 1);
+			int i = getChildCount() - 1;
+			View lastView;
+			do {
+				lastView = getChildAt(i);
+				i--;
+			} while ((lastView == null || lastView.getVisibility() == GONE) && i >= 0);
             if(lastView != null) {
-                int[] lastPoint = new int[2];
-                lastView.getLocationOnScreen(lastPoint);
-                if (lastPoint[1] > 0) {
-                    int bottom = lastPoint[1] + lastView.getHeight();
-                    Log.i("bottomS3","lastPoint[1]: "+lastPoint[1]+"  height: "+lastView.getHeight()+"  bottom: "+bottom);
-                    if ("lcd_s3a01".equals(VodUserAgent.getModelName())) {
-                        if (bottom+100 == screenHeight) {
-                            isScrollAtBottom = true;
-                        }
-                    }else{
-                        if (bottom == screenHeight) {
-                            isScrollAtBottom = true;
-                        }
-                    }
-                }
+				int key = (int) lastView.getTag();
+				int tag = (int) lastView.getTag(key);
+				boolean canScroll = tag>>30==1;//1可滑动，0不可滑动
+				if (!canScroll) {
+					isScrollAtBottom = true;
+				} else {
+					int[] lastPoint = new int[2];
+					lastView.getLocationOnScreen(lastPoint);
+					if (lastPoint[1] > 0) {
+						int bottom = lastPoint[1] + lastView.getHeight();
+						Log.i("bottomS3", "lastPoint[1]: " + lastPoint[1] + "  height: " + lastView.getHeight() + "  bottom: " + bottom);
+						if ("lcd_s3a01".equals(VodUserAgent.getModelName())) {
+							if (bottom + 100 == screenHeight) {
+								isScrollAtBottom = true;
+							}
+						} else {
+							if (bottom == screenHeight) {
+								isScrollAtBottom = true;
+							}
+						}
+					}
+				}
             }
 			/*modify by dragontec for bug 4339 end*/
         }
@@ -773,12 +806,16 @@ public class RecycleLinearLayout extends LinearLayout {
 		int[] location = new int[2];
 		for (int i = 0; i< getChildCount(); i++) {
 			View v = getChildAt(i);
-			v.getLocationOnScreen(location);
-			if (location[1] <= 0 && location[1] + v.getHeight() > 1) {
-				v.requestFocus();
-				v.requestFocusFromTouch();
-				break;
+			/*modify by dragontec for bug 4412 start*/
+			if (v != null && v.getVisibility() != GONE) {
+				v.getLocationOnScreen(location);
+				if (location[1] <= 0 && location[1] + v.getHeight() > 1) {
+					v.requestFocus();
+					v.requestFocusFromTouch();
+					break;
+				}
 			}
+			/*modify by dragontec for bug 4412 end*/
 		}
 	}
 	/*add by dragontec for bug 4338 end*/
@@ -794,4 +831,19 @@ public class RecycleLinearLayout extends LinearLayout {
 		return false;
 	}
 	/*add by dragontec for bug 4334 end*/
+	/*add by dragontec for bug 4412 start*/
+	public void checkDownButton() {
+		if(isScrollAtBottom()){
+			homeRootRelativeLayout.setShowDown(false);
+		}else{
+			homeRootRelativeLayout.setShowDown(true);
+		}
+	}
+
+	@Override
+	protected void onLayout(boolean changed, int l, int t, int r, int b) {
+		super.onLayout(changed, l, t, r, b);
+		checkDownButton();
+	}
+	/*add by dragontec for bug 4412 end*/
 }

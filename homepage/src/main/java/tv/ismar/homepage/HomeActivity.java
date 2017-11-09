@@ -405,7 +405,7 @@ public class HomeActivity extends BaseActivity
         mHoverView.setUpArrow(banner_arrow_up);
         mHoverView.setDownArrow(banner_arrow_down);
         mHoverView.setShowUp(false);
-        mHoverView.setShowDown(true);
+        mHoverView.setShowDown(false);
     }
 
     private void setBackground(int id) {

@@ -31,7 +31,9 @@ import static tv.ismar.homepage.fragment.ChannelFragment.BANNER_KEY;
 import static tv.ismar.homepage.fragment.ChannelFragment.CHANNEL_KEY;
 import static tv.ismar.homepage.fragment.ChannelFragment.NAME_KEY;
 import static tv.ismar.homepage.fragment.ChannelFragment.TITLE_KEY;
-
+/*add by dragontec for bug 4412 start*/
+import static android.view.View.VISIBLE;
+/*add by dragontec for bug 4412 end*/
 /**
  * @AUTHOR: xi @DATE: 2017/9/5 @DESC: 居中模版
  */
@@ -186,6 +188,11 @@ public class TemplateCenter extends Template
     		if (mAdapter.getData() == null) {
     			if (mFetchControl.mCarouselsMap.get(mBannerPk) != null) {
 					mAdapter.setData(mFetchControl.mCarouselsMap.get(mBannerPk));
+					/*modify by dragontec for bug 4412 start*/
+					if (mAdapter.getItemCount() > 0) {
+						setVisibility(VISIBLE);
+					}
+					/*modify by dragontec for bug 4412 end*/
     			/*modify by dragontec for bug 4332 start*/
 					mRecyclerView.setAdapter(mAdapter);
 /*modify by dragontec for bug 4332 end*/
@@ -202,10 +209,15 @@ public class TemplateCenter extends Template
 		/*add by dragontec for bug 4077 end*/
 				}
 			} else {
+    			/*modify by dragontec for bug 4412 start*/
+				if (mAdapter.getItemCount() > 0) {
+					setVisibility(VISIBLE);
+				}
+				/*modify by dragontec for bug 4412 end*/
 				int start =
 						mFetchControl.mCarouselsMap.get(mBannerPk).size() - mFetchControl.getHomeEntity(mBannerPk).carousels.size();
 				int end = mFetchControl.mCarouselsMap.get(mBannerPk).size();
-				mAdapter.notifyItemRangeChanged(start, end);
+				mAdapter.notifyItemRangeInserted(start, end - start + 1);
 			}
 		}
     }

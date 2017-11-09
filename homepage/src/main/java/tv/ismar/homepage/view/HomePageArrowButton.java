@@ -33,17 +33,33 @@ public class HomePageArrowButton extends AppCompatButton {
 	}
 	@Override
 	public boolean onHoverEvent(MotionEvent event) {
-		float margin = getResources().getDimensionPixelSize(R.dimen.home_page_banner_arrow_hover_margin) / getResources().getDisplayMetrics().density;
-		if (event.getX() >= margin && event.getX() <= getResources().getDisplayMetrics().widthPixels - margin) {
-			requestFocus();
-			requestFocusFromTouch();
-			setClickable(true);
-			return true;
-		} else {
-			clearFocus();
-			setClickable(false);
-			return false;
+		/*modify by dragontec for bug 4350 start*/
+		switch (event.getAction()) {
+			case MotionEvent.ACTION_HOVER_ENTER:
+			case MotionEvent.ACTION_HOVER_MOVE: {
+				float margin = getResources().getDimensionPixelSize(R.dimen.home_page_banner_arrow_hover_margin) / getResources().getDisplayMetrics().density;
+				if (event.getX() >= margin && event.getX() <= getResources().getDisplayMetrics().widthPixels - margin) {
+					requestFocus();
+					requestFocusFromTouch();
+					setClickable(true);
+					return true;
+				} else {
+					clearFocus();
+					setClickable(false);
+					return false;
+				}
+			}
+			case MotionEvent.ACTION_HOVER_EXIT:
+			{
+				if (event.getButtonState() != MotionEvent.BUTTON_PRIMARY) {
+					clearFocus();
+					setClickable(false);
+					return false;
+				}
+			}
 		}
+		return super.onHoverEvent(event);
+		/*modify by dragontec for bug 4350 end*/
 	}
 }
 /*add by dragontec for bug 4350 end*/

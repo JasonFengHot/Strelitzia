@@ -215,6 +215,11 @@ public class TemplateBigSmallLd extends Template
 			if (mAdapter.getData() == null) {
 				if (mFetchControl.getHomeEntity(mBannerPk) != null) {
 					mAdapter.setData(mFetchControl.getHomeEntity(mBannerPk).posters);
+					/*modify by dragontec for bug 4412 start*/
+					if (mAdapter.getItemCount() > 0) {
+						setVisibility(VISIBLE);
+					}
+					/*modify by dragontec for bug 4412 end*/
 					mRecyclerView.setAdapter(mAdapter);
 	/*add by dragontec for bug 4077 start*/
 					checkFocus(mRecyclerView);
@@ -222,9 +227,14 @@ public class TemplateBigSmallLd extends Template
 				}
 			} else {
 				mAdapter.getData().addAll(mFetchControl.getHomeEntity(mBannerPk).posters);
+				/*modify by dragontec for bug 4412 start*/
+				if (mAdapter.getItemCount() > 0) {
+					setVisibility(VISIBLE);
+				}
+				/*modify by dragontec for bug 4412 end*/
 				int start = mAdapter.getData().size() - mFetchControl.getHomeEntity(mBannerPk).posters.size();
 				int end = mAdapter.getData().size();
-				mAdapter.notifyItemRangeChanged(start, end);
+				mAdapter.notifyItemRangeInserted(start, end - start + 1);
 			}
 		}
 	}
@@ -346,13 +356,14 @@ public class TemplateBigSmallLd extends Template
 			if (mMovieMixLayoutManager.findFirstCompletelyVisibleItemPosition() - 1 >= 0) { // 向左滑动
 				int targetPosition = mMovieMixLayoutManager.findFirstCompletelyVisibleItemPosition() - 4;
 				if (targetPosition <= 0) targetPosition = 0;
-				mSelectItemPosition = targetPosition;
+				mSelectItemPosition = targetPosition + 1;
 /*add by dragontec for bug 4332 start*/
 				setNeedCheckScrollEnd();
 /*add by dragontec for bug 4332 end*/
 /*modify by dragontec for bug 4332 start*/
 				mMovieMixLayoutManager.smoothScrollToPosition(mRecyclerView, null, targetPosition);
 /*modify by dragontec for bug 4332 end*/
+				initTitle();
 			}
 		} else if (i == R.id.navigation_right) { // 向右滑动
 			mMovieMixLayoutManager.setCanScroll(true);
@@ -362,18 +373,21 @@ public class TemplateBigSmallLd extends Template
 			if (mMovieMixLayoutManager.findLastCompletelyVisibleItemPosition()
 					<= mFetchControl.getHomeEntity(mBannerPk).count) {
 				int targetPosition = mMovieMixLayoutManager.findLastCompletelyVisibleItemPosition() + 4;
-				if (targetPosition >= mFetchControl.getHomeEntity(mBannerPk).count) {
-					targetPosition = mFetchControl.getHomeEntity(mBannerPk).count;
+				if (targetPosition > mFetchControl.getHomeEntity(mBannerPk).count - 1) {
+					targetPosition = mFetchControl.getHomeEntity(mBannerPk).count - 1;
+					if (mFetchControl.getHomeEntity(mBannerPk).is_more) {
+						targetPosition++;
+					}
 				}
-				mSelectItemPosition = targetPosition;
+				mSelectItemPosition = targetPosition + 1;
 /*add by dragontec for bug 4332 start*/
 				setNeedCheckScrollEnd();
 /*add by dragontec for bug 4332 end*/
 /*modify by dragontec for bug 4332 start*/
 				mMovieMixLayoutManager.smoothScrollToPosition(mRecyclerView, null, targetPosition);
 /*modify by dragontec for bug 4332 end*/
+				initTitle();
 			}
-			initTitle();
 		}
 	}
 }

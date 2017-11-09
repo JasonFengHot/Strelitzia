@@ -712,6 +712,7 @@
 <dimen name="column_item_height">106.67dp</dimen>
 <dimen name="column_item_padding">29.63dp</dimen>
 <dimen name="column_item_margin_left">44.44dp</dimen>
+<dimen name="column_item_text_margin_right">22.22dp</dimen>
 
 <dimen name="column_item_margin_top">5.93dp</dimen>
 <!--横版双行尺寸-->
