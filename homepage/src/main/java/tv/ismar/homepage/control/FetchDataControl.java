@@ -343,7 +343,7 @@ public class FetchDataControl extends BaseControl{
         }
         Log.d(TAG, "fetchMBanners("+ bannersStr.toString() + ", page = " + page + ")");
 		/*modify by dragontec for bug 4412 start*/
-        Subscription fetchMBanner = SkyService.ServiceManager.getService().getMBanners(bannersStr.toString(), page)
+        Subscription fetchMBanner = SkyService.ServiceManager.getForceCacheService().getMBanners(bannersStr.toString(), page)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<HomeEntity[]>() {
