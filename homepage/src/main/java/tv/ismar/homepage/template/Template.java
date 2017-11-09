@@ -697,65 +697,69 @@ public abstract class Template implements BaseControl.ControlCallBack {
 		switch (direction) {
 			case View.FOCUS_DOWN: {
 				/*modify by dragontec for bug 4334 start*/
-				if (mRecyclerView != null && mRecyclerView.getChildCount() > 0) {
-					for (int i = mRecyclerView.findFirstVisibleItemPosition(); i <= mRecyclerView.findLastVisibleItemPosition(); i++) {
-						RecyclerView.ViewHolder viewHolder = mRecyclerView.findViewHolderForAdapterPosition(i);
-						if (viewHolder != null) {
-							View view = viewHolder.itemView;
-							view.getLocationOnScreen(location);
-							if (middleX >= location[0] && middleX <= location[0] + view.getWidth()) {
-								item = view;
+				if (mParentView.getVisibility() != View.GONE) {
+					if (mRecyclerView != null && mRecyclerView.getChildCount() > 0) {
+						for (int i = mRecyclerView.findFirstVisibleItemPosition(); i <= mRecyclerView.findLastVisibleItemPosition(); i++) {
+							RecyclerView.ViewHolder viewHolder = mRecyclerView.findViewHolderForAdapterPosition(i);
+							if (viewHolder != null) {
+								View view = viewHolder.itemView;
+								view.getLocationOnScreen(location);
+								if (middleX >= location[0] && middleX <= location[0] + view.getWidth()) {
+									item = view;
+									break;
+								}
+							} else {
 								break;
 							}
-						} else {
-							break;
 						}
+					} else {
+						item = mParentView;
 					}
-				} else {
-					item = mParentView;
-				}
 				/*modify by dragontec for bug 4334 end*/
 				/*modify by dragontec for bug 4391 start*/
-				if (mHeadView != null && mHeadView.getVisibility() == View.VISIBLE) {
-					mHeadView.getLocationOnScreen(location);
-					if (middleX >= location[0] && middleX <= location[0] + mHeadView.getWidth()) {
-						item = mHeadView;
+					if (mHeadView != null && mHeadView.getVisibility() == View.VISIBLE) {
+						mHeadView.getLocationOnScreen(location);
+						if (middleX >= location[0] && middleX <= location[0] + mHeadView.getWidth()) {
+							item = mHeadView;
+						}
+						break;
 					}
-					break;
 				}
 				/*modify by dragontec for bug 4391 end*/
 				break;
 			}
 			case View.FOCUS_UP: {
 				/*modify by dragontec for bug 4334 start*/
-				if (mRecyclerView != null && mRecyclerView.getChildCount() > 0) {
-					for (int i = mRecyclerView.findLastVisibleItemPosition(); i >= mRecyclerView.findFirstVisibleItemPosition(); i--) {
-						RecyclerView.ViewHolder viewHolder = mRecyclerView.findViewHolderForAdapterPosition(i);
-						if (viewHolder != null) {
-							View view = viewHolder.itemView;
-							view.getLocationOnScreen(location);
-							if (middleX >= location[0] && middleX <= location[0] + view.getWidth()) {
-								item = view;
+				if (mParentView.getVisibility() != View.GONE) {
+					if (mRecyclerView != null && mRecyclerView.getChildCount() > 0) {
+						for (int i = mRecyclerView.findLastVisibleItemPosition(); i >= mRecyclerView.findFirstVisibleItemPosition(); i--) {
+							RecyclerView.ViewHolder viewHolder = mRecyclerView.findViewHolderForAdapterPosition(i);
+							if (viewHolder != null) {
+								View view = viewHolder.itemView;
+								view.getLocationOnScreen(location);
+								if (middleX >= location[0] && middleX <= location[0] + view.getWidth()) {
+									item = view;
+									break;
+								}
+							} else {
 								break;
 							}
-						} else {
-							break;
 						}
+						if (item == null) {
+							item = mRecyclerView;
+						}
+					} else {
+						item = mParentView;
 					}
-					if (item == null) {
-						item = mRecyclerView;
-					}
-				} else {
-					item = mParentView;
-				}
 				/*modify by dragontec for bug 4334 end*/
 				/*modify by dragontec for bug 4391 start*/
-				if (mHeadView != null  && mHeadView.getVisibility() == View.VISIBLE) {
-					mHeadView.getLocationOnScreen(location);
-					if (middleX >= location[0] && middleX <= location[0] + mHeadView.getWidth()) {
-						item = mHeadView;
+					if (mHeadView != null && mHeadView.getVisibility() == View.VISIBLE) {
+						mHeadView.getLocationOnScreen(location);
+						if (middleX >= location[0] && middleX <= location[0] + mHeadView.getWidth()) {
+							item = mHeadView;
+						}
+						break;
 					}
-					break;
 				}
 				/*modify by dragontec for bug 4391 end*/
 				break;

@@ -18,8 +18,11 @@
         <com.open.androidtvwidget.leanback.recycle.RecyclerViewTV
             android:id="@+id/conlumn_recyclerview"
             android:layout_width="wrap_content"
-            android:layout_marginLeft="@dimen/column_item_margin_left"
-            android:paddingRight="@dimen/history_100"
+            android:layout_marginLeft="@dimen/column_banner_recycler_ml"
+            android:layout_marginRight="@dimen/column_banner_recycler_mr"
+            android:paddingLeft="@dimen/column_banner_recycler_pl"
+            android:paddingRight="@dimen/column_banner_recycler_pr"
+
             android:clipChildren="false"
             android:clipToPadding="false"
             android:focusable="false"

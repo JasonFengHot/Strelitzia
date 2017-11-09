@@ -6,6 +6,7 @@
     android:clipToPadding="false"
     android:orientation="horizontal">
     <View
+        android:id="@+id/left_space"
         android:layout_width="@dimen/column_item_padding"
         android:layout_height="10dp"
         android:background="#00000000"/>
@@ -44,4 +45,10 @@
                 android:textSize="@dimen/text_size_50sp"/>
         </RelativeLayout>
     </tv.ismar.homepage.banner.IsmartvLinearLayout>
+
+    <View
+        android:id="@+id/right_space"
+        android:layout_width="@dimen/column_item_padding"
+        android:layout_height="10dp"
+        android:background="#00000000"/>
 </LinearLayout>
