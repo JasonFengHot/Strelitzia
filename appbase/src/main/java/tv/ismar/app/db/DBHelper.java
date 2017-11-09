@@ -151,7 +151,6 @@ public class DBHelper extends SQLiteOpenHelper {
      * @return an ArrayList contains all Favorite objects.
      */
     public ArrayList<Favorite> getAllFavorites(String isnet) {
-        isnet="no";
         //Cursor cur = db.query(DBFields.FavoriteTable.TABLE_NAME, null, DBFields.FavoriteTable.URL + " = ? and " + DBFields.FavoriteTable.ISNET + "= ?", new String[]{url,isnet}, null, null, " _id desc");
         ArrayList<Favorite> favoriteList = new ArrayList<Favorite>();
         Cursor cur = db.query(DBFields.FavoriteTable.TABLE_NAME, null, DBFields.FavoriteTable.ISNET + "= ?", new String[]{isnet}, null, null, " _id desc");
