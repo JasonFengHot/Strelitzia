@@ -1,0 +1,20 @@
+http://res.tvxio.bestv.com.cn/media/upload/20160711/upload/20160420/huantimt160606_poster.jpg
+GET
+0
+HTTP/1.1 200 OK
+15
+Server: marco/1.8
+Date: Thu, 09 Nov 2017 03:12:43 GMT
+Content-Type: image/jpeg
+Content-Length: 49082
+X-Source: C/200
+Last-Modified: Fri, 09 Sep 2016 03:08:43 GMT
+Accept-Ranges: bytes
+Expires: Tue, 06 Feb 2018 02:02:21 GMT
+Cache-Control: max-age=7776000
+Age: 90622
+X-Request-Id: 0b5d552d398130729d6227e6e048ecaa; 9022968e42d8952b06b27eb38ced2fef
+Via: S.mix-hz-fdi-169, T.101170.M.1, V.mix-hz-fdi-172, T.3551.H.1, M.ctn-zj-lna4-046
+Proxy-Connection: Keep-alive
+OkHttp-Sent-Millis: 1510197163710
+OkHttp-Received-Millis: 1510197163759

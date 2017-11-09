@@ -2,14 +2,18 @@ http://res.tvxio.bestv.com.cn/media/upload/20160420/right_corner_zizhi_03_03.png
 GET
 0
 HTTP/1.1 200 OK
-10
-Server: vengine/1.10.3.201707191
-Date: Mon, 06 Nov 2017 09:29:51 GMT
+14
 Content-Type: image/png
 Content-Length: 3656
 Last-Modified: Mon, 30 Oct 2017 10:27:43 GMT
 age: 1
 Accept-Ranges: bytes
+Server: marco/1.8
+Date: Thu, 09 Nov 2017 03:12:43 GMT
+Expires: Mon, 29 Jan 2018 10:00:51 GMT
+Cache-Control: max-age=2592000
+Via: T.3542.H.1, M.ctn-zj-lna4-046
+X-Request-Id: ebf81fbf924516d3f2991543bd7c35ee
 Proxy-Connection: Keep-alive
-OkHttp-Sent-Millis: 1509960591702
-OkHttp-Received-Millis: 1509960591967
+OkHttp-Sent-Millis: 1510197161562
+OkHttp-Received-Millis: 1510197163708

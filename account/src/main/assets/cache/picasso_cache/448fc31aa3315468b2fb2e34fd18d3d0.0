@@ -1,0 +1,22 @@
+http://pic4.qiyipic.com/image/20150715/59/94/v_106339706_m_601_m8_260_360.jpg
+GET
+0
+HTTP/1.1 200 OK
+17
+Server: QWS
+Date: Thu, 09 Nov 2017 03:12:42 GMT
+Content-Type: image/jpeg
+Content-Length: 25287
+Last-Modified: Wed, 15 Jul 2015 06:22:52 GMT
+Expires: Thu, 28 Jun 2018 13:43:10 GMT
+Cache-Control: max-age=31536000
+X-Cache: from 58.215.125.70
+X-Cache: from 127.0.0.1
+Age: 237
+Via: http/1.1 QTS (QTS [cRs f ])
+X-Cache: from 10.121.32.223
+X-Cache: HIT from 101.227.22.159
+Accept-Ranges: bytes
+Proxy-Connection: Keep-alive
+OkHttp-Sent-Millis: 1510197161602
+OkHttp-Received-Millis: 1510197162640
