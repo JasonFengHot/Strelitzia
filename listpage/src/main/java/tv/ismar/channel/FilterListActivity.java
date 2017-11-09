@@ -389,8 +389,8 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
                     } else {
                         filter_root_view.setShow_right_down(true);
                     }
-                    if(poster_arrow_up.isFocused()||poster_arrow_down.isFocused()) {
-                        changeCheckedTab(firstVisiablePos);
+                    if(poster_arrow_up.isFocused()||poster_arrow_down.isFocused()||filter_root_view.isFocused()) {
+                        changeCheckedTab(mFocusGridLayoutManager.findFirstCompletelyVisibleItemPosition());
                     }
                     showData(firstVisiablePos,true);
                     showData(lastVisiablePos,false);
