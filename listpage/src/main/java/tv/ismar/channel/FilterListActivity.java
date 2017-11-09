@@ -1166,7 +1166,7 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
                         }else {
                             //第一行是海报
                             if(specialPos.contains(mFocusGridLayoutManager.findFirstVisibleItemPosition()-1)){
-                                mFocusGridLayoutManager.scrollToPositionWithOffset(mFocusGridLayoutManager.findFirstVisibleItemPosition()-2, getResources().getDimensionPixelOffset(R.dimen.list_scroll_up_offset_v));
+                                mFocusGridLayoutManager.scrollToPositionWithOffset(mFocusGridLayoutManager.findFirstVisibleItemPosition()-2<0?0:mFocusGridLayoutManager.findFirstVisibleItemPosition()-2, getResources().getDimensionPixelOffset(R.dimen.list_scroll_up_offset_v));
                             }else{
                                 mFocusGridLayoutManager.scrollToPositionWithOffset(mFocusGridLayoutManager.findFirstVisibleItemPosition()-1, getResources().getDimensionPixelOffset(R.dimen.list_scroll_up_offset_v));
                             }
