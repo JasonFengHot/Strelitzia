@@ -16,6 +16,7 @@ import com.open.androidtvwidget.leanback.recycle.LinearLayoutManagerTV;
 import com.open.androidtvwidget.leanback.recycle.RecyclerViewTV;
 
 import tv.ismar.app.BaseControl;
+import tv.ismar.app.core.VodUserAgent;
 import tv.ismar.app.entity.banner.HomeEntity;
 import tv.ismar.homepage.OnItemClickListener;
 import tv.ismar.homepage.OnItemHoverListener;
@@ -121,6 +122,9 @@ public class TemplateCenter extends Template
                 new LinearLayoutManagerTV(mContext, LinearLayoutManager.HORIZONTAL, false);
         mRecyclerView.setLayoutManager(mCenterLayoutManager);
         mRecyclerView.setSelectedItemAtCentered(true);
+        if ("lcd_s3a01".equals(VodUserAgent.getModelName())) {
+            mRecyclerView.setPadding(-6, 0, 0, 0);
+        }
         navigationLeft = view.findViewById(R.id.navigation_left);
         navigationRight = view.findViewById(R.id.navigation_right);
         mBannerLinearLayout = (BannerLinearLayout) view.findViewById(R.id.banner_layout);
@@ -197,7 +201,8 @@ public class TemplateCenter extends Template
 					mRecyclerView.setAdapter(mAdapter);
 /*modify by dragontec for bug 4332 end*/
 /*modify by dragontec for bug 4365 start*/
-					mCenterLayoutManager.scrollToPositionWithOffset(
+                    Log.i("centenoffset",((CenterRecyclerViewTV)mRecyclerView).getCenterOffset()+"");
+                    mCenterLayoutManager.scrollToPositionWithOffset(
 							mFetchControl.mCarouselsMap.get(mBannerPk).size() * 100,
 							((CenterRecyclerViewTV)mRecyclerView).getCenterOffset());
 /*modify by dragontec for bug 4365 end*/
