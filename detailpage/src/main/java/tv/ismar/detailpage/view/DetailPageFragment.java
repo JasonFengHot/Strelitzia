@@ -519,9 +519,7 @@ public class DetailPageFragment extends Fragment implements DetailPageContract.V
             if(isLogin.equals("no")||mItemEntity.getExpense()==null||mRemandDay>0)
                 handler.sendEmptyMessageDelayed(0,100);
             ((DetailPageActivity) getActivity()).mLoadingDialog.dismiss();
-            HashMap<String, Object> dataCollectionProperties = new HashMap<>();
-            dataCollectionProperties.put(EventProperty.CLIP, mItemEntity.getClip().getPk());
-            dataCollectionProperties.put(EventProperty.DURATION, (int) ((System.currentTimeMillis() - ((DetailPageActivity) getActivity()).start_time) / 1000));
+
             String quality = "";
             switch (mItemEntity.getQuality()) {
                 case 2:
@@ -540,12 +538,19 @@ public class DetailPageFragment extends Fragment implements DetailPageContract.V
                     quality = "adaptive";
                     break;
             }
-            dataCollectionProperties.put(EventProperty.QUALITY, quality);
-            dataCollectionProperties.put(EventProperty.TITLE, mItemEntity.getTitle());
-            dataCollectionProperties.put(EventProperty.ITEM, mItemEntity.getPk());
-            dataCollectionProperties.put(EventProperty.SUBITEM, mItemEntity.getItemPk());
-            dataCollectionProperties.put(EventProperty.LOCATION, "detail");
-            new NetworkUtils.DataCollectionTask().execute(NetworkUtils.DETAIL_PLAY_LOAD, dataCollectionProperties);
+
+            //没有clip表示没有正片，不需要添加日志上报时间
+            if (mItemEntity.getClip() != null) {
+                HashMap<String, Object> dataCollectionProperties = new HashMap<>();
+                dataCollectionProperties.put(EventProperty.CLIP, mItemEntity.getClip().getPk());
+                dataCollectionProperties.put(EventProperty.DURATION, (int) ((System.currentTimeMillis() - ((DetailPageActivity) getActivity()).start_time) / 1000));
+                dataCollectionProperties.put(EventProperty.QUALITY, quality);
+                dataCollectionProperties.put(EventProperty.TITLE, mItemEntity.getTitle());
+                dataCollectionProperties.put(EventProperty.ITEM, mItemEntity.getPk());
+                dataCollectionProperties.put(EventProperty.SUBITEM, mItemEntity.getItemPk());
+                dataCollectionProperties.put(EventProperty.LOCATION, "detail");
+                new NetworkUtils.DataCollectionTask().execute(NetworkUtils.DETAIL_PLAY_LOAD, dataCollectionProperties);
+            }
         }
 
         mModel.showLayout();
