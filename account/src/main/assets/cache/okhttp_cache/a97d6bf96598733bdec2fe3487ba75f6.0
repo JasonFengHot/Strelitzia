@@ -1,0 +1,15 @@
+http://sky.test.tvxio.com/v5_0/SKY2/touc/api/tv/mbanner/159%7C159_r%7C201%7C4%7C5/1/?token_check=1&device_token=__qNbSY8IHRqdl8TOKMaiSyVObHaUPbVQ5xwI7Z7-YR7McK8XQZeob4a9mlBM370zV
+GET
+0
+HTTP/1.1 200 OK
+10
+Server: nginx
+Date: Thu, 09 Nov 2017 03:12:38 GMT
+Content-Type: application/json
+Vary: X-User-Agent
+ETag: "63bc8e8091a56787cabf2aa83e6cc1d1"
+Allow: GET, POST, HEAD, OPTIONS
+Transfer-Encoding: chunked
+Proxy-Connection: Keep-alive
+OkHttp-Sent-Millis: 1510197157250
+OkHttp-Received-Millis: 1510197158932

@@ -235,7 +235,7 @@ public class FetchDataControl extends BaseControl{
      * @param banners {banner}数组
      * @param page
      */
-    public  void fetchMBanners(final String[] banners, int page){
+    public  void fetchMBanners(final String[] banners, final int page){
 		StringBuilder bannersStr = new StringBuilder();
 		for (String banner :
 				banners) {
@@ -263,11 +263,7 @@ public class FetchDataControl extends BaseControl{
 
                     @Override
                     public void onError(Throwable e) {
-                        e.printStackTrace();
-						Log.i(TAG, "fetchMBanners onError");
-                        if (mCallBack != null) {
-                        	mCallBack.callBack(FETCH_DATA_FAIL_FLAG);
-						}
+                        forceFetchMBanners(banners, page);
                     }
 
                     @Override
@@ -324,6 +320,95 @@ public class FetchDataControl extends BaseControl{
 		/*modify by dragontec for bug 4412 end*/
     }
     /*modify by dragontec for bug 4362 end*/
+
+    /**
+     *  获取影视内容（多个banner）
+     * @param banners {banner}数组
+     * @param page
+     */
+    public  void forceFetchMBanners(final String[] banners, int page){
+        StringBuilder bannersStr = new StringBuilder();
+        for (String banner :
+                banners) {
+            if (banner == null || banner.isEmpty()) {
+                continue;
+            }
+            if (bannersStr.length() > 0) {
+                bannersStr.append("|");
+            }
+            bannersStr.append(banner);
+        }
+        if (bannersStr.length() == 0) {
+            return;
+        }
+        Log.d(TAG, "fetchMBanners("+ bannersStr.toString() + ", page = " + page + ")");
+        fetchMBanners = SkyService.ServiceManager.getForceCacheService().getMBanners(bannersStr.toString(), page)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<HomeEntity[]>() {
+                    @Override
+                    public void onCompleted() {
+                        Log.i(TAG, "fetchMBanners onCompleted");
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                        Log.i(TAG, "fetchMBanners onError");
+                        if (mCallBack != null) {
+                            mCallBack.callBack(FETCH_DATA_FAIL_FLAG);
+                        }
+                    }
+
+                    @Override
+                    public void onNext(HomeEntity[] homeEntities) {
+                        Log.i(TAG, "fetchMBanners onNext");
+                        synchronized (mDataLock) {
+                            if (homeEntities != null && homeEntities.length > 0) {
+                                int minSize = banners.length < homeEntities.length ? banners.length : homeEntities.length;
+                                for (int i = 0; i < minSize; i++) {
+                                    mHomeEntities.put(banners[i], homeEntities[i]);
+                                }
+                            }
+                        }
+                        if (homeEntities != null) {
+                            for (int i = 0; i < homeEntities.length; i++) {
+                                HomeEntity homeEntity = homeEntities[i];
+                                if(homeEntity.carousels != null){
+                                    List<BannerCarousels> list = mCarouselsMap.get(banners[i]);
+                                    if (list == null) {
+                                        list = new ArrayList<>();
+                                    }
+                                    list.addAll(homeEntity.carousels);
+                                    if (!list.isEmpty() && list.size() > 5){
+                                        list = list.subList(0, 5);
+                                    }
+                                    mCarouselsMap.put(banners[i], list);
+                                }
+                                if(homeEntity.posters != null){
+                                    List<BannerPoster> list = mPosterMap.get(banners[i]);
+                                    if (list == null) {
+                                        list = new ArrayList<>();
+                                    }
+                                    list.addAll(homeEntity.posters);
+                                    if (list.size() >= homeEntity.count - 2 && homeEntity.is_more) {
+                                        BannerPoster morePoster = new BannerPoster();
+                                        morePoster.poster_url = "更多";
+                                        morePoster.vertical_url = "更多";
+                                        morePoster.title = "";
+                                        homeEntity.posters.add(morePoster);
+                                        list.add(morePoster);
+                                    }
+                                    mPosterMap.put(banners[i], list);
+                                }
+                            }
+                        }
+                        if(mCallBack!=null){
+                            mCallBack.callBack(FETCH_M_BANNERS_LIST_FLAG, (Object[]) banners);
+                        }
+                    }
+                });
+    }
 
     /**
      * 获取首页下的推荐列表
