@@ -296,7 +296,7 @@ public class TemplateConlumn extends Template
 				/*modify by dragontec for bug 4412 end*/
 				int start = mFetchControl.mPosterMap.get(mBannerPk).size() - mFetchControl.getHomeEntity(mBannerPk).posters.size();
 				int end = mFetchControl.mPosterMap.get(mBannerPk).size();
-				mAdapter.notifyItemRangeChanged(start, end);
+				mAdapter.notifyItemRangeInserted(start, end - start + 1);
 			}
 		}
 	}

@@ -217,7 +217,7 @@ public class TemplateCenter extends Template
 				int start =
 						mFetchControl.mCarouselsMap.get(mBannerPk).size() - mFetchControl.getHomeEntity(mBannerPk).carousels.size();
 				int end = mFetchControl.mCarouselsMap.get(mBannerPk).size();
-				mAdapter.notifyItemRangeChanged(start, end);
+				mAdapter.notifyItemRangeInserted(start, end - start + 1);
 			}
 		}
     }

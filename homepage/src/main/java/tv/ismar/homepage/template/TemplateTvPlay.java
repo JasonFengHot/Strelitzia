@@ -274,7 +274,7 @@ public class TemplateTvPlay extends Template
 				/*modify by dragontec for bug 4412 end*/
 				int start = mFetchControl.mPosterMap.get(mBannerPk).size() - mFetchControl.getHomeEntity(mBannerPk).posters.size();
 				int end = mFetchControl.mPosterMap.get(mBannerPk).size();
-				mAdapter.notifyItemRangeChanged(start, end);
+				mAdapter.notifyItemRangeInserted(start, end - start + 1);
 			}
 		}
     }
@@ -416,7 +416,7 @@ public class TemplateTvPlay extends Template
             if (mTvPlayerLayoutManager.findFirstCompletelyVisibleItemPosition() - 1 >= 0) { // 向左滑动
                 int targetPosition = mTvPlayerLayoutManager.findFirstCompletelyVisibleItemPosition() - 4;
                 if (targetPosition <= 0) targetPosition = 0;
-                mSelectItemPosition = targetPosition;
+                mSelectItemPosition = targetPosition + 1;
 /*add by dragontec for bug 4332 start*/
 				setNeedCheckScrollEnd();
 /*add by dragontec for bug 4332 end*/
@@ -427,6 +427,8 @@ public class TemplateTvPlay extends Template
                     mNavigationtHandler.removeMessages(NAVIGATION_LEFT);
                 }
                     mNavigationtHandler.sendEmptyMessageDelayed(NAVIGATION_LEFT,500);
+
+				initTitle();
             }
         } else if (i == R.id.navigation_right) { // 向右滑动
             mTvPlayerLayoutManager.setCanScroll(true);
@@ -436,15 +438,18 @@ public class TemplateTvPlay extends Template
             if (mTvPlayerLayoutManager.findLastCompletelyVisibleItemPosition()
                     <= mFetchControl.getHomeEntity(mBannerPk).count) {
                 int targetPosition = mTvPlayerLayoutManager.findLastCompletelyVisibleItemPosition() + 4;
-                if (targetPosition >= mFetchControl.getHomeEntity(mBannerPk).count) {
-                    targetPosition = mFetchControl.getHomeEntity(mBannerPk).count;
+                if (targetPosition > mFetchControl.getHomeEntity(mBannerPk).count - 1) {
+					targetPosition = mFetchControl.getHomeEntity(mBannerPk).count - 1;
+                	if (mFetchControl.getHomeEntity(mBannerPk).is_more) {
+                		targetPosition++;
+					}
                 }
-                mSelectItemPosition = targetPosition;
+                mSelectItemPosition = targetPosition + 1;
 /*add by dragontec for bug 4332 start*/
 				setNeedCheckScrollEnd();
 /*add by dragontec for bug 4332 end*/
 /*modify by dragontec for bug 4332 start*/
-                mTvPlayerLayoutManager.smoothScrollToPosition(mRecyclerView, null, targetPosition);
+				mTvPlayerLayoutManager.smoothScrollToPosition(mRecyclerView, null, targetPosition);
 /*modify by dragontec for bug 4332 end*/
                 if (mNavigationtHandler.hasMessages(NAVIGATION_RIGHT)){
                     mNavigationtHandler.removeMessages(NAVIGATION_RIGHT);
@@ -459,8 +464,8 @@ public class TemplateTvPlay extends Template
 //                                            .getChildAt(mRecyclerView.getChildCount() - 1)
 //                                            .findViewById(R.id.tv_player_ismartv_linear_layout));
 			/*delete by dragontec for bug 4303 end*/
+				initTitle();
             }
-            initTitle();
         }
     }
 }

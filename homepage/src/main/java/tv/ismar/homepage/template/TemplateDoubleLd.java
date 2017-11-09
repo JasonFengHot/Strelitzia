@@ -306,7 +306,7 @@ public class TemplateDoubleLd extends Template
 				/*modify by dragontec for bug 4412 end*/
 				int start = mFetchControl.mPosterMap.get(mBannerPk).size() - mFetchControl.getHomeEntity(mBannerPk).posters.size();
 				int end = mFetchControl.mPosterMap.get(mBannerPk).size();
-				mAdapter.notifyItemRangeChanged(start, end);
+				mAdapter.notifyItemRangeInserted(start, end - start + 1);
 			}
 		}
     }
@@ -483,7 +483,7 @@ public class TemplateDoubleLd extends Template
             if (positions[1] - 1 >= 0) { // 向左滑动
                 int targetPosition = positions[1] - 8;
                 if (targetPosition <= 0) targetPosition = 0;
-                mSelectItemPosition = targetPosition;
+                mSelectItemPosition = targetPosition + 1;
 /*add by dragontec for bug 4332 start*/
 				setNeedCheckScrollEnd();
 /*add by dragontec for bug 4332 end*/
@@ -492,6 +492,7 @@ public class TemplateDoubleLd extends Template
                     mNavigationtHandler.removeMessages(NAVIGATION_LEFT);
                 }
                     mNavigationtHandler.sendEmptyMessageDelayed(NAVIGATION_LEFT,500);
+                initTitle();
             }
         } else if (i == R.id.navigation_right) { // 向右滑动
             mDoubleLayoutManager.findLastCompletelyVisibleItemPositions(positions);
@@ -500,10 +501,13 @@ public class TemplateDoubleLd extends Template
             mRecyclerView.loadMore();
             if (positions[1] <= mFetchControl.getHomeEntity(mBannerPk).count) {
                 int targetPosition = positions[1] + 8;
-                if (targetPosition >= mFetchControl.getHomeEntity(mBannerPk).count) {
-                    targetPosition = mFetchControl.getHomeEntity(mBannerPk).count;
-                }
-                mSelectItemPosition = targetPosition;
+				if (targetPosition > mFetchControl.getHomeEntity(mBannerPk).count - 1) {
+					targetPosition = mFetchControl.getHomeEntity(mBannerPk).count - 1;
+					if (mFetchControl.getHomeEntity(mBannerPk).is_more) {
+						targetPosition++;
+					}
+				}
+				mSelectItemPosition = targetPosition + 1;
 /*add by dragontec for bug 4332 start*/
 				setNeedCheckScrollEnd();
 /*add by dragontec for bug 4332 end*/
@@ -526,8 +530,8 @@ public class TemplateDoubleLd extends Template
 //                    e.printStackTrace();
 //                }
 			/*delete by dragontec for bug 4303 end*/
+				initTitle();
             }
-            initTitle();
         }
     }
 
