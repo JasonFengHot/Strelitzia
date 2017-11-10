@@ -115,11 +115,18 @@ public abstract class BaseViewHolder extends RecyclerView.ViewHolder implements
 		v.getLocationOnScreen(location);
 		int screenWidth = v.getResources().getDisplayMetrics().widthPixels;
 		int screenHeight = v.getResources().getDisplayMetrics().heightPixels;
-		if (location[0] >= 0 && location[1] >= 0 && location[0] + v.getWidth() <= screenWidth && location[1] + v.getHeight() <= screenHeight) {
+		/*modify by dragontec for bug 4452 start*/
+		if (location[0] >= 0 && location[0] + v.getWidth() <= screenWidth) {
 			if (mClickListener != null && v.getId() == getScaleLayoutId()) {//item选中事件
 				mClickListener.onItemClick(v, mPosition);
 			}
 		}
+//		if (location[0] >= 0 && location[1] >= 0 && location[0] + v.getWidth() <= screenWidth && location[1] + v.getHeight() <= screenHeight) {
+//			if (mClickListener != null && v.getId() == getScaleLayoutId()) {//item选中事件
+//				mClickListener.onItemClick(v, mPosition);
+//			}
+//		}
+		/*modify by dragontec for bug 4452 end*/
 /*modify by dragontec for bug 4330 end*/
     }
 
@@ -142,10 +149,16 @@ public abstract class BaseViewHolder extends RecyclerView.ViewHolder implements
 					v.getLocationOnScreen(location);
 					int screenWidth = v.getResources().getDisplayMetrics().widthPixels;
 					int screenHeight = v.getResources().getDisplayMetrics().heightPixels;
-					if (location[0] >= 0 && location[1] >= 0 && location[0] + v.getWidth() <= screenWidth && location[1] + v.getHeight() <= screenHeight) {
+					/*modify by dragontec for bug 4452 start*/
+					if (location[0] >= 0 && location[0] + v.getWidth() <= screenWidth) {
 						v.requestFocus();
 						v.requestFocusFromTouch();
 					}
+//					if (location[0] >= 0 && location[1] >= 0 && location[0] + v.getWidth() <= screenWidth && location[1] + v.getHeight() <= screenHeight) {
+//						v.requestFocus();
+//						v.requestFocusFromTouch();
+//					}
+					/*modify by dragontec for bug 4452 end*/
 				}
 				/*add by dragontec for bug 4265 end*/
                 break;
