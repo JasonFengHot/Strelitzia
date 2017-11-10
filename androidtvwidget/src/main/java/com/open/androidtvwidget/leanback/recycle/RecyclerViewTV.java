@@ -33,6 +33,7 @@ public class RecyclerViewTV extends RecyclerView implements PrvInterface {
     private int firstCompletelyVisiblePosition;
     /*add by dragontec for bug 4221 start*/
     private View lastFocusChild;
+    private long lastKeyEventTime = 0;
     /*add by dragontec for bug 4221 end*/
 
     public RecyclerViewTV(Context context) {
@@ -57,7 +58,6 @@ public class RecyclerViewTV extends RecyclerView implements PrvInterface {
     private OnItemClickListener mOnItemClickListener; // item 单击事件.
     private ItemListener mItemListener;
     private int offset = -1;
-    private boolean isDispatch = true;
     private boolean ishover=false;
     private boolean hasHeaderView=false;
 	/*add by dragontec for bug 4265 start*/
@@ -559,35 +559,23 @@ public class RecyclerViewTV extends RecyclerView implements PrvInterface {
             ((StaggeredGridLayoutManagerTV) getLayoutManager()).setCanScroll(true);
         }
         int action = event.getAction();
-        if (action == KeyEvent.ACTION_UP) {
-            isDispatch = true;
-        }
-
-        if (isDispatch) {
-            isDispatch = false;
-            mKeyEventHandler.sendEmptyMessageDelayed(0, 100);
-            int keyCode = event.getKeyCode();
-            if (action == KeyEvent.ACTION_DOWN) {
-                if (!isHorizontalLayoutManger() && keyCode == KeyEvent.KEYCODE_DPAD_DOWN) {
-                    // 垂直布局向下按键.
-                    loadMore();
-                } else if (isHorizontalLayoutManger() && keyCode == KeyEvent.KEYCODE_DPAD_RIGHT) {
-                    // 横向布局向右按键.
-                    loadMore();
-                }
-            }
-            return super.dispatchKeyEvent(event);
-        } else {
+        long current = System.currentTimeMillis();
+        if(current - lastKeyEventTime <100){
             return true;
         }
-    }
-
-    Handler mKeyEventHandler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            isDispatch = true;
+        lastKeyEventTime = current;
+        int keyCode = event.getKeyCode();
+        if (action == KeyEvent.ACTION_DOWN) {
+            if (!isHorizontalLayoutManger() && keyCode == KeyEvent.KEYCODE_DPAD_DOWN) {
+                // 垂直布局向下按键.
+                loadMore();
+            } else if (isHorizontalLayoutManger() && keyCode == KeyEvent.KEYCODE_DPAD_RIGHT) {
+                // 横向布局向右按键.
+                loadMore();
+            }
         }
-    };
+        return super.dispatchKeyEvent(event);
+    }
 
     private static final int LOAD_MORE_VALUE = 10;
     public boolean loadMore() {

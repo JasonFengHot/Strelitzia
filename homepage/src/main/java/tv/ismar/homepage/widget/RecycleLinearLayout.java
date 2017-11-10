@@ -347,9 +347,11 @@ public class RecycleLinearLayout extends LinearLayout {
             mLastTime = mCurrentTime;
         }
 		/*modify by dragontec for bug 4296 start*/
-        if(mOverScroller.computeScrollOffset() && event.getAction() == KeyEvent.ACTION_DOWN){
-            return true;
-        }
+//        boolean isScrolling = mOverScroller.computeScrollOffset();
+//        if(isScrolling && event.getAction() == KeyEvent.ACTION_DOWN){
+//            Log.i("zzz","zzz key scroll isScrolling:" + isScrolling);
+//            return true;
+//        }
 		/*modify by dragontec for bug 4296 end*/
         return excuteKeyEvent(event, longPress);
     }
