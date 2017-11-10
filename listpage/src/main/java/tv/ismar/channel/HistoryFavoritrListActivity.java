@@ -95,6 +95,7 @@ public class HistoryFavoritrListActivity extends BaseActivity implements OnItemC
         recyclerView.addItemDecoration(mSpaceItemDecoration);
         focusGridLayoutManager=new FocusGridLayoutManager(this,4);
         focusGridLayoutManager.setFavorite(true);
+        focusGridLayoutManager.setmItemCount(mlists.size());
         recyclerView.setLayoutManager(focusGridLayoutManager);
         if(source.equals("edit")){
             if(type==1) {
@@ -204,7 +205,6 @@ public class HistoryFavoritrListActivity extends BaseActivity implements OnItemC
                         }
 
                     }
-
                 }
                 super.onScrollStateChanged(recyclerView, newState);
             }
@@ -435,7 +435,6 @@ public class HistoryFavoritrListActivity extends BaseActivity implements OnItemC
                     });
         }
     }
-
     @Override
     public void onItemfocused(View view, int position, boolean hasFocus) {
         if(hasFocus) {
@@ -444,10 +443,10 @@ public class HistoryFavoritrListActivity extends BaseActivity implements OnItemC
             if (!ishover) {
                 if (view.getY() > getResources().getDimensionPixelSize(R.dimen.history_640)) {
                     focusGridLayoutManager.setCanScroll(true);
-                    recyclerView.smoothScrollBy(0, getResources().getDimensionPixelOffset(R.dimen.history_732));
+                    recyclerView.smoothScrollBy(0, getResources().getDimensionPixelOffset(R.dimen.history_366));
                 } else if (view.getY() < 0) {
                     focusGridLayoutManager.setCanScroll(true);
-                    recyclerView.smoothScrollBy(0, -getResources().getDimensionPixelOffset(R.dimen.history_732));
+                    recyclerView.smoothScrollBy(0, -getResources().getDimensionPixelOffset(R.dimen.history_366));
                 }
             }
         }else{
@@ -526,10 +525,10 @@ public class HistoryFavoritrListActivity extends BaseActivity implements OnItemC
         int id=v.getId();
         if(id==R.id.poster_arrow_up){
             focusGridLayoutManager.setCanScroll(true);
-            recyclerView.smoothScrollBy(0, -getResources().getDimensionPixelOffset(R.dimen.history_732));
+            recyclerView.smoothScrollBy(0, -getResources().getDimensionPixelOffset(R.dimen.history_366));
         }else if(id==R.id.poster_arrow_down){
             focusGridLayoutManager.setCanScroll(true);
-            recyclerView.smoothScrollBy(0, getResources().getDimensionPixelOffset(R.dimen.history_732));
+            recyclerView.smoothScrollBy(0, getResources().getDimensionPixelOffset(R.dimen.history_366));
         }else if(id==R.id.clear_all){
             showPop();
         }
