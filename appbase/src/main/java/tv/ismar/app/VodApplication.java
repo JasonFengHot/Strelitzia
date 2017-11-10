@@ -62,6 +62,7 @@ import tv.ismar.app.entity.ContentModel;
 import tv.ismar.app.exception.CrashHandler;
 import tv.ismar.app.network.HttpCacheInterceptor;
 import tv.ismar.app.service.HttpProxyService;
+import tv.ismar.app.service.TrueTimeService;
 import tv.ismar.app.util.SPUtils;
 import tv.ismar.library.exception.ExceptionUtils;
 import tv.ismar.library.network.HttpManager;
@@ -139,6 +140,7 @@ public class VodApplication extends Application {
             }
         }
         ).start();
+        startTrueTimeService();
     }
 
     private void initLogCallback() {
@@ -469,4 +471,11 @@ public class VodApplication extends Application {
 //
 //    private RefWatcher refWatcher;
 /*delete by dragontec for bug 4205 end*/
+
+    /*同步服务器时间*/
+    public void startTrueTimeService() {
+        Intent intent = new Intent();
+        intent.setClass(getApplicationContext(), TrueTimeService.class);
+        getApplicationContext().startService(intent);
+    }
 }

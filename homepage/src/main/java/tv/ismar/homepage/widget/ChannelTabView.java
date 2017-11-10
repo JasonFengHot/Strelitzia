@@ -494,7 +494,6 @@ public class ChannelTabView extends HorizontalScrollView {
         if (sensorTimer != null) {
             sensorTimer.cancel();
             sensorTimer = null;
-            System.gc();
         }
         if (updateHoverHandler != null) {
             updateHoverHandler.removeCallbacksAndMessages(null);
