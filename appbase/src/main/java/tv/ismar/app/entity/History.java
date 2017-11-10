@@ -95,7 +95,7 @@ public class History implements Serializable, Comparable<History> {
      */
     @Override
     public int compareTo(History another) {
-        return (int) (another.add_time-this.add_time);
+        return (int) (another.last_played_time-this.last_played_time);
     }
 
 
