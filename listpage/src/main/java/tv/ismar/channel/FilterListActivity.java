@@ -560,7 +560,7 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
                                 listPosterAdapter.setmSpecialPos(specialPos);
                             if(mFocusGridLayoutManager!=null)
                                 mFocusGridLayoutManager.setSpecialPos(specialPos);
-                        }else if(index==sectionSize-1&&mAllSectionItemList.getCount()>specialPos.get(index-1)+listSectionEntity.getCount()){
+                        }else if(index==sectionSize-1&&mAllSectionItemList.getCount()>specialPos.get(index-1<0?0:index-1)+listSectionEntity.getCount()){
                             List<ListSectionEntity.ObjectsBean> list1=mAllSectionItemList.getObjects().subList(0,specialPos.get(index) + listSectionEntity.getCount()+1);
                             mAllSectionItemList.setObjects(new ArrayList<ListSectionEntity.ObjectsBean>());
                             mAllSectionItemList.getObjects().addAll(list1);
