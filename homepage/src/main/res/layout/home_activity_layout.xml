@@ -6,54 +6,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:clipChildren="false">
-    <RelativeLayout
-        android:id="@+id/advertisement"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="visible"
-        >
-        <tv.ismar.homepage.widget.DaisyVideoView
-            android:id="@+id/home_ad_video"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_centerInParent="true"
-            android:visibility="gone" />
-
-        <tv.ismar.app.widget.RecyclerImageView
-            android:id="@+id/home_ad_pic"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="centerCrop"
-            android:visibility="gone" />
-        <Button
-            android:id="@+id/home_ad_timer"
-            android:layout_width="@dimen/ad_timer_wh"
-            android:layout_height="@dimen/ad_timer_wh"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentTop="true"
-            android:layout_marginRight="@dimen/ad_timer_mr"
-            android:layout_marginTop="@dimen/ad_timer_mt"
-            android:background="@drawable/count_down_back"
-            android:enabled="false"
-            android:gravity="center"
-            android:textAllCaps="false"
-            android:textColor="@color/_ffffff"
-            android:textSize="@dimen/text_size_48sp"
-            android:visibility="gone"/>
-        <SeekBar
-            android:id="@+id/home_ad_seekbar"
-            android:layout_width="@dimen/launcher_ad_1031"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/launcher_ad_445"
-            android:layout_marginTop="@dimen/launcher_ad_549"
-            android:maxHeight="1dp"
-            android:paddingLeft="0dp"
-            android:paddingRight="0dp"
-            android:visibility="gone"
-            android:progressDrawable="@drawable/launcher_ad_seekbar_style"
-            android:splitTrack="false"
-            android:thumb="@drawable/launcher_thumb" />
-    </RelativeLayout>
     <LinearLayout
         android:id="@+id/home_page"
         android:layout_width="match_parent"
@@ -133,4 +85,55 @@
         android:layout_alignParentBottom="true"
         android:background="@drawable/transparent"
         android:visibility="gone"/>
+
+    <RelativeLayout
+        android:id="@+id/advertisement"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clickable="true"
+        android:longClickable="true"
+        android:visibility="visible"
+        >
+        <tv.ismar.homepage.widget.DaisyVideoView
+            android:id="@+id/home_ad_video"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            android:visibility="gone" />
+
+        <tv.ismar.app.widget.RecyclerImageView
+            android:id="@+id/home_ad_pic"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:visibility="gone" />
+        <Button
+            android:id="@+id/home_ad_timer"
+            android:layout_width="@dimen/ad_timer_wh"
+            android:layout_height="@dimen/ad_timer_wh"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginRight="@dimen/ad_timer_mr"
+            android:layout_marginTop="@dimen/ad_timer_mt"
+            android:background="@drawable/count_down_back"
+            android:enabled="false"
+            android:gravity="center"
+            android:textAllCaps="false"
+            android:textColor="@color/_ffffff"
+            android:textSize="@dimen/text_size_48sp"
+            android:visibility="gone"/>
+        <SeekBar
+            android:id="@+id/home_ad_seekbar"
+            android:layout_width="@dimen/launcher_ad_1031"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/launcher_ad_445"
+            android:layout_marginTop="@dimen/launcher_ad_549"
+            android:maxHeight="1dp"
+            android:paddingLeft="0dp"
+            android:paddingRight="0dp"
+            android:visibility="gone"
+            android:progressDrawable="@drawable/launcher_ad_seekbar_style"
+            android:splitTrack="false"
+            android:thumb="@drawable/launcher_thumb" />
+    </RelativeLayout>
 </tv.ismar.homepage.widget.HomeRootRelativeLayout>

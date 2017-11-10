@@ -154,7 +154,7 @@ public class RecycleLinearLayout extends LinearLayout {
 				lastView = getChildAt(i);
 				i--;
 			} while ((lastView == null || lastView.getVisibility() == GONE) && i >= 0);
-			if (lastView == null) {
+			if (lastView == null || lastView.getVisibility() == GONE) {
 				return;
 			}
 			/*modify by dragontec for bug 4412 en*/
@@ -447,7 +447,7 @@ public class RecycleLinearLayout extends LinearLayout {
 		for (int i = currentBannerPos; i >= 0; i--) {
 			View v = getChildAt(i);
 			/*modify by dragontec for bug 4412 start*/
-			if (v.getVisibility() == VISIBLE) {
+			if (v.getVisibility() != GONE) {
 				int layoutId = (int) v.getTag();
 				int positionTag = (int) v.getTag(layoutId);
 				boolean canScroll = positionTag >> 30 == 1;
@@ -500,7 +500,10 @@ public class RecycleLinearLayout extends LinearLayout {
 			do {
 				view = getChildAt(i);
 				i++;
-			} while ((view == null || view.getVisibility() != VISIBLE) && i < getChildCount());
+			} while ((view == null || view.getVisibility() == GONE) && i < getChildCount());
+			if (view != null && view.getVisibility() == GONE) {
+				view = null;
+			}
 			/*modify by dragontec for bug 4412 end*/
 		}
 		return view;
@@ -511,7 +514,7 @@ public class RecycleLinearLayout extends LinearLayout {
 		for (int i = currentBannerPos; i < getChildCount(); i++) {
 			View v = getChildAt(i);
 			/*modify by dragontec for bug 4412 start*/
-			if (v.getVisibility() == VISIBLE) {
+			if (v.getVisibility() != GONE) {
 				int[] location = new int[]{0, 0};
 				v.getLocationOnScreen(location);
 				Log.d(TAG, "findFirstViewOnNextPage view[" + i + "] x = " + location[0] + " y = " + location[1]);
@@ -530,7 +533,10 @@ public class RecycleLinearLayout extends LinearLayout {
 			do {
 				view = getChildAt(i);
 				i--;
-			} while ((view == null || view.getVisibility() != View.VISIBLE) && i >= 0);
+			} while ((view == null || view.getVisibility() == View.GONE) && i >= 0);
+			if (view != null && view.getVisibility() == GONE) {
+				view = null;
+			}
 			/*modify by dragontec for bug 4412 end*/
 		}
 		return view;
@@ -755,7 +761,7 @@ public class RecycleLinearLayout extends LinearLayout {
 				lastView = getChildAt(i);
 				i--;
 			} while ((lastView == null || lastView.getVisibility() == GONE) && i >= 0);
-            if(lastView != null) {
+            if(lastView != null && lastView.getVisibility() != GONE) {
 				int key = (int) lastView.getTag();
 				int tag = (int) lastView.getTag(key);
 				boolean canScroll = tag>>30==1;//1可滑动，0不可滑动

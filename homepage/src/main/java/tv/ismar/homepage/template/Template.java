@@ -471,7 +471,7 @@ public abstract class Template implements BaseControl.ControlCallBack {
 					last--;
 				} while ((lastView == null || lastView.getVisibility() == View.GONE) && last >= 0);
 				/*modify by dragontec for bug 4412 end*/
-				if(lastView != null && lastView instanceof BannerLinearLayout) {
+				if(lastView != null && lastView instanceof BannerLinearLayout && lastView.getVisibility() != View.GONE) {
 					BannerLinearLayout bannerLinearLayout = (BannerLinearLayout)lastView;
 					View headView = bannerLinearLayout.findViewById(R.id.banner_guide_head);
 					/*modify by dragontec for bug 4391 start*/
@@ -520,7 +520,11 @@ public abstract class Template implements BaseControl.ControlCallBack {
 							}
 						}
 						/*modify by dragontec for bug 4270 end*/
+					} else {
+						nextFocus = bannerLinearLayout;
 					}
+				} else {
+					nextFocus = focused;
 				}
 			}
 		}else if(focusDirection == View.FOCUS_DOWN) {
@@ -538,56 +542,64 @@ public abstract class Template implements BaseControl.ControlCallBack {
 					next++;
 				} while ((nextView == null || nextView.getVisibility() == View.GONE) && next < count);
 				/*modify by dragontec for bug 4412 end*/
-				if(nextView != null && nextView instanceof BannerLinearLayout) {
-					BannerLinearLayout bannerLinearLayout = (BannerLinearLayout)nextView;
-					View headView = bannerLinearLayout.findViewById(R.id.banner_guide_head);
+				if (nextView != null && nextView.getVisibility() != View.GONE) {
+					if (nextView instanceof BannerLinearLayout) {
+						BannerLinearLayout bannerLinearLayout = (BannerLinearLayout)nextView;
+						View headView = bannerLinearLayout.findViewById(R.id.banner_guide_head);
 					/*modify by dragontec for bug 4391 start*/
-					if (headView != null && headView.getVisibility() == View.VISIBLE) {
+						if (headView != null && headView.getVisibility() == View.VISIBLE) {
 					/*modify by dragontec for bug 4391 end*/
-						Rect rect = new Rect();
-						int[] location = new int[2];
-						focused.getGlobalVisibleRect(rect);
-						int middleX = rect.left + (focused.getWidth() / 2);
-						headView.getLocationOnScreen(location);
-						if (middleX >= location[0] && middleX <= location[0] + headView.getWidth()) {
-							nextFocus = headView;
-							return nextFocus;
-						}
-					}
-					View recycleView = bannerLinearLayout.findViewWithTag("recycleView");
-					if (recycleView != null && recycleView instanceof RecyclerViewTV) {
-							/*modify by dragontec for bug 4270 start*/
-						if (((RecyclerViewTV) recycleView).isSelectedItemAtCentered()) {
-							nextFocus = ((RecyclerViewTV) recycleView).getLastFocusChild();
-						} else {
 							Rect rect = new Rect();
 							int[] location = new int[2];
 							focused.getGlobalVisibleRect(rect);
 							int middleX = rect.left + (focused.getWidth() / 2);
-							/*modify by dragontec for bug 4334 start*/
-							if (((RecyclerViewTV) recycleView).getChildCount() > 0) {
-								for (int i = ((RecyclerViewTV) recycleView).findFirstVisibleItemPosition(); i <= ((RecyclerViewTV) recycleView).findLastVisibleItemPosition(); i++) {
-									RecyclerView.ViewHolder viewHolder = ((RecyclerViewTV) recycleView).findViewHolderForAdapterPosition(i);
-									if (viewHolder != null) {
-										View item = viewHolder.itemView;
-										item.getLocationOnScreen(location);
-										if (middleX >= location[0] && middleX <= location[0] + item.getWidth()) {
-											nextFocus = item;
-											break;
-										}
-									} else {
-										break;
-									}
-								}
-							}
-							/*modify by dragontec for bug 4334 end*/
-							if (nextFocus == null) {
-								nextFocus = recycleView;
+							headView.getLocationOnScreen(location);
+							if (middleX >= location[0] && middleX <= location[0] + headView.getWidth()) {
+								nextFocus = headView;
+								return nextFocus;
 							}
 						}
+						View recycleView = bannerLinearLayout.findViewWithTag("recycleView");
+						if (recycleView != null && recycleView instanceof RecyclerViewTV) {
+							/*modify by dragontec for bug 4270 start*/
+							if (((RecyclerViewTV) recycleView).isSelectedItemAtCentered()) {
+								nextFocus = ((RecyclerViewTV) recycleView).getLastFocusChild();
+							} else {
+								Rect rect = new Rect();
+								int[] location = new int[2];
+								focused.getGlobalVisibleRect(rect);
+								int middleX = rect.left + (focused.getWidth() / 2);
+							/*modify by dragontec for bug 4334 start*/
+								if (((RecyclerViewTV) recycleView).getChildCount() > 0) {
+									for (int i = ((RecyclerViewTV) recycleView).findFirstVisibleItemPosition(); i <= ((RecyclerViewTV) recycleView).findLastVisibleItemPosition(); i++) {
+										RecyclerView.ViewHolder viewHolder = ((RecyclerViewTV) recycleView).findViewHolderForAdapterPosition(i);
+										if (viewHolder != null) {
+											View item = viewHolder.itemView;
+											item.getLocationOnScreen(location);
+											if (middleX >= location[0] && middleX <= location[0] + item.getWidth()) {
+												nextFocus = item;
+												break;
+											}
+										} else {
+											break;
+										}
+									}
+								}
+							/*modify by dragontec for bug 4334 end*/
+								if (nextFocus == null) {
+									nextFocus = nextView;
+								}
+							}
 							/*modify by dragontec for bug 4270 end*/
+						} else {
+							nextFocus = bannerLinearLayout;
+						}
 					}
-
+					if (nextView instanceof RecycleLinearLayout) {
+						nextFocus = nextView;
+					}
+				} else {
+					nextFocus = focused;
 				}
 			}
 		}
