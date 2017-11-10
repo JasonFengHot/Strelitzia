@@ -19,8 +19,10 @@ public class IsmartvDns implements Dns {
 
     @Override
     public List<InetAddress> lookup(String hostName) throws UnknownHostException {
-        if (occurError){
-            throw new UnknownHostException("can't connect to internet");
+//        private static final String SKY_HOST = "http://sky.tvxio.com";
+//        private static final String SKY_HOST_TEST = "http://skypeach.test.tvxio.com/";
+        if (occurError && (hostName.equals("sky.tvxio.com") || hostName.equals("skypeach.test.tvxio.com"))){
+            throw new UnknownHostException("occurError throw UnknownHostException");
         }
 
         String ipAddress = IsmartvActivator.getHostByName(hostName);
