@@ -582,6 +582,7 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
     //防止recyclerview焦点乱跑
     long mDownTime=0;
     long mUpTime=0;
+    long mRightTime=0;
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
 /*add by dragontec for bug 4267 start*/
@@ -598,7 +599,7 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
                 mDownTime=downTime;
                 return false;
             }
-            if(downTime-mDownTime>200){
+            if(downTime-mDownTime>100){
                 mDownTime=downTime;
                 return false;
             }
@@ -610,8 +611,20 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
                 mUpTime=upTime;
                 return false;
             }
-            if(upTime-mUpTime>200){
+            if(upTime-mUpTime>100){
                 mUpTime=upTime;
+                return false;
+            }
+            return true;
+        }
+        if (keyCode == 22) {
+            long rightTime =System.currentTimeMillis();
+            if(mRightTime==0){
+                mRightTime=rightTime;
+                return false;
+            }
+            if(rightTime-mRightTime>20){
+                mRightTime=rightTime;
                 return false;
             }
             return true;
