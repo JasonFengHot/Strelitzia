@@ -774,11 +774,11 @@ public class RecycleLinearLayout extends LinearLayout {
 						int bottom = lastPoint[1] + lastView.getHeight();
 						Log.i("bottomS3", "lastPoint[1]: " + lastPoint[1] + "  height: " + lastView.getHeight() + "  bottom: " + bottom);
 						if ("lcd_s3a01".equals(VodUserAgent.getModelName())) {
-							if (bottom + 100 == screenHeight) {
+							if (bottom + 100 <= screenHeight + 1) {
 								isScrollAtBottom = true;
 							}
 						} else {
-							if (bottom == screenHeight) {
+							if (bottom <= screenHeight + 1) {
 								isScrollAtBottom = true;
 							}
 						}

@@ -191,9 +191,12 @@ public class TemplateDoubleMd extends Template
     mRecyclerView.setLayoutManager(mDoubleLayoutManager);
     mRecyclerView.setSelectedItemAtCentered(false);
     mRecyclerView.setHasHeaderView(true);
-    int selectedItemOffset =
+	/*modify by dragontec for bug 4434 start*/
+      int selectedItemOffset =
+              mContext.getResources().getDimensionPixelSize(R.dimen.banner_item_setSelectedItemDoubleOffset);
         mContext.getResources().getDimensionPixelSize(R.dimen.banner_item_setSelectedItemOffset);
-    mRecyclerView.setSelectedItemOffset(100, 100);
+    mRecyclerView.setSelectedItemOffset(0, selectedItemOffset);
+	/*modify by dragontec for bug 4434 end*/
     /*delete by dragontec for bug 4334 start*/
 //    mRecyclerView.setAdapter(new DoubleMdAdapter(mContext, new ArrayList<BannerPoster>()));
 	/*delete by dragontec for bug 4334 end*/

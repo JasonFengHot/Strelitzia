@@ -202,7 +202,11 @@ public class TemplateDoubleLd extends Template
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         mRecyclerView.setLayoutManager(mDoubleLayoutManager);
         mRecyclerView.setSelectedItemAtCentered(false);
-        mRecyclerView.setSelectedItemOffset(100, 100);
+		/*modify by dragontec for bug 4434 start*/
+        int selectedItemOffset =
+                mContext.getResources().getDimensionPixelSize(R.dimen.banner_item_setSelectedItemDoubleOffset);
+        mRecyclerView.setSelectedItemOffset(0, selectedItemOffset);
+		/*modify by dragontec for bug 4434 end*/
         mRecyclerView.setAdapter(new DoubleLdAdapter(mContext, new ArrayList<BannerPoster>()));
         navigationLeft = view.findViewById(R.id.navigation_left);
         navigationRight = view.findViewById(R.id.navigation_right);
