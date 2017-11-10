@@ -73,4 +73,9 @@
         </RelativeLayout>
 
     </tv.ismar.homepage.banner.IsmartvLinearLayout>
+    <View
+        android:id="@+id/tv_player_margin_right"
+        android:layout_width="@dimen/tv_play_recycleview_item_padding"
+        android:layout_height="10dp"
+        android:background="#00000000"/>
 </LinearLayout>

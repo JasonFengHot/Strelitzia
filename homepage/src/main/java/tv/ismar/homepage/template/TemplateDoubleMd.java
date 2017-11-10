@@ -195,7 +195,7 @@ public class TemplateDoubleMd extends Template
       int selectedItemOffset =
               mContext.getResources().getDimensionPixelSize(R.dimen.banner_item_setSelectedItemDoubleOffset);
         mContext.getResources().getDimensionPixelSize(R.dimen.banner_item_setSelectedItemOffset);
-    mRecyclerView.setSelectedItemOffset(0, selectedItemOffset);
+    mRecyclerView.setSelectedItemOffset(100, 100);
 	/*modify by dragontec for bug 4434 end*/
     /*delete by dragontec for bug 4334 start*/
 //    mRecyclerView.setAdapter(new DoubleMdAdapter(mContext, new ArrayList<BannerPoster>()));

@@ -20,6 +20,8 @@
             android:layout_width="wrap_content"
             android:layout_marginLeft="@dimen/tv_player_recycleview_margin_left"
             android:layout_marginRight="@dimen/tv_player_recycleview_margin_right"
+            android:paddingLeft="@dimen/tv_player_recycleview_pl"
+            android:paddingRight="@dimen/tv_player_recycleview_pr"
             android:focusable="false"
             android:clipChildren="false"
             android:clipToPadding="false"

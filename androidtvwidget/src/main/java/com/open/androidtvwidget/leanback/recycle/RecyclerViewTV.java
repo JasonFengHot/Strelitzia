@@ -216,13 +216,19 @@ public class RecyclerViewTV extends RecyclerView implements PrvInterface {
         // visible, limit the scroll such that start won't go out of bounds.
         final int dx;
         if (canScrollHorizontal) {
-            if (ViewCompat.getLayoutDirection(this) == ViewCompat.LAYOUT_DIRECTION_RTL) {
-                dx = offScreenRight != 0 ? offScreenRight
-                        : Math.max(offScreenLeft, childRight - parentRight);
-            } else {
-                dx = offScreenLeft != 0 ? offScreenLeft
-                        : Math.min(childLeft - parentLeft, offScreenRight);
+		/*modify by dragontec for bug 4434 start*/
+            if(getScrollX() == 0 && childRight < getResources().getDisplayMetrics().widthPixels - 20 && getPositionByView(child) > 2){
+                dx = 0;
+            }else{
+                if (ViewCompat.getLayoutDirection(this) == ViewCompat.LAYOUT_DIRECTION_RTL) {
+                    dx = offScreenRight != 0 ? offScreenRight
+                            : Math.max(offScreenLeft, childRight - parentRight);
+                } else {
+                    dx = offScreenLeft != 0 ? offScreenLeft
+                            : Math.min(childLeft - parentLeft, offScreenRight);
+                }
             }
+		/*modify by dragontec for bug 4434 end*/
         } else {
             dx = 0;
         }

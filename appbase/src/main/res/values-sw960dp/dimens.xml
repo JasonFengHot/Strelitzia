@@ -696,9 +696,12 @@
 <dimen name="guide_recycle_item_rb_margin_bottom">7.11dp</dimen>
 
 <!--电视剧尺�?-->
-<dimen name="tv_player_recycleview_margin_left">53.33dp</dimen>
-<dimen name="tv_player_recycleview_margin_right">88.89dp</dimen>
-<dimen name="tv_play_recycleview_item_padding">35.56dp</dimen>
+<dimen name="tv_player_recycleview_margin_left">44.44dp</dimen>
+<dimen name="tv_player_recycleview_margin_right">26.67dp</dimen>
+<dimen name="tv_player_recycleview_pl">44.44dp</dimen>
+<dimen name="tv_player_recycleview_pr">44.44dp</dimen>
+
+<dimen name="tv_play_recycleview_item_padding">17.78dp</dimen>
 <dimen name="tv_play_recycleview_item_h">8.89dp</dimen>
 <dimen name="tv_play_item_margin_top">9.78dp</dimen>
 <dimen name="tv_play_poster_height">192.00dp</dimen>

@@ -205,7 +205,7 @@ public class TemplateDoubleLd extends Template
 		/*modify by dragontec for bug 4434 start*/
         int selectedItemOffset =
                 mContext.getResources().getDimensionPixelSize(R.dimen.banner_item_setSelectedItemDoubleOffset);
-        mRecyclerView.setSelectedItemOffset(0, selectedItemOffset);
+        mRecyclerView.setSelectedItemOffset(100, 100);
 		/*modify by dragontec for bug 4434 end*/
         mRecyclerView.setAdapter(new DoubleLdAdapter(mContext, new ArrayList<BannerPoster>()));
         navigationLeft = view.findViewById(R.id.navigation_left);

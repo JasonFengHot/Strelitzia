@@ -6,6 +6,7 @@
     android:clipToPadding="false"
     android:orientation="horizontal">
     <View
+        android:id="@+id/left_space"
         android:layout_width="@dimen/tv_play_recycleview_item_padding"
         android:layout_height="@dimen/tv_play_recycleview_item_h"
         android:background="#00000000"/>
@@ -51,4 +52,8 @@
                 />
         </RelativeLayout>
     </tv.ismar.homepage.banner.IsmartvLinearLayout>
+    <View
+        android:layout_width="@dimen/tv_play_recycleview_item_padding"
+        android:layout_height="@dimen/tv_play_recycleview_item_h"
+        android:background="#00000000"/>
 </LinearLayout>

@@ -66,7 +66,9 @@ public class TvPlayAdapter extends BaseRecycleAdapter<TvPlayAdapter.TvPlayerView
     @Override
     public void onBindViewHolder(TvPlayerViewHolder holder, int position) {
         holder.mPosition = position;
-        holder.mMarginLeftView.setVisibility(mMarginLeftEnable? View.VISIBLE:View.GONE);
+		/*delete by dragontec for bug 4434 start*/
+//        holder.mMarginLeftView.setVisibility(mMarginLeftEnable? View.VISIBLE:View.GONE);
+		/*delete by dragontec for bug 4434 end*/
         BannerPoster poster = mData.get(position);
         if (!TextUtils.isEmpty(poster.poster_url)) {
              if(poster.poster_url.equals("更多")){
@@ -106,6 +108,13 @@ public class TvPlayAdapter extends BaseRecycleAdapter<TvPlayAdapter.TvPlayerView
         holder.mTitleTv.setTag(new String[]{poster.title,focusStr});
 		/*add by dragontec for bug 4325 end*/
         holder.mTitleTv.setText(poster.title);
+		/*modify by dragontec for bug 4434 start*/
+        if (position == 0) {
+            holder.mMarginLeftView.setVisibility(View.GONE);
+        } else {
+            holder.mMarginLeftView.setVisibility(View.VISIBLE);
+        }
+		/*modify by dragontec for bug 4434 end*/
     }
 
     @Override

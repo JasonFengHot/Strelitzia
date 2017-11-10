@@ -91,6 +91,13 @@ public class RecommendAdapter extends BaseRecycleAdapter<RecommendAdapter.Recomm
 			}
 			holder.mTitle.setTag(new String[]{poster.title, focusStr});
 			/*add by dragontec for bug 4325 end*/
+			/*modify by dragontec for bug 4434 start*/
+            if (position == 0) {
+                holder.mLeftSpace.setVisibility(View.GONE);
+            } else {
+                holder.mLeftSpace.setVisibility(View.VISIBLE);
+            }
+			/*modify by dragontec for bug 4434 end*/
 		}
 		/*modify by dragontec for bug 4334 end*/
     }
@@ -102,6 +109,7 @@ public class RecommendAdapter extends BaseRecycleAdapter<RecommendAdapter.Recomm
 
     public class RecommendViewHolder extends BaseViewHolder{
 
+        public View mLeftSpace;
         public TextView mTitle;
         public RecyclerImageView mPoster;
         public RecyclerImageView mRtIconTv;
@@ -111,6 +119,7 @@ public class RecommendAdapter extends BaseRecycleAdapter<RecommendAdapter.Recomm
             mTitle = (TextView) itemView.findViewById(R.id.recommend_item_tv);
             mPoster = (RecyclerImageView) itemView.findViewById(R.id.recommend_item_poster);
             mRtIconTv= (RecyclerImageView) itemView.findViewById(R.id.guide_rt_icon);
+            mLeftSpace= itemView.findViewById(R.id.left_space);
         }
 
         @Override
