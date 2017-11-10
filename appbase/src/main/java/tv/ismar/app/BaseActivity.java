@@ -342,6 +342,7 @@ public class BaseActivity extends AppCompatActivity {
     public abstract class BaseObserver<T> implements Observer<T> {
         @Override
         public void onError(Throwable e) {
+            Log.e(TAG, "start onError");
             e.printStackTrace();
             if (!activityIsAlive) {
                 return;
