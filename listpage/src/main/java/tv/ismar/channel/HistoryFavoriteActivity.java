@@ -869,7 +869,7 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
                     mDataCollectionProperties.put("to_title", history.getTitle());
 //                mDataCollectionProperties.put("position", history.get/1000);
                     if (history.getModel_name() != null && history.getModel_name().equals("subitem")) {
-                        intent.toPlayPage(this, history.getItem_pk(), 0, Source.HISTORY);
+                        intent.toPlayPage(this, pk,pk , Source.HISTORY);
                     } else {
                         intent.toPlayPage(this, pk, 0, Source.HISTORY);
                     }
@@ -1123,6 +1123,7 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
         item.setQuality(history.quality);
         item.setTitle(history.title);
         item.setUrl(history.url);
+        item.setModel_name(history.model_name);
         if(history.add_time==0){
             long time=0;
             DateFormat format=new SimpleDateFormat("MM-dd");
