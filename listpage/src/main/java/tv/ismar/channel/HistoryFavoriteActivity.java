@@ -860,6 +860,7 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
                 HistoryFavoriteEntity history = historyLists.get(postion);
                 boolean[] isSubItem = new boolean[1];
                 pk = SimpleRestClient.getItemId(history.getUrl(), isSubItem);
+                Log.i("loginPlay","url: "+history.getUrl()+"  pk: "+history.getPk()+" sub_url: "+history.getSub_url());
                 if (pk == 0) {
                     pk = history.getPk();
                 }
@@ -869,7 +870,8 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
                     mDataCollectionProperties.put("to_title", history.getTitle());
 //                mDataCollectionProperties.put("position", history.get/1000);
                     if (history.getModel_name() != null && history.getModel_name().equals("subitem")) {
-                        intent.toPlayPage(this, pk,pk , Source.HISTORY);
+                        Log.i("loginPlay","modelName: "+history.getModel_name());
+                        intent.toPlayPage(this, pk,0 , Source.HISTORY);
                     } else {
                         intent.toPlayPage(this, pk, 0, Source.HISTORY);
                     }
@@ -943,20 +945,18 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
                 v.getGlobalVisibleRect(rect);
                 Log.i("hoverX",rect.left+"");
                 if(!isEdit) {
+                    historyLayoutManager.setScrollEnabled(false);
+                    favoriteManager.setScrollEnabled(false);
                     if(recommend==0){
                         if(rect.left>=100&&rect.left<1576){
                             historyRecycler.setHovered(true);
                             v.setFocusable(true);
                             v.requestFocusFromTouch();
-                        }else{
-                            historyLayoutManager.setScrollEnabled(false);
                         }
                     }else{
                         if(rect.left>=100&&rect.left<1576){
                             favoriteRecycler.setHovered(true);
                             v.requestFocusFromTouch();
-                        }else{
-                            favoriteManager.setScrollEnabled(false);
                         }
                     }
                 }
@@ -1139,6 +1139,7 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
             history.add_time=time;
         }
         item.setDate(history.add_time);
+        item.setSub_url(history.sub_url);
         item.setType(1);
 //		if(history.price==0){
 //			item.expense = null;

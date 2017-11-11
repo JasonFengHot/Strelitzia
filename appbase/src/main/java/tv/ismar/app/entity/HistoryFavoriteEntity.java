@@ -82,9 +82,18 @@ public class HistoryFavoriteEntity implements Serializable{
 
     private double bean_score;
     private String url;
+    public String sub_url;
     private long date;
     private boolean showDate;
     private int type;  //1表示正常item，2表示更多按钮
+
+    public String getSub_url() {
+        return sub_url;
+    }
+
+    public void setSub_url(String sub_url) {
+        this.sub_url = sub_url;
+    }
 
     public int getType() {
         return type;
