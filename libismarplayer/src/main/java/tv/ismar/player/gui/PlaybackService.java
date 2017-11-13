@@ -43,6 +43,7 @@ import tv.ismar.account.IsmartvActivator;
 import tv.ismar.app.BaseActivity;
 import tv.ismar.app.VodApplication;
 import tv.ismar.app.ad.Advertisement;
+import tv.ismar.app.core.Util;
 import tv.ismar.app.db.HistoryManager;
 import tv.ismar.app.entity.ClipEntity;
 import tv.ismar.app.entity.DBQuality;
@@ -573,12 +574,15 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
         if (historyManager == null) {
             historyManager = VodApplication.getModuleAppContext().getModuleHistoryManager();
         }
-        String historyUrl = Utils.getItemUrl(itemPk);
-        String isLogin = "no";
-        if (!Utils.isEmptyText(authToken)) {
-            isLogin = "yes";
+        String historyUrl = IsmartvActivator.getInstance().getApiDomain()+"/api/item/" + itemPk + "/";
+//        String isLogin = "no";
+//        if (!Utils.isEmptyText(authToken)) {
+//            isLogin = "yes";
+//        }
+        mHistory = historyManager.getHistoryByUrl(historyUrl, "no");
+        if(mHistory==null){
+            mHistory = historyManager.getHistoryByUrl(historyUrl, "yes");
         }
-        mHistory = historyManager.getHistoryByUrl(historyUrl, isLogin);
         if (mHistory != null) {
             mStartPosition = (int) mHistory.last_position;
             hasHistory = true;
@@ -1317,7 +1321,7 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
         }
         String url = "/api/item/" + itemPk + "/";
         String apiDomain = IsmartvActivator.getInstance().getApiDomain();
-        history.url = apiDomain+url;
+        history.url = Utils.getItemUrl(itemPk);
         if (subItemPk > 0) {
             history.sub_url = Utils.getSubItemUrl(subItemPk);
         }
