@@ -292,6 +292,15 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
             recyclerParam.setMargins(0,getResources().getDimensionPixelOffset(R.dimen.filter_layout_poster_recyclerview_hmt),getResources().getDimensionPixelOffset(R.dimen.filter_layout_poster_recyclerview_mr),0);
         }
         list_poster_recyclerview.setLayoutParams(recyclerParam);
+        list_poster_recyclerview.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(hasFocus){
+                    filter_root_view.requestFocus();
+                    filter_root_view.requestFocusFromTouch();
+                }
+            }
+        });
     }
 
     private void initListener() {
@@ -359,22 +368,26 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
             @Override
             public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
                 //海报区上下箭头是否显示
-                if(mFilterFocusGridLayoutManager!=null) {
-                    if (mFilterFocusGridLayoutManager.findFirstVisibleItemPosition() == 0) {
-                        filter_root_view.setShow_right_up(false);
-                    } else {
-                        filter_root_view.setShow_right_up(true);
-                    }
-                    if(filterPosterAdapter!=null&&mFilterFocusGridLayoutManager.findLastCompletelyVisibleItemPosition()==filterPosterAdapter.getItemCount()-1){
-                        filter_root_view.setShow_right_down(false);
-                    }else{
-                        filter_root_view.setShow_right_down(true);
-                    }
-                    if(mFilterFocusGridLayoutManager.findLastVisibleItemPosition()==mFilterItemList.objects.size()-1&&mFilterFocusGridLayoutManager.findLastVisibleItemPosition()!=-1){
-                        if(mFilterPage+1<=mFilterItemList.num_pages) {
-                            fetchFilterResult(content_model, mFilterCondition, mFilterPage + 1);
+                try {
+                    if (mFilterFocusGridLayoutManager != null) {
+                        if (mFilterFocusGridLayoutManager.findFirstVisibleItemPosition() == 0) {
+                            filter_root_view.setShow_right_up(false);
+                        } else {
+                            filter_root_view.setShow_right_up(true);
+                        }
+                        if (filterPosterAdapter != null && mFilterFocusGridLayoutManager.findLastCompletelyVisibleItemPosition() == filterPosterAdapter.getItemCount() - 1) {
+                            filter_root_view.setShow_right_down(false);
+                        } else {
+                            filter_root_view.setShow_right_down(true);
+                        }
+                        if (mFilterFocusGridLayoutManager.findLastVisibleItemPosition() == mFilterItemList.objects.size() - 1 && mFilterFocusGridLayoutManager.findLastVisibleItemPosition() != -1) {
+                            if (mFilterPage + 1 <= mFilterItemList.num_pages) {
+                                fetchFilterResult(content_model, mFilterCondition, mFilterPage + 1);
+                            }
                         }
                     }
+                }catch (Exception e){
+                    e.printStackTrace();
                 }
             }
         });
@@ -1411,7 +1424,7 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
             });
             section_group.addView(radioButton);
         }
-        if(sections.size()<9) {
+        if(section_group.getChildCount()<10) {
             filter_root_view.setShow_left_down(false);
         }
         specialPos = new ArrayList<>();

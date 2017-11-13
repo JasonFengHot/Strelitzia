@@ -392,7 +392,7 @@ public class TemplateDoubleMd extends Template
           Y=locationY-1;
       }
       int locationX=(position+1)/2+1;
-      mFetchControl.launcher_vod_click(mChannel,mBannerPk,mName,Y+","+locationX);
+      mFetchControl.launcher_vod_click(mAdapter.getData().get(position).model_name,mBannerPk,mName,Y+","+locationX,mChannel);
   }
 
   @Override

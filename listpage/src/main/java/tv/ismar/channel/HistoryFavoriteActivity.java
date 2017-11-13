@@ -69,6 +69,7 @@ import tv.ismar.app.widget.RecyclerImageView;
 import tv.ismar.listener.LfListItemClickListener;
 import tv.ismar.listpage.R;
 import tv.ismar.searchpage.utils.JasmineUtil;
+import tv.ismar.view.HistoryRecyclerViewTV;
 import tv.ismar.view.IsmartvLinearLayout;
 
 import static android.support.v7.widget.RecyclerView.SCROLL_STATE_IDLE;
@@ -84,7 +85,7 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
     private GetHistoryTask mGetHistoryTask;
     private Subscription historySub,favoriteSub;
     private SkyService skyService;
-    private RecyclerViewTV historyRecycler,favoriteRecycler;
+    private HistoryRecyclerViewTV historyRecycler,favoriteRecycler;
     private HistoryListAdapter historyAdapter;
     private HistoryListAdapter favoritAdapter;
     private LinearLayout edit_history;
@@ -131,8 +132,8 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
 
         empty= (RelativeLayout) findViewById(R.id.empty);
         empty.setOnHoverListener(this);
-        historyRecycler= (RecyclerViewTV) findViewById(R.id.history_list);
-        favoriteRecycler= (RecyclerViewTV) findViewById(R.id.favorite_list);
+        historyRecycler= (HistoryRecyclerViewTV) findViewById(R.id.history_list);
+        favoriteRecycler= (HistoryRecyclerViewTV) findViewById(R.id.favorite_list);
         favorite_layout= (LinearLayout) findViewById(R.id.favorite_layout);
         list_layout= (LinearLayout) findViewById(R.id.list_layout);
         no_data= (LinearLayout) findViewById(R.id.no_data);

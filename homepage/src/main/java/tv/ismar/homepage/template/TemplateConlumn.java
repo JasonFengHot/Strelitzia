@@ -363,7 +363,7 @@ public class TemplateConlumn extends Template
         }else if(poster.model_name.equals("section")) {
             new PageIntent().toListPage(mContext,poster.channel_title,poster.channel,poster.style,poster.section_slug);
         }
-        mFetchControl.launcher_vod_click(mChannel,mBannerPk,mName,locationY+","+(position+1));
+        mFetchControl.launcher_vod_click(mAdapter.getData().get(position).model_name,mBannerPk,mName,locationY+","+(position+1),mChannel);
     }
 
     @Override

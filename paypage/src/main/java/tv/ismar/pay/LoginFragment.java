@@ -16,6 +16,17 @@ import android.widget.EditText;
 //import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.gson.GsonBuilder;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.ResponseBody;
@@ -28,8 +39,13 @@ import rx.schedulers.Schedulers;
 import tv.ismar.account.IsmartvActivator;
 import tv.ismar.app.BaseActivity;
 import tv.ismar.app.BaseFragment;
+import tv.ismar.app.core.DaisyUtils;
+import tv.ismar.app.entity.Favorite;
+import tv.ismar.app.entity.History;
+import tv.ismar.app.entity.HistoryFavoriteEntity;
 import tv.ismar.app.network.SkyService;
 import tv.ismar.app.network.entity.AccountsLoginEntity;
+import tv.ismar.app.util.Utils;
 import tv.ismar.app.widget.ModuleMessagePopWindow;
 import tv.ismar.app.widget.RecyclerImageView;
 import tv.ismar.statistics.AccountStatistics;
@@ -63,7 +79,8 @@ public class LoginFragment extends BaseFragment implements View.OnHoverListener 
     private Subscription accountsLoginSub;
     private String phoneNumber;
     private String verification;
-
+    private Subscription bookmarksSub;
+    private Subscription historySub;
 
     public static LoginFragment newInstance() {
         return new LoginFragment();
@@ -367,7 +384,8 @@ public class LoginFragment extends BaseFragment implements View.OnHoverListener 
                             countDownSubscription.unsubscribe();
                         }
                         showLoginSuccessPopup();
-
+                        fetchFavorite();
+                        getHistoryByNet();
                     }
                 });
     }
@@ -476,5 +494,129 @@ public class LoginFragment extends BaseFragment implements View.OnHoverListener 
         outState.putString("verification_code", edit_identifycode.getText().toString());
         super.onSaveInstanceState(outState);
     }
+    private void fetchFavorite() {
+        bookmarksSub = mSkyService.getBookmarksV3()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<ResponseBody>() {
+                    @Override
+                    public void onCompleted() {
 
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(ResponseBody responseBody) {
+                        String result=null;
+                        try {
+                            result=responseBody.string();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        Log.i("result",result);
+                        List<HistoryFavoriteEntity> historyLists= parseResult(result);
+                        for (HistoryFavoriteEntity historyFavoriteEntity:historyLists){
+                            addFavorite(historyFavoriteEntity);
+                        }
+                    }
+                });
+    }
+
+
+    private void addFavorite(HistoryFavoriteEntity mItem) {
+        String url = IsmartvActivator.getInstance().getApiDomain() + "/api/item/" + mItem.getPk() + "/";
+        Favorite favorite = new Favorite();
+        favorite.title = mItem.getTitle();
+        favorite.adlet_url = mItem.getAdlet_url();
+        favorite.content_model = mItem.getContent_model();
+        favorite.url = url;
+        favorite.quality = mItem.getQuality();
+        favorite.is_complex = mItem.getIs_complex();
+        favorite.isnet = "yes";
+        favorite.time=mItem.getDate();
+        DaisyUtils.getFavoriteManager(getActivity()).addFavorite(favorite, favorite.isnet);
+    }
+    private void getHistoryByNet() {
+        historySub = mSkyService.getHistoryByNetV3()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<ResponseBody>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(ResponseBody responseBody) {
+                        String result=null;
+                        try {
+                            result=responseBody.string();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        Log.i("result",result);
+                        List<HistoryFavoriteEntity> historyLists= parseResult(result);
+                        for (HistoryFavoriteEntity historyFavoriteEntity:historyLists){
+                            addHistory(historyFavoriteEntity);
+                        }
+                    }
+
+                });
+    }
+    private List<HistoryFavoriteEntity> parseResult(String result){
+        List<HistoryFavoriteEntity> lists=new ArrayList<>();
+        try {
+            JSONObject jsonObject=new JSONObject(result);
+            JSONObject info=jsonObject.getJSONObject("info");
+            JSONArray date=info.getJSONArray("date");
+            for(int i=0;i<date.length();i++){
+                JSONArray element=info.getJSONArray(date.getString(i));
+                for(int j=0;j<element.length();j++){
+                    HistoryFavoriteEntity historyFavoriteEntity=new GsonBuilder().create().fromJson(element.get(j).toString(),HistoryFavoriteEntity.class);
+                    SimpleDateFormat sdf = new SimpleDateFormat("MM-dd");
+                    historyFavoriteEntity.setDate(sdf.parse(date.getString(i)).getTime());
+                    lists.add(historyFavoriteEntity);
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return lists;
+    }
+
+    private void addHistory(HistoryFavoriteEntity item) {
+        History history = new History();
+        history.title = item.getTitle();
+        history.adlet_url = item.getAdlet_url();
+        history.content_model = item.getContent_model();
+        history.is_complex = item.getIs_complex();
+        history.last_position = item.getOffset();
+        history.last_quality = item.getQuality();
+        history.add_time=item.getDate();
+        history.model_name=item.getModel_name();
+        if ("subitem".equals(item.getModel_name())) {
+            history.url = IsmartvActivator.getInstance().getApiDomain() + "/api/item/" + item.getItem_pk() + "/";
+            history.sub_url = Utils.getSubItemUrl(item.getPk());
+        } else {
+            history.url = IsmartvActivator.getInstance().getApiDomain() + "/api/item/" + item.getPk() + "/";
+        }
+
+        history.is_continue = true;
+        if (IsmartvActivator.getInstance().isLogin())
+            DaisyUtils.getHistoryManager(getActivity()).addHistory(history, "yes", -1);
+        else
+            DaisyUtils.getHistoryManager(getActivity()).addHistory(history, "no", -1);
+
+    }
 }

@@ -654,12 +654,13 @@ public class FetchDataControl extends BaseControl{
 //        }
 		/*modify by dragontec for bug 4412 end*/
     }
-    public void launcher_vod_click(String type, String pk, String title, String position) {
+    public void launcher_vod_click(String type, String pk, String title, String position,String channel) {
         HashMap<String, Object> tempMap = new HashMap<String, Object>();
         tempMap.put("type", type);
         tempMap.put("pk", pk);
         tempMap.put("title", title);
         tempMap.put("location", position);
+        tempMap.put("channel",channel);
         new NetworkUtils.DataCollectionTask().execute(NetworkUtils.HOMEPAGE_VOD_CLICK, tempMap);
 
     }
