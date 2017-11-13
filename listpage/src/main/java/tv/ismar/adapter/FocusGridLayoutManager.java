@@ -112,8 +112,12 @@ public class FocusGridLayoutManager extends GridLayoutManager {
             if(!isFavorite) {
                 if (specialPos != null){
                     if(index<=getSpanCount()){
-                        if(specialPos.size()>1&&index<specialPos.get(1)) {
-                            YoYo.with(Techniques.VerticalShake).duration(1000).playOn(focused);
+                        if(specialPos.size()>1) {
+                            if(index<specialPos.get(1)) {
+                                YoYo.with(Techniques.VerticalShake).duration(1000).playOn(focused);
+                            }else{
+                                return null;
+                            }
                         }else if(specialPos.size()==1){
                             YoYo.with(Techniques.VerticalShake).duration(1000).playOn(focused);
                         }

@@ -1420,7 +1420,7 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
             });
             section_group.addView(radioButton);
         }
-        if(sections.size()<9) {
+        if(section_group.getChildCount()<10) {
             filter_root_view.setShow_left_down(false);
         }
         specialPos = new ArrayList<>();
