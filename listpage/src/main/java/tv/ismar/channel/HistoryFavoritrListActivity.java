@@ -255,12 +255,7 @@ public class HistoryFavoritrListActivity extends BaseActivity implements OnItemC
                 },200);
             }
         }else{
-            History history=DaisyUtils.getHistoryManager(this).getHistoryByUrl(mlists.get(position).getUrl(),"yes");
-            if(history!=null){
-                if(modelName!=null&&!modelName.equals("subitem")){
-                    item_pk=0;
-                }
-                removeSub = skyService.apiHistoryRemove(pk, item_pk).subscribeOn(Schedulers.io())
+            removeSub = skyService.apiHistoryRemove(pk, item_pk).subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(new BaseObserver<ResponseBody>() {
                             @Override
@@ -271,6 +266,7 @@ public class HistoryFavoritrListActivity extends BaseActivity implements OnItemC
                             @Override
                             public void onNext(ResponseBody responseBody) {
                                 DaisyUtils.getHistoryManager(HistoryFavoritrListActivity.this).deleteHistory(mlists.get(position).getUrl(),"yes");
+                                DaisyUtils.getHistoryManager(HistoryFavoritrListActivity.this).deleteHistory(mlists.get(position).getUrl(),"no");
                                 mlists.remove(position);
                                 adapter.notifyDataSetChanged();
                                 if(mlists.size()==0){
@@ -286,23 +282,6 @@ public class HistoryFavoritrListActivity extends BaseActivity implements OnItemC
                                 }
                             }
                         });
-            }else{
-                DaisyUtils.getHistoryManager(HistoryFavoritrListActivity.this).deleteHistory(mlists.get(position).getUrl(),"no");
-                mlists.remove(position);
-                adapter.notifyDataSetChanged();
-                if(mlists.size()==0){
-                    clearAll.setVisibility(View.GONE);
-                }else{
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            if(recyclerView.getChildAt(0)!=null)
-                                recyclerView.getChildAt(0).requestFocusFromTouch();
-                        }
-                    },200);
-                }
-            }
-
         }
     }
     private void deleteBookmark(int pk, final int position){
@@ -322,24 +301,7 @@ public class HistoryFavoritrListActivity extends BaseActivity implements OnItemC
                 },200);
             }
         }else {
-            Favorite favorite=DaisyUtils.getFavoriteManager(this).getFavoriteByUrl(mlists.get(position).getUrl(),"yes");
-            if(favorite==null){
-                DaisyUtils.getFavoriteManager(HistoryFavoritrListActivity.this).deleteFavoriteByUrl(mlists.get(position).getUrl(),"no");
-                mlists.remove(position);
-                adapter.notifyDataSetChanged();
-                if(mlists.size()==0){
-                    clearAll.setVisibility(View.GONE);
-                }else{
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            if(recyclerView.getChildAt(0)!=null)
-                                recyclerView.getChildAt(0).requestFocusFromTouch();
-                        }
-                    },200);
-                }
-            }else {
-                removeSub = skyService.apiBookmarksRemove(pk + "").subscribeOn(Schedulers.io())
+            removeSub = skyService.apiBookmarksRemove(pk + "").subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(new BaseObserver<ResponseBody>() {
                             @Override
@@ -350,6 +312,7 @@ public class HistoryFavoritrListActivity extends BaseActivity implements OnItemC
                             @Override
                             public void onNext(ResponseBody responseBody) {
                                 DaisyUtils.getFavoriteManager(HistoryFavoritrListActivity.this).deleteFavoriteByUrl(mlists.get(position).getUrl(), "yes");
+                                DaisyUtils.getFavoriteManager(HistoryFavoritrListActivity.this).deleteFavoriteByUrl(mlists.get(position).getUrl(), "no");
                                 mlists.remove(position);
                                 adapter.notifyDataSetChanged();
                                 if (mlists.size() == 0) {
@@ -365,7 +328,6 @@ public class HistoryFavoritrListActivity extends BaseActivity implements OnItemC
                                 }
                             }
                         });
-            }
         }
     }
     private void emptyHistories(){

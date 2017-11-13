@@ -669,7 +669,7 @@ public class TemplateGuide extends Template
         } else {
             mControl.go2Detail(mFetchControl.getHomeEntity(mBannerPk).posters.get(position));
         }
-        mFetchControl.launcher_vod_click(mChannel,mBannerPk,mName,locationY+","+(position+1));
+        mFetchControl.launcher_vod_click(mAdapter.getData().get(position).model_name,mBannerPk,mName,locationY+","+(position+2),mChannel);
     }
 
     @Override
@@ -796,7 +796,7 @@ public class TemplateGuide extends Template
         } else if (i == R.id.guide_head_ismartv_linearlayout) {
             Log.d(TAG, "onClick goToNextPage");
             goToNextPage(v);
-            mFetchControl.launcher_vod_click(mChannel,mBannerPk,mName,locationY+","+1);
+            mFetchControl.launcher_vod_click("item",mBannerPk,mName,locationY+","+1,mChannel);
         }
     }
 

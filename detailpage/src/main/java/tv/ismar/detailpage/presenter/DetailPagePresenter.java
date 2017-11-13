@@ -27,6 +27,7 @@ import tv.ismar.app.core.DaisyUtils;
 import tv.ismar.app.core.PageIntent;
 import tv.ismar.app.db.FavoriteManager;
 import tv.ismar.app.entity.Favorite;
+import tv.ismar.app.entity.History;
 import tv.ismar.app.network.SkyService;
 import tv.ismar.app.network.entity.ItemEntity;
 import tv.ismar.app.network.entity.PlayCheckEntity;
@@ -432,14 +433,13 @@ public class DetailPagePresenter implements DetailPageContract.Presenter {
             url = IsmartvActivator.getInstance().getApiDomain() + "/api/item/" + mItemEntity.getPk() + "/";
         }
         if (isFavorite) {
-            String isnet = "";
             if (isLogin()) {
-                isnet = "yes";
                 deleteFavoriteByNet();
-            } else {
-                isnet = "no";
+                favoriteManager.deleteFavoriteByUrl(url, "no");
+                favoriteManager.deleteFavoriteByUrl(url, "yes");
+            }else {
+                favoriteManager.deleteFavoriteByUrl(url, "no");
             }
-            favoriteManager.deleteFavoriteByUrl(url, isnet);
             isFavorite = false;
             mDetailView.notifyBookmark(false, true);
         } else {

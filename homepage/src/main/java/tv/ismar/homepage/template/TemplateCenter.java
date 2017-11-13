@@ -331,7 +331,7 @@ public class TemplateCenter extends Template
 		/*add by dragontec for bug 4307,4277 start*/
         if(view.hasFocus()) {
 			mFetchControl.go2Detail(mFetchControl.mCarouselsMap.get(mBannerPk).get(position));
-            mFetchControl.launcher_vod_click(mChannel,mBannerPk,mName,locationY+","+(position+1));
+            mFetchControl.launcher_vod_click(mAdapter.getData().get(position).model_name,mBannerPk,mName,locationY+","+(position+1),mChannel);
         }
 		/*add by dragontec for bug 4307,4277 end*/
     }

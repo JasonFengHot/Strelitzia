@@ -314,7 +314,7 @@ public class Template519 extends Template
 			mFetchControl.go2Detail(mFetchControl.mPosterMap.get(mBannerPk).get(position));
             /*modify by dragontec for bug 4334 end*/
 		}
-		mFetchControl.launcher_vod_click(mChannel,mBannerPk,mName,locationY+","+(position+1));
+		mFetchControl.launcher_vod_click(mAdapter.getData().get(position).model_name,mBannerPk,mName,locationY+","+(position+1),mChannel);
     }
 
 	/*modify by dragontec for bug 4277 start*/
