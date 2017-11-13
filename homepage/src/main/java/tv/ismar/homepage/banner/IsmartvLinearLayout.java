@@ -107,5 +107,7 @@ public class IsmartvLinearLayout extends LinearLayout {
         if (foreground != null) {
             foreground.draw(canvas);
         }
+        requestLayout();
+        invalidate();
     }
 }
