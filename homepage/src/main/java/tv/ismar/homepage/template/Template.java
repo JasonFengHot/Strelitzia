@@ -523,8 +523,6 @@ public abstract class Template implements BaseControl.ControlCallBack {
 					} else {
 						nextFocus = bannerLinearLayout;
 					}
-				} else {
-					nextFocus = focused;
 				}
 			}
 		}else if(focusDirection == View.FOCUS_DOWN) {

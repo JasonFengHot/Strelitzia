@@ -72,7 +72,7 @@ import static android.widget.RelativeLayout.ALIGN_PARENT_RIGHT;
 public class FilterListActivity extends BaseActivity implements View.OnClickListener, View.OnHoverListener {
 
     private static final long CLICK_BLOCK_TIME = 1000;
-    private static final long KEY_BLOCK_TIME = 800;
+    private static final long KEY_BLOCK_TIME = 300;
     private static final long CHECK_CHANGED_DELAYED = 300;
     private TextView filter_title;
     private RadioButton filter_tab;
@@ -139,7 +139,7 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
     private int firstInSection=-1;
     private View onKeyFocusView;
     private long lastClickTime = 0;
-    private long lastEventTime = 0 ;
+    private long lastKeyDownTime = 0 ;
     private Handler mClickRadioBtnHandler = null;
     private CheckedChangedRunnable mCheckedChangedRunnable;
 
@@ -584,16 +584,15 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
 
     }
 
-    //dragontec 按键保护优化
+    //dragontec 4440, 4463按键保护优化
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
         long current = System.currentTimeMillis();
-        int count = event.getRepeatCount();
-        if(count > 0){
-            if(current - lastEventTime < KEY_BLOCK_TIME){
-                return false;
-            }else{
-                lastEventTime = current;
+        if(event.getAction() == KeyEvent.ACTION_DOWN) {
+            if (current - lastKeyDownTime < KEY_BLOCK_TIME) {
+                return true;
+            } else {
+                lastKeyDownTime = current;
             }
         }
         if (event.getKeyCode() != KeyEvent.KEYCODE_BACK) {

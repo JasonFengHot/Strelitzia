@@ -669,4 +669,10 @@ public class HorizontalTabView extends HorizontalScrollView
         }
     }
 /*add by dragontec for bug 4225, 4224, 4223 end*/
+
+	/*add by dragontec for fix 焦点错误 start*/
+	public View getLastFocusView() {
+		return linearContainer.getChildAt(mSelectedIndex);
+	}
+	/*add by dragontec for fix 焦点错误 end`*/
 }
