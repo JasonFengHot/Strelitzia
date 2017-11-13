@@ -72,6 +72,8 @@ import static android.widget.RelativeLayout.ALIGN_PARENT_RIGHT;
 public class FilterListActivity extends BaseActivity implements View.OnClickListener, View.OnHoverListener {
 
     private static final long CLICK_BLOCK_TIME = 1000;
+    private static final long KEY_BLOCK_TIME = 800;
+    private static final long CHECK_CHANGED_DELAYED = 300;
     private TextView filter_title;
     private RadioButton filter_tab;
     private LinearLayout filter_checked_conditiion;
@@ -137,6 +139,9 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
     private int firstInSection=-1;
     private View onKeyFocusView;
     private long lastClickTime = 0;
+    private long lastEventTime = 0 ;
+    private Handler mClickRadioBtnHandler = null;
+    private CheckedChangedRunnable mCheckedChangedRunnable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -149,6 +154,7 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
         int style = intent.getIntExtra("style",0);
         section=intent.getStringExtra("section");
         isVertical=style==1?false:true;
+        mClickRadioBtnHandler = new Handler();
         //view和data、监听事件的初始化操作
         initView();
         initListener();
@@ -591,57 +597,63 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
 
     }
 
-
-    //防止recyclerview焦点乱跑
-    long mDownTime=0;
-    long mUpTime=0;
-    long mRightTime=0;
+    //dragontec 按键保护优化
     @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-/*add by dragontec for bug 4267 start*/
-        if (keyCode != KeyEvent.KEYCODE_BACK) {
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        long current = System.currentTimeMillis();
+        int count = event.getRepeatCount();
+        if(count > 0){
+            if(current - lastEventTime < KEY_BLOCK_TIME){
+                return false;
+            }else{
+                lastEventTime = current;
+            }
+        }
+        if (event.getKeyCode() != KeyEvent.KEYCODE_BACK) {
             if (onKeyFocusView == null) {
                 return true;
             }
         }
+        return super.dispatchKeyEvent(event);
+    }
+
+    //防止recyclerview焦点乱跑
+    long mDownTime=0;
+    long mUpTime=0;
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+/*add by dragontec for bug 4267 start*/
+//        if (keyCode != KeyEvent.KEYCODE_BACK) {
+//            if (onKeyFocusView == null) {
+//                return true;
+//            }
+//        }
 /*add by dragontec for bug 4267 end*/
         //长按滑动 滑动时焦点不会乱跳，但是每隔400毫秒滑动一次
-        if (keyCode == 20) {
-            long downTime =System.currentTimeMillis();
-            if(mDownTime==0){
-                mDownTime=downTime;
-                return false;
-            }
-            if(downTime-mDownTime>100){
-                mDownTime=downTime;
-                return false;
-            }
-            return true;
-        }
-        if (keyCode == 19) {
-            long upTime =System.currentTimeMillis();
-            if(mUpTime==0){
-                mUpTime=upTime;
-                return false;
-            }
-            if(upTime-mUpTime>100){
-                mUpTime=upTime;
-                return false;
-            }
-            return true;
-        }
-        if (keyCode == 22) {
-            long rightTime =System.currentTimeMillis();
-            if(mRightTime==0){
-                mRightTime=rightTime;
-                return false;
-            }
-            if(rightTime-mRightTime>20){
-                mRightTime=rightTime;
-                return false;
-            }
-            return true;
-        }
+//        if (keyCode == 20) {
+//            long downTime =System.currentTimeMillis();
+//            if(mDownTime==0){
+//                mDownTime=downTime;
+//                return false;
+//            }
+//            if(downTime-mDownTime>200){
+//                mDownTime=downTime;
+//                return false;
+//            }
+//            return true;
+//        }
+//        if (keyCode == 19) {
+//            long upTime =System.currentTimeMillis();
+//            if(mUpTime==0){
+//                mUpTime=upTime;
+//                return false;
+//            }
+//            if(upTime-mUpTime>200){
+//                mUpTime=upTime;
+//                return false;
+//            }
+//            return true;
+//        }
 
         return super.onKeyDown(keyCode, event);
     }
@@ -1328,39 +1340,26 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
                 }
             });
             final int finalI = i;
-            radioButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if(!section.title.equals(current_section_title.getText())||(finalI!=sectionSize-1&&mFocusGridLayoutManager.findLastCompletelyVisibleItemPosition()>specialPos.get(sectionSize-1))) {
-                        mFocusGridLayoutManager.scrollToPositionWithOffset(specialPos.get(finalI), 0);
-                    }
-                    if(isFirst) {
-                        fetchSectionData(section.url, finalI, false);
-
-                    }
-                    current_section_title.setText(sectionList.get(finalI).title);
-                }
-            });
+//            radioButton.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//
+//                }
+//            });
             radioButton.setOnHoverListener(this);
             radioButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    //check changed保护
                     if(isChecked){
-                        checkedTab = finalI;
-                        if(filterPopup!=null&&filterPopup.isShowing())
-                            filterPopup.dismiss();
-                        filter_checked_conditiion.setVisibility(View.INVISIBLE);
-                        current_section_title.setVisibility(View.VISIBLE);
-                        filter_checked_conditiion.requestLayout();
-                        if(mFocusGridLayoutManager!=null){
-                            mFocusGridLayoutManager.setLeftFocusView(radioButton);
+                        if(mClickRadioBtnHandler != null){
+                            if(mCheckedChangedRunnable != null){
+                                mClickRadioBtnHandler.removeCallbacks(mCheckedChangedRunnable);
+                                mCheckedChangedRunnable = null;
+                            }
+                            mCheckedChangedRunnable = new CheckedChangedRunnable(finalI,section, buttonView);
+                            mClickRadioBtnHandler.postDelayed(mCheckedChangedRunnable,CHECK_CHANGED_DELAYED);
                         }
-                        filter_root_view.setShow_right_up(true);
-                        //日志
-                        mSectionProperties.put(EventProperty.SECTION, sectionList.get(finalI).slug);
-                        mSectionProperties.put(EventProperty.TITLE, sectionList.get(finalI).title);
-                        mSectionProperties.put(EventProperty.SOURCE,"list");
-                        new NetworkUtils.DataCollectionTask().execute(NetworkUtils.VIDEO_CATEGORY_IN, mSectionProperties);
                     }else{
                         mSectionProperties.put(EventProperty.SECTION, sectionList.get(finalI).slug);
                         mSectionProperties.put(EventProperty.TITLE, sectionList.get(finalI).title);
@@ -1494,6 +1493,50 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
 
     }
 
+
+    private class CheckedChangedRunnable implements Runnable{
+
+        private CompoundButton radioButton;
+        private Section section;
+        private int finalI;
+
+        public CheckedChangedRunnable(int finalI, Section section, CompoundButton radioButton) {
+            this.finalI = finalI;
+            this.section = section;
+            this.radioButton = radioButton;
+        }
+
+        @Override
+        public void run() {
+            if(mClickRadioBtnHandler != null){
+                mClickRadioBtnHandler.removeCallbacks(this);
+            }
+            if(!section.title.equals(current_section_title.getText())||(finalI!=sectionSize-1&&mFocusGridLayoutManager.findLastCompletelyVisibleItemPosition()>specialPos.get(sectionSize-1))) {
+                mFocusGridLayoutManager.scrollToPositionWithOffset(specialPos.get(finalI), 0);
+            }
+            if(isFirst) {
+                fetchSectionData(section.url, finalI, false);
+
+            }
+            current_section_title.setText(sectionList.get(finalI).title);
+
+            checkedTab = finalI;
+            if(filterPopup!=null&&filterPopup.isShowing())
+                filterPopup.dismiss();
+            filter_checked_conditiion.setVisibility(View.INVISIBLE);
+            current_section_title.setVisibility(View.VISIBLE);
+            filter_checked_conditiion.requestLayout();
+            if(mFocusGridLayoutManager!=null){
+                mFocusGridLayoutManager.setLeftFocusView(radioButton);
+            }
+            filter_root_view.setShow_right_up(true);
+            //日志
+            mSectionProperties.put(EventProperty.SECTION, sectionList.get(finalI).slug);
+            mSectionProperties.put(EventProperty.TITLE, sectionList.get(finalI).title);
+            mSectionProperties.put(EventProperty.SOURCE,"list");
+            new NetworkUtils.DataCollectionTask().execute(NetworkUtils.VIDEO_CATEGORY_IN, mSectionProperties);
+        }
+    }
 	/*add by dragontec for bug 4343 start*/
     private void checkItemScroll(View v, int position, GridLayoutManager layoutManager) {
 		if (v.getY() > getResources().getDimensionPixelOffset(R.dimen.filter_poster_start_scroll_length)) {

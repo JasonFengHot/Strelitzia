@@ -441,7 +441,7 @@ public class HistoryFavoritrListActivity extends BaseActivity implements OnItemC
             JasmineUtil.scaleOut3(view);
             Log.i("ViewY", view.getY() + "");
             if (!ishover) {
-                if (view.getY() > getResources().getDimensionPixelOffset(R.dimen.history_500)) {
+                if (view.getY() > getResources().getDimensionPixelOffset(R.dimen.filter_poster_start_scroll_length)) {
                     focusGridLayoutManager.setCanScroll(true);
                     recyclerView.smoothScrollBy(0, getResources().getDimensionPixelOffset(R.dimen.history_366));
                 } else if (view.getY() < getResources().getDimensionPixelOffset(R.dimen.history_200)) {

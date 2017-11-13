@@ -46,6 +46,7 @@ import tv.ismar.app.entity.HistoryFavoriteEntity;
 import tv.ismar.app.entity.Item;
 import tv.ismar.app.ui.HeadFragment;
 import tv.ismar.app.util.ActivityUtils;
+import tv.ismar.app.util.Utils;
 import tv.ismar.app.widget.RecyclerImageView;
 import tv.ismar.pay.LoginFragment;
 import tv.ismar.usercenter.R;
@@ -791,6 +792,7 @@ public class UserCenterActivity extends BaseActivity implements LoginFragment.Lo
         history.model_name=item.getModel_name();
         if ("subitem".equals(item.getModel_name())) {
             history.url = IsmartvActivator.getInstance().getApiDomain() + "/api/item/" + item.getItem_pk() + "/";
+            history.sub_url = Utils.getSubItemUrl(item.getPk());
         } else {
             history.url = IsmartvActivator.getInstance().getApiDomain() + "/api/item/" + item.getPk() + "/";
         }
