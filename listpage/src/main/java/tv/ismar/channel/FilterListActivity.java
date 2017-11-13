@@ -285,6 +285,15 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
             recyclerParam.setMargins(0,getResources().getDimensionPixelOffset(R.dimen.filter_layout_poster_recyclerview_hmt),getResources().getDimensionPixelOffset(R.dimen.filter_layout_poster_recyclerview_mr),0);
         }
         list_poster_recyclerview.setLayoutParams(recyclerParam);
+        list_poster_recyclerview.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(hasFocus){
+                    filter_root_view.requestFocus();
+                    filter_root_view.requestFocusFromTouch();
+                }
+            }
+        });
     }
 
     private void initListener() {
