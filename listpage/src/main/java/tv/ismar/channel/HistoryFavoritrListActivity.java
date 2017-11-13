@@ -222,7 +222,7 @@ public class HistoryFavoritrListActivity extends BaseActivity implements OnItemC
         }
         if(source.equals("edit")){
             if(type==1){
-                deleteHistory(entity.getItem_pk(),pk,position,entity.getModel_name());
+                deleteHistory(pk,entity.getItem_pk(),position,entity.getModel_name());
             }else{
                 deleteBookmark(pk,position);
             }
