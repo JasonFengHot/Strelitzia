@@ -134,7 +134,12 @@ public class DaisyPlayer extends IsmartvPlayer implements SurfaceHelper.SurfaceC
     public void start() {
         super.start();
         if (isInPlaybackState()) {
-            if (!isPlaying() && mSurfaceHelper != null && mSurfaceHelper.getSurfaceHolder() != null) {
+/*modify by dragontec for bug 4294 start*/
+//            if (!isPlaying() && mSurfaceHelper != null && mSurfaceHelper.getSurfaceHolder() != null) {
+            if (!isPlaying() && mSurfaceHelper != null && mSurfaceHelper.getSurfaceHolder() != null
+                    && mSurfaceHelper.getSurfaceHolder().getSurface() != null
+                    && mSurfaceHelper.getSurfaceHolder().getSurface().isValid()) {
+/*modify by dragontec for bug 4294 start*/
                 mPlayer.start();
                 mCurrentState = STATE_PLAYING;
             }
