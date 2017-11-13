@@ -361,22 +361,26 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
             @Override
             public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
                 //海报区上下箭头是否显示
-                if(mFilterFocusGridLayoutManager!=null) {
-                    if (mFilterFocusGridLayoutManager.findFirstVisibleItemPosition() == 0) {
-                        filter_root_view.setShow_right_up(false);
-                    } else {
-                        filter_root_view.setShow_right_up(true);
-                    }
-                    if(filterPosterAdapter!=null&&mFilterFocusGridLayoutManager.findLastCompletelyVisibleItemPosition()==filterPosterAdapter.getItemCount()-1){
-                        filter_root_view.setShow_right_down(false);
-                    }else{
-                        filter_root_view.setShow_right_down(true);
-                    }
-                    if(mFilterFocusGridLayoutManager.findLastVisibleItemPosition()==mFilterItemList.objects.size()-1&&mFilterFocusGridLayoutManager.findLastVisibleItemPosition()!=-1){
-                        if(mFilterPage+1<=mFilterItemList.num_pages) {
-                            fetchFilterResult(content_model, mFilterCondition, mFilterPage + 1);
+                try {
+                    if (mFilterFocusGridLayoutManager != null) {
+                        if (mFilterFocusGridLayoutManager.findFirstVisibleItemPosition() == 0) {
+                            filter_root_view.setShow_right_up(false);
+                        } else {
+                            filter_root_view.setShow_right_up(true);
+                        }
+                        if (filterPosterAdapter != null && mFilterFocusGridLayoutManager.findLastCompletelyVisibleItemPosition() == filterPosterAdapter.getItemCount() - 1) {
+                            filter_root_view.setShow_right_down(false);
+                        } else {
+                            filter_root_view.setShow_right_down(true);
+                        }
+                        if (mFilterFocusGridLayoutManager.findLastVisibleItemPosition() == mFilterItemList.objects.size() - 1 && mFilterFocusGridLayoutManager.findLastVisibleItemPosition() != -1) {
+                            if (mFilterPage + 1 <= mFilterItemList.num_pages) {
+                                fetchFilterResult(content_model, mFilterCondition, mFilterPage + 1);
+                            }
                         }
                     }
+                }catch (Exception e){
+                    e.printStackTrace();
                 }
             }
         });
