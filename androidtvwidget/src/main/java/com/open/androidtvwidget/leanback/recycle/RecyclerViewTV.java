@@ -463,15 +463,27 @@ public class RecyclerViewTV extends RecyclerView implements PrvInterface {
     public void onScrollStateChanged(int state) {
 	/*add by dragontec for bug 4265 start*/
     	Log.d("RecyclerViewTV", "onScrollStateChanged : state = " + state);
-		mScrollState = state;
+    	if (mScrollState != state) {
+			mScrollState = state;
 	/*add by dragontec for bug 4265 end*/
-        if (state == SCROLL_STATE_IDLE) {
-            offset = -1;
-            final View focuse = getFocusedChild();
-            if (null != mOnItemListener && null != focuse) {
-                mOnItemListener.onReviseFocusFollow(this, focuse, getChildLayoutPosition(focuse));
-            }
-        }
+			if (state == SCROLL_STATE_IDLE) {
+				offset = -1;
+				final View focuse = getFocusedChild();
+				if (focuse != null) {
+					if (null != mOnItemListener) {
+						mOnItemListener.onReviseFocusFollow(this, focuse, getChildLayoutPosition(focuse));
+					}
+					//check focused position
+					int[] location = new int[]{0, 0};
+					focuse.getLocationOnScreen(location);
+					int screenWidth = focuse.getResources().getDisplayMetrics().widthPixels;
+					if (location[0] < 1 || location[0] + focuse.getWidth() > screenWidth - 1) {
+						getLayoutManager().smoothScrollToPosition(this, null, getChildAdapterPosition(focuse));
+					}
+
+				}
+			}
+		}
         super.onScrollStateChanged(state);
     }
 
@@ -559,13 +571,13 @@ public class RecyclerViewTV extends RecyclerView implements PrvInterface {
             ((StaggeredGridLayoutManagerTV) getLayoutManager()).setCanScroll(true);
         }
         int action = event.getAction();
-        long current = System.currentTimeMillis();
-        if(current - lastKeyEventTime <100){
-            return true;
-        }
-        lastKeyEventTime = current;
         int keyCode = event.getKeyCode();
         if (action == KeyEvent.ACTION_DOWN) {
+			long current = System.currentTimeMillis();
+			if(current - lastKeyEventTime <100){
+				return true;
+			}
+			lastKeyEventTime = current;
             if (!isHorizontalLayoutManger() && keyCode == KeyEvent.KEYCODE_DPAD_DOWN) {
                 // 垂直布局向下按键.
                 loadMore();
