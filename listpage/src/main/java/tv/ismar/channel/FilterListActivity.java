@@ -73,6 +73,7 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
 
     private static final long CLICK_BLOCK_TIME = 1000;
     private static final long KEY_BLOCK_TIME = 300;
+    private static final long KEY_BLOCK_LEFT_RIGHT_TIME = 100;
     private static final long CHECK_CHANGED_DELAYED = 300;
     private TextView filter_title;
     private RadioButton filter_tab;
@@ -589,7 +590,11 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
     public boolean dispatchKeyEvent(KeyEvent event) {
         long current = System.currentTimeMillis();
         if(event.getAction() == KeyEvent.ACTION_DOWN) {
-            if (current - lastKeyDownTime < KEY_BLOCK_TIME) {
+            long keyDelay = KEY_BLOCK_TIME;
+            if(event.getKeyCode() == KeyEvent.KEYCODE_DPAD_LEFT || event.getKeyCode() == KeyEvent.KEYCODE_DPAD_RIGHT){
+                keyDelay =KEY_BLOCK_LEFT_RIGHT_TIME;
+            }
+            if (current - lastKeyDownTime < keyDelay) {
                 return true;
             } else {
                 lastKeyDownTime = current;

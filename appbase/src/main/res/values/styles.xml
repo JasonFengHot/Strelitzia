@@ -16,6 +16,7 @@
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
         <item name="android:windowFullscreen">true</item>
+        <item name="android:configChanges">orientation|keyboardHidden</item>
         <item name="android:textViewStyle">@style/AppTheme.Widget.TextView</item>
         <item name="android:windowBackground">@mipmap/bg</item>
         <item name="android:textColor">@android:color/white</item>
