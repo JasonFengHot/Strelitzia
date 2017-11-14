@@ -817,7 +817,7 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
                             intent.toDetailPage(HistoryFavoriteActivity.this, "tvhome", pk);
                         } else {
                             //	intent.toPlayPage(getActivity(),pk,0, Source.HISTORY);
-                            intent.toPlayPageEpisode(HistoryFavoriteActivity.this, pk, 0, Source.HISTORY, object.getContent_model());
+                            intent.toPlayPageEpisode(HistoryFavoriteActivity.this, pk, 0, Source.TVHOME, object.getContent_model());
                         }
                     }
                 }
