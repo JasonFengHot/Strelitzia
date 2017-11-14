@@ -581,6 +581,7 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
 //        }
         mHistory = historyManager.getHistoryByUrl(historyUrl, "no");
         if(mHistory==null){
+            if(!Utils.isEmptyText(authToken))
             mHistory = historyManager.getHistoryByUrl(historyUrl, "yes");
         }
         if (mHistory != null) {

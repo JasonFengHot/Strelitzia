@@ -491,10 +491,18 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnClickList
             String url = IsmartvActivator.getInstance().getApiDomain() + "/api/item/" + id + "/";
             Favorite favorite= mFavoriteManager.getFavoriteByUrl(url, "yes");
             Favorite local=mFavoriteManager.getFavoriteByUrl(url, "no");
-            if (favorite!=null||local!=null){
-                return true;
+            if(IsmartvActivator.getInstance().isLogin()) {
+                if (favorite != null || local != null) {
+                    return true;
+                } else {
+                    return false;
+                }
             }else{
-                return false;
+                if(local==null){
+                    return false;
+                }else{
+                    return true;
+                }
             }
     }
 

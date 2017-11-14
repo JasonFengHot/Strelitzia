@@ -1003,13 +1003,10 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
                 if(IsmartvActivator.getInstance().isLogin()){
                     mHistories= DaisyUtils.getHistoryManager(HistoryFavoriteActivity.this).getAllHistories("yes");
                     ArrayList<History> localhistory= DaisyUtils.getHistoryManager(HistoryFavoriteActivity.this).getAllHistories("no");
-                    for (int i=0;i<localhistory.size();i++){
-                        for (int j=0;j<mHistories.size();j++){
-                            if(i>=0) {
-                                if (localhistory.get(i).url.equals(mHistories.get(j).url)) {
-                                    localhistory.remove(i);
-                                    i--;
-                                }
+                    for (int i=0;i<mHistories.size();i++){
+                        for (int j=1;j<=mHistories.size()-1;j++){
+                                if (mHistories.get(i).url.equals(mHistories.get(j).url)) {
+                                    mHistories.remove(j);
                             }
                         }
                     }

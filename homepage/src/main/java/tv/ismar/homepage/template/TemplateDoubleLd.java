@@ -380,6 +380,7 @@ public class TemplateDoubleLd extends Template
     public void onItemClick(View view, int position) {
         if (position == 0) { // 第一张大图
             mFetchControl.go2Detail(mFetchControl.getHomeEntity(mBannerPk).bg_image);
+            mFetchControl.launcher_vod_click(mAdapter.getData().get(position).model_name,mBannerPk,mName,locationY+",1",mChannel);
         } else if (mFetchControl.getHomeEntity(mBannerPk).is_more && position == mAdapter.getItemCount() - 1) {
             new PageIntent()
                     .toListPage(
@@ -390,13 +391,14 @@ public class TemplateDoubleLd extends Template
                             mFetchControl.getHomeEntity(mBannerPk).section_slug);
         } else {
             mFetchControl.go2Detail(mAdapter.getmData().get(position - 1));
+            int Y=locationY;
+            if(position%2!=0){
+                Y=locationY-1;
+            }
+            int locationX=(position+1)/2+1;
+            if(position<mAdapter.getItemCount())
+                mFetchControl.launcher_vod_click(mAdapter.getData().get(position).model_name,mBannerPk,mName,Y+","+locationX,mChannel);
         }
-        int Y=locationY;
-        if(position==0||position%2!=0){
-            Y=locationY-1;
-        }
-        int locationX=(position+1)/2+1;
-        mFetchControl.launcher_vod_click(mAdapter.getData().get(position).model_name,mBannerPk,mName,Y+","+locationX,mChannel);
     }
 
     @Override
