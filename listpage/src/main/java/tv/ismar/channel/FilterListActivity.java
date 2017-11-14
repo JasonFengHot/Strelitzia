@@ -553,6 +553,8 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
                         if(isFirst){
                             isFirst=false;
                         }
+                        listSectionEntity.setObjects(listSectionEntity.getObjects().subList(0,1));
+                        listSectionEntity.setCount(1);
                         //将请求到的栏目数据替换之前占位的空数据
                         for (int i = 0; i <listSectionEntity.getObjects().size() ; i++) {
                             if(mAllSectionItemList.getCount()>specialPos.get(index)+i+1)
@@ -1236,7 +1238,7 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
                     mFilterFocusGridLayoutManager.scrollToPositionWithOffset(mFilterFocusGridLayoutManager.findLastVisibleItemPosition(), 0);
                 } else {
                     if (isVertical) {
-                        nextPos = mFocusGridLayoutManager.findLastVisibleItemPosition() + 1;
+                        nextPos = mFocusGridLayoutManager.findLastCompletelyVisibleItemPosition() + 1;
                         if(nextPos>mAllSectionItemList.getCount()-1){
                             nextPos=mFocusGridLayoutManager.findLastVisibleItemPosition();
                         }
