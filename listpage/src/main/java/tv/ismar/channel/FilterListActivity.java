@@ -1238,7 +1238,7 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
                     if (isVertical) {
                         nextPos = mFocusGridLayoutManager.findLastCompletelyVisibleItemPosition() + 1;
                         if(nextPos>mAllSectionItemList.getCount()-1){
-                            nextPos=mFocusGridLayoutManager.findLastVisibleItemPosition();
+                            nextPos=mFocusGridLayoutManager.findLastCompletelyVisibleItemPosition();
                         }
                         if (specialPos.contains(nextPos)) {
                             mFocusGridLayoutManager.scrollToPositionWithOffset(nextPos, 0);

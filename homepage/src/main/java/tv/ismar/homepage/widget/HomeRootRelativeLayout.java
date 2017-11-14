@@ -8,9 +8,9 @@ import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-/*add by dragontec for fix ½¹µã´íÎó start*/
+/*add by dragontec for fix ç„¦ç‚¹é”™è¯¯ start*/
 import tv.ismar.homepage.R;
-/*add by dragontec for fix ½¹µã´íÎó end*/
+/*add by dragontec for fix ç„¦ç‚¹é”™è¯¯ end*/
 
 /**
  * Created by admin on 2017/10/22.
@@ -126,14 +126,14 @@ public class HomeRootRelativeLayout extends RelativeLayout {
 					}
 				}
 			}
-			/*add by dragontec for fix ½¹µã´íÎó start*/
+			/*add by dragontec for fix ç„¦ç‚¹é”™è¯¯ start*/
 			if ((focused.getId() == R.id.collection_rect_layout || focused.getId() == R.id.center_rect_layout) && direction == FOCUS_DOWN) {
 				View tabView = findViewById(R.id.channel_tab);
 				if (tabView != null && tabView instanceof HorizontalTabView) {
 					result = ((HorizontalTabView) tabView).getLastFocusView();
 				}
 			}
-			/*add by dragontec for fix ½¹µã´íÎó end*/
+			/*add by dragontec for fix ç„¦ç‚¹é”™è¯¯ end*/
 		} catch (NullPointerException e) {
     		e.printStackTrace();
     		result = null;

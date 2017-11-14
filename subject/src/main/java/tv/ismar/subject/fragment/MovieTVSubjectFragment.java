@@ -407,23 +407,20 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnClickList
                         favorites = DaisyUtils.getFavoriteManager(getActivity().getApplicationContext()).getAllFavorites("yes");
                     }else{
                         favorites = DaisyUtils.getFavoriteManager(getActivity().getApplicationContext()).getAllFavorites("no");
-                        subject_btn_like.setBackgroundResource(R.drawable.liked_btn_selector);
-                        showToast("收藏成功");
                     }
                     if (favorites.size() > 49) {
-                        mFavoriteManager.deleteFavoriteByUrl(favorites.get(favorites.size() - 1).url, "no");
+                        mFavoriteManager.deleteFavoriteByUrl(favorites.get(favorites.size() - 1).url, isnet);
                     }
                     mFavoriteManager.addFavorite(favorite, isnet);
+                    subject_btn_like.setBackgroundResource(R.drawable.liked_btn_selector);
+                    showToast("收藏成功");
                 } else {
                     String url = IsmartvActivator.getInstance().getApiDomain() + "/api/item/" + id + "/";
-                    if (IsmartvActivator.getInstance().isLogin()) {
-                        deleteFavoriteByNet(id);
-                        mFavoriteManager.deleteFavoriteByUrl(url, "yes");
-                    } else {
-                        mFavoriteManager.deleteFavoriteByUrl(url, "no");
-                        subject_btn_like.setBackgroundResource(R.drawable.like_btn_selector);
-                        showToast("取消收藏成功");
-                    }
+                    deleteFavoriteByNet(id);
+                    mFavoriteManager.deleteFavoriteByUrl(url, "yes");
+                    mFavoriteManager.deleteFavoriteByUrl(url, "no");
+                    subject_btn_like.setBackgroundResource(R.drawable.like_btn_selector);
+                    showToast("取消收藏成功");
 
                 }
             }catch (Exception e){
@@ -491,18 +488,14 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnClickList
     }
 
     private boolean isFavorite() {
-
             String url = IsmartvActivator.getInstance().getApiDomain() + "/api/item/" + id + "/";
-            Favorite favorite;
-            if (IsmartvActivator.getInstance().isLogin()) {
-                favorite = mFavoriteManager.getFavoriteByUrl(url, "yes");
-            } else {
-                favorite = mFavoriteManager.getFavoriteByUrl(url, "no");
-            }
-            if (favorite != null) {
+            Favorite favorite= mFavoriteManager.getFavoriteByUrl(url, "yes");
+            Favorite local=mFavoriteManager.getFavoriteByUrl(url, "no");
+            if (favorite!=null||local!=null){
                 return true;
+            }else{
+                return false;
             }
-        return false;
     }
 
     private void createFavoriteByNet(int pk) {

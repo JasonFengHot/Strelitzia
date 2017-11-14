@@ -1321,7 +1321,7 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
         }
         String url = "/api/item/" + itemPk + "/";
         String apiDomain = IsmartvActivator.getInstance().getApiDomain();
-        history.url = Utils.getItemUrl(itemPk);
+        history.url = apiDomain + url;
         if (subItemPk > 0) {
             history.sub_url = Utils.getSubItemUrl(subItemPk);
         }
