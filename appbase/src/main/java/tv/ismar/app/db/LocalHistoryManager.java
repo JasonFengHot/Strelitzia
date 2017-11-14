@@ -64,16 +64,16 @@ public class LocalHistoryManager implements HistoryManager {
             throw new RuntimeException("url cannot be null");
         }
         History history = null;
-//        if (mHistories == null) {
-//            mHistories = new ArrayList<History>();
-//        } else {
-//            for (History h : mHistories) {
-//                if (url.equals(h.url)) {
-//                    history = h;
-//                    break;
-//                }
-//            }
-//        }
+        if (mHistories == null) {
+            mHistories = new ArrayList<History>();
+        } else {
+            for (History h : mHistories) {
+                if (url.equals(h.url)) {
+                    history = h;
+                    break;
+                }
+            }
+        }
         if (history == null) {
             history = mDBHelper.queryHistoryByUrl(url, isnet);
             if (history != null) {
