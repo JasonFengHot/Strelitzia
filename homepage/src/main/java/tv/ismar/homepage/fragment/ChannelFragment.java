@@ -3,6 +3,7 @@ package tv.ismar.homepage.fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -18,6 +19,8 @@ import com.orhanobut.logger.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Queue;
+import java.util.concurrent.ArrayBlockingQueue;
 
 import tv.ismar.app.BaseControl;
 import tv.ismar.app.entity.GuideBanner;
@@ -48,6 +51,7 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
 	/*add by dragontec for bug 3983,4077,4200 start*/
 		, RecycleLinearLayout.OnDataFinishedListener, RecycleLinearLayout.OnPositionChangedListener, RecycleLinearLayout.OnScrollListener
 	/*add by dragontec for bug 3983,4077,4200 end*/
+	, Handler.Callback
 {
     private static final String TAG = "ChannelFragment";
     public static final String TITLE_KEY = "title";
@@ -60,9 +64,9 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
     public static final String MORE_CHANNEL_FLAG = "channel";
     public static final String MORE_STYLE_FLAG = "style";
     public static final String BANNER_LOCATION="location";
-	public static final int LOAD_BANNERS_COUNT = 5;
+	public static final int LOAD_BANNERS_COUNT = 4;
 	/*add by dragontec for bug 4248,4334 start*/
-	private static final int APPEND_LOAD_BANNERS_COUNT = 3;
+	private static final int APPEND_LOAD_BANNERS_COUNT = 1;
 	/*add by dragontec for bug 4248,4334 end*/
 	private FetchDataControl mControl = null; // 业务类引用
     private RecycleLinearLayout mLinearContainer; // banner容器
@@ -92,12 +96,15 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
 	private boolean mNeedAddBanner = false;
 	private boolean mDoingFragmentFlipAni = false;
 	private Handler mAniHandler = null;
+	private Handler mHandler = null;
 	private AniFinishRunnable mAniFinishRunnable = null;
 /*add by dragontec for bug 4065 end*/
 
 	/*add by dragontec for bug 4334 start*/
 	private CheckViewAppearRunnable mCheckViewAppearRunnable = null;
 	/*add by dragontec for bug 4334 end*/
+
+	private ArrayBlockingQueue<List<String>> mFetchCallBannerQueue = null;
 
 	@Override
     public void onAttach(Context context) {
@@ -112,6 +119,7 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
         findView(view);
 		initListener();
         Logger.t(TAG).d("ChannelFragment onCreateView");
+        mHandler = new Handler(this);
 /*add by dragontec for bug 4065 start*/
 		mAniHandler = new Handler();
 /*add by dragontec for bug 4065 end*/
@@ -329,6 +337,7 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
 			/*modify by dragontec for bug 4178 start*/
 					if (banners != null) {
 						mLinearContainer.setDataSize(banners.length);
+						mFetchCallBannerQueue = new ArrayBlockingQueue<>(banners.length);
 					} else {
 						mLinearContainer.setDataSize(0);
 					}
@@ -344,13 +353,37 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
 				}
 			}
 			break;
-			case BaseControl.FETCH_DATA_FAIL_FLAG:
-			case BaseControl.FETCH_BANNERS_LIST_FLAG:
-			case BaseControl.FETCH_M_BANNERS_LIST_FLAG: {
+			case BaseControl.FETCH_DATA_FAIL_FLAG: {
 				synchronized (templateDataLock) {
 					for (Template template:
-						 mTemplates) {
+							mTemplates) {
 						template.callBack(flags, args);
+					}
+				}
+			}
+			break;
+			case BaseControl.FETCH_BANNERS_LIST_FLAG:
+			case BaseControl.FETCH_M_BANNERS_LIST_FLAG: {
+				if (args != null) {
+					List<String> list = new ArrayList<>();
+					for (int i = 0; i < args.length; i++) {
+						if (args[i] != null && args[i] instanceof String) {
+							list.add((String) args[i]);
+						}
+					}
+					if (mFetchCallBannerQueue != null) {
+						try {
+							Message message = new Message();
+							message.what = flags;
+							int delay = 0;
+//							if (!mFetchCallBannerQueue.isEmpty()) {
+//								delay = 500;
+//							}
+							mFetchCallBannerQueue.put(list);
+							mHandler.sendMessageDelayed(message, delay);
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
 					}
 				}
 			}
@@ -414,18 +447,22 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
 	}
 
 	/*modify by dragontec for bug 4362 start*/
-	private void appendBanner(int position, GuideBanner data) {
+	/*modify by dragontec for bug 4472 start*/
+	private boolean appendBanner(int position, GuideBanner data) {
 		synchronized (layoutLock) {
 			if (data != null) {
-				addBannerView(position, data);
+				return addBannerView(position, data);
 			}
 		}
+		return false;
 	}
+	/*modify by dragontec for bug 4472 end*/
 	/*modify by dragontec for bug 4362 end*/
 	private int locationY=2;
-	private void addBannerView(int position, GuideBanner guideBanner) {
+	/*modify by dragontec for bug 4472 start*/
+	private boolean addBannerView(int position, GuideBanner guideBanner) {
 		if (position <= lastLoadedPostion) {
-			return;
+			return false;
 		}
 		lastLoadedPostion = position;
 		Template templateObject = null;
@@ -526,8 +563,11 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
 				}
 			}
 			mLinearContainer.addView(bannerView);
+			return true;
 		}
+		return false;
 	}
+	/*modify by dragontec for bug 4472 end*/
 	/*modify by dragontec for bug 4077 end*/
 
     private int createTag(int position, boolean canScroll) {
@@ -605,37 +645,48 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
 			last = lastLoadedPostion;
 		}
 		Log.d(TAG, "last = " + last);
+		/*modify by dragontec for bug 4472 start*/
 		if (position > last - RecycleLinearLayout.BANNER_LOAD_AIMING_OFF) {
 			/*modify by dragontec for bug 4362 start*/
 				/*modify by dragontec for bug 4248 start*/
-			int number = position + RecycleLinearLayout.BANNER_LOAD_AIMING_OFF - last + (APPEND_LOAD_BANNERS_COUNT - 1);
+			int number;
+				if (APPEND_LOAD_BANNERS_COUNT > 1) {
+					number = position + RecycleLinearLayout.BANNER_LOAD_AIMING_OFF - last + (APPEND_LOAD_BANNERS_COUNT - 1);
+				} else {
+					number = position + RecycleLinearLayout.BANNER_LOAD_AIMING_OFF - last;
+				}
 				/*modify by dragontec for bug 4248 end*/
-			String[] strings = new String[number];
+//			String[] strings = new String[number];
 			GuideBanner[] datas;
 			synchronized (bannerDataLock) {
 				datas = mGuideBanners;
 			}
-			for (int i = 0; i < number; i++) {
-				if (datas  == null || last + i + 1 >= datas.length) {
-					break;
+			if (datas != null) {
+				for (int i = 0; i < number; i++) {
+					if (last + i + 1 >= datas.length) {
+						break;
+					}
+					GuideBanner data = datas[last + i + 1];
+//				strings[i] = data.page_banner_pk;
+					if (appendBanner(last + i + 1, data)) {
+						mControl.fetchBanners(data.page_banner_pk, 1, false);
+					}
 				}
-				GuideBanner data = datas[last + i + 1];
-				strings[i] = data.page_banner_pk;
-				appendBanner(last + i + 1, data);
-			}
 			/*modify by dragontec for bug 4331 start*/
-			if (lastLoadedPostion == datas.length - 1) {
-				if (!mChannel.equals("homepage")) {//首页频道最后不添加更多banner
-					addMoreView(datas.length);
-				} else {
-					synchronized (templateDataLock) {
-						mTemplates.get(lastLoadedPostion).isLastView = true;
+				if (lastLoadedPostion == datas.length - 1) {
+					if (!mChannel.equals("homepage")) {//首页频道最后不添加更多banner
+						addMoreView(datas.length);
+					} else {
+						synchronized (templateDataLock) {
+							mTemplates.get(lastLoadedPostion).isLastView = true;
+						}
 					}
 				}
 			}
 			/*modify by dragontec for bug 4331 end*/
-			mControl.fetchMBanners(strings, 1);
+//			mControl.fetchMBanners(strings, 1);
 			/*modify by dragontec for bug 4362 end*/
+			/*modify by dragontec for bug 4472 end*/
 		}
 		/*modify by dragontec for bug 4335 start*/
 		if(mLinearContainer != null && mLinearContainer.getChildCount() > 0) {
@@ -722,6 +773,37 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
 			});
 		}
 		return animation;
+	}
+
+	@Override
+	public boolean handleMessage(Message msg) {
+		boolean ret = false;
+		switch (msg.what) {
+			case BaseControl.FETCH_BANNERS_LIST_FLAG:
+			case BaseControl.FETCH_M_BANNERS_LIST_FLAG: {
+				if (mFetchCallBannerQueue != null && !mFetchCallBannerQueue.isEmpty()) {
+					try {
+						if (!isDetached()) {
+							List<String> list = mFetchCallBannerQueue.take();
+							for (String banner :
+									list) {
+								synchronized (templateDataLock) {
+									for (Template template :
+											mTemplates) {
+										template.onFetchDataFinish(banner);
+									}
+								}
+							}
+						}
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+				ret = true;
+			}
+			break;
+		}
+		return ret;
 	}
 
 	private class AniFinishRunnable implements Runnable {
@@ -851,4 +933,9 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
 		return false;
 	}
 /*add by dragontec for bug 4259 end*/
+	/*add by dragontec for bug 4472 start*/
+	public boolean isUpdateQueueEmpty(){
+		return !(mFetchCallBannerQueue != null && mFetchCallBannerQueue.size() > 0);
+	}
+	/*add by dragontec for bug 4472 end*/
 }

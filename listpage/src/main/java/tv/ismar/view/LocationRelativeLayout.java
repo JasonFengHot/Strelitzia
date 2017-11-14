@@ -24,7 +24,9 @@ public class LocationRelativeLayout extends RelativeLayout {
     private boolean show_right_up=false;
     private boolean show_right_down=true;
     private int xBoundary=0;
-    public boolean horving;
+	/*modify by dragontec for bug 4468 start*/
+    public boolean horving = true;
+    /*modify by dragontec for bug 4468 end*/
 
     public void setArrow_up_left(View arrow_up_left) {
         this.arrow_up_left = arrow_up_left;

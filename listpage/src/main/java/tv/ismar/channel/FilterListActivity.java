@@ -70,7 +70,7 @@ import static android.widget.RelativeLayout.ALIGN_PARENT_RIGHT;
  * Created by zhangjiqiang on 15-6-18.
  */
 public class FilterListActivity extends BaseActivity implements View.OnClickListener, View.OnHoverListener {
-
+	private final String TAG = this.getClass().getSimpleName();
     private static final long CLICK_BLOCK_TIME = 400;
     private static final long KEY_BLOCK_TIME = 300;
     private static final long KEY_BLOCK_LEFT_RIGHT_TIME = 100;
@@ -410,7 +410,13 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
                         filter_root_view.setShow_right_down(true);
                     }
                     if(poster_arrow_up.isFocused()||poster_arrow_down.isFocused()||filter_root_view.isFocused()) {
-                        changeCheckedTab(mFocusGridLayoutManager.findFirstCompletelyVisibleItemPosition());
+                    	/*modify by dragontec for bug 4468 start*/
+                    	if (mFocusGridLayoutManager.findLastVisibleItemPosition() == mFocusGridLayoutManager.getItemCount() - 1) {
+							changeCheckedTab(mFocusGridLayoutManager.findLastVisibleItemPosition());
+						} else {
+							changeCheckedTab(mFocusGridLayoutManager.findFirstCompletelyVisibleItemPosition());
+						}
+						/*modify by dragontec for bug 4468 end*/
                     }
                     showData(firstVisiablePos,true);
                     showData(lastVisiablePos,false);
@@ -1344,12 +1350,21 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
                 }
             });
             final int finalI = i;
-//            radioButton.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//
-//                }
-//            });
+            /*modify by dragontec for bug 4468 start*/
+            radioButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+					if(!section.title.equals(current_section_title.getText())||(finalI!=sectionSize-1&&mFocusGridLayoutManager.findLastCompletelyVisibleItemPosition()>specialPos.get(sectionSize-1))) {
+						mFocusGridLayoutManager.scrollToPositionWithOffset(specialPos.get(finalI), 0);
+					}
+					if(isFirst) {
+						fetchSectionData(section.url, finalI, false);
+
+					}
+					current_section_title.setText(sectionList.get(finalI).title);
+                }
+            });
+            /*modify by dragontec for bug 4468 end*/
             radioButton.setOnHoverListener(this);
             radioButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
@@ -1515,14 +1530,16 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
             if(mClickRadioBtnHandler != null){
                 mClickRadioBtnHandler.removeCallbacks(this);
             }
-            if(!section.title.equals(current_section_title.getText())||(finalI!=sectionSize-1&&mFocusGridLayoutManager.findLastCompletelyVisibleItemPosition()>specialPos.get(sectionSize-1))) {
-                mFocusGridLayoutManager.scrollToPositionWithOffset(specialPos.get(finalI), 0);
-            }
-            if(isFirst) {
-                fetchSectionData(section.url, finalI, false);
-
-            }
-            current_section_title.setText(sectionList.get(finalI).title);
+            /*delete by dragontec for bug 4468 start*/
+//            if(!section.title.equals(current_section_title.getText())||(finalI!=sectionSize-1&&mFocusGridLayoutManager.findLastCompletelyVisibleItemPosition()>specialPos.get(sectionSize-1))) {
+//                mFocusGridLayoutManager.scrollToPositionWithOffset(specialPos.get(finalI), 0);
+//            }
+//            if(isFirst) {
+//                fetchSectionData(section.url, finalI, false);
+//
+//            }
+//            current_section_title.setText(sectionList.get(finalI).title);
+			/*delete by dragontec for bug 4468 end*/
 
             checkedTab = finalI;
             if(filterPopup!=null&&filterPopup.isShowing())
@@ -1721,13 +1738,15 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
             }
             listPosterAdapter.setmItemList(listSectionEntity.getObjects());
             //修正滚动位置
-            if(isFirstPos) {
+			/*modify by dragontec for bug 4468 start*/
+            if(isFirstPos && !filter_root_view.horving) {
                 if (isVertical) {
                     mFocusGridLayoutManager.scrollToPositionWithOffset(position, getResources().getDimensionPixelOffset(R.dimen.list_scroll_down_offset_v));
                 } else {
                     mFocusGridLayoutManager.scrollToPositionWithOffset(position, getResources().getDimensionPixelOffset(R.dimen.list_scroll_down_offset_h));
                 }
             }
+            /*modify by dragontec for bug 4468 end*/
             listPosterAdapter.notifyDataSetChanged();
         }
 

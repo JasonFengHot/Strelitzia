@@ -56,6 +56,7 @@ public class RecycleLinearLayout extends LinearLayout {
 	/*modify by dragontec for bug 4334 start*/
 	private final Object scrollStateLock = new Object();
 	private boolean isStartScroll = false;
+    private boolean isScrolling = false;
 	/*modify by dragontec for bug 4334 end*/
 
     public RecycleLinearLayout(Context context) {
@@ -121,11 +122,17 @@ public class RecycleLinearLayout extends LinearLayout {
             scrollTo(mOverScroller.getCurrX(), mOverScroller.getCurrY());//调用view方法执行真实的滑动动作
 /*modify by dragontec for bug 4200 start*/
 //            postInvalidate();
+            int delta = mOverScroller.getFinalY() - mOverScroller.getCurrY();
+            if(delta == 0){
+                isScrolling = false;
+            }else{
+                isScrolling = true;
+            }
 			invalidate();
         } else {
         	/*modify by dragontec for bug 4334 start*/
         	synchronized (scrollStateLock) {
-        		if (isStartScroll) {
+                    if (isStartScroll) {
 					//滚动完毕后确认数据请求
 					isStartScroll = false;
 					if (mOnScrollListener != null) {
@@ -347,11 +354,9 @@ public class RecycleLinearLayout extends LinearLayout {
             mLastTime = mCurrentTime;
         }
 		/*modify by dragontec for bug 4296 start*/
-//        boolean isScrolling = mOverScroller.computeScrollOffset();
-//        if(isScrolling && event.getAction() == KeyEvent.ACTION_DOWN){
-//            Log.i("zzz","zzz key scroll isScrolling:" + isScrolling);
-//            return true;
-//        }
+        if(isScrolling && event.getAction() == KeyEvent.ACTION_DOWN){
+            return true;
+        }
 		/*modify by dragontec for bug 4296 end*/
         return excuteKeyEvent(event, longPress);
     }
@@ -409,6 +414,13 @@ public class RecycleLinearLayout extends LinearLayout {
                     if(position-1 < 0) return super.dispatchKeyEvent(event);//将不可滑动的banner和前一个banner绑定为一个banner
 //                    mScrollView.setBottom(mScrollHeight+mScreenHeight);
                     scrollToTop(getChildAt(position-1));
+                    /*modify by dragontec for bug 4472 start*/
+					if (position >= getChildCount() - BANNER_LOAD_AIMING_OFF && keyCode == KeyEvent.KEYCODE_DPAD_DOWN) {
+						if (mOnDataFinishedListener != null) {
+							mOnDataFinishedListener.onDataFinished(view);
+						}
+					}
+					/*modify by dragontec for bug 4472 end*/
                     return super.dispatchKeyEvent(event);
                 }
 	/*add by dragontec for bug 4077 start*/

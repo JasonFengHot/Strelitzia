@@ -339,6 +339,12 @@ public class BaseActivity extends AppCompatActivity {
         return netErrorPopWindow != null && netErrorPopWindow.isShowing();
     }
 
+    /*add by dragontec for bug 4476 start*/
+    public void onNetError(Throwable e) {
+		//do nothing
+	}
+	/*add by dragontec for bug 4476 end*/
+
     public abstract class BaseObserver<T> implements Observer<T> {
         @Override
         public void onError(Throwable e) {
@@ -368,6 +374,9 @@ public class BaseActivity extends AppCompatActivity {
             }else{
                ToastTip.showToast(BaseActivity.this,"网络连接失败，请检查网络是否通畅");
             }
+            /*add by dragontec for bug 4476 start*/
+            onNetError(e);
+            /*add by dragontec for bug 4476 end*/
         }
     }
     public void showExpireAccessTokenPop() {

@@ -155,4 +155,9 @@ public class TemplateMore extends Template implements View.OnClickListener, View
 	}
 	/*modify by dragontec for bug 4362 end*/
   /*add by dragontec for bug 4221 end*/
+
+	@Override
+	public void onFetchDataFinish(String bannerPK) {
+		//do nothing
+	}
 }

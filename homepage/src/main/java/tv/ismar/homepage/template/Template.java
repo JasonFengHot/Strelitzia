@@ -863,5 +863,15 @@ public abstract class Template implements BaseControl.ControlCallBack {
 		}
 	}
 	/*add by dragontec for bug 4412 end*/
+
+	public void onFetchDataFinish(String bannerPK) {
+		if (bannerPK != null && !bannerPK.isEmpty()) {
+			if (bannerPK.equals(mBannerPk)) {
+				isNeedFillData = true;
+				checkViewAppear();
+				mRecyclerView.setOnLoadMoreComplete();
+			}
+		}
+	}
 }
 /*modify by dragontec for bug 4362 end*/

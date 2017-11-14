@@ -543,7 +543,7 @@ public class HomeActivity extends BaseActivity
     /*add by dragontec for bug 3983 start 当动画执行过程中不响应按键*/
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
-        if(isAnimationPlaying){
+        if(isAnimationPlaying || !getChannelFragment().isUpdateQueueEmpty()){
             return true;
         }
 /*add by dragontec for bug 4259 start*/

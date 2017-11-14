@@ -3,6 +3,7 @@ package tv.ismar.homepage.control;
 import android.content.Context;
 import android.util.Log;
 
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 /*modify by dragontec for bug 4362 start*/
 import java.util.HashMap;
@@ -10,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 /*modify by dragontec for bug 4362 end*/
 
+import retrofit2.adapter.rxjava.HttpException;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -26,6 +28,7 @@ import tv.ismar.app.entity.banner.BannerRecommend;
 import tv.ismar.app.entity.banner.HomeEntity;
 import tv.ismar.app.network.SkyService;
 import tv.ismar.app.ui.ToastTip;
+import tv.ismar.homepage.R;
 
 /**
  * @AUTHOR: xi
@@ -113,6 +116,11 @@ public class FetchDataControl extends BaseControl{
                     @Override
                     public void onError(Throwable e) {
                         e.printStackTrace();
+						/*modify by dragontec for bug 4474 start*/
+                        if((e instanceof HttpException|| e instanceof UnknownHostException) && mContext != null) {
+                            ToastTip.showToast(mContext, mContext.getString(R.string.fetch_data_time_out));
+                        }
+						/*modify by dragontec for bug 4474 end*/
                     }
 
                     @Override
@@ -165,6 +173,11 @@ public class FetchDataControl extends BaseControl{
                     @Override
                     public void onError(Throwable e) {
                         e.printStackTrace();
+						/*modify by dragontec for bug 4474 start*/
+                        if((e instanceof HttpException|| e instanceof UnknownHostException) && mContext != null) {
+                            ToastTip.showToast(mContext, mContext.getString(R.string.fetch_data_time_out));
+                        }
+						/*modify by dragontec for bug 4474 end*/
                     }
 
                     @Override
@@ -217,6 +230,11 @@ public class FetchDataControl extends BaseControl{
                     @Override
                     public void onError(Throwable e) {
                         e.printStackTrace();
+						/*modify by dragontec for bug 4474 start*/
+                        if((e instanceof HttpException|| e instanceof UnknownHostException) && mContext != null) {
+                            ToastTip.showToast(mContext, mContext.getString(R.string.fetch_data_time_out));
+                        }
+						/*modify by dragontec for bug 4474 end*/
                     }
 
                     @Override
@@ -359,6 +377,11 @@ public class FetchDataControl extends BaseControl{
                         if (mCallBack != null) {
                             mCallBack.callBack(FETCH_DATA_FAIL_FLAG);
                         }
+						/*modify by dragontec for bug 4474 start*/
+                        if((e instanceof HttpException|| e instanceof UnknownHostException) && mContext != null) {
+                            ToastTip.showToast(mContext, mContext.getString(R.string.fetch_data_time_out));
+                        }
+						/*modify by dragontec for bug 4474 end*/
                     }
 
                     @Override
@@ -431,6 +454,11 @@ public class FetchDataControl extends BaseControl{
                     @Override
                     public void onError(Throwable e) {
                         e.printStackTrace();
+						/*modify by dragontec for bug 4474 start*/
+                        if((e instanceof HttpException|| e instanceof UnknownHostException) && mContext != null) {
+                            ToastTip.showToast(mContext, mContext.getString(R.string.fetch_data_time_out));
+                        }
+						/*modify by dragontec for bug 4474 end*/
                     }
 
                     @Override
@@ -487,6 +515,10 @@ public class FetchDataControl extends BaseControl{
                             if(homeEntity != null){
                             	mHomeEntities.put(banner, homeEntity);
                             	List<BannerCarousels> carousels = mCarouselsMap.get(banner);
+								if (carousels == null) {
+									carousels = new ArrayList<>();
+									mCarouselsMap.put(banner, carousels);
+								}
                                 if(homeEntity.carousels != null){
                                     if(!loadMore){
 										carousels.clear();
@@ -497,6 +529,10 @@ public class FetchDataControl extends BaseControl{
                                     }
                                 }
 								List<BannerPoster> posters = mPosterMap.get(banner);
+								if (posters == null) {
+									posters = new ArrayList<>();
+									mPosterMap.put(banner, posters);
+								}
                                 if(homeEntity.posters != null){
                                     if(!loadMore){
 										posters.clear();
@@ -542,19 +578,22 @@ public class FetchDataControl extends BaseControl{
                 .subscribe(new Observer<HomeEntity>() {
                     @Override
                     public void onCompleted() {
-	/* add by dragontec for bug 4264 start */
-                        Log.i("fetchBanners", "onCompleted");
-	/* add by dragontec for bug 4264 end */
+                    	Log.d(TAG, "forceFetchBanners onCompleted");
                     }
 
                     @Override
                     public void onError(Throwable e) {
+						Log.d(TAG, "forceFetchBanners onError");
                         e.printStackTrace();
-                        Log.i("onError", "onError");
 	/* add by dragontec for bug 4264 start */
                         if (mCallBack != null) {
                             mCallBack.callBack(FETCH_DATA_FAIL_FLAG);
                         }
+						/*modify by dragontec for bug 4474 start*/
+                        if((e instanceof HttpException|| e instanceof UnknownHostException) && mContext != null) {
+                            ToastTip.showToast(mContext, mContext.getString(R.string.fetch_data_time_out));
+                        }
+						/*modify by dragontec for bug 4474 end*/
 	/* add by dragontec for bug 4264 end */
                     }
 
@@ -563,6 +602,10 @@ public class FetchDataControl extends BaseControl{
                         if(homeEntity != null){
 							mHomeEntities.put(banner, homeEntity);
 							List<BannerCarousels> carousels = mCarouselsMap.get(banner);
+							if (carousels == null) {
+								carousels = new ArrayList<>();
+								mCarouselsMap.put(banner, carousels);
+							}
 							if(homeEntity.carousels != null){
 								if(!loadMore){
 									carousels.clear();
@@ -573,6 +616,10 @@ public class FetchDataControl extends BaseControl{
 								}
 							}
 							List<BannerPoster> posters = mPosterMap.get(banner);
+							if (posters == null) {
+								posters = new ArrayList<>();
+								mPosterMap.put(banner, posters);
+							}
 							if(homeEntity.posters != null){
 								if(!loadMore){
 									posters.clear();

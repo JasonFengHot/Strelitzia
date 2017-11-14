@@ -308,6 +308,7 @@ public class DetailPageActivity extends BaseActivity implements PlaybackService.
         mLoadingDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
             @Override
             public void onCancel(DialogInterface dialog) {
+            	handler.removeMessages(0);
                 dialog.dismiss();
                 finish();
             }
@@ -315,7 +316,19 @@ public class DetailPageActivity extends BaseActivity implements PlaybackService.
         mLoadingDialog.showDialog();
     }
 
-    // 此方法必须在clic事件之后调用
+	/*add by dragontec for bug 4476 start*/
+	@Override
+	public void onNetError(Throwable e) {
+		if (mLoadingDialog != null && mLoadingDialog.isShowing()) {
+			mLoadingDialog.dismiss();
+		}
+		if (handler != null) {
+			handler.removeMessages(0);
+		}
+	}
+	/*add by dragontec for bug 4476 end*/
+
+	// 此方法必须在clic事件之后调用
     public void stopPreload() {
         if (mPlaybackService != null) {
             if (!IsmartvPlayer.isPreloadCompleted && mPlaybackService.getMediaPlayer() != null) {

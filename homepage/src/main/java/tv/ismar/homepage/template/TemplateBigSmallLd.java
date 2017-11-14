@@ -214,9 +214,12 @@ public class TemplateBigSmallLd extends Template
 		if (mAdapter != null) {
 			if (mAdapter.getData() == null) {
 				if (mFetchControl.getHomeEntity(mBannerPk) != null) {
+					/*add by dragontec for bug 4245 start*/
+					mAdapter.setBigImage(mFetchControl.getHomeEntity(mBannerPk).bg_image);
+					/*add by dragontec for bug 4245 end*/
 					mAdapter.setData(mFetchControl.getHomeEntity(mBannerPk).posters);
 					/*modify by dragontec for bug 4412 start*/
-					if (mAdapter.getItemCount() > 0) {
+					if (mAdapter.getBigImage() != null || mAdapter.getItemCount() > 0) {
 						setVisibility(VISIBLE);
 					}
 					/*modify by dragontec for bug 4412 end*/
@@ -234,6 +237,10 @@ public class TemplateBigSmallLd extends Template
 				/*modify by dragontec for bug 4412 end*/
 				int start = mAdapter.getData().size() - mFetchControl.getHomeEntity(mBannerPk).posters.size();
 				int end = mAdapter.getData().size();
+				if (mAdapter.getBigImage() != null) {
+					start++;
+					end++;
+				}
 				mAdapter.notifyItemRangeInserted(start, end - start + 1);
 			}
 		}
@@ -302,9 +309,15 @@ public class TemplateBigSmallLd extends Template
 							mFetchControl.getHomeEntity(mBannerPk).style,
 							mFetchControl.getHomeEntity(mBannerPk).section_slug);
 		} else {
-        	/*modify by dragontec for bug 4334 start*/
-			mFetchControl.go2Detail(mAdapter.getData().get(position));
-            /*modify by dragontec for bug 4334 end*/
+			if (mAdapter.getBigImage() != null) {
+				if (position == 0) {
+					mFetchControl.go2Detail( mAdapter.getBigImage());
+				} else {
+					mFetchControl.go2Detail(mAdapter.getData().get(position - 1));
+				}
+			} else {
+				mFetchControl.go2Detail(mAdapter.getData().get(position));
+			}
 		}
 		mFetchControl.launcher_vod_click(mAdapter.getData().get(position).model_name,mBannerPk,mName,locationY+","+(position+1),mChannel);
 	}
