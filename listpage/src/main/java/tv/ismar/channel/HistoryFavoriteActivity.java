@@ -1004,7 +1004,7 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
                     mHistories= DaisyUtils.getHistoryManager(HistoryFavoriteActivity.this).getAllHistories("yes");
                     ArrayList<History> localhistory= DaisyUtils.getHistoryManager(HistoryFavoriteActivity.this).getAllHistories("no");
                     for (int i=0;i<mHistories.size();i++){
-                        for (int j=1;j<=mHistories.size()-1;j++){
+                        for (int j=mHistories.size()-1;j>i;j--){
                                 if (mHistories.get(i).url.equals(mHistories.get(j).url)) {
                                     mHistories.remove(j);
                             }
