@@ -17,6 +17,7 @@ import com.open.androidtvwidget.leanback.recycle.RecyclerViewTV;
 
 import tv.ismar.app.BaseControl;
 import tv.ismar.app.core.VodUserAgent;
+import tv.ismar.app.entity.banner.BannerPoster;
 import tv.ismar.app.entity.banner.HomeEntity;
 import tv.ismar.homepage.OnItemClickListener;
 import tv.ismar.homepage.OnItemHoverListener;
@@ -331,7 +332,7 @@ public class TemplateCenter extends Template
 		/*add by dragontec for bug 4307,4277 start*/
         if(view.hasFocus()) {
 			mFetchControl.go2Detail(mFetchControl.mCarouselsMap.get(mBannerPk).get(position));
-            mFetchControl.launcher_vod_click(mAdapter.getData().get(position).model_name,mBannerPk,mName,locationY+","+(position+1),mChannel);
+            mFetchControl.launcher_vod_click(mAdapter.getData().get(position).model_name,mAdapter.getData().get(position).pk+"",mAdapter.getData().get(position).title,locationY+","+(position+1),mChannel);
         }
 		/*add by dragontec for bug 4307,4277 end*/
     }

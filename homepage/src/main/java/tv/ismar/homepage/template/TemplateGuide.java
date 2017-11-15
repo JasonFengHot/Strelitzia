@@ -47,6 +47,7 @@ import tv.ismar.app.BaseControl;
 import tv.ismar.app.core.PageIntent;
 import tv.ismar.app.core.cache.CacheManager;
 import tv.ismar.app.core.cache.DownloadClient;
+import tv.ismar.app.entity.banner.BannerPoster;
 import tv.ismar.app.entity.banner.HomeEntity;
 import tv.ismar.app.player.CallaPlay;
 import tv.ismar.app.util.HardwareUtils;
@@ -666,10 +667,12 @@ public class TemplateGuide extends Template
                             mFetchControl.getHomeEntity(mBannerPk).channel,
                             Integer.valueOf(mFetchControl.getHomeEntity(mBannerPk).style),
                             mFetchControl.getHomeEntity(mBannerPk).section_slug);
+            mFetchControl.launcher_vod_click("section","-1","更多",locationY+","+(position+2),mChannel);
         } else {
             mControl.go2Detail(mFetchControl.getHomeEntity(mBannerPk).posters.get(position));
+            BannerPoster entity=mAdapter.getData().get(position);
+            mFetchControl.launcher_vod_click(entity.model_name,entity.pk+"",entity.title,locationY+","+(position+2),mChannel);
         }
-        mFetchControl.launcher_vod_click(mAdapter.getData().get(position).model_name,mBannerPk,mName,locationY+","+(position+2),mChannel);
     }
 
     @Override

@@ -27,6 +27,7 @@ import rx.schedulers.Schedulers;
 import tv.ismar.app.BaseControl;
 import tv.ismar.app.core.PageIntent;
 import tv.ismar.app.entity.banner.BannerEntity;
+import tv.ismar.app.entity.banner.BannerPoster;
 import tv.ismar.app.entity.banner.HomeEntity;
 import tv.ismar.app.network.SkyService;
 import tv.ismar.homepage.OnItemClickListener;
@@ -320,12 +321,14 @@ public class TemplateOrder extends Template
 							mFetchControl.getHomeEntity(mBannerPk).channel,
 							Integer.valueOf(mFetchControl.getHomeEntity(mBannerPk).style),
 							mFetchControl.getHomeEntity(mBannerPk).section_slug);
+			mFetchControl.launcher_vod_click("section",-1+"","更多",locationY+","+(position+1),mChannel);
 		} else {
         	/*modify by dragontec for bug 4334 start*/
 			mFetchControl.go2Detail(mAdapter.getData().get(position));
             /*modify by dragontec for bug 4334 end*/
+			BannerPoster entity=mAdapter.getData().get(position);
+			mFetchControl.launcher_vod_click(entity.model_name,entity.pk+"",entity.title,locationY+","+(position+1),mChannel);
 		}
-		mFetchControl.launcher_vod_click(mAdapter.getData().get(position).model_name,mBannerPk,mName,locationY+","+(position+1),mChannel);
 	}
 
 	/*modify by dragontec for bug 4277 start*/

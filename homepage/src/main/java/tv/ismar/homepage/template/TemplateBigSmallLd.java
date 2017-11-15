@@ -19,6 +19,7 @@ import com.daimajia.androidanimations.library.YoYo;
 import com.open.androidtvwidget.leanback.recycle.LinearLayoutManagerTV;
 import com.open.androidtvwidget.leanback.recycle.RecyclerViewTV;
 import tv.ismar.app.core.PageIntent;
+import tv.ismar.app.entity.banner.BannerPoster;
 import tv.ismar.app.entity.banner.HomeEntity;
 import tv.ismar.homepage.OnItemClickListener;
 import tv.ismar.homepage.OnItemHoverListener;
@@ -308,6 +309,7 @@ public class TemplateBigSmallLd extends Template
 							mFetchControl.getHomeEntity(mBannerPk).channel,
 							Integer.valueOf(mFetchControl.getHomeEntity(mBannerPk).style),
 							mFetchControl.getHomeEntity(mBannerPk).section_slug);
+			mFetchControl.launcher_vod_click("section",-1+"","更多",locationY+","+(position+1),mChannel);
 		} else {
 			if (mAdapter.getBigImage() != null) {
 				if (position == 0) {
@@ -318,8 +320,9 @@ public class TemplateBigSmallLd extends Template
 			} else {
 				mFetchControl.go2Detail(mAdapter.getData().get(position));
 			}
+			BannerPoster entity=mAdapter.getData().get(position);
+			mFetchControl.launcher_vod_click(entity.model_name,entity.pk+"",entity.title,locationY+","+(position+1),mChannel);
 		}
-		mFetchControl.launcher_vod_click(mAdapter.getData().get(position).model_name,mBannerPk,mName,locationY+","+(position+1),mChannel);
 	}
 
 	/*modify by dragontec for bug 4277 start*/
