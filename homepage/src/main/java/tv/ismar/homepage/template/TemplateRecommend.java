@@ -303,7 +303,7 @@ public class TemplateRecommend extends Template
       BannerPoster bannerRecommend = mFetchControl.mPosterMap.get(mBannerPk).get(position);
       if (bannerRecommend != null) {
         mFetchControl.go2Detail(bannerRecommend.pk,bannerRecommend.model_name,bannerRecommend.content_model,bannerRecommend.content_url,bannerRecommend.title,null,null,null);
-        mFetchControl.launcher_vod_click(mAdapter.getData().get(position).model_name,mBannerPk,mName,locationY+","+(position+1),mChannel);
+        mFetchControl.launcher_vod_click(bannerRecommend.model_name,bannerRecommend.pk+"",bannerRecommend.title,locationY+","+(position+1),mChannel);
       }
     }
   }

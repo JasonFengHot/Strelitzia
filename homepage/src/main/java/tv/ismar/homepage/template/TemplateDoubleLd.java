@@ -380,7 +380,8 @@ public class TemplateDoubleLd extends Template
     public void onItemClick(View view, int position) {
         if (position == 0) { // 第一张大图
             mFetchControl.go2Detail(mFetchControl.getHomeEntity(mBannerPk).bg_image);
-            mFetchControl.launcher_vod_click(mAdapter.getData().get(position).model_name,mBannerPk,mName,locationY+",1",mChannel);
+            BigImage entity=mFetchControl.getHomeEntity(mBannerPk).bg_image;
+            mFetchControl.launcher_vod_click(entity.model_name,entity.pk+"",entity.title,(locationY-1)+",1",mChannel);
         } else if (mFetchControl.getHomeEntity(mBannerPk).is_more && position == mAdapter.getItemCount() - 1) {
             new PageIntent()
                     .toListPage(
@@ -389,6 +390,7 @@ public class TemplateDoubleLd extends Template
                             mFetchControl.getHomeEntity(mBannerPk).channel,
                             mFetchControl.getHomeEntity(mBannerPk).style,
                             mFetchControl.getHomeEntity(mBannerPk).section_slug);
+            mFetchControl.launcher_vod_click("section","-1","更多",locationY+",1",mChannel);
         } else {
             mFetchControl.go2Detail(mAdapter.getmData().get(position - 1));
             int Y=locationY;
@@ -396,8 +398,9 @@ public class TemplateDoubleLd extends Template
                 Y=locationY-1;
             }
             int locationX=(position+1)/2+1;
+            BannerPoster poster=mAdapter.getData().get(position);
             if(position<mAdapter.getItemCount())
-                mFetchControl.launcher_vod_click(mAdapter.getData().get(position).model_name,mBannerPk,mName,Y+","+locationX,mChannel);
+                mFetchControl.launcher_vod_click(poster.model_name,poster.pk+"",poster.title,Y+","+locationX,mChannel);
         }
     }
 
