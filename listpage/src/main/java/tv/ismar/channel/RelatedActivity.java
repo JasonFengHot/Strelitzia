@@ -473,7 +473,7 @@ public class RelatedActivity extends BaseActivity implements RelateScrollableSec
         boolean[] isSubItem = new boolean[1];
         int pk = SimpleRestClient.getItemId(item.item_url, isSubItem);
         if (item.is_complex) {
-            if (item.expense != null && (item.content_model.equals("variety") || item.content_model.equals("entertainment"))) {
+            if (item.expense_info != null && (item.content_model.equals("variety") || item.content_model.equals("entertainment"))) {
                 item.content_model = "music";
             }
             pageIntent.toDetailPage(RelatedActivity.this,"related",pk);

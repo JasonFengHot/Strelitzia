@@ -379,12 +379,12 @@ public class TemplateDoubleMd extends Template
         mFetchControl.launcher_vod_click(mAdapter.getData().get(position).model_name,mBannerPk,mName,locationY+",1",mChannel);
     } else if (mFetchControl.getHomeEntity(mBannerPk).is_more && position == mAdapter.getItemCount() - 1) {
       new PageIntent()
-          .toListPage(
-              mContext,
-              mFetchControl.getHomeEntity(mBannerPk).channel_title,
-              mFetchControl.getHomeEntity(mBannerPk).channel,
-              mFetchControl.getHomeEntity(mBannerPk).style,
-                  mFetchControl.getHomeEntity(mBannerPk).section_slug);
+			  .toListPage(
+					  mContext,
+					  mFetchControl.getHomeEntity(mBannerPk).channel_title,
+					  mFetchControl.getHomeEntity(mBannerPk).channel,
+					  Integer.valueOf(mFetchControl.getHomeEntity(mBannerPk).style),
+					  mFetchControl.getHomeEntity(mBannerPk).section_slug);
     } else {
 		mFetchControl.go2Detail(mAdapter.getmData().get(position - 1));
         int Y=locationY;

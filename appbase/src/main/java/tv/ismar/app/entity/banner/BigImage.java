@@ -7,17 +7,15 @@ package tv.ismar.app.entity.banner;
  */
 
 public class BigImage {
-    public String poster_url;//横图
-    public String vertical_url;//竖图
-    public String content_model;//类型
-    public String title;//标题
-	/*modify by dragontec for bug 卖点文字不正确的问题 start*/
-    public String focus;//简介
-	/*modify by dragontec for bug 卖点文字不正确的问题 end*/
-    public int rating_average;//评分
-    public String content_url;//媒体地址
-    public int pk;//媒体id
-    public String model_name;//表格名称（如item）
-    public String top_left_corner;//左上角角标
-    public String top_right_corner;
+	public String vertical_url;//竖版海报图地址
+	public int rating_average;//评分
+	public String focus;//焦点文字
+	public String content_model;//媒体类型
+	public String title;//标题
+	public String url;//地址
+	public String top_left_corner;//左上角标
+	public String top_right_corner;//右上角标
+	public String poster_url;//海报图地址
+	public int pk;//对象唯一标识id
+	public String model_name;//判断点击打开方式（item、section、gather、clip等）
 }

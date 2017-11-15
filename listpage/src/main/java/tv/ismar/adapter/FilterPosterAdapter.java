@@ -136,8 +136,8 @@ public class FilterPosterAdapter extends RecyclerView.Adapter<FilterPosterAdapte
                                 into(holder.item_vertical_poster_img);
 /*modify by dragontec for bug 4336 end*/
                     }
-                    if (item.expense != null) {
-                        Picasso.with(mContext).load(VipMark.getInstance().getImage((Activity) mContext, item.expense.pay_type, item.expense.cpid)).memoryPolicy(MemoryPolicy.NO_STORE).memoryPolicy(MemoryPolicy.NO_CACHE).into(holder.item_vertical_poster_vip);
+                    if (item.expense_info != null) {
+                        Picasso.with(mContext).load(VipMark.getInstance().getImage((Activity) mContext, item.expense_info.pay_type, item.expense_info.cpid)).memoryPolicy(MemoryPolicy.NO_STORE).memoryPolicy(MemoryPolicy.NO_CACHE).into(holder.item_vertical_poster_vip);
                         holder.item_vertical_poster_vip.setVisibility(View.VISIBLE);
                     } else {
                         holder.item_vertical_poster_vip.setVisibility(View.GONE);
@@ -189,8 +189,8 @@ public class FilterPosterAdapter extends RecyclerView.Adapter<FilterPosterAdapte
                         Picasso.with(mContext).load(R.drawable.item_horizontal_preview).error(R.drawable.item_horizontal_preview).placeholder(R.drawable.item_horizontal_preview).memoryPolicy(MemoryPolicy.NO_STORE).memoryPolicy(MemoryPolicy.NO_CACHE).config(Bitmap.Config.RGB_565)
                                 .into(holder.item_horizontal_poster_img);
                     }
-                    if (item.expense != null) {
-                        Picasso.with(mContext).load(VipMark.getInstance().getImage((Activity) mContext, item.expense.pay_type, item.expense.cpid)).memoryPolicy(MemoryPolicy.NO_STORE).memoryPolicy(MemoryPolicy.NO_CACHE).into(holder.item_horizontal_poster_vip);
+                    if (item.expense_info != null) {
+                        Picasso.with(mContext).load(VipMark.getInstance().getImage((Activity) mContext, item.expense_info.pay_type, item.expense_info.cpid)).memoryPolicy(MemoryPolicy.NO_STORE).memoryPolicy(MemoryPolicy.NO_CACHE).into(holder.item_horizontal_poster_vip);
                         holder.item_horizontal_poster_vip.setVisibility(View.VISIBLE);
                     } else {
                         holder.item_horizontal_poster_vip.setVisibility(View.GONE);

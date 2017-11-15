@@ -73,7 +73,7 @@ public class CenterAdapter extends BaseRecycleAdapter<CenterAdapter.CenterViewHo
 			BannerCarousels carousels = mData.get(position % mData.size());
 			holder.mTitle.setText(carousels.title);
 			/*add by dragontec for bug 4316,卖点文字不正确的问题 start*/
-			holder.mIntroduction.setText(carousels.getFocus());
+			holder.mIntroduction.setText(carousels.focus);
 			/*add by dragontec for bug 4316,卖点文字不正确的问题 end*/
 			/*add by dragontec for bug 4307,4277 start*/
 			holder.mLayout.setFocusableInTouchMode(false);
@@ -97,8 +97,8 @@ public class CenterAdapter extends BaseRecycleAdapter<CenterAdapter.CenterViewHo
 			}
 			/*add by dragontec for bug 4325,卖点文字不正确的问题 start*/
 			String focusStr = carousels.title;
-			if (carousels.getFocus() != null && !carousels.getFocus().equals("") && !carousels.getFocus().equals("null")) {
-				focusStr = carousels.getFocus();
+			if (carousels.focus != null && !carousels.focus.equals("") && !carousels.focus.equals("null")) {
+				focusStr = carousels.focus;
 			}
 			holder.mTitle.setTag(new String[]{carousels.title, focusStr});
 			/*add by dragontec for bug 4325,卖点文字不正确的问题 end*/

@@ -78,17 +78,17 @@ public class BaseControl {
      */
     public void go2Detail(BigImage entity){
         if(entity == null) return;
-        go2Detail(entity.pk, entity.model_name, entity.content_model, entity.content_url, entity.title,"","","");
+        go2Detail(entity.pk, entity.model_name, entity.content_model, entity.url, entity.title,"","","","", "",0,"");
     }
 
     public void go2Detail(BannerPoster entity){
         if(entity == null) return;
-        go2Detail(entity.pk, entity.model_name, entity.content_model, entity.content_url, entity.title,entity.app_id,entity.nameId,entity.backgroundUrl);
+        go2Detail(entity.pk, entity.model_name, entity.content_model, entity.url, entity.title,entity.app_id,entity.nameId,entity.backgroundUrl, entity.channel_title, entity.channel, entity.style, entity.section_slug);
     }
 
     public void go2Detail(BannerCarousels entity){
         if(entity == null) return;
-        go2Detail(entity.pk, entity.model_name, entity.content_model, entity.url, entity.title,"","","");
+        go2Detail(entity.pk, entity.model_name, entity.content_model, entity.url, entity.title,"","","", "", "", 0, "");
     }
 
     /**
@@ -99,7 +99,7 @@ public class BaseControl {
      * @param url
      * @param title
      */
-    public void go2Detail(int pk, String modelName, String contentModel, String url, String title,String appId,String nameId,String backgroundUrl) {
+    public void go2Detail(int pk, String modelName, String contentModel, String url, String title,String appId,String nameId,String backgroundUrl, String channelTitle, String channel, int style, String slug) {
         if(modelName==null || contentModel==null
                 /*|| StringUtils.isEmpty(url)*/) return;
         Intent intent = new Intent();
@@ -116,15 +116,18 @@ public class BaseControl {
             intent.setAction("tv.ismar.daisy.Topic");
             mContext.startActivity(intent);
         } else if (modelName.contains("section")) {
-            intent.putExtra("title", title);
-            intent.putExtra("itemlistUrl", url);
-            intent.putExtra("lableString", title);
-            intent.putExtra("pk", pk);
-            intent.setAction("tv.ismar.daisy.packagelist");
-            mContext.startActivity(intent);
+			PageIntent pageIntent = new PageIntent();
+			pageIntent.toListPage(mContext, channelTitle, channel, style, slug);
+//            intent.putExtra("title", title);
+//            intent.putExtra("itemlistUrl", url);
+//            intent.putExtra("lableString", title);
+//            intent.putExtra("pk", pk);
+//            intent.setAction("tv.ismar.daisy.packagelist");
+//            mContext.startActivity(intent);
         } else if (modelName.contains("package")) {
             intent.setAction("tv.ismar.daisy.packageitem");
             intent.putExtra("url", url);
+			mContext.startActivity(intent);
         } else if (modelName.contains("clip")) {
             PageIntent pageIntent = new PageIntent();
             pageIntent.toPlayPage(mContext, pk, -1, Source.HOMEPAGE);

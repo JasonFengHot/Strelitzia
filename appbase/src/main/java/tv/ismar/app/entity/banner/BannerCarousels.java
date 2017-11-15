@@ -7,96 +7,16 @@ package tv.ismar.app.entity.banner;
  */
 
 public class BannerCarousels {
-    public String video_image;//轮播用的视频图片地址
-    public String video_url;//轮播用的视频地址
-    public String content_model;//媒体类型
-    public int pause_time;//图片暂停时间
-    public String title;//影片标题
-    public String url;//详情页地址
-	/*modify by dragontec for bug 卖点文字不正确的问题 start*/
-    public String focus;//简介
-	/*modify by dragontec for bug 卖点文字不正确的问题 end*/
-    public int pk;
-    public boolean expense;
-    public String model_name;
-
-    public String getVideo_image() {
-        return video_image;
-    }
-
-    public void setVideo_image(String video_image) {
-        this.video_image = video_image;
-    }
-
-    public String getVideo_url() {
-        return video_url;
-    }
-
-    public void setVideo_url(String video_url) {
-        this.video_url = video_url;
-    }
-
-    public String getContent_model() {
-        return content_model;
-    }
-
-    public void setContent_model(String content_model) {
-        this.content_model = content_model;
-    }
-
-    public int getPause_time() {
-        return pause_time;
-    }
-
-    public void setPause_time(int pause_time) {
-        this.pause_time = pause_time;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
-	/*modify by dragontec for bug 卖点文字不正确的问题 start*/
-    public String getFocus() {
-        return focus;
-    }
-
-    public void setFocus(String focus) {
-        this.focus = focus;
-    }
-	/*modify by dragontec for bug 卖点文字不正确的问题 end*/
-    public int getPk() {
-        return pk;
-    }
-
-    public void setPk(int pk) {
-        this.pk = pk;
-    }
-
-    public boolean isExpense() {
-        return expense;
-    }
-
-    public void setExpense(boolean expense) {
-        this.expense = expense;
-    }
-
-    public String getModel_name() {
-        return model_name;
-    }
-
-    public void setModel_name(String model_name) {
-        this.model_name = model_name;
-    }
+	public String video_image;//视频图片地址
+	public String video_url;//视频地址
+	public String focus;//焦点文字
+	public String content_model;//媒体类型
+	public int pause_time;//暂停时间
+	public String thumb_image;//缩略图地址
+	public String title;//标题
+	public String url;//详情地址
+	public String top_left_corner;//左上角标
+	public String top_right_corner;//右上角标
+	public int pk;//ID（关联对象），唯一标识
+	public String model_name; //判断点击打开方式（item、section、gather、clip等）
 }

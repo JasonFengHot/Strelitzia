@@ -124,10 +124,10 @@ public class RelatedAdapter extends BaseAdapter implements AsyncImageView.OnImag
         } else {
             holder.ItemBeanScore.setVisibility(View.INVISIBLE);
         }
-        if (mItemList.get(position).expense != null) {
-            if (mItemList.get(position).expense.cptitle != null) {
+        if (mItemList.get(position).expense_info != null) {
+            if (mItemList.get(position).expense_info.cptitle != null) {
                 holder.price.setVisibility(View.VISIBLE);
-                String imageUrl = VipMark.getInstance().getImage((Activity) mContext, mItemList.get(position).expense.pay_type, mItemList.get(position).expense.cpid);
+                String imageUrl = VipMark.getInstance().getImage((Activity) mContext, mItemList.get(position).expense_info.pay_type, mItemList.get(position).expense_info.cpid);
                 Picasso.with(mContext).load(imageUrl).into(holder.price);
             }
         } else {

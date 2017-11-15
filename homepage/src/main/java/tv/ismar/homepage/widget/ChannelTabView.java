@@ -187,7 +187,7 @@ public class ChannelTabView extends HorizontalScrollView {
 //        sectionHolder.setFocusableInTouchMode(true);
         TextView label = (TextView) sectionHolder.findViewById(R.id.section_label);
         ((LayoutParams) label.getLayoutParams()).setMargins(tabSpace, 0, tabSpace, 0);
-        label.setText(channelEntity.getName());
+        label.setText(channelEntity.name);
         return sectionHolder;
     }
 

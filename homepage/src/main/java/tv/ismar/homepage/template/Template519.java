@@ -307,7 +307,7 @@ public class Template519 extends Template
 							mContext,
 							mFetchControl.getHomeEntity(mBannerPk).channel_title,
 							mFetchControl.getHomeEntity(mBannerPk).channel,
-							mFetchControl.getHomeEntity(mBannerPk).style,
+							Integer.valueOf(mFetchControl.getHomeEntity(mBannerPk).style),
 							mFetchControl.getHomeEntity(mBannerPk).section_slug);
 		} else {
         	/*modify by dragontec for bug 4334 start*/

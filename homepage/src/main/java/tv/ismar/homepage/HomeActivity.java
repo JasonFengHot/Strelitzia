@@ -528,11 +528,11 @@ public class HomeActivity extends BaseActivity
         }
         for (int i = 0; i < channelEntities.length; i++) {
             ChannelEntity channelEntity = channelEntities[i];
-            if (!TextUtils.isEmpty(homepageUrl) && !TextUtils.isEmpty(channelEntity.getHomepage_url())
-                    && channelEntity.getHomepage_url().contains(homepageUrl)) {
+            if (!TextUtils.isEmpty(homepageUrl) && !TextUtils.isEmpty(channelEntity.homepage_url)
+                    && channelEntity.homepage_url.contains(homepageUrl)) {
                 defaultSelectPosition = i + 2;
             }
-            HorizontalTabView.Tab tab = new HorizontalTabView.Tab("", channelEntity.getName());
+            HorizontalTabView.Tab tab = new HorizontalTabView.Tab("", channelEntity.name);
             tabs.add(tab);
         }
         callBack( TAB_CHANGE_FALG, defaultSelectPosition);
@@ -543,7 +543,7 @@ public class HomeActivity extends BaseActivity
     /*add by dragontec for bug 3983 start 当动画执行过程中不响应按键*/
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
-        if(isAnimationPlaying || (getChannelFragment() != null && !getChannelFragment().isUpdateQueueEmpty())){
+        if(isAnimationPlaying || !getChannelFragment().isUpdateQueueEmpty()){
             return true;
         }
 /*add by dragontec for bug 4259 start*/
@@ -799,7 +799,7 @@ public class HomeActivity extends BaseActivity
                         break;
                     default: // 其他频道
                         if (position - 2 < 0) return;
-                        if (mFetchDataControl.mChannels[position - 2].getChannel().equals("comic")) {
+                        if (mFetchDataControl.mChannels[position - 2].channel.equals("comic")) {
 							/*add by dragontec for bug 4346 start*/
                             setBackground(R.drawable.channel_child_bg);
                             right_image.post(new Runnable() {
@@ -837,10 +837,10 @@ public class HomeActivity extends BaseActivity
 							/*add by dragontec for bug 4346 end*/
                         }
                         channelFragment.setChannel(
-                                mFetchDataControl.mChannels[position - 2].getName(),
-                                mFetchDataControl.mChannels[position - 2].getChannel(),
-                                mFetchDataControl.mChannels[position - 2].getName(),
-                                mFetchDataControl.mChannels[position - 2].getStyle());
+                                mFetchDataControl.mChannels[position - 2].name,
+                                mFetchDataControl.mChannels[position - 2].channel,
+                                mFetchDataControl.mChannels[position - 2].name,
+                                mFetchDataControl.mChannels[position - 2].style);
                         break;
                 }
                 if (position > mLastSelectedIndex) { // 右切

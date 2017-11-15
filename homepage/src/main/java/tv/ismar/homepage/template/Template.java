@@ -266,10 +266,10 @@ public abstract class Template implements BaseControl.ControlCallBack {
 				title = bean.getTitle();
 			} else if (tag instanceof BannerCarousels) {
 				BannerCarousels bean = (BannerCarousels) tag;
-				contentModel = bean.getContent_model();
-				url = bean.getUrl();
-				itemPk = bean.getPk();
-				title = bean.getTitle();
+				contentModel = bean.content_model;
+				url = bean.url;
+				itemPk = bean.pk;
+				title = bean.title;
 			}
 		}
 

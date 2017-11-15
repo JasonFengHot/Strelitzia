@@ -664,7 +664,7 @@ public class TemplateGuide extends Template
                             mContext,
                             mFetchControl.getHomeEntity(mBannerPk).channel_title,
                             mFetchControl.getHomeEntity(mBannerPk).channel,
-                            mFetchControl.getHomeEntity(mBannerPk).style,
+                            Integer.valueOf(mFetchControl.getHomeEntity(mBannerPk).style),
                             mFetchControl.getHomeEntity(mBannerPk).section_slug);
         } else {
             mControl.go2Detail(mFetchControl.getHomeEntity(mBannerPk).posters.get(position));
@@ -844,7 +844,7 @@ public class TemplateGuide extends Template
         changeCarouselIcon(mCurrentCarouselIndex);
 
         Logger.t(TAG).d("play carousel position: " + mCurrentCarouselIndex);
-        String videoUrl = mFetchControl.mCarouselsMap.get(mBannerPk).get(mCurrentCarouselIndex).getVideo_url();
+        String videoUrl = mFetchControl.mCarouselsMap.get(mBannerPk).get(mCurrentCarouselIndex).video_url;
         if (playSubscription != null && !playSubscription.isUnsubscribed()){
             playSubscription.unsubscribe();
         }
@@ -943,15 +943,15 @@ public class TemplateGuide extends Template
 
         mVideoViewLayout.setTag(mFetchControl.mCarouselsMap.get(mBannerPk).get(mCurrentCarouselIndex));
 
-        final String url = mFetchControl.mCarouselsMap.get(mBannerPk).get(mCurrentCarouselIndex).getVideo_image();
-        String tilte = mFetchControl.mCarouselsMap.get(mBannerPk).get(mCurrentCarouselIndex).getTitle();
+        final String url = mFetchControl.mCarouselsMap.get(mBannerPk).get(mCurrentCarouselIndex).video_image;
+        String tilte = mFetchControl.mCarouselsMap.get(mBannerPk).get(mCurrentCarouselIndex).title;
         if (!StringUtils.isEmpty(tilte)) {
             mVideoTitleTv.setVisibility(View.VISIBLE);
             mVideoTitleTv.setText(tilte);
         } else {
             mVideoTitleTv.setVisibility(View.GONE);
         }
-        final int pauseTime = mFetchControl.mCarouselsMap.get(mBannerPk).get(mCurrentCarouselIndex).getPause_time();
+        final int pauseTime = mFetchControl.mCarouselsMap.get(mBannerPk).get(mCurrentCarouselIndex).pause_time;
  		/*modify by dragontec for bug 4428 start*/
         if(url == null || url.equals("")){
             Picasso.with(mContext)
@@ -1017,7 +1017,7 @@ public class TemplateGuide extends Template
 
         mVideoViewLayout.setTag(mFetchControl.mCarouselsMap.get(mBannerPk).get(mCurrentCarouselIndex));
 
-        String title = mFetchControl.mCarouselsMap.get(mBannerPk).get(mCurrentCarouselIndex).getTitle();
+        String title = mFetchControl.mCarouselsMap.get(mBannerPk).get(mCurrentCarouselIndex).title;
         if (!StringUtils.isEmpty(title)) {
             mVideoTitleTv.setVisibility(View.VISIBLE);
             mVideoTitleTv.setText(title);
@@ -1042,7 +1042,7 @@ public class TemplateGuide extends Template
             videoPath =
                     CacheManager.getInstance()
                             .doRequest(
-                                    mFetchControl.mCarouselsMap.get(mBannerPk).get(mCurrentCarouselIndex).getVideo_url(),
+                                    mFetchControl.mCarouselsMap.get(mBannerPk).get(mCurrentCarouselIndex).video_url,
                                     videoName,
                                     DownloadClient.StoreType.Internal);
 /*add by dragontec for bug 4415 start*/
@@ -1056,7 +1056,7 @@ public class TemplateGuide extends Template
             videoPath =
                     CacheManager.getInstance()
                             .doRequest(
-                                    mFetchControl.mCarouselsMap.get(mBannerPk).get(mCurrentCarouselIndex).getVideo_url(),
+                                    mFetchControl.mCarouselsMap.get(mBannerPk).get(mCurrentCarouselIndex).video_url,
                                     videoName,
                                     DownloadClient.StoreType.External);
 /*add by dragontec for bug 4415 start*/

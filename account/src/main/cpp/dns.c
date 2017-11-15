@@ -287,6 +287,12 @@ char *ngethostbyname(unsigned char *host, int query_type) {
             LOGD("has IPv4 address : %s", inet_ntoa(a.sin_addr));
 #endif
 
+/*add by dragontec for bug 4469 4431 start*/
+            if (s != -1) {
+                close(s);
+            }
+/*add by dragontec for bug 4469 4431 end*/
+
             return inet_ntoa(a.sin_addr);
         }
 
@@ -353,6 +359,13 @@ char *ngethostbyname(unsigned char *host, int query_type) {
 #endif
 
     }
+
+/*add by dragontec for bug 4469 4431 start*/
+    if (s != -1) {
+        close(s);
+    }
+/*add by dragontec for bug 4469 4431 end*/
+
     return "0.0.0.0";
 }
 

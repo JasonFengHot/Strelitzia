@@ -72,7 +72,7 @@ public class ChannelRecyclerAdapter extends RecyclerView.Adapter<ChannelRecycler
     public void onBindViewHolder(final ChannelHolder holder, int position) {
         ChannelEntity channelEntity = movieList.get(position);
         holder.channel_item_back.setBackgroundResource(R.drawable.channel_item_normal);
-        holder.channel_item_text.setText(channelEntity.getName());
+        holder.channel_item_text.setText(channelEntity.name);
 
         holder.itemView.setOnHoverListener(new View.OnHoverListener() {
             @Override

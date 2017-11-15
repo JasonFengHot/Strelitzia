@@ -185,10 +185,10 @@ public class HGridAdapterImpl extends HGridAdapter<ItemCollection> implements As
             if(mList.get(sectionIndex).isItemReady(indexOfCurrentSection)) {
                 final Item item = mList.get(sectionIndex).objects.get(indexOfCurrentSection);
                 if(item!=null){
-                    if(item.expense!=null){
-						if(item.expense.cptitle!=null){
+                    if(item.expense_info!=null){
+						if(item.expense_info.cptitle!=null){
 							holder.price.setVisibility(View.VISIBLE);
-							String imageUrl =  VipMark.getInstance().getImage((Activity) mContext, item.expense.pay_type,item.expense.cpid);
+							String imageUrl =  VipMark.getInstance().getImage((Activity) mContext, item.expense_info.pay_type,item.expense_info.cpid);
 							Picasso.with(mContext).load(imageUrl).into(holder.price);
 						}  else{
 							holder.price.setVisibility(View.GONE);
@@ -214,18 +214,22 @@ public class HGridAdapterImpl extends HGridAdapter<ItemCollection> implements As
 								holder.previewImage.setUrl(item.list_url);
 							}
 						} else {
-							if(item.adlet_url.equals("http://res.tvxio.bestv.com.cn/media/upload/20160504/5eae6db53f065ff0269dfc71fb28a4ec.png")){
+                    		if (item.adlet_url != null) {
+								if (item.adlet_url.equals("http://res.tvxio.bestv.com.cn/media/upload/20160504/5eae6db53f065ff0269dfc71fb28a4ec.png")) {
 /*modify by dragontec for bug 4336 start*/
-								Picasso.with(mContext)
-										.load(item.list_url)
-										.error(R.drawable.item_horizontal_preview)
-										.placeholder(R.drawable.item_horizontal_preview)
-										.transform(mTransformation)
-										.config(Bitmap.Config.RGB_565)
-										.into(holder.previewImage);
+									Picasso.with(mContext)
+											.load(item.list_url)
+											.error(R.drawable.item_horizontal_preview)
+											.placeholder(R.drawable.item_horizontal_preview)
+											.transform(mTransformation)
+											.config(Bitmap.Config.RGB_565)
+											.into(holder.previewImage);
 /*modify by dragontec for bug 4336 end*/
-							}else {
-								holder.previewImage.setUrl(item.adlet_url);
+								} else {
+									holder.previewImage.setUrl(item.adlet_url);
+								}
+							} else {
+								holder.previewImage.setImageResource(R.drawable.item_horizontal_preview);
 							}
 						}
                     if(isPortrait){

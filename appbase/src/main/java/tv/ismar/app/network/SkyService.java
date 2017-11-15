@@ -717,11 +717,11 @@ public interface SkyService {
             @Path("item_id") String item_id
     );
 
-    @GET("api/tv/banner/{banner_name}/{page}/")
-    Observable<BannerEntity> apiTvBanner(
-            @Path("banner_name") String banner,
-            @Path("page") int page
-    );
+//    @GET("api/tv/banner/{banner_name}/{page}/")
+//    Observable<BannerEntity> apiTvBanner(
+//            @Path("banner_name") String banner,
+//            @Path("page") int page
+//    );
 
 
     @GET("accounts/sports/subscribe/")
