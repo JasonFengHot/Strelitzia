@@ -203,6 +203,9 @@ public class PurchaseHistoryFragment extends BaseFragment implements PurchaseHis
         createHistoryListView(arrayList);
     }
 
+    /*add by dragontec for bug 4455 start*/
+    private static final int History_List_Max_Count = 40;
+    /*add by dragontec for bug 4455 end*/
 
     private void createHistoryListView(ArrayList<AccountsOrdersEntity.OrderEntity> orderEntities) {
         mRecyclerView.removeAllViews();
@@ -212,8 +215,10 @@ public class PurchaseHistoryFragment extends BaseFragment implements PurchaseHis
 //            if(!orderEntities.isEmpty()){
 //                purchaseHasData = true;
 //            }
-
-        for (int i = 0; i < orderEntities.size(); i++) {
+		/*add by dragontec for bug 4455 start*/
+		int size = orderEntities.size() > History_List_Max_Count ? History_List_Max_Count : orderEntities.size();
+        for (int i = 0; i < size; i++) {
+        /*add by dragontec for bug 4455 end*/
             View convertView = LayoutInflater.from(mUserCenterActivity).inflate(R.layout.item_purchase_history, null);
 
             AccountsOrdersEntity.OrderEntity item = orderEntities.get(i);

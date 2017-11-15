@@ -1,6 +1,7 @@
 package tv.ismar.adapter;
 
 import android.content.Context;
+import android.graphics.Rect;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
@@ -213,9 +214,16 @@ public class FocusGridLayoutManager extends GridLayoutManager {
         if(nextView instanceof TextView){
             nextView=findViewByPosition(nextPos+1);
         }
+		/*modify by dragontec for bug 4482 start*/
         if(nextView==null&&focusDirection==View.FOCUS_RIGHT){
-            nextView=focused;
+            ((HistoryFavoriteListAdapter)((RecyclerView)focused.getParent()).getAdapter()).setBindingViewRequestFocusPosition(nextPos);
+            ((RecyclerView)focused.getParent()).smoothScrollToPosition(nextPos);
         }
+        if(nextView==null&&focusDirection==View.FOCUS_LEFT){
+            ((HistoryFavoriteListAdapter)((RecyclerView)focused.getParent()).getAdapter()).setBindingViewRequestFocusPosition(nextPos);
+            ((RecyclerView)focused.getParent()).smoothScrollToPosition(nextPos);
+        }
+		/*modify by dragontec for bug 4482 end*/
         if(nextView==null&&focusDirection==View.FOCUS_DOWN){
             nextView=focused;
             YoYo.with(Techniques.VerticalShake).duration(1000).playOn(nextView);

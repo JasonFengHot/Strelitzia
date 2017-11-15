@@ -36,6 +36,9 @@ public class HistoryFavoriteListAdapter extends RecyclerView.Adapter<HistoryFavo
     private OnItemClickListener itemClickListener;
     private OnItemFocusedListener itemFocusedListener;
     private OnItemOnhoverlistener itemOnhoverlistener;
+	/*modify by dragontec for bug 4482 start*/
+    private int bindingViewRequestFocusPosition = -1;
+	/*modify by dragontec for bug 4482 end*/
     public HistoryFavoriteListAdapter(Context context,List<HistoryFavoriteEntity> item,int typeId,String source) {
         mContext=context;
         items=item;
@@ -73,6 +76,9 @@ public class HistoryFavoriteListAdapter extends RecyclerView.Adapter<HistoryFavo
             if (!TextUtils.isEmpty(item.getFocus())) {
               //  holder.intro.setText(item.getFocus());
             }
+			/*modify by dragontec for bug 4482 start*/
+            holder.itemView.setTag(position);
+			/*modify by dragontec for bug 4482 end*/
             if (!TextUtils.isEmpty(item.getTitle()))
                 holder.title.setText(item.getTitle());
             if (!TextUtils.isEmpty(item.getAdlet_url())) {
@@ -133,7 +139,16 @@ public class HistoryFavoriteListAdapter extends RecyclerView.Adapter<HistoryFavo
     public int getItemCount() {
         return items.size();
     }
+	/*modify by dragontec for bug 4482 start*/
+    public void setBindingViewRequestFocusPosition(int bindingViewRequestFocusPosition) {
+        this.bindingViewRequestFocusPosition = bindingViewRequestFocusPosition;
+    }
 
+    public int getBindingViewRequestFocusPosition() {
+       return this.bindingViewRequestFocusPosition;
+    }
+	/*modify by dragontec for bug 4482 end*/
+	
     public static class listViewholder extends RecyclerView.ViewHolder{
         private RecyclerImageView item_detail_image,vip_image,marking_bg,delete_bg;
         private TextView marking,intro,title;
