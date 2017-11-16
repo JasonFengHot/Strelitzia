@@ -100,7 +100,7 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
     private TextView current_section_title;
     private View filter_noresult;
     private Button tab_arrow_up;
-    private Button tab_arrow_dowm;
+    private Button tab_arrow_down;
     private Button poster_arrow_up;
     private Button poster_arrow_down;
     private LocationRelativeLayout filter_root_view;
@@ -202,21 +202,21 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
         //空鼠箭头view
         filter_root_view = (LocationRelativeLayout) findViewById(R.id.filter_root_view);
         tab_arrow_up = (Button)findViewById(R.id.tab_arrow_up);
-        tab_arrow_dowm = (Button)findViewById(R.id.tab_arrow_dowm);
+        tab_arrow_down = (Button)findViewById(R.id.tab_arrow_down);
         poster_arrow_up = (Button)findViewById(R.id.poster_arrow_up);
         poster_arrow_down = (Button)findViewById(R.id.poster_arrow_down);
         filter_root_view.setArrow_up_left(tab_arrow_up);
-        filter_root_view.setArrow_down_left(tab_arrow_dowm);
+        filter_root_view.setArrow_down_left(tab_arrow_down);
         filter_root_view.setArrow_up_right(poster_arrow_up);
         filter_root_view.setArrow_down_right(poster_arrow_down);
         full_view = findView(R.id.full_view);
         filter_root_view.setxBoundary(getResources().getDimensionPixelOffset(R.dimen.filter_layout_left_view_tab_w));
         tab_arrow_up.setOnHoverListener(this);
-        tab_arrow_dowm.setOnHoverListener(this);
+        tab_arrow_down.setOnHoverListener(this);
         poster_arrow_up.setOnHoverListener(this);
         poster_arrow_down.setOnHoverListener(this);
         tab_arrow_up.setOnClickListener(this);
-        tab_arrow_dowm.setOnClickListener(this);
+        tab_arrow_down.setOnClickListener(this);
         poster_arrow_up.setOnClickListener(this);
         poster_arrow_down.setOnClickListener(this);
         full_view.setOnHoverListener(this);
@@ -232,8 +232,8 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
                     if(keyCode==19||keyCode==20||keyCode==21||keyCode==22) {
                         if (v.hasFocus()) {
 /*modify by dragontec for bug 4267 start*/
-//                            if (onKeyFocusView != v && onKeyFocusView != tab_arrow_up && onKeyFocusView != tab_arrow_dowm && onKeyFocusView != poster_arrow_up && onKeyFocusView != poster_arrow_down) {
-                            if (onKeyFocusView != null && onKeyFocusView != v && onKeyFocusView != tab_arrow_up && onKeyFocusView != tab_arrow_dowm && onKeyFocusView != poster_arrow_up && onKeyFocusView != poster_arrow_down) {
+//                            if (onKeyFocusView != v && onKeyFocusView != tab_arrow_up && onKeyFocusView != tab_arrow_down && onKeyFocusView != poster_arrow_up && onKeyFocusView != poster_arrow_down) {
+                            if (onKeyFocusView != null && onKeyFocusView != v && onKeyFocusView != tab_arrow_up && onKeyFocusView != tab_arrow_down && onKeyFocusView != poster_arrow_up && onKeyFocusView != poster_arrow_down) {
 /*modify by dragontec for bug 4267 end*/
                                 onKeyFocusView.requestFocus();
                                 onKeyFocusView.requestFocusFromTouch();
@@ -1193,7 +1193,7 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
                     ((RadioButton) section_group.getChildAt(firstPos)).setChecked(true);
                     section_group.getChildAt(firstPos).callOnClick();
                 }
-            } else if (i == R.id.tab_arrow_dowm) {
+            } else if (i == R.id.tab_arrow_down) {
                 tab_scroll.scrollBy(0, getResources().getDimensionPixelOffset(R.dimen.list_scroll_arrow_down_lenth));
                 firstPos = tab_scroll.getScrollY() / section_group.getChildAt(0).getHeight();
                 if (checkedTab < firstPos || checkedTab > firstPos + 8) {
@@ -1228,12 +1228,21 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
                         }
                     } else {
                         nextPos =mFocusGridLayoutManager.findFirstCompletelyVisibleItemPosition()-1;
-                        if(checkedTab>0&&nextPos-specialPos.get(checkedTab-1)<=spanCount){
+                        if(specialPos.contains(nextPos)){
+                            int lastSpecialPosIndex=specialPos.indexOf(nextPos)-1;
+                            if(lastSpecialPosIndex>=0&&nextPos-specialPos.get(lastSpecialPosIndex)<=spanCount){
+                                mFocusGridLayoutManager.scrollToPositionWithOffset(nextPos-1, getResources().getDimensionPixelOffset(R.dimen.list_scroll_up_offset_h1));
+                            }else{
+                                mFocusGridLayoutManager.scrollToPositionWithOffset(nextPos-1, getResources().getDimensionPixelOffset(R.dimen.list_scroll_down_offset_h));
+                            }
+                        } else if(checkedTab>0&&nextPos-specialPos.get(checkedTab-1)<=spanCount){
                             mFocusGridLayoutManager.scrollToPositionWithOffset(nextPos, getResources().getDimensionPixelOffset(R.dimen.list_scroll_up_offset_h1));
-                        }else if(specialPos.contains(nextPos)){
-                            mFocusGridLayoutManager.scrollToPositionWithOffset(nextPos-1, getResources().getDimensionPixelOffset(R.dimen.list_scroll_down_offset_h));
                         }else {
-                            mFocusGridLayoutManager.scrollToPositionWithOffset(nextPos, getResources().getDimensionPixelOffset(R.dimen.list_scroll_down_offset_h));
+                            if(nextPos-specialPos.get(checkedTab)>0&&nextPos-specialPos.get(checkedTab)<=spanCount){
+                                mFocusGridLayoutManager.scrollToPositionWithOffset(nextPos, getResources().getDimensionPixelOffset(R.dimen.list_scroll_up_offset_h1));
+                            }else{
+                                mFocusGridLayoutManager.scrollToPositionWithOffset(nextPos, getResources().getDimensionPixelOffset(R.dimen.list_scroll_down_offset_h));
+                            }
                         }
                     }
                 }
