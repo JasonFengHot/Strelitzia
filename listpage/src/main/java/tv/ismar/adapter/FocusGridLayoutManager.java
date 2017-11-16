@@ -216,12 +216,20 @@ public class FocusGridLayoutManager extends GridLayoutManager {
         }
 		/*modify by dragontec for bug 4482 start*/
         if(nextView==null&&focusDirection==View.FOCUS_RIGHT){
-            ((HistoryFavoriteListAdapter)((RecyclerView)focused.getParent()).getAdapter()).setBindingViewRequestFocusPosition(nextPos);
-            ((RecyclerView)focused.getParent()).smoothScrollToPosition(nextPos);
+            RecyclerView.Adapter adapter = ((RecyclerView)focused.getParent()).getAdapter();
+            if(adapter instanceof HistoryFavoriteListAdapter){
+                ((HistoryFavoriteListAdapter)adapter).setBindingViewRequestFocusPosition(nextPos);
+                ((RecyclerView)focused.getParent()).smoothScrollToPosition(nextPos);
+            }else{
+                nextView=focused;
+            }
         }
         if(nextView==null&&focusDirection==View.FOCUS_LEFT){
-            ((HistoryFavoriteListAdapter)((RecyclerView)focused.getParent()).getAdapter()).setBindingViewRequestFocusPosition(nextPos);
-            ((RecyclerView)focused.getParent()).smoothScrollToPosition(nextPos);
+            RecyclerView.Adapter adapter = ((RecyclerView)focused.getParent()).getAdapter();
+            if(adapter instanceof HistoryFavoriteListAdapter){
+                ((HistoryFavoriteListAdapter)adapter).setBindingViewRequestFocusPosition(nextPos);
+                ((RecyclerView)focused.getParent()).smoothScrollToPosition(nextPos);
+            }
         }
 		/*modify by dragontec for bug 4482 end*/
         if(nextView==null&&focusDirection==View.FOCUS_DOWN){
