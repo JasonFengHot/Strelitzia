@@ -133,17 +133,17 @@ public class HistoryFavoritrListActivity extends BaseActivity implements OnItemC
 //                }
 //            }
 //        });
-        clearAll.setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if(event.getAction()==KeyEvent.ACTION_DOWN&&keyCode==20){
-                    if(lastFocusView!=null){
-                        lastFocusView.requestFocusFromTouch();
-                    }
-                }
-                return false;
-            }
-        });
+//        clearAll.setOnKeyListener(new View.OnKeyListener() {
+//            @Override
+//            public boolean onKey(View v, int keyCode, KeyEvent event) {
+//                if(event.getAction()==KeyEvent.ACTION_DOWN&&keyCode==20){
+//                    if(lastFocusView!=null){
+//                        lastFocusView.requestFocusFromTouch();
+//                    }
+//                }
+//                return false;
+//            }
+//        });
     }
 	/*modify by dragontec for bug 4482 start*/
     @Override
@@ -205,6 +205,11 @@ public class HistoryFavoritrListActivity extends BaseActivity implements OnItemC
                     }
                 }
             }
+        }else if(event.getAction() == KeyEvent.ACTION_UP){
+            if(event.getKeyCode() == KeyEvent.KEYCODE_1){
+                View outSide = recyclerView.findViewWithTag(8);
+                outSide.requestFocus();
+            }
         }
         return super.dispatchKeyEvent(event);
     }
@@ -247,7 +252,7 @@ public class HistoryFavoritrListActivity extends BaseActivity implements OnItemC
             public void onGlobalLayout() {
                 if(onePageScrollY == -1){
                     if(recyclerView.getAdapter().getItemCount()> 8){
-                        View outsideView = recyclerView.findViewWithTag(9);
+                        View outsideView = recyclerView.findViewWithTag(8);
                         if(outsideView != null) {
                             Rect rect = new Rect();
                             outsideView.getGlobalVisibleRect(rect);
@@ -274,6 +279,27 @@ public class HistoryFavoritrListActivity extends BaseActivity implements OnItemC
             arrow_down.setVisibility(View.VISIBLE);
         }
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+
+                int position = adapter.getBindingViewRequestFocusPosition();
+                if(position != -1){
+                    int firstVisibleItemPosition = focusGridLayoutManager.findFirstVisibleItemPosition();
+                    int lastVisibleItemPosition = focusGridLayoutManager.findLastVisibleItemPosition();
+                    if(position >= firstVisibleItemPosition && position <= lastVisibleItemPosition){
+                        View targetFocus = recyclerView.findViewWithTag(position);
+                        if(targetFocus != null) {
+                            focusGridLayoutManager.setCanScroll(false);
+                            targetFocus.requestFocus();
+                            focusGridLayoutManager.setCanScroll(true);
+                            adapter.setBindingViewRequestFocusPosition(-1);
+                        }
+                    }
+                }
+            }
+
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 if(newState==SCROLL_STATE_IDLE){
@@ -291,18 +317,6 @@ public class HistoryFavoritrListActivity extends BaseActivity implements OnItemC
                             arrow_down.setVisibility(View.GONE);
                         }
 
-                    }
-                    int position = adapter.getBindingViewRequestFocusPosition();
-                    if(position != -1){
-                        int firstVisibleItemPosition = focusGridLayoutManager.findFirstVisibleItemPosition();
-                        int lastVisibleItemPosition = focusGridLayoutManager.findLastVisibleItemPosition();
-                        if(position >= firstVisibleItemPosition && position <= lastVisibleItemPosition){
-                            View targetFocus = recyclerView.findViewWithTag(position);
-                            if(targetFocus != null) {
-                                targetFocus.requestFocus();
-                                adapter.setBindingViewRequestFocusPosition(-1);
-                            }
-                        }
                     }
                 }
                 super.onScrollStateChanged(recyclerView, newState);
@@ -500,19 +514,19 @@ public class HistoryFavoritrListActivity extends BaseActivity implements OnItemC
     public void onItemfocused(View view, int position, boolean hasFocus) {
         if(hasFocus) {
             JasmineUtil.scaleOut3(view);
-            Log.i("ViewY", view.getY() + "");
-            if (!ishover) {
-                if (view.getY() > getResources().getDimensionPixelOffset(R.dimen.filter_poster_start_scroll_length)) {
-                    focusGridLayoutManager.setCanScroll(true);
-//                    recyclerView.smoothScrollBy(0, getResources().getDimensionPixelOffset(R.dimen.history_366));
-                } else if (view.getY() < getResources().getDimensionPixelOffset(R.dimen.history_200)) {
-                    focusGridLayoutManager.setCanScroll(true);
-//                    recyclerView.smoothScrollBy(0, -getResources().getDimensionPixelOffset(R.dimen.history_366));
-                }
-            }
+//            Log.i("ViewY", view.getY() + "");
+//            if (!ishover) {
+//                if (view.getY() > getResources().getDimensionPixelOffset(R.dimen.filter_poster_start_scroll_length)) {
+//                    focusGridLayoutManager.setCanScroll(true);
+////                    recyclerView.smoothScrollBy(0, getResources().getDimensionPixelOffset(R.dimen.history_366));
+//                } else if (view.getY() < getResources().getDimensionPixelOffset(R.dimen.history_200)) {
+//                    focusGridLayoutManager.setCanScroll(true);
+////                    recyclerView.smoothScrollBy(0, -getResources().getDimensionPixelOffset(R.dimen.history_366));
+//                }
+//            }
         }else{
             JasmineUtil.scaleIn3(view);
-            lastFocusView=view;
+//            lastFocusView=view;
         }
     }
     //防止recyclerview焦点乱跑
@@ -556,7 +570,7 @@ public class HistoryFavoritrListActivity extends BaseActivity implements OnItemC
 		/*delete by dragontec for bug 4482 end*/
         return super.onKeyDown(keyCode, event);
     }
-    private View lastFocusView;
+//    private View lastFocusView;
     boolean ishover=false;
     @Override
     public void OnItemOnhoverlistener(View v, MotionEvent event, int position, int recommend) {
