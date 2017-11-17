@@ -1288,7 +1288,7 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
             historyManager = VodApplication.getModuleAppContext().getModuleHistoryManager();
         }
         long time=0;
-        DateFormat format=new SimpleDateFormat("MM-dd");
+        DateFormat format=new SimpleDateFormat("yyyy-MM-dd");
         format.setTimeZone(TimeZone.getTimeZone("Asia/Shanghai"));
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(TrueTime.now().getTime());

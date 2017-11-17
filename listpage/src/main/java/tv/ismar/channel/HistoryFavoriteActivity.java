@@ -801,7 +801,10 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
             TextView title= (TextView) container.findViewById(R.id.title);
             final VideoEntity.Objects object=videoEntity.getObjects().get(i);
             item.setOnHoverListener(this);
-            Picasso.with(this).load(object.getImage()).into(detail);
+            if(object.getImage()==null||object.getImage().isEmpty()){
+                Picasso.with(this).load(R.drawable.item_horizontal_preview).into(detail);
+            }
+            Picasso.with(this).load(object.getImage()).error(R.drawable.item_horizontal_preview).into(detail);
             title.setText(object.getTitle());
             item.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -1019,6 +1022,7 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
                 if(mHistories.size()>0) {
                     Collections.sort(mHistories);
                     for(int i=0;i<mHistories.size();i++) {
+                        Log.i("listSize","time: "+mHistories.get(i).add_time+"");
                         History history = mHistories.get(i);
                         HistoryFavoriteEntity item = getItem(history);
                         allhistoryLists.add(item);
@@ -1124,7 +1128,7 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
         item.setModel_name(history.model_name);
         if(history.add_time==0){
             long time=0;
-            DateFormat format=new SimpleDateFormat("MM-dd");
+            DateFormat format=new SimpleDateFormat("yyyy-MM-dd");
             format.setTimeZone(TimeZone.getTimeZone("Asia/Shanghai"));
             Calendar calendar = Calendar.getInstance();
             calendar.setTimeInMillis(TrueTime.now().getTime());
@@ -1167,7 +1171,7 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
         item.setUrl(favorite.url);
         if(favorite.time==0){
             long time=0;
-            DateFormat format=new SimpleDateFormat("MM-dd");
+            DateFormat format=new SimpleDateFormat("yyyy-MM-dd");
             format.setTimeZone(TimeZone.getTimeZone("Asia/Shanghai"));
             Calendar calendar = Calendar.getInstance();
             calendar.setTimeInMillis(TrueTime.now().getTime());
