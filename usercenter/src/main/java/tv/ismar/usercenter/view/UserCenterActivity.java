@@ -767,7 +767,7 @@ public class UserCenterActivity extends BaseActivity implements LoginFragment.Lo
                 JSONArray element=info.getJSONArray(date.getString(i));
                 for(int j=0;j<element.length();j++){
                     HistoryFavoriteEntity historyFavoriteEntity=new GsonBuilder().create().fromJson(element.get(j).toString(),HistoryFavoriteEntity.class);
-                    SimpleDateFormat sdf = new SimpleDateFormat("MM-dd");
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
                     historyFavoriteEntity.setDate(sdf.parse(date.getString(i)).getTime());
                     lists.add(historyFavoriteEntity);
                 }

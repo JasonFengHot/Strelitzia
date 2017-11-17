@@ -444,7 +444,7 @@ public class DetailPagePresenter implements DetailPageContract.Presenter {
             mDetailView.notifyBookmark(false, true);
         } else {
             long time=0;
-            DateFormat format=new SimpleDateFormat("MM-dd");
+            DateFormat format=new SimpleDateFormat("yyyy-MM-dd");
             format.setTimeZone(TimeZone.getTimeZone("Asia/Shanghai"));
             Calendar calendar = Calendar.getInstance();
             calendar.setTimeInMillis(TrueTime.now().getTime());
@@ -474,7 +474,7 @@ public class DetailPagePresenter implements DetailPageContract.Presenter {
                 createBookmarks(String.valueOf(mItemEntity.getPk()));
                 ArrayList<Favorite> favorites = DaisyUtils.getFavoriteManager(mDetailView.getActivity()).getAllFavorites("yes");
                 if (favorites.size() > 49) {
-                    favoriteManager.deleteFavoriteByUrl(favorites.get(favorites.size() - 1).url, "no");
+                    favoriteManager.deleteFavoriteByUrl(favorites.get(favorites.size() - 1).url, "yes");
                 }
                 favoriteManager.addFavorite(favorite, favorite.isnet);
             } else {
