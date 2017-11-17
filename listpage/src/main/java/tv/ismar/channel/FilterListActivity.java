@@ -1213,7 +1213,7 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
                         if(specialPos.contains(mFocusGridLayoutManager.findFirstVisibleItemPosition())){
                             //第一行是标题
                             nextPos =mFocusGridLayoutManager.findFirstVisibleItemPosition()-1;
-                            if(checkedTab>0&&nextPos-specialPos.get(checkedTab-1)<=spanCount){
+                            if(checkedTab>0&&nextPos-specialPos.get(checkedTab-1)-1<=spanCount){
                                 mFocusGridLayoutManager.scrollToPositionWithOffset(nextPos, getResources().getDimensionPixelOffset(R.dimen.list_scroll_up_offset_v1));
                             }else{
                                 mFocusGridLayoutManager.scrollToPositionWithOffset(nextPos, getResources().getDimensionPixelOffset(R.dimen.list_scroll_down_offset_v));
@@ -1230,7 +1230,7 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
                         nextPos =mFocusGridLayoutManager.findFirstCompletelyVisibleItemPosition()-1;
                         if(specialPos.contains(nextPos)){
                             int lastSpecialPosIndex=specialPos.indexOf(nextPos)-1;
-                            if(lastSpecialPosIndex>=0&&nextPos-specialPos.get(lastSpecialPosIndex)<=spanCount){
+                            if(lastSpecialPosIndex>=0&&nextPos-specialPos.get(lastSpecialPosIndex)-1<=spanCount){
                                 mFocusGridLayoutManager.scrollToPositionWithOffset(nextPos-1, getResources().getDimensionPixelOffset(R.dimen.list_scroll_up_offset_h1));
                             }else{
                                 mFocusGridLayoutManager.scrollToPositionWithOffset(nextPos-1, getResources().getDimensionPixelOffset(R.dimen.list_scroll_down_offset_h));
