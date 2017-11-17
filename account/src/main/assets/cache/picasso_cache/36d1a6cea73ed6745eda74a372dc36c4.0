@@ -3,18 +3,18 @@ GET
 0
 HTTP/1.1 200 OK
 15
-Server: marco/1.8
-Date: Thu, 09 Nov 2017 03:12:43 GMT
+Server: marco/1.9
+Date: Fri, 17 Nov 2017 03:20:51 GMT
 Content-Type: image/jpeg
 Content-Length: 28165
+Connection: keep-alive
 X-Source: C/200
 Last-Modified: Mon, 19 Sep 2016 03:01:10 GMT
 Accept-Ranges: bytes
 Expires: Mon, 22 Jan 2018 02:56:12 GMT
 Cache-Control: max-age=7776000
-Age: 1383391
-X-Request-Id: 747f9c9099d2ceb0ebb5dae2e2553661; 6bfc3ce236de39cdc47b10f5ae6dd5e7
-Via: S.mix-hz-fdi-163, T.101170.M.1, V.mix-hz-fdi-169, T.3548.H.1, M.ctn-zj-lna4-043
-Proxy-Connection: Keep-alive
-OkHttp-Sent-Millis: 1510197161583
-OkHttp-Received-Millis: 1510197163864
+Age: 2075079
+X-Request-Id: 747f9c9099d2ceb0ebb5dae2e2553661; 1ac2ff05c39aa9ad3ec754ac848dfd86
+Via: S.mix-hz-fdi-163, T.101170.M.1, V.mix-hz-fdi-169, T.3548.H.1, M.ctn-zj-lna4-050
+OkHttp-Sent-Millis: 1510888851865
+OkHttp-Received-Millis: 1510888851888

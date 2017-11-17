@@ -1,0 +1,18 @@
+http://www.qiyipic.com/thumb/20100813/vrsa7400_480_270.jpg
+GET
+0
+HTTP/1.1 200 OK
+13
+Server: QWS
+Date: Fri, 17 Nov 2017 03:20:51 GMT
+Content-Type: image/jpeg
+Content-Length: 21202
+Connection: keep-alive
+Expires: Mon, 08 Oct 2018 12:09:19 GMT
+Cache-Control: max-age=31536000
+Last-Modified: Fri, 06 Jan 2012 04:04:56 GMT
+X-Cache: HIT from 10.121.32.222
+X-Cache: MISS from 101.227.22.161
+Accept-Ranges: bytes
+OkHttp-Sent-Millis: 1510888851473
+OkHttp-Received-Millis: 1510888851485
