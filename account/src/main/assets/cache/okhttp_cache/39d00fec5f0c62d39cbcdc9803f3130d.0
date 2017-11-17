@@ -1,0 +1,15 @@
+http://sky.test.tvxio.com/v5_0/YOGA/togs/api/tv/mbanner/159%7C159_r%7C201%7C4/1/?token_check=1&device_token=__F393BmYyOvPIcsXW-rqm3RIfh-Ocz0-xpKePkhAXa4gXuPtDPfiWlsG8BkE7WUdt
+GET
+0
+HTTP/1.1 200 OK
+10
+Server: nginx
+Date: Fri, 17 Nov 2017 03:20:47 GMT
+Content-Type: application/json
+Transfer-Encoding: chunked
+Connection: keep-alive
+Vary: X-User-Agent
+ETag: "fbccc996fafd0f673e4b7c4173949549"
+Allow: GET, POST, HEAD, OPTIONS
+OkHttp-Sent-Millis: 1510888846746
+OkHttp-Received-Millis: 1510888847277

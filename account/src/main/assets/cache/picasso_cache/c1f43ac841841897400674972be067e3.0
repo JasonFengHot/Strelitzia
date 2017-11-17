@@ -1,0 +1,18 @@
+http://www.qiyipic.com/thumb/20100531/vrsa2562_480_270.jpg
+GET
+0
+HTTP/1.1 200 OK
+13
+Server: QWS
+Date: Fri, 17 Nov 2017 03:20:51 GMT
+Content-Type: image/jpeg
+Content-Length: 30206
+Connection: keep-alive
+Expires: Tue, 18 Sep 2018 09:29:00 GMT
+Cache-Control: max-age=31536000
+Last-Modified: Fri, 06 Jan 2012 04:01:20 GMT
+X-Cache: HIT from 10.121.32.223
+X-Cache: MISS from 101.227.22.161
+Accept-Ranges: bytes
+OkHttp-Sent-Millis: 1510888851520
+OkHttp-Received-Millis: 1510888851530
