@@ -126,5 +126,9 @@ public class VersionInfoV2Entity {
         public void setMd5(String md5) {
             this.md5 = md5;
         }
+
+        public String getInfo(){
+            return product + ":" + name + ":" + url + ":" + version + ":" + md5;
+        }
     }
 }

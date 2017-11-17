@@ -154,7 +154,7 @@ public class UpdateService extends Service implements Loader.OnLoadCompleteListe
                             String title;
                             String selection = "title in (";
                             for (VersionInfoV2Entity.ApplicationEntity applicationEntity : versionInfoV2Entity.getUpgrades()) {
-                                title = Md5.md5(new GsonBuilder().create().toJson(applicationEntity));
+                                title = Md5.md5(applicationEntity.getInfo());
                                 md5Jsons.add(title);
                                 checkUpgrade(applicationEntity);
                                 selection += "?,";
@@ -203,7 +203,7 @@ public class UpdateService extends Service implements Loader.OnLoadCompleteListe
         }
 
         Log.i(TAG, "local version code ---> " + installVersionCode);
-        String title = Md5.md5(new GsonBuilder().create().toJson(applicationEntity));
+        String title = Md5.md5(applicationEntity.getInfo());
 
 
         DownloadEntity download = new Select().from(DownloadEntity.class).where("title = ?", title).executeSingle();
@@ -316,7 +316,7 @@ public class UpdateService extends Service implements Loader.OnLoadCompleteListe
     private void downloadApp(VersionInfoV2Entity.ApplicationEntity entity) {
         String url = entity.getUrl();
         String json = new GsonBuilder().create().toJson(entity);
-        String title = Md5.md5(json);
+        String title = Md5.md5(entity.getInfo());
         String filePath = getFilesDir().getAbsolutePath();
         DownloadManager.getInstance().start(url, title, json, filePath);
     }
