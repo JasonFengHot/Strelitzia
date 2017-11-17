@@ -117,7 +117,9 @@ public class SubscribeAdapter extends BaseRecycleAdapter<SubscribeAdapter.Subscr
 			if(entity.focus != null && !entity.focus.equals("") && !entity.focus.equals("null")){
 				focusStr = entity.focus;
 			}
-			holder.mOrderTitle.setTag(new String[]{entity.title,focusStr});
+			/*modify by dragontec for bug 4325 start*/
+			holder.mTitle.setTag(new String[]{entity.title,focusStr});
+			/*modify by dragontec for bug 4325 end*/
 		}
 	}
 

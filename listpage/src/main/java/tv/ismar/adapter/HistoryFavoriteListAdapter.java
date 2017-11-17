@@ -36,6 +36,10 @@ public class HistoryFavoriteListAdapter extends RecyclerView.Adapter<HistoryFavo
     private OnItemClickListener itemClickListener;
     private OnItemFocusedListener itemFocusedListener;
     private OnItemOnhoverlistener itemOnhoverlistener;
+    public static final String PICASSO_TAG = "history_favorite";
+	/*modify by dragontec for bug 4482 start*/
+    private int bindingViewRequestFocusPosition = -1;
+	/*modify by dragontec for bug 4482 end*/
     public HistoryFavoriteListAdapter(Context context,List<HistoryFavoriteEntity> item,int typeId,String source) {
         mContext=context;
         items=item;
@@ -73,12 +77,16 @@ public class HistoryFavoriteListAdapter extends RecyclerView.Adapter<HistoryFavo
             if (!TextUtils.isEmpty(item.getFocus())) {
               //  holder.intro.setText(item.getFocus());
             }
+			/*modify by dragontec for bug 4482 start*/
+            holder.itemView.setTag(position);
+			/*modify by dragontec for bug 4482 end*/
             if (!TextUtils.isEmpty(item.getTitle()))
                 holder.title.setText(item.getTitle());
             if (!TextUtils.isEmpty(item.getAdlet_url())) {
 /*modify by dragontec for bug 4336 start*/
                 Picasso.with(mContext).load(item.getAdlet_url()).
 /*modify by dragontec for bug 4205 start*/
+                        tag(PICASSO_TAG).
                         memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE).
 /*modify by dragontec for bug 4205 end*/
                         error(R.drawable.item_horizontal_preview).
@@ -87,11 +95,11 @@ public class HistoryFavoriteListAdapter extends RecyclerView.Adapter<HistoryFavo
 /*modify by dragontec for bug 4336 end*/
             }else{
 /*modify by dragontec for bug 4336 start*/
-                Picasso.with(mContext).load(R.drawable.item_horizontal_preview).into(holder.item_detail_image);
+                Picasso.with(mContext).load(R.drawable.item_horizontal_preview).tag(PICASSO_TAG).into(holder.item_detail_image);
 /*modify by dragontec for bug 4336 end*/
             }
             if (item.getExpense() != null) {
-                Picasso.with(mContext).load(VipMark.getInstance().getImage((Activity) mContext, item.getExpense().pay_type, item.getExpense().cpid)).memoryPolicy(MemoryPolicy.NO_STORE).memoryPolicy(MemoryPolicy.NO_CACHE).into(holder.vip_image);
+                Picasso.with(mContext).load(VipMark.getInstance().getImage((Activity) mContext, item.getExpense().pay_type, item.getExpense().cpid)).tag(PICASSO_TAG).memoryPolicy(MemoryPolicy.NO_STORE).memoryPolicy(MemoryPolicy.NO_CACHE).into(holder.vip_image);
                 holder.vip_image.setVisibility(View.VISIBLE);
             } else {
                 holder.vip_image.setVisibility(View.GONE);
@@ -133,7 +141,16 @@ public class HistoryFavoriteListAdapter extends RecyclerView.Adapter<HistoryFavo
     public int getItemCount() {
         return items.size();
     }
+	/*modify by dragontec for bug 4482 start*/
+    public void setBindingViewRequestFocusPosition(int bindingViewRequestFocusPosition) {
+        this.bindingViewRequestFocusPosition = bindingViewRequestFocusPosition;
+    }
 
+    public int getBindingViewRequestFocusPosition() {
+       return this.bindingViewRequestFocusPosition;
+    }
+	/*modify by dragontec for bug 4482 end*/
+	
     public static class listViewholder extends RecyclerView.ViewHolder{
         private RecyclerImageView item_detail_image,vip_image,marking_bg,delete_bg;
         private TextView marking,intro,title;

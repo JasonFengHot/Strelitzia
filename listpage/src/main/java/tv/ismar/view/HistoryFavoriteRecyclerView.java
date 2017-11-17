@@ -5,47 +5,59 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 
+import com.squareup.picasso.Picasso;
+
+import tv.ismar.adapter.HistoryFavoriteListAdapter;
+import tv.ismar.app.widget.MyRecyclerView;
+
 /**
  * Created by liucan on 2017/8/25.
  */
 
-public class HistoryFavoriteRecyclerView extends RecyclerView {
-    private int position=0;
-    public void setCurrentPosition(int pos){//刷新adapter前，在activity中调用这句传入当前选中的item在屏幕中的次序
-        this.position= pos;
-    }
-    protected void setChildrenDrawingOrderEnabled(boolean enabled)
-    {
-        //TODOAuto-generated method stub
-        super.setChildrenDrawingOrderEnabled(enabled);
-    }
-    @Override
-
-    protected int getChildDrawingOrder(int childCount,int i)
-    {
-        //return super.getChildDrawingOrder(childCount, i);
-
-        if(i==childCount-1){//这是最后一个需要刷新的item
-            return position;
-         }
-
-        if(i ==position){//这是原本要在最后一个刷新的item
-            return childCount-1;
-        }
-        return i;//正常次序的item
-    }
-
-
+public class HistoryFavoriteRecyclerView extends MyRecyclerView {
     public HistoryFavoriteRecyclerView(Context context) {
         super(context);
-        setChildrenDrawingOrderEnabled(true);
+        init();
     }
 
     public HistoryFavoriteRecyclerView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
+        init();
     }
 
     public HistoryFavoriteRecyclerView(Context context, @Nullable AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
+        init();
+    }
+
+    private void init() {
+        addOnScrollListener(new CustomOnScrollListener());
+    }
+
+
+    private class CustomOnScrollListener extends OnScrollListener{
+        @Override
+        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+            super.onScrolled(recyclerView, dx, dy);
+        }
+
+        @Override
+        public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+            super.onScrollStateChanged(recyclerView, newState);
+            switch (newState){
+                case SCROLL_STATE_IDLE:
+                    Picasso.with(getContext()).resumeTag(HistoryFavoriteListAdapter.PICASSO_TAG);
+                    break;
+                case SCROLL_STATE_DRAGGING:
+                    Picasso.with(getContext()).pauseTag(HistoryFavoriteListAdapter.PICASSO_TAG);
+                    break;
+                case SCROLL_STATE_SETTLING:
+                    Picasso.with(getContext()).pauseTag(HistoryFavoriteListAdapter.PICASSO_TAG);
+                    break;
+                default:
+                    break;
+            }
+
+        }
     }
 }

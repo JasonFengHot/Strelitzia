@@ -168,11 +168,16 @@ public class BaseActivity extends AppCompatActivity {
         activityIsAlive = false;
         try {
             unregisterConnectionReceiver();
-            unregisterReceiver(mUpdateReceiver);
         } catch (Exception e) {
             ExceptionUtils.sendProgramError(e);
             e.printStackTrace();
         }
+		try {
+			unregisterReceiver(mUpdateReceiver);
+		} catch (Exception e) {
+			ExceptionUtils.sendProgramError(e);
+			e.printStackTrace();
+		}
         if (updateAgainHandler != null) {
             updateAgainHandler.removeCallbacks(updateAgainRunnable);
         }

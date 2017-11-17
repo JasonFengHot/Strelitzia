@@ -116,11 +116,6 @@ public class FetchDataControl extends BaseControl{
                     @Override
                     public void onError(Throwable e) {
                         e.printStackTrace();
-						/*modify by dragontec for bug 4474 start*/
-                        if((e instanceof HttpException|| e instanceof UnknownHostException) && mContext != null) {
-                            ToastTip.showToast(mContext, mContext.getString(R.string.fetch_data_time_out));
-                        }
-						/*modify by dragontec for bug 4474 end*/
                     }
 
                     @Override
@@ -173,11 +168,6 @@ public class FetchDataControl extends BaseControl{
                     @Override
                     public void onError(Throwable e) {
                         e.printStackTrace();
-						/*modify by dragontec for bug 4474 start*/
-                        if((e instanceof HttpException|| e instanceof UnknownHostException) && mContext != null) {
-                            ToastTip.showToast(mContext, mContext.getString(R.string.fetch_data_time_out));
-                        }
-						/*modify by dragontec for bug 4474 end*/
                     }
 
                     @Override
@@ -195,7 +185,10 @@ public class FetchDataControl extends BaseControl{
         fetchChannels = SkyService.ServiceManager.getService().apiTvChannels()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<ChannelEntity[]>() {
+/*modify by dragontec for bug 4474 start*/
+//                .subscribe(new Observer<ChannelEntity[]>() {
+                .subscribe(((BaseActivity)mContext).new BaseObserver<ChannelEntity[]>() {
+/*modify by dragontec for bug 4474 end*/
                     @Override
                     public void onCompleted() {
 
@@ -203,6 +196,9 @@ public class FetchDataControl extends BaseControl{
 
                     @Override
                     public void onError(Throwable e) {
+/*add by dragontec for bug 4474 start*/
+                        super.onError(e);
+/*add by dragontec for bug 4474 end*/
                         forceFetchChannels();
                     }
 
@@ -230,11 +226,6 @@ public class FetchDataControl extends BaseControl{
                     @Override
                     public void onError(Throwable e) {
                         e.printStackTrace();
-						/*modify by dragontec for bug 4474 start*/
-                        if((e instanceof HttpException|| e instanceof UnknownHostException) && mContext != null) {
-                            ToastTip.showToast(mContext, mContext.getString(R.string.fetch_data_time_out));
-                        }
-						/*modify by dragontec for bug 4474 end*/
                     }
 
                     @Override
@@ -273,7 +264,10 @@ public class FetchDataControl extends BaseControl{
 		Subscription fetchMBanner = SkyService.ServiceManager.getService().getMBanners(bannersStr.toString(), page)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<HomeEntity[]>() {
+/*modify by dragontec for bug 4474 start*/
+//                .subscribe(new Observer<HomeEntity[]>() {
+                .subscribe(((BaseActivity)mContext).new BaseObserver<HomeEntity[]>() {
+/*modify by dragontec for bug 4474 end*/
                     @Override
                     public void onCompleted() {
                     	Log.i(TAG, "fetchMBanners onCompleted");
@@ -281,6 +275,9 @@ public class FetchDataControl extends BaseControl{
 
                     @Override
                     public void onError(Throwable e) {
+/*add by dragontec for bug 4474 start*/
+                        super.onError(e);
+/*add by dragontec for bug 4474 end*/
                         forceFetchMBanners(banners, page);
                     }
 
@@ -377,11 +374,6 @@ public class FetchDataControl extends BaseControl{
                         if (mCallBack != null) {
                             mCallBack.callBack(FETCH_DATA_FAIL_FLAG);
                         }
-						/*modify by dragontec for bug 4474 start*/
-                        if((e instanceof HttpException|| e instanceof UnknownHostException) && mContext != null) {
-                            ToastTip.showToast(mContext, mContext.getString(R.string.fetch_data_time_out));
-                        }
-						/*modify by dragontec for bug 4474 end*/
                     }
 
                     @Override
@@ -454,11 +446,6 @@ public class FetchDataControl extends BaseControl{
                     @Override
                     public void onError(Throwable e) {
                         e.printStackTrace();
-						/*modify by dragontec for bug 4474 start*/
-                        if((e instanceof HttpException|| e instanceof UnknownHostException) && mContext != null) {
-                            ToastTip.showToast(mContext, mContext.getString(R.string.fetch_data_time_out));
-                        }
-						/*modify by dragontec for bug 4474 end*/
                     }
 
                     @Override
@@ -497,7 +484,10 @@ public class FetchDataControl extends BaseControl{
         Subscription fetchBanner = SkyService.ServiceManager.getService().getBanners(banner, page)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<HomeEntity>() {
+/*modify by dragontec for bug 4474 start*/
+//                .subscribe(new Observer<HomeEntity>() {
+                .subscribe(((BaseActivity)mContext).new BaseObserver<HomeEntity>() {
+/*modify by dragontec for bug 4474 end*/
                     @Override
                     public void onCompleted() {
 	/* add by dragontec for bug 4264 start */
@@ -507,6 +497,9 @@ public class FetchDataControl extends BaseControl{
 
                     @Override
                     public void onError(Throwable e) {
+/*add by dragontec for bug 4474 start*/
+                        super.onError(e);
+/*add by dragontec for bug 4474 end*/
                         forceFetchBanners(banner, page, loadMore);
                     }
 
@@ -589,11 +582,6 @@ public class FetchDataControl extends BaseControl{
                         if (mCallBack != null) {
                             mCallBack.callBack(FETCH_DATA_FAIL_FLAG);
                         }
-						/*modify by dragontec for bug 4474 start*/
-                        if((e instanceof HttpException|| e instanceof UnknownHostException) && mContext != null) {
-                            ToastTip.showToast(mContext, mContext.getString(R.string.fetch_data_time_out));
-                        }
-						/*modify by dragontec for bug 4474 end*/
 	/* add by dragontec for bug 4264 end */
                     }
 
