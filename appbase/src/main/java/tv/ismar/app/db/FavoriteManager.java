@@ -19,7 +19,11 @@ public interface FavoriteManager {
 
     public ArrayList<Favorite> getAllFavorites(String isnet);
 
+    public ArrayList<Favorite> getAllFavorites();
+
     public void deleteFavoriteByUrl(String url, String isnet);
+
+    public void deleteFavorite(String url, String isnet);
 
     public void deleteAll(String isnet);
 

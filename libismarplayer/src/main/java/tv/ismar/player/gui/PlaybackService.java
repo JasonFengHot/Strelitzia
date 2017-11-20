@@ -25,6 +25,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -43,6 +44,7 @@ import tv.ismar.account.IsmartvActivator;
 import tv.ismar.app.BaseActivity;
 import tv.ismar.app.VodApplication;
 import tv.ismar.app.ad.Advertisement;
+import tv.ismar.app.core.DaisyUtils;
 import tv.ismar.app.db.HistoryManager;
 import tv.ismar.app.entity.ClipEntity;
 import tv.ismar.app.entity.DBQuality;
@@ -1325,11 +1327,23 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
         if (subItemPk > 0) {
             history.sub_url = Utils.getSubItemUrl(subItemPk);
         }
-        if (!Utils.isEmptyText(IsmartvActivator.getInstance().getAuthToken()))
-            historyManager.addHistory(history, "yes", completePosition);
-        else
-            historyManager.addHistory(history, "no", completePosition);
-
+        String isnet="no";
+        if (!Utils.isEmptyText(IsmartvActivator.getInstance().getAuthToken())) {
+            isnet = "yes";
+            List<History> histories = historyManager.getAllHistories();
+            Collections.sort(histories);
+            if (histories.size() > 99) {
+                historyManager.deleteHistoryByUrl(histories.get(histories.size() - 1).url, isnet);
+            }
+        }else {
+            isnet = "no";
+            List<History> histories = historyManager.getAllHistories(isnet);
+            Collections.sort(histories);
+            if (histories.size() > 49) {
+                historyManager.deleteHistory(histories.get(histories.size() - 1).url, isnet);
+            }
+        }
+        historyManager.addHistory(history, isnet, completePosition);
         if (!Utils.isEmptyText(IsmartvActivator.getInstance().getAuthToken()) && sendToServer) {
             int offset = last_position;
             if (last_position == mDuration) {

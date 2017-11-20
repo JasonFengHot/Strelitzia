@@ -11,6 +11,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.TimeZone;
 
 import cn.ismartv.truetime.TrueTime;
@@ -472,14 +473,16 @@ public class DetailPagePresenter implements DetailPageContract.Presenter {
             if (isLogin()) {
                 favorite.isnet = "yes";
                 createBookmarks(String.valueOf(mItemEntity.getPk()));
-                ArrayList<Favorite> favorites = DaisyUtils.getFavoriteManager(mDetailView.getActivity()).getAllFavorites("yes");
-                if (favorites.size() > 49) {
-                    favoriteManager.deleteFavoriteByUrl(favorites.get(favorites.size() - 1).url, "yes");
+                ArrayList<Favorite> favorites = DaisyUtils.getFavoriteManager(mDetailView.getActivity()).getAllFavorites();
+                Collections.sort(favorites);
+                if (favorites.size() > 99) {
+                    favoriteManager.deleteFavorite(favorites.get(favorites.size() - 1).url,favorite.isnet);
                 }
                 favoriteManager.addFavorite(favorite, favorite.isnet);
             } else {
                 favorite.isnet = "no";
                 ArrayList<Favorite> favorites = DaisyUtils.getFavoriteManager(mDetailView.getActivity()).getAllFavorites("no");
+                Collections.sort(favorites);
                 if (favorites.size() > 49) {
                     favoriteManager.deleteFavoriteByUrl(favorites.get(favorites.size() - 1).url, "no");
                 }

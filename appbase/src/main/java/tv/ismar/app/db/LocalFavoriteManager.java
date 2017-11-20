@@ -83,6 +83,14 @@ public class LocalFavoriteManager implements FavoriteManager {
         mFavorites = mDBHelper.getAllFavorites(isent);
         return mFavorites;
     }
+    @Override
+    public ArrayList<Favorite> getAllFavorites() {
+        if (mFavorites == null) {
+            mFavorites = new ArrayList<Favorite>();
+        }
+        mFavorites = mDBHelper.getAllFavorites();
+        return mFavorites;
+    }
 
     @Override
     public void deleteFavoriteByUrl(String url, String isnet) {
@@ -90,6 +98,14 @@ public class LocalFavoriteManager implements FavoriteManager {
             throw new RuntimeException("url cannot be null");
         }
         mDBHelper.delete(DBFields.FavoriteTable.TABLE_NAME, url, isnet);
+        mFavorites = mDBHelper.getAllFavorites(isnet);
+    }
+    @Override
+    public void deleteFavorite(String url,String isnet) {
+        if (url == null) {
+            throw new RuntimeException("url cannot be null");
+        }
+        mDBHelper.delete(DBFields.FavoriteTable.TABLE_NAME, url);
         mFavorites = mDBHelper.getAllFavorites(isnet);
     }
 

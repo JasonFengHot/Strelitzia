@@ -803,8 +803,9 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
             item.setOnHoverListener(this);
             if(object.getImage()==null||object.getImage().isEmpty()){
                 Picasso.with(this).load(R.drawable.item_horizontal_preview).into(detail);
+            }else {
+                Picasso.with(this).load(object.getImage()).error(R.drawable.item_horizontal_preview).into(detail);
             }
-            Picasso.with(this).load(object.getImage()).error(R.drawable.item_horizontal_preview).into(detail);
             title.setText(object.getTitle());
             item.setOnClickListener(new View.OnClickListener() {
                 @Override

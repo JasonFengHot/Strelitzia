@@ -91,6 +91,14 @@ public class LocalHistoryManager implements HistoryManager {
         mHistories = mDBHelper.getAllHistories(isnet);
         return mHistories;
     }
+    @Override
+    public ArrayList<History> getAllHistories() {
+        if (mHistories == null) {
+            mHistories = new ArrayList<History>();
+        }
+        mHistories = mDBHelper.getAllHistories();
+        return mHistories;
+    }
 
     @Override
     public void addHistory(History history, String isnet, int completePosition) {
@@ -156,6 +164,15 @@ public class LocalHistoryManager implements HistoryManager {
             throw new RuntimeException("url should not be null");
         }
         int rowsAffected = mDBHelper.deleteHistory(DBFields.HistroyTable.TABLE_NAME, url, isnet);
+        Log.d("LocalHistoryManager", rowsAffected + "records delete");
+        mHistories = mDBHelper.getAllHistories(isnet);
+    }
+    @Override
+    public void deleteHistoryByUrl(String url,String isnet) {
+        if (url == null) {
+            throw new RuntimeException("url should not be null");
+        }
+        int rowsAffected = mDBHelper.deleteHistory(DBFields.HistroyTable.TABLE_NAME, url);
         Log.d("LocalHistoryManager", rowsAffected + "records delete");
         mHistories = mDBHelper.getAllHistories(isnet);
     }

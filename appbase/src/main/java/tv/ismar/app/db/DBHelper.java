@@ -145,6 +145,20 @@ public class DBHelper extends SQLiteOpenHelper {
         }
         return historyList;
     }
+    public ArrayList<History> getAllHistories() {
+        ArrayList<History> historyList = new ArrayList<History>();
+        Cursor cur = db.query(DBFields.HistroyTable.TABLE_NAME, null, null,null, null, null, " last_played_time desc");
+        if (cur != null) {
+            if (cur.moveToFirst()) {
+                do {
+                    historyList.add(new History(cur));
+                } while (cur.moveToNext());
+            }
+            cur.close();
+            cur = null;
+        }
+        return historyList;
+    }
     /**
      * Use to query all favorite record.
      *
@@ -154,6 +168,21 @@ public class DBHelper extends SQLiteOpenHelper {
         //Cursor cur = db.query(DBFields.FavoriteTable.TABLE_NAME, null, DBFields.FavoriteTable.URL + " = ? and " + DBFields.FavoriteTable.ISNET + "= ?", new String[]{url,isnet}, null, null, " _id desc");
         ArrayList<Favorite> favoriteList = new ArrayList<Favorite>();
         Cursor cur = db.query(DBFields.FavoriteTable.TABLE_NAME, null, DBFields.FavoriteTable.ISNET + "= ?", new String[]{isnet}, null, null, " _id desc");
+        if (cur != null) {
+            if (cur.moveToFirst()) {
+                do {
+                    favoriteList.add(new Favorite(cur));
+                } while (cur.moveToNext());
+            }
+            cur.close();
+            cur = null;
+        }
+        return favoriteList;
+    }
+    public ArrayList<Favorite> getAllFavorites() {
+        //Cursor cur = db.query(DBFields.FavoriteTable.TABLE_NAME, null, DBFields.FavoriteTable.URL + " = ? and " + DBFields.FavoriteTable.ISNET + "= ?", new String[]{url,isnet}, null, null, " _id desc");
+        ArrayList<Favorite> favoriteList = new ArrayList<Favorite>();
+        Cursor cur = db.query(DBFields.FavoriteTable.TABLE_NAME, null, null,null, null, null, " _id desc");
         if (cur != null) {
             if (cur.moveToFirst()) {
                 do {
@@ -301,6 +330,12 @@ public class DBHelper extends SQLiteOpenHelper {
         }
         return db.delete(table, " url = ? and " + DBFields.FavoriteTable.ISNET + "=?", new String[]{url, isnet});
     }
+    public int delete(String table, String url){
+        if (url == null) {
+            return db.delete(table, null, null);
+        }
+        return db.delete(table, " url = ?", new String[]{url});
+    }
 
     public int deleteHistory(String table, String url, String isnet) {
         if (url == null) {
@@ -308,7 +343,12 @@ public class DBHelper extends SQLiteOpenHelper {
         }
         return db.delete(table, " url = ? and " + DBFields.HistroyTable.ISNET + "=?", new String[]{url, isnet});
     }
-
+    public int deleteHistory(String table, String url) {
+        if (url == null) {
+            return db.delete(table, null, null);
+        }
+        return db.delete(table, " url = ?", new String[]{url});
+    }
     public void releaseDB() {
         db.close();
         db = null;
