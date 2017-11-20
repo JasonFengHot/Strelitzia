@@ -29,7 +29,7 @@ public class LocalHistoryManager implements HistoryManager {
         mHistories = mDBHelper.getAllHistories("no");
     }
 
-    private int mTotalEntriesLimit = 50;
+    private int mTotalEntriesLimit = 100;
 
     @Override
     public void addHistory(String title, String url, long currentPosition, String isnet) {
