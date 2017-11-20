@@ -439,7 +439,7 @@ public class BaseActivity extends AppCompatActivity {
             boolean isExsit = false;
             for (Bundle b : updateInfo) {
                 if (b.get("path").equals(bundle.get("path")) &&
-                        b.get("msgs").equals(bundle.get("msgs"))) {
+                        b.get("app_package_name").equals(bundle.get("app_package_name"))) {
                     isExsit = true;
 
                 }
@@ -447,7 +447,7 @@ public class BaseActivity extends AppCompatActivity {
 
             if (updateBundle!=null) {
                 if (updateBundle.get("path").equals(bundle.get("path")) &&
-                        updateBundle.get("msgs").equals(bundle.get("msgs"))) {
+                        updateBundle.get("app_package_name").equals(bundle.get("app_package_name"))) {
                     isExsit = true;
 
                 }
