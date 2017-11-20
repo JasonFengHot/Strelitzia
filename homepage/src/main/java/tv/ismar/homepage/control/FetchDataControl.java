@@ -17,6 +17,7 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import tv.ismar.account.IsmartvActivator;
+import tv.ismar.account.statistics.LogQueue;
 import tv.ismar.app.BaseActivity;
 import tv.ismar.app.BaseControl;
 import tv.ismar.app.core.client.NetworkUtils;
@@ -204,6 +205,7 @@ public class FetchDataControl extends BaseControl{
 
                     @Override
                     public void onNext(ChannelEntity[] channelEntities) {
+                        LogQueue.getInstance().init(IsmartvActivator.getInstance().getApiDomain());
                         if (mCallBack != null && channelEntities != null) {
                             mChannels = channelEntities;
                             mCallBack.callBack(FETCH_CHANNEL_TAB_FLAG, channelEntities);
