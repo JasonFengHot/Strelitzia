@@ -858,7 +858,7 @@ public interface SkyService {
                     .build();
 
             Gson gson = new GsonBuilder()
-                    .setDateFormat("yyyy-MM-dd hh:mm:ss")
+                    .setDateFormat("yyyy-MM-dd HH:mm:ss")
                     .create();
 
             /**
