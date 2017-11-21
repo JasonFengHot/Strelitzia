@@ -198,21 +198,28 @@ public class HistoryFavoritrListActivity extends BaseActivity implements OnItemC
                     return true;
                 }
             }else if(event.getKeyCode() == KeyEvent.KEYCODE_DPAD_UP) {
-                if (recyclerView.hasFocus()) {
-                    View focused = recyclerView.findFocus();
-                    if (focused != null) {
-                        int position = (int) focused.getTag() - 4;
-                        if (position < 0) {
-                            return super.dispatchKeyEvent(event);
-                        }
-                        if (focusGridLayoutManager.findFirstCompletelyVisibleItemPosition() > position) {
-                            focusGridLayoutManager.setCanScroll(true);
-                            recyclerView.smoothScrollBy(0, -onePageScrollY);
-                            adapter.setBindingViewRequestFocusPosition(position);
-                            return true;
+                //modify by dragontec for bug 4508 start
+                try {
+                    if (recyclerView.hasFocus()) {
+                        View focused = recyclerView.findFocus();
+                        if (focused != null && focused.getTag() != null) {
+                            int position = (int) focused.getTag() - 4;
+                            if (position < 0) {
+                                return super.dispatchKeyEvent(event);
+                            }
+                            if (focusGridLayoutManager.findFirstCompletelyVisibleItemPosition() > position) {
+                                focusGridLayoutManager.setCanScroll(true);
+                                recyclerView.smoothScrollBy(0, -onePageScrollY);
+                                adapter.setBindingViewRequestFocusPosition(position);
+                                return true;
+                            }
                         }
                     }
+                }catch(Exception e){
+                    e.printStackTrace();
+                    return true;
                 }
+                //modify by dragontec for bug 4508 end
             }
         }else if(event.getAction() == KeyEvent.ACTION_UP){
             if(event.getKeyCode() == KeyEvent.KEYCODE_1){
