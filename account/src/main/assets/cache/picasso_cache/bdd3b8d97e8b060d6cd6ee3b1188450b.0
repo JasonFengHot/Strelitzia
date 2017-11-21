@@ -1,0 +1,20 @@
+http://res.tvxio.bestv.com.cn/media/upload/upload/cysxbt480270713_poster.jpg
+GET
+0
+HTTP/1.1 200 OK
+15
+Server: marco/1.9
+Date: Fri, 17 Nov 2017 03:20:51 GMT
+Content-Type: image/jpeg
+Content-Length: 33566
+Connection: keep-alive
+X-Source: C/200
+Last-Modified: Fri, 13 Jul 2012 00:39:48 GMT
+Accept-Ranges: bytes
+Expires: Wed, 17 Jan 2018 14:44:10 GMT
+Cache-Control: max-age=7776000
+Age: 2468861
+X-Request-Id: b4f5ebe02875453181ce3823473e4c72; 0eb6841fafc6fed7e3afa69c9790042a
+Via: T.101164.M.1, S.mix-hz-fdi-168, V.mix-hz-fdi-164, T.3548.H.1, M.ctn-zj-lna4-050
+OkHttp-Sent-Millis: 1510888851297
+OkHttp-Received-Millis: 1510888851349

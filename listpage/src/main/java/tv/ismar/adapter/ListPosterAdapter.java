@@ -279,6 +279,7 @@ public class ListPosterAdapter extends RecyclerView.Adapter<ListPosterAdapter.Fi
         }
         if(position==focusedPosition){
             holder.itemView.requestFocus();
+            focusedPosition=-1;
         }
     }
 

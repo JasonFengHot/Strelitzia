@@ -1,0 +1,20 @@
+http://res.tvxio.bestv.com.cn/media/upload/20160420/right_corner_quanji_05_01.png
+GET
+0
+HTTP/1.1 200 OK
+15
+Server: marco/1.9
+Date: Fri, 17 Nov 2017 03:20:51 GMT
+Content-Type: image/png
+Content-Length: 4007
+Connection: keep-alive
+X-Source: C/200
+Last-Modified: Mon, 30 Oct 2017 10:27:43 GMT
+Accept-Ranges: bytes
+Expires: Mon, 29 Jan 2018 08:38:19 GMT
+Cache-Control: max-age=7776000
+Age: 1449752
+X-Request-Id: 6746518be1b864f0817652f31b153526; 82c88594df05d18c9f9f52fb2ed99135
+Via: S.mix-hz-fdi-166, T.101168.M.1, V.mix-hz-fdi-165, T.3549.H.1, M.ctn-zj-lna4-050
+OkHttp-Sent-Millis: 1510888851832
+OkHttp-Received-Millis: 1510888851851

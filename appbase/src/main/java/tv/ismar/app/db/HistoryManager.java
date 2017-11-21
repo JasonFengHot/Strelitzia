@@ -47,6 +47,7 @@ public interface HistoryManager {
      */
     public ArrayList<History> getAllHistories(String isnet);
 
+    public ArrayList<History> getAllHistories();
     /**
      * Delete a history entry in database by url
      *
@@ -54,6 +55,7 @@ public interface HistoryManager {
      */
     public void deleteHistory(String url, String isnet);
 
+    public void deleteHistoryByUrl(String url, String isnet);
     /**
      * Delete all histories in database
      */

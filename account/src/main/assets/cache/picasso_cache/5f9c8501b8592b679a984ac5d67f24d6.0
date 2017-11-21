@@ -2,14 +2,19 @@ http://res.tvxio.bestv.com.cn/media/upload/20160711/upload/20160420/upload/20140
 GET
 0
 HTTP/1.1 200 OK
-10
-Server: vengine/1.10.3.201707191
-Date: Mon, 06 Nov 2017 09:29:47 GMT
+15
+Server: marco/1.9
+Date: Fri, 17 Nov 2017 03:20:49 GMT
 Content-Type: image/jpeg
 Content-Length: 215038
+Connection: keep-alive
+X-Source: C/200
 Last-Modified: Fri, 19 Aug 2016 07:28:42 GMT
-age: 1
 Accept-Ranges: bytes
-Proxy-Connection: Keep-alive
-OkHttp-Sent-Millis: 1509960587069
-OkHttp-Received-Millis: 1509960587189
+Expires: Tue, 06 Feb 2018 02:02:19 GMT
+Cache-Control: max-age=7776000
+Age: 782310
+X-Request-Id: abe3197fc3d0a1200435acaa4cf0370b; efcae12a2571e4a8e38d58c86d271072
+Via: S.mix-hz-fdi-166, T.101163.M.1, V.mix-hz-fdi-167, T.3551.H.1, M.ctn-zj-lna4-050
+OkHttp-Sent-Millis: 1510888849052
+OkHttp-Received-Millis: 1510888849074

@@ -24,6 +24,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.TimeZone;
@@ -373,7 +374,7 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnClickList
                 if (!isFavorite()) {
                     String url = IsmartvActivator.getInstance().getApiDomain() + "/api/item/" + id + "/";
                     long time=0;
-                    DateFormat format=new SimpleDateFormat("MM-dd");
+                    DateFormat format=new SimpleDateFormat("yyyy-MM-dd");
                     format.setTimeZone(TimeZone.getTimeZone("Asia/Shanghai"));
                     Calendar calendar = Calendar.getInstance();
                     calendar.setTimeInMillis(TrueTime.now().getTime());
@@ -404,12 +405,17 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnClickList
                     ArrayList<Favorite> favorites=new ArrayList<>();
                     if ("yes".equals(isnet)) {
                         createFavoriteByNet(id);
-                        favorites = DaisyUtils.getFavoriteManager(getActivity().getApplicationContext()).getAllFavorites("yes");
-                    }else{
-                        favorites = DaisyUtils.getFavoriteManager(getActivity().getApplicationContext()).getAllFavorites("no");
-                    }
-                    if (favorites.size() > 49) {
-                        mFavoriteManager.deleteFavoriteByUrl(favorites.get(favorites.size() - 1).url, isnet);
+                        favorites=DaisyUtils.getFavoriteManager(getActivity()).getAllFavorites();
+                        Collections.sort(favorites);
+                        if (favorites.size() > 99) {
+                            mFavoriteManager.deleteFavorite(favorites.get(favorites.size() - 1).url, isnet);
+                        }
+                    }else {
+                        favorites = DaisyUtils.getFavoriteManager(getActivity()).getAllFavorites(isnet);
+                        Collections.sort(favorites);
+                        if (favorites.size() > 49) {
+                            mFavoriteManager.deleteFavoriteByUrl(favorites.get(favorites.size() - 1).url, isnet);
+                        }
                     }
                     mFavoriteManager.addFavorite(favorite, isnet);
                     subject_btn_like.setBackgroundResource(R.drawable.liked_btn_selector);
