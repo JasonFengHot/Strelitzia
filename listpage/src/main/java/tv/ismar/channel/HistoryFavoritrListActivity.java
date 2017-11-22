@@ -344,14 +344,16 @@ public class HistoryFavoritrListActivity extends BaseActivity implements OnItemC
         PageIntent intent=new PageIntent();
         HistoryFavoriteEntity entity=mlists.get(position);
         int pk=0;
+        int item_pk=0;
         boolean[] isSubItem = new boolean[1];
          pk = SimpleRestClient.getItemId(entity.getUrl(), isSubItem);
+         item_pk=SimpleRestClient.getItemId(entity.getSub_url(), isSubItem);
         if(pk==0){
             pk=entity.getPk();
         }
         if(source.equals("edit")){
             if(type==1){
-                deleteHistory(pk,entity.getItem_pk(),position,entity.getModel_name());
+                deleteHistory(pk,item_pk,position,entity.getModel_name());
             }else{
                 deleteBookmark(pk,position);
             }
@@ -384,6 +386,9 @@ public class HistoryFavoritrListActivity extends BaseActivity implements OnItemC
                 },200);
             }
         }else{
+//            if(!modelName.equals("subitem")){
+//                item_pk=0;
+//            }
             removeSub = skyService.apiHistoryRemove(pk, item_pk).subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(new BaseObserver<ResponseBody>() {
