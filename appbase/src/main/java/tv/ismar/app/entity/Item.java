@@ -1,7 +1,5 @@
 package tv.ismar.app.entity;
 
-import com.google.gson.annotations.SerializedName;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 
@@ -30,7 +28,6 @@ public class Item implements Serializable {
     public String[] tags;
     public String thumb_url;
     public String title;
-    @SerializedName("expense")
     public Expense expense_info;
     public Clip preview;
     public int spinoff_pk;
