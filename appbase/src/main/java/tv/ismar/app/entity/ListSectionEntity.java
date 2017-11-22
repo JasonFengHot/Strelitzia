@@ -1,5 +1,7 @@
 package tv.ismar.app.entity;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.List;
 
 /**
@@ -53,6 +55,7 @@ public class ListSectionEntity {
         private boolean expense;
         private String model_name;
         private Object custom_image;
+        @SerializedName("expense")
         private ExpenseInfoBean expense_info;
 
         public String getFocus() {
