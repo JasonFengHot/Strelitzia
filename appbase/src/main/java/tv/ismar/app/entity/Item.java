@@ -28,7 +28,7 @@ public class Item implements Serializable {
     public String[] tags;
     public String thumb_url;
     public String title;
-    public Expense expense_info;
+    public Expense expense;
     public Clip preview;
     public int spinoff_pk;
     public boolean is_3d;

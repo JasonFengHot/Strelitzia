@@ -22,7 +22,6 @@ import cn.ismartv.imagereflection.ReflectionTransformationBuilder;
 import tv.ismar.app.core.VipMark;
 import tv.ismar.app.entity.Item;
 import tv.ismar.app.ui.view.AsyncImageView;
-import tv.ismar.app.ui.view.LabelImageView;
 import tv.ismar.app.widget.RecyclerImageView;
 import tv.ismar.listpage.R;
 
@@ -124,10 +123,10 @@ public class RelatedAdapter extends BaseAdapter implements AsyncImageView.OnImag
         } else {
             holder.ItemBeanScore.setVisibility(View.INVISIBLE);
         }
-        if (mItemList.get(position).expense_info != null) {
-            if (mItemList.get(position).expense_info.cptitle != null) {
+        if (mItemList.get(position).expense != null) {
+            if (mItemList.get(position).expense.cptitle != null) {
                 holder.price.setVisibility(View.VISIBLE);
-                String imageUrl = VipMark.getInstance().getImage((Activity) mContext, mItemList.get(position).expense_info.pay_type, mItemList.get(position).expense_info.cpid);
+                String imageUrl = VipMark.getInstance().getImage((Activity) mContext, mItemList.get(position).expense.pay_type, mItemList.get(position).expense.cpid);
                 Picasso.with(mContext).load(imageUrl).into(holder.price);
             }
         } else {

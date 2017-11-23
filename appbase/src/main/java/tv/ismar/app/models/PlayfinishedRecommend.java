@@ -34,6 +34,7 @@ public class PlayfinishedRecommend {
         private  String custom_image;
         private  int order;
         private  int clip_id;
+        private  float bean_score;
 
         public int getClip_id() {
             return clip_id;
@@ -148,6 +149,10 @@ public class PlayfinishedRecommend {
         public void setCustom_image(String custom_image) {
             this.custom_image = custom_image;
         }
+
+        public float getBean_score() { return bean_score; }
+
+        public void setBean_score(float bean_score) { this.bean_score = bean_score; }
     }
 
 }

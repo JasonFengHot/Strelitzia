@@ -50,10 +50,9 @@ public class ListSectionEntity {
         private float bean_score;
         private String poster_url;
         private int pk;
-        private boolean expense;
+        private ExpenseInfoBean expense;
         private String model_name;
         private Object custom_image;
-        private ExpenseInfoBean expense_info;
 
         public String getFocus() {
             return focus;
@@ -143,14 +142,6 @@ public class ListSectionEntity {
             this.pk = pk;
         }
 
-        public boolean isExpense() {
-            return expense;
-        }
-
-        public void setExpense(boolean expense) {
-            this.expense = expense;
-        }
-
         public String getModel_name() {
             return model_name;
         }
@@ -167,12 +158,12 @@ public class ListSectionEntity {
             this.custom_image = custom_image;
         }
 
-        public ExpenseInfoBean getExpense_info() {
-            return expense_info;
+        public ExpenseInfoBean getExpense() {
+            return expense;
         }
 
-        public void setExpense_info(ExpenseInfoBean expense_info) {
-            this.expense_info = expense_info;
+        public void setExpense(ExpenseInfoBean expense) {
+            this.expense = expense;
         }
 
         public static class ExpenseInfoBean {

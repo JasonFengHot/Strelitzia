@@ -168,8 +168,8 @@ public class ListPosterAdapter extends RecyclerView.Adapter<ListPosterAdapter.Fi
                                 into(holder.item_vertical_poster_img);
 /*modify by dragontec for bug 4336 end*/
                     }
-                    if (item.isExpense()) {
-                        Picasso.with(mContext).load(VipMark.getInstance().getImage((Activity) mContext, item.getExpense_info().getPay_type(), item.getExpense_info().getCpid())).memoryPolicy(MemoryPolicy.NO_STORE).memoryPolicy(MemoryPolicy.NO_CACHE).into(holder.item_vertical_poster_vip);
+                    if (item.getExpense() != null) {
+                        Picasso.with(mContext).load(VipMark.getInstance().getImage((Activity) mContext, item.getExpense().getPay_type(), item.getExpense().getCpid())).memoryPolicy(MemoryPolicy.NO_STORE).memoryPolicy(MemoryPolicy.NO_CACHE).into(holder.item_vertical_poster_vip);
                         holder.item_vertical_poster_vip.setVisibility(View.VISIBLE);
                     } else {
                         holder.item_vertical_poster_vip.setVisibility(View.GONE);
@@ -225,8 +225,8 @@ public class ListPosterAdapter extends RecyclerView.Adapter<ListPosterAdapter.Fi
                                 .into(holder.item_horizontal_poster_img);
 /*modify by dragontec for bug 4336 end*/
                     }
-                    if (item.isExpense()) {
-                        Picasso.with(mContext).load(VipMark.getInstance().getImage((Activity) mContext, item.getExpense_info().getPay_type(), item.getExpense_info().getCpid())).memoryPolicy(MemoryPolicy.NO_STORE).memoryPolicy(MemoryPolicy.NO_CACHE).into(holder.item_horizontal_poster_vip);
+                    if (item.getExpense() != null) {
+                        Picasso.with(mContext).load(VipMark.getInstance().getImage((Activity) mContext, item.getExpense().getPay_type(), item.getExpense().getCpid())).memoryPolicy(MemoryPolicy.NO_STORE).memoryPolicy(MemoryPolicy.NO_CACHE).into(holder.item_horizontal_poster_vip);
                         holder.item_horizontal_poster_vip.setVisibility(View.VISIBLE);
                     } else {
                         holder.item_horizontal_poster_vip.setVisibility(View.GONE);

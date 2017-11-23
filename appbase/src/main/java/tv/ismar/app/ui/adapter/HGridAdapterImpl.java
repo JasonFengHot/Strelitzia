@@ -185,10 +185,10 @@ public class HGridAdapterImpl extends HGridAdapter<ItemCollection> implements As
             if(mList.get(sectionIndex).isItemReady(indexOfCurrentSection)) {
                 final Item item = mList.get(sectionIndex).objects.get(indexOfCurrentSection);
                 if(item!=null){
-                    if(item.expense_info!=null){
-						if(item.expense_info.cptitle!=null){
+                    if(item.expense !=null){
+						if(item.expense.cptitle!=null){
 							holder.price.setVisibility(View.VISIBLE);
-							String imageUrl =  VipMark.getInstance().getImage((Activity) mContext, item.expense_info.pay_type,item.expense_info.cpid);
+							String imageUrl =  VipMark.getInstance().getImage((Activity) mContext, item.expense.pay_type,item.expense.cpid);
 							Picasso.with(mContext).load(imageUrl).into(holder.price);
 						}  else{
 							holder.price.setVisibility(View.GONE);
