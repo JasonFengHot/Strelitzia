@@ -22,7 +22,8 @@
         android:clipChildren="false"
         android:clipToPadding="false"
         android:orientation="vertical">
-        <ScrollView
+        <tv.ismar.usercenter.widget.PurchaseHistoryRecyclerView
+            android:id="@+id/recyclerview"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginLeft="@dimen/usercenter_purchase_history_ml"
@@ -30,23 +31,12 @@
             android:layout_marginBottom="@dimen/purchase_history_recycler_mt"
             android:clipChildren="false"
             android:clipToPadding="false"
-            android:focusable="false"
-            android:scrollbars="none">
-
-            <RelativeLayout
-                android:id="@+id/recyclerview"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:clipChildren="false"
-                android:clipToPadding="false"
-                android:orientation="vertical"></RelativeLayout>
-        </ScrollView>
+            android:scrollbars="vertical" />
         <tv.ismar.app.widget.RecyclerImageView
             android:id="@+id/mainup_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:focusable="true" />
-
     </LinearLayout>
 </layout>
 

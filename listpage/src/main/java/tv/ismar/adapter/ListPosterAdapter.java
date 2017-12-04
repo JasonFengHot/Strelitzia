@@ -37,7 +37,10 @@ import tv.ismar.app.ui.adapter.OnItemFocusedListener;
 import tv.ismar.app.ui.adapter.OnItemKeyListener;
 //add by dragontec for bug 4310 end
 import tv.ismar.app.widget.RecyclerImageView;
+import tv.ismar.channel.FilterListActivity;
 import tv.ismar.listpage.R;
+
+import static tv.ismar.channel.FilterListActivity.PICASSO_TAG;
 
 /**
  * Created by admin on 2017/5/27.
@@ -60,14 +63,14 @@ public class ListPosterAdapter extends RecyclerView.Adapter<ListPosterAdapter.Fi
     private OnItemKeyListener itemKeyListener;
 	//add by dragontec for bug 4310 end
     //标题所在的位置集合
-    private ArrayList<Integer> mSpecialPos;
+    private ArrayList<SpecialPos> mSpecialPos;
     //标题data
     private SectionList mSectionList;
     //填充数据之后默认获取焦点的view位置
     private int focusedPosition=-1;
     private Rect rect;
 
-    public ListPosterAdapter(Context context, List<ListSectionEntity.ObjectsBean> itemList, boolean isVertical, ArrayList<Integer> specialPos, SectionList sectionList) {
+    public ListPosterAdapter(Context context, List<ListSectionEntity.ObjectsBean> itemList, boolean isVertical, ArrayList<SpecialPos> specialPos, SectionList sectionList) {
         this.mContext = context;
         this.mItemList = itemList;
         this.mIsVertical=isVertical;
@@ -76,7 +79,7 @@ public class ListPosterAdapter extends RecyclerView.Adapter<ListPosterAdapter.Fi
         rect=new Rect(0,0,1920,540);
     }
 
-    public void setmSpecialPos(ArrayList<Integer> mSpecialPos) {
+    public void setmSpecialPos(ArrayList<SpecialPos> mSpecialPos) {
         this.mSpecialPos = mSpecialPos;
     }
 
@@ -117,30 +120,30 @@ public class ListPosterAdapter extends RecyclerView.Adapter<ListPosterAdapter.Fi
     @Override
     public FilterPosterHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         FilterPosterHolder filterPosterHolder;
-        if(viewType==0) {
+//        if(viewType==0) {
             if (mIsVertical) {
                 filterPosterHolder = new FilterPosterHolder(LayoutInflater.from(mContext).inflate(R.layout.filter_item_vertical_poster, null));
             } else {
                 filterPosterHolder = new FilterPosterHolder(LayoutInflater.from(mContext).inflate(R.layout.filter_item_horizontal_poster, null));
             }
-        }else{
-            TextView textView=new TextView(mContext);
-            textView.setTextSize(TypedValue.COMPLEX_UNIT_PX,mContext.getResources().getDimensionPixelSize(R.dimen.filter_layout_current_section_title_ts));
-            textView.setWidth(mContext.getResources().getDimensionPixelOffset(R.dimen.list_section_title_w));
-            if(mIsVertical) {
-                textView.setHeight(mContext.getResources().getDimensionPixelOffset(R.dimen.list_section_vertical_title_h));
-            }else {
-                textView.setHeight(mContext.getResources().getDimensionPixelOffset(R.dimen.list_section_horizontal_title_h));
-            }
-            textView.setGravity(Gravity.CENTER_VERTICAL);
-            filterPosterHolder=new FilterPosterHolder(textView);
-        }
+//        }else{
+//            TextView textView=new TextView(mContext);
+//            textView.setTextSize(TypedValue.COMPLEX_UNIT_PX,mContext.getResources().getDimensionPixelSize(R.dimen.filter_layout_current_section_title_ts));
+//            textView.setWidth(mContext.getResources().getDimensionPixelOffset(R.dimen.list_section_title_w));
+//            if(mIsVertical) {
+//                textView.setHeight(mContext.getResources().getDimensionPixelOffset(R.dimen.list_section_vertical_title_h));
+//            }else {
+//                textView.setHeight(mContext.getResources().getDimensionPixelOffset(R.dimen.list_section_horizontal_title_h));
+//            }
+//            textView.setGravity(Gravity.CENTER_VERTICAL);
+//            filterPosterHolder=new FilterPosterHolder(textView);
+//        }
         return filterPosterHolder;
     }
 
     @Override
     public void onBindViewHolder(final FilterPosterHolder holder, final int position) {
-        if(getItemViewType(position)==0) {
+//        if(getItemViewType(position)==0) {
             if(position<mItemList.size()) {
                 final ListSectionEntity.ObjectsBean item = mItemList.get(position);
                 if (mIsVertical) {
@@ -159,17 +162,17 @@ public class ListPosterAdapter extends RecyclerView.Adapter<ListPosterAdapter.Fi
                     }
                     if (!TextUtils.isEmpty(item.getVertical_url())) {
 /*modify by dragontec for bug 4336 start*/
-                        Picasso.with(mContext).load(item.getVertical_url()).error(R.drawable.item_vertical_preview).placeholder(R.drawable.item_vertical_preview).memoryPolicy(MemoryPolicy.NO_STORE).memoryPolicy(MemoryPolicy.NO_CACHE).config(Bitmap.Config.RGB_565).
+                        Picasso.with(mContext).load(item.getVertical_url()).tag(PICASSO_TAG).error(R.drawable.item_vertical_preview).placeholder(R.drawable.item_vertical_preview).memoryPolicy(MemoryPolicy.NO_STORE).memoryPolicy(MemoryPolicy.NO_CACHE).config(Bitmap.Config.RGB_565).
                                 into(holder.item_vertical_poster_img);
 /*modify by dragontec for bug 4336 end*/
                     } else {
 /*modify by dragontec for bug 4336 start*/
-                        Picasso.with(mContext).load(R.drawable.item_vertical_preview).memoryPolicy(MemoryPolicy.NO_STORE).memoryPolicy(MemoryPolicy.NO_CACHE).config(Bitmap.Config.RGB_565).
+                        Picasso.with(mContext).load(R.drawable.item_vertical_preview).tag(PICASSO_TAG).memoryPolicy(MemoryPolicy.NO_STORE).memoryPolicy(MemoryPolicy.NO_CACHE).config(Bitmap.Config.RGB_565).
                                 into(holder.item_vertical_poster_img);
 /*modify by dragontec for bug 4336 end*/
                     }
                     if (item.getExpense() != null) {
-                        Picasso.with(mContext).load(VipMark.getInstance().getImage((Activity) mContext, item.getExpense().getPay_type(), item.getExpense().getCpid())).memoryPolicy(MemoryPolicy.NO_STORE).memoryPolicy(MemoryPolicy.NO_CACHE).into(holder.item_vertical_poster_vip);
+                        Picasso.with(mContext).load(VipMark.getInstance().getImage((Activity) mContext, item.getExpense().getPay_type(), item.getExpense().getCpid())).tag(PICASSO_TAG).memoryPolicy(MemoryPolicy.NO_STORE).memoryPolicy(MemoryPolicy.NO_CACHE).into(holder.item_vertical_poster_vip);
                         holder.item_vertical_poster_vip.setVisibility(View.VISIBLE);
                     } else {
                         holder.item_vertical_poster_vip.setVisibility(View.GONE);
@@ -216,17 +219,17 @@ public class ListPosterAdapter extends RecyclerView.Adapter<ListPosterAdapter.Fi
                     }
                     if (!TextUtils.isEmpty(item.getPoster_url())) {
 /*modify by dragontec for bug 4336 start*/
-                        Picasso.with(mContext).load(item.getPoster_url()).error(R.drawable.item_horizontal_preview).placeholder(R.drawable.item_horizontal_preview).memoryPolicy(MemoryPolicy.NO_STORE).memoryPolicy(MemoryPolicy.NO_CACHE).config(Bitmap.Config.RGB_565)
+                        Picasso.with(mContext).load(item.getPoster_url()).tag(PICASSO_TAG).error(R.drawable.item_horizontal_preview).placeholder(R.drawable.item_horizontal_preview).memoryPolicy(MemoryPolicy.NO_STORE).memoryPolicy(MemoryPolicy.NO_CACHE).config(Bitmap.Config.RGB_565)
                                 .into(holder.item_horizontal_poster_img);
 /*modify by dragontec for bug 4336 end*/
                     }else{
 /*modify by dragontec for bug 4336 start*/
-                        Picasso.with(mContext).load(R.drawable.item_horizontal_preview).memoryPolicy(MemoryPolicy.NO_STORE).memoryPolicy(MemoryPolicy.NO_CACHE).config(Bitmap.Config.RGB_565)
+                        Picasso.with(mContext).load(R.drawable.item_horizontal_preview).tag(PICASSO_TAG).memoryPolicy(MemoryPolicy.NO_STORE).memoryPolicy(MemoryPolicy.NO_CACHE).config(Bitmap.Config.RGB_565)
                                 .into(holder.item_horizontal_poster_img);
 /*modify by dragontec for bug 4336 end*/
                     }
                     if (item.getExpense() != null) {
-                        Picasso.with(mContext).load(VipMark.getInstance().getImage((Activity) mContext, item.getExpense().getPay_type(), item.getExpense().getCpid())).memoryPolicy(MemoryPolicy.NO_STORE).memoryPolicy(MemoryPolicy.NO_CACHE).into(holder.item_horizontal_poster_vip);
+                        Picasso.with(mContext).load(VipMark.getInstance().getImage((Activity) mContext, item.getExpense().getPay_type(), item.getExpense().getCpid())).tag(PICASSO_TAG).memoryPolicy(MemoryPolicy.NO_STORE).memoryPolicy(MemoryPolicy.NO_CACHE).into(holder.item_horizontal_poster_vip);
                         holder.item_horizontal_poster_vip.setVisibility(View.VISIBLE);
                     } else {
                         holder.item_horizontal_poster_vip.setVisibility(View.GONE);
@@ -273,10 +276,10 @@ public class ListPosterAdapter extends RecyclerView.Adapter<ListPosterAdapter.Fi
                     return false;
                 }
             });
-        }else{
-            if(mSpecialPos.indexOf(position)<mSectionList.size())
-                ((TextView)holder.itemView).setText(mSectionList.get(mSpecialPos.indexOf(position)).title);
-        }
+//        }else{
+//            if(mSpecialPos.indexOf(position)<mSectionList.size())
+//                ((TextView)holder.itemView).setText(mSectionList.get(mSpecialPos.indexOf(position)).title);
+//        }
         if(position==focusedPosition){
             holder.itemView.requestFocus();
             focusedPosition=-1;

@@ -160,4 +160,6 @@
 <dimen name="privilege_item_scroll">22.22dp</dimen>
 <dimen name="privilege_recycler_layout_mb">14.17dp</dimen>
 <dimen name="usercenter_storefragment_packagelist_gridview_P">4.44dip</dimen>
+
+<dimen name="purchase_history_recycler_view_padding">9.72dp</dimen>
 </resources>

@@ -5,8 +5,6 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:background="#00000000"
-    android:clipChildren="false"
-    android:clipToPadding="false"
     android:focusable="true"
     android:focusableInTouchMode="true"
     android:foreground="@drawable/selector_item_banner_subscribe"
@@ -17,11 +15,17 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     >
+    <tv.ismar.app.widget.RecyclerImageView
+        android:layout_width="@dimen/item_horizontal_poster_img_w"
+        android:layout_height="@dimen/item_horizontal_poster_img_h"
+        android:src="@drawable/item_horizontal_preview"
+        />
 
     <tv.ismar.app.widget.RecyclerImageView
         android:id="@+id/item_horizontal_poster_img"
         android:layout_width="@dimen/item_horizontal_poster_img_w"
-        android:layout_height="@dimen/item_horizontal_poster_img_h" />
+        android:layout_height="@dimen/item_horizontal_poster_img_h"
+        android:src="@drawable/item_horizontal_preview"/>
     
     <tv.ismar.app.widget.RecyclerImageView
         android:id="@+id/item_horizontal_poster_vip"

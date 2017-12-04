@@ -6,6 +6,8 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -14,6 +16,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 //import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -37,8 +40,10 @@ import tv.ismar.app.widget.RecyclerImageView;
 import tv.ismar.library.exception.ExceptionUtils;
 import tv.ismar.usercenter.PurchaseHistoryContract;
 import tv.ismar.usercenter.R;
+import tv.ismar.usercenter.adapter.PurchaseHistoryListAdapter;
 import tv.ismar.usercenter.databinding.FragmentPurchasehistoryBinding;
 import tv.ismar.usercenter.viewmodel.PurchaseHistoryViewModel;
+import tv.ismar.usercenter.widget.PurchaseHistoryRecyclerView;
 
 /**
  * Created by huibin on 10/27/16.
@@ -56,26 +61,34 @@ public class PurchaseHistoryFragment extends BaseFragment implements PurchaseHis
 
     private FragmentPurchasehistoryBinding purchasehistoryBinding;
 
-    private RelativeLayout mRecyclerView;
+    private PurchaseHistoryRecyclerView mRecyclerView;
 
     private boolean fragmentIsPause = false;
 
 
     private UserCenterActivity mUserCenterActivity;
+    private Context mContext;
+
+    private LinearLayoutManager mLayoutManager;
+    private PurchaseHistoryListAdapter mAdapter;
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         Log.d(TAG, "onAttach");
+		mContext = context;
+		mUserCenterActivity = (UserCenterActivity) getActivity();
+		View purchaseHistoryIndicator = mUserCenterActivity.findViewById(R.id.usercenter_purchase_history);
+		purchaseHistoryIndicator.setNextFocusRightId(purchaseHistoryIndicator.getId());
     }
 
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        mUserCenterActivity = (UserCenterActivity) activity;
-        View purchaseHistoryIndicator = mUserCenterActivity.findViewById(R.id.usercenter_purchase_history);
-        purchaseHistoryIndicator.setNextFocusRightId(purchaseHistoryIndicator.getId());
-    }
+//    @Override
+//    public void onAttach(Activity activity) {
+//        super.onAttach(activity);
+//        mUserCenterActivity = (UserCenterActivity) activity;
+//        View purchaseHistoryIndicator = mUserCenterActivity.findViewById(R.id.usercenter_purchase_history);
+//        purchaseHistoryIndicator.setNextFocusRightId(purchaseHistoryIndicator.getId());
+//    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -91,16 +104,40 @@ public class PurchaseHistoryFragment extends BaseFragment implements PurchaseHis
         purchasehistoryBinding = FragmentPurchasehistoryBinding.inflate(inflater, container, false);
         purchasehistoryBinding.setTasks(mViewModel);
         purchasehistoryBinding.setActionHandler(mPresenter);
-
         mRecyclerView = purchasehistoryBinding.recyclerview;
-        View root = purchasehistoryBinding.getRoot();
-        return root;
+        mRecyclerView.setNextFocusLeftId(R.id.usercenter_purchase_history);
+		return purchasehistoryBinding.getRoot();
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         Log.d(TAG, "onViewCreated");
         super.onViewCreated(view, savedInstanceState);
+		mLayoutManager = new LinearLayoutManager(mContext);
+		mRecyclerView.setLayoutManager(mLayoutManager);
+		mAdapter = new PurchaseHistoryListAdapter();
+		mAdapter.setOnItemHoveredListener(new PurchaseHistoryListAdapter.OnItemHoveredListener() {
+			@Override
+			public void onHovered(View v, MotionEvent event) {
+				switch (event.getAction()) {
+					case MotionEvent.ACTION_HOVER_ENTER:
+					case MotionEvent.ACTION_HOVER_MOVE:
+						if (!v.hasFocus()) {
+							((UserCenterActivity) getActivity()).clearTheLastHoveredVewState();
+							v.requestFocus();
+							v.requestFocusFromTouch();
+						}
+						break;
+					case MotionEvent.ACTION_HOVER_EXIT:
+						if (!fragmentIsPause) {
+//							purchasehistoryBinding.mainupView.requestFocus();
+//							purchasehistoryBinding.mainupView.requestFocusFromTouch();
+						}
+						break;
+				}
+			}
+		});
+		mRecyclerView.setAdapter(mAdapter);
         mPresenter.start();
 
     }
@@ -109,7 +146,6 @@ public class PurchaseHistoryFragment extends BaseFragment implements PurchaseHis
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         Log.d(TAG, "onActivityCreated");
-
     }
 
     @Override
@@ -125,40 +161,48 @@ public class PurchaseHistoryFragment extends BaseFragment implements PurchaseHis
         AppConstant.purchase_entrance_page = "expense_history";
         fragmentIsPause = false;
         Log.d(TAG, "onResume");
-
-
     }
 
     @Override
     public void onPause() {
+		Log.d(TAG, "onPause");
         fragmentIsPause = true;
         super.onPause();
-        Log.d(TAG, "onPause");
     }
 
     @Override
     public void onStop() {
+		Log.d(TAG, "onStop");
         super.onStop();
-        Log.d(TAG, "onStop");
     }
 
     @Override
     public void onDestroyView() {
+		Log.d(TAG, "onDestroyView");
+		mPresenter.stop();
+		mRecyclerView.setAdapter(null);
+		mAdapter.setOnItemHoveredListener(null);
+		mAdapter = null;
+		mRecyclerView.setLayoutManager(null);
+		mLayoutManager = null;
+		mRecyclerView = null;
+		purchasehistoryBinding = null;
         super.onDestroyView();
-        Log.d(TAG, "onDestroyView");
     }
 
     @Override
     public void onDestroy() {
+		Log.d(TAG, "onDestroy");
         super.onDestroy();
-        Log.d(TAG, "onDestroy");
-
     }
 
     @Override
     public void onDetach() {
-        super.onDetach();
+		mRecyclerView = null;
         Log.d(TAG, "onDetach");
+        mUserCenterActivity = null;
+        mContext = null;
+		super.onDetach();
     }
 
     public void setViewModel(PurchaseHistoryViewModel viewModel) {
@@ -174,7 +218,7 @@ public class PurchaseHistoryFragment extends BaseFragment implements PurchaseHis
     public void loadAccountOrders(AccountsOrdersEntity accountsOrdersEntity) {
 
 
-        ArrayList<AccountsOrdersEntity.OrderEntity> arrayList = new ArrayList<AccountsOrdersEntity.OrderEntity>();
+        ArrayList<AccountsOrdersEntity.OrderEntity> arrayList = new ArrayList<>();
         if (!TextUtils.isEmpty(IsmartvActivator.getInstance().getAuthToken()) && !TextUtils.isEmpty(IsmartvActivator.getInstance().getUsername())) {
 
 
@@ -208,158 +252,9 @@ public class PurchaseHistoryFragment extends BaseFragment implements PurchaseHis
     /*add by dragontec for bug 4455 end*/
 
     private void createHistoryListView(ArrayList<AccountsOrdersEntity.OrderEntity> orderEntities) {
-        mRecyclerView.removeAllViews();
-        if (mUserCenterActivity == null) {
-            return;
-        }
-//            if(!orderEntities.isEmpty()){
-//                purchaseHasData = true;
-//            }
-		/*add by dragontec for bug 4455 start*/
-		int size = orderEntities.size() > History_List_Max_Count ? History_List_Max_Count : orderEntities.size();
-        for (int i = 0; i < size; i++) {
-        /*add by dragontec for bug 4455 end*/
-            View convertView = LayoutInflater.from(mUserCenterActivity).inflate(R.layout.item_purchase_history, null);
-
-            AccountsOrdersEntity.OrderEntity item = orderEntities.get(i);
-
-            TextView title = (TextView) convertView.findViewById(R.id.orderlistitem_title);
-            TextView buydate_txt = (TextView) convertView.findViewById(R.id.orderlistitem_time);
-            TextView orderlistitem_remainday = (TextView) convertView.findViewById(R.id.orderlistitem_remainday);
-            TextView totalfee = (TextView) convertView.findViewById(R.id.orderlistitem_cost);
-            RecyclerImageView icon = (RecyclerImageView) convertView.findViewById(R.id.orderlistitem_icon);
-            TextView orderlistitem_paychannel = (TextView) convertView.findViewById(R.id.orderlistitem_paychannel);
-            TextView purchaseExtra = (TextView) convertView.findViewById(R.id.purchase_extra);
-            TextView mergeTxt = (TextView) convertView.findViewById(R.id.orderlistitem_merge);
-
-            icon.setTag(i);
-
-
-            String orderday = mUserCenterActivity.getResources().getString(R.string.personcenter_orderlist_item_orderday);
-            String remainday = mUserCenterActivity.getResources().getString(R.string.personcenter_orderlist_item_remainday);
-            String cost = mUserCenterActivity.getResources().getString(R.string.personcenter_orderlist_item_cost);
-            String paySource = mUserCenterActivity.getResources().getString(R.string.personcenter_orderlist_item_paysource);
-            title.setText(item.getTitle());
-            buydate_txt.setText(String.format(orderday, item.getStart_date()));
-            orderlistitem_remainday.setText(String.format(remainday, remaindDay(item.getExpiry_date())));
-            Log.d(TAG, "remainday: " + remaindDay(item.getExpiry_date()));
-            totalfee.setText(String.format(cost, item.getTotal_fee()));
-            orderlistitem_paychannel.setText(String.format(paySource, getValueBySource(item.getSource())));
-            if (!TextUtils.isEmpty(item.getThumb_url()))
-                Picasso.with(mUserCenterActivity).load(item.getThumb_url()).memoryPolicy(MemoryPolicy.NO_STORE).config(Bitmap.Config.RGB_565).into(icon);
-            if (!TextUtils.isEmpty(item.getInfo())) {
-                String account = item.getInfo().split("@")[0];
-                String mergedate = item.getInfo().split("@")[1];
-                SimpleDateFormat time = new SimpleDateFormat("yyyy-MM-dd");
-                String mergeTime = time.format(Timestamp.valueOf(mergedate));
-
-                if (item.type.equals("order_list")) {
-                    purchaseExtra.setText("( " + mergeTime + "合并至视云账户" + IsmartvActivator.getInstance().getUsername() + " )");
-                } else if (item.type.equals("snorder_list")) {
-                    purchaseExtra.setText(mergeTime + "合并至视云账户" + account);
-                }
-
-                purchaseExtra.setVisibility(View.VISIBLE);
-                mergeTxt.setVisibility(View.INVISIBLE);
-            } else {
-                purchaseExtra.setVisibility(View.INVISIBLE);
-                mergeTxt.setVisibility(View.INVISIBLE);
-            }
-            convertView.setTag(item);
-            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            if (i == 0) {
-                convertView.setId(R.id.balance_pay);
-            } else {
-                convertView.setId(R.id.balance_pay + i * 5);
-                params.addRule(RelativeLayout.BELOW, R.id.feedback_time + 5 * (i - 1));
-            }
-            mRecyclerView.addView(convertView,params);
-            RecyclerImageView imageView = new RecyclerImageView(mUserCenterActivity);
-            imageView.setBackgroundResource(R.color.history_divider);
-            imageView.setId(R.id.feedback_time+i * 5);
-            RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, 1);
-            layoutParams.bottomMargin = 4;
-            layoutParams.topMargin =4;
-            layoutParams.addRule(RelativeLayout.BELOW,convertView.getId());
-            imageView.setLayoutParams(layoutParams);
-            mRecyclerView.addView(imageView);
-            convertView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    AccountsOrdersEntity.OrderEntity orderEntity = (AccountsOrdersEntity.OrderEntity) v.getTag();
-                    if (TextUtils.isEmpty(orderEntity.getUrl())) {
-                        Toast.makeText(mUserCenterActivity, "url is empty!!!", Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-                    List<String> pathSegments = Uri.parse(orderEntity.getUrl()).getPathSegments();
-                    String pk = pathSegments.get(pathSegments.size() - 1);
-                    String type = pathSegments.get(pathSegments.size() - 2);
-                    PageIntent pageIntent = new PageIntent();
-                    switch (type) {
-                        case "package":
-                            pageIntent.toPackageDetail(mUserCenterActivity, "history", Integer.parseInt(pk));
-                            break;
-                        case "item":
-                            pageIntent.toDetailPage(mUserCenterActivity, "history", Integer.parseInt(pk));
-                            break;
-                        default:
-                            throw new IllegalArgumentException(orderEntity.getUrl() + " type not support!!!");
-                    }
-                }
-            });
-
-            convertView.setOnHoverListener(new View.OnHoverListener() {
-                @Override
-                public boolean onHover(View v, MotionEvent event) {
-                    switch (event.getAction()) {
-                        case MotionEvent.ACTION_HOVER_ENTER:
-                        case MotionEvent.ACTION_HOVER_MOVE:
-                            if (!v.hasFocus()) {
-                                ((UserCenterActivity) getActivity()).clearTheLastHoveredVewState();
-                                v.requestFocus();
-                                v.requestFocusFromTouch();
-                            }
-
-                            break;
-                        case MotionEvent.ACTION_HOVER_EXIT:
-                            Log.d(TAG, "MotionEvent.ACTION_HOVER_EXIT");
-                            if (!fragmentIsPause) {
-                                purchasehistoryBinding.mainupView.requestFocus();
-                                purchasehistoryBinding.mainupView.requestFocusFromTouch();
-                            }
-                            break;
-                    }
-                    return false;
-                }
-            });
-            if (i == 0) {
-//                convertView.setId(R.id.purchase_last_item_id);
-                convertView.setNextFocusUpId(convertView.getId());
-            }
-            if(i == orderEntities.size() -1){
-                convertView.setNextFocusDownId(convertView.getId());
-            }
-            convertView.setNextFocusLeftId(R.id.usercenter_purchase_history);
-            icon.setOnKeyListener(new View.OnKeyListener() {
-                @Override
-                public boolean onKey(View v, int keyCode, KeyEvent event) {
-                    int tag = (int) v.getTag();
-                    if (tag == 0 && keyCode == KeyEvent.KEYCODE_DPAD_UP) {
-                        return true;
-                    }
-                    return false;
-                }
-            });
-
-//            if (i != orderEntities.size() - 1) {
-//                ImageView imageView = new ImageView(mUserCenterActivity);
-//                imageView.setBackgroundResource(R.color.history_divider);
-//                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 1);
-//                imageView.setLayoutParams(layoutParams);
-//                mRecyclerView.addView(imageView);
-//            }
-        }
-
+    	if (mContext != null) {
+			mAdapter.setData(orderEntities);
+		}
     }
 
 
@@ -386,6 +281,5 @@ public class PurchaseHistoryFragment extends BaseFragment implements PurchaseHis
         }
         return 0;
     }
-
 
 }

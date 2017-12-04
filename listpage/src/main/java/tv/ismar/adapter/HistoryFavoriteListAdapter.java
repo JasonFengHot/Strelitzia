@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -14,6 +15,7 @@ import android.widget.TextView;
 import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import tv.ismar.app.core.VipMark;
@@ -42,7 +44,14 @@ public class HistoryFavoriteListAdapter extends RecyclerView.Adapter<HistoryFavo
 	/*modify by dragontec for bug 4482 end*/
     public HistoryFavoriteListAdapter(Context context,List<HistoryFavoriteEntity> item,int typeId,String source) {
         mContext=context;
-        items=item;
+        this.items=item;
+//        this.items=new ArrayList<>();
+//        for (int i = 0; i < 100; i++) {
+//            HistoryFavoriteEntity mHistoryFavoriteEntity = new HistoryFavoriteEntity();
+//            mHistoryFavoriteEntity.setTitle("title" + i);
+//            items.add(mHistoryFavoriteEntity);
+//        }
+
         type=typeId;
         listsource=source;
     }
@@ -64,6 +73,7 @@ public class HistoryFavoriteListAdapter extends RecyclerView.Adapter<HistoryFavo
 
     @Override
     public void onBindViewHolder(final listViewholder holder, final int position) {
+        Log.i("zzz","zzz binding view pos:" + position);
         HistoryFavoriteEntity item=items.get(position);
         if(item!=null) {
             if (item.getBean_score() > 0) {
@@ -117,7 +127,7 @@ public class HistoryFavoriteListAdapter extends RecyclerView.Adapter<HistoryFavo
                         holder.delete_bg.setVisibility(View.GONE);
                         holder.title.setSelected(false);
                         holder.title.setEllipsize(TextUtils.TruncateAt.END);
-                    }
+                }
                     itemFocusedListener.onItemfocused(v, position, hasFocus);
                 }
             });
@@ -134,6 +144,14 @@ public class HistoryFavoriteListAdapter extends RecyclerView.Adapter<HistoryFavo
                     return false;
                 }
             });
+
+//            int readyFocusPosition = getBindingViewRequestFocusPosition();
+//            if(readyFocusPosition != -1){
+//                if(position == readyFocusPosition){
+//                    holder.itemView.requestFocus();
+//                    setBindingViewRequestFocusPosition(-1);
+//                }
+//            }
         }
     }
 

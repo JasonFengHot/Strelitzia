@@ -56,6 +56,8 @@ public class LocationRelativeLayout extends RelativeLayout {
             }else{
                 arrow_up_left.setVisibility(View.GONE);
             }
+        }else{
+            arrow_up_left.setVisibility(View.GONE);
         }
     }
 
@@ -67,6 +69,8 @@ public class LocationRelativeLayout extends RelativeLayout {
             }else{
                 arrow_down_left.setVisibility(View.GONE);
             }
+        }else{
+            arrow_down_left.setVisibility(View.GONE);
         }
     }
 
@@ -78,6 +82,8 @@ public class LocationRelativeLayout extends RelativeLayout {
             }else{
                 arrow_up_right.setVisibility(View.GONE);
             }
+        }else{
+            arrow_up_right.setVisibility(View.GONE);
         }
     }
 
@@ -89,6 +95,8 @@ public class LocationRelativeLayout extends RelativeLayout {
             }else{
                 arrow_down_right.setVisibility(View.GONE);
             }
+        }else{
+            arrow_down_right.setVisibility(View.GONE);
         }
     }
 

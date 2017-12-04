@@ -228,7 +228,7 @@ public class HomeActivity extends BaseActivity
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate((savedInstanceState != null) ? null : savedInstanceState);
+        super.onCreate(null);
         getWindow().setFormat(PixelFormat.TRANSLUCENT);
         View contentview = LayoutInflater.from(this).inflate(R.layout.home_activity_layout, null);
         setContentView(contentview);
@@ -260,9 +260,12 @@ public class HomeActivity extends BaseActivity
         super.onResume();
         mTimeTv.setText(mHomeControl.getNowTime());
         isKeyDown = false;
-        if (mLastSelectedIndex == 0) {
-            mChannelTab.setDefaultSelection(1);
-        }
+//        if (mLastSelectedIndex == 0) {
+//            mChannelTab.setDefaultSelection(1);
+//        }
+		if (mLastSelectedIndex != -1) {
+			mChannelTab.setDefaultSelection(mLastSelectedIndex);
+		}
     }
 
     @Override
@@ -556,13 +559,23 @@ public class HomeActivity extends BaseActivity
                 stopRequestFocusBanner();
             }
         }
-/*add by dragontec for bug 4259 end*/
+/*end by dragontec for bug 4259 end*/
+
+
         if(event.getAction() == KeyEvent.ACTION_DOWN){
             isKeyDown = true;
         }else  if(event.getAction() == KeyEvent.ACTION_UP){
             if(isKeyDown){
                 isKeyDown = false;
             }else{
+            	//temp solution, because we can not get key action down in some situation
+//				if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_UP || event.getKeyCode() == KeyEvent.KEYCODE_DPAD_DOWN || event.getKeyCode() == KeyEvent.KEYCODE_DPAD_LEFT || event.getKeyCode() == KeyEvent.KEYCODE_DPAD_RIGHT) {
+//					ChannelFragment fragment = getChannelFragment();
+//					if (fragment != null) {
+//						fragment.requestFocus();
+//					}
+//				}
+				Log.d(TAG, "dispatchKeyEvent key up but not down");
                 return true;
             }
         }
@@ -784,11 +797,11 @@ public class HomeActivity extends BaseActivity
             int position = (int) args[0];
             Log.d(TAG, "callback position:" + position);
             Log.d(TAG, "mChannels: " + mFetchDataControl.mChannels );
-            if (mFetchDataControl.mChannels != null && mFetchDataControl.mChannels.length + 2  > position) {
+            if (mFetchDataControl.mChannels != null && mFetchDataControl.mChannels.length + 2  > position && position != mLastSelectedIndex) {
                 ChannelFragment channelFragment = new ChannelFragment();
                 switch (position) {
                     case 0: // 搜索
-                        mLastSelectedIndex = position;
+//                        mLastSelectedIndex = position;
                         setBackground(R.drawable.homepage_background);
                         PageIntent intent = new PageIntent();
                         intent.toSearch(this);

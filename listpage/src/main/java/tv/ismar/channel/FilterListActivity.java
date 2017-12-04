@@ -2,10 +2,12 @@ package tv.ismar.channel;
 
 
 import android.content.Intent;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.TypedValue;
@@ -14,6 +16,7 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.CompoundButton;
 //import android.widget.ImageView;
@@ -39,6 +42,7 @@ import tv.ismar.adapter.FilterPosterAdapter;
 import tv.ismar.adapter.FocusGridLayoutManager;
 import tv.ismar.adapter.ListPosterAdapter;
 import tv.ismar.adapter.SpaceItemDecoration;
+import tv.ismar.adapter.SpecialPos;
 import tv.ismar.app.AppConstant;
 import tv.ismar.app.BaseActivity;
 import tv.ismar.app.core.PageIntent;
@@ -55,31 +59,36 @@ import tv.ismar.app.network.entity.EventProperty;
 import tv.ismar.app.ui.adapter.OnItemClickListener;
 import tv.ismar.app.ui.adapter.OnItemFocusedListener;
 import tv.ismar.app.ui.adapter.OnItemKeyListener;
-import tv.ismar.app.widget.MyRecyclerView;
 import tv.ismar.app.widget.RecyclerImageView;
 import tv.ismar.listpage.R;
 import tv.ismar.searchpage.utils.JasmineUtil;
 import tv.ismar.view.FilterConditionGroupView;
+import tv.ismar.view.FilterListRecyclerView;
 import tv.ismar.view.FullScrollView;
 import tv.ismar.view.LocationRelativeLayout;
 
+import static android.support.v7.widget.RecyclerView.SCROLL_STATE_IDLE;
 import static android.widget.RelativeLayout.ALIGN_PARENT_BOTTOM;
 import static android.widget.RelativeLayout.ALIGN_PARENT_RIGHT;
 
 /**
  * Created by zhangjiqiang on 15-6-18.
  */
-public class FilterListActivity extends BaseActivity implements View.OnClickListener, View.OnHoverListener {
+public class FilterListActivity extends BaseActivity implements View.OnClickListener, View.OnHoverListener, FilterListRecyclerView.OnRecyclerScrollListener {
+    public static final String PICASSO_TAG = "filter_list";
 	private final String TAG = this.getClass().getSimpleName();
     private static final long CLICK_BLOCK_TIME = 400;
     private static final long KEY_BLOCK_TIME = 300;
     private static final long KEY_BLOCK_LEFT_RIGHT_TIME = 100;
     private static final long CHECK_CHANGED_DELAYED = 300;
+    public static final int HORIZONTAL_SPAN_COUNT = 3;
+    public static final int VERTICAL_SPAN_COUNT = 5;
+
     private TextView filter_title;
     private RadioButton filter_tab;
     private LinearLayout filter_checked_conditiion;
-    private MyRecyclerView poster_recyclerview;
-    private MyRecyclerView list_poster_recyclerview;
+    private FilterListRecyclerView poster_recyclerview;
+    private FilterListRecyclerView list_poster_recyclerview;
     private LinearLayout filter_conditions;
     boolean isVertical;
     private View filter_condition_layout;
@@ -91,7 +100,7 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
     private int spanCount;
     private RadioGroup section_group;
     private FocusGridLayoutManager mFocusGridLayoutManager;
-    private ArrayList<Integer> specialPos;
+    private ArrayList<SpecialPos> specialPos;
     private int totalItemCount;
     private ListSectionEntity mAllSectionItemList;
     private SectionList sectionList;
@@ -143,6 +152,8 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
     private long lastKeyDownTime = 0 ;
     private Handler mClickRadioBtnHandler = null;
     private CheckedChangedRunnable mCheckedChangedRunnable;
+    private int itemHeight = -1;
+    private int onePageScrollY = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -160,7 +171,6 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
         initView();
         initListener();
         initData();
-
     }
 
 
@@ -180,8 +190,6 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
         new NetworkUtils.DataCollectionTask().execute(NetworkUtils.VIDEO_CHANNEL_IN, properties);
     }
 
-
-
     private void initView() {
         //左侧tab区view
         filter_title = (TextView) findViewById(R.id.filter_title);
@@ -190,13 +198,13 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
         filter_tab = (RadioButton) findViewById(R.id.filter_tab);
         //筛选区view
         filter_checked_conditiion = (LinearLayout) findViewById(R.id.filter_checked_conditiion);
-        poster_recyclerview = (MyRecyclerView) findViewById(R.id.poster_recyclerview);
+        poster_recyclerview = (FilterListRecyclerView) findViewById(R.id.poster_recyclerview);
         poster_recyclerview.setHasFixedSize(true);
         filter_condition_layout = View.inflate(this, R.layout.filter_condition_layout,null);
         filter_conditions = (LinearLayout)filter_condition_layout.findViewById(R.id.filter_conditions);
         filter_noresult = findViewById(R.id.filter_noresult);
         //列表区view
-        list_poster_recyclerview = (MyRecyclerView) findViewById(R.id.list_poster_recyclerview);
+        list_poster_recyclerview = (FilterListRecyclerView) findViewById(R.id.list_poster_recyclerview);
         list_poster_recyclerview.setHasFixedSize(true);
         current_section_title = (TextView) findViewById(R.id.current_section_title);
         //空鼠箭头view
@@ -211,16 +219,23 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
         filter_root_view.setArrow_down_right(poster_arrow_down);
         full_view = findView(R.id.full_view);
         filter_root_view.setxBoundary(getResources().getDimensionPixelOffset(R.dimen.filter_layout_left_view_tab_w));
+    }
+
+    private void initListener() {
         tab_arrow_up.setOnHoverListener(this);
         tab_arrow_down.setOnHoverListener(this);
         poster_arrow_up.setOnHoverListener(this);
         poster_arrow_down.setOnHoverListener(this);
+        poster_recyclerview.setOnHoverListener(this);
+        list_poster_recyclerview.setOnHoverListener(this);
         tab_arrow_up.setOnClickListener(this);
         tab_arrow_down.setOnClickListener(this);
         poster_arrow_up.setOnClickListener(this);
         poster_arrow_down.setOnClickListener(this);
         full_view.setOnHoverListener(this);
-        /*
+        poster_recyclerview.setScrollListener(this);
+        list_poster_recyclerview.setScrollListener(this);
+            /*
          * 空鼠使页面焦点丢失后，按五向键要使焦点落到特定view上
          * 需求：优先落到最后一次获取到焦点的view
          * 如果最后一次获取到焦点的view为箭头、或者已经在界面不可见，则选择第一张海报作为焦点的落脚点
@@ -253,8 +268,8 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
                                     }
                                 } else {
                                     View firstView = null;
-                                    if (checkedTab == sectionSize - 1 && mAllSectionItemList.getCount() - specialPos.get(checkedTab) < spanCount) {
-                                        firstView = mFocusGridLayoutManager.findViewByPosition(specialPos.get(checkedTab) + 1);
+                                    if (checkedTab == sectionSize - 1 && mAllSectionItemList.getCount() - specialPos.get(checkedTab).startPosition < spanCount) {
+                                        firstView = mFocusGridLayoutManager.findViewByPosition(specialPos.get(checkedTab).startPosition + 1);
                                     } else if (list_poster_recyclerview.getChildCount() > spanCount) {
                                         firstView = list_poster_recyclerview.getChildAt(spanCount);
                                     }
@@ -281,7 +296,7 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
 
         RelativeLayout.LayoutParams recyclerParam= (RelativeLayout.LayoutParams) list_poster_recyclerview.getLayoutParams();
         if(isVertical){
-            recyclerParam.setMargins(0,getResources().getDimensionPixelOffset(R.dimen.filter_layout_poster_recyclerview_vmt),getResources().getDimensionPixelOffset(R.dimen.filter_layout_poster_recyclerview_mr),0);
+            recyclerParam.setMargins(getResources().getDimensionPixelOffset(R.dimen.filter_layout_poster_vertical_recyclerview_ml),0,0,0);
             RelativeLayout.LayoutParams params=new RelativeLayout.LayoutParams(getResources().getDimensionPixelOffset(R.dimen.filter_layout_poster_arrow_w),getResources().getDimensionPixelOffset(R.dimen.filter_layout_poster_arrow_h));
             params.rightMargin=getResources().getDimensionPixelOffset(R.dimen.filter_layout_poster_arrow_mr);
             params.addRule(ALIGN_PARENT_RIGHT);
@@ -289,9 +304,10 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
             poster_arrow_down.setBackgroundResource(R.drawable.poster_arrow_down_vselector);
             poster_arrow_down.setLayoutParams(params);
         }else{
-            recyclerParam.setMargins(0,getResources().getDimensionPixelOffset(R.dimen.filter_layout_poster_recyclerview_hmt),getResources().getDimensionPixelOffset(R.dimen.filter_layout_poster_recyclerview_mr),0);
+            recyclerParam.setMargins(getResources().getDimensionPixelOffset(R.dimen.filter_layout_poster_horizontal_recyclerview_ml),0,0,0);
         }
         list_poster_recyclerview.setLayoutParams(recyclerParam);
+        poster_recyclerview.setLayoutParams(recyclerParam);
         list_poster_recyclerview.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
@@ -301,9 +317,6 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
                 }
             }
         });
-    }
-
-    private void initListener() {
         filter_tab.setOnClickListener(this);
         filter_tab.setOnHoverListener(this);
         filter_tab.setOnFocusChangeListener(new View.OnFocusChangeListener() {
@@ -368,73 +381,13 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
             @Override
             public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
                 //海报区上下箭头是否显示
-                try {
-                    if (mFilterFocusGridLayoutManager != null) {
-                        if (mFilterFocusGridLayoutManager.findFirstVisibleItemPosition() == 0) {
-                            filter_root_view.setShow_right_up(false);
-                        } else {
-                            filter_root_view.setShow_right_up(true);
-                        }
-                        if (filterPosterAdapter != null && mFilterFocusGridLayoutManager.findLastCompletelyVisibleItemPosition() == filterPosterAdapter.getItemCount() - 1) {
-                            filter_root_view.setShow_right_down(false);
-                        } else {
-                            filter_root_view.setShow_right_down(true);
-                        }
-                        if (mFilterFocusGridLayoutManager.findLastVisibleItemPosition() == mFilterItemList.objects.size() - 1 && mFilterFocusGridLayoutManager.findLastVisibleItemPosition() != -1) {
-                            if (mFilterPage + 1 <= mFilterItemList.num_pages) {
-                                fetchFilterResult(content_model, mFilterCondition, mFilterPage + 1);
-                            }
-                        }
-                    }
-                }catch (Exception e){
-                    e.printStackTrace();
-                }
+
             }
         });
         list_poster_recyclerview.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
             @Override
             public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
-                //通过滑动停止后判断当前所在列表位置，进行数据更新操作(列表数据更新、列表区title更新、当前选中tab更新)
-                if(mFocusGridLayoutManager!=null) {
-                    int firstVisiablePos = mFocusGridLayoutManager.findFirstVisibleItemPosition();
-                    int lastVisiablePos = mFocusGridLayoutManager.findLastVisibleItemPosition();
-                    //海报区上下箭头是否显示
-                    if(firstVisiablePos==0){
-                        filter_root_view.setShow_right_up(false);
-                    }else{
-                        filter_root_view.setShow_right_up(true);
-                    }
-                    if (mFocusGridLayoutManager.findLastCompletelyVisibleItemPosition() == mAllSectionItemList.getCount()-1) {
-                        filter_root_view.setShow_right_down(false);
-                    } else {
-                        filter_root_view.setShow_right_down(true);
-                    }
-                    if(poster_arrow_up.isFocused()||poster_arrow_down.isFocused()||filter_root_view.isFocused()) {
-                    	/*modify by dragontec for bug 4468 start*/
-                    	if (mFocusGridLayoutManager.findLastVisibleItemPosition() == mFocusGridLayoutManager.getItemCount() - 1) {
-							changeCheckedTab(mFocusGridLayoutManager.findLastVisibleItemPosition());
-						} else {
-							changeCheckedTab(mFocusGridLayoutManager.findFirstCompletelyVisibleItemPosition());
-						}
-						/*modify by dragontec for bug 4468 end*/
-                    }
-                    showData(firstVisiablePos,true);
-                    showData(lastVisiablePos,false);
-                    for (int i = 0; i < sectionSize; i++) {
-                        if (i == sectionSize - 1) {
-                            if(isVertical&&mFocusGridLayoutManager.findFirstCompletelyVisibleItemPosition()>=specialPos.get(i)){
-                                current_section_title.setText(sectionList.get(i).title);
-                            }else if(mFocusGridLayoutManager.findFirstCompletelyVisibleItemPosition()>specialPos.get(i)){
-                                current_section_title.setText(sectionList.get(i).title);
-                            }
-                            break;
-                        }
-                        if (firstVisiablePos >= specialPos.get(i) && firstVisiablePos < specialPos.get(i + 1)) {
-                            if (current_section_title.getText() != null && !sectionList.get(i).title.equals(current_section_title.getText()))
-                                current_section_title.setText(sectionList.get(i).title);
-                        }
-                    }
-                }
+
             }
         });
         tab_scroll.setOnScroll(new FullScrollView.OnScroll() {
@@ -450,17 +403,108 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
         });
     }
 
+    private void updateArrowState() {
+        if (filter_tab.isChecked()) {
+            if(filterPosterAdapter != null && mFilterFocusGridLayoutManager != null && filterPosterAdapter.getItemCount() > 0) {
+                int first = mFilterFocusGridLayoutManager.findFirstVisibleItemPosition();
+                int last = mFilterFocusGridLayoutManager.findLastCompletelyVisibleItemPosition();
+                if (first != -1 && first > 0) {
+                    filter_root_view.setShow_right_up(true);
+                } else {
+                    filter_root_view.setShow_right_up(false);
+                }
+                if (last != -1 && last < filterPosterAdapter.getItemCount() - 1) {
+                    filter_root_view.setShow_right_down(true);
+                } else {
+                    filter_root_view.setShow_right_down(false);
+                }
+            }else{
+                filter_root_view.setShow_right_up(false);
+                filter_root_view.setShow_right_down(false);
+            }
+        }else{
+            if(listPosterAdapter != null && mFocusGridLayoutManager != null && listPosterAdapter.getItemCount() > 0) {
+                int first = mFocusGridLayoutManager.findFirstVisibleItemPosition();
+                int last = mFocusGridLayoutManager.findLastCompletelyVisibleItemPosition();
+
+                if (first != -1 && first > 0) {
+                    filter_root_view.setShow_right_up(true);
+                } else {
+                    filter_root_view.setShow_right_up(false);
+                }
+                if (last != -1 && last < listPosterAdapter.getItemCount() - 1) {
+                    filter_root_view.setShow_right_down(true);
+                } else {
+                    filter_root_view.setShow_right_down(false);
+                }
+            }else{
+                filter_root_view.setShow_right_up(false);
+                filter_root_view.setShow_right_down(false);
+            }
+        }
+    }
+
+    private void uninitListener() {
+        tab_arrow_up.setOnHoverListener(null);
+        tab_arrow_down.setOnHoverListener(null);
+        poster_arrow_up.setOnHoverListener(null);
+        poster_arrow_down.setOnHoverListener(null);
+        poster_recyclerview.setOnHoverListener(null);
+        list_poster_recyclerview.setOnHoverListener(null);
+        tab_arrow_up.setOnClickListener(null);
+        tab_arrow_down.setOnClickListener(null);
+        poster_arrow_up.setOnClickListener(null);
+        poster_arrow_down.setOnClickListener(null);
+        full_view.setOnHoverListener(null);
+        poster_recyclerview.setScrollListener(null);
+        list_poster_recyclerview.setScrollListener(null);
+    }
+
+    private void updateCurrentTab() {
+        //通过滑动停止后判断当前所在列表位置，进行数据更新操作(列表数据更新、列表区title更新、当前选中tab更新)
+        if(mFocusGridLayoutManager!=null) {
+            int firstVisiablePos = mFocusGridLayoutManager.findFirstVisibleItemPosition();
+            int lastVisiablePos = mFocusGridLayoutManager.findLastVisibleItemPosition();
+            updateArrowState();
+            if(poster_arrow_up.isFocused()||poster_arrow_down.isFocused()||filter_root_view.isFocused()) {
+                    	/*modify by dragontec for bug 4468 start*/
+                if (mFocusGridLayoutManager.findLastVisibleItemPosition() == mFocusGridLayoutManager.getItemCount() - 1) {
+                    changeCheckedTab(mFocusGridLayoutManager.findLastVisibleItemPosition());
+                } else {
+                    changeCheckedTab(mFocusGridLayoutManager.findFirstCompletelyVisibleItemPosition());
+                }
+						/*modify by dragontec for bug 4468 end*/
+            }
+            showData(firstVisiablePos,true);
+            showData(lastVisiablePos,false);
+            for (int i = 0; i < sectionSize; i++) {
+                if (i == sectionSize - 1) {
+                    if(isVertical&&mFocusGridLayoutManager.findFirstCompletelyVisibleItemPosition()>=specialPos.get(i).startPosition){
+                        current_section_title.setText(sectionList.get(i).title);
+                    }else if(mFocusGridLayoutManager.findFirstCompletelyVisibleItemPosition()>specialPos.get(i).startPosition){
+                        current_section_title.setText(sectionList.get(i).title);
+                    }
+                    break;
+                }
+                if (firstVisiablePos >= specialPos.get(i).startPosition && firstVisiablePos < specialPos.get(i + 1).startPosition) {
+                    if (current_section_title.getText() != null && !sectionList.get(i).title.equals(current_section_title.getText()))
+                        current_section_title.setText(sectionList.get(i).title);
+                }
+            }
+        }
+    }
+
     private void changeCheckedTab(int position) {
         try {
             for (int i = 0; i < sectionSize; i++) {
                 if (i == sectionSize - 1) {
-                    if (specialPos != null && position >= specialPos.get(i)) {
+                    if (specialPos != null && position >= specialPos.get(i).startPosition) {
                         ((RadioButton) section_group.getChildAt(i + 1)).setChecked(true);
                         tab_scroll.smoothScrollTo(0, (int) section_group.getChildAt(i + 1).getY());
                     }
                     break;
                 }
-                if (specialPos != null && position >= specialPos.get(i) && position < specialPos.get(i + 1)) {
+                if (specialPos != null && position >= specialPos.get(i).startPosition && position < specialPos.get(i + 1).startPosition) {
 
                     ((RadioButton) section_group.getChildAt(i + 1)).setChecked(true);
                     if (section_group.getChildAt(i + 1).getY() + section_group.getChildAt(i + 1).getHeight() > tab_scroll.getScrollY() + tab_scroll.getHeight()) {
@@ -561,42 +605,42 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
                         }
                         //将请求到的栏目数据替换之前占位的空数据
                         for (int i = 0; i <listSectionEntity.getObjects().size() ; i++) {
-                            if(mAllSectionItemList.getCount()>specialPos.get(index)+i+1)
-                                mAllSectionItemList.getObjects().set(specialPos.get(index)+i+1,listSectionEntity.getObjects().get(i));
+                            if(mAllSectionItemList.getCount()>specialPos.get(index).startPosition + i)
+                                mAllSectionItemList.getObjects().set(specialPos.get(index).startPosition + i,listSectionEntity.getObjects().get(i));
                         }
                         //将占位和实际请求到的数据大小进行修正，并修正标题所在的位置
-                        int removeCount=0;
-                        if(index!=specialPos.size()-1&&specialPos.get(index)+listSectionEntity.getCount()<specialPos.get(index+1)-1) {
-                            List<ListSectionEntity.ObjectsBean> list1=mAllSectionItemList.getObjects().subList(0,specialPos.get(index) + listSectionEntity.getCount()+1);
-                            List<ListSectionEntity.ObjectsBean> list2=mAllSectionItemList.getObjects().subList(specialPos.get(index+1),mAllSectionItemList.getCount());
-                            mAllSectionItemList.setObjects(new ArrayList<ListSectionEntity.ObjectsBean>());
-                            mAllSectionItemList.getObjects().addAll(list1);
-                            mAllSectionItemList.getObjects().addAll(list2);
-                            removeCount=specialPos.get(index+1)-1-specialPos.get(index)-listSectionEntity.getCount();
-                            mAllSectionItemList.setCount(mAllSectionItemList.getObjects().size());
-                            Log.e("removecount", removeCount + "");
-                            for (int i = index + 1; i < sectionSize; i++) {
-                                specialPos.set(i, specialPos.get(i) - removeCount);
-                            }
-                            if(vSpaceItemDecoration!=null)
-                                vSpaceItemDecoration.setSpecialPos(specialPos);
-                            if(hSpaceItemDecoration!=null)
-                                hSpaceItemDecoration.setSpecialPos(specialPos);
-                            if(listPosterAdapter!=null)
-                                listPosterAdapter.setmSpecialPos(specialPos);
-                            if(mFocusGridLayoutManager!=null)
-                                mFocusGridLayoutManager.setSpecialPos(specialPos);
-                        }else if(index==sectionSize-1&&mAllSectionItemList.getCount()>specialPos.get(index-1<0?0:index-1)+listSectionEntity.getCount()){
-                            List<ListSectionEntity.ObjectsBean> list1=mAllSectionItemList.getObjects().subList(0,specialPos.get(index) + listSectionEntity.getCount()+1);
-                            mAllSectionItemList.setObjects(new ArrayList<ListSectionEntity.ObjectsBean>());
-                            mAllSectionItemList.getObjects().addAll(list1);
-                            removeCount=mAllSectionItemList.getCount()-mAllSectionItemList.getObjects().size();
-                            mAllSectionItemList.setCount(mAllSectionItemList.getObjects().size());
-                        }else{
-                            removeCount=0;
-                        }
+//                        int removeCount=0;
+//                        if(index!=specialPos.size()-1&&specialPos.get(index).position+listSectionEntity.getCount()<specialPos.get(index).position-1) {
+//                            List<ListSectionEntity.ObjectsBean> list1=mAllSectionItemList.getObjects().subList(0,specialPos.get(index).position + listSectionEntity.getCount()+1);
+//                            List<ListSectionEntity.ObjectsBean> list2=mAllSectionItemList.getObjects().subList(specialPos.get(index+1).position,mAllSectionItemList.getCount());
+//                            mAllSectionItemList.setObjects(new ArrayList<ListSectionEntity.ObjectsBean>());
+//                            mAllSectionItemList.getObjects().addAll(list1);
+//                            mAllSectionItemList.getObjects().addAll(list2);
+//                            removeCount=specialPos.get(index+1).position-1-specialPos.get(index).position-listSectionEntity.getCount();
+//                            mAllSectionItemList.setCount(mAllSectionItemList.getObjects().size());
+//                            Log.e("removecount", removeCount + "");
+//                            for (int i = index + 1; i < sectionSize; i++) {
+//                                specialPos.get(i).position = specialPos.get(i).position - removeCount;
+//                            }
+//                            if(vSpaceItemDecoration!=null)
+//                                vSpaceItemDecoration.setSpecialPos(specialPos);
+//                            if(hSpaceItemDecoration!=null)
+//                                hSpaceItemDecoration.setSpecialPos(specialPos);
+//                            if(listPosterAdapter!=null)
+//                                listPosterAdapter.setmSpecialPos(specialPos);
+//                            if(mFocusGridLayoutManager!=null)
+//                                mFocusGridLayoutManager.setSpecialPos(specialPos);
+//                        }else if(index==sectionSize-1&&mAllSectionItemList.getCount()>specialPos.get(index-1<0?0:index-1).position+listSectionEntity.getCount()){
+//                            List<ListSectionEntity.ObjectsBean> list1=mAllSectionItemList.getObjects().subList(0,specialPos.get(index).position + listSectionEntity.getCount()+1);
+//                            mAllSectionItemList.setObjects(new ArrayList<ListSectionEntity.ObjectsBean>());
+//                            mAllSectionItemList.getObjects().addAll(list1);
+//                            removeCount=mAllSectionItemList.getCount()-mAllSectionItemList.getObjects().size();
+//                            mAllSectionItemList.setCount(mAllSectionItemList.getObjects().size());
+//                        }else{
+//                            removeCount=0;
+//                        }
                         //数据大小修正之后填充海报区内容
-                        processResultData(mAllSectionItemList,index,removeCount,isFirstPos);
+                        processResultData(mAllSectionItemList,index,0,isFirstPos);
                         mFocusGridLayoutManager.setmItemCount(mAllSectionItemList.getCount());
                     }
                 });
@@ -622,6 +666,16 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
         if (event.getKeyCode() != KeyEvent.KEYCODE_BACK) {
             if (onKeyFocusView == null) {
                 return true;
+            }
+        }
+        if(event.getAction() == KeyEvent.ACTION_DOWN){
+            if(poster_recyclerview != null && list_poster_recyclerview != null) {
+                poster_recyclerview.setBlockFocusScrollWhenManualScroll(false);
+                list_poster_recyclerview.setBlockFocusScrollWhenManualScroll(false);
+            }
+            if(mFilterFocusGridLayoutManager != null && mFocusGridLayoutManager != null){
+                mFilterFocusGridLayoutManager.setCanScroll(true);
+                mFocusGridLayoutManager.setCanScroll(true);
             }
         }
         return super.dispatchKeyEvent(event);
@@ -975,15 +1029,15 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
 
 	/*add by dragontec for bug 4398 start*/
     private void checkFilterItemScroll(View v, int position, GridLayoutManager gridLayoutManager) {
-			if (v.getY() > getResources().getDimensionPixelOffset(R.dimen.filter_poster_start_scroll_length)) {
-				gridLayoutManager.scrollToPositionWithOffset(position, 0);
-			} else if (v.getY() < 0) {
-				if (isVertical) {
-					gridLayoutManager.scrollToPositionWithOffset(position, getResources().getDimensionPixelOffset(R.dimen.list_scroll_filter_offset_v));
-				} else {
-					gridLayoutManager.scrollToPositionWithOffset(position, getResources().getDimensionPixelOffset(R.dimen.list_scroll_filter_offset_h));
-				}
-			}
+//			if (v.getY() > getResources().getDimensionPixelOffset(R.dimen.filter_poster_start_scroll_length)) {
+//				gridLayoutManager.scrollToPositionWithOffset(position, 0);
+//			} else if (v.getY() < 0) {
+//				if (isVertical) {
+//					gridLayoutManager.scrollToPositionWithOffset(position, getResources().getDimensionPixelOffset(R.dimen.list_scroll_filter_offset_v));
+//				} else {
+//					gridLayoutManager.scrollToPositionWithOffset(position, getResources().getDimensionPixelOffset(R.dimen.list_scroll_filter_offset_h));
+//				}
+//			}
 	}
 	/*add by dragontec for bug 4398 end*/
 
@@ -1086,6 +1140,28 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
                     }
                 }
             });
+            poster_recyclerview.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                @Override
+                public void onGlobalLayout() {
+                    if(onePageScrollY == -1){
+                        int position = mFilterFocusGridLayoutManager.findLastCompletelyVisibleItemPosition()+ 1;
+
+                        if(position < poster_recyclerview.getAdapter().getItemCount()){
+                            View outsideView = mFilterFocusGridLayoutManager.findViewByPosition(position);
+                            if(outsideView != null) {
+                                Rect rect = new Rect();
+                                outsideView.getGlobalVisibleRect(rect);
+                                Rect recycleRect = new Rect();
+                                poster_recyclerview.getGlobalVisibleRect(recycleRect);
+                                int titleOffset = poster_recyclerview.getScrollOffset();
+                                onePageScrollY = rect.top - recycleRect.top - titleOffset;
+                            }
+                        }
+                    }
+                    poster_recyclerview.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                    updateArrowState();
+                }
+            });
         }else{
             if(lastFocusedView==null){
                 filterPosterAdapter.setFocusedPosition(-1);
@@ -1170,8 +1246,8 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
                 return;
             }
             lastClickTime = current;
-            int i = v.getId();
-            if (i == R.id.filter_tab) {
+            int id = v.getId();
+            if (id == R.id.filter_tab) {
                 current_section_title.setVisibility(View.INVISIBLE);
                 if (filter_checked_conditiion.getChildCount() > 1) {
                     filter_checked_conditiion.setVisibility(View.VISIBLE);
@@ -1183,7 +1259,7 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
                     full_view.requestFocus();
                     showFilterPopup();
                 }
-            } else if (i == R.id.tab_arrow_up) {
+            } else if (id == R.id.tab_arrow_up) {
                 tab_scroll.scrollBy(0, getResources().getDimensionPixelOffset(R.dimen.list_scroll_arrow_up_lenth));
                 firstPos = tab_scroll.getScrollY() / section_group.getChildAt(0).getHeight();
                 if (checkedTab < firstPos || checkedTab >= firstPos + 8) {
@@ -1193,81 +1269,116 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
                     ((RadioButton) section_group.getChildAt(firstPos)).setChecked(true);
                     section_group.getChildAt(firstPos).callOnClick();
                 }
-            } else if (i == R.id.tab_arrow_down) {
+            } else if (id == R.id.tab_arrow_down) {
                 tab_scroll.scrollBy(0, getResources().getDimensionPixelOffset(R.dimen.list_scroll_arrow_down_lenth));
                 firstPos = tab_scroll.getScrollY() / section_group.getChildAt(0).getHeight();
                 if (checkedTab < firstPos || checkedTab > firstPos + 8) {
                     ((RadioButton) section_group.getChildAt(firstPos)).setChecked(true);
                     section_group.getChildAt(firstPos).callOnClick();
                 }
-            } else if (i == R.id.poster_arrow_up) {
+            } else if (id == R.id.poster_arrow_up) {
                 if (filter_tab.isChecked()) {
-                    if (isVertical) {
-                        mFilterFocusGridLayoutManager.scrollToPositionWithOffset(mFilterFocusGridLayoutManager.findFirstVisibleItemPosition() - 1, getResources().getDimensionPixelOffset(R.dimen.list_scroll_filter_offset_v));
-                    } else {
-                        mFilterFocusGridLayoutManager.scrollToPositionWithOffset(mFilterFocusGridLayoutManager.findFirstVisibleItemPosition() - 1, getResources().getDimensionPixelOffset(R.dimen.list_scroll_filter_offset_h));
-                    }
+                    poster_recyclerview.directSmoothScrollBy(0, -onePageScrollY);
                 } else {
-                    if (isVertical) {
-                        //竖版列表页
-                        if(specialPos.contains(mFocusGridLayoutManager.findFirstVisibleItemPosition())){
-                            //第一行是标题
-                            nextPos =mFocusGridLayoutManager.findFirstVisibleItemPosition()-1;
-                            if(checkedTab>0&&nextPos-specialPos.get(checkedTab-1)-1<=spanCount){
-                                mFocusGridLayoutManager.scrollToPositionWithOffset(nextPos, getResources().getDimensionPixelOffset(R.dimen.list_scroll_up_offset_v1));
-                            }else{
-                                mFocusGridLayoutManager.scrollToPositionWithOffset(nextPos, getResources().getDimensionPixelOffset(R.dimen.list_scroll_down_offset_v));
-                            }
-                        }else {
-                            //第一行是海报
-                            if(specialPos.contains(mFocusGridLayoutManager.findFirstVisibleItemPosition()-1)){
-                                mFocusGridLayoutManager.scrollToPositionWithOffset(mFocusGridLayoutManager.findFirstVisibleItemPosition()-2<0?0:mFocusGridLayoutManager.findFirstVisibleItemPosition()-2, getResources().getDimensionPixelOffset(R.dimen.list_scroll_up_offset_v));
-                            }else{
-                                mFocusGridLayoutManager.scrollToPositionWithOffset(mFocusGridLayoutManager.findFirstVisibleItemPosition()-1, getResources().getDimensionPixelOffset(R.dimen.list_scroll_up_offset_v));
-                            }
+                    int firstVisible = mFocusGridLayoutManager.findFirstCompletelyVisibleItemPosition();
+                    nextPos = firstVisible-1;
+                    if(nextPos < 0){
+                        return;
+                    }
+                    int titleOffset = list_poster_recyclerview.getScrollOffset();
+                    if(itemHeight == -1){
+                        View view = mFocusGridLayoutManager.findViewByPosition(firstVisible);
+                        Rect rect = new Rect();
+                        view.getGlobalVisibleRect(rect);
+                        itemHeight = rect.height();
+                    }
+                    int spaceV = list_poster_recyclerview.getSpaceV();
+                    int belongSection = -1;
+                    for (int i = 0; i < specialPos.size(); i++) {
+                        if(firstVisible < specialPos.get(i).endPosition){
+                            belongSection = i;
+                            break;
                         }
-                    } else {
-                        nextPos =mFocusGridLayoutManager.findFirstCompletelyVisibleItemPosition()-1;
-                        if(specialPos.contains(nextPos)){
-                            int lastSpecialPosIndex=specialPos.indexOf(nextPos)-1;
-                            if(lastSpecialPosIndex>=0&&nextPos-specialPos.get(lastSpecialPosIndex)-1<=spanCount){
-                                mFocusGridLayoutManager.scrollToPositionWithOffset(nextPos-1, getResources().getDimensionPixelOffset(R.dimen.list_scroll_up_offset_h1));
+                    }
+                    if(belongSection > -1){
+                        int baseOffset = -(itemHeight + spaceV/2)*2;
+                        View firstVisibleView = mFocusGridLayoutManager.findViewByPosition(firstVisible);
+                        //修正初始位置不对
+                        if(specialPos.contains(new SpecialPos(firstVisible))){
+                            baseOffset = baseOffset - (firstVisibleView.getTop());
+                        }else{
+                            baseOffset= baseOffset - (titleOffset - firstVisibleView.getTop());
+                        }
+                        int sectionStartCount = firstVisible - specialPos.get(belongSection).startPosition;
+                        if(sectionStartCount>= mFocusGridLayoutManager.getDefaultSpanCount()*2){
+                            // -2 line height
+                            baseOffset -= spaceV/2*2;
+                            list_poster_recyclerview.directSmoothScrollBy(0,baseOffset);
+                        }else{
+                            if(belongSection == 0){
+                                View firstView = list_poster_recyclerview.getLayoutManager().findViewByPosition(0);
+                                if(firstView != null){
+                                    baseOffset = firstView.getTop() - titleOffset;
+                                }else{
+                                    return;
+                                }
                             }else{
-                                mFocusGridLayoutManager.scrollToPositionWithOffset(nextPos-1, getResources().getDimensionPixelOffset(R.dimen.list_scroll_down_offset_h));
+                                baseOffset -=spaceV/2;
+                                if(sectionStartCount>=mFocusGridLayoutManager.getDefaultSpanCount()){
+                                    baseOffset -= titleOffset;
+                                }
+                                int count = specialPos.get(belongSection-1).endPosition - specialPos.get(belongSection-1).startPosition;
+                                if(count < mFocusGridLayoutManager.getDefaultSpanCount()){
+                                    baseOffset -=spaceV/2;
+                                }
                             }
-                        } else if(checkedTab>0&&nextPos-specialPos.get(checkedTab-1)<=spanCount){
-                            mFocusGridLayoutManager.scrollToPositionWithOffset(nextPos, getResources().getDimensionPixelOffset(R.dimen.list_scroll_up_offset_h1));
-                        }else {
-                            if(nextPos-specialPos.get(checkedTab)>0&&nextPos-specialPos.get(checkedTab)<=spanCount){
-                                mFocusGridLayoutManager.scrollToPositionWithOffset(nextPos, getResources().getDimensionPixelOffset(R.dimen.list_scroll_up_offset_h1));
-                            }else{
-                                mFocusGridLayoutManager.scrollToPositionWithOffset(nextPos, getResources().getDimensionPixelOffset(R.dimen.list_scroll_down_offset_h));
-                            }
+                            list_poster_recyclerview.directSmoothScrollBy(0,baseOffset);
                         }
                     }
                 }
-            } else if (i == R.id.poster_arrow_down) {
+            } else if (id == R.id.poster_arrow_down) {
                 if (filter_tab.isChecked()) {
-                    mFilterFocusGridLayoutManager.scrollToPositionWithOffset(mFilterFocusGridLayoutManager.findLastVisibleItemPosition(), 0);
+                    poster_recyclerview.directSmoothScrollBy(0, onePageScrollY);
                 } else {
-                    if (isVertical) {
-                        nextPos = mFocusGridLayoutManager.findLastCompletelyVisibleItemPosition() + 1;
-                        if(nextPos>mAllSectionItemList.getCount()-1){
-                            nextPos=mFocusGridLayoutManager.findLastCompletelyVisibleItemPosition();
+                    int lastVisible = mFocusGridLayoutManager.findLastCompletelyVisibleItemPosition();
+                    int firstVisible = mFocusGridLayoutManager.findFirstCompletelyVisibleItemPosition();
+                    nextPos = lastVisible + 1;
+                    if(nextPos>mAllSectionItemList.getCount()-1){
+                       return;
+                    }
+                    if(itemHeight == -1){
+                        View view = mFocusGridLayoutManager.findViewByPosition(firstVisible);
+                        Rect rect = new Rect();
+                        view.getGlobalVisibleRect(rect);
+                        itemHeight = rect.height();
+                    }
+                    int titleOffset = list_poster_recyclerview.getScrollOffset();
+                    View view = mFocusGridLayoutManager.findViewByPosition(nextPos);
+                    Rect rect = new Rect();
+                    view.getGlobalVisibleRect(rect);
+                    int firstSectionIndex = -1;
+                    int lastSectionIndex = -1;
+                    for (int i = 0; i < specialPos.size(); i++) {
+                        if(firstSectionIndex == -1 && firstVisible < specialPos.get(i).endPosition){
+                            firstSectionIndex = i;
                         }
-                        if (specialPos.contains(nextPos)) {
-                            mFocusGridLayoutManager.scrollToPositionWithOffset(nextPos, 0);
-                        } else {
-                            mFocusGridLayoutManager.scrollToPositionWithOffset(nextPos, getResources().getDimensionPixelOffset(R.dimen.list_scroll_up_offset_v));
+                        if(lastSectionIndex == -1 && nextPos < specialPos.get(i).endPosition){
+                            lastSectionIndex = i;
                         }
-                    } else {
-                        nextPos = mFocusGridLayoutManager.findLastCompletelyVisibleItemPosition() + 1;
-                        if (specialPos.contains(nextPos)) {
-                            mFocusGridLayoutManager.scrollToPositionWithOffset(nextPos , 0);
-                        } else {
-                            mFocusGridLayoutManager.scrollToPositionWithOffset(nextPos, getResources().getDimensionPixelOffset(R.dimen.list_scroll_up_offset_h));
+                        if(firstSectionIndex != -1 && lastSectionIndex != -1){
+                            break;
                         }
                     }
+                    View lastView = mFocusGridLayoutManager.findViewByPosition(nextPos);
+                    int baseOffset = lastView.getTop() - titleOffset;
+                    View finalView = mFocusGridLayoutManager.findViewByPosition(specialPos.get(specialPos.size() - 1).endPosition);
+                    if(finalView != null){
+                        int delta = finalView.getBottom() - list_poster_recyclerview.getBottom();
+                        if(delta < list_poster_recyclerview.getHeight()){
+                            baseOffset = delta;
+                        }
+                    }
+                    list_poster_recyclerview.directSmoothScrollBy(0, baseOffset);
                 }
             }
         }catch (Exception e){
@@ -1278,12 +1389,23 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
     @Override
     public boolean onHover(View v, MotionEvent event) {
         if(event.getAction()==MotionEvent.ACTION_HOVER_ENTER||event.getAction()==MotionEvent.ACTION_HOVER_MOVE){
-            v.requestFocus();
-            onKeyFocusView=v;
-            lastFocusedView=null;
-            if (filterPosterAdapter != null)
-                filterPosterAdapter.setFocusedPosition(-1);
-
+            if(v.getId() == R.id.poster_recyclerview ){
+                if(poster_recyclerview != null && mFocusGridLayoutManager != null) {
+                    poster_recyclerview.setBlockFocusScrollWhenManualScroll(true);
+                    mFocusGridLayoutManager.setCanScroll(false);
+                }
+            }else if(v.getId() == R.id.list_poster_recyclerview){
+                if(list_poster_recyclerview != null && mFilterFocusGridLayoutManager != null) {
+                    list_poster_recyclerview.setBlockFocusScrollWhenManualScroll(true);
+                    mFilterFocusGridLayoutManager.setCanScroll(false);
+                }
+            }else{
+                v.requestFocus();
+                onKeyFocusView=v;
+                lastFocusedView=null;
+                if (filterPosterAdapter != null)
+                    filterPosterAdapter.setFocusedPosition(-1);
+            }
         }
         return true;
     }
@@ -1296,12 +1418,12 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
         Log.e("showdata",position+"");
         for (int i = 0; i <sectionSize ; i++) {
             if(i!=sectionSize-1){
-                booleanFlag=position<specialPos.get(i+1);
+                booleanFlag=position<specialPos.get(i+1).startPosition;
             }else{
                 booleanFlag=true;
             }
-            if(position>=specialPos.get(i)&&booleanFlag&&!sectionHasData[i]){
-                if(position==specialPos.get(i)){
+            if(position>=specialPos.get(i).startPosition&&booleanFlag&&!sectionHasData[i]){
+                if(position==specialPos.get(i).startPosition){
                     isFirstPos=false;
                 }
                 fetchSectionData(sectionList.get(i).url,i,isFirstPos);
@@ -1324,7 +1446,7 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
     //填充list分类列表
     private boolean isFirst=true;
     private void fillSections(SectionList sections) {
-        RadioGroup.LayoutParams params=new RadioGroup.LayoutParams(getResources().getDimensionPixelOffset(R.dimen.filter_layout_left_view_tab_w),getResources().getDimensionPixelOffset(R.dimen.filter_layout_left_view_tab_h));
+        final RadioGroup.LayoutParams params=new RadioGroup.LayoutParams(getResources().getDimensionPixelSize(R.dimen.filter_layout_left_view_tab_w),getResources().getDimensionPixelOffset(R.dimen.filter_layout_left_view_tab_h));
         for (int i = 0; i <sections.size() ; i++) {
             final Section section = sections.get(i);
             final RadioButton radioButton= (RadioButton) View.inflate(this,R.layout.item_section_radiobtn,null);
@@ -1363,8 +1485,8 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
             radioButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-					if(!section.title.equals(current_section_title.getText())||(finalI!=sectionSize-1&&mFocusGridLayoutManager.findLastCompletelyVisibleItemPosition()>specialPos.get(sectionSize-1))) {
-						mFocusGridLayoutManager.scrollToPositionWithOffset(specialPos.get(finalI), 0);
+					if(!section.title.equals(current_section_title.getText())||(finalI!=sectionSize-1&&mFocusGridLayoutManager.findLastCompletelyVisibleItemPosition()>specialPos.get(sectionSize-1).startPosition)) {
+						mFocusGridLayoutManager.scrollToPositionWithOffset(specialPos.get(finalI).startPosition, 0);
 					}
 					if(isFirst) {
 						fetchSectionData(section.url, finalI, false);
@@ -1428,8 +1550,8 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
                                 lastFocusedView.requestFocus();
                             } else {
                                 View firstView = null;
-                                if(finalI==sectionSize-1&&mAllSectionItemList.getCount()-specialPos.get(finalI)-1<=spanCount){
-                                    firstView=mFocusGridLayoutManager.findViewByPosition(specialPos.get(finalI)+1);
+                                if(finalI==sectionSize-1&&mAllSectionItemList.getCount()-specialPos.get(finalI).startPosition-1<=spanCount){
+                                    firstView=mFocusGridLayoutManager.findViewByPosition(specialPos.get(finalI).startPosition+1);
                                 }else if(list_poster_recyclerview.getChildCount()>spanCount) {
                                     firstView = list_poster_recyclerview.getChildAt(spanCount);
                                     if(mFocusGridLayoutManager.findViewByPosition(mFocusGridLayoutManager.findFirstCompletelyVisibleItemPosition()) instanceof TextView){
@@ -1452,36 +1574,52 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
             filter_root_view.setShow_left_down(false);
         }
         specialPos = new ArrayList<>();
-        specialPos.add(0);
+//        SpecialPos first = new SpecialPos();
+//        specialPos.add(first);
         totalItemCount = 0;
-        for (int i = 0; i <sections.size() ; i++) {
-            totalItemCount +=sections.get(i).count;
-            if(i!=sections.size()-1)
-                specialPos.add(totalItemCount+i+1);
+//        for (int i = 0; i <sections.size() ; i++) {
+//            totalItemCount +=sections.get(i).count;
+//            if(i!=sections.size()-1){
+//                SpecialPos item = new SpecialPos();
+//                item.position = totalItemCount+i+1;
+//                item.sections = sections.get(i+1).title;
+//                specialPos.add(item);
+//            }
+//        }
+        for (int i = 0; i < sections.size(); i++) {
+            SpecialPos item = new SpecialPos();
+            item.startPosition = totalItemCount;
+            item.endPosition = item.startPosition + sections.get(i).count;
+            item.sections = sections.get(i).title;
+            specialPos.add(item);
+            totalItemCount += sections.get(i).count;
         }
+
         //根据不同的板式(横、竖版)设置不同的列表样式
         if(isVertical) {
-            spanCount = 5;
-            SpaceItemDecoration vFilterSpaceItemDecoration = new SpaceItemDecoration(getResources().getDimensionPixelOffset(R.dimen.vertical_recycler_hs),getResources().getDimensionPixelOffset(R.dimen.vertical_recycler_vs),isVertical);
+            spanCount = VERTICAL_SPAN_COUNT;
+            SpaceItemDecoration vFilterSpaceItemDecoration = new SpaceItemDecoration(getApplicationContext(),getWindowManager(),isVertical);
             poster_recyclerview.addItemDecoration(vFilterSpaceItemDecoration);
-            vSpaceItemDecoration = new SpaceItemDecoration(getResources().getDimensionPixelOffset(R.dimen.vertical_recycler_hs),getResources().getDimensionPixelOffset(R.dimen.vertical_recycler_vs),isVertical);
+            vSpaceItemDecoration = new SpaceItemDecoration(getApplicationContext(),getWindowManager(),isVertical);
             vSpaceItemDecoration.setSpecialPos(specialPos);
-            poster_recyclerview.setPadding(0,0,0,getResources().getDimensionPixelOffset(R.dimen.vertical_recycler_padding_bottom));
+            poster_recyclerview.setPadding(0,0,getResources().getDimensionPixelOffset(R.dimen.filter_layout_poster_recyclerview_mr),getResources().getDimensionPixelOffset(R.dimen.vertical_recycler_padding_bottom));
             list_poster_recyclerview.addItemDecoration(vSpaceItemDecoration);
-            list_poster_recyclerview.setPadding(0,0,0,getResources().getDimensionPixelOffset(R.dimen.vertical_recycler_padding_bottom));
+            list_poster_recyclerview.setPadding(0,0,getResources().getDimensionPixelOffset(R.dimen.filter_layout_poster_recyclerview_mr),getResources().getDimensionPixelOffset(R.dimen.vertical_recycler_padding_bottom));
         }else{
-            spanCount = 3;
-            SpaceItemDecoration hFilterSpaceItemDecoration=new SpaceItemDecoration(getResources().getDimensionPixelOffset(R.dimen.horizontal_recycler_hs),getResources().getDimensionPixelOffset(R.dimen.horizontal_recycler_vs),isVertical);
-            poster_recyclerview.setPadding(0,0,0,getResources().getDimensionPixelOffset(R.dimen.horizontal_recycler_padding_bottom));
+            spanCount = HORIZONTAL_SPAN_COUNT;
+            SpaceItemDecoration hFilterSpaceItemDecoration=new SpaceItemDecoration(getApplicationContext(),getWindowManager(), isVertical);
+            poster_recyclerview.setPadding(0,0,getResources().getDimensionPixelOffset(R.dimen.filter_layout_poster_recyclerview_mr),getResources().getDimensionPixelOffset(R.dimen.horizontal_recycler_padding_bottom));
             poster_recyclerview.addItemDecoration(hFilterSpaceItemDecoration);
-            hSpaceItemDecoration = new SpaceItemDecoration(getResources().getDimensionPixelOffset(R.dimen.horizontal_recycler_hs),getResources().getDimensionPixelOffset(R.dimen.horizontal_recycler_vs),isVertical);
+            hSpaceItemDecoration = new SpaceItemDecoration(getApplicationContext(),getWindowManager(),isVertical);
             hSpaceItemDecoration.setSpecialPos(specialPos);
-            list_poster_recyclerview.setPadding(0,0,0,getResources().getDimensionPixelOffset(R.dimen.horizontal_recycler_padding_bottom));
+            list_poster_recyclerview.setPadding(0,0,getResources().getDimensionPixelOffset(R.dimen.filter_layout_poster_recyclerview_mr),getResources().getDimensionPixelOffset(R.dimen.horizontal_recycler_padding_bottom));
             list_poster_recyclerview.addItemDecoration(hSpaceItemDecoration);
         }
         mFocusGridLayoutManager = new FocusGridLayoutManager(this,spanCount);
+        mFocusGridLayoutManager.setCanScroll(true);
         mFocusGridLayoutManager.setSpecialPos(specialPos);
         mFilterFocusGridLayoutManager = new FocusGridLayoutManager(this,spanCount);
+        mFilterFocusGridLayoutManager.setCanScroll(true);
         mFilterFocusGridLayoutManager.setLeftFocusView(filter_tab);
         poster_recyclerview.setLayoutManager(mFilterFocusGridLayoutManager);
         list_poster_recyclerview.setLayoutManager(mFocusGridLayoutManager);
@@ -1496,11 +1634,7 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
         mFocusGridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
             public int getSpanSize(int position) {
-                if(specialPos.contains(position)) {
-                    return spanCount;
-                }else{
-                    return 1;
-                }
+                return PosterUtil.computeSectionSpanSize(specialPos, position, spanCount);
             }
         });
 
@@ -1518,9 +1652,21 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
             section_group.getChildAt(1).callOnClick();
             ((RadioButton) section_group.getChildAt(1)).setChecked(true);
         }
-
     }
 
+    @Override
+    public void onScrollIdle() {
+        if(filter_tab.isChecked()) {
+            updateArrowState();
+            if (mFilterFocusGridLayoutManager.findLastVisibleItemPosition() == mFilterItemList.objects.size() - 1 && mFilterFocusGridLayoutManager.findLastVisibleItemPosition() != -1) {
+                if (mFilterPage + 1 <= mFilterItemList.num_pages) {
+                    fetchFilterResult(content_model, mFilterCondition, mFilterPage + 1);
+                }
+            }
+        }else{
+            updateCurrentTab();
+        }
+    }
 
     private class CheckedChangedRunnable implements Runnable{
 
@@ -1549,17 +1695,17 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
 //            }
 //            current_section_title.setText(sectionList.get(finalI).title);
 			/*delete by dragontec for bug 4468 end*/
-
+            updateCurrentTab();
             checkedTab = finalI;
             if(filterPopup!=null&&filterPopup.isShowing())
                 filterPopup.dismiss();
             filter_checked_conditiion.setVisibility(View.INVISIBLE);
-            current_section_title.setVisibility(View.VISIBLE);
+//            current_section_title.setVisibility(View.VISIBLE);
             filter_checked_conditiion.requestLayout();
             if(mFocusGridLayoutManager!=null){
                 mFocusGridLayoutManager.setLeftFocusView(radioButton);
             }
-            filter_root_view.setShow_right_up(true);
+//            filter_root_view.setShow_right_up(true);
             //日志
             mSectionProperties.put(EventProperty.SECTION, sectionList.get(finalI).slug);
             mSectionProperties.put(EventProperty.TITLE, sectionList.get(finalI).title);
@@ -1569,34 +1715,35 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
     }
 	/*add by dragontec for bug 4343 start*/
     private void checkItemScroll(View v, int position, GridLayoutManager layoutManager) {
-		if (v.getY() > getResources().getDimensionPixelOffset(R.dimen.filter_poster_start_scroll_length)) {
-			if (isVertical) {
-				layoutManager.scrollToPositionWithOffset(position, getResources().getDimensionPixelOffset(R.dimen.list_scroll_up_offset_v));
-			} else {
-				layoutManager.scrollToPositionWithOffset(position, getResources().getDimensionPixelOffset(R.dimen.list_scroll_up_offset_h));
-			}
-		} else if (v.getY() < 0) {
-			if (isVertical) {
-				if (specialPos != null && (specialPos.contains(position - 1) || specialPos.contains(position - 2) || specialPos.contains(position - 3) || specialPos.contains(position - 4) || specialPos.contains(position - 5))) {
-					layoutManager.scrollToPositionWithOffset(position, getResources().getDimensionPixelOffset(R.dimen.list_scroll_up_offset_v));
-				} else {
-					layoutManager.scrollToPositionWithOffset(position, getResources().getDimensionPixelOffset(R.dimen.list_scroll_down_offset_v));
-				}
-			} else {
-				if (specialPos != null && (specialPos.contains(position - 1) || specialPos.contains(position - 2) || specialPos.contains(position - 3))) {
-					layoutManager.scrollToPositionWithOffset(position, getResources().getDimensionPixelOffset(R.dimen.list_scroll_up_offset_h));
-				} else {
-					layoutManager.scrollToPositionWithOffset(position, getResources().getDimensionPixelOffset(R.dimen.list_scroll_down_offset_h));
-				}
-
-			}
-		} else if (isVertical && v.getY() > 0 && v.getY() < current_section_title.getHeight()) {
-			if (specialPos != null && (specialPos.contains(position - 1) || specialPos.contains(position - 2) || specialPos.contains(position - 3) || specialPos.contains(position - 4) || specialPos.contains(position - 5))) {
-				mFocusGridLayoutManager.scrollToPositionWithOffset(position, getResources().getDimensionPixelOffset(R.dimen.list_scroll_up_offset_v));
-			} else {
-				mFocusGridLayoutManager.scrollToPositionWithOffset(position, getResources().getDimensionPixelOffset(R.dimen.list_scroll_down_offset_v));
-			}
-		}
+        return;
+//		if (v.getY() > getResources().getDimensionPixelOffset(R.dimen.filter_poster_start_scroll_length)) {
+//			if (isVertical) {
+//				layoutManager.scrollToPositionWithOffset(position, getResources().getDimensionPixelOffset(R.dimen.list_scroll_up_offset_v));
+//			} else {
+//				list_poster_recyclerview.smoothScrollToPosition(position);
+//			}
+//		} else if (v.getY() < 0) {
+//			if (isVertical) {
+//				if (specialPos != null && (specialPos.contains(position - 1) || specialPos.contains(position - 2) || specialPos.contains(position - 3) || specialPos.contains(position - 4) || specialPos.contains(position - 5))) {
+//					layoutManager.scrollToPositionWithOffset(position, getResources().getDimensionPixelOffset(R.dimen.list_scroll_up_offset_v));
+//				} else {
+//					layoutManager.scrollToPositionWithOffset(position, getResources().getDimensionPixelOffset(R.dimen.list_scroll_down_offset_v));
+//				}
+//			} else {
+//				if (specialPos != null && (specialPos.contains(position - 1) || specialPos.contains(position - 2) || specialPos.contains(position - 3))) {
+//					layoutManager.scrollToPositionWithOffset(position, getResources().getDimensionPixelOffset(R.dimen.list_scroll_up_offset_h));
+//				} else {
+//					layoutManager.scrollToPositionWithOffset(position, getResources().getDimensionPixelOffset(R.dimen.list_scroll_down_offset_h));
+//				}
+//
+//			}
+//		} else if (isVertical && v.getY() > 0 && v.getY() < current_section_title.getHeight()) {
+//			if (specialPos != null && (specialPos.contains(position - 1) || specialPos.contains(position - 2) || specialPos.contains(position - 3) || specialPos.contains(position - 4) || specialPos.contains(position - 5))) {
+//				mFocusGridLayoutManager.scrollToPositionWithOffset(position, getResources().getDimensionPixelOffset(R.dimen.list_scroll_up_offset_v));
+//			} else {
+//				mFocusGridLayoutManager.scrollToPositionWithOffset(position, getResources().getDimensionPixelOffset(R.dimen.list_scroll_down_offset_v));
+//			}
+//		}
 	}
 	/*add by dragontec for bug 4343 end*/
 
@@ -1608,10 +1755,11 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
             listPosterAdapter = new ListPosterAdapter(FilterListActivity.this, listSectionEntity.getObjects(), isVertical, specialPos, sectionList);
             list_poster_recyclerview.swapAdapter(listPosterAdapter,false);
             if(firstInSection!=-1){
-                listPosterAdapter.setFocusedPosition(specialPos.get(firstInSection)+1);
+                listPosterAdapter.setFocusedPosition(specialPos.get(firstInSection).startPosition);
             }else {
-                listPosterAdapter.setFocusedPosition(1);
+                listPosterAdapter.setFocusedPosition(0);
             }
+
             //设置海报点击事件监听
             listPosterAdapter.setItemClickListener(new OnItemClickListener() {
                 @Override
@@ -1730,11 +1878,18 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
                     }
                 }
             });
+            list_poster_recyclerview.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                @Override
+                public void onGlobalLayout() {
+                    updateArrowState();
+                    list_poster_recyclerview.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                }
+            });
         }else{
             int position=-1;
             if(lastFocusedView==null){
                 listPosterAdapter.setFocusedPosition(-1);
-                position=index+1==specialPos.size()?-1:specialPos.get(index+1)-1;
+                position=index+1==specialPos.size()?-1:specialPos.get(index+1).startPosition-1;
             }else{
                 //判断是从顶部更新数据还是从底部更新数据
                 if(isFirstPos) {
@@ -1748,13 +1903,13 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
             listPosterAdapter.setmItemList(listSectionEntity.getObjects());
             //修正滚动位置
 			/*modify by dragontec for bug 4468 start*/
-            if(isFirstPos && !filter_root_view.horving) {
-                if (isVertical) {
-                    mFocusGridLayoutManager.scrollToPositionWithOffset(position, getResources().getDimensionPixelOffset(R.dimen.list_scroll_down_offset_v));
-                } else {
-                    mFocusGridLayoutManager.scrollToPositionWithOffset(position, getResources().getDimensionPixelOffset(R.dimen.list_scroll_down_offset_h));
-                }
-            }
+//            if(isFirstPos && !filter_root_view.horving) {
+//                if (isVertical) {
+//                    mFocusGridLayoutManager.scrollToPositionWithOffset(position, getResources().getDimensionPixelOffset(R.dimen.list_scroll_down_offset_v));
+//                } else {
+//                    mFocusGridLayoutManager.scrollToPositionWithOffset(position, getResources().getDimensionPixelOffset(R.dimen.list_scroll_down_offset_h));
+//                }
+//            }
             /*modify by dragontec for bug 4468 end*/
             listPosterAdapter.notifyDataSetChanged();
         }
@@ -1764,9 +1919,13 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        uninitListener();
         baseSection="";
         filter_conditions.removeAllViews();
         poster_recyclerview.swapAdapter(null,true);
         mHandler=null;
     }
+
+
+
 }

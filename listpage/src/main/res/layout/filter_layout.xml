@@ -77,40 +77,33 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:clipChildren="false"
-        android:clipToPadding="false"
+        android:clipToPadding="true"
+        android:clipChildren="true"
         >
 
-        <tv.ismar.app.widget.MyRecyclerView
+        <tv.ismar.view.FilterListRecyclerView
             android:id="@+id/poster_recyclerview"
-            android:layout_width="@dimen/filter_layout_poster_recyclerview_w"
+            android:layout_width="match_parent"
             android:layout_height="@dimen/filter_layout_poster_recyclerview_h"
-            android:layout_marginTop="@dimen/filter_layout_poster_recyclerview_mt"
-            android:clipToPadding="false"
-            android:clipChildren="false"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="@dimen/filter_layout_poster_recyclerview_mr"
+            android:clipToPadding="true"
+            android:clipChildren="true"
+            android:paddingRight="@dimen/filter_layout_poster_recyclerview_mr"
             />
 
-        <tv.ismar.app.widget.MyRecyclerView
+        <tv.ismar.view.FilterListRecyclerView
             android:id="@+id/list_poster_recyclerview"
-            android:layout_width="@dimen/filter_layout_poster_recyclerview_w"
+            android:layout_width="match_parent"
             android:layout_height="@dimen/filter_layout_poster_recyclerview_h"
             android:clipToPadding="false"
             android:clipChildren="false"
             android:visibility="gone"
-            android:layout_alignParentRight="true"
+            android:paddingRight="@dimen/filter_layout_poster_recyclerview_mr"
             />
 
         <include
             android:id="@+id/filter_noresult"
             layout="@layout/layout_filter_noresult"
             android:visibility="gone"
-            />
-        <View
-            android:layout_width="@dimen/filter_layout_top_view_w"
-            android:layout_height="@dimen/filter_layout_top_view_h"
-            android:background="@drawable/top_bg"
             />
         <TextView
             android:id="@+id/current_section_title"

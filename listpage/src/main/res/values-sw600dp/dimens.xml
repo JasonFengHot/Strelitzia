@@ -247,6 +247,7 @@
 <dimen name="divider_blowhead_ML">18.89dp</dimen>
 <dimen name="history_top_textBl">16.11dp</dimen>
 <dimen name="clear_history_Ml">823.33dp</dimen>
+<dimen name="clear_history_mr">26.67dp</dimen>
 <dimen name="divider_1dp">0.56dp</dimen>
 <dimen name="history_Hgride_PT">8.33dp</dimen>
 <dimen name="history_Hgride_MT">41.67dp</dimen>
@@ -254,7 +255,7 @@
 <dimen name="history_Hgride_Margin">11.67dp</dimen>
 
 <!--filterlayout-->
-<dimen name="filter_layout_left_view_w">198.89dp</dimen>
+<dimen name="filter_layout_left_view_w">177.78dp</dimen>
 <dimen name="filter_layout_left_view_title_h">46.11dp</dimen>
 <dimen name="filter_layout_left_view_title_ts">33.33dp</dimen>
 <dimen name="filter_layout_left_view_title_mt">15.56dp</dimen>
@@ -292,9 +293,13 @@
 <dimen name="filter_layout_filter_arrow_up_mt">292.22dp</dimen>
 <dimen name="filter_layout_filter_arrow_mr">23.33dp</dimen>
 <dimen name="filter_layout_filter_arrow_down_mb">193.33dp</dimen>
-
+<dimen name="filter_layout_filter_recycle_mt">16.67dp</dimen>
 <dimen name="filter_layout_top_view_w">887.78dp</dimen>
 <dimen name="filter_layout_top_view_h">55.00dp</dimen>
+
+<dimen name="filter_layout_poster_vertical_recyclerview_ml">22.78dp</dimen>
+<dimen name="filter_layout_poster_horizontal_recyclerview_ml">17.22dp</dimen>
+
 
 <!--filter_condition_layout-->
 <dimen name="filter_condition_layout_h">293.33dp</dimen>
@@ -346,6 +351,7 @@
 <dimen name="item_vertical_poster_title_ts">20.00dp</dimen>
 <dimen name="item_vertical_poster_w">135.00dp</dimen>
 <dimen name="item_vertical_poster_h">223.89dp</dimen>
+<dimen name="item_decoration_title_start_margin">33.33dp</dimen>
 
 <!--filter_item_horizontal_poster-->
 <dimen name="filter_item_horizontal_poster_mr">3.33dp</dimen>

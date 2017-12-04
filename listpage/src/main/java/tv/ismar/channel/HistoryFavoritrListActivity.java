@@ -100,6 +100,7 @@ public class HistoryFavoritrListActivity extends BaseActivity implements OnItemC
         focusGridLayoutManager=new FocusGridLayoutManager(this,4);
         focusGridLayoutManager.setFavorite(true);
         focusGridLayoutManager.setmItemCount(mlists.size());
+        focusGridLayoutManager.setCanScroll(true);	
         recyclerView.setLayoutManager(focusGridLayoutManager);
         if(source.equals("edit")){
             if(type==1) {
@@ -157,69 +158,63 @@ public class HistoryFavoritrListActivity extends BaseActivity implements OnItemC
                 return true;
             }
             lastKeyDownTime = current;
+            focusGridLayoutManager.setCanScroll(true);
             if(event.getKeyCode() == KeyEvent.KEYCODE_DPAD_DOWN){
-                if(recyclerView.hasFocus()){
+//                if(recyclerView.hasFocus()){
 				//modify by dragontec for bug 4508 start
-                    try{
-                        View focused = recyclerView.findFocus();
-                        if(focused != null && focused.getTag() != null){
-                            int position = (int) focused.getTag() + 4;
-                            if(position > (adapter.getItemCount()/4 * 4)){
-                                return super.dispatchKeyEvent(event);
-                            }
-                            if(position > adapter.getItemCount() - 1){
-                                position = adapter.getItemCount() - 1;
-                            }
-                            View targetView = recyclerView.findViewWithTag(position);
-                            if(targetView != null){
-                                int lastCompletelyVisibleItemPosition = focusGridLayoutManager.findLastCompletelyVisibleItemPosition();
-                                if(position > lastCompletelyVisibleItemPosition){
-                                    recyclerView.requestFocus();
-                                    focusGridLayoutManager.setCanScroll(true);
-                                    recyclerView.smoothScrollBy(0,onePageScrollY);
-                                    adapter.setBindingViewRequestFocusPosition(position);
-                                    return true;
-                                }
-                            }
-                        }else{
-                            return true;
-                        }
-                    }catch(Exception e){
-                        e.printStackTrace();
-                        return true;
-                    }
+//                    try{
+//                        View focused = recyclerView.findFocus();
+//                        if(focused != null && focused.getTag() != null){
+//                            int position = (int) focused.getTag() + 4;
+//                            if(position > (adapter.getItemCount()/4 * 4)){
+//                                return super.dispatchKeyEvent(event);
+//                            }
+//                            if(position > adapter.getItemCount() - 1){
+//                                position = adapter.getItemCount() - 1;
+//                            }
+//                            View targetView = recyclerView.findViewWithTag(position);
+//                            if(targetView != null){
+//                                int lastCompletelyVisibleItemPosition = focusGridLayoutManager.findLastCompletelyVisibleItemPosition();
+//                                if(position > lastCompletelyVisibleItemPosition){
+//                                    recyclerView.requestFocus();
+//                                    focusGridLayoutManager.setCanScroll(true);
+//                                    recyclerView.smoothScrollBy(0,onePageScrollY);
+//                                    adapter.setBindingViewRequestFocusPosition(position);
+//                                    return true;
+//                                }
+//                            }
+//                        }else{
+//                            return true;
+//                        }
+//                    }catch(Exception e){
+//                        e.printStackTrace();
+//                        return true;
+//                    }
 					//modify by dragontec for bug 4508 end
-                }else if(clearAll.hasFocus()){
-                    int position = focusGridLayoutManager.findFirstCompletelyVisibleItemPosition();
-                    RecyclerView.ViewHolder viewHolder = recyclerView.findViewHolderForAdapterPosition(position);
-                    if(viewHolder != null){
-                        viewHolder.itemView.requestFocus();
-                    }
-                    return true;
-                }
+//                }else if(clearAll.hasFocus()){
+//                    int position = focusGridLayoutManager.findFirstCompletelyVisibleItemPosition();
+//                    RecyclerView.ViewHolder viewHolder = recyclerView.findViewHolderForAdapterPosition(position);
+//                    if(viewHolder != null){
+//                        viewHolder.itemView.requestFocus();
+//                    }
+//                    return true;
+//                }
             }else if(event.getKeyCode() == KeyEvent.KEYCODE_DPAD_UP) {
-                //modify by dragontec for bug 4508 start
-                try {
-                    if (recyclerView.hasFocus()) {
-                        View focused = recyclerView.findFocus();
-                        if (focused != null && focused.getTag() != null) {
-                            int position = (int) focused.getTag() - 4;
-                            if (position < 0) {
-                                return super.dispatchKeyEvent(event);
-                            }
-                            if (focusGridLayoutManager.findFirstCompletelyVisibleItemPosition() > position) {
-                                focusGridLayoutManager.setCanScroll(true);
-                                recyclerView.smoothScrollBy(0, -onePageScrollY);
-                                adapter.setBindingViewRequestFocusPosition(position);
-                                return true;
-                            }
-                        }
-                    }
-                }catch(Exception e){
-                    e.printStackTrace();
-                    return true;
-                }
-                //modify by dragontec for bug 4508 end
+//                if (recyclerView.hasFocus()) {
+//                    View focused = recyclerView.findFocus();
+//                    if (focused != null) {
+//                        int position = (int) focused.getTag() - 4;
+//                        if (position < 0) {
+//                            return super.dispatchKeyEvent(event);
+//                        }
+//                        if (focusGridLayoutManager.findFirstCompletelyVisibleItemPosition() > position) {
+//                            focusGridLayoutManager.setCanScroll(true);
+//                            recyclerView.smoothScrollBy(0, -onePageScrollY);
+//                            adapter.setBindingViewRequestFocusPosition(position);
+//                            return true;
+//                        }
+//                    }
+//                }
             }
         }else if(event.getAction() == KeyEvent.ACTION_UP){
             if(event.getKeyCode() == KeyEvent.KEYCODE_1){

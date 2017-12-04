@@ -3,6 +3,7 @@ package tv.ismar.Utils;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 //import android.widget.ImageView;
 import android.widget.TextView;
@@ -10,6 +11,9 @@ import android.widget.TextView;
 import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
+
+import tv.ismar.adapter.SpecialPos;
 import tv.ismar.app.core.VipMark;
 import tv.ismar.app.entity.FilterNoresultPoster;
 import tv.ismar.app.widget.RecyclerImageView;
@@ -59,4 +63,40 @@ public class PosterUtil {
         }
     }
 
+    public static int computeSectionSpanSize(ArrayList<SpecialPos> specialPos, int position, int defaultSpanCount){
+        int index = specialPos.indexOf(new SpecialPos(position + 1));
+        if(index > -1) {
+            int pastSectionCount =specialPos.get(index-1).startPosition;
+            pastSectionCount = pastSectionCount <0 ? 0 :pastSectionCount;
+            int sectionCount = position - pastSectionCount + 1;
+            int leftItem = sectionCount % defaultSpanCount;
+            int span = (defaultSpanCount - leftItem) % defaultSpanCount + 1;
+            Log.i("zzz","zzz position:"+ position+"span:" + span);
+            return span;
+        }else{
+            return 1;
+        }
+    }
+
+    public static int computePositionInLine(ArrayList<SpecialPos> specialPos, int position, int defaultSpanCount){
+        int index = -1;
+        for (int i = 0; i < specialPos.size(); i++) {
+            if(position < specialPos.get(i).endPosition){
+                index = i;
+                break;
+            }
+        }
+        if(index > -1) {
+            int pastSectionCount = 0;
+            if(index > 0){
+                pastSectionCount =specialPos.get(index-1).endPosition;
+            }
+            pastSectionCount = pastSectionCount <0 ? 0 :pastSectionCount;
+            int sectionCount = position - pastSectionCount;
+            int positionInLine = sectionCount % defaultSpanCount;
+            return positionInLine;
+        }else{
+            return -1;
+        }
+    }
 }

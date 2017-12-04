@@ -67,6 +67,8 @@ public class RecyclerViewTV extends RecyclerView implements PrvInterface {
     private RecyclerViewTV.OnChildViewHolderSelectedListener mChildViewHolderSelectedListener;
 
     private void init(Context context) {
+    	setDrawingCacheEnabled(true);
+    	setDrawingCacheQuality(DRAWING_CACHE_QUALITY_HIGH);
         setDescendantFocusability(FOCUS_AFTER_DESCENDANTS);
         setHasFixedSize(true);
         setWillNotDraw(true);
@@ -217,7 +219,7 @@ public class RecyclerViewTV extends RecyclerView implements PrvInterface {
         final int dx;
         if (canScrollHorizontal) {
 		/*modify by dragontec for bug 4434 start*/
-            if(getScrollX() == 0 && childRight < getResources().getDisplayMetrics().widthPixels - 20 && getPositionByView(child) > 2){
+            if(getScrollX() == 0 && childLeft >= 0 && childRight < getResources().getDisplayMetrics().widthPixels - 20 && getPositionByView(child) > 2){
                 dx = 0;
             }else{
                 if (ViewCompat.getLayoutDirection(this) == ViewCompat.LAYOUT_DIRECTION_RTL) {

@@ -12,7 +12,6 @@
         android:id="@+id/title_layout"
         android:layout_width="match_parent"
         android:layout_height="@dimen/history_105"
-        android:layout_gravity="center_vertical"
         >
         <TextView
             android:layout_width="wrap_content"
@@ -21,7 +20,7 @@
             android:textColor="@color/_ffffff"
             android:layout_marginTop="@dimen/history_11"
             android:text="历史＆收藏"
-            android:layout_marginLeft="@dimen/history_817"
+            android:layout_centerInParent="true"
             android:gravity="center"
             />
         <LinearLayout
@@ -30,6 +29,7 @@
             android:layout_height="@dimen/history_78"
             android:layout_marginRight="@dimen/history_11"
             android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
             android:orientation="horizontal"
             android:layout_marginTop="@dimen/history_12"
             android:background="@drawable/edit_btn_selector"

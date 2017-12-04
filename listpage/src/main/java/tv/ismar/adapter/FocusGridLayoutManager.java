@@ -1,7 +1,6 @@
 package tv.ismar.adapter;
 
 import android.content.Context;
-import android.graphics.Rect;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
@@ -21,7 +20,8 @@ import java.util.ArrayList;
 
 public class FocusGridLayoutManager extends GridLayoutManager {
 
-    private ArrayList<Integer> specialPos;
+    private int spanCount;
+    private ArrayList<SpecialPos> specialPos;
     private int mItemCount=1;
     private View leftFocusView;
     private Context context;
@@ -36,6 +36,12 @@ public class FocusGridLayoutManager extends GridLayoutManager {
     }
 
     public FocusGridLayoutManager(Context context, int spanCount) {
+        super(context, spanCount);
+        this.context=context;
+        this.spanCount = spanCount;
+    }
+
+    public FocusGridLayoutManager(Context context, int spanCount, boolean needNewLine) {
         super(context, spanCount);
         this.context=context;
     }
@@ -91,18 +97,18 @@ public class FocusGridLayoutManager extends GridLayoutManager {
     public View onInterceptFocusSearch(View focused, int direction) {
         int index=getPosition(focused);
         if(direction==View.FOCUS_RIGHT){
-            if(specialPos!=null&&specialPos.contains(index+1)){
-                nextPos = getNextViewPos(getPosition(focused), direction);
-                if(findLastVisibleItemPosition()==mItemCount-1||mItemCount- nextPos <getSpanCount()) {
-                    scroll=false;
-                }else{
-                    scroll=true;
-                }
-                if(mItemCount - nextPos < getSpanCount()){
-                    scroll=true;
-                }
-                scrollToPositionWithOffset(nextPos, 0);
-                nextView = findViewByPosition(nextPos +1);
+            if(specialPos!=null&&specialPos.contains(new SpecialPos(index+1))){
+                nextPos = getFavoriteNextViewPos(getPosition(focused), direction);
+//                if(findLastVisibleItemPosition()==mItemCount-1||mItemCount- nextPos <getSpanCount()) {
+//                    scroll=false;
+//                }else{
+//                    scroll=true;
+//                }
+//                if(mItemCount - nextPos < getSpanCount()){
+//                    scroll=true;
+//                }
+//                scrollToPositionWithOffset(nextPos, 0);
+                nextView = findViewByPosition(nextPos);
                 return nextView;
             }
             if(index==getItemCount()-1){
@@ -114,7 +120,7 @@ public class FocusGridLayoutManager extends GridLayoutManager {
                 if (specialPos != null){
                     if(index<=getSpanCount()){
                         if(specialPos.size()>1) {
-                            if(index<specialPos.get(1)) {
+                            if(index<specialPos.get(0).startPosition) {
                                 YoYo.with(Techniques.VerticalShake).duration(1000).playOn(focused);
                             }else{
                                 return null;
@@ -144,7 +150,7 @@ public class FocusGridLayoutManager extends GridLayoutManager {
         if(scroll) {
             scroll = false;
             if (mItemCount - nextPos -1<= getSpanCount() && specialPos != null) {
-                View view = findViewByPosition(specialPos.get(specialPos.size() - 1) + 1);
+                View view = findViewByPosition(specialPos.get(specialPos.size() - 1).startPosition + 1);
                 if (view != null) {
                     view.requestFocus();
                 }
@@ -172,21 +178,29 @@ public class FocusGridLayoutManager extends GridLayoutManager {
         /**
          * 获取我们希望的下一个焦点的位置
          */
-        int nextPos = getNextViewPos(fromPos, focusDirection);
-        View nextView=findViewByPosition(nextPos);
+        int nextPos = -1;
+        if(isFavorite){
+            nextPos = getFavoriteNextViewPos(fromPos, focusDirection);
+        }else{
+            nextPos = getFliterNextViewPos(fromPos, focusDirection);
+        }
+        View nextView= null;
+        if(nextPos != -1) {
+            nextView = findViewByPosition(nextPos);
+        }
         if(focusDirection==View.FOCUS_DOWN) {
             for (int i = fromPos; i < nextPos; i++) {
-                if (specialPos!=null&&specialPos.contains(i)) {
-                    int nextSpecialPos=specialPos.indexOf(i);
-                    int lastColumnCount=(i-specialPos.get(nextSpecialPos-1)-1)%getSpanCount();
+                if (specialPos!=null&&specialPos.contains(new SpecialPos(i))) {
+                    int nextSpecialPos=specialPos.indexOf(new SpecialPos(i));
+                    int lastColumnCount=(i-specialPos.get(nextSpecialPos-1).startPosition-1)%getSpanCount();
                     if(lastColumnCount==0){
                         lastColumnCount=getSpanCount();
                     }
-                    int currentLine=fromPos-specialPos.get(nextSpecialPos)+lastColumnCount+1;
+                    int currentLine=fromPos-specialPos.get(nextSpecialPos).startPosition+lastColumnCount+1;
                     if(i+currentLine>mItemCount-1){
                         nextView = findViewByPosition(mItemCount-1);
-                    }else if(nextSpecialPos+1<specialPos.size()&&i+currentLine>=specialPos.get(nextSpecialPos+1)){
-                        nextView = findViewByPosition(specialPos.get(nextSpecialPos+1)-1);
+                    }else if(nextSpecialPos+1<specialPos.size()&&i+currentLine>=specialPos.get(nextSpecialPos+1).startPosition){
+                        nextView = findViewByPosition(specialPos.get(nextSpecialPos+1).startPosition-1);
                     }else{
                         nextView = findViewByPosition(i+currentLine);
                     }
@@ -194,10 +208,18 @@ public class FocusGridLayoutManager extends GridLayoutManager {
                 }
             }
         }else if(focusDirection==View.FOCUS_UP){
+            if(fromPos < getSpanCount()){
+                return focused;
+            }
             for (int i = fromPos; i >= nextPos; i--) {
-                if (specialPos!=null&&specialPos.contains(i)) {
-                    int nextSpecialPos=specialPos.indexOf(i);
-                    int lastColumnCount=(i-specialPos.get(nextSpecialPos-1)-1)%getSpanCount();
+                if (specialPos!=null&&specialPos.contains(new SpecialPos(i))) {
+                    int nextSpecialPos=specialPos.indexOf(new SpecialPos(i));
+                    int lastColumnCount;
+                    if(nextSpecialPos > 0){
+                        lastColumnCount=(i-specialPos.get(nextSpecialPos-1).startPosition-1)%getSpanCount();
+                    }else{
+                        return focused;
+                    }
                     if(lastColumnCount==0){
                         lastColumnCount=getSpanCount();
                     }
@@ -240,52 +262,137 @@ public class FocusGridLayoutManager extends GridLayoutManager {
 
     }
 
+    @Override
+    public int scrollVerticallyBy(int dy, RecyclerView.Recycler recycler, RecyclerView.State state) {
+        return super.scrollVerticallyBy(dy, recycler, state);
+    }
 
-    protected int getNextViewPos(int fromPos, int direction) {
-        int offset = calcOffsetToNextView(direction);
-        if(!isFavorite) {
-            if (hitBorder(fromPos, offset)) {
-                return fromPos + offset + 1;
+    protected int getFavoriteNextViewPos(int fromPos, int direction) {
+        int offset = 0;
+        int spanCount = getDefaultSpanCount();
+        int orientation = getOrientation();
+        if (orientation == VERTICAL) {
+            switch (direction) {
+                case View.FOCUS_DOWN:
+                    offset = spanCount;
+                    break;
+                case View.FOCUS_UP:
+                    offset = -spanCount;
+                    break;
+                case View.FOCUS_RIGHT:
+                    offset = 1;
+                    break;
+                case View.FOCUS_LEFT:
+                    offset = -1;
+                    break;
+                default:
+                    break;
+            }
+        } else if (orientation == HORIZONTAL) {
+            switch (direction) {
+                case View.FOCUS_DOWN:
+                    offset = 1;
+                    break;
+                case View.FOCUS_UP:
+                    offset = -1;
+                    break;
+                case View.FOCUS_RIGHT:
+                    offset = spanCount;
+                    break;
+                case View.FOCUS_LEFT:
+                    offset = -spanCount;
+                    break;
+                default:
+                    break;
             }
         }
-
         return fromPos + offset;
     }
 
     /**
      * Calculates position offset.
      *
+     *
+     * @param fromPos
      * @param direction regular {@code View.FOCUS_*}.
-     * @return position offset according to {@code direction}.
+     * @return position according to {@code direction}.
      */
-    protected int calcOffsetToNextView(int direction) {
-        int spanCount = getSpanCount();
-        int orientation = getOrientation();
-
-        if (orientation == VERTICAL) {
-            switch (direction) {
-                case View.FOCUS_DOWN:
-                    return spanCount;
-                case View.FOCUS_UP:
-                    return -spanCount;
-                case View.FOCUS_RIGHT:
-                    return 1;
-                case View.FOCUS_LEFT:
-                    return -1;
-            }
-        } else if (orientation == HORIZONTAL) {
-            switch (direction) {
-                case View.FOCUS_DOWN:
-                    return 1;
-                case View.FOCUS_UP:
-                    return -1;
-                case View.FOCUS_RIGHT:
-                    return spanCount;
-                case View.FOCUS_LEFT:
-                    return -spanCount;
+    protected int getFliterNextViewPos(int fromPos, int direction) {
+        int spanCount = getDefaultSpanCount();
+        int fromIndex = 0;
+        if(specialPos == null){
+            return -1;
+        }
+        for (int i = 0; i < specialPos.size(); i++) {
+            if(fromPos < specialPos.get(i).endPosition){
+                fromIndex = i;
+                break;
             }
         }
-
+        int count = specialPos.get(fromIndex).endPosition - specialPos.get(fromIndex).startPosition + 1;
+        int sectionStart = fromPos - specialPos.get(fromIndex).startPosition;
+        int sectionFinalLinePos = sectionStart%spanCount;
+        sectionFinalLinePos = sectionFinalLinePos == 0?spanCount:sectionFinalLinePos;
+        switch (direction) {
+            case View.FOCUS_DOWN:
+                if((fromPos + spanCount) > specialPos.get(fromIndex).endPosition){
+                    if((fromPos + spanCount) > specialPos.get(specialPos.size() - 1).endPosition){
+                        //已经是最后一行
+                        return -1;
+                    }else{
+                        if(sectionStart < count - sectionFinalLinePos){
+                            //此section在fromPos后还有一行，定位到该section最后一个item
+                            return specialPos.get(fromIndex).endPosition;
+                        }else{
+                            //定位到后一个section的相应位置
+                            int lineStart = sectionFinalLinePos - (count -sectionStart) ;
+                            int nextCount = specialPos.get(fromIndex + 1).endPosition - specialPos.get(fromIndex + 1).startPosition;
+                            if(lineStart > nextCount -1){
+                                //后一个section在相应位置没有item，定位到该section最后一个
+                                return specialPos.get(fromIndex + 1).endPosition;
+                            }else{
+                                return specialPos.get(fromIndex + 1).startPosition + lineStart;
+                            }
+                        }
+                    }
+                }else{
+                    return fromPos + spanCount;
+                }
+            case View.FOCUS_UP:
+                if((fromPos - spanCount) < specialPos.get(fromIndex).startPosition){
+                    if(fromPos - spanCount < 0){
+                        //已经是第一行
+                        return -1;
+                    }else{
+                        int lastSectionCount = specialPos.get(fromIndex - 1).endPosition - specialPos.get(fromIndex - 1).startPosition;
+                        int lastSectionFinalLineCount = lastSectionCount%spanCount;
+                        if(sectionStart > lastSectionFinalLineCount){
+                            //前一个section在相应位置没有item，定位到该section最后一个
+                            return specialPos.get(fromIndex - 1).endPosition;
+                        }else{
+                            return lastSectionCount - lastSectionFinalLineCount + sectionStart;
+                        }
+                    }
+                }else{
+                    return fromPos - spanCount;
+                }
+            case View.FOCUS_RIGHT: {
+                int targetPos = fromPos + 1;
+                if (targetPos > specialPos.get(specialPos.size() - 1).endPosition) {
+                    targetPos = specialPos.get(specialPos.size() - 1).endPosition;
+                }
+                return targetPos;
+            }
+            case View.FOCUS_LEFT: {
+                int targetPos = fromPos - 1;
+                if (targetPos < 0) {
+                    targetPos = 0;
+                }
+                return targetPos;
+            }
+            default:
+                break;
+        }
         return 0;
     }
 
@@ -323,13 +430,19 @@ public class FocusGridLayoutManager extends GridLayoutManager {
         return canScroll;
     }
 
-    public void setSpecialPos(ArrayList<Integer> specialPos) {
+    public void setSpecialPos(ArrayList<SpecialPos> specialPos) {
         this.specialPos = specialPos;
+    }
+
+    public ArrayList<SpecialPos> getSpecialPos() {
+        return this.specialPos;
     }
 
     public void setLeftFocusView(View leftFocusView) {
         this.leftFocusView = leftFocusView;
     }
 
-
+    public int getDefaultSpanCount(){
+        return spanCount;
+    }
 }

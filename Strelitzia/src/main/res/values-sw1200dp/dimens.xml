@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+<!--play_finish-->
+<dimen name="play_finished_title_h">74.44dp</dimen>
+<dimen name="play_finished_title_ts">53.33dp</dimen>
+<dimen name="play_finished_title_mt">161.11dp</dimen>
+<dimen name="play_finished_horizontal_recylerview_h">434.44dp</dimen>
+<dimen name="play_finished_horizontal_recylerview_mt">152.22dp</dimen>
+<dimen name="play_finished_horizontal_recylerview_ml">214.44dp</dimen>
+<dimen name="play_finished_horizontal_recylerview_pr">191.11dp</dimen>
+<dimen name="play_finished_vertical_recylerview_h">583.33dp</dimen>
+<dimen name="play_finished_vertical_recylerview_mt">82.22dp</dimen>
+<dimen name="play_finished_vertical_recylerview_ml">419.44dp</dimen>
+<dimen name="play_finished_vertical_recylerview_pr">395.00dp</dimen>
+<dimen name="play_finished_btn_mt">98.89dp</dimen>
+<dimen name="play_finished_btn_w">277.78dp</dimen>
+<dimen name="play_finished_btn_h">66.67dp</dimen>
+<dimen name="play_finished_btn_ml">35.56dp</dimen>
+<dimen name="play_finished_vertical_poster_focus_w">507.22dp</dimen>
+<dimen name="play_finished_vertical_poster_focus_h">690.56dp</dimen>
+<dimen name="play_finished_horizontal_poster_focus_w">657.78dp</dimen>
+<dimen name="play_finished_horizontal_poster_focus_h">512.22dp</dimen>
+
+<!--item_horizontal-->
+<dimen name="item_horizontal_pr">22.22dp</dimen>
+<dimen name="item_horizontal_w">553.33dp</dimen>
+<dimen name="item_horizontal_h">421.11dp</dimen>
+<dimen name="item_horizontal_mt">10.00dp</dimen>
+<dimen name="item_horizontal_mb">5.56dp</dimen>
+<dimen name="item_horizontal_poster_w">533.33dp</dimen>
+<dimen name="item_horizontal_poster_h">300.00dp</dimen>
+<dimen name="item_horizontal_poster_ml">10.00dp</dimen>
+<dimen name="item_horizontal_title_ml">7.78dp</dimen>
+<dimen name="item_horizontal_title_mt">8.89dp</dimen>
+<dimen name="item_horizontal_title_mb">5.56dp</dimen>
+<dimen name="item_horizontal_title_line_space">7.78dp</dimen>
+<dimen name="item_horizontal_title_ts">33.33dp</dimen>
+
+<!--item_vertical-->
+<dimen name="item_vertical_pr">22.22dp</dimen>
+<dimen name="item_vertical_w">416.67dp</dimen>
+<dimen name="item_vertical_h">583.33dp</dimen>
+<dimen name="item_vertical_title_h">141.11dp</dimen>
+<dimen name="item_vertical_title_ts">48.89dp</dimen>
+<dimen name="item_vertical_title_pb">5.56dp</dimen>
+
+<!--scroll_size-->
+<dimen name="scroll_395">438.89dp</dimen>
+<dimen name="scroll_238">264.44dp</dimen>
+<dimen name="scroll_337">374.44dp</dimen>
+<dimen name="scroll_1127">1252.22dp</dimen>
+<dimen name="scroll_732">813.33dp</dimen>
+<dimen name="scroll_519">576.67dp</dimen>
+<dimen name="scroll_307">341.11dp</dimen>
+<dimen name="scroll_147">163.33dp</dimen>
+<dimen name="scroll_1183">1314.44dp</dimen>
+<dimen name="scroll_665">738.89dp</dimen>
+
+<!--play_exit_error-->
+<dimen name="play_exit_error_icon_w">355.56dp</dimen>
+<dimen name="play_exit_error_mt">303.33dp</dimen>
+<dimen name="play_exit_error_text_mt">48.89dp</dimen>
+<dimen name="play_exit_error_text_h">92.22dp</dimen>
+<dimen name="play_exit_error_text_ts">66.67dp</dimen>
+</resources>
