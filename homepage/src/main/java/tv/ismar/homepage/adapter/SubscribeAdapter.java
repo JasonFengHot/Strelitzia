@@ -2,10 +2,12 @@
 package tv.ismar.homepage.adapter;
 
 import android.content.Context;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Space;
 import android.widget.TextView;
@@ -50,6 +52,14 @@ public class SubscribeAdapter extends BaseRecycleAdapter<SubscribeAdapter.Subscr
 	}
 
 	@Override
+	public void clearData() {
+		if (mData != null) {
+			mData = null;
+			notifyDataSetChanged();
+		}
+	}
+
+	@Override
 	public SubscribeViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 		View view = LayoutInflater.from(mContext).inflate(R.layout.item_banner_subscribe, parent, false);
 		return new SubscribeViewHolder(view);
@@ -57,32 +67,36 @@ public class SubscribeAdapter extends BaseRecycleAdapter<SubscribeAdapter.Subscr
 
 	@Override
 	public void onBindViewHolder(SubscribeViewHolder holder, int position) {
-		holder.mPosition = position;
+		holder.imageUrl = null;
+		holder.isMore = false;
 		if (mData != null) {
 			BannerPoster entity = mData.get(position);
-			String title = entity.title;
 
-			String imageUrl = entity.poster_url;
-			String targetImageUrl = TextUtils.isEmpty(imageUrl) ? null : imageUrl;
 			if (!TextUtils.isEmpty(entity.vertical_url) && entity.vertical_url.equals("更多")){
-				holder.mItemView.findViewById(R.id.item_layout).setBackgroundResource(R.drawable.banner_horizontal_more);
-				holder.mItemView.findViewById(R.id.content_layout).setVisibility(View.INVISIBLE);
+				holder.isMore = true;
+				holder.mItemLayout.setBackgroundResource(R.drawable.banner_horizontal_more);
+				holder.mContentLayout.setVisibility(View.INVISIBLE);
 				holder.mOrderTitle.setVisibility(View.INVISIBLE);
 //            Picasso.with(mContext).load(R.drawable.banner_horizontal_more).into(holder.mImageView);
 			}else {
-				holder.mItemView.findViewById(R.id.item_layout).setBackgroundResource(android.R.color.transparent);
-				holder.mItemView.findViewById(R.id.content_layout).setVisibility(View.VISIBLE);
+				holder.mItemLayout.setBackgroundResource(android.R.color.transparent);
+				holder.mContentLayout.setVisibility(View.VISIBLE);
 				holder.mOrderTitle.setVisibility(View.VISIBLE);
-
-/*modify by dragontec for bug 4336 start*/
-				Picasso.with(mContext).load(targetImageUrl).
-						placeholder(R.drawable.template_title_item_horizontal_preview).
-/*add by dragontec for bug 4205 start*/
-						memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE).
-/*add by dragontec for bug 4205 end*/
-						error(R.drawable.template_title_item_horizontal_preview).
-						into(holder.mImageView);
-/*modify by dragontec for bug 4336 end*/
+				if (!TextUtils.isEmpty(entity.poster_url)) {
+					holder.imageUrl = entity.poster_url;
+					Picasso.with(mContext).load(entity.poster_url).
+							placeholder(R.drawable.template_title_item_horizontal_preview).
+							memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE).
+							error(R.drawable.template_title_item_horizontal_preview).
+							tag("banner").
+							into(holder.mImageView);
+					if (mScrollState != RecyclerView.SCROLL_STATE_IDLE || isParentScrolling) {
+						Picasso.with(mContext).pauseTag("banner");
+					}
+				} else {
+					Picasso.with(mContext).load(R.drawable.template_title_item_horizontal_preview).
+							into(holder.mImageView);
+				}
 			}
 			if (position == 0) {
 				RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) holder.mTimeLine.getLayoutParams();
@@ -103,8 +117,8 @@ public class SubscribeAdapter extends BaseRecycleAdapter<SubscribeAdapter.Subscr
 			}
 
 			holder.mTitle.setText(entity.title + " ");
-			holder.mItemView.findViewById(R.id.item_layout).setTag(entity);
-			holder.mItemView.findViewById(R.id.item_layout).setTag(R.id.banner_item_position, position);
+			holder.mItemLayout.setTag(entity);
+			holder.mItemLayout.setTag(R.id.banner_item_position, position);
 
 			if (position == 0){
 				holder.mLeftSpace.setVisibility(View.GONE);
@@ -124,6 +138,11 @@ public class SubscribeAdapter extends BaseRecycleAdapter<SubscribeAdapter.Subscr
 	}
 
 	@Override
+	public int getItemViewType(int position) {
+		return TYPE_NORMAL;
+	}
+
+	@Override
 	public int getItemCount() {
 		return (mData!=null) ? mData.size() : 0;
 	}
@@ -134,7 +153,6 @@ public class SubscribeAdapter extends BaseRecycleAdapter<SubscribeAdapter.Subscr
 		private RecyclerImageView mImageView;
 		private TextView mOrderTitle;
 		private TextView mPublishTime;
-		private View mItemView;
 		private TextView mTitle;
 		private RecyclerImageView mTimeLine;
 		/*add by dragontec for bug 4366 start*/
@@ -142,10 +160,13 @@ public class SubscribeAdapter extends BaseRecycleAdapter<SubscribeAdapter.Subscr
 		/*add by dragontec for bug 4366 end*/
 		private RecyclerImageView markLT;
 		private TextView markRB;
+		private LinearLayout mItemLayout;
+		private RelativeLayout mContentLayout;
+		private String imageUrl;
+		private boolean isMore;
 
 		public SubscribeViewHolder(View itemView) {
 			super(itemView, SubscribeAdapter.this);
-			mItemView = itemView;
 			mImageView = (RecyclerImageView) itemView.findViewById(R.id.image_view);
 			mOrderTitle = (TextView) itemView.findViewById(R.id.order_title);
 			mPublishTime = (TextView) itemView.findViewById(R.id.publish_time);
@@ -156,6 +177,55 @@ public class SubscribeAdapter extends BaseRecycleAdapter<SubscribeAdapter.Subscr
 			markLT = (RecyclerImageView) itemView.findViewById(R.id.banner_mark_lt);
 			markRB = (TextView)itemView.findViewById(R.id.banner_mark_br);
 			markRT = (RecyclerImageView) itemView.findViewById(R.id.banner_mark_rt);
+			mItemLayout = (LinearLayout) itemView.findViewById(R.id.item_layout);
+			mContentLayout = (RelativeLayout) itemView.findViewById(R.id.content_layout);
+		}
+
+		@Override
+		public void clearImage() {
+			super.clearImage();
+			if (isMore) {
+				//do nothing
+			} else {
+				if (mItemLayout != null) {
+					mItemLayout.setBackgroundResource(R.drawable.transparent);
+				}
+				if (mImageView != null) {
+					Picasso.with(mContext).
+							load(R.drawable.template_title_item_horizontal_preview).
+							into(mImageView);
+				}
+			}
+		}
+
+		@Override
+		public void restoreImage() {
+			if (isMore) {
+				//do nothing
+			} else {
+				if (mItemLayout != null) {
+					mItemLayout.setBackgroundResource(R.drawable.transparent);
+				}
+				if (mImageView != null) {
+					if (imageUrl != null) {
+						Picasso.with(mContext).
+								load(imageUrl).
+								placeholder(R.drawable.template_title_item_horizontal_preview).
+								memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE).
+								error(R.drawable.template_title_item_horizontal_preview).
+								tag("banner").
+								into(mImageView);
+						if (mScrollState != RecyclerView.SCROLL_STATE_IDLE || isParentScrolling) {
+							Picasso.with(mContext).pauseTag("banner");
+						}
+					} else {
+						Picasso.with(mContext).
+								load(R.drawable.template_title_item_horizontal_preview).
+								into(mImageView);
+					}
+				}
+			}
+			super.restoreImage();
 		}
 
 		@Override

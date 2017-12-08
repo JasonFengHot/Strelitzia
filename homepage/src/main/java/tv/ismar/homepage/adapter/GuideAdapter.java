@@ -1,6 +1,7 @@
 package tv.ismar.homepage.adapter;
 
 import android.content.Context;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -54,6 +55,14 @@ public class GuideAdapter extends BaseRecycleAdapter<GuideAdapter.GuideViewHolde
 	}
 	/*add by dragontec for bug 4334 end*/
 
+	@Override
+	public void clearData() {
+		if (mData != null) {
+			mData = null;
+			notifyDataSetChanged();
+		}
+	}
+
     @Override
     public GuideViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(mContext).inflate(R.layout.banner_guide_item,parent,false);
@@ -62,6 +71,8 @@ public class GuideAdapter extends BaseRecycleAdapter<GuideAdapter.GuideViewHolde
 
     @Override
     public void onBindViewHolder(GuideViewHolder holder, int position) {
+		holder.imageUrl = null;
+		holder.isMore = false;
         holder.mMarginLeftView.setVisibility(mMarginLeftEnable?View.VISIBLE:View.GONE);
 //        if(position==0) holder.mMarginLeftView.setVisibility(View.GONE);
 		/*modify by dragontec for bug 4334 start*/
@@ -71,18 +82,23 @@ public class GuideAdapter extends BaseRecycleAdapter<GuideAdapter.GuideViewHolde
 			/*modify by dragontec for bug 4362 end*/
 			if (!TextUtils.isEmpty(poster.vertical_url)) {
 				if (poster.vertical_url.equals("更多")) {
+					holder.isMore = true;
 					Picasso.with(mContext).load(R.drawable.banner_vertical_more).into(holder.mPosterIg);
 				} else {
+					holder.imageUrl = poster.vertical_url;
 /*modify by dragontec for bug 4336,4407 start*/
-					Picasso.with(mContext).
-                            load(poster.vertical_url).
+					Picasso.with(mContext).load(poster.vertical_url).
 /*add by dragontec for bug 4205 start*/
                             memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE).
 /*add by dragontec for bug 4205 end*/
                             error(R.drawable.template_item_vertical_preview).
                             placeholder(R.drawable.template_item_vertical_preview).
+							tag("banner").
                             into(holder.mPosterIg);
 /*modify by dragontec for bug 4336,4407 end*/
+					if (mScrollState != RecyclerView.SCROLL_STATE_IDLE || isParentScrolling) {
+						Picasso.with(mContext).pauseTag("banner");
+					}
 				}
 			} else {
 /*modify by dragontec for bug 4336,4407 start*/
@@ -104,9 +120,6 @@ public class GuideAdapter extends BaseRecycleAdapter<GuideAdapter.GuideViewHolde
 			/*add by dragontec for bug 4325 start*/
 			String title = poster.title;
 			holder.mTitleTv.setText(title);
-			/*modify by dragontec for bug 4362 start*/
-			holder.mPosition = holder.getAdapterPosition();
-			/*modify by dragontec for bug 4362 end*/
 
 			String focusStr = title;
 			if (poster.focus != null && !poster.focus.equals("") && !poster.focus.equals("null")) {
@@ -117,6 +130,11 @@ public class GuideAdapter extends BaseRecycleAdapter<GuideAdapter.GuideViewHolde
 		}
 		/*modify by dragontec for bug 4334 end*/
     }
+
+	@Override
+	public int getItemViewType(int position) {
+		return TYPE_NORMAL;
+	}
 
     @Override
     public int getItemCount() {
@@ -134,6 +152,8 @@ public class GuideAdapter extends BaseRecycleAdapter<GuideAdapter.GuideViewHolde
         public TextView mTitleTv;//标题
         public View mMarginLeftView;//左边距
         public RecyclerImageView mRtIconTv;//右上icon
+		public String imageUrl;
+		public boolean isMore;
 
         public GuideViewHolder(View itemView) {
             super(itemView, GuideAdapter.this);
@@ -144,6 +164,44 @@ public class GuideAdapter extends BaseRecycleAdapter<GuideAdapter.GuideViewHolde
             mMarginLeftView = itemView.findViewById(R.id.guide_margin_left);
             mRtIconTv= (RecyclerImageView) itemView.findViewById(R.id.guide_rt_icon);
         }
+
+		@Override
+		public void clearImage() {
+			super.clearImage();
+			if (mPosterIg != null) {
+				if (isMore) {
+					//do nothing
+				} else {
+					Picasso.with(mContext).
+							load(R.drawable.template_item_vertical_preview).
+							into(mPosterIg);
+				}
+			}
+		}
+
+		@Override
+		public void restoreImage() {
+			if (mPosterIg != null) {
+				if (isMore) {
+					//do nothing
+				} else if (imageUrl != null) {
+					Picasso.with(mContext).load(imageUrl).
+							memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE).
+							error(R.drawable.template_item_vertical_preview).
+							placeholder(R.drawable.template_item_vertical_preview).
+							tag("banner").
+							into(mPosterIg);
+					if (mScrollState != RecyclerView.SCROLL_STATE_IDLE || isParentScrolling) {
+						Picasso.with(mContext).pauseTag("banner");
+					}
+				} else {
+					Picasso.with(mContext).
+							load(R.drawable.template_item_vertical_preview).
+							into(mPosterIg);
+				}
+			}
+			super.restoreImage();
+		}
 
         @Override
         protected int getScaleLayoutId() {

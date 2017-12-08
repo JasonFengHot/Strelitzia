@@ -124,9 +124,12 @@ public class SpaceItemDecoration extends RecyclerView.ItemDecoration {
                 } else if (!isVertical && (specialPos.contains(new SpecialPos(position)) || specialPos.contains(new SpecialPos(position - 1)) || specialPos.contains(new SpecialPos(position - 2)))) {
                     outRect.bottom = spaceV / 2;
                     outRect.top = mTitleHeight +  spaceV / 2;
-                } else if (specialPos.contains(new SpecialPos(position + 1))) {
+
+                } else {
                     outRect.bottom = spaceV / 2;
                     outRect.top = spaceV / 2;
+                }
+                if (specialPos.contains(new SpecialPos(position + 1))) {
                     int defaultSpanCount = ((FocusGridLayoutManager)parent.getLayoutManager()).getDefaultSpanCount();
                     int spanCount = PosterUtil.computeSectionSpanSize(specialPos, position, defaultSpanCount);
                     int itemWidth = (parent.getWidth() - parent.getPaddingRight()- parent.getPaddingLeft())/defaultSpanCount;
@@ -136,9 +139,6 @@ public class SpaceItemDecoration extends RecyclerView.ItemDecoration {
                         outRect.right = itemWidth* (spanCount - 1);
                     }
                     Log.i("zzz","zzz position:"+ position+"rect:" + outRect);
-                } else {
-                    outRect.bottom = spaceV / 2;
-                    outRect.top = spaceV / 2;
                 }
             }
 
@@ -202,11 +202,43 @@ public class SpaceItemDecoration extends RecyclerView.ItemDecoration {
                 return;
             }
             boolean flag = false;
-            if (getTag(position + 1) != null && !initial.equals(getTag(position + 1))) {
-                if (child.getHeight() + child.getTop() < mTitleHeight) {
+            int defaultSpanCount = ((FocusGridLayoutManager)parent.getLayoutManager()).getDefaultSpanCount();
+            String nextTag = getTag(position + defaultSpanCount);
+            boolean needCheck = false;
+            int nextLinePos = 0;
+            if(nextTag != null){
+                if(nextTag.equals(initial)){
+                    nextLinePos = position + defaultSpanCount;
+                    //do nothing
+                }else{
+                    needCheck = true;
+                }
+            }else{
+                //over max count
+                needCheck = true;
+            }
+            boolean isSameTitle = true;
+            if(needCheck){
+                for (int i = 0; i < defaultSpanCount; i++) {
+                    String checkTag = getTag(position + i);
+                    if(checkTag != null){
+                        if(checkTag.equals(initial)){
+                            continue;
+                            //do nothing
+                        }else{
+                            isSameTitle = false;
+                            break;
+                        }
+                    }else{
+                        //over max count
+                    }
+                }
+            }
+            if (!isSameTitle) {
+                if (child.getHeight() + child.getTop() < mTitleHeight + spaceV / 2) {
                     c.save();
                     flag = true;
-                    c.translate(0, child.getHeight() + child.getTop() - mTitleHeight );
+                    c.translate(0, child.getHeight() + child.getTop() - mTitleHeight + spaceV / 2 );
                 }
             }
             Rect bgRect = new Rect(parent.getPaddingLeft(), parent.getPaddingTop(),
@@ -297,15 +329,23 @@ public class SpaceItemDecoration extends RecyclerView.ItemDecoration {
     }
 
     private String getTag(int position) {
-        while (position >= 0) {
-            int index = specialPos.indexOf(new SpecialPos(position));
-            if (index > -1) {
-                return specialPos.get(index).sections;
-            }
-            position--;
+        int idx = getPositionSpecialIndex(position);
+        if(idx != -1){
+            return specialPos.get(idx).sections;
+        }else{
+            return null;
         }
-        return null;
     }
+
+    private int getPositionSpecialIndex(int position) {
+        for (int i = 0; i < specialPos.size(); i++) {
+            if(position<= specialPos.get(i).endPosition){
+                return i;
+            }
+        }
+        return -1;
+    }
+
 
     private DisplayMetrics getScreenDisplayMetrics(WindowManager wm){
         Display display = wm.getDefaultDisplay();

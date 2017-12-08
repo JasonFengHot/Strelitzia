@@ -94,7 +94,7 @@ public class HistoryFavoritrListActivity extends BaseActivity implements OnItemC
         parent.setOnHoverListener(this);
         arrow_down= (Button) findViewById(R.id.poster_arrow_down);
         arrow_up= (Button) findViewById(R.id.poster_arrow_up);
-        mSpaceItemDecoration=new HistorySpaceItemDecoration(getResources().getDimensionPixelSize(R.dimen.history_30),0,getResources().getDimensionPixelSize(R.dimen.history_16),getResources().getDimensionPixelOffset(R.dimen.history_44));
+        mSpaceItemDecoration=new HistorySpaceItemDecoration(getResources().getDimensionPixelSize(R.dimen.history_30),getResources().getDimensionPixelSize(R.dimen.history_30),getResources().getDimensionPixelSize(R.dimen.history_44),getResources().getDimensionPixelOffset(R.dimen.history_44));
         recyclerView=findView(R.id.history_favorite_list);
         recyclerView.addItemDecoration(mSpaceItemDecoration);
         focusGridLayoutManager=new FocusGridLayoutManager(this,4);
@@ -148,18 +148,18 @@ public class HistoryFavoritrListActivity extends BaseActivity implements OnItemC
     }
 	/*modify by dragontec for bug 4482 start*/
     @Override
-    public boolean dispatchKeyEvent(KeyEvent event) {
-        if(event.getAction() == KeyEvent.ACTION_DOWN){
-            if(recyclerView.getScrollState() != RecyclerView.SCROLL_STATE_IDLE){
-                return true;
-            }
-            long current = System.currentTimeMillis();
-            if(current - lastKeyDownTime < KEY_BLOCK_LEFT_RIGHT_TIME){
-                return true;
-            }
-            lastKeyDownTime = current;
-            focusGridLayoutManager.setCanScroll(true);
-            if(event.getKeyCode() == KeyEvent.KEYCODE_DPAD_DOWN){
+	public boolean dispatchKeyEvent(KeyEvent event) {
+		if (event.getAction() == KeyEvent.ACTION_DOWN) {
+//			if (recyclerView.getScrollState() != RecyclerView.SCROLL_STATE_IDLE) {
+//				return true;
+//			}
+			long current = System.currentTimeMillis();
+			if (current - lastKeyDownTime < KEY_BLOCK_LEFT_RIGHT_TIME) {
+				return true;
+			}
+			lastKeyDownTime = current;
+			focusGridLayoutManager.setCanScroll(true);
+			if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_DOWN) {
 //                if(recyclerView.hasFocus()){
 				//modify by dragontec for bug 4508 start
 //                    try{
@@ -190,7 +190,7 @@ public class HistoryFavoritrListActivity extends BaseActivity implements OnItemC
 //                        e.printStackTrace();
 //                        return true;
 //                    }
-					//modify by dragontec for bug 4508 end
+				//modify by dragontec for bug 4508 end
 //                }else if(clearAll.hasFocus()){
 //                    int position = focusGridLayoutManager.findFirstCompletelyVisibleItemPosition();
 //                    RecyclerView.ViewHolder viewHolder = recyclerView.findViewHolderForAdapterPosition(position);
@@ -199,7 +199,7 @@ public class HistoryFavoritrListActivity extends BaseActivity implements OnItemC
 //                    }
 //                    return true;
 //                }
-            }else if(event.getKeyCode() == KeyEvent.KEYCODE_DPAD_UP) {
+			} else if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_UP) {
 //                if (recyclerView.hasFocus()) {
 //                    View focused = recyclerView.findFocus();
 //                    if (focused != null) {
@@ -215,17 +215,22 @@ public class HistoryFavoritrListActivity extends BaseActivity implements OnItemC
 //                        }
 //                    }
 //                }
-            }
-        }else if(event.getAction() == KeyEvent.ACTION_UP){
-            if(event.getKeyCode() == KeyEvent.KEYCODE_1){
-                View outSide = recyclerView.findViewWithTag(8);
-                outSide.requestFocus();
-            }
-        }
-        return super.dispatchKeyEvent(event);
-    }
+			}
+		} else if (event.getAction() == KeyEvent.ACTION_UP) {
+			if (event.getKeyCode() == KeyEvent.KEYCODE_1) {
+				View outSide = recyclerView.findViewWithTag(8);
+				outSide.requestFocus();
+			}
+		}
+		return super.dispatchKeyEvent(event);
+	}
 	/*modify by dragontec for bug 4482 end*/
     private void showPop() {
+/*add by dragontec for bug 4464 start*/
+        if (pop != null && pop.isShowing()) {
+            pop.dismiss();
+        }
+/*add by dragontec for bug 4464 end*/
         pop=new ModuleMessagePopWindow(this);
         if(type==1) {
             pop.setMessage("您需要清空所有历史记录吗？");
@@ -473,6 +478,16 @@ public class HistoryFavoritrListActivity extends BaseActivity implements OnItemC
             removeSub = skyService.emptyHistory(IsmartvActivator.getInstance().getDeviceToken()).subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new BaseObserver<ResponseBody>() {
+/*add by dragontec for bug 4464 start*/
+                        @Override
+                        public void onError(Throwable e) {
+                            super.onError(e);
+                            if (pop != null) {
+                                pop.dismiss();
+                            }
+                        }
+/*add by dragontec for bug 4464 end*/
+
                         @Override
                         public void onCompleted() {
 
@@ -507,6 +522,16 @@ public class HistoryFavoritrListActivity extends BaseActivity implements OnItemC
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new BaseObserver<ResponseBody>() {
+/*add by dragontec for bug 4464 start*/
+                        @Override
+                        public void onError(Throwable e) {
+                            super.onError(e);
+                            if (pop != null) {
+                                pop.dismiss();
+                            }
+                        }
+/*add by dragontec for bug 4464 end*/
+
                         @Override
                         public void onCompleted() {
 
@@ -617,12 +642,61 @@ public class HistoryFavoritrListActivity extends BaseActivity implements OnItemC
     public void onClick(View v) {
         int id=v.getId();
         if(id==R.id.poster_arrow_up){
-            focusGridLayoutManager.setCanScroll(true);
+        	if (focusGridLayoutManager != null && recyclerView != null) {
+				focusGridLayoutManager.setCanScroll(true);
 			/*modify by dragontec for bug 4482 start*/
-            recyclerView.smoothScrollBy(0, -onePageScrollY);
+				int dy = 0;
+				if (focusGridLayoutManager.findFirstVisibleItemPosition() == focusGridLayoutManager.findFirstCompletelyVisibleItemPosition()) {
+					if (focusGridLayoutManager.findFirstCompletelyVisibleItemPosition() != 0) {
+						RecyclerView.ViewHolder viewHolder = recyclerView.findViewHolderForAdapterPosition(focusGridLayoutManager.findFirstCompletelyVisibleItemPosition());
+						if (viewHolder != null && viewHolder.itemView != null) {
+							int[] location = new int[2];
+							viewHolder.itemView.getLocationOnScreen(location);
+							dy = (int) -(getResources().getDisplayMetrics().heightPixels + getResources().getDimensionPixelSize(R.dimen.history_list_recycler_margin) / getResources().getDisplayMetrics().density - location[1] + getResources().getDimensionPixelSize(R.dimen.history_44));
+						}
+					}
+				} else {
+					RecyclerView.ViewHolder viewHolder = recyclerView.findViewHolderForAdapterPosition(focusGridLayoutManager.findFirstVisibleItemPosition());
+					if (viewHolder != null && viewHolder.itemView != null) {
+						int[] location = new int[2];
+						viewHolder.itemView.getLocationOnScreen(location);
+						dy = (int) -(getResources().getDisplayMetrics().heightPixels + getResources().getDimensionPixelSize(R.dimen.history_list_recycler_margin) / getResources().getDisplayMetrics().density - (location[1] + viewHolder.itemView.getHeight()) - getResources().getDimensionPixelSize(R.dimen.history_44));
+					}
+				}
+				if (dy != 0) {
+					recyclerView.smoothScrollBy(0, dy);
+				}
+			}
         }else if(id==R.id.poster_arrow_down){
-            focusGridLayoutManager.setCanScroll(true);
-            recyclerView.smoothScrollBy(0, onePageScrollY);
+        	if (focusGridLayoutManager != null && recyclerView != null) {
+				focusGridLayoutManager.setCanScroll(true);
+				int dy = 0;
+				if (focusGridLayoutManager.findLastVisibleItemPosition() == focusGridLayoutManager.findLastCompletelyVisibleItemPosition()) {
+					if (focusGridLayoutManager.findLastCompletelyVisibleItemPosition() != focusGridLayoutManager.getItemCount() - 1) {
+						RecyclerView.ViewHolder viewHolder = recyclerView.findViewHolderForAdapterPosition(focusGridLayoutManager.findLastCompletelyVisibleItemPosition());
+						if (viewHolder != null && viewHolder.itemView != null) {
+							int[] location = new int[2];
+							viewHolder.itemView.getLocationOnScreen(location);
+							int[] recyclerLocation = new int[2];
+							recyclerView.getLocationOnScreen(recyclerLocation);
+							dy = (int) (location[1] + viewHolder.itemView.getHeight() - (recyclerLocation[1] - getResources().getDimensionPixelSize(R.dimen.history_list_recycler_margin) / getResources().getDisplayMetrics().density) + getResources().getDimensionPixelSize(R.dimen.history_44));
+						}
+					}
+				} else {
+					RecyclerView.ViewHolder viewHolder = recyclerView.findViewHolderForAdapterPosition(focusGridLayoutManager.findLastVisibleItemPosition());
+					if (viewHolder != null && viewHolder.itemView != null) {
+						int[] location = new int[2];
+						viewHolder.itemView.getLocationOnScreen(location);
+						int[] recyclerLocation = new int[2];
+						recyclerView.getLocationOnScreen(recyclerLocation);
+						dy = (int) (location[1] - (recyclerLocation[1] - getResources().getDimensionPixelSize(R.dimen.history_list_recycler_margin) / getResources().getDisplayMetrics().density) - getResources().getDimensionPixelSize(R.dimen.history_44));
+					}
+				}
+				if (dy != 0) {
+					recyclerView.smoothScrollBy(0, dy);
+				}
+
+			}
 			/*modify by dragontec for bug 4482 end*/
         }else if(id==R.id.clear_all){
             showPop();

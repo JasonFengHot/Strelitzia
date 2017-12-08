@@ -16,6 +16,8 @@ public class ResultEntity {
     private int is_report_log;
     private int report_log_time_interval;
     private int report_log_size;
+    private BestvObject bestv_config;
+
 
     public int getReport_log_time_interval() {
         return report_log_time_interval;
@@ -136,5 +138,13 @@ public class ResultEntity {
 
     public void setH264_player(int player) {
         this.h264_player = player;
+    }
+
+    public BestvObject getBestv_config() {
+        return bestv_config;
+    }
+
+    public void setBestv_config(BestvObject bestv_config) {
+        this.bestv_config = bestv_config;
     }
 }

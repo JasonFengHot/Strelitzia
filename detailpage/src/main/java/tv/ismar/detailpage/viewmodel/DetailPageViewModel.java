@@ -520,14 +520,24 @@ public class DetailPageViewModel extends BaseObservable {
                                     mContext.getString(R.string.video_preview)) :
                                     mContext.getString(R.string.video_play);
                         } else {
-                            return mItemEntity.getExpense() != null && mRemandDay <= 0 ?
+/*modify by dragontec for bug 4509 start*/
+//                            return mItemEntity.getExpense() != null && mRemandDay <= 0 ?
+//                                    (mItemEntity.is_order() ? mContext.getString(R.string.detail_prevue) :
+//                                            mContext.getString(R.string.video_preview))
+//                                            + " " + subitem_title
+////                                    subItems[subItems.length - 1].getSubtitle()
+//                                    :
+//                                    mContext.getString(R.string.video_play) + " " + subitem_title;
+////                                    subItems[subItems.length - 1].getSubtitle();
+                            String playText = mItemEntity.getExpense() != null && mRemandDay <= 0 ?
                                     (mItemEntity.is_order() ? mContext.getString(R.string.detail_prevue) :
                                             mContext.getString(R.string.video_preview))
-                                            + " " + subitem_title
-//                                    subItems[subItems.length - 1].getSubtitle()
-                                    :
-                                    mContext.getString(R.string.video_play) + " " + subitem_title;
-//                                    subItems[subItems.length - 1].getSubtitle();
+                                    : mContext.getString(R.string.video_play);
+                            if (subitem_title != null && subitem_title.length() > 0) {
+                                playText += " " + subitem_title;
+                            }
+                            return playText;
+/*modify by dragontec for bug 4509 end*/
                         }
 
                     default:

@@ -44,6 +44,8 @@ import tv.ismar.homepage.widget.HomeRootRelativeLayout;
 import tv.ismar.homepage.widget.RecycleLinearLayout;
 import tv.ismar.library.util.StringUtils;
 
+import static tv.ismar.homepage.widget.RecycleLinearLayout.BANNER_LOAD_AIMING_OFF;
+
 /**
  * @AUTHOR: xi @DATE: 2017/9/8 @DESC: 频道fragemnt
  */
@@ -92,7 +94,7 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
 	/*add by dragontec for bug 4077 end*/
 
 /*add by dragontec for bug 4065 start*/
-	private Object mAniLock = new Object();
+	private final Object mAniLock = new Object();
 	private boolean mNeedAddBanner = false;
 	private boolean mDoingFragmentFlipAni = false;
 	private Handler mAniHandler = null;
@@ -192,6 +194,14 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
 
     @Override
     public void onDestroyView() {
+		if (mHandler != null) {
+			mHandler.removeCallbacksAndMessages(null);
+			mHandler = null;
+		}
+		if (mAniFinishRunnable != null) {
+			mAniHandler.removeCallbacks(mAniFinishRunnable);
+			mAniHandler = null;
+		}
 		unInitListener();
 /*delete by dragontec for bug 4065 start*/
 //        if (mLinearContainer != null){
@@ -227,6 +237,7 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
 		synchronized (templateDataLock) {
 			if (mTemplates != null) {
 				for (Template template : mTemplates) {
+					template.setCallback(null);
 					template.onDestroy();
 				}
 			}
@@ -242,8 +253,8 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
 		/*modify by dragontec for bug 4362 end*/
         super.onDestroy();
     }
-
-    private void findView(View view) {
+	
+	private void findView(View view) {
         mLinearContainer = (RecycleLinearLayout) view.findViewById(R.id.scroll_linear_container);
 /*add by dragontec for bug 4195 start*/
 		mLinearContainer.enableChildrenDrawingOrder();
@@ -291,11 +302,26 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
 		/*add by dragontec for bug 4200 start*/
 			mLinearContainer.setOnScrollListener(this);
 		/*add by dragontec for bug 4200 end*/
+			mLinearContainer.setCallback(new RecycleLinearLayout.Callback() {
+				@Override
+				public boolean focusOnFirstBanner(int position) {
+					synchronized (templateDataLock) {
+						if (position < mTemplates.size()) {
+							Template template = mTemplates.get(position);
+							if (template != null) {
+								return template.requestFocus();
+							}
+						}
+					}
+					return false;
+				}
+			});
 		}
 	}
 
 	private void unInitListener() {
 		if (mLinearContainer != null) {
+			mLinearContainer.setCallback(null);
 		/*add by dragontec for bug 4200 start*/
 			mLinearContainer.setOnScrollListener(null);
 		/*add by dragontec for bug 4200 end*/
@@ -366,9 +392,9 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
 			case BaseControl.FETCH_M_BANNERS_LIST_FLAG: {
 				if (args != null) {
 					List<String> list = new ArrayList<>();
-					for (int i = 0; i < args.length; i++) {
-						if (args[i] != null && args[i] instanceof String) {
-							list.add((String) args[i]);
+					for (Object arg : args) {
+						if (arg != null && arg instanceof String) {
+							list.add((String) arg);
 						}
 					}
 					if (mFetchCallBannerQueue != null) {
@@ -380,7 +406,9 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
 //								delay = 500;
 //							}
 							mFetchCallBannerQueue.put(list);
-							mHandler.sendMessageDelayed(message, delay);
+							if (mHandler != null) {
+								mHandler.sendMessageDelayed(message, delay);
+							}
 						} catch (InterruptedException e) {
 							e.printStackTrace();
 						}
@@ -448,13 +476,15 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
 
 	/*modify by dragontec for bug 4362 start*/
 	/*modify by dragontec for bug 4472 start*/
-	private boolean appendBanner(int position, GuideBanner data) {
+	private void appendBanner(int position) {
 		synchronized (layoutLock) {
-			if (data != null) {
-				return addBannerView(position, data);
+			if (position > lastLoadedPostion && mHandler != null) {
+				Message message = Message.obtain();
+				message.what = BaseControl.ADD_BANNER;
+				message.arg1 = position;
+				mHandler.sendMessage(message);
 			}
 		}
-		return false;
 	}
 	/*modify by dragontec for bug 4472 end*/
 	/*modify by dragontec for bug 4362 end*/
@@ -554,6 +584,14 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
 			int tag = createTag(position, canScroll);
 			bannerView.setTag(layoutId);
 			bannerView.setTag(layoutId, tag);
+			templateObject.setCallback(new Template.Callback() {
+				@Override
+				public void scrollToTop(int position) {
+					if (mLinearContainer != null) {
+						mLinearContainer.scrollToTop(position);
+					}
+				}
+			});
 			synchronized (templateDataLock) {
 				if (mTemplates != null) {
 					/*modify by dragontec for bug 4412 start*/
@@ -562,7 +600,10 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
 					mTemplates.add(templateObject);
 				}
 			}
-			mLinearContainer.addView(bannerView);
+			if (mLinearContainer != null) {
+				templateObject.setParentScrolling(mLinearContainer.isScrolling());
+				mLinearContainer.addView(bannerView);
+			}
 			return true;
 		}
 		return false;
@@ -598,6 +639,14 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
 				mTemplates.add(templateObject);
 			}
 		}
+		templateObject.setCallback(new Template.Callback() {
+			@Override
+			public void scrollToTop(int position) {
+				if (mLinearContainer != null) {
+					mLinearContainer.scrollToTop(position);
+				}
+			}
+		});
         mLinearContainer.addView(bannerView);
 		mLinearContainer.setHasMore(true);
     }
@@ -627,7 +676,7 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
 	/*add by dragontec for bug 4077 start*/
 	@Override
 	public void onDataFinished(View view) {
-		if (mLastFocus == view) {
+		if (view == null || mLastFocus == view) {
 			return;
 		}
 		mLastFocus = view;
@@ -646,14 +695,14 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
 		}
 		Log.d(TAG, "last = " + last);
 		/*modify by dragontec for bug 4472 start*/
-		if (position > last - RecycleLinearLayout.BANNER_LOAD_AIMING_OFF) {
+		if (position > last - BANNER_LOAD_AIMING_OFF) {
 			/*modify by dragontec for bug 4362 start*/
 				/*modify by dragontec for bug 4248 start*/
 			int number;
 				if (APPEND_LOAD_BANNERS_COUNT > 1) {
-					number = position + RecycleLinearLayout.BANNER_LOAD_AIMING_OFF - last + (APPEND_LOAD_BANNERS_COUNT - 1);
+					number = position + BANNER_LOAD_AIMING_OFF - last + (APPEND_LOAD_BANNERS_COUNT - 1);
 				} else {
-					number = position + RecycleLinearLayout.BANNER_LOAD_AIMING_OFF - last;
+					number = position + BANNER_LOAD_AIMING_OFF - last;
 				}
 				/*modify by dragontec for bug 4248 end*/
 //			String[] strings = new String[number];
@@ -666,55 +715,29 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
 					if (last + i + 1 >= datas.length) {
 						break;
 					}
-					GuideBanner data = datas[last + i + 1];
-//				strings[i] = data.page_banner_pk;
-					if (appendBanner(last + i + 1, data)) {
-						mControl.fetchBanners(data.page_banner_pk, 1, false);
-					}
-				}
-			/*modify by dragontec for bug 4331 start*/
-				if (lastLoadedPostion == datas.length - 1) {
-					if (!mChannel.equals("homepage")) {//首页频道最后不添加更多banner
-						addMoreView(datas.length);
-					} else {
-						synchronized (templateDataLock) {
-							mTemplates.get(lastLoadedPostion).isLastView = true;
-						}
-					}
-				}
-			}
-			/*modify by dragontec for bug 4331 end*/
-//			mControl.fetchMBanners(strings, 1);
-			/*modify by dragontec for bug 4362 end*/
-			/*modify by dragontec for bug 4472 end*/
-		}
-		/*modify by dragontec for bug 4335 start*/
-		if(mLinearContainer != null && mLinearContainer.getChildCount() > 0) {
-			for (int i = 0; i < mLinearContainer.getChildCount(); i++) {
-				View itemView = mLinearContainer.getChildAt(i);
-				if(i == mLinearContainer.getChildCount() - 1 && !mLinearContainer.hasMore()){
-					if(itemView.getPaddingBottom() != getResources().getDimensionPixelSize(R.dimen.banner_bottom_margin)) {
-						itemView.setPadding(itemView.getPaddingLeft(), itemView.getPaddingTop(), itemView.getPaddingRight(), getResources().getDimensionPixelSize(R.dimen.banner_bottom_margin));
-					}
-				}else{
-					if(itemView.getPaddingBottom() != 0) {
-						itemView.setPadding(itemView.getPaddingLeft(), itemView.getPaddingTop(), itemView.getPaddingRight(), 0);
-					}
+					appendBanner(last + i + 1);
 				}
 			}
 		}
-		/*modify by dragontec for bug 4335 end*/
 	}
 	/*add by dragontec for bug 4077 end*/
 
-	public void onKeyDown(int keyCode, KeyEvent event) {
-		Log.d(TAG, "keydown: " + keyCode);
-		/*add by dragontec for bug 4338 start*/
+	public void requestFocus() {
 		if (mLinearContainer != null && !mLinearContainer.hasFocus()) {
 			if (!mLinearContainer.isScrolling()) {
 				mLinearContainer.focusOnFirstBanner();
 			}
 		}
+	}
+
+	public void onKeyDown(int keyCode, KeyEvent event) {
+		Log.d(TAG, "keydown: " + keyCode);
+		/*add by dragontec for bug 4338 start*/
+//		if (mLinearContainer != null && !mLinearContainer.hasFocus()) {
+//			if (!mLinearContainer.isScrolling()) {
+//				mLinearContainer.focusOnFirstBanner();
+//			}
+//		}
 		/*add by dragontec for bug 4338 end*/
 //		if ("lcd_s3a01".equals(VodUserAgent.getModelName())) {
 //			if (keyCode == 707 || keyCode == 774 || keyCode == 253) {
@@ -802,6 +825,46 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
 				ret = true;
 			}
 			break;
+			case BaseControl.ADD_BANNER: {
+				int position = msg.arg1;
+				synchronized (bannerDataLock) {
+					if (mGuideBanners != null && position < mGuideBanners.length) {
+						GuideBanner guideBanner = mGuideBanners[position];
+						synchronized (layoutLock) {
+							if (addBannerView(position, guideBanner)) {
+								if (mControl != null) {
+									mControl.fetchBanners(guideBanner.page_banner_pk, 1, false);
+								}
+								if (lastLoadedPostion == mGuideBanners.length - 1) {
+									if (!mChannel.equals("homepage")) {//首页频道最后不添加更多banner
+										addMoreView(mGuideBanners.length);
+									} else {
+										synchronized (templateDataLock) {
+											mTemplates.get(lastLoadedPostion).isLastView = true;
+										}
+									}
+								}
+								if(mLinearContainer != null && mLinearContainer.getChildCount() > 0) {
+									for (int i = 0; i < mLinearContainer.getChildCount(); i++) {
+										View itemView = mLinearContainer.getChildAt(i);
+										if(i == mLinearContainer.getChildCount() - 1 && !mLinearContainer.hasMore()){
+											if(itemView.getPaddingBottom() != getResources().getDimensionPixelSize(R.dimen.banner_bottom_margin)) {
+												itemView.setPadding(itemView.getPaddingLeft(), itemView.getPaddingTop(), itemView.getPaddingRight(), getResources().getDimensionPixelSize(R.dimen.banner_bottom_margin));
+											}
+										}else{
+											if(itemView.getPaddingBottom() != 0) {
+												itemView.setPadding(itemView.getPaddingLeft(), itemView.getPaddingTop(), itemView.getPaddingRight(), 0);
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+				ret = true;
+			}
+			break;
 		}
 		return ret;
 	}
@@ -852,6 +915,12 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
 			mAniHandler.removeCallbacks(mCheckViewAppearRunnable);
 			mCheckViewAppearRunnable = null;
 		}
+		synchronized (templateDataLock) {
+			for (Template template :
+					mTemplates) {
+				template.setParentScrolling(true);
+			}
+		}
 	}
 /*add by dragontec for bug 4334 end*/
 
@@ -859,9 +928,17 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
 	public void onScrollFinished() {
 /*add by dragontec for bug 4225, 4224, 4223 start*/
 		if (mLinearContainer != null) {
+			onDataFinished(mLinearContainer.getChildAt(mLinearContainer.getCurrentBannerPos()));
 			((HomeActivity)getActivity()).actionScrollerMoveToBottom(mLinearContainer.isScrollAtBottom());
 		}
+
 /*add by dragontec for bug 4225, 4224, 4223 end*/
+		synchronized (templateDataLock) {
+			for (Template template :
+					mTemplates) {
+				template.setParentScrolling(false);
+			}
+		}
 		/*modify by dragontec for bug 4334 start*/
 		if (mCheckViewAppearRunnable != null) {
 			mAniHandler.removeCallbacks(mCheckViewAppearRunnable);

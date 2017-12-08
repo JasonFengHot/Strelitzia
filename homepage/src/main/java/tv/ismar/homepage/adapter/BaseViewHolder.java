@@ -23,6 +23,7 @@ import com.open.androidtvwidget.leanback.recycle.RecyclerViewTV;
 import tv.ismar.homepage.HomeActivity;
 import tv.ismar.homepage.OnItemClickListener;
 import tv.ismar.homepage.OnItemHoverListener;
+import tv.ismar.homepage.OnItemKeyListener;
 import tv.ismar.homepage.OnItemSelectedListener;
 import tv.ismar.homepage.R;
 import tv.ismar.homepage.widget.CenterRecyclerViewTV;
@@ -42,10 +43,11 @@ public abstract class BaseViewHolder extends RecyclerView.ViewHolder implements
 /*add by dragontec for bug 4265 end*/
 {
 
-    public int mPosition;//item位置
+//    public int mPosition;//item位置
     private OnItemClickListener mClickListener = null;
     private OnItemSelectedListener mSelectedListener = null;
     private OnItemHoverListener mHoverListener = null;
+    private OnItemKeyListener mKeyListener = null;
 	/*add by dragontec for bug 4265 start*/
     private RecyclerView mRecyclerView = null;
     private boolean isCenter = false;
@@ -56,6 +58,7 @@ public abstract class BaseViewHolder extends RecyclerView.ViewHolder implements
         this.mClickListener = baseAdapter.mClickListener;
         this.mSelectedListener = baseAdapter.mSelectedListener;
         this.mHoverListener = baseAdapter.mHoverListener;
+        this.mKeyListener = baseAdapter.mKeyListener;
 		/*add by dragontec for bug 4265 start*/
         this.mRecyclerView = baseAdapter.mRecyclerView;
         if (baseAdapter instanceof CenterAdapter) {
@@ -89,7 +92,7 @@ public abstract class BaseViewHolder extends RecyclerView.ViewHolder implements
         if (hasFocus) {
             scaleToLarge(v.findViewById(getScaleLayoutId()));
             if(mSelectedListener != null) {
-                mSelectedListener.onItemSelect(v, mPosition);
+                mSelectedListener.onItemSelect(v, getAdapterPosition());
             }
         } else {
             scaleToNormal(v.findViewById(getScaleLayoutId()));
@@ -118,7 +121,7 @@ public abstract class BaseViewHolder extends RecyclerView.ViewHolder implements
 		/*modify by dragontec for bug 4452 start*/
 		if (location[0] >= 0 && location[0] + v.getWidth() <= screenWidth) {
 			if (mClickListener != null && v.getId() == getScaleLayoutId()) {//item选中事件
-				mClickListener.onItemClick(v, mPosition);
+				mClickListener.onItemClick(v, getAdapterPosition());
 			}
 		}
 //		if (location[0] >= 0 && location[1] >= 0 && location[0] + v.getWidth() <= screenWidth && location[1] + v.getHeight() <= screenHeight) {
@@ -132,6 +135,9 @@ public abstract class BaseViewHolder extends RecyclerView.ViewHolder implements
 
     @Override
     public boolean onHover(View v, MotionEvent event) {
+    	if (event.getAction() == MotionEvent.ACTION_HOVER_ENTER || event.getAction() == MotionEvent.ACTION_HOVER_MOVE) {
+    		v.setHovered(true);
+		}
         switch (event.getAction()){
             case MotionEvent.ACTION_HOVER_ENTER://鼠标放置到view上时 9
 			/*delete by dragontec for bug 4169 start*/
@@ -140,7 +146,7 @@ public abstract class BaseViewHolder extends RecyclerView.ViewHolder implements
 			/*modify by dragontec for bug 4277 start*/
 			boolean needRequestFocus = true;
                 if (mHoverListener!= null){
-                    needRequestFocus= mHoverListener.onHover(v, mPosition, true);
+                    needRequestFocus= mHoverListener.onHover(v, getAdapterPosition(), true);
                 }
 				//by dragontec 和其他地方保持一致
 				/*add by dragontec for bug 4265 start*/
@@ -165,7 +171,7 @@ public abstract class BaseViewHolder extends RecyclerView.ViewHolder implements
 			/*modify by dragontec for bug 4277 end*/
             case MotionEvent.ACTION_HOVER_EXIT://10
                 if (mHoverListener!= null){
-                    mHoverListener.onHover(v, mPosition, false);
+                    mHoverListener.onHover(v, getAdapterPosition(), false);
                 }
 				//by dragontec clearfocus应该和是否setListener无关
                 /*modify by dragontec for bug 4057 start*/
@@ -197,14 +203,7 @@ public abstract class BaseViewHolder extends RecyclerView.ViewHolder implements
 	/*add by dragontec for bug 4325 start*/
     private void updateTitleText(boolean hasFocus) {
 		/*modify by dragontec for bug 卖点文字不正确的问题 start*/
-        View view = null;
-        if(this instanceof DoubleLdAdapter.DoubleLdViewHolder && getAdapterPosition() == 0){
-            view = itemView.findViewById(R.id.double_ld_image_title);
-        }else if(this instanceof DoubleMdAdapter.DoubleMdViewHolder && getAdapterPosition() == 0){
-            view = itemView.findViewById(R.id.double_md_image_title);
-        }else {
-            view = itemView.findViewById(getTitleId());
-        }
+        View view = itemView.findViewById(getTitleId());;
         if(view != null && view instanceof TextView) {
             TextView textView = (TextView) view;
             Object tag = textView.getTag();
@@ -282,6 +281,7 @@ public abstract class BaseViewHolder extends RecyclerView.ViewHolder implements
     /*add by dragontec for bug 4265 start*/
 	@Override
 	public boolean onKey(View v, int keyCode, KeyEvent event) {
+		v.setHovered(false);
     	if (event.getAction() == KeyEvent.ACTION_UP) {
     		if (keyCode == KeyEvent.KEYCODE_DPAD_LEFT || keyCode == KeyEvent.KEYCODE_DPAD_RIGHT ) {
     			if (mRecyclerView != null && mRecyclerView instanceof RecyclerViewTV) {
@@ -295,38 +295,29 @@ public abstract class BaseViewHolder extends RecyclerView.ViewHolder implements
 								if (isCenter) {
 									if (mRecyclerView.getLayoutManager() instanceof LinearLayoutManagerTV) {
 										if (keyCode == KeyEvent.KEYCODE_DPAD_LEFT) {
-											int position = ((RecyclerViewTV)mRecyclerView).findFirstVisibleItemPosition();
 											((LinearLayoutManagerTV) mRecyclerView.getLayoutManager()).setCanScroll(true);
 											/*modify by dragontec for bug 4365 start*/
 											((LinearLayoutManagerTV) mRecyclerView.getLayoutManager()).scrollToPositionWithOffset( ((RecyclerViewTV)mRecyclerView).findFirstVisibleItemPosition(), ((CenterRecyclerViewTV) mRecyclerView).getCenterOffset());
 											/*modify by dragontec for bug 4365 end*/
-											if (mSelectedListener != null) {
-												mSelectedListener.onItemSelect(v, position);
-											}
 										}
 										if (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT) {
-											int position = ((RecyclerViewTV)mRecyclerView).findFirstVisibleItemPosition();
 											((LinearLayoutManagerTV) mRecyclerView.getLayoutManager()).setCanScroll(true);
 											/*modify by dragontec for bug 4365 start*/
 											((LinearLayoutManagerTV) mRecyclerView.getLayoutManager()).scrollToPositionWithOffset( ((RecyclerViewTV)mRecyclerView).findLastVisibleItemPosition(), ((CenterRecyclerViewTV) mRecyclerView).getCenterOffset());
 											/*modify by dragontec for bug 4365 end*/
-											if (mSelectedListener != null) {
-												mSelectedListener.onItemSelect(v, position);
-											}
 										}
 									}
 								} else {
-									int position = getAdapterPosition();
 									mRecyclerView.getLayoutManager().smoothScrollToPosition(mRecyclerView, null, getAdapterPosition());
-									if (mSelectedListener != null) {
-										mSelectedListener.onItemSelect(v, position);
-									}
 								}
 							}
 						}
 					}
 				}
 			}
+		}
+		if (mKeyListener != null) {
+    		mKeyListener.onKey(v, keyCode, event);
 		}
 		return false;
 	}
@@ -351,4 +342,12 @@ public abstract class BaseViewHolder extends RecyclerView.ViewHolder implements
         objectAnimatorY.setDuration(100L);
         objectAnimatorY.start();
     }
+
+    public void clearImage() {
+
+	}
+
+    public void restoreImage() {
+
+	}
 }

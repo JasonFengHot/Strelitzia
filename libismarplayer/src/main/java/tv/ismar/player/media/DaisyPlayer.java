@@ -4,7 +4,9 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Environment;
 import android.os.Handler;
+import android.os.HandlerThread;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.qiyi.sdk.player.IAdController;
 
@@ -42,6 +44,24 @@ public class DaisyPlayer extends IsmartvPlayer implements SurfaceHelper.SurfaceC
 
     private String logCurrentMediaUrl;
     private boolean isSwitchingQuality = false;// 切换码率后，不回调onPrepared,直接开始播放
+
+/*add by dragontec for bug 4418 start*/
+    private HandlerThread mReleaseMediaHandlerThread = null;
+
+    public DaisyPlayer() {
+        mReleaseMediaHandlerThread = new HandlerThread("ReleaseMediaHandlerThread");
+        mReleaseMediaHandlerThread.start();
+    }
+
+    @Override
+    protected void finalize() throws Throwable {
+        if (mReleaseMediaHandlerThread != null && mReleaseMediaHandlerThread.isAlive()) {
+            mReleaseMediaHandlerThread.quit();
+            mReleaseMediaHandlerThread = null;
+        }
+        super.finalize();
+    }
+/*add by dragontec for bug 4418 end*/
 
     private SmartPlayer getSmartPlayerInstance(){
         if (mPlayer == null) {
@@ -215,11 +235,47 @@ public class DaisyPlayer extends IsmartvPlayer implements SurfaceHelper.SurfaceC
             mPlayer.setOnCompletionListenerUrl(null);
             mPlayer.setOnPreloadCompleteListener(null);
             mPlayer.stop();
-            mPlayer.release();
+/*modify by dragontec for bug 4418 start*/
+//            mPlayer.release();
+            if (mPlayer.getPlayerType() == SmartPlayer.PlayerType.PlayerCodec) {
+                mPlayer.release();
+            } else {
+                releaseMediaPlayerInRunnable(mPlayer);
+            }
+/*modify by dragontec for bug 4418 end*/
             mPlayer = null;
         }
         mCurrentState = STATE_IDLE;
     }
+
+/*add by dragontec for bug 4418 start*/
+    private void releaseMediaPlayerInRunnable(SmartPlayer smartPlayer) {
+        Handler releaseMediaHandler = new Handler(mReleaseMediaHandlerThread.getLooper());
+        ReleaseMediaPlayerRunnable runnable = new ReleaseMediaPlayerRunnable(smartPlayer, releaseMediaHandler);
+        releaseMediaHandler.post(runnable);
+    }
+
+
+    private class ReleaseMediaPlayerRunnable implements Runnable {
+        private SmartPlayer smartPlayer;
+        private Handler handler;
+
+        public ReleaseMediaPlayerRunnable(SmartPlayer smartPlayer, Handler handler) {
+            this.smartPlayer = smartPlayer;
+            this.handler = handler;
+        }
+
+        @Override
+        public void run() {
+            if (handler != null) {
+                handler.removeCallbacks(this);
+            }
+            if (smartPlayer != null) {
+                smartPlayer.release();
+            }
+        }
+    }
+/*add by dragontec for bug 4418 end*/
 
     @Override
     public int getCurrentPosition() {
@@ -269,7 +325,10 @@ public class DaisyPlayer extends IsmartvPlayer implements SurfaceHelper.SurfaceC
 
     @Override
     public void switchQuality(int position, ClipEntity.Quality quality) {
-        if (!isInPlaybackState()) {
+/*modify by dragontec for bug 4418 start*/
+//        if (!isInPlaybackState()) {
+        if (mPlayer == null) {
+/*modify by dragontec for bug 4418 end*/
             return;
         }
         super.switchQuality(position, quality);

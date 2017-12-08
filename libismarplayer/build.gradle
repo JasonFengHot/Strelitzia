@@ -38,6 +38,7 @@ dependencies {
     compile rootDependence.support_v4
     compile project(':appbase')
     compile project(':statistics')
+    implementation project(':bestvframework')
 }
 
 tasks.withType(JavaCompile) {

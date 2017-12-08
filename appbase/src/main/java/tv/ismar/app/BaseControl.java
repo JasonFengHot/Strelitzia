@@ -32,6 +32,7 @@ public class BaseControl {
 	/* add by dragontec for bug 4264 start */
 	public static final int FETCH_DATA_FAIL_FLAG = 0x0A;//获取数据失败
 	/* add by dragontec for bug 4264 end */
+	public static final int ADD_BANNER = 0x0B;
 
     public Context mContext;
     public Activity mActivity;
@@ -148,7 +149,7 @@ public class BaseControl {
                 }
                 mContext.startActivity(appIntent);
             }catch (Exception e){
-
+				e.printStackTrace();
             }
         }else {
             if (contentModel.contains("gather")) {

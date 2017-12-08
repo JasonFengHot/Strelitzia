@@ -4,62 +4,71 @@
     android:layout_height="match_parent"
     android:id="@+id/parent_view"
     >
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/history_94"
-        >
-        <TextView
-            android:id="@+id/title"
-            android:layout_width="@dimen/history_363"
-            android:layout_height="@dimen/history_83"
-            android:textColor="@color/_ffffff"
-            android:textSize="@dimen/text_size_60sp"
-            android:layout_marginTop="@dimen/history_11"
-            android:layout_centerInParent="true"
-            android:layout_gravity="center"
-            android:text="编辑历史记录"
-            />
-        <TextView
-            android:id="@+id/clear_all"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/history_43"
-            android:textSize="@dimen/text_size_30sp"
-            android:focusableInTouchMode="true"
-            android:focusable="true"
-            android:text="全部清除"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="@dimen/clear_history_mr"
-            android:layout_marginTop="@dimen/history_3"
-            android:gravity="center"
-            android:textColor="@color/clear_history"
-            />
-    </RelativeLayout>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:clipChildren="false"
-        android:clipToPadding="false"
-        android:orientation="horizontal"
-        android:layout_marginTop="@dimen/history_94"
-        >
-        <tv.ismar.view.HistoryFavoriteRecyclerView
-            android:id="@+id/history_favorite_list"
-            android:layout_marginLeft="@dimen/history_20"
-            android:clipToPadding="false"
-            android:focusableInTouchMode="false"
-            android:nextFocusRight="@+id/history_favorite_list"
-            android:nextFocusLeft="@+id/history_favorite_list"
-            android:nextFocusDown="@+id/history_favorite_list"
-            android:clipChildren="false"
-            android:layout_width="@dimen/history_1848"
-            android:layout_height="wrap_content">
-        </tv.ismar.view.HistoryFavoriteRecyclerView>
+        android:orientation="vertical">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/history_94"
+            >
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="@dimen/history_363"
+                android:layout_height="@dimen/history_83"
+                android:textColor="@color/_ffffff"
+                android:textSize="@dimen/text_size_60sp"
+                android:layout_marginTop="@dimen/history_11"
+                android:layout_centerInParent="true"
+                android:layout_gravity="center"
+                android:text="编辑历史记录"
+                />
+            <TextView
+                android:id="@+id/clear_all"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/history_43"
+                android:textSize="@dimen/text_size_30sp"
+                android:focusableInTouchMode="true"
+                android:focusable="true"
+                android:text="全部清除"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="@dimen/clear_history_mr"
+                android:layout_marginTop="@dimen/history_3"
+                android:gravity="center"
+                android:textColor="@color/clear_history"
+                />
+        </RelativeLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipChildren="true"
+            android:clipToPadding="true"
+            android:orientation="horizontal"
+            >
+            <tv.ismar.view.HistoryFavoriteListRecyclerView
+                android:id="@+id/history_favorite_list"
+                android:layout_marginStart="@dimen/history_20"
+                android:layout_marginEnd="@dimen/history_20"
+                android:layout_marginTop="@dimen/history_list_recycler_margin"
+                android:layout_marginBottom="@dimen/history_list_recycler_margin"
+                android:clipToPadding="false"
+                android:focusableInTouchMode="false"
+                android:nextFocusRight="@+id/history_favorite_list"
+                android:nextFocusLeft="@+id/history_favorite_list"
+                android:nextFocusDown="@+id/history_favorite_list"
+                android:clipChildren="false"
+                android:layout_width="@dimen/history_1848"
+                android:layout_height="wrap_content">
+            </tv.ismar.view.HistoryFavoriteListRecyclerView>
+        </LinearLayout>
     </LinearLayout>
+
     <Button
         android:id="@+id/poster_arrow_up"
         android:layout_width="@dimen/history_1415"
         android:layout_height="@dimen/filter_layout_poster_arrow_h"
+        android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:visibility="gone"
         android:background="@drawable/poster_arrow_up_selector"/>

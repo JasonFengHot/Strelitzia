@@ -549,4 +549,5 @@
 <dimen name="history_165">91.67dp</dimen>
 <dimen name="history_366">203.33dp</dimen>
 <dimen name="history_500">277.78dp</dimen>
+<dimen name="history_list_recycler_margin">-11.11dp</dimen>
 </resources>

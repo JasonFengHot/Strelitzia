@@ -1,6 +1,7 @@
 package tv.ismar.homepage.adapter;
 
 import android.content.Context;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +17,7 @@ import java.util.List;
 
 import tv.ismar.app.core.VipMark;
 import tv.ismar.app.entity.banner.BannerPoster;
+import tv.ismar.app.entity.banner.BigImage;
 import tv.ismar.app.widget.RecyclerImageView;
 import tv.ismar.homepage.R;
 
@@ -29,7 +31,7 @@ public class DoubleLdAdapter extends BaseRecycleAdapter<DoubleLdAdapter.DoubleLd
 
     private Context mContext;
     private List<BannerPoster> mData;
-    private View mHeaderView;
+    private BigImage mBigImage;
 
 	/*add by dragontec for bug 4334 start*/
     public DoubleLdAdapter(Context context) {
@@ -53,76 +55,135 @@ public class DoubleLdAdapter extends BaseRecycleAdapter<DoubleLdAdapter.DoubleLd
 	public List<BannerPoster> getData(){
 		return mData;
 	}
+
+	public void setBigImage(BigImage bigImage) {
+		mBigImage = bigImage;
+		notifyDataSetChanged();
+	}
+
+	public BigImage getBigImage() {
+		return mBigImage;
+	}
+
 	/*add by dragontec for bug 4334 end*/
 
-    public void setHeaderView(View headerView) {
-        mHeaderView = headerView;
-        notifyItemInserted(0);
-    }
+	@Override
+	public void clearData() {
+		if (mData != null) {
+			mData = null;
+			notifyDataSetChanged();
+		}
+	}
 
     @Override
     public DoubleLdViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        if (mHeaderView != null && viewType == TYPE_HEADER)
-            return new DoubleLdViewHolder(mHeaderView);
-        View view = LayoutInflater.from(mContext).inflate(R.layout.banner_double_ld_item,parent,false);
-        return new DoubleLdViewHolder(view);
+		View view = null;
+		if (viewType == TYPE_HEADER) {
+			view = LayoutInflater.from(mContext).inflate(R.layout.banner_double_ld_head, parent,false);
+		} else if (viewType == TYPE_NORMAL){
+			view = LayoutInflater.from(mContext).inflate(R.layout.banner_double_ld_item, parent,false);
+		}
+		return new DoubleLdViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(DoubleLdViewHolder holder, int position) {
-        holder.mPosition = position;
-        if(position != 0){
-        	/*modify by dragontec for bug 4334 start*/
-        	if (mData != null) {
-				BannerPoster poster = mData.get(position - 1);
-				if (!TextUtils.isEmpty(poster.poster_url)) {
-					if (poster.poster_url.equals("更多")) {
-						Picasso.with(mContext).load(R.drawable.banner_horizontal_more).into(holder.mPosterIg);
+		holder.imageUrl = null;
+		holder.isMore = false;
+		switch (holder.getItemViewType()) {
+			case TYPE_HEADER: {
+				if (mBigImage != null) {
+					if (!TextUtils.isEmpty(mBigImage.poster_url)) {
+						holder.imageUrl = mBigImage.poster_url;
+						Picasso.with(mContext).
+								load(mBigImage.poster_url).
+								memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE).
+								error(R.drawable.template_title_item_horizontal_preview).
+								placeholder(R.drawable.template_title_item_horizontal_preview).
+								tag("banner").
+								into(holder.mPosterIg);
+						if (mScrollState != RecyclerView.SCROLL_STATE_IDLE || isParentScrolling) {
+							Picasso.with(mContext).pauseTag("banner");
+						}
 					} else {
-/*modify by dragontec for bug 4336 start*/
-						Picasso.with(mContext).load(poster.poster_url).
-/*add by dragontec for bug 4205 start*/
-                                memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE).
-/*add by dragontec for bug 4205 end*/
-                                error(R.drawable.template_title_item_horizontal_preview).
-                                placeholder(R.drawable.template_title_item_horizontal_preview).
-                                into(holder.mPosterIg);
-/*modify by dragontec for bug 4336 end*/
+						Picasso.with(mContext).
+								load(R.drawable.template_title_item_horizontal_preview).
+								into(holder.mPosterIg);
 					}
-				} else {
-/*modify by dragontec for bug 4336 start*/
 					Picasso.with(mContext).
-                            load(R.drawable.template_title_item_horizontal_preview).
-                            into(holder.mPosterIg);
-/*modify by dragontec for bug 4336 end*/
+							load(VipMark.getInstance().getBannerIconMarkImage(mBigImage.top_left_corner)).
+							into(holder.mLtIconTv);
+					Picasso.with(mContext).load(VipMark.getInstance().getBannerIconMarkImage(mBigImage.top_right_corner)).into(holder.mRtIconTv);
+					holder.mRbIconTv.setText(new DecimalFormat("0.0").format(mBigImage.rating_average));
+					holder.mRbIconTv.setVisibility((mBigImage.rating_average == 0) ? View.GONE : View.VISIBLE);
+					holder.mTitleTv.setText(mBigImage.title);
+					String focusStr = mBigImage.title;
+					if (mBigImage.focus != null && !mBigImage.focus.equals("") && !mBigImage.focus.equals("null")) {
+						focusStr = mBigImage.focus;
+					}
+					holder.mTitleTv.setTag(new String[]{mBigImage.title, focusStr});
 				}
-				Picasso.with(mContext).load(VipMark.getInstance().getBannerIconMarkImage(poster.top_left_corner)).into(holder.mLtIconTv);
-				holder.mRbIconTv.setText(new DecimalFormat("0.0").format(poster.rating_average));
-				holder.mRbIconTv.setVisibility((poster.rating_average == 0) ? View.GONE : View.VISIBLE);
-				if (!TextUtils.isEmpty(poster.poster_url) && poster.poster_url.equals("更多")) {
-					holder.mTitleTv.setVisibility(View.INVISIBLE);
-				} else {
-					holder.mTitleTv.setVisibility(View.VISIBLE);
-				}
-				holder.mTitleTv.setText(poster.title);
-				/*add by dragontec for bug 4325 start*/
-				String focusStr = poster.title;
-				if (poster.focus != null && !poster.focus.equals("") && !poster.focus.equals("null")) {
-					focusStr = poster.focus;
-				}
-				holder.mTitleTv.setTag(new String[]{poster.title, focusStr});
-				/*add by dragontec for bug 4325 end*/
-				Picasso.with(mContext).load(VipMark.getInstance().getBannerIconMarkImage(poster.top_right_corner)).into(holder.mRtIconTv);
 			}
-			/*add by dragontec for bug 4334 end*/
-        }
-
+				break;
+			case TYPE_NORMAL:
+			{
+				if (position != 0 && getItemViewType(0) == TYPE_HEADER) {
+					position--;
+				}
+				if (mData != null && position < mData.size()) {
+					BannerPoster poster = mData.get(position);
+					if (!TextUtils.isEmpty(poster.poster_url)) {
+						if (poster.poster_url.equals("更多")) {
+							holder.isMore = true;
+							Picasso.with(mContext).load(R.drawable.banner_horizontal_more).into(holder.mPosterIg);
+						} else {
+							holder.imageUrl = poster.poster_url;
+							Picasso.with(mContext).load(poster.poster_url).
+									memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE).
+									error(R.drawable.template_title_item_horizontal_preview).
+									placeholder(R.drawable.template_title_item_horizontal_preview).
+									tag("banner").
+									into(holder.mPosterIg);
+							if (mScrollState != RecyclerView.SCROLL_STATE_IDLE || isParentScrolling) {
+								Picasso.with(mContext).pauseTag("banner");
+							}
+						}
+					} else {
+						Picasso.with(mContext).
+								load(R.drawable.template_title_item_horizontal_preview).
+								into(holder.mPosterIg);
+					}
+					Picasso.with(mContext).load(VipMark.getInstance().getBannerIconMarkImage(poster.top_left_corner)).into(holder.mLtIconTv);
+					holder.mRbIconTv.setText(new DecimalFormat("0.0").format(poster.rating_average));
+					holder.mRbIconTv.setVisibility((poster.rating_average == 0) ? View.GONE : View.VISIBLE);
+					if (!TextUtils.isEmpty(poster.poster_url) && poster.poster_url.equals("更多")) {
+						holder.mTitleTv.setVisibility(View.INVISIBLE);
+					} else {
+						holder.mTitleTv.setVisibility(View.VISIBLE);
+					}
+					holder.mTitleTv.setText(poster.title);
+					String focusStr = poster.title;
+					if (poster.focus != null && !poster.focus.equals("") && !poster.focus.equals("null")) {
+						focusStr = poster.focus;
+					}
+					holder.mTitleTv.setTag(new String[]{poster.title, focusStr});
+					Picasso.with(mContext).load(VipMark.getInstance().getBannerIconMarkImage(poster.top_right_corner)).into(holder.mRtIconTv);
+				}
+			}
+				break;
+		}
     }
 
     @Override
     public int getItemCount() {
-        if(mData == null) return 0;
-        return (mHeaderView==null) ? mData.size() : mData.size() + 1;
+		int count = 0;
+		if (mBigImage != null) {
+			count++;
+		}
+		if (mData != null) {
+			count += mData.size();
+		}
+		return count;
     }
 
     public List<BannerPoster> getmData() {
@@ -134,9 +195,10 @@ public class DoubleLdAdapter extends BaseRecycleAdapter<DoubleLdAdapter.DoubleLd
 
     @Override
     public int getItemViewType(int position) {
-        if (mHeaderView == null) return TYPE_NORMAL;
-        if (position == 0) return TYPE_HEADER;
-        return TYPE_NORMAL;
+    	if (position == 0 && mBigImage != null) {
+    		return TYPE_HEADER;
+		}
+		return TYPE_NORMAL;
     }
 
     public class DoubleLdViewHolder extends BaseViewHolder{
@@ -145,6 +207,8 @@ public class DoubleLdAdapter extends BaseRecycleAdapter<DoubleLdAdapter.DoubleLd
         public TextView mRbIconTv;//右下icon
         public TextView mTitleTv;//标题
         public RecyclerImageView mRtIconTv;
+        public String imageUrl;
+        public boolean isMore;
 
         public DoubleLdViewHolder(View itemView) {
             super(itemView, DoubleLdAdapter.this);
@@ -155,7 +219,45 @@ public class DoubleLdAdapter extends BaseRecycleAdapter<DoubleLdAdapter.DoubleLd
             mRtIconTv= (RecyclerImageView) itemView.findViewById(R.id.guide_rt_icon);
         }
 
-        @Override
+		@Override
+		public void clearImage() {
+			super.clearImage();
+			if (mPosterIg != null) {
+				if (isMore) {
+					//do nothing
+				} else {
+					Picasso.with(mContext).
+							load(R.drawable.template_title_item_horizontal_preview).
+							into(mPosterIg);
+				}
+			}
+		}
+
+		@Override
+		public void restoreImage() {
+        	if (mPosterIg != null) {
+        		if (isMore) {
+					//do nothing
+				} else if (imageUrl != null) {
+					Picasso.with(mContext).load(imageUrl).
+							memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE).
+							error(R.drawable.template_title_item_horizontal_preview).
+							placeholder(R.drawable.template_title_item_horizontal_preview).
+							tag("banner").
+							into(mPosterIg);
+					if (mScrollState != RecyclerView.SCROLL_STATE_IDLE || isParentScrolling) {
+						Picasso.with(mContext).pauseTag("banner");
+					}
+				} else {
+					Picasso.with(mContext).
+							load(R.drawable.template_title_item_horizontal_preview).
+							into(mPosterIg);
+				}
+			}
+			super.restoreImage();
+		}
+
+		@Override
         protected int getScaleLayoutId() {
             return R.id.double_ld_ismartv_linear_layout;
         }

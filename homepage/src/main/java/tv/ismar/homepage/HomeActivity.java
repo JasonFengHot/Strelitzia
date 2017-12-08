@@ -174,6 +174,9 @@ public class HomeActivity extends BaseActivity
     private Button timeBtn;
     private RelativeLayout ad_layout;
     private LinearLayout home_layout;
+
+    private View currentFocus;
+
     private Handler mHandler = new Handler(Looper.getMainLooper()) {
         @Override
         public void handleMessage(Message msg) {
@@ -266,14 +269,17 @@ public class HomeActivity extends BaseActivity
 		if (mLastSelectedIndex != -1) {
 			mChannelTab.setDefaultSelection(mLastSelectedIndex);
 		}
+		if (currentFocus != null) {
+			currentFocus.requestFocus();
+			currentFocus = null;
+		}
     }
 
     @Override
     protected void onPause() {
-        if (mFetchDataControl!= null){
-            mFetchDataControl.stop();
-        }
-        super.onPause();
+		currentFocus = getCurrentFocus();
+		mFetchDataControl.stop();
+		super.onPause();
     }
 
     @Override
@@ -290,7 +296,6 @@ public class HomeActivity extends BaseActivity
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
 /*add by dragontec for bug 4205 start*/
         if (banner_arrow_up != null) {
             banner_arrow_up.setOnClickListener(null);
@@ -333,6 +338,7 @@ public class HomeActivity extends BaseActivity
 //        RefWatcher refWatcher = VodApplication.getRefWatcher(this);
 //        refWatcher.watch(this);
 /*delete by dragontec for bug 4205 end*/
+		super.onDestroy();
     }
 
     private void initServer(){
@@ -543,7 +549,7 @@ public class HomeActivity extends BaseActivity
         mChannelTab.addAllViews(tabs, defaultSelectPosition);
     }
 
-    /*add by dragontec for bug 3983 start 当动画执行过程中不响应按键*/
+	/*add by dragontec for bug 3983 start 当动画执行过程中不响应按键*/
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
         if(isAnimationPlaying ||(getChannelFragment() != null && !getChannelFragment().isUpdateQueueEmpty())){
@@ -569,12 +575,12 @@ public class HomeActivity extends BaseActivity
                 isKeyDown = false;
             }else{
             	//temp solution, because we can not get key action down in some situation
-//				if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_UP || event.getKeyCode() == KeyEvent.KEYCODE_DPAD_DOWN || event.getKeyCode() == KeyEvent.KEYCODE_DPAD_LEFT || event.getKeyCode() == KeyEvent.KEYCODE_DPAD_RIGHT) {
-//					ChannelFragment fragment = getChannelFragment();
-//					if (fragment != null) {
-//						fragment.requestFocus();
-//					}
-//				}
+				if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_UP || event.getKeyCode() == KeyEvent.KEYCODE_DPAD_DOWN || event.getKeyCode() == KeyEvent.KEYCODE_DPAD_LEFT || event.getKeyCode() == KeyEvent.KEYCODE_DPAD_RIGHT) {
+					ChannelFragment fragment = getChannelFragment();
+					if (fragment != null) {
+						fragment.requestFocus();
+					}
+				}
 				Log.d(TAG, "dispatchKeyEvent key up but not down");
                 return true;
             }
@@ -949,7 +955,7 @@ public class HomeActivity extends BaseActivity
 
         ChannelFragment channelFragment = (ChannelFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_layout);
         if (channelFragment != null){
-            channelFragment.onKeyDown(keyCode, event);
+			channelFragment.onKeyDown(keyCode, event);
         }
 
         return super.onKeyDown(keyCode, event);

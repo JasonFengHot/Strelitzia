@@ -35,6 +35,7 @@ dependencies {
     compile project(':ismartv_tvhorizontalscrollview')
     compile project(':calligraphy-2.2.0')
     compile project(':animation')
+    implementation project(':bestvframework')
     compile dependencies.appCompat
     compile dependencies.recyclerView
     compile 'com.squareup.leakcanary:leakcanary-android:1.5.4'
