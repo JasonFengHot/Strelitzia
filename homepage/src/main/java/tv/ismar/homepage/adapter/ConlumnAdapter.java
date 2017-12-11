@@ -1,6 +1,7 @@
 package tv.ismar.homepage.adapter;
 
 import android.content.Context;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -53,6 +54,14 @@ public class ConlumnAdapter extends BaseRecycleAdapter<ConlumnAdapter.ConlumnVie
 	}
 	/*add by dragontec for bug 4334 end*/
 
+	@Override
+	public void clearData() {
+		if (mData != null) {
+			mData = null;
+			notifyDataSetChanged();
+		}
+	}
+
     @Override
     public ConlumnViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(mContext).inflate(R.layout.banner_conlumn_item,parent,false);
@@ -61,16 +70,17 @@ public class ConlumnAdapter extends BaseRecycleAdapter<ConlumnAdapter.ConlumnVie
 
     @Override
     public void onBindViewHolder(ConlumnViewHolder holder, int position) {
+		holder.imageUrl = null;
     	/*modify by dragontec for bug 4334 start*/
     	if (mData != null) {
 			BannerPoster poster = mData.get(position);
 			Log.d("ConlumnAdapter", "position:" + position);
-			holder.mPosition = position;
 			/*add by dragontec for bug 4422 start*/
 			holder.mTitle.setVisibility(poster.display_title ? View.VISIBLE : View.GONE);
 			/*add by dragontec for bug 4422 end*/
 			holder.mTitle.setText(poster.title);
 			if (!TextUtils.isEmpty(poster.image_url)) {
+				holder.imageUrl = poster.image_url;
 /*modify by dragontec for bug 4336 start*/
 				Picasso.with(mContext).load(poster.image_url).
 /*add by dragontec for bug 4205 start*/
@@ -78,8 +88,12 @@ public class ConlumnAdapter extends BaseRecycleAdapter<ConlumnAdapter.ConlumnVie
 /*add by dragontec for bug 4205 end*/
                         error(R.drawable.template_item_horizontal_preview).
                         placeholder(R.drawable.template_item_horizontal_preview).
+						tag("banner").
                         into(holder.mPoster);
 /*modify by dragontec for bug 4336 end*/
+				if (mScrollState != RecyclerView.SCROLL_STATE_IDLE || isParentScrolling) {
+					Picasso.with(mContext).pauseTag("banner");
+				}
 			} else {
 /*modify by dragontec for bug 4336 start*/
 				Picasso.with(mContext).
@@ -104,6 +118,10 @@ public class ConlumnAdapter extends BaseRecycleAdapter<ConlumnAdapter.ConlumnVie
         }
 		/*add by dragontec for bug 4434 end*/
     }
+	@Override
+	public int getItemViewType(int position) {
+		return TYPE_NORMAL;
+	}
 
     @Override
     public int getItemCount() {
@@ -114,6 +132,7 @@ public class ConlumnAdapter extends BaseRecycleAdapter<ConlumnAdapter.ConlumnVie
         public TextView mTitle;
         public RecyclerImageView mPoster;
         public View leftSpace;
+        public String imageUrl;
 
         public ConlumnViewHolder(View itemView) {
             super(itemView, ConlumnAdapter.this);
@@ -122,7 +141,40 @@ public class ConlumnAdapter extends BaseRecycleAdapter<ConlumnAdapter.ConlumnVie
             leftSpace = itemView.findViewById(R.id.left_space);
         }
 
-        @Override
+		@Override
+		public void clearImage() {
+			super.clearImage();
+			if (mPoster != null) {
+				Picasso.with(mContext).
+						load(R.drawable.template_item_horizontal_preview).
+						into(mPoster);
+			}
+		}
+
+		@Override
+		public void restoreImage() {
+        	if (mPoster != null) {
+        		if (imageUrl != null) {
+					Picasso.with(mContext).
+							load(imageUrl).
+							memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE).
+							error(R.drawable.template_item_horizontal_preview).
+							placeholder(R.drawable.template_item_horizontal_preview).
+							tag("banner").
+							into(mPoster);
+					if (mScrollState != RecyclerView.SCROLL_STATE_IDLE || isParentScrolling) {
+						Picasso.with(mContext).pauseTag("banner");
+					}
+				} else {
+					Picasso.with(mContext).
+							load(R.drawable.template_item_horizontal_preview).
+							into(mPoster);
+				}
+			}
+			super.restoreImage();
+		}
+
+		@Override
         protected int getScaleLayoutId() {
             return R.id.conlumn_ismartv_linear_layout;
         }

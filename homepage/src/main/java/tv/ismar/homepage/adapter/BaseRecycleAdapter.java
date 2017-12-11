@@ -6,6 +6,7 @@ import android.view.ViewGroup;
 
 import tv.ismar.homepage.OnItemHoverListener;
 import tv.ismar.homepage.OnItemClickListener;
+import tv.ismar.homepage.OnItemKeyListener;
 import tv.ismar.homepage.OnItemSelectedListener;
 
 /**
@@ -16,17 +17,26 @@ import tv.ismar.homepage.OnItemSelectedListener;
 
 public abstract class BaseRecycleAdapter<VH extends RecyclerView.ViewHolder> extends RecyclerView.Adapter<VH>{
 	/*add by dragontec for bug 4316 start*/
+	public static final int TYPE_HEADER = 0;//头部
+	public static final int TYPE_NORMAL = 1;//一般item
 	public final String TAG = this.getClass().getSimpleName();
 	/*add by dragontec for bug 4316 end*/
 
     public OnItemClickListener mClickListener = null;
     public OnItemSelectedListener mSelectedListener = null;
     public OnItemHoverListener mHoverListener = null;
+    public OnItemKeyListener mKeyListener = null;
 
 	/*add by dragontec for bug 4265 start*/
     public RecyclerView mRecyclerView = null;
 	/*add by dragontec for bug 4265 end*/
+	public boolean isParentScrolling = false;
 
+	public abstract void clearData();
+
+	private RecyclerView.OnScrollListener mOnScrollListener;
+
+	protected int mScrollState = RecyclerView.SCROLL_STATE_IDLE;
 
 
     @Override
@@ -35,7 +45,7 @@ public abstract class BaseRecycleAdapter<VH extends RecyclerView.ViewHolder> ext
         ViewGroup.LayoutParams lp = holder.itemView.getLayoutParams();
         if (lp != null
                 && lp instanceof StaggeredGridLayoutManager.LayoutParams
-                && holder.getLayoutPosition() == 0) {
+                && getItemViewType(holder.getAdapterPosition()) == TYPE_HEADER) {
             StaggeredGridLayoutManager.LayoutParams p = (StaggeredGridLayoutManager.LayoutParams) lp;
             p.setFullSpan(true);
         }
@@ -46,11 +56,28 @@ public abstract class BaseRecycleAdapter<VH extends RecyclerView.ViewHolder> ext
 	public void onAttachedToRecyclerView(RecyclerView recyclerView) {
 		super.onAttachedToRecyclerView(recyclerView);
 		mRecyclerView = recyclerView;
+		mOnScrollListener = new RecyclerView.OnScrollListener() {
+			@Override
+			public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+				super.onScrollStateChanged(recyclerView, newState);
+				mScrollState = newState;
+			}
+
+			@Override
+			public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+				super.onScrolled(recyclerView, dx, dy);
+			}
+		};
+		mRecyclerView.addOnScrollListener(mOnScrollListener);
 	}
 
 	@Override
 	public void onDetachedFromRecyclerView(RecyclerView recyclerView) {
     	if (mRecyclerView == recyclerView) {
+    		if (mOnScrollListener != null) {
+    			mRecyclerView.removeOnScrollListener(mOnScrollListener);
+				mOnScrollListener = null;
+			}
 			mRecyclerView = null;
 		}
 		super.onDetachedFromRecyclerView(recyclerView);
@@ -70,4 +97,8 @@ public abstract class BaseRecycleAdapter<VH extends RecyclerView.ViewHolder> ext
         this.mHoverListener = listener;
     }
     /*modify by dragontec for bug 4362 end*/
+
+    public void setOnItemKeyListener(OnItemKeyListener listener) {
+    	this.mKeyListener = listener;
+	}
 }

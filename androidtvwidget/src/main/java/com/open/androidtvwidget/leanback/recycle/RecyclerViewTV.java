@@ -576,7 +576,7 @@ public class RecyclerViewTV extends RecyclerView implements PrvInterface {
         int keyCode = event.getKeyCode();
         if (action == KeyEvent.ACTION_DOWN) {
 			long current = System.currentTimeMillis();
-			if(current - lastKeyEventTime <100){
+			if(current - lastKeyEventTime < 100){
 				return true;
 			}
 			lastKeyEventTime = current;

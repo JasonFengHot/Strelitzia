@@ -88,10 +88,10 @@ public class TemplateGuide extends Template
 		/*add by dragontec for bug 4242 end*/
         LinearLayoutManagerTV.FocusSearchFailedListener,
         OnItemSelectedListener,
-        View.OnClickListener {
+        View.OnClickListener,
+		Handler.Callback{
     private static final int CAROUSEL_NEXT = 0x0001;
     private static final int START_PLAYBACK = 0x0002;
-    public GuideControl mControl;
     private DaisyVideoView mVideoView; // 导视view
     private RecyclerImageView mLoadingIg; // 加载提示logo
     private TextView mVideoTitleTv; // 导视标题
@@ -124,79 +124,22 @@ public class TemplateGuide extends Template
     private String mName; // 频道名称（中文）
     private String mChannel; // 频道名称（英文）
     private int locationY;
-    private MediaPlayer.OnCompletionListener mOnCompletionListener;
-    private MediaPlayer.OnErrorListener mVideoOnErrorListener;
-    private MediaPlayer.OnPreparedListener mOnPreparedListener;
-    private Handler mHandler =
-            new Handler() {
-                @Override
-                public void handleMessage(Message msg) {
-					try {
-						switch (msg.what) {
-							case START_PLAYBACK:
-								// 如果视频没有下载完，播放图片
-								if (!startPlayback()) {
-									playImage();
-								}
-								break;
-							case CAROUSEL_NEXT:
-								playCarousel();
-								break;
-						}
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-                }
-            };
+    private Handler mHandler;
 
-
-    private static final int NAVIGATION_LEFT = 0x0001;
-    private static final int NAVIGATION_RIGHT = 0x0002;
 	/*add by dragontec for bug 4334 start*/
     private boolean isPlayed = false;
     /*add by dragontec for bug 4334 end*/
 
-    private NavigationtHandler mNavigationtHandler;
-    private Transformation transformation;
-
 /*add by dragontec for bug 4415 start*/
     private Vector<String> mDownloadUrlVector = new Vector<>();
 /*add by dragontec for bug 4415 end*/
-
-    private class NavigationtHandler extends Handler {
-        @Override
-        public void handleMessage(Message msg) {
-/*delete by dragontec for bug 4332 start*/
-//            switch (msg.what){
-//                case NAVIGATION_LEFT:
-//                	if (mRecyclerView != null) {
-//                		if (mRecyclerView.cannotScrollBackward(-10) && mHeadView.getVisibility() == VISIBLE) {
-//                			navigationLeft.setVisibility(INVISIBLE);
-//						} else {
-//                			navigationLeft.setVisibility(VISIBLE);
-//						}
-//					}
-//                    break;
-//                case NAVIGATION_RIGHT:
-//                	if (mRecyclerView != null) {
-//                		if (mRecyclerView.cannotScrollForward(10)) {
-//                			navigationRight.setVisibility(INVISIBLE);
-//						} else {
-//                			navigationRight.setVisibility(VISIBLE);
-//						}
-//					}
-//                    break;
-//            }
-        }
-/*delete by dragontec for bug 4332 end*/
-    }
 
 /*add by dragontec for bug 4065 start*/
     private final static String PLAYER_HANDLER_THREAD_NAME = "PLAYER_HANDLER_THREAD_NAME";
     private static HandlerThread mPlayerHandlerThread = null;
     private static Handler mPlayerHandler = null;
     private static PlayerActionRunnable mPlayerActionRunnable = null;
-    private static Object stLock = new Object();
+    private final static Object stLock = new Object();
 
     static
     {
@@ -210,7 +153,31 @@ public class TemplateGuide extends Template
             }
         }
     }
-    private class PlayerActionRunnable implements Runnable {
+
+	@Override
+	public boolean handleMessage(Message msg) {
+    	boolean ret = false;
+		try {
+			switch (msg.what) {
+				case START_PLAYBACK:
+					// 如果视频没有下载完，播放图片
+					if (!startPlayback()) {
+						playImage();
+					}
+					ret = true;
+					break;
+				case CAROUSEL_NEXT:
+					playCarousel();
+					ret = true;
+					break;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return ret;
+	}
+
+	private class PlayerActionRunnable implements Runnable {
 
         private DaisyVideoView daisyView = null;
         public PlayerActionRunnable(DaisyVideoView videoView)
@@ -266,8 +233,7 @@ public class TemplateGuide extends Template
 	/*modify by dragontec for bug 4334 start*/
     public TemplateGuide(Context context, int position, FetchDataControl fetchDataControl) {
         super(context, position, fetchDataControl);
-        mControl = new GuideControl(mContext);
-        mNavigationtHandler = new NavigationtHandler();
+        mHandler = new Handler(this);
     }
     /*modify by dragontec for bug 4334 end*/
 
@@ -279,11 +245,9 @@ public class TemplateGuide extends Template
     @Override
     public void onStart() {
         Log.d(TAG, "onStart");
-/*add by dragontec for bug 4065 start*/
         synchronized (stLock)
         {
             stopVideoViewNormal();
-/*add by dragontec for bug 4065 end*/
 			if (mFetchControl.mCarouselsMap.get(mBannerPk) != null && !mFetchControl.mCarouselsMap.get(mBannerPk).isEmpty()) {
                 if (videoViewIsVisibility()){
                     playCarousel();
@@ -292,9 +256,7 @@ public class TemplateGuide extends Template
                     checkVideoViewFullVisibility();
                 }
             }
-/*add by dragontec for bug 4065 start*/
         }
-/*add by dragontec for bug 4065 end*/
     }
 
     @Override
@@ -337,13 +299,6 @@ public class TemplateGuide extends Template
             checkVideoViewFullVisibilitySubsc.unsubscribe();
         }
 
-        if (mNavigationtHandler.hasMessages(NAVIGATION_LEFT)){
-            mNavigationtHandler.removeMessages(NAVIGATION_LEFT);
-        }
-        if (mNavigationtHandler.hasMessages(NAVIGATION_RIGHT)){
-            mNavigationtHandler.removeMessages(NAVIGATION_RIGHT);
-        }
-
 /*add by dragontec for bug 4415 start*/
         stopRequestDownload();
 /*add by dragontec for bug 4415 end*/
@@ -365,50 +320,11 @@ public class TemplateGuide extends Template
 
     @Override
     public void onDestroy() {
-/*add by dragontec for bug 4205 start*/
-        if (mVideoView != null) {
-            mVideoView.setOnFocusChangeListener(null);
-            mVideoView.setOnCompletionListener(null);
-            mVideoView.setOnErrorListener(null);
-            mVideoView.setOnPreparedListener(null);
-        }
-        if (mGuideLayoutManager != null) {
-            mGuideLayoutManager.setFocusSearchFailedListener(null);
-        }
-        if (mAdapter != null) {
-            mAdapter.setOnItemClickListener(null);
-            mAdapter.setOnItemSelectedListener(null);
-        }
-        if (mRecyclerView != null) {
-            mRecyclerView.setPagingableListener(null);
-            mRecyclerView.setLayoutManager(null);
-            mRecyclerView.setAdapter(null);
-        }
-        if (mBannerLinearLayout != null) {
-            mBannerLinearLayout.setNavigationLeft(null);
-            mBannerLinearLayout.setNavigationRight(null);
-            mBannerLinearLayout.setRecyclerViewTV(null);
-            mBannerLinearLayout.setHeadView(null);
-        }
-/*add by dragontec for bug 4205 end*/
-/*add by dragontec for bug 4065 start*/
         synchronized (stLock)
         {
-/*add by dragontec for bug 4065 end*/
             mHandler = null;
             playSubscription = null;
             checkVideoViewFullVisibilitySubsc = null;
-            mVideoView = null;
-/*add by dragontec for bug 4205 start*/
-            if (mLoadingIg != null) {
-                mLoadingIg.setImageDrawable(null);
-                mLoadingIg.setOnHoverListener(null);
-                mLoadingIg.setOnFocusChangeListener(null);
-            }
-/*add by dragontec for bug 4205 end*/
-            mLoadingIg = null;
-            mControl = null;
-/*add by dragontec for bug 4065 start*/
             if (mPlayerActionRunnable != null) {
                 if (mPlayerHandler != null) {
                     mPlayerHandler.removeCallbacks(mPlayerActionRunnable);
@@ -416,11 +332,7 @@ public class TemplateGuide extends Template
                 mPlayerActionRunnable = null;
             }
         }
-/*add by dragontec for bug 4065 end*/
 
-        if (mNavigationtHandler != null){
-            mNavigationtHandler = null;
-        }
 		super.onDestroy();
 
     }
@@ -431,6 +343,9 @@ public class TemplateGuide extends Template
         //        mHeadView.findViewById(R.id.guide_head_ismartv_linearlayout).setFocusable(true);
         //        mHeadView.findViewById(R.id.guide_head_ismartv_linearlayout).requestFocus();
         mVideoView = (DaisyVideoView) view.findViewById(R.id.guide_daisy_video_view);
+/*add by dragontec for bug 4065 start*/
+		mVideoView.setManualReset(true);
+/*add by dragontec for bug 4065 end*/
         mLoadingIg = (RecyclerImageView) view.findViewById(R.id.guide_video_loading_image);
         mVideoTitleTv = (TextView) view.findViewById(R.id.guide_video_title);
         mFirstIcon = (TextView) view.findViewById(R.id.first_video_icon);
@@ -440,13 +355,13 @@ public class TemplateGuide extends Template
         mFiveIcon = (TextView) view.findViewById(R.id.five_video_icon);
         mVideoViewLayout = view.findViewById(R.id.guide_head_ismartv_linearlayout);
 
+		mGuideLayoutManager =
+				new LinearLayoutManagerTV(mContext, LinearLayoutManager.HORIZONTAL, false);
 /*modify by dragontec for bug 4332 start*/
         mRecyclerView = (RecyclerViewTV) view.findViewById(R.id.guide_recyclerview);
 		/*modify by dragontec for bug 4221 start*/
         mRecyclerView.setTag("recycleView");
 		/*modify by dragontec for bug 4221 end*/
-        mGuideLayoutManager =
-                new LinearLayoutManagerTV(mContext, LinearLayoutManager.HORIZONTAL, false);
         mRecyclerView.setLayoutManager(mGuideLayoutManager);
         mRecyclerView.setSelectedItemOffset(100, 100);
         navigationLeft = view.findViewById(R.id.navigation_left);
@@ -459,28 +374,65 @@ public class TemplateGuide extends Template
 /*add by dragontec for bug 4275 start*/
         mBannerLinearLayout.setHeadView(mHeadView);
 /*add by dragontec for bug 4275 end*/
-
-/*add by dragontec for bug 4065 start*/
-        mVideoView.setManualReset(true);
-/*add by dragontec for bug 4065 end*/
 /*add by dragontec for bug 4332 start*/
 		mHoverView = view.findViewById(R.id.hover_view);
 /*add by dragontec for bug 4332 end*/
     }
 
-    @Override
+	@Override
+	public void clearView() {
+		mHoverView = null;
+		if (mBannerLinearLayout != null) {
+			mBannerLinearLayout.setHeadView(null);
+			mBannerLinearLayout.setRecyclerViewTV(null);
+			mBannerLinearLayout.setNavigationRight(null);
+			mBannerLinearLayout.setNavigationLeft(null);
+			mBannerLinearLayout = null;
+		}
+		navigationRight = null;
+		navigationLeft = null;
+		if (mRecyclerView != null) {
+			mRecyclerView.setLayoutManager(null);
+			mRecyclerView.setAdapter(null);
+			mRecyclerView = null;
+		}
+		mGuideLayoutManager = null;
+		mVideoViewLayout = null;
+		mFirstIcon = null;
+		mFourIcon = null;
+		mThirdIcon = null;
+		mSecondIcon = null;
+		mFirstIcon = null;
+		mVideoTitleTv = null;
+		mLoadingIg = null;
+		if (mVideoView != null) {
+			mVideoView.setOnFocusChangeListener(null);
+			mVideoView.setOnCompletionListener(null);
+			mVideoView.setOnErrorListener(null);
+			mVideoView.setOnPreparedListener(null);
+			mVideoView = null;
+		}
+		mHeadView = null;
+	}
+
+	@Override
     public void initData(Bundle bundle) {
     	initAdapter();
         mBannerPk = bundle.getString(BANNER_KEY);
         mName = bundle.getString("title");
         mChannel = bundle.getString(CHANNEL_KEY);
-        locationY=bundle.getInt(ChannelFragment.BANNER_LOCATION,0);
+        locationY=bundle.getInt(BANNER_LOCATION,0);
 /*modify by dragontec for bug 4334 start*/
 		if (mFetchControl.getHomeEntity(mBannerPk) != null) {
 			isNeedFillData = true;
 			checkViewAppear();
 		}
     }
+
+	@Override
+	public void unInitData() {
+		unInitAdapter();
+	}
 
 	@Override
 	public void fetchData() {
@@ -504,32 +456,35 @@ public class TemplateGuide extends Template
 
     @Override
     protected void initListener(View view) {
-/*add by dragontec for bug 4332 start*/
 		super.initListener(view);
-/*add by dragontec for bug 4332 end*/
         navigationLeft.setOnClickListener(this);
         navigationRight.setOnClickListener(this);
-//        navigationRight.setOnHoverListener(this);
-//        navigationLeft.setOnHoverListener(this);
-        //        mVideoView.setOnCompletionListener(this);
-        //        mVideoView.setOnErrorListener(this);
-        //        mVideoView.setOnPreparedListener(this);
-/*modify by dragontec for bug 4332 start*/
         mRecyclerView.setPagingableListener(this);
-/*modify by dragontec for bug 4332 end*/
         mVideoView.setOnFocusChangeListener(this);
         mGuideLayoutManager.setFocusSearchFailedListener(this);
         mHeadView.findViewById(R.id.guide_head_ismartv_linearlayout).setOnHoverListener(this);
         mVideoViewLayout.setOnClickListener(this);
-		/*add by dragontec for bug 4242 start*/
 		mVideoViewLayout.setOnKeyListener(this);
-		/*add by dragontec for bug 4242 end*/
         mLoadingIg.setOnFocusChangeListener(this);
         mLoadingIg.setOnHoverListener(this);
-
     }
 
-    /*更改图标背景*/
+	@Override
+	protected void unInitListener() {
+    	mLoadingIg.setOnHoverListener(null);
+    	mLoadingIg.setOnFocusChangeListener(null);
+    	mVideoViewLayout.setOnKeyListener(null);
+    	mVideoViewLayout.setOnClickListener(null);
+		mHeadView.findViewById(R.id.guide_head_ismartv_linearlayout).setOnHoverListener(null);
+		mGuideLayoutManager.setFocusSearchFailedListener(null);
+		mVideoView.setOnFocusChangeListener(null);
+		mRecyclerView.setPagingableListener(null);
+		navigationRight.setOnClickListener(null);
+		navigationLeft.setOnClickListener(null);
+		super.unInitListener();
+	}
+
+	/*更改图标背景*/
     private void changeCarouselIcon(int index) {
         mFirstIcon.setBackground(
                 mContext.getResources().getDrawable(R.drawable.first_video_normal_icon));
@@ -587,6 +542,15 @@ public class TemplateGuide extends Template
 			mAdapter.setMarginLeftEnable(true);
 			mAdapter.setOnItemClickListener(this);
 			mAdapter.setOnItemSelectedListener(this);
+		}
+	}
+
+	private void unInitAdapter() {
+    	if (mAdapter != null) {
+    		mAdapter.setOnItemSelectedListener(null);
+    		mAdapter.setOnItemClickListener(null);
+    		mAdapter.clearData();
+    		mAdapter = null;
 		}
 	}
 
@@ -669,7 +633,7 @@ public class TemplateGuide extends Template
                             mFetchControl.getHomeEntity(mBannerPk).section_slug);
             mFetchControl.launcher_vod_click("section","-1","更多",locationY+","+(position+2),mChannel);
         } else {
-            mControl.go2Detail(mFetchControl.getHomeEntity(mBannerPk).posters.get(position));
+            mFetchControl.go2Detail(mFetchControl.getHomeEntity(mBannerPk).posters.get(position));
             BannerPoster entity=mAdapter.getData().get(position);
             mFetchControl.launcher_vod_click(entity.model_name,entity.pk+"",entity.title,locationY+","+(position+2),mChannel);
         }
@@ -731,28 +695,43 @@ public class TemplateGuide extends Template
     public void onClick(View v) {
         int i = v.getId();
         if (i == R.id.navigation_left) {
-            mGuideLayoutManager.setCanScroll(true);
-            if (mGuideLayoutManager.findFirstCompletelyVisibleItemPosition() > 0) { // 向左滑动
-                int targetPosition = mGuideLayoutManager.findFirstCompletelyVisibleItemPosition() - 5;
-                if (targetPosition <= 0) targetPosition = 0;
-/*add by dragontec for bug 4332 start*/
+			if (!mRecyclerView.isNotScrolling()) {
+				return;
+			}
+			if (mGuideLayoutManager.findFirstCompletelyVisibleItemPosition() > 0) {
+				mGuideLayoutManager.setCanScroll(true);
+				int targetPosition = mGuideLayoutManager.findFirstCompletelyVisibleItemPosition() - 5;
+				if (targetPosition < 0) {
+					targetPosition = 0;
+				}
 				setNeedCheckScrollEnd();
-/*add by dragontec for bug 4332 end*/
-/*modify by dragontec for bug 4332 start*/
-                mGuideLayoutManager.smoothScrollToPosition(mRecyclerView, null, targetPosition);
-/*modify by dragontec for bug 4332 end*/
-                if (mNavigationtHandler.hasMessages(NAVIGATION_LEFT)) {
-                    mNavigationtHandler.removeMessages(NAVIGATION_LEFT);
-                }
-                    mNavigationtHandler.sendEmptyMessageDelayed(NAVIGATION_LEFT,500);
-            }else{
-                mHeadView.setVisibility(View.VISIBLE);
-                videoViewVisibility = true;
-/*add by dragontec for bug 4332 start*/
+				mGuideLayoutManager.smoothScrollToPosition(mRecyclerView, null, targetPosition);
+			} else {
+				mHeadView.setVisibility(View.VISIBLE);
+				videoViewVisibility = true;
 				checkNavigationButtonVisibility();
-/*add by dragontec for bug 4332 end*/
-            }
+			}
+//            mGuideLayoutManager.setCanScroll(true);
+//            if (mGuideLayoutManager.findFirstCompletelyVisibleItemPosition() > 0) { // 向左滑动
+//                int targetPosition = mGuideLayoutManager.findFirstCompletelyVisibleItemPosition() - 5;
+//                if (targetPosition <= 0) targetPosition = 0;
+///*add by dragontec for bug 4332 start*/
+//				setNeedCheckScrollEnd();
+///*add by dragontec for bug 4332 end*/
+///*modify by dragontec for bug 4332 start*/
+//                mGuideLayoutManager.smoothScrollToPosition(mRecyclerView, null, targetPosition);
+///*modify by dragontec for bug 4332 end*/
+//            }else{
+//                mHeadView.setVisibility(View.VISIBLE);
+//                videoViewVisibility = true;
+///*add by dragontec for bug 4332 start*/
+//				checkNavigationButtonVisibility();
+///*add by dragontec for bug 4332 end*/
+//            }
         } else if (i == R.id.navigation_right) {
+			if (!mRecyclerView.isNotScrolling()) {
+				return;
+			}
             mGuideLayoutManager.setCanScroll(true);
             // 向右滑动
 /*modify by dragontec for bug 4332 start*/
@@ -790,10 +769,6 @@ public class TemplateGuide extends Template
 /*modify by dragontec for bug 4332 start*/
 				mGuideLayoutManager.smoothScrollToPosition(mRecyclerView, null, targetPosition);
 /*modify by dragontec for bug 4332 end*/
-                if (mNavigationtHandler.hasMessages(NAVIGATION_RIGHT)){
-                    mNavigationtHandler.removeMessages(NAVIGATION_RIGHT);
-                }
-                mNavigationtHandler.sendEmptyMessageDelayed(NAVIGATION_RIGHT, 500);
 			}
         /*modify by dragontec for bug 4240 end*/
         } else if (i == R.id.guide_head_ismartv_linearlayout) {
@@ -962,23 +937,22 @@ public class TemplateGuide extends Template
                     .placeholder(R.drawable.guide_video_loading)
                     .error(R.drawable.guide_video_loading)
                     .into(
-                            mLoadingIg,
-                            new Callback() {
+							mLoadingIg,
+							new com.squareup.picasso.Callback() {
+								@Override
+								public void onSuccess() {
+									if (mHandler!= null){
+										mHandler.sendEmptyMessageDelayed(CAROUSEL_NEXT, pauseTime * 1000);
+									}
+								}
 
-                                @Override
-                                public void onSuccess() {
-                                    if (mHandler!= null){
-                                        mHandler.sendEmptyMessageDelayed(CAROUSEL_NEXT, pauseTime * 1000);
-                                    }
-                                }
-
-                                @Override
-                                public void onError(Exception e) {
-                                    if (mHandler != null){
-                                        mHandler.sendEmptyMessageDelayed(CAROUSEL_NEXT, pauseTime * 1000);
-                                    }
-                                }
-                            });
+								@Override
+								public void onError(Exception e) {
+									if (mHandler != null){
+										mHandler.sendEmptyMessageDelayed(CAROUSEL_NEXT, pauseTime * 1000);
+									}
+								}
+							});
         }else{
 			/*modify by dragontec for bug 4428 end*/
             /*modify by dragontec for bug 4336 start*/
@@ -988,22 +962,21 @@ public class TemplateGuide extends Template
                     .error(R.drawable.guide_video_loading)
                     .into(
                             mLoadingIg,
-                            new Callback() {
+							new com.squareup.picasso.Callback() {
+								@Override
+								public void onSuccess() {
+									if (mHandler!= null){
+										mHandler.sendEmptyMessageDelayed(CAROUSEL_NEXT, pauseTime * 1000);
+									}
+								}
 
-                                @Override
-                                public void onSuccess() {
-                                    if (mHandler!= null){
-                                        mHandler.sendEmptyMessageDelayed(CAROUSEL_NEXT, pauseTime * 1000);
-                                    }
-                                }
-
-                                @Override
-                                public void onError(Exception e) {
-                                    if (mHandler != null){
-                                        mHandler.sendEmptyMessageDelayed(CAROUSEL_NEXT, pauseTime * 1000);
-                                    }
-                                }
-                            });
+								@Override
+								public void onError(Exception e) {
+									if (mHandler != null){
+										mHandler.sendEmptyMessageDelayed(CAROUSEL_NEXT, pauseTime * 1000);
+									}
+								}
+							});
         /*modify by dragontec for bug 4336 end*/
         }
 
@@ -1048,13 +1021,6 @@ public class TemplateGuide extends Template
                                     mFetchControl.mCarouselsMap.get(mBannerPk).get(mCurrentCarouselIndex).video_url,
                                     videoName,
                                     DownloadClient.StoreType.Internal);
-/*add by dragontec for bug 4415 start*/
-            Log.d(TAG, "startPlayback do request result url = " + videoPath);
-            if (!videoPath.startsWith("file://") && !mDownloadUrlVector.contains(videoPath)) {
-                Log.d(TAG, "startPlayback add to download url = " + videoPath);
-                mDownloadUrlVector.add(videoPath);
-            }
-/*add by dragontec for bug 4415 end*/
         } else {
             videoPath =
                     CacheManager.getInstance()
@@ -1062,14 +1028,14 @@ public class TemplateGuide extends Template
                                     mFetchControl.mCarouselsMap.get(mBannerPk).get(mCurrentCarouselIndex).video_url,
                                     videoName,
                                     DownloadClient.StoreType.External);
-/*add by dragontec for bug 4415 start*/
-            Log.d(TAG, "startPlayback do request result url = " + videoPath);
-            if (!videoPath.startsWith("file://") && !mDownloadUrlVector.contains(videoPath)) {
-                Log.d(TAG, "startPlayback add to download url = " + videoPath);
-                mDownloadUrlVector.add(videoPath);
-            }
-/*add by dragontec for bug 4415 end*/
         }
+        /*add by dragontec for bug 4415 start*/
+		Log.d(TAG, "startPlayback do request result url = " + videoPath);
+		if (!videoPath.startsWith("file://") && !mDownloadUrlVector.contains(videoPath)) {
+			Log.d(TAG, "startPlayback add to download url = " + videoPath);
+			mDownloadUrlVector.add(videoPath);
+		}
+/*add by dragontec for bug 4415 end*/
 
         if (videoPath.startsWith("http://")) {
             return false;
@@ -1094,53 +1060,40 @@ public class TemplateGuide extends Template
     }
 
     private void initCallback() {
-        mOnCompletionListener =
-                new MediaPlayer.OnCompletionListener() {
-                    @Override
-                    public void onCompletion(MediaPlayer mp) {
-                        if (checkVideoViewFullVisibilitySubsc != null
-                                && checkVideoViewFullVisibilitySubsc.isUnsubscribed()) {
-                            checkVideoViewFullVisibilitySubsc.unsubscribe();
-                        }
-                        stopPlayback();
-                        mHandler.sendEmptyMessage(CAROUSEL_NEXT);
-                    }
-                };
-        mVideoOnErrorListener =
-                new MediaPlayer.OnErrorListener() {
-                    @Override
-                    public boolean onError(MediaPlayer mp, int what, int extra) {
+        mVideoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+			@Override
+			public void onCompletion(MediaPlayer mp) {
+				if (checkVideoViewFullVisibilitySubsc != null
+						&& checkVideoViewFullVisibilitySubsc.isUnsubscribed()) {
+					checkVideoViewFullVisibilitySubsc.unsubscribe();
+				}
+				stopPlayback();
+				mHandler.sendEmptyMessage(CAROUSEL_NEXT);
+			}
+		});
+        mVideoView.setOnErrorListener(new MediaPlayer.OnErrorListener() {
+			@Override
+			public boolean onError(MediaPlayer mp, int what, int extra) {
 
-                        Log.e(TAG, "play video error!!!");
-                        playCarousel();
+				Log.e(TAG, "play video error!!!");
+				playCarousel();
 
-                        return true;
-                    }
-                };
-        mOnPreparedListener =
-                new MediaPlayer.OnPreparedListener() {
-                    @Override
-                    public void onPrepared(MediaPlayer mp) {
-/*modify by dragontec for bug 4327 start*/
-//                        if (mp != null && !mp.isPlaying()) {
-//                            mp.start();
-//                        }
-//                        mLoadingIg.setVisibility(View.GONE);
-                        synchronized (stLock) {
-                            if (mp != null && !mp.isPlaying()) {
-                                mp.start();
-                            }
-                            if (mLoadingIg != null) {
-                                mLoadingIg.setVisibility(View.GONE);
-                            }
-                        }
-/*modify by dragontec for bug 4327 start*/
-                    }
-                };
-
-        mVideoView.setOnCompletionListener(mOnCompletionListener);
-        mVideoView.setOnErrorListener(mVideoOnErrorListener);
-        mVideoView.setOnPreparedListener(mOnPreparedListener);
+				return true;
+			}
+		});
+        mVideoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+			@Override
+			public void onPrepared(MediaPlayer mp) {
+				synchronized (stLock) {
+					if (mp != null && !mp.isPlaying()) {
+						mp.start();
+					}
+					if (mLoadingIg != null) {
+						mLoadingIg.setVisibility(View.GONE);
+					}
+				}
+			}
+		});
     }
 
     private void stopPlayback() {

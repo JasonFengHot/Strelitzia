@@ -7,6 +7,8 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.os.Handler;
+import android.os.Looper;
 import android.os.StrictMode;
 import android.preference.PreferenceManager;
 import android.support.multidex.MultiDex;
@@ -45,6 +47,7 @@ import tv.ismar.account.IsmartvActivator;
 import tv.ismar.account.IsmartvDns;
 import tv.ismar.account.IsmartvHttpParamsInterceptor;
 import tv.ismar.account.IsmartvPlatform;
+import tv.ismar.account.data.ResultEntity;
 import tv.ismar.account.statistics.LogEntity;
 import tv.ismar.account.statistics.LogQueue;
 import tv.ismar.app.core.ImageCache;
@@ -64,6 +67,7 @@ import tv.ismar.app.network.HttpCacheInterceptor;
 import tv.ismar.app.service.HttpProxyService;
 import tv.ismar.app.service.TrueTimeService;
 import tv.ismar.app.util.SPUtils;
+import tv.ismar.bestvframework.BestActivator;
 import tv.ismar.library.exception.ExceptionUtils;
 import tv.ismar.library.network.HttpManager;
 import tv.ismar.library.network.UserAgentInterceptor;
@@ -92,7 +96,9 @@ public class VodApplication extends Application {
     private SharedPreferences.Editor mEditor;
     public static final String PREFERENCE_FILE_NAME = "Daisy";
     private boolean isFinish = true;
-
+/*add by dragontec for bug 百视通OTT播控平台接入技术规范 start*/
+    private Handler mBestHandler = null;
+/*add by dragontec for bug 百视通OTT播控平台接入技术规范 end*/
 
     @Override
     public void onCreate() {
@@ -133,15 +139,65 @@ public class VodApplication extends Application {
         File cacheFile = new File(VodApplication.getModuleAppContext().getCacheDir(), "");
         HttpManager.getInstance().initialize(mIsmartvHttpParamsInterceptor, new HttpCacheInterceptor(), cacheFile);
         VipMark.getInstance();
+/*add by dragontec for bug 百视通OTT播控平台接入技术规范 start*/
+        mBestHandler = new Handler(Looper.getMainLooper());
+/*add by dragontec for bug 百视通OTT播控平台接入技术规范 end*/
         new Thread(new Runnable() {
             @Override
             public void run() {
-                IsmartvActivator.getInstance().execute();
+/*modify by dragontec for bug 百视通OTT播控平台接入技术规范 start*/
+//                IsmartvActivator.getInstance().execute();
+                ResultEntity result = IsmartvActivator.getInstance().execute();
+                if (result != null && result.getBestv_config() != null) {
+                    boolean bestEnable = result.getBestv_config().getPlayauth_check_on_off() != 0;
+                    Log.i(TAG, "best config on/off : " + result.getBestv_config().getPlayauth_check_on_off());
+                    BestActivator.setEnable(bestEnable);
+                }
+
+                mBestHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (BestActivator.isEnabled()) {
+                            initBestvActive();
+                            bestvStartLoader();
+                        }
+                    }
+                });
+/*modify by dragontec for bug 百视通OTT播控平台接入技术规范 end*/
             }
         }
         ).start();
         startTrueTimeService();
     }
+
+/*add by dragontec for bug 百视通OTT播控平台接入技术规范 start*/
+    @Override
+    public void onTerminate() {
+        deInitBestvActive();
+        super.onTerminate();
+    }
+
+    private void bestvStartLoader() {
+        BestActivator.getInstance(getApplicationContext()).startLoader();
+    }
+
+    private void initBestvActive() {
+        BestActivator.getInstance(getApplicationContext()).setBestLoaderResultListener(mListener);
+    }
+
+    private void deInitBestvActive() {
+        BestActivator.getInstance(getApplicationContext()).setBestLoaderResultListener(null);
+    }
+
+    private BestActivator.BestLoaderResultListener mListener = new BestActivator.BestLoaderResultListener() {
+        @Override
+        public void startLoaderResult(BestActivator.StartLoaderResultE result) {
+            if (!BestActivator.startLoaderResultISuccess(result)) {
+                BestActivator.actionStartLoaderFailure();
+            }
+        }
+    };
+/*add by dragontec for bug 百视通OTT播控平台接入技术规范 end*/
 
     private void initLogCallback() {
         Parse.iCallLog = new ICallLog() {

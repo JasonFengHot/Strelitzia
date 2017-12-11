@@ -1,6 +1,7 @@
 package tv.ismar.homepage.adapter;
 
 import android.content.Context;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -57,6 +58,14 @@ public class TvPlayAdapter extends BaseRecycleAdapter<TvPlayAdapter.TvPlayerView
     }
     /*modify by dragontec for bug 4334 end*/
 
+	@Override
+	public void clearData() {
+		if (mData != null) {
+			mData = null;
+			notifyDataSetChanged();
+		}
+	}
+
     @Override
     public TvPlayAdapter.TvPlayerViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(mContext).inflate(R.layout.banner_tv_player_item,parent,false);
@@ -65,33 +74,38 @@ public class TvPlayAdapter extends BaseRecycleAdapter<TvPlayAdapter.TvPlayerView
 
     @Override
     public void onBindViewHolder(TvPlayerViewHolder holder, int position) {
-        holder.mPosition = position;
+		holder.imageUrl = null;
+		holder.isMore = false;
 		/*delete by dragontec for bug 4434 start*/
 //        holder.mMarginLeftView.setVisibility(mMarginLeftEnable? View.VISIBLE:View.GONE);
 		/*delete by dragontec for bug 4434 end*/
-        BannerPoster poster = mData.get(position);
-        if (!TextUtils.isEmpty(poster.poster_url)) {
-             if(poster.poster_url.equals("更多")){
-                 Picasso.with(mContext).load(R.drawable.banner_horizontal_more).into(holder.mPosterIg);
-             } else {
+		BannerPoster poster = mData.get(position);
+		if (!TextUtils.isEmpty(poster.poster_url)) {
+			if (poster.poster_url.equals("更多")) {
+				holder.isMore = true;
+				Picasso.with(mContext).load(R.drawable.banner_horizontal_more).into(holder.mPosterIg);
+			} else {
+				holder.imageUrl = poster.poster_url;
 /*modify by dragontec for bug 4336 start*/
-                 Picasso.with(mContext).load(poster.poster_url).
-/*add by dragontec for bug 4205 start*/
-                         memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE).
-/*add by dragontec for bug 4205 end*/
-                         error(R.drawable.template_title_item_horizontal_preview).
-                         placeholder(R.drawable.template_title_item_horizontal_preview).
-                         into(holder.mPosterIg);
+				Picasso.with(mContext).load(poster.poster_url).
+						memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE).
+						error(R.drawable.template_title_item_horizontal_preview).
+						placeholder(R.drawable.template_title_item_horizontal_preview).
+						tag("banner").
+						into(holder.mPosterIg);
 /*modify by dragontec for bug 4336 end*/
-             }
-        } else {
+				if (mScrollState != RecyclerView.SCROLL_STATE_IDLE || isParentScrolling) {
+					Picasso.with(mContext).pauseTag("banner");
+				}
+			}
+		} else {
 /*modify by dragontec for bug 4336 start*/
-            Picasso.with(mContext).
-                    load(R.drawable.template_title_item_horizontal_preview).
-                    into(holder.mPosterIg);
+			Picasso.with(mContext).
+					load(R.drawable.template_title_item_horizontal_preview).
+					into(holder.mPosterIg);
 /*modify by dragontec for bug 4336 end*/
-        }
-        Picasso.with(mContext).load(VipMark.getInstance().getBannerIconMarkImage(poster.top_right_corner)).into(holder.mRtIconTv);
+		}
+		Picasso.with(mContext).load(VipMark.getInstance().getBannerIconMarkImage(poster.top_right_corner)).into(holder.mRtIconTv);
         Picasso.with(mContext).load(VipMark.getInstance().getBannerIconMarkImage(poster.top_left_corner)).into(holder.mLtIconTv);
         holder.mRbIconTv.setText(new DecimalFormat("0.0").format(poster.rating_average));
         holder.mRbIconTv.setVisibility((poster.rating_average==0) ? View.GONE:View.VISIBLE);
@@ -117,6 +131,11 @@ public class TvPlayAdapter extends BaseRecycleAdapter<TvPlayAdapter.TvPlayerView
 		/*modify by dragontec for bug 4434 end*/
     }
 
+	@Override
+	public int getItemViewType(int position) {
+		return TYPE_NORMAL;
+	}
+
     @Override
     public int getItemCount() {
         return (mData!=null)? mData.size():0;
@@ -133,6 +152,8 @@ public class TvPlayAdapter extends BaseRecycleAdapter<TvPlayAdapter.TvPlayerView
         public TextView mTitleTv;//标题
         public View mMarginLeftView;//左边距
         public RecyclerImageView mRtIconTv;
+        public String imageUrl;
+        public boolean isMore;
 
         public TvPlayerViewHolder(View itemView) {
             super(itemView, TvPlayAdapter.this);
@@ -144,7 +165,46 @@ public class TvPlayAdapter extends BaseRecycleAdapter<TvPlayAdapter.TvPlayerView
             mRtIconTv= (RecyclerImageView) itemView.findViewById(R.id.guide_rt_icon);
         }
 
-        @Override
+		@Override
+		public void clearImage() {
+			super.clearImage();
+			if (isMore) {
+				//do nothing
+			} else {
+				if (mPosterIg != null) {
+					Picasso.with(mContext).
+							load(R.drawable.template_title_item_horizontal_preview).
+							into(mPosterIg);
+				}
+			}
+		}
+
+		@Override
+		public void restoreImage() {
+        	if (mPosterIg != null) {
+        		if (isMore) {
+					//do nothing
+				} else if (imageUrl != null) {
+					Picasso.with(mContext).
+							load(imageUrl).
+							memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE).
+							error(R.drawable.template_title_item_horizontal_preview).
+							placeholder(R.drawable.template_title_item_horizontal_preview).
+							tag("banner").
+							into(mPosterIg);
+					if (mScrollState != RecyclerView.SCROLL_STATE_IDLE || isParentScrolling) {
+						Picasso.with(mContext).pauseTag("banner");
+					}
+				} else {
+					Picasso.with(mContext).
+							load(R.drawable.template_title_item_horizontal_preview).
+							into(mPosterIg);
+				}
+			}
+			super.restoreImage();
+		}
+
+		@Override
         protected int getScaleLayoutId() {
             return R.id.tv_player_ismartv_linear_layout;
         }

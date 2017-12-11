@@ -146,12 +146,10 @@ public class FilterListRecyclerView extends MyRecyclerView {
                 }
             }
         }
-        Log.i("zzz","zzz scroll by:" + dy);
         super.smoothScrollBy(dx, dy);
     }
 
     public void directSmoothScrollBy(int dx, int dy) {
-        Log.i("zzz","zzz scroll by:" + dy);
         this.blockFocusScrollWhenManualScroll = true;
         ((FocusGridLayoutManager)getLayoutManager()).setCanScroll(true);
         super.smoothScrollBy(dx, dy);

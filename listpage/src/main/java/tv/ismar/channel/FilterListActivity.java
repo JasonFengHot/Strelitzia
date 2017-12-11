@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.TypedValue;
@@ -67,7 +66,6 @@ import tv.ismar.view.FilterListRecyclerView;
 import tv.ismar.view.FullScrollView;
 import tv.ismar.view.LocationRelativeLayout;
 
-import static android.support.v7.widget.RecyclerView.SCROLL_STATE_IDLE;
 import static android.widget.RelativeLayout.ALIGN_PARENT_BOTTOM;
 import static android.widget.RelativeLayout.ALIGN_PARENT_RIGHT;
 
@@ -154,6 +152,7 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
     private CheckedChangedRunnable mCheckedChangedRunnable;
     private int itemHeight = -1;
     private int onePageScrollY = -1;
+    private boolean needRequestListFocusWhenGetData = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -398,7 +397,11 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
 
             @Override
             public void onShowDown(boolean showDown) {
-                filter_root_view.setShow_left_down(showDown);
+                if(section_group.getChildCount()<10) {
+                    filter_root_view.setShow_left_down(false);
+                }else{
+                    filter_root_view.setShow_left_down(showDown);
+                }
             }
         });
     }
@@ -406,7 +409,7 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
     private void updateArrowState() {
         if (filter_tab.isChecked()) {
             if(filterPosterAdapter != null && mFilterFocusGridLayoutManager != null && filterPosterAdapter.getItemCount() > 0) {
-                int first = mFilterFocusGridLayoutManager.findFirstVisibleItemPosition();
+                int first = mFilterFocusGridLayoutManager.findFirstCompletelyVisibleItemPosition();
                 int last = mFilterFocusGridLayoutManager.findLastCompletelyVisibleItemPosition();
                 if (first != -1 && first > 0) {
                     filter_root_view.setShow_right_up(true);
@@ -424,7 +427,7 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
             }
         }else{
             if(listPosterAdapter != null && mFocusGridLayoutManager != null && listPosterAdapter.getItemCount() > 0) {
-                int first = mFocusGridLayoutManager.findFirstVisibleItemPosition();
+                int first = mFocusGridLayoutManager.findFirstCompletelyVisibleItemPosition();
                 int last = mFocusGridLayoutManager.findLastCompletelyVisibleItemPosition();
 
                 if (first != -1 && first > 0) {
@@ -554,7 +557,10 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
 
                     @Override
                     public void onCompleted() {
+                    }
 
+                    @Override
+                    public void onError(Throwable e) {
                     }
 
                     @Override
@@ -589,7 +595,6 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
                 .subscribe(new BaseObserver<ListSectionEntity>() {
                     @Override
                     public void onCompleted() {
-
                     }
 
                     @Override
@@ -669,6 +674,7 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
             }
         }
         if(event.getAction() == KeyEvent.ACTION_DOWN){
+            needRequestListFocusWhenGetData = false;
             if(poster_recyclerview != null && list_poster_recyclerview != null) {
                 poster_recyclerview.setBlockFocusScrollWhenManualScroll(false);
                 list_poster_recyclerview.setBlockFocusScrollWhenManualScroll(false);
@@ -1589,7 +1595,7 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
         for (int i = 0; i < sections.size(); i++) {
             SpecialPos item = new SpecialPos();
             item.startPosition = totalItemCount;
-            item.endPosition = item.startPosition + sections.get(i).count;
+            item.endPosition = item.startPosition + sections.get(i).count - 1;
             item.sections = sections.get(i).title;
             specialPos.add(item);
             totalItemCount += sections.get(i).count;
@@ -1642,6 +1648,7 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
             for (int i = 0; i <sections.size() ; i++) {
                 if(section.equals(sections.get(i).slug)&&section_group.getChildAt(i+1)!=null){
                     section_group.getChildAt(i+1).callOnClick();
+                    section_group.getChildAt(i+1).requestFocus();
                     ((RadioButton) section_group.getChildAt(i+1)).setChecked(true);
                     firstInSection = i;
                     break;
@@ -1650,6 +1657,7 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
         }
         if (section_group.getChildAt(1) != null&&firstInSection==-1) {
             section_group.getChildAt(1).callOnClick();
+            section_group.getChildAt(1).requestFocus();
             ((RadioButton) section_group.getChildAt(1)).setChecked(true);
         }
     }
@@ -1754,10 +1762,12 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
         if(listPosterAdapter==null) {
             listPosterAdapter = new ListPosterAdapter(FilterListActivity.this, listSectionEntity.getObjects(), isVertical, specialPos, sectionList);
             list_poster_recyclerview.swapAdapter(listPosterAdapter,false);
-            if(firstInSection!=-1){
-                listPosterAdapter.setFocusedPosition(specialPos.get(firstInSection).startPosition);
-            }else {
-                listPosterAdapter.setFocusedPosition(0);
+            if(needRequestListFocusWhenGetData) {
+                if (firstInSection != -1) {
+                    listPosterAdapter.setFocusedPosition(specialPos.get(firstInSection).startPosition);
+                } else {
+                    listPosterAdapter.setFocusedPosition(0);
+                }
             }
 
             //设置海报点击事件监听

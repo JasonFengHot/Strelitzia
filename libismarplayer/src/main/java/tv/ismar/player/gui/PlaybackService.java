@@ -54,6 +54,7 @@ import tv.ismar.app.network.entity.AdElementEntity;
 import tv.ismar.app.network.entity.ItemEntity;
 import tv.ismar.app.network.entity.PlayCheckEntity;
 import tv.ismar.app.util.Utils;
+import tv.ismar.bestvframework.BestActivator;
 import tv.ismar.library.exception.ExceptionUtils;
 import tv.ismar.library.network.HttpManager;
 import tv.ismar.library.util.AppUtils;
@@ -117,6 +118,56 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
     private boolean mIsPlayerOnStarted;
     private boolean mIsPlayerStopping = false;// 播放器stop，release需要时间较长
     public static long prepareStartTime;// 预加载开始时间
+
+/*add by dragontec for bug 百视通OTT播控平台接入技术规范 start*/
+    private static int mBestAuthRequestCode = 0;
+    private int mCurrentBestAuthRequestCode = 0;
+
+    private class BestvAuthRunnable implements Runnable {
+        private int requestCode;
+        private ItemEntity itemEntity;
+
+        public BestvAuthRunnable(int requestCode, ItemEntity itemEntity) {
+            this.requestCode = requestCode;
+            this.itemEntity = itemEntity;
+        }
+
+        @Override
+        public void run() {
+            Log.d(TAG, "BestvAuthRunnable current request code = " + mCurrentBestAuthRequestCode
+                    + ", saved request code = " + requestCode);
+            int episode = 1;
+            if (itemEntity.getEpisode() == 0) {
+                //非剧集节目
+                episode = 1;
+            } else if (itemEntity.getEpisode() > 1) {
+                //剧集节目
+                ItemEntity[] itemEntities = itemEntity.getSubitems();
+                if (itemEntities != null) {
+                    for (int i = 0; i < itemEntities.length; i++) {
+                        if (itemEntity.getClip().getPk() == itemEntities[i].getClip().getPk()) {
+                            episode = i + 1;
+                            break;
+                        }
+                    }
+                }
+            }
+            BestActivator.AuthProxyResultE result = BestActivator.getInstance(getApplicationContext()).
+                    authProxy(itemEntity.getMedia_code(), String.valueOf(episode));
+            if (mCurrentBestAuthRequestCode == requestCode) {
+                if (BestActivator.authProxyResultISuccess(result)) {
+                    if (mIsPreload) {
+                        hlsPlayer.preparePreloadPlayer(mPreloadMediaSource);
+                    } else {
+                        hlsPlayer.prepare(mPreloadMediaSource, false);
+                    }
+                } else {
+                    BestActivator.actionAuthProxyFailure();
+                }
+            }
+        }
+    }
+/*add by dragontec for bug 百视通OTT播控平台接入技术规范 end*/
 
     public PlaybackService() {
     }
@@ -226,6 +277,20 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
         }
 
     }
+
+/*add by dragontec for bug 百视通OTT播控平台接入技术规范 start*/
+    private int generateBestAuthRequestCode() {
+        int requestCode = mBestAuthRequestCode;
+        ++mBestAuthRequestCode;
+        return requestCode;
+    }
+
+    private void startBestAuthRunnable(ItemEntity itemEntity) {
+        int requestCode = generateBestAuthRequestCode();
+        mCurrentBestAuthRequestCode = requestCode;
+        new Thread(new BestvAuthRunnable(requestCode, itemEntity)).start();
+    }
+/*add by dragontec for bug 百视通OTT播控平台接入技术规范 end*/
 
     public void initUserInfo() {
         snToken = IsmartvActivator.getInstance().getSnToken();
@@ -725,11 +790,19 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
         }
         mPreloadMediaSource.setInitQuality(mCurrentQuality);
         mPreloadMediaSource.setStartPosition(mStartPosition);
-        if (mIsPreload) {
-            hlsPlayer.preparePreloadPlayer(mPreloadMediaSource);
+/*add by dragontec for bug 百视通OTT播控平台接入技术规范 start*/
+        if (Utils.isEmptyText(iqiyi) && BestActivator.isEnabled()) {
+            startBestAuthRunnable(mItemEntity);
         } else {
-            hlsPlayer.prepare(mPreloadMediaSource, false);
+/*add by dragontec for bug 百视通OTT播控平台接入技术规范 end*/
+            if (mIsPreload) {
+                hlsPlayer.preparePreloadPlayer(mPreloadMediaSource);
+            } else {
+                hlsPlayer.prepare(mPreloadMediaSource, false);
+            }
+/*add by dragontec for bug 百视通OTT播控平台接入技术规范 start*/
         }
+/*add by dragontec for bug 百视通OTT播控平台接入技术规范 end*/
     }
 
     private void fetchPlayerItem(String itemPk) {

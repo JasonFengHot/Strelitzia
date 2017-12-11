@@ -2,10 +2,12 @@
 package tv.ismar.homepage.adapter;
 
 import android.content.Context;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Space;
 import android.widget.TextView;
@@ -51,6 +53,14 @@ public class MovieAdapter extends BaseRecycleAdapter<MovieAdapter.MovieViewHolde
 	}
 
 	@Override
+	public void clearData() {
+		if (mData != null) {
+			mData = null;
+			notifyDataSetChanged();
+		}
+	}
+
+	@Override
 	public MovieViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 		View view = LayoutInflater.from(mContext).inflate(R.layout.item_banner_movie, parent, false);
 		return new MovieViewHolder(view);
@@ -58,7 +68,8 @@ public class MovieAdapter extends BaseRecycleAdapter<MovieAdapter.MovieViewHolde
 
 	@Override
 	public void onBindViewHolder(MovieViewHolder holder, int position) {
-		holder.mPosition = position;
+		holder.imageUrl = null;
+		holder.isMore = false;
 		if (mData != null) {
 			BannerPoster entity = mData.get(position);
 
@@ -69,27 +80,35 @@ public class MovieAdapter extends BaseRecycleAdapter<MovieAdapter.MovieViewHolde
 
 
 			holder.mTitle.setText(entity.title + " ");
-			holder.mItemView.findViewById(R.id.item_layout).setTag(entity);
-			holder.mItemView.findViewById(R.id.item_layout).setTag(R.id.banner_item_position, position);
+			holder.itemLayout.setTag(entity);
+			holder.itemLayout.setTag(R.id.banner_item_position, position);
 
 			if (!TextUtils.isEmpty(entity.vertical_url) && entity.vertical_url.equals("更多")) {
-				holder.mItemView.findViewById(R.id.item_layout).setBackgroundResource(R.drawable.banner_vertical_more);
+				holder.isMore = true;
+				holder.itemLayout.setBackgroundResource(R.drawable.banner_vertical_more);
 				holder.mTitle.setVisibility(View.INVISIBLE);
 				holder.itemWrapper.setVisibility(View.INVISIBLE);
 
 			} else {
-				holder.mItemView.findViewById(R.id.item_layout).setBackgroundResource(android.R.color.transparent);
+				holder.itemLayout.setBackgroundResource(android.R.color.transparent);
 				holder.mTitle.setVisibility(View.VISIBLE);
 				holder.itemWrapper.setVisibility(View.VISIBLE);
-/*modify by dragontec for bug 4336 start*/
-				Picasso.with(mContext).load(targetImageUrl).
-/*add by dragontec for bug 4205 start*/
-						memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE).
-/*add by dragontec for bug 4205 end*/
-						placeholder(R.drawable.template_title_item_vertical_preview).
-						error(R.drawable.template_title_item_vertical_preview).
-						into(holder.mImageView);
-/*modify by dragontec for bug 4336 end*/
+				if (!TextUtils.isEmpty(entity.vertical_url)) {
+					holder.imageUrl = entity.vertical_url;
+					Picasso.with(mContext).load(entity.vertical_url).
+							memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE).
+							placeholder(R.drawable.template_title_item_vertical_preview).
+							error(R.drawable.template_title_item_vertical_preview).
+							tag("banner").
+							into(holder.mImageView);
+					if (mScrollState != RecyclerView.SCROLL_STATE_IDLE || isParentScrolling) {
+						Picasso.with(mContext).pauseTag("banner");
+					}
+				} else {
+					Picasso.with(mContext).
+							load(R.drawable.template_title_item_vertical_preview).
+							into(holder.mImageView);
+				}
 			}
 
 			Picasso.with(mContext).load(VipMark.getInstance().getBannerIconMarkImage(entity.top_left_corner)).into(holder.markLT);
@@ -116,6 +135,11 @@ public class MovieAdapter extends BaseRecycleAdapter<MovieAdapter.MovieViewHolde
 	}
 
 	@Override
+	public int getItemViewType(int position) {
+		return TYPE_NORMAL;
+	}
+
+	@Override
 	public int getItemCount() {
 		return (mData!=null) ? mData.size() : 0;
 	}
@@ -129,17 +153,62 @@ public class MovieAdapter extends BaseRecycleAdapter<MovieAdapter.MovieViewHolde
 		private RecyclerImageView markLT;
 		private TextView markRB;
 		private RelativeLayout itemWrapper;
+		private LinearLayout itemLayout;
+		private String imageUrl;
+		private boolean isMore;
 
 		public MovieViewHolder(View itemView) {
 			super(itemView, MovieAdapter.this);
 			mItemView = itemView;
 			itemWrapper = (RelativeLayout) mItemView.findViewById(R.id.item_wrapper);
 			mImageView = (RecyclerImageView) itemView.findViewById(R.id.image_view);
+			itemLayout = (LinearLayout) itemView.findViewById(R.id.item_layout);
 			mTitle = (TextView) itemView.findViewById(R.id.title);
 			mLeftSpace = (Space)itemView.findViewById(R.id.left_space);
 			markLT = (RecyclerImageView) itemView.findViewById(R.id.banner_mark_lt);
 			markRB = (TextView)itemView.findViewById(R.id.banner_mark_br);
 			markRT = (RecyclerImageView) itemView.findViewById(R.id.banner_mark_rt);
+		}
+
+		@Override
+		public void clearImage() {
+			super.clearImage();
+			if (isMore) {
+				//do nothing
+			} else {
+				Picasso.with(mContext).
+						load(R.drawable.template_title_item_vertical_preview).
+						into(mImageView);
+			}
+		}
+
+		@Override
+		public void restoreImage() {
+			if (isMore) {
+				//do nothing
+			} else {
+				if (itemLayout != null) {
+					itemLayout.setBackgroundResource(R.drawable.transparent);
+				}
+				if (mImageView != null) {
+					if (imageUrl != null) {
+						Picasso.with(mContext).load(imageUrl).
+								memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE).
+								placeholder(R.drawable.template_title_item_vertical_preview).
+								error(R.drawable.template_title_item_vertical_preview).
+								tag("banner").
+								into(mImageView);
+						if (mScrollState != RecyclerView.SCROLL_STATE_IDLE || isParentScrolling) {
+							Picasso.with(mContext).pauseTag("banner");
+						}
+					} else {
+						Picasso.with(mContext).
+								load(R.drawable.template_title_item_vertical_preview).
+								into(mImageView);
+					}
+				}
+			}
+			super.restoreImage();
 		}
 
 		@Override

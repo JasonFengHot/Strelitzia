@@ -1,7 +1,9 @@
 package tv.ismar.homepage.widget;
 
+import android.app.Fragment;
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -10,6 +12,7 @@ import android.widget.TextView;
 
 /*add by dragontec for fix 焦点错误 start*/
 import tv.ismar.homepage.R;
+import tv.ismar.homepage.fragment.ChannelFragment;
 /*add by dragontec for fix 焦点错误 end*/
 
 /**
@@ -17,6 +20,7 @@ import tv.ismar.homepage.R;
  */
 
 public class HomeRootRelativeLayout extends RelativeLayout {
+	private final String TAG = this.getClass().getSimpleName();
 
     private View upArrow;
     private View downArrow;
@@ -52,9 +56,11 @@ public class HomeRootRelativeLayout extends RelativeLayout {
     public void updateUpDownArrow() {
         if(isKeyMode){
             if(upArrow!=null) {
+				upArrow.clearFocus();
                 upArrow.setVisibility(View.GONE);
             }
             if(downArrow!=null) {
+				downArrow.clearFocus();
                 downArrow.setVisibility(View.GONE);
             }
         }else{
@@ -62,6 +68,7 @@ public class HomeRootRelativeLayout extends RelativeLayout {
                 if (showUp) {
                     upArrow.setVisibility(View.VISIBLE);
                 } else {
+					upArrow.clearFocus();
                     upArrow.setVisibility(View.GONE);
                 }
             }
@@ -69,6 +76,7 @@ public class HomeRootRelativeLayout extends RelativeLayout {
                 if (showDown) {
                     downArrow.setVisibility(View.VISIBLE);
                 } else {
+                	downArrow.clearFocus();
                     downArrow.setVisibility(View.GONE);
                 }
             }
@@ -81,12 +89,29 @@ public class HomeRootRelativeLayout extends RelativeLayout {
         isKeyMode = true;
 		/*modify by dragontec for bug 4339 end*/
         if(upArrow!=null) {
+			upArrow.clearFocus();
             upArrow.setVisibility(View.GONE);
         }
         if(downArrow!=null) {
+			downArrow.clearFocus();
             downArrow.setVisibility(View.GONE);
         }
-        return super.dispatchKeyEvent(event);
+        if (event.getAction() == KeyEvent.ACTION_DOWN && (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_UP
+				|| event.getKeyCode() == KeyEvent.KEYCODE_DPAD_DOWN
+				|| event.getKeyCode() == KeyEvent.KEYCODE_DPAD_LEFT
+				|| event.getKeyCode() == KeyEvent.KEYCODE_DPAD_RIGHT)) {
+        		View head = findViewById(R.id.head_layout);
+        		if (head == null || !head.hasFocus()) {
+					RecycleLinearLayout recycleLinearLayout = (RecycleLinearLayout) findViewById(R.id.scroll_linear_container);
+					if (recycleLinearLayout != null && !recycleLinearLayout.isScrolling() && !recycleLinearLayout.hasFocus()) {
+						recycleLinearLayout.focusOnFirstBanner();
+						return true;
+					}
+				}
+		}
+        boolean dispatched = super.dispatchKeyEvent(event);
+        Log.d(TAG, "dispatchKeyEvent dispatched = " + dispatched);
+        return dispatched;
     }
 
     public void setUpArrow(View upArrow) {

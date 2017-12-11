@@ -1,6 +1,7 @@
 package tv.ismar.homepage.adapter;
 
 import android.content.Context;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -57,7 +58,15 @@ public class CenterAdapter extends BaseRecycleAdapter<CenterAdapter.CenterViewHo
 	}
 	/*add by dragontec for bug 4334 end*/
 
-    @Override
+	@Override
+	public void clearData() {
+		if (mData != null) {
+			mData = null;
+			notifyDataSetChanged();
+		}
+	}
+
+	@Override
     public CenterViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(mContext).inflate(R.layout.banner_center_item,parent,false);
         return new CenterViewHolder(view);
@@ -65,10 +74,8 @@ public class CenterAdapter extends BaseRecycleAdapter<CenterAdapter.CenterViewHo
 
     @Override
     public void onBindViewHolder(CenterViewHolder holder, int position) {
+		holder.imageUrl = null;
     	/*modify by dragontec for bug 4334 start*/
-    	/*modify by dragontec for bug 4430 start*/
-    	holder.mPosition = position % mData.size();
-    	/*modify by dragontec for bug 4430 end*/
     	if (mData != null) {
 			BannerCarousels carousels = mData.get(position % mData.size());
 			holder.mTitle.setText(carousels.title);
@@ -79,6 +86,7 @@ public class CenterAdapter extends BaseRecycleAdapter<CenterAdapter.CenterViewHo
 			holder.mLayout.setFocusableInTouchMode(false);
 			/*add by dragontec for bug 4307,4277 end*/
 			if (!TextUtils.isEmpty(carousels.video_image)) {
+				holder.imageUrl = carousels.video_image;
 /*modify by dragontec for bug 4336 start*/
 				Picasso.with(mContext).load(carousels.video_image).
 /*add by dragontec for bug 4205 start*/
@@ -86,8 +94,12 @@ public class CenterAdapter extends BaseRecycleAdapter<CenterAdapter.CenterViewHo
 /*add by dragontec for bug 4205 end*/
                         placeholder(R.drawable.template_center_item_preview).
                         error(R.drawable.template_center_item_preview).
+						tag("banner").
                         into(holder.mPosterIg);
 /*modify by dragontec for bug 4336 end*/
+				if (mScrollState != RecyclerView.SCROLL_STATE_IDLE || isParentScrolling) {
+					Picasso.with(mContext).pauseTag("banner");
+				}
 			} else {
 /*modify by dragontec for bug 4336 start*/
 				Picasso.with(mContext).
@@ -106,7 +118,12 @@ public class CenterAdapter extends BaseRecycleAdapter<CenterAdapter.CenterViewHo
 		/*modify by dragontec for bug 4334 end*/
     }
 
-    @Override
+	@Override
+	public int getItemViewType(int position) {
+		return TYPE_NORMAL;
+	}
+
+	@Override
     public int getItemCount() {
         if (mData.size() == 0){
             return 0;
@@ -127,6 +144,7 @@ public class CenterAdapter extends BaseRecycleAdapter<CenterAdapter.CenterViewHo
 		/*add by dragontec for bug 4355 start*/
         public LinearLayout mTextLayout;
 		/*add by dragontec for bug 4355 end*/
+		public String imageUrl = null;
 
         public CenterViewHolder(View itemView) {
             super(itemView, CenterAdapter.this);
@@ -143,7 +161,40 @@ public class CenterAdapter extends BaseRecycleAdapter<CenterAdapter.CenterViewHo
 			/*add by dragontec for bug 4355 end*/
         }
 
-        @Override
+		@Override
+		public void clearImage() {
+			super.clearImage();
+			if (mPosterIg != null) {
+				Picasso.with(mContext).
+						load(R.drawable.template_center_item_preview).
+						into(mPosterIg);
+			}
+		}
+
+		@Override
+		public void restoreImage() {
+        	if (mPosterIg != null ) {
+				if (imageUrl != null) {
+					Picasso.with(mContext).
+							load(imageUrl).
+							memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE).
+							placeholder(R.drawable.template_center_item_preview).
+							error(R.drawable.template_center_item_preview).
+							tag("banner").
+							into(mPosterIg);
+					if (mScrollState != RecyclerView.SCROLL_STATE_IDLE || isParentScrolling) {
+						Picasso.with(mContext).pauseTag("banner");
+					}
+				} else {
+					Picasso.with(mContext).
+							load(R.drawable.template_center_item_preview).
+							into(mPosterIg);
+				}
+			}
+			super.restoreImage();
+		}
+
+		@Override
         protected float getScaleXY() {
             return 1.2F;
         }

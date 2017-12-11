@@ -92,35 +92,15 @@ public class TemplateCenter extends Template
 
     @Override
     public void onDestroy() {
-/*add by dragontec for bug 4205 start*/
-        if (mAdapter != null) {
-            mAdapter.setOnItemSelectedListener(null);
-            mAdapter.setOnItemHoverListener(null);
-            mAdapter.setOnItemClickListener(null);
-        }
-        if (mRecyclerView != null) {
-            mRecyclerView.setLayoutManager(null);
-            mRecyclerView.setAdapter(null);
-        }
-        if (mBannerLinearLayout != null) {
-            mBannerLinearLayout.setNavigationLeft(null);
-            mBannerLinearLayout.setNavigationRight(null);
-            mBannerLinearLayout.setRecyclerViewTV(null);
-            mBannerLinearLayout.setHeadView(null);
-        }
-/*add by dragontec for bug 4205 end*/
 		super.onDestroy();
     }
 
     @Override
     public void getView(View view) {
-/*modify by dragontec for bug 4332 start*/
+		mCenterLayoutManager =
+				new LinearLayoutManagerTV(mContext, LinearLayoutManager.HORIZONTAL, false);
         mRecyclerView = (RecyclerViewTV) view.findViewById(R.id.center_recyclerview);
-		/*modify by dragontec for bug 4221 start*/
         mRecyclerView.setTag("recycleView");
-		/*modify by dragontec for bug 4221 end*/
-        mCenterLayoutManager =
-                new LinearLayoutManagerTV(mContext, LinearLayoutManager.HORIZONTAL, false);
         mRecyclerView.setLayoutManager(mCenterLayoutManager);
         mRecyclerView.setSelectedItemAtCentered(true);
         if ("lcd_s3a01".equals(VodUserAgent.getModelName())) {
@@ -133,22 +113,44 @@ public class TemplateCenter extends Template
         mBannerLinearLayout.setNavigationRight(navigationRight);
         mBannerLinearLayout.setRecyclerViewTV(mRecyclerView);
         mHoverView = view.findViewById(R.id.hover_view);
-/*modify by dragontec for bug 4332 end*/
     }
 
-    @Override
+	@Override
+	public void clearView() {
+		mHoverView = null;
+		if (mBannerLinearLayout != null) {
+			mBannerLinearLayout.setNavigationLeft(null);
+			mBannerLinearLayout.setNavigationRight(null);
+			mBannerLinearLayout.setRecyclerViewTV(null);
+			mBannerLinearLayout = null;
+		}
+		navigationRight = null;
+		navigationLeft = null;
+		if (mRecyclerView != null) {
+			mRecyclerView.setLayoutManager(null);
+			mRecyclerView.setAdapter(null);
+			mRecyclerView = null;
+		}
+	}
+
+	@Override
     public void initData(Bundle bundle) {
     	initAdapter();
         mBannerPk = bundle.getString(BANNER_KEY);
         mName = bundle.getString("title");
         mChannel = bundle.getString(CHANNEL_KEY);
-        locationY=bundle.getInt(ChannelFragment.BANNER_LOCATION,0);
+        locationY=bundle.getInt(BANNER_LOCATION,0);
 /*modify by dragontec for bug 4334 start*/
 		if (mFetchControl.getHomeEntity(mBannerPk)!= null) {
 			isNeedFillData = true;
 			checkViewAppear();
 		}
     }
+
+	@Override
+	public void unInitData() {
+		unInitAdapter();
+	}
 
 	@Override
 	public void fetchData() {
@@ -178,6 +180,15 @@ public class TemplateCenter extends Template
         mCenterLayoutManager.setFocusSearchFailedListener(this);
     }
 
+	@Override
+	protected void unInitListener() {
+    	mCenterLayoutManager.setFocusSearchFailedListener(null);
+    	mRecyclerView.setPagingableListener(null);
+    	navigationRight.setOnClickListener(null);
+    	navigationLeft.setOnClickListener(null);
+		super.unInitListener();
+	}
+
 	/*modify by dragontec for bug 4334 start*/
     private void initAdapter() {
     	if (mAdapter == null) {
@@ -185,6 +196,15 @@ public class TemplateCenter extends Template
 			mAdapter.setOnItemClickListener(this);
 			/*modify by dragontec for bug 4277 start*/
 			mAdapter.setOnItemHoverListener(this);
+		}
+	}
+
+	private void unInitAdapter() {
+    	if (mAdapter != null) {
+    		mAdapter.setOnItemHoverListener(null);
+    		mAdapter.setOnItemClickListener(null);
+    		mAdapter.clearData();
+    		mAdapter = null;
 		}
 	}
 
@@ -331,8 +351,9 @@ public class TemplateCenter extends Template
     public void onItemClick(View view, int position) {
 		/*add by dragontec for bug 4307,4277 start*/
         if(view.hasFocus()) {
-			mFetchControl.go2Detail(mFetchControl.mCarouselsMap.get(mBannerPk).get(position));
-            mFetchControl.launcher_vod_click(mAdapter.getData().get(position).model_name,mAdapter.getData().get(position).pk+"",mAdapter.getData().get(position).title,locationY+","+(position+1),mChannel);
+        	int dataPos = position % mAdapter.getData().size();
+			mFetchControl.go2Detail(mFetchControl.mCarouselsMap.get(mBannerPk).get(dataPos));
+            mFetchControl.launcher_vod_click(mAdapter.getData().get(dataPos).model_name,mAdapter.getData().get(dataPos).pk+"",mAdapter.getData().get(dataPos).title,locationY+","+(dataPos+1),mChannel);
         }
 		/*add by dragontec for bug 4307,4277 end*/
     }
@@ -365,6 +386,9 @@ public class TemplateCenter extends Template
     @Override
     public void onClick(View v) {
         if(v.getId()==R.id.navigation_left){
+			if (!mRecyclerView.isNotScrolling()) {
+				return;
+			}
 /*add by dragontec for bug 4332 start*/
 			setNeedCheckScrollEnd();
 /*add by dragontec for bug 4332 end*/
@@ -373,6 +397,9 @@ public class TemplateCenter extends Template
             mCenterLayoutManager.scrollToPositionWithOffset(mRecyclerView.findFirstVisibleItemPosition(), ((CenterRecyclerViewTV)mRecyclerView).getCenterOffset());
 /*modify by dragontec for bug 4332,4365 end*/
         }else if(v.getId()==R.id.navigation_right){
+			if (!mRecyclerView.isNotScrolling()) {
+				return;
+			}
 /*add by dragontec for bug 4332 start*/
 			setNeedCheckScrollEnd();
 /*add by dragontec for bug 4332 end*/

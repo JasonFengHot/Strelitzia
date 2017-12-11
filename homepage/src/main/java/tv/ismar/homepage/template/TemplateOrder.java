@@ -8,6 +8,7 @@ import android.os.Message;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
@@ -32,6 +33,7 @@ import tv.ismar.app.entity.banner.HomeEntity;
 import tv.ismar.app.network.SkyService;
 import tv.ismar.homepage.OnItemClickListener;
 import tv.ismar.homepage.OnItemHoverListener;
+import tv.ismar.homepage.OnItemKeyListener;
 import tv.ismar.homepage.R;
 import tv.ismar.homepage.adapter.MovieAdapter;
 import tv.ismar.homepage.adapter.SubscribeAdapter;
@@ -63,6 +65,7 @@ public class TemplateOrder extends Template
 		RecyclerViewTV.OnItemFocusChangeListener,
 		OnItemClickListener,
 		OnItemHoverListener,
+		OnItemKeyListener,
 		View.OnHoverListener,
 		View.OnClickListener {
 	private int mSelectItemPosition = 1; // 标题--选中海报位置
@@ -80,8 +83,6 @@ public class TemplateOrder extends Template
 	private String mName; // 频道名称（中文）
 	private String mChannel; // 频道名称（英文）
 	private int locationY;
-	private static final int NAVIGATION_LEFT = 0x0001;
-	private static final int NAVIGATION_RIGHT = 0x0002;
 
 	/*modify by dragontec for bug 4334 start*/
 	public TemplateOrder(Context context, int position, FetchDataControl fetchDataControl) {
@@ -115,21 +116,6 @@ public class TemplateOrder extends Template
 
 	@Override
 	public void onDestroy() {
-/*add by dragontec for bug 4205 start*/
-		if (mAdapter != null) {
-			mAdapter.setOnItemClickListener(null);
-		}
-		if (mRecyclerView != null) {
-			mRecyclerView.setLayoutManager(null);
-			mRecyclerView.setAdapter(null);
-		}
-		if (mBannerLinearLayout != null) {
-			mBannerLinearLayout.setNavigationLeft(null);
-			mBannerLinearLayout.setNavigationRight(null);
-			mBannerLinearLayout.setRecyclerViewTV(null);
-			mBannerLinearLayout.setHeadView(null);
-		}
-/*add by dragontec for bug 4205 end*/
 		super.onDestroy();
 	}
 
@@ -137,13 +123,10 @@ public class TemplateOrder extends Template
 	public void getView(View view) {
 		mTitleTv = (TextView) view.findViewById(R.id.banner_title_tv);
 		mTitleCountTv = (TextView) view.findViewById(R.id.banner_title_count);
-/*modify by dragontec for bug 4332 start*/
-		mRecyclerView = (RecyclerViewTV) view.findViewById(R.id.subscribe_banner);
-		/*modify by dragontec for bug 4221 start*/
-		mRecyclerView.setTag("recycleView");
-		/*modify by dragontec for bug 4221 end*/
 		mSubscribeLayoutManager =
 				new LinearLayoutManagerTV(mContext, LinearLayoutManager.HORIZONTAL, false);
+		mRecyclerView = (RecyclerViewTV) view.findViewById(R.id.subscribe_banner);
+		mRecyclerView.setTag("recycleView");
 		mRecyclerView.setLayoutManager(mSubscribeLayoutManager);
 		mRecyclerView.setSelectedItemAtCentered(false);
 		int selectedItemOffset =
@@ -156,7 +139,27 @@ public class TemplateOrder extends Template
 		mBannerLinearLayout.setNavigationRight(navigationRight);
 		mBannerLinearLayout.setRecyclerViewTV(mRecyclerView);
 		mHoverView = view.findViewById(R.id.hover_view);
-/*modify by dragontec for bug 4332 end*/
+	}
+
+	@Override
+	public void clearView() {
+		mHoverView = null;
+		if (mBannerLinearLayout != null) {
+			mBannerLinearLayout.setRecyclerViewTV(null);
+			mBannerLinearLayout.setNavigationRight(null);
+			mBannerLinearLayout.setNavigationLeft(null);
+			mBannerLinearLayout = null;
+		}
+		navigationRight = null;
+		navigationLeft = null;
+		if (mRecyclerView != null) {
+			mRecyclerView.setLayoutManager(null);
+			mRecyclerView.setAdapter(null);
+			mRecyclerView = null;
+		}
+		mSubscribeLayoutManager = null;
+		mTitleCountTv = null;
+		mTitleTv = null;
 	}
 
 	@Override
@@ -176,19 +179,34 @@ public class TemplateOrder extends Template
 	}
 
 	@Override
+	protected void unInitListener() {
+		mSubscribeLayoutManager.setFocusSearchFailedListener(null);
+		mRecyclerView.setOnItemFocusChangeListener(null);
+		mRecyclerView.setPagingableListener(null);
+		navigationRight.setOnClickListener(null);
+		navigationLeft.setOnClickListener(null);
+		super.unInitListener();
+	}
+
+	@Override
 	public void initData(Bundle bundle) {
 		initAdapter();
 		mTitleTv.setText(bundle.getString("title"));
 		mBannerPk = bundle.getString("banner");
 		mName = bundle.getString("title");
 		mChannel = bundle.getString(CHANNEL_KEY);
-		locationY=bundle.getInt(ChannelFragment.BANNER_LOCATION,0);
+		locationY=bundle.getInt(BANNER_LOCATION,0);
 /*modify by dragontec for bug 4334 start*/
 		mTitleCountTv.setText("00/00");
 		if (mFetchControl.getHomeEntity(mBannerPk)!= null) {
 			isNeedFillData = true;
 			checkViewAppear();
 		}
+	}
+
+	@Override
+	public void unInitData() {
+		unInitAdapter();
 	}
 
 	@Override
@@ -227,6 +245,16 @@ public class TemplateOrder extends Template
 /*modify by dragontec for bug 4332 start*/
 			mAdapter.setOnItemClickListener(this);
 /*modify by dragontec for bug 4332 end*/
+			mAdapter.setOnItemKeyListener(this);
+		}
+	}
+
+	private void unInitAdapter() {
+		if (mAdapter != null) {
+			mAdapter.setOnItemKeyListener(null);
+			mAdapter.setOnItemClickListener(null);
+			mAdapter.clearData();
+			mAdapter = null;
 		}
 	}
 
@@ -374,41 +402,79 @@ public class TemplateOrder extends Template
 	public void onClick(View v) {
 		int i = v.getId();
 		if (i == R.id.navigation_left) {
-			mSubscribeLayoutManager.setCanScroll(true);
-			if (mSubscribeLayoutManager.findFirstCompletelyVisibleItemPosition() - 1 >= 0) { // 向左滑动
-				int targetPosition = mSubscribeLayoutManager.findFirstCompletelyVisibleItemPosition() - 4;
-				if (targetPosition <= 0) targetPosition = 0;
-				mSelectItemPosition = targetPosition + 1;
-/*add by dragontec for bug 4332 start*/
-				setNeedCheckScrollEnd();
-/*add by dragontec for bug 4332 end*/
-/*modify by dragontec for bug 4332 start*/
-				mSubscribeLayoutManager.smoothScrollToPosition(mRecyclerView, null, targetPosition);
-/*modify by dragontec for bug 4332 end*/
-				initTitle();
+			if (!mRecyclerView.isNotScrolling()) {
+				return;
 			}
-		} else if (i == R.id.navigation_right) { // 向右滑动
-			mSubscribeLayoutManager.setCanScroll(true);
-/*modify by dragontec for bug 4332 start*/
-			mRecyclerView.loadMore();
-/*modify by dragontec for bug 4332 end*/
-			if (mSubscribeLayoutManager.findLastCompletelyVisibleItemPosition()
-					<= mFetchControl.getHomeEntity(mBannerPk).count) {
-				int targetPosition = mSubscribeLayoutManager.findLastCompletelyVisibleItemPosition() + 4;
-				if (targetPosition > mFetchControl.getHomeEntity(mBannerPk).count - 1) {
-					targetPosition = mFetchControl.getHomeEntity(mBannerPk).count - 1;
-					if (mFetchControl.getHomeEntity(mBannerPk).is_more) {
-						targetPosition++;
-					}
+			if (mSubscribeLayoutManager.findFirstCompletelyVisibleItemPosition() > 0) {
+				mSubscribeLayoutManager.setCanScroll(true);
+				int targetPosition = mSubscribeLayoutManager.findFirstCompletelyVisibleItemPosition() - 4;
+				if (targetPosition < 0) {
+					targetPosition = 0;
 				}
 				mSelectItemPosition = targetPosition + 1;
-/*add by dragontec for bug 4332 start*/
 				setNeedCheckScrollEnd();
-/*add by dragontec for bug 4332 end*/
-/*modify by dragontec for bug 4332 start*/
 				mSubscribeLayoutManager.smoothScrollToPosition(mRecyclerView, null, targetPosition);
-/*modify by dragontec for bug 4332 end*/
 				initTitle();
+			}
+//			mSubscribeLayoutManager.setCanScroll(true);
+//			if (mSubscribeLayoutManager.findFirstCompletelyVisibleItemPosition() - 1 >= 0) { // 向左滑动
+//				int targetPosition = mSubscribeLayoutManager.findFirstCompletelyVisibleItemPosition() - 4;
+//				if (targetPosition <= 0) targetPosition = 0;
+//				mSelectItemPosition = targetPosition + 1;
+///*add by dragontec for bug 4332 start*/
+//				setNeedCheckScrollEnd();
+///*add by dragontec for bug 4332 end*/
+///*modify by dragontec for bug 4332 start*/
+//				mSubscribeLayoutManager.smoothScrollToPosition(mRecyclerView, null, targetPosition);
+///*modify by dragontec for bug 4332 end*/
+//				initTitle();
+//			}
+		} else if (i == R.id.navigation_right) { // 向右滑动
+			if (!mRecyclerView.isNotScrolling()) {
+				return;
+			}
+			if (mSubscribeLayoutManager.findLastCompletelyVisibleItemPosition() <= mFetchControl.getHomeEntity(mBannerPk).count) {
+				mSubscribeLayoutManager.setCanScroll(true);
+				mRecyclerView.loadMore();
+				int targetPosition = mSubscribeLayoutManager.findLastCompletelyVisibleItemPosition() + 4;
+				if (targetPosition > mSubscribeLayoutManager.getItemCount() - 1) {
+					targetPosition = mSubscribeLayoutManager.getItemCount() - 1;
+				}
+				mSelectItemPosition = targetPosition + 1;
+				setNeedCheckScrollEnd();
+				mSubscribeLayoutManager.smoothScrollToPosition(mRecyclerView, null, targetPosition);
+				initTitle();
+			}
+//			mSubscribeLayoutManager.setCanScroll(true);
+///*modify by dragontec for bug 4332 start*/
+//			mRecyclerView.loadMore();
+///*modify by dragontec for bug 4332 end*/
+//			if (mSubscribeLayoutManager.findLastCompletelyVisibleItemPosition()
+//					<= mSubscribeLayoutManager.getItemCount() - 1) {
+//				int targetPosition = mSubscribeLayoutManager.findLastCompletelyVisibleItemPosition() + 4;
+//				if (targetPosition > mSubscribeLayoutManager.getItemCount() - 1) {
+//					targetPosition = mSubscribeLayoutManager.getItemCount() - 1;
+//				}
+//				mSelectItemPosition = targetPosition + 1;
+///*add by dragontec for bug 4332 start*/
+//				setNeedCheckScrollEnd();
+///*add by dragontec for bug 4332 end*/
+///*modify by dragontec for bug 4332 start*/
+//				mSubscribeLayoutManager.smoothScrollToPosition(mRecyclerView, null, targetPosition);
+///*modify by dragontec for bug 4332 end*/
+//				initTitle();
+//			}
+		}
+	}
+
+	@Override
+	public void onKey(View v, int keyCode, KeyEvent event) {
+		if (isParentScrolling) {
+			return;
+		}
+		if (event.getAction() == KeyEvent.ACTION_UP) {
+			if (keyCode == KeyEvent.KEYCODE_DPAD_UP || keyCode == KeyEvent.KEYCODE_DPAD_DOWN || keyCode == KeyEvent.KEYCODE_DPAD_LEFT || keyCode == KeyEvent.KEYCODE_DPAD_RIGHT) {
+				checkViewLocation(v);
 			}
 		}
 	}

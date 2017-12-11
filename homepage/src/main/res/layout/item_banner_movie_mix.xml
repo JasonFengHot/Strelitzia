@@ -37,14 +37,14 @@
 
             <RelativeLayout
                 android:id="@+id/item_wrapper"
-                android:layout_width="@dimen/banner_movie_post_mix_w"
+                android:layout_width="@dimen/banner_item_movie_small_width"
                 android:layout_height="@dimen/banner_movie_post_mix_h"
                 >
 
                 <tv.ismar.app.widget.RecyclerImageView
                     android:id="@+id/image_view"
-                    android:layout_width="@dimen/banner_movie_post_mix_w"
-                    android:layout_height="@dimen/banner_movie_post_mix_h"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
                     android:clipChildren="false"
                     android:clipToPadding="false"
                     android:scaleType="fitXY"
@@ -52,15 +52,15 @@
 
                 <tv.ismar.app.widget.RecyclerImageView
                     android:id="@+id/banner_mark_lt"
-                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
                     android:layout_alignParentTop="true"
                     android:layout_width="@dimen/banner_mark_lt_width"
                     android:layout_height="@dimen/banner_mark_lt_width"/>
                 <tv.ismar.app.widget.RecyclerImageView
                     android:layout_marginTop="@dimen/banner_mark_rt_margin"
-                    android:layout_marginRight="@dimen/banner_mark_rt_margin"
+                    android:layout_marginEnd="@dimen/banner_mark_rt_margin"
                     android:layout_alignParentTop="true"
-                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
                     android:id="@+id/banner_mark_rt"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
@@ -69,14 +69,14 @@
                     android:id="@+id/banner_mark_br"
                     android:layout_width="@dimen/banner_mark_br_width"
                     android:layout_height="@dimen/banner_mark_br_height"
-                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
                     android:gravity="center"
                     android:background="@drawable/banner_post_score_bg"
                     android:layout_marginTop="@dimen/banner_movie_mark_br_mix_mt"
                     android:textSize="@dimen/text_size_30sp"/>
                 <TextView
                     android:id="@+id/title"
-                    android:layout_width="@dimen/banner_movie_post_mix_w"
+                    android:layout_width="match_parent"
                     android:layout_height="@dimen/banner_movie_post_title_h"
                     android:layout_alignParentBottom="true"
                     android:background="@drawable/banner_subscrib_introduction_bg"

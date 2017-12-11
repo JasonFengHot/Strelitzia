@@ -1,6 +1,7 @@
 package tv.ismar.homepage.adapter;
 
 import android.content.Context;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -53,6 +54,14 @@ public class RecommendAdapter extends BaseRecycleAdapter<RecommendAdapter.Recomm
 	}
 	/*add by dragontec for bug 4334 end*/
 
+	@Override
+	public void clearData() {
+		if (mData != null) {
+			mData = null;
+			notifyDataSetChanged();
+		}
+	}
+
     @Override
     public RecommendViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(mContext).inflate(R.layout.banner_recommend_item,parent,false);
@@ -61,12 +70,13 @@ public class RecommendAdapter extends BaseRecycleAdapter<RecommendAdapter.Recomm
 
     @Override
     public void onBindViewHolder(RecommendViewHolder holder, int position) {
+		holder.imageUrl = null;
     	/*modify by dragontec for bug 4334 start*/
     	if (mData != null) {
 			BannerPoster poster = mData.get(position);
-			holder.mPosition = position;
 			holder.mTitle.setText(poster.title);
 			if (!TextUtils.isEmpty(poster.poster_url)) {
+				holder.imageUrl = poster.poster_url;
 /*modify by dragontec for bug 4336 start*/
 				Picasso.with(mContext).load(poster.poster_url).
 /*add by dragontec for bug 4205 start*/
@@ -74,8 +84,12 @@ public class RecommendAdapter extends BaseRecycleAdapter<RecommendAdapter.Recomm
 /*add by dragontec for bug 4205 end*/
                         error(R.drawable.template_item_horizontal_preview).
                         placeholder(R.drawable.template_item_horizontal_preview).
+						tag("banner").
                         into(holder.mPoster);
 /*modify by dragontec for bug 4336 end*/
+				if (mScrollState != RecyclerView.SCROLL_STATE_IDLE || isParentScrolling) {
+					Picasso.with(mContext).pauseTag("banner");
+				}
 			} else {
 /*modify by dragontec for bug 4336 start*/
 				Picasso.with(mContext).
@@ -102,6 +116,11 @@ public class RecommendAdapter extends BaseRecycleAdapter<RecommendAdapter.Recomm
 		/*modify by dragontec for bug 4334 end*/
     }
 
+	@Override
+	public int getItemViewType(int position) {
+		return TYPE_NORMAL;
+	}
+
     @Override
     public int getItemCount() {
         return (mData!=null)? mData.size() : 0;
@@ -113,6 +132,7 @@ public class RecommendAdapter extends BaseRecycleAdapter<RecommendAdapter.Recomm
         public TextView mTitle;
         public RecyclerImageView mPoster;
         public RecyclerImageView mRtIconTv;
+        public String imageUrl;
 
         public RecommendViewHolder(View itemView) {
             super(itemView, RecommendAdapter.this);
@@ -122,7 +142,36 @@ public class RecommendAdapter extends BaseRecycleAdapter<RecommendAdapter.Recomm
             mLeftSpace= itemView.findViewById(R.id.left_space);
         }
 
-        @Override
+		@Override
+		public void clearImage() {
+			super.clearImage();
+			if (mPoster != null) {
+				Picasso.with(mContext).
+						load(R.drawable.template_item_horizontal_preview).
+						into(mPoster);
+			}
+		}
+
+		@Override
+		public void restoreImage() {
+        	if (mPoster != null) {
+        		if (imageUrl != null) {
+					Picasso.with(mContext).load(imageUrl).
+							memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE).
+							error(R.drawable.template_item_horizontal_preview).
+							placeholder(R.drawable.template_item_horizontal_preview).
+							tag("banner").
+							into(mPoster);
+				} else {
+					Picasso.with(mContext).
+							load(R.drawable.template_item_horizontal_preview).
+							into(mPoster);
+				}
+			}
+			super.restoreImage();
+		}
+
+		@Override
         protected int getScaleLayoutId() {
             return R.id.recommend_ismartv_linear_layout;
         }

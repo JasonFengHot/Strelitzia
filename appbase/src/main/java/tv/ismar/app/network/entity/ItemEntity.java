@@ -74,6 +74,7 @@ public class ItemEntity {
     private String poster_url_old;
     private String top_right_corner;
     private String model_name;
+    private String media_code;
 
     public String getModel_name() {
         return model_name;
@@ -467,6 +468,14 @@ public class ItemEntity {
 
     public void setClassification(String classification) {
         this.classification = classification;
+    }
+
+    public String getMedia_code() {
+        return media_code;
+    }
+
+    public void setMedia_code(String media_code) {
+        this.media_code = media_code;
     }
 
     public class Clip {

@@ -12,6 +12,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -39,6 +40,8 @@ import tv.ismar.app.widget.ListSpacesItemDecoration;
 import tv.ismar.app.widget.RecyclerImageView;
 import tv.ismar.homepage.HomeActivity;
 import tv.ismar.homepage.OnItemClickListener;
+import tv.ismar.homepage.OnItemKeyListener;
+import tv.ismar.homepage.OnItemSelectedListener;
 import tv.ismar.homepage.R;
 import tv.ismar.homepage.adapter.DoubleLdAdapter;
 import tv.ismar.homepage.control.FetchDataControl;
@@ -62,6 +65,7 @@ import static tv.ismar.homepage.fragment.ChannelFragment.TITLE_KEY;
 public class TemplateDoubleLd extends Template
         implements BaseControl.ControlCallBack,
         OnItemClickListener,
+		OnItemKeyListener,
         RecyclerViewTV.OnItemFocusChangeListener,
         RecyclerViewTV.PagingableListener,
         StaggeredGridLayoutManagerTV.FocusSearchFailedListener,
@@ -69,23 +73,15 @@ public class TemplateDoubleLd extends Template
         View.OnClickListener {
     private int mSelectItemPosition = 1; // 标题--选中海报位置
     private TextView mTitleTv; // banner标题;
-    private RecyclerImageView mVerticalImg; // 大图海报
-    private RecyclerImageView mLtImage; // 左上角图标
-    private TextView mRbImage; // 右下角图标
-    private TextView mIgTitleTv; // 大图标题
 /*delete by dragontec for bug 4332 start*/
 //    private RecyclerViewTV mRecyclerView;
 /*delete by dragontec for bug 4332 start*/
-    private RecyclerImageView mRtImage;//右上角图标
     private DoubleLdAdapter mAdapter;
     private BannerLinearLayout mBannerLinearLayout;
 	/*delete by dragontec for bug 4332 start*/
 //    private View navigationLeft;
 //    private View navigationRight;
 	/*delete by dragontec for bug 4332 end*/
-	/*modify by dragontec for bug 4332 start*/
-    private View mHeaderView; // recylview头view
-	/*modify by dragontec for bug 4332 start*/
     private StaggeredGridLayoutManagerTV mDoubleLayoutManager;
     private String mName; // 频道名称（中文）
     private String mChannel; // 频道名称（英文）
@@ -94,34 +90,9 @@ public class TemplateDoubleLd extends Template
     private static final int NAVIGATION_LEFT = 0x0001;
     private static final int NAVIGATION_RIGHT = 0x0002;
 
-    private NavigationtHandler mNavigationtHandler;
-
-    private class NavigationtHandler extends Handler {
-        @Override
-        public void handleMessage(Message msg) {
-            switch (msg.what){
-                case NAVIGATION_LEFT:
-                    if (mRecyclerView!=null&&!mRecyclerView.cannotScrollBackward(-10)) {
-                        navigationLeft.setVisibility(VISIBLE);
-                    }else if (mRecyclerView!=null){
-                        navigationLeft.setVisibility(INVISIBLE);
-                    }
-                    break;
-                case NAVIGATION_RIGHT:
-                    if(mRecyclerView!=null&&!mRecyclerView.cannotScrollForward(10)){
-                        navigationRight.setVisibility(VISIBLE);
-                    }else if (mRecyclerView!=null){
-                        navigationRight.setVisibility(INVISIBLE);
-                    }
-                    break;
-            }
-        }
-    }
-
 	/*modify by dragontec for bug 4334 start*/
     public TemplateDoubleLd(Context context, int position, FetchDataControl fetchDataControl) {
         super(context, position, fetchDataControl);
-        mNavigationtHandler = new NavigationtHandler();
     }
     /*modify by dragontec for bug 4334 end*/
 
@@ -147,35 +118,10 @@ public class TemplateDoubleLd extends Template
 
     @Override
     public void onStop() {
-        if (mNavigationtHandler.hasMessages(NAVIGATION_LEFT)){
-            mNavigationtHandler.removeMessages(NAVIGATION_LEFT);
-        }
-        if (mNavigationtHandler.hasMessages(NAVIGATION_RIGHT)){
-            mNavigationtHandler.removeMessages(NAVIGATION_RIGHT);
-        }
     }
 
     @Override
     public void onDestroy() {
-/*add by dragontec for bug 4205 start*/
-        if (mAdapter != null) {
-            mAdapter.setHeaderView(null);
-            mAdapter.setOnItemClickListener(null);
-        }
-        if (mRecyclerView != null) {
-            mRecyclerView.setLayoutManager(null);
-            mRecyclerView.setAdapter(null);
-        }
-        if (mBannerLinearLayout != null) {
-            mBannerLinearLayout.setNavigationLeft(null);
-            mBannerLinearLayout.setNavigationRight(null);
-            mBannerLinearLayout.setRecyclerViewTV(null);
-            mBannerLinearLayout.setHeadView(null);
-        }
-/*add by dragontec for bug 4205 end*/
-        if (mNavigationtHandler != null){
-            mNavigationtHandler = null;
-        }
 		super.onDestroy();
     }
 
@@ -183,22 +129,12 @@ public class TemplateDoubleLd extends Template
     public void getView(View view) {
         mTitleTv = (TextView) view.findViewById(R.id.banner_title_tv);
         mTitleCountTv = (TextView) view.findViewById(R.id.banner_title_count);
-        mRecyclerView = (RecyclerViewTV) view.findViewById(R.id.double_ld_recyclerview);
-		/*modify by dragontec for bug 4221 start*/
-        mRecyclerView.setTag("recycleView");
-		/*modify by dragontec for bug 4221 end*/
-/*modify by dragontec for bug 4332 start*/
-        mHeaderView = LayoutInflater.from(mContext).inflate(R.layout.banner_double_ld_head, null);
-        mVerticalImg = (RecyclerImageView) mHeaderView.findViewById(R.id.double_ld_image_poster);
-        mLtImage = (RecyclerImageView) mHeaderView.findViewById(R.id.double_ld_image_lt_icon);
-        mRbImage = (TextView) mHeaderView.findViewById(R.id.double_ld_image_rb_icon);
-        mIgTitleTv = (TextView) mHeaderView.findViewById(R.id.double_ld_image_title);
-        mRtImage= (RecyclerImageView) mHeaderView.findViewById(R.id.guide_rt_icon);
-/*modify by dragontec for bug 4332 end*/
         mDoubleLayoutManager =
                 new StaggeredGridLayoutManagerTV(2, StaggeredGridLayoutManager.HORIZONTAL);
+		mDoubleLayoutManager.setOrientation(GridLayoutManagerTV.HORIZONTAL);
+		mRecyclerView = (RecyclerViewTV) view.findViewById(R.id.double_ld_recyclerview);
+		mRecyclerView.setTag("recycleView");
         mRecyclerView.addItemDecoration(new ListSpacesItemDecoration(mContext.getResources().getDimensionPixelOffset(R.dimen.double_ld_padding)));
-        mDoubleLayoutManager.setOrientation(GridLayoutManagerTV.HORIZONTAL);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         mRecyclerView.setLayoutManager(mDoubleLayoutManager);
         mRecyclerView.setSelectedItemAtCentered(false);
@@ -208,19 +144,41 @@ public class TemplateDoubleLd extends Template
         mRecyclerView.setSelectedItemOffset(100, 100);
 		/*modify by dragontec for bug 4434 end*/
         mRecyclerView.setAdapter(new DoubleLdAdapter(mContext, new ArrayList<BannerPoster>()));
+		mRecyclerView.setHasHeaderView(true);
         navigationLeft = view.findViewById(R.id.navigation_left);
         navigationRight = view.findViewById(R.id.navigation_right);
         mBannerLinearLayout = (BannerLinearLayout) view.findViewById(R.id.banner_layout);
         mBannerLinearLayout.setNavigationLeft(navigationLeft);
         mBannerLinearLayout.setNavigationRight(navigationRight);
         mBannerLinearLayout.setRecyclerViewTV(mRecyclerView);
-        mRecyclerView.setHasHeaderView(true);
 /*add by dragontec for bug 4332 start*/
         mHoverView = view.findViewById(R.id.hover_view);
 /*add by dragontec for bug 4332 end*/
     }
 
-    private void initTitle() {
+	@Override
+	public void clearView() {
+		mHoverView = null;
+		if (mBannerLinearLayout != null) {
+			mBannerLinearLayout.setRecyclerViewTV(null);
+			mBannerLinearLayout.setNavigationRight(null);
+			mBannerLinearLayout.setNavigationLeft(null);
+			mBannerLinearLayout = null;
+		}
+		navigationRight = null;
+		navigationLeft = null;
+		if (mRecyclerView != null) {
+			mRecyclerView.setLayoutManager(null);
+			mRecyclerView.setAdapter(null);
+			mRecyclerView.setItemAnimator(null);
+			mRecyclerView = null;
+		}
+		mDoubleLayoutManager = null;
+		mTitleCountTv = null;
+		mTitleTv = null;
+	}
+
+	private void initTitle() {
     	if (mFetchControl.getHomeEntity(mBannerPk) != null)
         if (mSelectItemPosition > mFetchControl.getHomeEntity(mBannerPk).count)
             mSelectItemPosition = mFetchControl.getHomeEntity(mBannerPk).count;
@@ -243,14 +201,24 @@ public class TemplateDoubleLd extends Template
         mDoubleLayoutManager.setFocusSearchFailedListener(this);
     }
 
-    @Override
+	@Override
+	protected void unInitListener() {
+    	mDoubleLayoutManager.setFocusSearchFailedListener(null);
+    	mRecyclerView.setOnItemFocusChangeListener(null);
+    	mRecyclerView.setPagingableListener(null);
+    	navigationRight.setOnClickListener(null);
+    	navigationLeft.setOnClickListener(null);
+		super.unInitListener();
+	}
+
+	@Override
     public void initData(Bundle bundle) {
     	initAdapter();
         mTitleTv.setText(bundle.getString(TITLE_KEY));
         mBannerPk = bundle.getString(BANNER_KEY);
         mName = bundle.getString("title");
         mChannel = bundle.getString(CHANNEL_KEY);
-        locationY=bundle.getInt(ChannelFragment.BANNER_LOCATION,0);
+        locationY=bundle.getInt(BANNER_LOCATION,0);
         mTitleCountTv.setText("00/00");
 /*modify by dragontec for bug 4334 start*/
 		if (mFetchControl.getHomeEntity(mBannerPk) != null) {
@@ -258,6 +226,11 @@ public class TemplateDoubleLd extends Template
 			checkViewAppear();
 		}
     }
+
+	@Override
+	public void unInitData() {
+		unInitAdapter();
+	}
 
 	@Override
 	public void fetchData() {
@@ -269,7 +242,6 @@ public class TemplateDoubleLd extends Template
     	if (isNeedFillData) {
 			isNeedFillData = false;
 			initTitle();
-			initImage();
 			initRecycleView();
 		}
 	}
@@ -281,16 +253,26 @@ public class TemplateDoubleLd extends Template
 		if (mAdapter == null) {
 			mAdapter = new DoubleLdAdapter(mContext);
 			mAdapter.setOnItemClickListener(this);
-			/*modify by dragontec for bug 4332 start*/
-			mAdapter.setHeaderView(mHeaderView);
-			/*modify by dragontec for bug 4332 end*/
+			mAdapter.setOnItemKeyListener(this);
+		}
+	}
+
+	private void unInitAdapter() {
+		if (mAdapter != null) {
+			mRecyclerView.setAdapter(null);
+			mAdapter.setOnItemKeyListener(null);
+			mAdapter.setOnItemClickListener(null);
+			mAdapter.setBigImage(null);
+			mAdapter.clearData();
+			mAdapter = null;
 		}
 	}
 
     private void initRecycleView() {
 		if (mAdapter != null) {
 			if (mAdapter.getData() == null) {
-				if (mFetchControl.mPosterMap.get(mBannerPk) != null) {
+				if (mFetchControl.getHomeEntity(mBannerPk) != null) {
+					mAdapter.setBigImage(mFetchControl.getHomeEntity(mBannerPk).bg_image);
 					mAdapter.setData(mFetchControl.mPosterMap.get(mBannerPk));
 					/*modify by dragontec for bug 4412 start*/
 					if (mAdapter.getItemCount() > 0) {
@@ -310,48 +292,15 @@ public class TemplateDoubleLd extends Template
 				/*modify by dragontec for bug 4412 end*/
 				int start = mFetchControl.mPosterMap.get(mBannerPk).size() - mFetchControl.getHomeEntity(mBannerPk).posters.size();
 				int end = mFetchControl.mPosterMap.get(mBannerPk).size();
+				if (mAdapter.getBigImage() != null) {
+					start++;
+					end++;
+				}
 				mAdapter.notifyItemRangeInserted(start, end - start + 1);
 			}
 		}
     }
     /*modify by dragontec for bug 4334 end*/
-
-    private void initImage() {
-        BigImage data = mFetchControl.getHomeEntity(mBannerPk) != null ? mFetchControl.getHomeEntity(mBannerPk).bg_image : null;
-        if (data != null) {
-            if (!TextUtils.isEmpty(data.poster_url)) {
-/*modify by dragontec for bug 4336 start*/
-                Picasso.with(mContext).load(data.poster_url).
-/*add by dragontec for bug 4205 start*/
-                        memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE).
-/*add by dragontec for bug 4205 end*/
-                        error(R.drawable.template_title_item_horizontal_preview).
-                        placeholder(R.drawable.template_title_item_horizontal_preview).
-                        into(mVerticalImg);
-/*modify by dragontec for bug 4336 end*/
-            } else {
-/*modify by dragontec for bug 4336 start*/
-                Picasso.with(mContext).
-                        load(R.drawable.template_title_item_horizontal_preview).
-                        into(mVerticalImg);
-/*modify by dragontec for bug 4336 end*/
-            }
-            Picasso.with(mContext)
-                    .load(VipMark.getInstance().getBannerIconMarkImage(data.top_left_corner))
-                    .into(mLtImage);
-            Picasso.with(mContext).load(VipMark.getInstance().getBannerIconMarkImage(data.top_right_corner)).into(mRtImage);
-            mRbImage.setText(new DecimalFormat("0.0").format(data.rating_average));
-            mRbImage.setVisibility((data.rating_average == 0) ? View.GONE : View.VISIBLE);
-            mIgTitleTv.setText(data.title);
-			/*add by dragontec for bug 卖点文字不正确的问题 start*/
-            String focusStr = data.title;
-            if(data.focus != null && !data.focus.equals("") && !data.focus.equals("null")){
-                focusStr = data.focus;
-            }
-            mIgTitleTv.setTag(new String[]{data.title,focusStr});
-			/*add by dragontec for bug 卖点文字不正确的问题 end*/
-        }
-    }
 
 //    @Override
 //    public void callBack(int flags, Object... args) {
@@ -487,63 +436,82 @@ public class TemplateDoubleLd extends Template
     @Override
     public void onClick(View v) {
         int i = v.getId();
-        int[] positions = new int[]{0, 0};
-        Log.i("onClick", "positions[0]:" + positions[0] + "positions[1]:" + positions[1]);
         if (i == R.id.navigation_left) {
-            mDoubleLayoutManager.findFirstCompletelyVisibleItemPositions(positions);
-            mDoubleLayoutManager.setCanScroll(true);
-            if (positions[1] - 1 >= 0) { // 向左滑动
-                int targetPosition = positions[1] - 8;
-                if (targetPosition <= 0) targetPosition = 0;
-                mSelectItemPosition = targetPosition + 1;
-/*add by dragontec for bug 4332 start*/
-				setNeedCheckScrollEnd();
-/*add by dragontec for bug 4332 end*/
-                mDoubleLayoutManager.smoothScrollToPosition(mRecyclerView, null, targetPosition);
-                if (mNavigationtHandler.hasMessages(NAVIGATION_LEFT)) {
-                    mNavigationtHandler.removeMessages(NAVIGATION_LEFT);
-                }
-                    mNavigationtHandler.sendEmptyMessageDelayed(NAVIGATION_LEFT,500);
-                initTitle();
-            }
-        } else if (i == R.id.navigation_right) { // 向右滑动
-            mDoubleLayoutManager.findLastCompletelyVisibleItemPositions(positions);
-            mDoubleLayoutManager.setCanScroll(true);
-            mRecyclerView.setloadMoreType(true);
-            mRecyclerView.loadMore();
-            if (positions[1] <= mFetchControl.getHomeEntity(mBannerPk).count) {
-                int targetPosition = positions[1] + 8;
-				if (targetPosition > mFetchControl.getHomeEntity(mBannerPk).count - 1) {
-					targetPosition = mFetchControl.getHomeEntity(mBannerPk).count - 1;
-					if (mFetchControl.getHomeEntity(mBannerPk).is_more) {
-						targetPosition++;
-					}
+			if (!mRecyclerView.isNotScrolling()) {
+				return;
+			}
+			int position = mRecyclerView.getFirstCompletelyVisiblePosition();
+			if (position > 0) {
+				mDoubleLayoutManager.setCanScroll(true);
+				int targetPosition = position - 8;
+				if (targetPosition < 0) {
+					targetPosition = 0;
 				}
 				mSelectItemPosition = targetPosition + 1;
-/*add by dragontec for bug 4332 start*/
 				setNeedCheckScrollEnd();
-/*add by dragontec for bug 4332 end*/
-                mDoubleLayoutManager.smoothScrollToPosition(mRecyclerView, null, targetPosition);
-                if (mNavigationtHandler.hasMessages(NAVIGATION_RIGHT)){
-                    mNavigationtHandler.removeMessages(NAVIGATION_RIGHT);
-                }
-                mNavigationtHandler.sendEmptyMessageDelayed(NAVIGATION_RIGHT, 500);
-
-			/*delete by dragontec for bug 4303 start*/
-//                try {
-//                    if (targetPosition == mFetchDataControl.mHomeEntity.count)
-//                        YoYo.with(Techniques.HorizontalShake)
-//                                .duration(1000)
-//                                .playOn(
-//                                        mRecyclerView
-//                                                .getChildAt(mRecyclerView.getChildCount() - 1)
-//                                                .findViewById(R.id.double_md_ismartv_linear_layout));
-//                }catch(Exception e){
-//                    e.printStackTrace();
-//                }
-			/*delete by dragontec for bug 4303 end*/
+				mDoubleLayoutManager.smoothScrollToPosition(mRecyclerView, null, targetPosition);
 				initTitle();
-            }
+			}
+//            int[] positions = mDoubleLayoutManager.findFirstCompletelyVisibleItemPositions(null);
+//            mDoubleLayoutManager.setCanScroll(true);
+//            if (positions[1] - 1 >= 0) { // 向左滑动
+//                int targetPosition = positions[1] - 8;
+//                if (targetPosition <= 0) targetPosition = 0;
+//                mSelectItemPosition = targetPosition + 1;
+///*add by dragontec for bug 4332 start*/
+//				setNeedCheckScrollEnd();
+///*add by dragontec for bug 4332 end*/
+//                mDoubleLayoutManager.smoothScrollToPosition(mRecyclerView, null, targetPosition);
+//                initTitle();
+//            }
+        } else if (i == R.id.navigation_right) { // 向右滑动
+			if (!mRecyclerView.isNotScrolling()) {
+				return;
+			}
+			int position = mRecyclerView.findLastCompletelyVisibleItemPosition();
+			if (position <= mFetchControl.getHomeEntity(mBannerPk).count) {
+				mDoubleLayoutManager.setCanScroll(true);
+				mRecyclerView.setloadMoreType(true);
+				mRecyclerView.loadMore();
+				int targetPosition = position + 8;
+				if (targetPosition > mDoubleLayoutManager.getItemCount() - 1) {
+					targetPosition = mDoubleLayoutManager.getItemCount() - 1;
+				}
+				mSelectItemPosition = targetPosition + 1;
+				setNeedCheckScrollEnd();
+				mDoubleLayoutManager.smoothScrollToPosition(mRecyclerView, null, targetPosition);
+				initTitle();
+			}
+//            int[] positions = mDoubleLayoutManager.findLastCompletelyVisibleItemPositions(null);
+//            mDoubleLayoutManager.setCanScroll(true);
+//            mRecyclerView.setloadMoreType(true);
+//            if (positions[1] <= mFetchControl.getHomeEntity(mBannerPk).count) {
+//				mRecyclerView.loadMore();
+//                int targetPosition = positions[1] + 8;
+//				if (targetPosition > mDoubleLayoutManager.getItemCount() - 1) {
+//					targetPosition = mDoubleLayoutManager.getItemCount() - 1;
+//				}
+//				mSelectItemPosition = targetPosition + 1;
+///*add by dragontec for bug 4332 start*/
+//				setNeedCheckScrollEnd();
+///*add by dragontec for bug 4332 end*/
+//                mDoubleLayoutManager.smoothScrollToPosition(mRecyclerView, null, targetPosition);
+//
+//			/*delete by dragontec for bug 4303 start*/
+////                try {
+////                    if (targetPosition == mFetchDataControl.mHomeEntity.count)
+////                        YoYo.with(Techniques.HorizontalShake)
+////                                .duration(1000)
+////                                .playOn(
+////                                        mRecyclerView
+////                                                .getChildAt(mRecyclerView.getChildCount() - 1)
+////                                                .findViewById(R.id.double_md_ismartv_linear_layout));
+////                }catch(Exception e){
+////                    e.printStackTrace();
+////                }
+//			/*delete by dragontec for bug 4303 end*/
+//				initTitle();
+//            }
         }
     }
 
@@ -572,5 +540,17 @@ public class TemplateDoubleLd extends Template
         }
         return false;
     }
+
+	@Override
+	public void onKey(View v, int keyCode, KeyEvent event) {
+    	if (isParentScrolling) {
+    		return;
+		}
+		if (event.getAction() == KeyEvent.ACTION_UP) {
+			if (keyCode == KeyEvent.KEYCODE_DPAD_UP || keyCode == KeyEvent.KEYCODE_DPAD_DOWN || keyCode == KeyEvent.KEYCODE_DPAD_LEFT || keyCode == KeyEvent.KEYCODE_DPAD_RIGHT) {
+				checkViewLocation(v);
+			}
+		}
+	}
 }
 /*modify by dragontec for bug 4362 end*/

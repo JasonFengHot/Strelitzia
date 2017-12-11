@@ -2,7 +2,9 @@
 package tv.ismar.homepage.adapter;
 
 import android.content.Context;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +15,8 @@ import android.widget.TextView;
 
 import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
+
+import org.w3c.dom.Text;
 
 import java.text.DecimalFormat;
 import java.util.List;
@@ -36,27 +40,21 @@ public class MovieMixAdapter extends BaseRecycleAdapter<MovieMixAdapter.MovieMix
 	private BigImage mBigImage;
 	/*add by dragontec for bug 4245 end*/
 	private List<BannerPoster> mData;
-	private int bigWidth;
-	private int smallWidth;
 
 	public MovieMixAdapter(Context context) {
 		mContext = context;
-		bigWidth = context.getResources().getDimensionPixelSize(R.dimen.banner_item_movie_big_width);
-		smallWidth = context.getResources().getDimensionPixelSize(R.dimen.banner_item_movie_small_width);
 	}
 
 	public MovieMixAdapter(Context context, List<BannerPoster> data){
 		this.mContext = context;
 		this.mData = data;
-		bigWidth = context.getResources().getDimensionPixelSize(R.dimen.banner_item_movie_big_width);
-		smallWidth = context.getResources().getDimensionPixelSize(R.dimen.banner_item_movie_small_width);
 	}
 
 	/*add by dragontec for bug 4245 start*/
 	public void setBigImage(BigImage bigImage) {
 		mBigImage = bigImage;
 		if (mBigImage != null) {
-			notifyItemChanged(0);
+			notifyItemInserted(0);
 		}
 	}
 
@@ -77,67 +75,56 @@ public class MovieMixAdapter extends BaseRecycleAdapter<MovieMixAdapter.MovieMix
 	}
 
 	@Override
+	public void clearData() {
+		if (mData != null) {
+			mData = null;
+			notifyDataSetChanged();
+		}
+	}
+
+	@Override
 	public MovieMixViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-		View view = LayoutInflater.from(mContext).inflate(R.layout.item_banner_movie_mix, parent, false);
+		View view = null;
+		if (viewType == TYPE_HEADER) {
+			view = LayoutInflater.from(mContext).inflate(R.layout.item_banner_movie_mix_big, parent, false);
+		} else if (viewType == TYPE_NORMAL){
+			view = LayoutInflater.from(mContext).inflate(R.layout.item_banner_movie_mix, parent, false);
+		}
 		return new MovieMixViewHolder(view);
 	}
 
 	@Override
 	public void onBindViewHolder(MovieMixViewHolder holder, int position) {
-		holder.mPosition = position;
-		if (position == 0){
-			ViewGroup.LayoutParams itemLayoutParams = holder.itemLayout.getLayoutParams();
-			itemLayoutParams.width = bigWidth;
-			holder.itemLayout.setLayoutParams(itemLayoutParams);
-
-
-			ViewGroup.LayoutParams wrapperLayoutParams = holder.itemWrapper.getLayoutParams();
-			wrapperLayoutParams.width = bigWidth;
-			holder.itemWrapper.setLayoutParams(wrapperLayoutParams);
-
-			ViewGroup.LayoutParams imageLayoutParams = holder.mImageView.getLayoutParams();
-			imageLayoutParams.width = bigWidth;
-			holder.mImageView.setLayoutParams(imageLayoutParams);
-
-			ViewGroup.LayoutParams titleLayoutParams = holder.mTitle.getLayoutParams();
-			titleLayoutParams.width = bigWidth;
-			holder.mTitle.setLayoutParams(titleLayoutParams);
-		}else {
-			ViewGroup.LayoutParams itemLayoutParams = holder.itemLayout.getLayoutParams();
-			itemLayoutParams.width = smallWidth;
-			holder.itemLayout.setLayoutParams(itemLayoutParams);
-
-			ViewGroup.LayoutParams wrapperLayoutParams = holder.itemWrapper.getLayoutParams();
-			wrapperLayoutParams.width = smallWidth;
-			holder.itemWrapper.setLayoutParams(wrapperLayoutParams);
-
-			ViewGroup.LayoutParams imageLayoutParams = holder.mImageView.getLayoutParams();
-			imageLayoutParams.width = smallWidth;
-			holder.mImageView.setLayoutParams(imageLayoutParams);
-
-			ViewGroup.LayoutParams titleLayoutParams = holder.mTitle.getLayoutParams();
-			titleLayoutParams.width = smallWidth;
-			holder.mTitle.setLayoutParams(titleLayoutParams);
-		}
-		/*modify by dragontec for bug 4245 start*/
-		if (mBigImage != null) {
-			if (position == 0) {
-				String title = mBigImage.title;
-				String imageUrl = mBigImage.poster_url;
-				String targetImageUrl = TextUtils.isEmpty(imageUrl) ? null : imageUrl;
-
-				holder.mItemView.findViewById(R.id.item_layout).setBackgroundResource(android.R.color.transparent);
+		holder.imageUrl = null;
+		holder.isMore = false;
+		holder.isBig = false;
+		switch (holder.getItemViewType()) {
+			case TYPE_HEADER: {
+				holder.itemLayout.setBackgroundResource(android.R.color.transparent);
 				holder.mTitle.setVisibility(View.VISIBLE);
 				holder.itemWrapper.setVisibility(View.VISIBLE);
-/*modify by dragontec for bug 4336 start*/
-				Picasso.with(mContext).load(targetImageUrl).placeholder(R.drawable.template_title_item_horizontal_preview).error(R.drawable.template_title_item_horizontal_preview).into(holder.mImageView);
-/*modify by dragontec for bug 4336 end*/
+				holder.isBig = true;
+				if (!TextUtils.isEmpty(mBigImage.poster_url)) {
+					holder.imageUrl = mBigImage.poster_url;
+					Picasso.with(mContext).load(mBigImage.poster_url).
+							placeholder(R.drawable.template_title_item_horizontal_preview).
+							error(R.drawable.template_title_item_horizontal_preview).
+							tag("banner").
+							into(holder.mImageView);
+					if (mScrollState != RecyclerView.SCROLL_STATE_IDLE || isParentScrolling) {
+						Picasso.with(mContext).pauseTag("banner");
+					}
+				} else {
+					Picasso.with(mContext).
+							load(R.drawable.template_title_item_horizontal_preview).
+							into(holder.mImageView);
+				}
 				holder.mTitle.setText(mBigImage.title + " ");
-				holder.mItemView.findViewById(R.id.item_layout).setTag(mBigImage);
-				holder.mItemView.findViewById(R.id.item_layout).setTag(R.id.banner_item_position, position);
+				holder.itemLayout.setTag(mBigImage);
+				holder.itemLayout.setTag(R.id.banner_item_position, position);
 
-				Picasso.with(mContext).load(VipMark.getInstance().getBannerIconMarkImage(mBigImage.top_left_corner)).into(holder.markLT);
-				Picasso.with(mContext).load(VipMark.getInstance().getBannerIconMarkImage(mBigImage.top_right_corner)).into(holder.markRT);
+				Picasso.with(mContext).load(VipMark.getInstance().getBannerIconMarkImage(mBigImage.top_left_corner)).tag("banner").into(holder.markLT);
+				Picasso.with(mContext).load(VipMark.getInstance().getBannerIconMarkImage(mBigImage.top_right_corner)).tag("banner").into(holder.markRT);
 
 				if (mBigImage.rating_average != 0) {
 					holder.markRB.setText(new DecimalFormat("0.0").format(mBigImage.rating_average));
@@ -152,77 +139,64 @@ public class MovieMixAdapter extends BaseRecycleAdapter<MovieMixAdapter.MovieMix
 					focusStr = mBigImage.focus;
 				}
 				holder.mTitle.setTag(new String[]{mBigImage.title, focusStr});
-				return;
-			} else {
-				position--;
 			}
-		}
-		if (mData != null) {
-			BannerPoster entity = mData.get(position);
-			String title = entity.title;
-			String imageUrl;
-//			if (position == 0) {
-//				imageUrl = entity.poster_url;
-//			} else {
-				imageUrl = entity.vertical_url;
-//			}
-			String targetImageUrl = TextUtils.isEmpty(imageUrl) ? null : imageUrl;
-
-//			if (position == 0) {
-//				holder.mItemView.findViewById(R.id.item_layout).setBackgroundResource(android.R.color.transparent);
-//				holder.mTitle.setVisibility(View.VISIBLE);
-//				holder.itemWrapper.setVisibility(View.VISIBLE);
-///*modify by dragontec for bug 4336 start*/
-//				Picasso.with(mContext).load(targetImageUrl).placeholder(R.drawable.template_title_item_horizontal_preview)
-//						.error(R.drawable.template_title_item_horizontal_preview).into(holder.mImageView);
-///*modify by dragontec for bug 4336 end*/
-//			} else {
-				if (!TextUtils.isEmpty(entity.vertical_url) && entity.vertical_url.equals("更多")) {
-					holder.mItemView.findViewById(R.id.item_layout).setBackgroundResource(R.drawable.banner_vertical_more);
+				break;
+			case TYPE_NORMAL: {
+				if (position == 0) {
+					holder.mLeftSpace.setVisibility(View.GONE);
+				} else {
+					holder.mLeftSpace.setVisibility(View.VISIBLE);
+				}
+				if (getItemViewType(0) == TYPE_HEADER) {
+					position--;
+				}
+				BannerPoster poster = mData.get(position);
+				if (!TextUtils.isEmpty(poster.vertical_url) && poster.vertical_url.equals("更多")) {
+					holder.isMore = true;
+					holder.itemLayout.setBackgroundResource(R.drawable.banner_vertical_more);
 					holder.mTitle.setVisibility(View.INVISIBLE);
 					holder.itemWrapper.setVisibility(View.INVISIBLE);
 				} else {
-					holder.mItemView.findViewById(R.id.item_layout).setBackgroundResource(android.R.color.transparent);
+					holder.itemLayout.setBackgroundResource(android.R.color.transparent);
 					holder.mTitle.setVisibility(View.VISIBLE);
 					holder.itemWrapper.setVisibility(View.VISIBLE);
-/*modify by dragontec for bug 4336 start*/
-					Picasso.with(mContext).load(targetImageUrl).
-/*add by dragontec for bug 4205 start*/
-							memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE).
-/*add by dragontec for bug 4205 end*/
-							placeholder(R.drawable.template_title_item_vertical_preview).
-							error(R.drawable.template_title_item_vertical_preview).
-							into(holder.mImageView);
-/*modify by dragontec for bug 4336 end*/
+					if (!TextUtils.isEmpty(poster.vertical_url)) {
+						holder.imageUrl = poster.vertical_url;
+						Picasso.with(mContext).load(poster.vertical_url).
+								memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE).
+								placeholder(R.drawable.template_title_item_vertical_preview).
+								error(R.drawable.template_title_item_vertical_preview).
+								tag("banner").
+								into(holder.mImageView);
+						if (mScrollState != RecyclerView.SCROLL_STATE_IDLE || isParentScrolling) {
+							Picasso.with(mContext).pauseTag("banner");
+						}
+					} else {
+						Picasso.with(mContext).load(R.drawable.template_title_item_vertical_preview).
+								into(holder.mImageView);
+					}
 				}
+				holder.mTitle.setText(poster.title + " ");
+				holder.itemLayout.setTag(poster);
+				holder.itemLayout.setTag(R.id.banner_item_position, position);
 
-//			}
-			holder.mTitle.setText(entity.title + " ");
-			holder.mItemView.findViewById(R.id.item_layout).setTag(entity);
-			holder.mItemView.findViewById(R.id.item_layout).setTag(R.id.banner_item_position, position);
+				Picasso.with(mContext).load(VipMark.getInstance().getBannerIconMarkImage(poster.top_left_corner)).tag("banner").into(holder.markLT);
+				Picasso.with(mContext).load(VipMark.getInstance().getBannerIconMarkImage(poster.top_right_corner)).tag("banner").into(holder.markRT);
 
-			Picasso.with(mContext).load(VipMark.getInstance().getBannerIconMarkImage(entity.top_left_corner)).into(holder.markLT);
-			Picasso.with(mContext).load(VipMark.getInstance().getBannerIconMarkImage(entity.top_right_corner)).into(holder.markRT);
-
-			if (entity.rating_average != 0) {
-				holder.markRB.setText(new DecimalFormat("0.0").format(entity.rating_average));
-				holder.markRB.setVisibility(View.VISIBLE);
-			} else {
-				holder.markRB.setVisibility(View.INVISIBLE);
+				if (poster.rating_average != 0) {
+					holder.markRB.setText(new DecimalFormat("0.0").format(poster.rating_average));
+					holder.markRB.setVisibility(View.VISIBLE);
+				} else {
+					holder.markRB.setVisibility(View.INVISIBLE);
+				}
+				String focusStr = poster.title;
+				if (poster.focus != null && !poster.focus.equals("") && !poster.focus.equals("null")) {
+					focusStr = poster.focus;
+				}
+				holder.mTitle.setTag(new String[]{poster.title, focusStr});
 			}
-
-//			if (position == 0) {
-//				holder.mLeftSpace.setVisibility(View.GONE);
-//			} else {
-				holder.mLeftSpace.setVisibility(View.VISIBLE);
-//			}
-			String focusStr = entity.title;
-			if (entity.focus != null && !entity.focus.equals("") && !entity.focus.equals("null")) {
-				focusStr = entity.focus;
-			}
-			holder.mTitle.setTag(new String[]{entity.title, focusStr});
+				break;
 		}
-		/*modify by dragontec for bug 4245 end*/
 	}
 
 	@Override
@@ -239,6 +213,15 @@ public class MovieMixAdapter extends BaseRecycleAdapter<MovieMixAdapter.MovieMix
 		/*modify by dragontec for bug 4245 end*/
 	}
 
+	@Override
+	public int getItemViewType(int position) {
+		if (position == 0 && mBigImage != null) {
+			return TYPE_HEADER;
+		} else {
+			return TYPE_NORMAL;
+		}
+	}
+
 	public class MovieMixViewHolder extends BaseViewHolder {
 		private final RecyclerImageView markRT;
 		private Space mLeftSpace;
@@ -249,6 +232,9 @@ public class MovieMixAdapter extends BaseRecycleAdapter<MovieMixAdapter.MovieMix
 		private RelativeLayout itemWrapper;
 		private RecyclerImageView markLT;
 		private TextView markRB;
+		private String imageUrl;
+		private boolean isMore;
+		private boolean isBig;
 
 		public MovieMixViewHolder(View itemView) {
 			super(itemView, MovieMixAdapter.this);
@@ -261,6 +247,64 @@ public class MovieMixAdapter extends BaseRecycleAdapter<MovieMixAdapter.MovieMix
 			markLT = (RecyclerImageView) itemView.findViewById(R.id.banner_mark_lt);
 			markRB = (TextView)itemView.findViewById(R.id.banner_mark_br);
 			markRT = (RecyclerImageView) itemView.findViewById(R.id.banner_mark_rt);
+		}
+
+		@Override
+		public void clearImage() {
+			super.clearImage();
+			if (isMore) {
+				//do nothing
+			} else {
+				if (itemLayout != null) {
+					itemLayout.setBackgroundResource(R.drawable.transparent);
+				}
+				if (isBig) {
+					Picasso.with(mContext).load(R.drawable.template_title_item_horizontal_preview).
+							into(mImageView);
+				} else {
+					Picasso.with(mContext).load(R.drawable.template_title_item_vertical_preview).
+							into(mImageView);
+				}
+			}
+		}
+
+		@Override
+		public void restoreImage() {
+			if (isMore) {
+				//do nothing
+			} else {
+				if (itemLayout != null) {
+					itemLayout.setBackgroundResource(R.drawable.transparent);
+				}
+				if (mImageView != null) {
+					if (isBig) {
+						if (imageUrl != null) {
+							Picasso.with(mContext).load(imageUrl).
+									memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE).
+									placeholder(R.drawable.template_title_item_horizontal_preview).
+									error(R.drawable.template_title_item_horizontal_preview).
+									tag("banner").
+									into(mImageView);
+						} else {
+							Picasso.with(mContext).load(R.drawable.template_title_item_horizontal_preview).
+									into(mImageView);
+						}
+					} else {
+						if (imageUrl != null) {
+							Picasso.with(mContext).load(imageUrl).
+									memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE).
+									placeholder(R.drawable.template_title_item_vertical_preview).
+									error(R.drawable.template_title_item_vertical_preview).
+									tag("banner").
+									into(mImageView);
+						} else {
+							Picasso.with(mContext).load(R.drawable.template_title_item_vertical_preview).
+									into(mImageView);
+						}
+					}
+				}
+			}
+			super.restoreImage();
 		}
 
 		@Override

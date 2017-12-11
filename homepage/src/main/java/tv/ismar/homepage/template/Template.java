@@ -22,7 +22,11 @@ import android.widget.TextView;
 
 	/*add by dragontec for bug 4077 start*/
 import com.open.androidtvwidget.leanback.recycle.RecyclerViewTV;
+import com.qiyi.speedrunner.speedrunner.IFailureCallback;
+import com.squareup.picasso.Picasso;
 	/*add by dragontec for bug 4077 end*/
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -39,6 +43,8 @@ import tv.ismar.app.entity.banner.BannerEntity;
 import tv.ismar.homepage.R;
 /*add by dragontec for bug 4338 end*/
 /*add by dragontec for bug 4362 start*/
+import tv.ismar.homepage.adapter.BaseRecycleAdapter;
+import tv.ismar.homepage.adapter.BaseViewHolder;
 import tv.ismar.homepage.control.FetchDataControl;
 /*add by dragontec for bug 4362 end*/
 import tv.ismar.homepage.fragment.ChannelFragment;
@@ -55,6 +61,19 @@ import static android.view.MotionEvent.BUTTON_PRIMARY;
  * @AUTHOR: xi @DATE: 2017/8/29 @DESC: 模版基类(只负责模版约束，其他的一律不能加，不能参杂任何业务)
  */
 public abstract class Template implements BaseControl.ControlCallBack {
+	public static final String TITLE_KEY = "title";
+	public static final String URL_KEY = "url";
+	public static final String BANNER_KEY = "banner";
+	public static final String TEMPLATE_KEY = "template";
+	public static final String CHANNEL_KEY = "channel";
+	public static final String NAME_KEY = "name";
+	public static final String MORE_TITLE_FLAG = "title";
+	public static final String MORE_CHANNEL_FLAG = "channel";
+	public static final String MORE_STYLE_FLAG = "style";
+	public static final String BANNER_LOCATION="location";
+
+	private static final int CHECK_PARENT_VIEW_DELAY = 5000;
+
 	protected final String TAG = this.getClass().getSimpleName();
 	protected Context mContext;
 	protected TextView mTitleCountTv; // 标题数量view
@@ -84,6 +103,15 @@ public abstract class Template implements BaseControl.ControlCallBack {
 	/*add by dragontec for bug 4334 end*/
 	protected FetchDataControl mFetchControl;
 	protected String mBannerPk;
+	private final Object mSetVisibilityLock = new Object();
+	private List<Integer> mSetVisibilityList = new ArrayList<>();
+
+	protected boolean isParentScrolling = false;
+
+	private boolean isAttached = true;
+
+	private CheckParentViewLocaitonRunnable mCheckParentViewLocaitonRunnable = null;
+	private SetParentVisibilityRunnable mSetParentVisibilityRunnable = null;
 
 	/*modify by dragontec for bug 4334 start*/
 	public Template(Context context, int position) {
@@ -112,6 +140,13 @@ public abstract class Template implements BaseControl.ControlCallBack {
 		return this;
 	}
 
+	private void clear() {
+		unInitData();
+		unInitListener();
+		clearView();
+		mParentView = null;
+	}
+
 	/*设置数量view*/
 	public Template setTitleCountView(TextView view) {
 		mTitleCountTv = view;
@@ -125,12 +160,17 @@ public abstract class Template implements BaseControl.ControlCallBack {
 	 */
 	public abstract void getView(View view);
 
+
+	public abstract void clearView();
+
 	/**
 	 * 处理数据
 	 *
 	 * @param bundle
 	 */
 	public abstract void initData(Bundle bundle);
+
+	public abstract void unInitData();
 
 	/*add by dragontec for bug 4200 start*/
 	public abstract void fetchData();
@@ -144,7 +184,7 @@ public abstract class Template implements BaseControl.ControlCallBack {
 	/*add by dragontec for bug 4334 end*/
 	/*add by dragontec for bug 4200 end*/
 
-	protected void initListener(View view) {
+	protected void initListener(final View view) {
 /*add by dragontec for bug 4332 start*/
 		if (mHoverView != null) {
 			mHoverView.setOnHoverListener(new View.OnHoverListener() {
@@ -178,6 +218,11 @@ public abstract class Template implements BaseControl.ControlCallBack {
 				@Override
 				public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
 					synchronized (mLock) {
+						if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+							Picasso.with(mContext).resumeTag("banner");
+						} else {
+							Picasso.with(mContext).pauseTag("banner");
+						}
 						if (checkScrollEnd && newState == RecyclerView.SCROLL_STATE_IDLE) {
 							checkScrollEnd = false;
 							checkNavigationButtonVisibility();
@@ -243,8 +288,21 @@ public abstract class Template implements BaseControl.ControlCallBack {
 				}
 			});
 		}
-		/*add by dragontec for bug 4338 end*/
-/*add by dragontec for bug 4332 emd*/
+	}
+
+	protected void unInitListener() {
+		if (mHoverView != null) {
+			mHoverView.setOnHoverListener(null);
+		}
+		if (mRecyclerView != null) {
+			mRecyclerView.clearOnScrollListeners();
+		}
+		if (navigationLeft != null) {
+			navigationLeft.setOnHoverListener(null);
+		}
+		if (navigationRight != null) {
+			navigationRight.setOnHoverListener(null);
+		}
 	}
 
 	public void goToNextPage(View view) {
@@ -364,16 +422,23 @@ public abstract class Template implements BaseControl.ControlCallBack {
 			handler.removeCallbacks(mCheckFocusRunnable);
 			mCheckFocusRunnable = null;
 		}
+		if (mCheckParentViewLocaitonRunnable != null) {
+			handler.removeCallbacks(mCheckParentViewLocaitonRunnable);
+			mCheckParentViewLocaitonRunnable = null;
+		}
+		if (mSetParentVisibilityRunnable != null) {
+			handler.removeCallbacks(mSetParentVisibilityRunnable);
+			mSetParentVisibilityRunnable = null;
+		}
 	}
 	/*modify by dragontec for bug 4077 start*/
 
 	public abstract void onStop();
 
 	public void onDestroy() {
+		clear();
 		mParentView = null;
-		if (mFetchControl != null) {
-			mFetchControl = null;
-		}
+		mFetchControl = null;
 		handler.removeCallbacksAndMessages(null);
 		handler = null;
 	}
@@ -427,28 +492,12 @@ public abstract class Template implements BaseControl.ControlCallBack {
 
 	/*add by dragontec for bug 4200 start*/
 	/*modify by dragontec for bug 4334 start*/
-	public boolean checkViewAppear() {
-		boolean ret = true;
-		//等view第一次显示出画面的是以进行数据取得
+	public void checkViewAppear() {
 		synchronized (mCheckViewLock) {
 			if (isNeedFillData && mParentView != null) {
-				/*modify by dragontec for bug 4412 start*/
-//				if (mPosition < ChannelFragment.LOAD_BANNERS_COUNT) {
-					fillData();
-//				} else {
-//					mParentView.getLocationOnScreen(location);
-//					if (location[1] + mParentView.getHeight() >= 0) {
-//						if (location[1] >= mParentView.getResources().getDisplayMetrics().heightPixels + 1) {
-//							ret = false;
-//						} else {
-//							fillData();
-//						}
-//					}
-//				}
-				/*modify by dragontec for bug 4412 end*/
+				fillData();
 			}
 		}
-		return ret;
 	}
 	/*modify by dragontec for bug 4334 end*/
 	/*add by dragontec for bug 4200 end*/
@@ -645,10 +694,33 @@ public abstract class Template implements BaseControl.ControlCallBack {
     /*add by dragontec for bug 4221 end*/
 
 	/*add by dragontec for bug 4249 start*/
-	public void requestFocus() {
+	public boolean requestFocus() {
+		if (mHeadView != null && mHeadView.getVisibility() == View.VISIBLE) {
+			mHeadView.requestFocus();
+			mHeadView.requestFocusFromTouch();
+			return true;
+		}
+		if (mRecyclerView != null) {
+			int position = mRecyclerView.getFirstCompletelyVisiblePosition();
+			if (position != RecyclerView.NO_POSITION) {
+				RecyclerView.ViewHolder viewHolder = mRecyclerView.findViewHolderForAdapterPosition(position);
+				if (viewHolder != null) {
+					viewHolder.itemView.requestFocus();
+					viewHolder.itemView.requestFocusFromTouch();
+					return true;
+				}
+			} else {
+				mRecyclerView.requestFocus();
+				mRecyclerView.requestFocusFromTouch();
+				return true;
+			}
+		}
 		if (mParentView != null) {
 			mParentView.requestFocus();
+			mParentView.requestFocusFromTouch();
+			return true;
 		}
+		return false;
 	}
 /*add by dragontec for bug 4249 end*/
 
@@ -707,7 +779,7 @@ public abstract class Template implements BaseControl.ControlCallBack {
 		switch (direction) {
 			case View.FOCUS_DOWN: {
 				/*modify by dragontec for bug 4334 start*/
-				if (mParentView.getVisibility() != View.GONE) {
+				if (mParentView != null && mParentView.getVisibility() != View.GONE) {
 					if (mRecyclerView != null && mRecyclerView.getChildCount() > 0) {
 						/*modify by dragontec for bug 4409 start*/
 						if (mRecyclerView.isSelectedItemAtCentered()) {
@@ -750,7 +822,7 @@ public abstract class Template implements BaseControl.ControlCallBack {
 			}
 			case View.FOCUS_UP: {
 				/*modify by dragontec for bug 4334 start*/
-				if (mParentView.getVisibility() != View.GONE) {
+				if (mParentView != null && mParentView.getVisibility() != View.GONE) {
 					if (mRecyclerView != null && mRecyclerView.getChildCount() > 0) {
 						/*modify by dragontec for bug 4409 start*/
 						if (mRecyclerView.isSelectedItemAtCentered()) {
@@ -847,19 +919,19 @@ public abstract class Template implements BaseControl.ControlCallBack {
 	/*add by dragontec for bug 4412 start*/
 	public void setVisibility(int visibility) {
 		if (mParentView != null) {
-//			View title = mParentView.findViewById(R.id.banner_title_tv);
-//			if (title != null) {
-//				title.setVisibility(visibility);
-//			}
-//			View titleCount = mParentView.findViewById(R.id.banner_title_count);
-//			if (titleCount != null) {
-//				titleCount.setVisibility(visibility);
-//			}
-//			View recyclerLayout = mParentView.findViewById(R.id.recycler_layout);
-//			if (recyclerLayout != null) {
-//				recyclerLayout.setVisibility(visibility);
-//			}
-			mParentView.setVisibility(visibility);
+			synchronized (mSetVisibilityLock) {
+				if (visibility == View.GONE) {
+					mParentView.setVisibility(visibility);
+				} else if (isParentScrolling) {
+					mSetVisibilityList.add(visibility);
+				} else {
+					if (mSetParentVisibilityRunnable != null) {
+						handler.removeCallbacks(mSetParentVisibilityRunnable);
+					}
+					mSetParentVisibilityRunnable = new SetParentVisibilityRunnable(visibility);
+					handler.postDelayed(mSetParentVisibilityRunnable, 200);
+				}
+			}
 		}
 	}
 	/*add by dragontec for bug 4412 end*/
@@ -873,5 +945,138 @@ public abstract class Template implements BaseControl.ControlCallBack {
 			}
 		}
 	}
+
+	public void forceCheckParentView() {
+		if (mCheckParentViewLocaitonRunnable != null) {
+			handler.removeCallbacks(mCheckParentViewLocaitonRunnable);
+			mCheckParentViewLocaitonRunnable = null;
+		}
+		if (mParentView != null) {
+			int[] location = new int[2];
+			mParentView.getLocationOnScreen(location);
+			if (location[1] + mParentView.getHeight() <= 0 || location[1] >= mParentView.getResources().getDisplayMetrics().heightPixels) {
+				onViewAttachStateChange(false);
+			} else {
+				onViewAttachStateChange(true);
+			}
+		}
+	}
+
+	public void setParentScrolling(boolean isParentScrolling) {
+		Integer visibility = -1;
+		synchronized (mSetVisibilityLock) {
+			this.isParentScrolling = isParentScrolling;
+			if (mRecyclerView != null && mRecyclerView.getAdapter() != null && mRecyclerView.getAdapter() instanceof BaseRecycleAdapter) {
+				((BaseRecycleAdapter) mRecyclerView.getAdapter()).isParentScrolling = isParentScrolling;
+			}
+			if (isParentScrolling) {
+				if (mCheckParentViewLocaitonRunnable != null) {
+					handler.removeCallbacks(mCheckParentViewLocaitonRunnable);
+					mCheckParentViewLocaitonRunnable = null;
+				}
+			} else {
+				if (mParentView != null) {
+					int[] location = new int[2];
+					mParentView.getLocationOnScreen(location);
+					if (location[1] + mParentView.getHeight() <= 0 || location[1] >= mParentView.getResources().getDisplayMetrics().heightPixels) {
+						if (mCheckParentViewLocaitonRunnable == null) {
+							mCheckParentViewLocaitonRunnable = new CheckParentViewLocaitonRunnable();
+							handler.postDelayed(mCheckParentViewLocaitonRunnable, 0);
+						}
+					} else {
+						onViewAttachStateChange(true);
+					}
+				}
+				if (mSetVisibilityList.size() > 0) {
+					visibility = mSetVisibilityList.get(mSetVisibilityList.size() - 1);
+					mSetVisibilityList.clear();
+				}
+			}
+		}
+		if (visibility != -1) {
+			setVisibility(visibility);
+		}
+	}
+
+	public interface Callback {
+		void scrollToTop(int position);
+	}
+
+	protected Callback mCallback = null;
+
+	public void setCallback(Callback callback) {
+		mCallback = callback;
+	}
+
+	public void onViewAttachStateChange(boolean attached) {
+		if (attached == isAttached) {
+			return;
+		}
+		if (mRecyclerView != null && mRecyclerView.getLayoutManager() != null && mRecyclerView.getLayoutManager().getItemCount() > 0) {
+			int i = mRecyclerView.findFirstVisibleItemPosition();
+			if (i != RecyclerView.NO_POSITION) {
+				for (; i <= mRecyclerView.findLastVisibleItemPosition(); i++) {
+					RecyclerView.ViewHolder viewHolder = mRecyclerView.findViewHolderForAdapterPosition(i);
+					if (viewHolder != null && viewHolder instanceof BaseViewHolder) {
+						if (attached) {
+							((BaseViewHolder) viewHolder).restoreImage();
+						} else {
+							((BaseViewHolder) viewHolder).clearImage();
+						}
+						isAttached = attached;
+					}
+				}
+			}
+		}
+	}
+
+	protected void checkViewLocation(View v) {
+		int[] location = new int[2];
+		v.getLocationOnScreen(location);
+		if (location[1] < 0 || location[1] + v.getHeight() > mContext.getResources().getDisplayMetrics().heightPixels) {
+			//垂直未显示在屏幕内
+			if (mCallback != null) {
+				mCallback.scrollToTop(mPosition);
+			}
+		}
+	}
+
+	private class CheckParentViewLocaitonRunnable implements Runnable {
+
+		@Override
+		public void run() {
+			if (handler != null && mCheckParentViewLocaitonRunnable != null) {
+				handler.removeCallbacks(mCheckParentViewLocaitonRunnable);
+				mCheckParentViewLocaitonRunnable = null;
+			}
+			if (mParentView != null) {
+				int[] location = new int[2];
+				mParentView.getLocationOnScreen(location);
+				if (location[1] + mParentView.getHeight() <= 0 || location[1] >= mParentView.getResources().getDisplayMetrics().heightPixels) {
+					onViewAttachStateChange(false);
+				} else {
+					onViewAttachStateChange(true);
+				}
+			}
+		}
+	}
+
+	private class SetParentVisibilityRunnable implements Runnable {
+		int visibility;
+
+		SetParentVisibilityRunnable(int visibility) {
+			this.visibility = visibility;
+		}
+
+		@Override
+		public void run() {
+			if (handler != null && mSetParentVisibilityRunnable != null) {
+				handler.removeCallbacks(mSetParentVisibilityRunnable);
+				mSetParentVisibilityRunnable = null;
+			}
+			mParentView.setVisibility(visibility);
+		}
+	}
+
 }
 /*modify by dragontec for bug 4362 end*/
