@@ -37,8 +37,6 @@ android {
     lintOptions {
         abortOnError false
     }
-    buildToolsVersion '26.0.2'
-    sourceSets { main { assets.srcDirs = ['src/main/assets', 'src/main/assets/'] } }
 }
 
 dependencies {
@@ -50,8 +48,8 @@ dependencies {
     compile project(':utilcode-1.8.2')
     compile 'com.orhanobut:logger:1.15'
     compile 'io.reactivex:rxandroid:1.2.1'
-    compile 'com.android.support:multidex:1.0.2'
-    compile 'com.koushikdutta.async:androidasync:2.2.1'
+    compile 'com.android.support:multidex:1.0.1'
+    compile 'com.koushikdutta.async:androidasync:2.+'
 }
 
 tasks.withType(JavaCompile) {

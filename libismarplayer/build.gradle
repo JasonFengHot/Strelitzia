@@ -24,7 +24,6 @@ android {
     lintOptions {
         abortOnError false
     }
-    buildToolsVersion '26.0.2'
 }
 
 Map<String, String> rootDependence = rootProject.ext.dependencies
@@ -38,7 +37,7 @@ dependencies {
     compile rootDependence.support_v4
     compile project(':appbase')
     compile project(':statistics')
-    implementation project(':bestvframework')
+    compile project(':bestvframework')
 }
 
 tasks.withType(JavaCompile) {
