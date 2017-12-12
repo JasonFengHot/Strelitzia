@@ -397,7 +397,13 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
 
             @Override
             public void onShowDown(boolean showDown) {
-                if(section_group.getChildCount()<10) {
+                int onePageMaxCount = 9;
+                for (int i = 0; i < section_group.getChildCount(); i++) {
+                    if(section_group.getChildAt(i).getVisibility() == View.GONE){
+                        onePageMaxCount ++;
+                    }
+                }
+                if(section_group.getChildCount()<=onePageMaxCount) {
                     filter_root_view.setShow_left_down(false);
                 }else{
                     filter_root_view.setShow_left_down(showDown);
@@ -608,42 +614,59 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
                         if(isFirst){
                             isFirst=false;
                         }
-                        //将请求到的栏目数据替换之前占位的空数据
-                        for (int i = 0; i <listSectionEntity.getObjects().size() ; i++) {
-                            if(mAllSectionItemList.getCount()>specialPos.get(index).startPosition + i)
-                                mAllSectionItemList.getObjects().set(specialPos.get(index).startPosition + i,listSectionEntity.getObjects().get(i));
+                        //修正specialPos
+/*modify by dragontec for bug 4501 start*/
+                        int oldSectionCount = -1;
+                        oldSectionCount = specialPos.get(index).count;
+/*modify by dragontec for bug 4501 end*/
+                        if(specialPos.get(index).count != listSectionEntity.getObjects().size()){
+                            specialPos.get(index).count = listSectionEntity.getObjects().size();
+                            int totalCount = specialPos.get(index).startPosition;
+                            for (int i = index; i < specialPos.size(); i++) {
+                                SpecialPos item = specialPos.get(i);
+                                item.startPosition = totalCount;
+                                item.endPosition = specialPos.get(i).startPosition + specialPos.get(i).count - 1;
+                                totalCount += item.count;
+                            }
                         }
-                        //将占位和实际请求到的数据大小进行修正，并修正标题所在的位置
-//                        int removeCount=0;
-//                        if(index!=specialPos.size()-1&&specialPos.get(index).position+listSectionEntity.getCount()<specialPos.get(index).position-1) {
-//                            List<ListSectionEntity.ObjectsBean> list1=mAllSectionItemList.getObjects().subList(0,specialPos.get(index).position + listSectionEntity.getCount()+1);
-//                            List<ListSectionEntity.ObjectsBean> list2=mAllSectionItemList.getObjects().subList(specialPos.get(index+1).position,mAllSectionItemList.getCount());
-//                            mAllSectionItemList.setObjects(new ArrayList<ListSectionEntity.ObjectsBean>());
-//                            mAllSectionItemList.getObjects().addAll(list1);
-//                            mAllSectionItemList.getObjects().addAll(list2);
-//                            removeCount=specialPos.get(index+1).position-1-specialPos.get(index).position-listSectionEntity.getCount();
-//                            mAllSectionItemList.setCount(mAllSectionItemList.getObjects().size());
-//                            Log.e("removecount", removeCount + "");
-//                            for (int i = index + 1; i < sectionSize; i++) {
-//                                specialPos.get(i).position = specialPos.get(i).position - removeCount;
+
+                        mFocusGridLayoutManager.setSpecialPos(specialPos);
+                        if(isVertical){
+                            vSpaceItemDecoration.setSpecialPos(specialPos);
+                        }else{
+                            hSpaceItemDecoration.setSpecialPos(specialPos);
+                        }
+                        //将请求到的栏目数据替换之前占位的空数据
+                        List<ListSectionEntity.ObjectsBean> afterData = new ArrayList<>();
+                        if(index < specialPos.size() - 1){
+/*modify by dragontec for bug 4501 start*/
+                            afterData = mAllSectionItemList.getObjects().subList(specialPos.get(index).startPosition + oldSectionCount, mAllSectionItemList.getObjects().size());
+/*modify by dragontec for bug 4501 end*/
+                        }
+                        List<ListSectionEntity.ObjectsBean> beforeData = new ArrayList<>();
+                        if(index >0){
+/*modify by dragontec for bug 4501 start*/
+                            beforeData = mAllSectionItemList.getObjects().subList(0, specialPos.get(index).startPosition);
+/*modify by dragontec for bug 4501 end*/
+                        }
+                        List<ListSectionEntity.ObjectsBean> allData = new ArrayList<>();
+                        allData.addAll(beforeData);
+                        allData.addAll(listSectionEntity.getObjects());
+                        allData.addAll(afterData);
+                        mAllSectionItemList.setObjects(allData);
+                        mAllSectionItemList.setCount(mAllSectionItemList.getObjects().size());
+//                        for (int i = 0; i <listSectionEntity.getObjects().size() ; i++) {
+//                            if(mAllSectionItemList.getCount()>specialPos.get(index).startPosition + i){
+//                                if(oldCount > -1){
+//
+//                                }else{
+//                                    mAllSectionItemList.getObjects().set(specialPos.get(index).startPosition + i,listSectionEntity.getObjects().get(i));
+//                                }
+//                            } else{
+//                                mAllSectionItemList.getObjects().add(listSectionEntity.getObjects().get(i));
 //                            }
-//                            if(vSpaceItemDecoration!=null)
-//                                vSpaceItemDecoration.setSpecialPos(specialPos);
-//                            if(hSpaceItemDecoration!=null)
-//                                hSpaceItemDecoration.setSpecialPos(specialPos);
-//                            if(listPosterAdapter!=null)
-//                                listPosterAdapter.setmSpecialPos(specialPos);
-//                            if(mFocusGridLayoutManager!=null)
-//                                mFocusGridLayoutManager.setSpecialPos(specialPos);
-//                        }else if(index==sectionSize-1&&mAllSectionItemList.getCount()>specialPos.get(index-1<0?0:index-1).position+listSectionEntity.getCount()){
-//                            List<ListSectionEntity.ObjectsBean> list1=mAllSectionItemList.getObjects().subList(0,specialPos.get(index).position + listSectionEntity.getCount()+1);
-//                            mAllSectionItemList.setObjects(new ArrayList<ListSectionEntity.ObjectsBean>());
-//                            mAllSectionItemList.getObjects().addAll(list1);
-//                            removeCount=mAllSectionItemList.getCount()-mAllSectionItemList.getObjects().size();
-//                            mAllSectionItemList.setCount(mAllSectionItemList.getObjects().size());
-//                        }else{
-//                            removeCount=0;
 //                        }
+//                        mAllSectionItemList.setCount(mAllSectionItemList.getObjects().size());
                         //数据大小修正之后填充海报区内容
                         processResultData(mAllSectionItemList,index,0,isFirstPos);
                         mFocusGridLayoutManager.setmItemCount(mAllSectionItemList.getCount());
@@ -1284,7 +1307,19 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
                 }
             } else if (id == R.id.poster_arrow_up) {
                 if (filter_tab.isChecked()) {
-                    poster_recyclerview.directSmoothScrollBy(0, -onePageScrollY);
+                    int firstVisible = mFocusGridLayoutManager.findFirstCompletelyVisibleItemPosition();
+                    int spaceV = poster_recyclerview.getSpaceV();
+                    if(itemHeight == -1){
+                        View view = mFocusGridLayoutManager.findViewByPosition(firstVisible);
+                        Rect rect = new Rect();
+                        view.getGlobalVisibleRect(rect);
+                        itemHeight = rect.height();
+                    }
+                    int scrollOffset = -(itemHeight + spaceV/2) * 2;
+                    if(firstVisible <= mFocusGridLayoutManager.getDefaultSpanCount()*2){
+                        scrollOffset -= spaceV;
+                    }
+                    poster_recyclerview.directSmoothScrollBy(0, scrollOffset);
                 } else {
                     int firstVisible = mFocusGridLayoutManager.findFirstCompletelyVisibleItemPosition();
                     nextPos = firstVisible-1;
@@ -1307,7 +1342,7 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
                         }
                     }
                     if(belongSection > -1){
-                        int baseOffset = -(itemHeight + spaceV/2)*2;
+                        int baseOffset = -(itemHeight + spaceV)*2;
                         View firstVisibleView = mFocusGridLayoutManager.findViewByPosition(firstVisible);
                         //修正初始位置不对
                         if(specialPos.contains(new SpecialPos(firstVisible))){
@@ -1344,7 +1379,17 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
                 }
             } else if (id == R.id.poster_arrow_down) {
                 if (filter_tab.isChecked()) {
-                    poster_recyclerview.directSmoothScrollBy(0, onePageScrollY);
+//                    poster_recyclerview.directSmoothScrollBy(0, onePageScrollY);
+                    int firstVisible = mFocusGridLayoutManager.findFirstCompletelyVisibleItemPosition();
+                    int spaceV = poster_recyclerview.getSpaceV();
+                    if(itemHeight == -1){
+                        View view = mFocusGridLayoutManager.findViewByPosition(firstVisible);
+                        Rect rect = new Rect();
+                        view.getGlobalVisibleRect(rect);
+                        itemHeight = rect.height();
+                    }
+                    int scrollOffset = (itemHeight + spaceV) * 2;
+                    poster_recyclerview.directSmoothScrollBy(0, scrollOffset);
                 } else {
                     int lastVisible = mFocusGridLayoutManager.findLastCompletelyVisibleItemPosition();
                     int firstVisible = mFocusGridLayoutManager.findFirstCompletelyVisibleItemPosition();
@@ -1576,9 +1621,16 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
             });
             section_group.addView(radioButton);
         }
-        if(section_group.getChildCount()<10) {
+        int onePageMaxCount = 9;
+        for (int i = 0; i < section_group.getChildCount(); i++) {
+            if(section_group.getChildAt(i).getVisibility() == View.GONE){
+                onePageMaxCount ++;
+            }
+        }
+        if(section_group.getChildCount()<= onePageMaxCount) {
             filter_root_view.setShow_left_down(false);
         }
+
         specialPos = new ArrayList<>();
 //        SpecialPos first = new SpecialPos();
 //        specialPos.add(first);
@@ -1597,6 +1649,7 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
             item.startPosition = totalItemCount;
             item.endPosition = item.startPosition + sections.get(i).count - 1;
             item.sections = sections.get(i).title;
+            item.count = sections.get(i).count;
             specialPos.add(item);
             totalItemCount += sections.get(i).count;
         }
@@ -1629,7 +1682,9 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
         mFilterFocusGridLayoutManager.setLeftFocusView(filter_tab);
         poster_recyclerview.setLayoutManager(mFilterFocusGridLayoutManager);
         list_poster_recyclerview.setLayoutManager(mFocusGridLayoutManager);
-        totalItemCount+=sections.size();
+/*modify by dragontec for bug 4501 start*/
+//        totalItemCount+=sections.size();
+/*modify by dragontec for bug 4501 end*/
         mAllSectionItemList = new ListSectionEntity();
         mAllSectionItemList.setObjects(new ArrayList<ListSectionEntity.ObjectsBean>());
         for (int i = 0; i <totalItemCount ; i++) {

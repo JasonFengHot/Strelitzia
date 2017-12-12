@@ -21,7 +21,7 @@ import tv.ismar.listpage.R;
 
 public class FilterListRecyclerView extends MyRecyclerView {
     private int itemHeight;
-    private boolean blockFocusScrollWhenManualScroll = false;
+    private boolean blockFocusScrollWhenManualScroll = true;
     private OnRecyclerScrollListener mScrollListener = null;
 
     public FilterListRecyclerView(Context context) {

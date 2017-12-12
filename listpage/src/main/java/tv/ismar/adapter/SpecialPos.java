@@ -5,6 +5,7 @@ package tv.ismar.adapter;
  */
 
 public class SpecialPos {
+    public int count = 0;
     public int startPosition = 0;
     public int endPosition = 0;
     public String sections = "";
