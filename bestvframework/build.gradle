@@ -13,5 +13,5 @@ android {
 }
 
 dependencies {
-    implementation files('libs/bestvFramework.jar')
+    compile fileTree(include: ['*.jar'], dir: 'libs')
 }
