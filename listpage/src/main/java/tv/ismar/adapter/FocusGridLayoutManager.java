@@ -125,6 +125,28 @@ public class FocusGridLayoutManager extends GridLayoutManager {
 						}
 					}
 				}
+				if (nextFocus == null) {
+					if (direction == View.FOCUS_LEFT) {
+						nextFocus = focused;
+						if (findFirstCompletelyVisibleItemPosition() == 0) {
+							YoYo.with(Techniques.HorizontalShake).duration(1000).playOn(nextFocus);
+						}
+					} else if (direction == View.FOCUS_RIGHT) {
+						nextFocus = focused;
+						if (findLastCompletelyVisibleItemPosition() == getItemCount() - 1) {
+							YoYo.with(Techniques.HorizontalShake).duration(1000).playOn(nextFocus);
+						}
+					} else if (direction == View.FOCUS_DOWN) {
+						nextFocus = focused;
+						if (findLastCompletelyVisibleItemPosition() == getItemCount() - 1) {
+							YoYo.with(Techniques.VerticalShake).duration(1000).playOn(nextFocus);
+						}
+					} else if (direction == View.FOCUS_UP) {
+						if (findFirstCompletelyVisibleItemPosition() != 0) {
+							nextFocus = focused;
+						}
+					}
+				}
 			}
 			Log.d(TAG, "onInterceptFocusSearch nextFocus = " + nextFocus);
 			return nextFocus;
@@ -208,30 +230,7 @@ public class FocusGridLayoutManager extends GridLayoutManager {
     @Override
     public View onFocusSearchFailed(View focused, int focusDirection, RecyclerView.Recycler recycler, RecyclerView.State state) {
 		if (isFavorite) {
-			View nextFocus = onInterceptFocusSearch(focused, focusDirection);
-			if (nextFocus == null) {
-				if (focusDirection == View.FOCUS_LEFT) {
-					nextFocus = focused;
-					if (findFirstCompletelyVisibleItemPosition() == 0) {
-						YoYo.with(Techniques.HorizontalShake).duration(1000).playOn(nextFocus);
-					}
-				} else if (focusDirection == View.FOCUS_RIGHT) {
-					nextFocus = focused;
-					if (findLastCompletelyVisibleItemPosition() == getItemCount() - 1) {
-						YoYo.with(Techniques.HorizontalShake).duration(1000).playOn(nextFocus);
-					}
-				} else if (focusDirection == View.FOCUS_DOWN) {
-					nextFocus = focused;
-					if (findLastCompletelyVisibleItemPosition() == getItemCount() - 1) {
-						YoYo.with(Techniques.VerticalShake).duration(1000).playOn(nextFocus);
-					}
-				} else if (focusDirection == View.FOCUS_UP) {
-					if (findFirstCompletelyVisibleItemPosition() != 0) {
-						nextFocus = focused;
-					}
-				}
-			}
-			return nextFocus;
+			return onInterceptFocusSearch(focused, focusDirection);
 		} else {
 			// Need to be called in order to layout new row/column
 			View nextFocus = super.onFocusSearchFailed(focused, focusDirection, recycler, state);

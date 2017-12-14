@@ -55,13 +55,11 @@ public class HistoryFavoriteListRecyclerView extends MyRecyclerView {
 	}
 
 	public HistoryFavoriteListRecyclerView(Context context) {
-        super(context);
-        init();
+        this(context, null);
     }
 
     public HistoryFavoriteListRecyclerView(Context context, @Nullable AttributeSet attrs) {
-        super(context, attrs);
-        init();
+        this(context, attrs, -1);
     }
 
     public HistoryFavoriteListRecyclerView(Context context, @Nullable AttributeSet attrs, int defStyle) {

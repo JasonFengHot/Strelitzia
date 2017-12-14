@@ -27,6 +27,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.ResponseBody;
@@ -81,6 +82,13 @@ public class LoginFragment extends BaseFragment implements View.OnHoverListener 
     private String verification;
     private Subscription bookmarksSub;
     private Subscription historySub;
+
+    /*add by dragontec for bug 4560 start*/
+    private final int RetryFetchFavoriteMaxTimes = 5;
+    private final int RetryFetchHistoriesMaxTimes = 5;
+    private int mRetryFetchFavoriteTimes = 0;
+    private int mRetryFetchHistoriesTimes = 0;
+    /*add by dragontec for bug 4560 end*/
 
     public static LoginFragment newInstance() {
         return new LoginFragment();
@@ -354,6 +362,11 @@ public class LoginFragment extends BaseFragment implements View.OnHoverListener 
             setcount_tipText("不是手机号码");
             return;
         }
+/*add by dragontec for bug 4560 start*/
+        Log.d("LoginFragment", "reset fetch times");
+        mRetryFetchFavoriteTimes = 0;
+        mRetryFetchHistoriesTimes = 0;
+/*add by dragontec for bug 4560 end*/
         accountsLoginSub = mSkyService.accountsLogin(username, authNumber)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -506,7 +519,13 @@ public class LoginFragment extends BaseFragment implements View.OnHoverListener 
 
                     @Override
                     public void onError(Throwable e) {
-
+/*add by dragontec for bug 4560 start*/
+                        ++mRetryFetchFavoriteTimes;
+                        if (mRetryFetchFavoriteTimes < RetryFetchFavoriteMaxTimes) {
+                            Log.d("LoginFragment", "retry fetch favorite times = " + mRetryFetchFavoriteTimes);
+                            fetchFavorite();
+                        }
+/*add by dragontec for bug 4560 end*/
                     }
 
                     @Override
@@ -537,7 +556,7 @@ public class LoginFragment extends BaseFragment implements View.OnHoverListener 
         favorite.quality = mItem.getQuality();
         favorite.is_complex = mItem.getIs_complex();
         favorite.isnet = "yes";
-        favorite.time=mItem.getDate();
+        favorite.time=mItem.getCreateTime();
         DaisyUtils.getFavoriteManager(getActivity()).addFavorite(favorite, favorite.isnet);
     }
     private void getHistoryByNet() {
@@ -552,7 +571,13 @@ public class LoginFragment extends BaseFragment implements View.OnHoverListener 
 
                     @Override
                     public void onError(Throwable e) {
-
+/*add by dragontec for bug 4560 start*/
+                        ++mRetryFetchHistoriesTimes;
+                        if (mRetryFetchHistoriesTimes < RetryFetchHistoriesMaxTimes) {
+                            Log.d("LoginFragment", "retry fetch history times = " + RetryFetchHistoriesMaxTimes);
+                            getHistoryByNet();
+                        }
+/*add by dragontec for bug 4560 end*/
                     }
 
                     @Override
@@ -584,6 +609,8 @@ public class LoginFragment extends BaseFragment implements View.OnHoverListener 
                     HistoryFavoriteEntity historyFavoriteEntity=new GsonBuilder().create().fromJson(element.get(j).toString(),HistoryFavoriteEntity.class);
                     SimpleDateFormat sdf = new SimpleDateFormat("MM-dd");
                     historyFavoriteEntity.setDate(sdf.parse(date.getString(i)).getTime());
+					sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+					historyFavoriteEntity.setCreateTime(sdf.parse(historyFavoriteEntity.getCreateTimeStr()).getTime());
                     lists.add(historyFavoriteEntity);
                 }
             }
@@ -603,7 +630,7 @@ public class LoginFragment extends BaseFragment implements View.OnHoverListener 
         history.is_complex = item.getIs_complex();
         history.last_position = item.getOffset();
         history.last_quality = item.getQuality();
-        history.add_time=item.getDate();
+        history.add_time=item.getCreateTime();
         history.model_name=item.getModel_name();
         if ("subitem".equals(item.getModel_name())) {
             history.url = IsmartvActivator.getInstance().getApiDomain() + "/api/item/" + item.getItem_pk() + "/";

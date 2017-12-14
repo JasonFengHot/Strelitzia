@@ -48,7 +48,7 @@ public class HorizontalTabView extends HorizontalScrollView
 
     private Context mContext;
     private LinearLayout linearContainer;
-    private int mSelectedIndex = 1;
+    public int mSelectedIndex = 1;
     private int mFocusedIndex = 1;
     private int mTabMargin;
     private OnItemSelectedListener onItemSelectedListener;
@@ -201,6 +201,7 @@ public class HorizontalTabView extends HorizontalScrollView
         item.setGravity(Gravity.CENTER);
         item.setId(View.generateViewId());
         item.setTag(i);
+        item.setTag(getId(), "tab");
         item.setText(label);
         item.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
         item.setTextColor(textDefaultColor);

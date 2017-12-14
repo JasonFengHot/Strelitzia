@@ -20,6 +20,7 @@ import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import tv.ismar.account.ActiveService;
+import tv.ismar.account.IsmartvActivator;
 import tv.ismar.app.network.SkyService;
 import tv.ismar.app.update.UpdateService;
 import tv.ismar.library.util.DeviceUtils;
@@ -42,6 +43,18 @@ public class ConnectivityChangeReceiver extends BroadcastReceiver {
             Log.i(TAG, "netWork has connect");
             SharedPreferences mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
             String apiDomain = mSharedPreferences.getString("api_domain", "");
+
+/*add by dragontec for bug 4513 start*/
+            final boolean isActive = IsmartvActivator.isactive;
+            if (!isActive) {
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        IsmartvActivator.getInstance().execute();
+                    }
+                }).start();
+            }
+/*add by dragontec for bug 4513 end*/
 
             if (TextUtils.isEmpty(apiDomain)){
                 //更新会去激活

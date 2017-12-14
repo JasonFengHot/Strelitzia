@@ -15,6 +15,7 @@ public class DownloadTable extends Model {
     public static final String DOWNLOAD_STATE = "download_state";
     public static final String START_POSITION = "start_position";
     public static final String CONTENT_LENGTH = "content_length";
+    public static final String LOCAL_MD5 = "local_md5";
 
     @Column
     public String file_name;

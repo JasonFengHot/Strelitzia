@@ -68,6 +68,9 @@ public class HistoryRecyclerViewTV extends RecyclerView{
     private HistoryRecyclerViewTV.OnChildViewHolderSelectedListener mChildViewHolderSelectedListener;
 
     private void init(Context context) {
+    	setDrawingCacheEnabled(true);
+    	setDrawingCacheQuality(DRAWING_CACHE_QUALITY_HIGH);
+
         setDescendantFocusability(FOCUS_AFTER_DESCENDANTS);
         setHasFixedSize(true);
         setWillNotDraw(true);
@@ -188,6 +191,7 @@ public class HistoryRecyclerViewTV extends RecyclerView{
         if (mOnItemFocusChangeListener != null){
             mOnItemFocusChangeListener.onItemFocusGain(child, getPositionByView(child));
         }
+
         final int parentLeft = getPaddingLeft();
         final int parentTop = getPaddingTop();
         final int parentRight = getWidth() - getPaddingRight();
@@ -217,17 +221,22 @@ public class HistoryRecyclerViewTV extends RecyclerView{
         // visible, limit the scroll such that start won't go out of bounds.
         final int dx;
         if (canScrollHorizontal) {
-		/*modify by dragontec for bug 4434 start*/
-//            if(getScrollX() == 0 && childRight < getResources().getDisplayMetrics().widthPixels - 20 && getPositionByView(child) > 2){
-//                dx = 0;
-//            }else{
-                if (ViewCompat.getLayoutDirection(this) == ViewCompat.LAYOUT_DIRECTION_RTL) {
-                    dx = offScreenRight != 0 ? offScreenRight
-                            : Math.max(offScreenLeft, childRight - parentRight);
-                } else {
-                    dx = offScreenLeft != 0 ? offScreenLeft
-                            : Math.min(childLeft - parentLeft, offScreenRight);
-                }
+
+			int[] locations = new int[2];
+			child.getLocationOnScreen(locations);
+			dx = locations[0] + child.getWidth() / 2 - getResources().getDisplayMetrics().widthPixels / 2;
+
+//		/*modify by dragontec for bug 4434 start*/
+////            if(getScrollX() == 0 && childRight < getResources().getDisplayMetrics().widthPixels - 20 && getPositionByView(child) > 2){
+////                dx = 0;
+////            }else{
+//                if (ViewCompat.getLayoutDirection(this) == ViewCompat.LAYOUT_DIRECTION_RTL) {
+//                    dx = offScreenRight != 0 ? offScreenRight
+//                            : Math.max(offScreenLeft, childRight - parentRight);
+//                } else {
+//                    dx = offScreenLeft != 0 ? offScreenLeft
+//                            : Math.min(childLeft - parentLeft, offScreenRight);
+//                }
 //            }
 		/*modify by dragontec for bug 4434 end*/
         } else {

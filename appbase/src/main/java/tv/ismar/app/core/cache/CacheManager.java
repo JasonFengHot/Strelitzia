@@ -20,7 +20,7 @@ import tv.ismar.app.util.HardwareUtils;
  * Created by huaijie on 8/25/15.
  */
 public class CacheManager {
-    private static final String TAG = "LH/CacheManager";
+    private static final String TAG = CacheManager.class.getSimpleName();
 
     private static CacheManager instance;
     private ExecutorService executorService;
@@ -55,47 +55,55 @@ public class CacheManager {
                 break;
         }
 
-        DownloadTable downloadTable = new Select()
-                .from(DownloadTable.class)
-                .where(DownloadTable.DOWNLOAD_PATH + " =? ", downloadFile.getAbsolutePath())
-                .executeSingle();
+		String serverMD5 = FileUtils.getFileByUrl(url).split("\\.")[0];
+		DownloadTable downloadTable = new Select().from(DownloadTable.class).where(DownloadTable.LOCAL_MD5 + " = '" + serverMD5 + "'").executeSingle();
         if (downloadTable == null) {
-            // 本地数据库为空，首次下载，直接返回网络地址
-            addRequestToThreadPool(null, url, downloadFile);
-            Log.i(TAG, "first download.");
-        } else {
-            String serverMD5 = FileUtils.getFileByUrl(url).split("\\.")[0];
-            String localMD5 = downloadTable.local_md5;
-            String downloadState = downloadTable.download_state;
-            if (serverMD5.equalsIgnoreCase(localMD5)) {
-                File file = new File(downloadTable.download_path);
-                if (file.exists()) {
-                    return "file://" + downloadTable.download_path;
-                } else {
-                    // 本地文件已经被删除，需重新下载
-                    resetDownload(downloadTable);
-                    addRequestToThreadPool(null, url, downloadFile);
-                    Log.i(TAG, "local file deleted.");
-                }
-            } else if (downloadState.equals(DownloadClient.DownloadState.run.name())) {
-                // 当前url正在下载队列中，无需处理
-                Log.i(TAG, "current task is running.");
-                Future future = mFutureMap.get(url);
-                if (future == null || future.isCancelled()) {
-                    addRequestToThreadPool(downloadTable, url, downloadFile);
-                }
-            } else if (downloadState.equals(DownloadClient.DownloadState.pause.name())) {
-                // 断点续传
-                addRequestToThreadPool(downloadTable, url, downloadFile);
-                Log.i(TAG, "last download paused.");
-            } else if (downloadState.equals(DownloadClient.DownloadState.complete.name())) {
-                // 本地文件md5与服务器文件md5不同，需删除重新下载
-                resetDownload(downloadTable);
-                downloadFile.delete();
-                addRequestToThreadPool(null, url, downloadFile);
-                Log.i(TAG, "server file changed.");
-            }
-        }
+			// 本地数据库为空，首次下载，直接返回网络地址
+			Log.i(TAG, "本地数据库为空，首次下载，直接返回网络地址");
+			addRequestToThreadPool(null, url, downloadFile);
+		} else {
+			String downloadState = downloadTable.download_state;
+			if (downloadState.equals(DownloadClient.DownloadState.complete.name())) {
+				File file = new File(downloadTable.download_path);
+				if (file.exists()) {
+					if (downloadTable.download_path.equals(downloadFile.getAbsolutePath())) {
+						Log.i(TAG, "本地文件已存在，直接返回文件地址");
+						return "file://" + downloadTable.download_path;
+					} else {
+						Log.i(TAG, "本地文件已存在，但index不同，rename文件，直接返回文件地址");
+						//视频index已变更
+						if (downloadFile.exists()) {
+							DownloadTable existTable = new Select().from(DownloadTable.class).where(DownloadTable.DOWNLOAD_PATH + "=?" + downloadFile.getAbsolutePath()).executeSingle();
+							if (existTable != null) {
+								existTable.delete();
+							}
+							downloadFile.delete();
+						}
+						file.renameTo(downloadFile.getAbsoluteFile());
+						downloadTable.download_path = downloadFile.getAbsolutePath();
+						downloadTable.save();
+						return "file://" + downloadTable.download_path;
+					}
+				} else {
+					// 本地文件已经被删除，需重新下载
+					Log.i(TAG, "本地文件已经被删除，需重新下载");
+					resetDownload(downloadTable);
+					addRequestToThreadPool(null, url, downloadFile);
+				}
+			} else if (downloadState.equals(DownloadClient.DownloadState.run.name())) {
+				// 当前url正在下载队列中，无需处理
+				Log.i(TAG, "当前url正在下载队列中，无需处理");
+				Future future = mFutureMap.get(url);
+				if (future == null || future.isCancelled()) {
+					addRequestToThreadPool(downloadTable, url, downloadFile);
+				}
+			} else if (downloadState.equals(DownloadClient.DownloadState.pause.name())) {
+				Log.i(TAG, "断点续传");
+				// 断点续传
+				addRequestToThreadPool(downloadTable, url, downloadFile);
+			}
+
+		}
         return url;
     }
 

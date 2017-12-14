@@ -113,6 +113,10 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
     private Boolean isEdit=false;
     private boolean isMore=false;
     private String fromPage="homePage";
+    private RecyclerView.OnScrollListener mOnScrollListener;
+
+	private static final int HistoryFavoriteShowLimitNumber = 100;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -129,11 +133,27 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
         history_right_arrow= (Button) findViewById(R.id.history_right_arrow);
         favorite_left_arrow= (Button) findViewById(R.id.favorite_left_arrow);
         favorite_right_arrow= (Button) findViewById(R.id.favorite_right_arrow);
-
         empty= (RelativeLayout) findViewById(R.id.empty);
         empty.setOnHoverListener(this);
+		mOnScrollListener = new RecyclerView.OnScrollListener() {
+			@Override
+			public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+				super.onScrollStateChanged(recyclerView, newState);
+				if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+					arrowState();
+				}
+			}
+
+			@Override
+			public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+				//do nothing
+				super.onScrolled(recyclerView, dx, dy);
+			}
+		};
         historyRecycler= (HistoryRecyclerViewTV) findViewById(R.id.history_list);
+        historyRecycler.addOnScrollListener(mOnScrollListener);
         favoriteRecycler= (HistoryRecyclerViewTV) findViewById(R.id.favorite_list);
+        favoriteRecycler.addOnScrollListener(mOnScrollListener);
         favorite_layout= (LinearLayout) findViewById(R.id.favorite_layout);
         list_layout= (LinearLayout) findViewById(R.id.list_layout);
         no_data= (LinearLayout) findViewById(R.id.no_data);
@@ -304,6 +324,7 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
     }
     @Override
     protected void onResume() {
+		super.onResume();
         AppConstant.purchase_referer = "history";
         AppConstant.purchase_page = "history";
         AppConstant.purchase_channel = "";
@@ -322,11 +343,11 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
 //        }
         edit_history.setFocusable(false);
         edit_history.setFocusableInTouchMode(false);
-        super.onResume();
     }
 
     @Override
     protected void onPause() {
+    	Log.d("HistoryFavoriteActivity", "onPause begin");
         historyLists.clear();
         favoriteLists.clear();
         allhistoryLists.clear();
@@ -336,9 +357,23 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
         new NetworkUtils.DataCollectionTask().execute(NetworkUtils.VIDEO_HISTORY_OUT, properties);
         mDataCollectionProperties = null;
         super.onPause();
+		Log.d("HistoryFavoriteActivity", "onPause end");
     }
 
-    private void getHistoryByNet(){
+	@Override
+	protected void onDestroy() {
+    	if (mOnScrollListener != null) {
+			if (favoriteRecycler != null) {
+				favoriteRecycler.removeOnScrollListener(mOnScrollListener);
+			}
+			if (historyRecycler != null) {
+				historyRecycler.removeOnScrollListener(mOnScrollListener);
+			}
+		}
+		super.onDestroy();
+	}
+
+	private void getHistoryByNet(){
         historySub=skyService.getHistoryByNetV3().subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new BaseObserver<ResponseBody>() {
@@ -618,67 +653,144 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
             }
             startActivity(intent);
         }else if(id==R.id.favorite_right_arrow){
+        	if (favoriteRecycler.getScrollState() != SCROLL_STATE_IDLE) {
+        		return;
+			}
             favoriteManager.setScrollEnabled(true);
-            favorite_left_arrow.setVisibility(View.VISIBLE);
-            targetPosition=favoriteManager.findFirstCompletelyVisibleItemPosition()+3;
-            if(targetPosition+2>=favoriteLists.size()-1) {
-                favoriteManager.smoothScrollToPosition(favoriteRecycler, null, getResources().getDimensionPixelOffset(R.dimen.history_165));
-            }else if(targetPosition==3){
-                favorite_left_arrow.setVisibility(View.VISIBLE);
-                favoriteManager.scrollToPositionWithOffset(targetPosition,getResources().getDimensionPixelOffset(R.dimen.history_165));
-            }else{
-                favoriteManager.scrollToPositionWithOffset(targetPosition,getResources().getDimensionPixelOffset(R.dimen.history_165));
-                arrowState();
-            }
+//            favorite_left_arrow.setVisibility(View.VISIBLE);
+			if (favoriteManager.findLastCompletelyVisibleItemPosition() != favoriteManager.getItemCount() - 1) {
+				RecyclerView.ViewHolder viewHolder = favoriteRecycler.findViewHolderForAdapterPosition(favoriteManager.findLastVisibleItemPosition());
+				if (viewHolder != null && viewHolder.itemView != null) {
+					int dx;
+					int[] location = new int[2];
+					viewHolder.itemView.getLocationOnScreen(location);
+					if (favoriteManager.findLastVisibleItemPosition() == favoriteManager.findLastCompletelyVisibleItemPosition()) {
+						dx = location[0] + viewHolder.itemView.getWidth() * 3 / 2 - getResources().getDisplayMetrics().widthPixels / 2;
+					} else {
+						dx = location[0] + viewHolder.itemView.getWidth() / 2 - getResources().getDisplayMetrics().widthPixels / 2;
+					}
+					if (dx != 0) {
+						favoriteRecycler.smoothScrollBy(dx, 0);
+					}
+				}
+			}
+//            targetPosition=favoriteManager.findFirstCompletelyVisibleItemPosition()+3;
+//            if(targetPosition+2>=favoriteLists.size()-1) {
+//                favoriteManager.smoothScrollToPosition(favoriteRecycler, null, getResources().getDimensionPixelOffset(R.dimen.history_165));
+//            }else if(targetPosition==3){
+//                favorite_left_arrow.setVisibility(View.VISIBLE);
+//                favoriteManager.scrollToPositionWithOffset(targetPosition,getResources().getDimensionPixelOffset(R.dimen.history_165));
+//            }else{
+//                favoriteManager.scrollToPositionWithOffset(targetPosition,getResources().getDimensionPixelOffset(R.dimen.history_165));
+//                arrowState();
+//            }
 //            targetPosition=favoriteManager.findLastCompletelyVisibleItemPosition()+3;
 //            favoriteManager.smoothScrollToPosition(favoriteRecycler,null,targetPosition);
         }else if(id==R.id.favorite_left_arrow){
+			if (favoriteRecycler.getScrollState() != SCROLL_STATE_IDLE) {
+				return;
+			}
             favoriteManager.setScrollEnabled(true);
-            targetPosition=favoriteManager.findFirstCompletelyVisibleItemPosition()-3;
-            if(targetPosition<=0) {
-                favoriteManager.smoothScrollToPosition(favoriteRecycler,null,0);
-                favoriteManager.scrollToPositionWithOffset(targetPosition, getResources().getDimensionPixelOffset(R.dimen.history_165));
-            }else{
-                favoriteManager.scrollToPositionWithOffset(targetPosition, getResources().getDimensionPixelOffset(R.dimen.history_165));
-                arrowState();
-            }
-            if(favoriteManager.findLastVisibleItemPosition()==favoriteLists.size()-1){
-                favorite_right_arrow.setVisibility(View.VISIBLE);
-            }
+			if (favoriteManager.findFirstCompletelyVisibleItemPosition() != 0) {
+				RecyclerView.ViewHolder viewHolder = favoriteRecycler.findViewHolderForAdapterPosition(favoriteManager.findFirstVisibleItemPosition());
+				if (viewHolder != null && viewHolder.itemView != null) {
+					int dx;
+					int[] location = new int[2];
+					viewHolder.itemView.getLocationOnScreen(location);
+					if (favoriteManager.findFirstVisibleItemPosition() == favoriteManager.findFirstCompletelyVisibleItemPosition()) {
+						dx = location[0] - viewHolder.itemView.getWidth() / 2 - getResources().getDisplayMetrics().widthPixels / 2;
+					} else {
+						dx = location[0] + viewHolder.itemView.getWidth() / 2 - getResources().getDisplayMetrics().widthPixels / 2;
+					}
+					if (dx != 0) {
+						favoriteRecycler.smoothScrollBy(dx, 0);
+					}
+				}
+			}
+//            targetPosition=favoriteManager.findFirstCompletelyVisibleItemPosition()-3;
+//            if(targetPosition<=0) {
+//                favoriteManager.smoothScrollToPosition(favoriteRecycler,null,0);
+//                favoriteManager.scrollToPositionWithOffset(targetPosition, getResources().getDimensionPixelOffset(R.dimen.history_165));
+//            }else{
+//                favoriteManager.scrollToPositionWithOffset(targetPosition, getResources().getDimensionPixelOffset(R.dimen.history_165));
+//                arrowState();
+//            }
+//            if(favoriteManager.findLastVisibleItemPosition()==favoriteLists.size()-1){
+//                favorite_right_arrow.setVisibility(View.VISIBLE);
+//            }
         }else if(id==R.id.history_left_arrow){
+			if (historyRecycler.getScrollState() != SCROLL_STATE_IDLE) {
+				return;
+			}
             historyLayoutManager.setScrollEnabled(true);
-            targetPosition=historyLayoutManager.findFirstCompletelyVisibleItemPosition()-3;
-            if(targetPosition<=0){
-                historyLayoutManager.smoothScrollToPosition(historyRecycler,null,0);
-            }else {
-                historyLayoutManager.scrollToPositionWithOffset(targetPosition, getResources().getDimensionPixelOffset(R.dimen.history_165));
-                arrowState();
-            }
-            history_right_arrow.setVisibility(View.VISIBLE);
+			if (historyLayoutManager.findFirstCompletelyVisibleItemPosition() != 0) {
+				RecyclerView.ViewHolder viewHolder = historyRecycler.findViewHolderForAdapterPosition(historyLayoutManager.findFirstVisibleItemPosition());
+				if (viewHolder != null && viewHolder.itemView != null) {
+					int dx = 0;
+					int[] location = new int[2];
+					viewHolder.itemView.getLocationOnScreen(location);
+					if (historyLayoutManager.findFirstVisibleItemPosition() == historyLayoutManager.findFirstCompletelyVisibleItemPosition()) {
+						dx = location[0] - viewHolder.itemView.getWidth() / 2 - getResources().getDisplayMetrics().widthPixels / 2;
+					} else {
+						dx = location[0] + viewHolder.itemView.getWidth() / 2 - getResources().getDisplayMetrics().widthPixels / 2;
+					}
+					if (dx != 0) {
+						historyRecycler.smoothScrollBy(dx, 0);
+					}
+				}
+			}
+
+//            targetPosition=historyLayoutManager.findFirstCompletelyVisibleItemPosition()-3;
+//            if(targetPosition<=0){
+//                historyLayoutManager.smoothScrollToPosition(historyRecycler,null,0);
+//            }else {
+//                historyLayoutManager.scrollToPositionWithOffset(targetPosition, getResources().getDimensionPixelOffset(R.dimen.history_165));
+//                arrowState();
+//            }
+//            history_right_arrow.setVisibility(View.VISIBLE);
         }else if(id==R.id.history_right_arrow){
+			if (historyRecycler.getScrollState() != SCROLL_STATE_IDLE) {
+				return;
+			}
             historyLayoutManager.setScrollEnabled(true);
-            targetPosition=historyLayoutManager.findFirstCompletelyVisibleItemPosition()+3;
-            if(historyLists.size()>0){
-                if(targetPosition+2>=historyLists.size()-1) {
-                    historyLayoutManager.smoothScrollToPosition(historyRecycler, null, getResources().getDimensionPixelOffset(R.dimen.history_165));
-                }else if(targetPosition==3) {
-                    history_left_arrow.setVisibility(View.VISIBLE);
-                    historyLayoutManager.scrollToPositionWithOffset(targetPosition,getResources().getDimensionPixelOffset(R.dimen.history_165));
-                }else{
-                    historyLayoutManager.scrollToPositionWithOffset(targetPosition, getResources().getDimensionPixelOffset(R.dimen.history_165));
-                    arrowState();
-                }
-            }else{
-                if(targetPosition+2>=favoriteLists.size()-1) {
-                    historyLayoutManager.smoothScrollToPosition(historyRecycler, null, getResources().getDimensionPixelOffset(R.dimen.history_165));
-                }else if(targetPosition==3) {
-                    history_left_arrow.setVisibility(View.VISIBLE);
-                    historyLayoutManager.scrollToPositionWithOffset(targetPosition,getResources().getDimensionPixelOffset(R.dimen.history_165));
-                }else{
-                    historyLayoutManager.scrollToPositionWithOffset(targetPosition, getResources().getDimensionPixelOffset(R.dimen.history_165));
-                    arrowState();
-                }
-            }
+			if (historyLayoutManager.findLastCompletelyVisibleItemPosition() != historyLayoutManager.getItemCount() - 1) {
+				RecyclerView.ViewHolder viewHolder = historyRecycler.findViewHolderForAdapterPosition(historyLayoutManager.findLastVisibleItemPosition());
+				if (viewHolder != null && viewHolder.itemView != null) {
+					int dx = 0;
+					int[] location = new int[2];
+					viewHolder.itemView.getLocationOnScreen(location);
+					if (historyLayoutManager.findLastVisibleItemPosition() == historyLayoutManager.findLastCompletelyVisibleItemPosition()) {
+						dx = location[0] + viewHolder.itemView.getWidth() * 3 / 2 - getResources().getDisplayMetrics().widthPixels / 2;
+					} else {
+						dx = location[0] + viewHolder.itemView.getWidth() / 2 - getResources().getDisplayMetrics().widthPixels / 2;
+					}
+					if (dx != 0) {
+						historyRecycler.smoothScrollBy(dx, 0);
+					}
+				}
+			}
+//            targetPosition=historyLayoutManager.findFirstCompletelyVisibleItemPosition()+3;
+//            if(historyLists.size()>0){
+//                if(targetPosition+2>=historyLists.size()-1) {
+//                    historyLayoutManager.smoothScrollToPosition(historyRecycler, null, getResources().getDimensionPixelOffset(R.dimen.history_165));
+//                }else if(targetPosition==3) {
+//                    history_left_arrow.setVisibility(View.VISIBLE);
+//                    historyLayoutManager.scrollToPositionWithOffset(targetPosition,getResources().getDimensionPixelOffset(R.dimen.history_165));
+//                }else{
+//                    historyLayoutManager.scrollToPositionWithOffset(targetPosition, getResources().getDimensionPixelOffset(R.dimen.history_165));
+//                    arrowState();
+//                }
+//            }else{
+//                if(targetPosition+2>=favoriteLists.size()-1) {
+//                    historyLayoutManager.smoothScrollToPosition(historyRecycler, null, getResources().getDimensionPixelOffset(R.dimen.history_165));
+//                }else if(targetPosition==3) {
+//                    history_left_arrow.setVisibility(View.VISIBLE);
+//                    historyLayoutManager.scrollToPositionWithOffset(targetPosition,getResources().getDimensionPixelOffset(R.dimen.history_165));
+//                }else{
+//                    historyLayoutManager.scrollToPositionWithOffset(targetPosition, getResources().getDimensionPixelOffset(R.dimen.history_165));
+//                    arrowState();
+//                }
+//            }
         }
     }
     private void arrowState(){
@@ -840,9 +952,12 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
         Rect rect=new Rect();
         view.getGlobalVisibleRect(rect);
         if(hasFocus){
-            if(rect.left>=100&&rect.left<1576) {
-                JasmineUtil.scaleOut3(view);
-            }
+        	if (rect.width() == view.getWidth()) {
+				JasmineUtil.scaleOut3(view);
+			}
+//            if(rect.left>=100&&rect.left<1576) {
+//                JasmineUtil.scaleOut3(view);
+//            }
         }else{
             JasmineUtil.scaleIn3(view);
         }
@@ -1003,18 +1118,28 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
         @Override
         protected Void doInBackground(Void... params) {
             try {
-                ArrayList<History> mHistories=new ArrayList<>();
+                ArrayList<History> mHistories;
                 if(IsmartvActivator.getInstance().isLogin()){
                     mHistories= DaisyUtils.getHistoryManager(HistoryFavoriteActivity.this).getAllHistories("yes");
-                    ArrayList<History> localhistory= DaisyUtils.getHistoryManager(HistoryFavoriteActivity.this).getAllHistories("no");
-                    for (int i=0;i<mHistories.size();i++){
-                        for (int j=mHistories.size()-1;j>i;j--){
-                                if (mHistories.get(i).url.equals(mHistories.get(j).url)) {
-                                    mHistories.remove(j);
-                            }
-                        }
-                    }
-                    mHistories.addAll(localhistory);
+                    ArrayList<History> localHistorys= DaisyUtils.getHistoryManager(HistoryFavoriteActivity.this).getAllHistories("no");
+                    List<History> removeList = null;
+					for (History localHistory :
+							localHistorys) {
+						for (History history:
+							 mHistories) {
+							if (localHistory.url.equals(history.url)) {
+								if (removeList == null) {
+									removeList = new ArrayList<>();
+								}
+								removeList.add(localHistory);
+								break;
+							}
+						}
+					}
+					if (removeList != null) {
+						localHistorys.removeAll(removeList);
+					}
+                    mHistories.addAll(localHistorys);
                 }else{
                     mHistories= DaisyUtils.getHistoryManager(HistoryFavoriteActivity.this).getAllHistories("no");
                 }
@@ -1027,6 +1152,9 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
                         History history = mHistories.get(i);
                         HistoryFavoriteEntity item = getItem(history);
                         allhistoryLists.add(item);
+						if (allhistoryLists.size() == HistoryFavoriteShowLimitNumber) {
+							break;
+						}
                     }
                     Log.i("listSize","allhistoryLists: "+allhistoryLists.size()+"");
                     srotHistoryFavoriteList(allhistoryLists,historyLists);
@@ -1044,34 +1172,45 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
         }
 
     }
+
     class GetFavoriteTask extends AsyncTask<Void, Void, Void>{
 
         @Override
         protected Void doInBackground(Void... params) {
-            ArrayList<Favorite> favorites=new ArrayList<>();
+            ArrayList<Favorite> favorites;
             if(IsmartvActivator.getInstance().isLogin()){
                 favorites= DaisyUtils.getFavoriteManager(HistoryFavoriteActivity.this).getAllFavorites("yes");
-                ArrayList<Favorite> localfavorite=DaisyUtils.getFavoriteManager(HistoryFavoriteActivity.this).getAllFavorites("no");
-                for(int i=0;i<localfavorite.size();i++){
-                    for(int j=0;j<favorites.size();j++){
-                        if(i>=0) {
-                            if (localfavorite.get(i).url.equals(favorites.get(j).url)) {
-                                localfavorite.remove(i);
-                                i--;
-                            }
-                        }
-                    }
-                }
-                favorites.addAll(localfavorite);
+                ArrayList<Favorite> localFavorites=DaisyUtils.getFavoriteManager(HistoryFavoriteActivity.this).getAllFavorites("no");
+				List<Favorite> removeList = null;
+				for (Favorite localFavorite :
+						localFavorites) {
+					for (Favorite favorite:
+							favorites) {
+						if (localFavorite.url.equals(favorite.url)) {
+							if (removeList == null) {
+								removeList = new ArrayList<>();
+							}
+							removeList.add(localFavorite);
+							break;
+						}
+					}
+				}
+				if (removeList != null) {
+					localFavorites.removeAll(removeList);
+				}
+				favorites.addAll(localFavorites);
             }else{
                 favorites= DaisyUtils.getFavoriteManager(HistoryFavoriteActivity.this).getAllFavorites("no");
             }
             if(favorites.size()>0) {
                 Collections.sort(favorites);
                 for (Favorite favorite : favorites) {
-                    Log.i("listSize", "FavoriteTime: " +favorite.time);
+                    Log.i("listSize", "FavoriteTime: " + favorite.time / 1000);
                     HistoryFavoriteEntity item = getFavoriteItem(favorite);
                     allfavoriteLists.add(item);
+                    if (allfavoriteLists.size() == HistoryFavoriteShowLimitNumber) {
+                    	break;
+					}
                 }
             }
             srotHistoryFavoriteList(allfavoriteLists,favoriteLists);
@@ -1083,6 +1222,7 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
                 loadData();
         }
     }
+
     private void srotHistoryFavoriteList(List<HistoryFavoriteEntity> list,List<HistoryFavoriteEntity> list2){
         int count=0;
         if(list.size()>0){

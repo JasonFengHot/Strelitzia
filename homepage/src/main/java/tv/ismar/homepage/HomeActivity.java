@@ -177,6 +177,8 @@ public class HomeActivity extends BaseActivity
 
     private View currentFocus;
 
+    private boolean isPaused;
+
     private Handler mHandler = new Handler(Looper.getMainLooper()) {
         @Override
         public void handleMessage(Message msg) {
@@ -273,11 +275,17 @@ public class HomeActivity extends BaseActivity
 			currentFocus.requestFocus();
 			currentFocus = null;
 		}
+		isPaused = false;
     }
 
     @Override
     protected void onPause() {
+		isPaused = true;
 		currentFocus = getCurrentFocus();
+		Object tag = currentFocus.getTag(mChannelTab.getId());
+		if (tag != null && tag instanceof String && tag.equals("tab")) {
+			currentFocus = null;
+		}
 		mFetchDataControl.stop();
 		super.onPause();
     }
@@ -304,13 +312,9 @@ public class HomeActivity extends BaseActivity
             banner_arrow_down.setOnClickListener(null);
         }
         mAdvertisement = null;
-        if (mHomeControl != null) {
-            mHomeControl.clear();
-        }
-        if (mFetchDataControl != null) {
-            mFetchDataControl.clear();
-        }
-        if (mChannelTab != null) {
+		mHomeControl.clear();
+		mFetchDataControl.clear();
+		if (mChannelTab != null) {
             mChannelTab.leftbtn = null;
             mChannelTab.rightbtn = null;
             mChannelTab.removeAllViews();
@@ -808,9 +812,12 @@ public class HomeActivity extends BaseActivity
                 switch (position) {
                     case 0: // 搜索
 //                        mLastSelectedIndex = position;
-                        setBackground(R.drawable.homepage_background);
-                        PageIntent intent = new PageIntent();
-                        intent.toSearch(this);
+						if (!isPaused) {
+							setBackground(R.drawable.homepage_background);
+							PageIntent intent = new PageIntent();
+							intent.toSearch(this);
+							isPaused = true;
+						}
                         return;
                     case 1: // 首页
                         setBackground(R.drawable.homepage_background);

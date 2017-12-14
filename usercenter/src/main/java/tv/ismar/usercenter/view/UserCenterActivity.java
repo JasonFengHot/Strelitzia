@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.TimeZone;
 
 import cn.ismartv.truetime.TrueTime;
@@ -710,7 +711,7 @@ public class UserCenterActivity extends BaseActivity implements LoginFragment.Lo
           favorite.quality = mItem.getQuality();
           favorite.is_complex = mItem.getIs_complex();
           favorite.isnet = "yes";
-          favorite.time=mItem.getDate();
+          favorite.time = mItem.getCreateTime();
           DaisyUtils.getFavoriteManager(this).addFavorite(favorite, favorite.isnet);
     }
 
@@ -769,6 +770,8 @@ public class UserCenterActivity extends BaseActivity implements LoginFragment.Lo
                     HistoryFavoriteEntity historyFavoriteEntity=new GsonBuilder().create().fromJson(element.get(j).toString(),HistoryFavoriteEntity.class);
                     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
                     historyFavoriteEntity.setDate(sdf.parse(date.getString(i)).getTime());
+                    sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    historyFavoriteEntity.setCreateTime(sdf.parse(historyFavoriteEntity.getCreateTimeStr()).getTime());
                     lists.add(historyFavoriteEntity);
                 }
             }
@@ -788,7 +791,7 @@ public class UserCenterActivity extends BaseActivity implements LoginFragment.Lo
         history.is_complex = item.getIs_complex();
         history.last_position = item.getOffset();
         history.last_quality = item.getQuality();
-        history.add_time=item.getDate();
+        history.add_time=item.getCreateTime();
         history.model_name=item.getModel_name();
         if ("subitem".equals(item.getModel_name())) {
             history.url = IsmartvActivator.getInstance().getApiDomain() + "/api/item/" + item.getItem_pk() + "/";

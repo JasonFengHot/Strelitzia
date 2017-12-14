@@ -87,6 +87,9 @@ public class HistoryFavoriteEntity implements Serializable{
     private boolean showDate;
     private int type;  //1表示正常item，2表示更多按钮
 
+	private String create_time;
+	private long createTime;
+
     public String getSub_url() {
         return sub_url;
     }
@@ -360,5 +363,10 @@ public class HistoryFavoriteEntity implements Serializable{
     public double getBean_score(){
         return this.bean_score;
     }
+
+    public String getCreateTimeStr() { return this.create_time; }
+    public void setCreateTimeStr(String createTimeStr) { this.create_time = createTimeStr; }
+	public long getCreateTime() { return this.createTime; }
+	public void setCreateTime(long createTime) { this.createTime = createTime; }
 
 }

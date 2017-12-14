@@ -22,6 +22,8 @@ public class LocalFavoriteManager implements FavoriteManager {
 
     private DBHelper mDBHelper;
 
+	private int mTotalEntriesLimit = 100;
+
     public LocalFavoriteManager(Context context) {
         mDBHelper = VodApplication.getModuleAppContext().getModuleDBHelper();
         mFavorites = mDBHelper.getAllFavorites("no");
@@ -45,7 +47,7 @@ public class LocalFavoriteManager implements FavoriteManager {
             cv.put(DBFields.FavoriteTable.TITLE, title);
             cv.put(DBFields.FavoriteTable.URL, url);
             cv.put(DBFields.FavoriteTable.CONTENT_MODEL, content_model);
-            mDBHelper.insert(cv, DBFields.FavoriteTable.TABLE_NAME, 0);
+            mDBHelper.insert(cv, DBFields.FavoriteTable.TABLE_NAME, mTotalEntriesLimit);
             mFavorites = mDBHelper.getAllFavorites(isnet);
         }
     }
@@ -148,7 +150,7 @@ public class LocalFavoriteManager implements FavoriteManager {
             cv.put(DBFields.FavoriteTable.CPNAME, favorite.cpname);
             cv.put(DBFields.FavoriteTable.CPTITLE, favorite.cptitle);
             cv.put(DBFields.FavoriteTable.PAYTYPE, favorite.paytype);
-            long result = mDBHelper.insert(cv, DBFields.FavoriteTable.TABLE_NAME, 0);
+            long result = mDBHelper.insert(cv, DBFields.FavoriteTable.TABLE_NAME, mTotalEntriesLimit);
             mFavorites = mDBHelper.getAllFavorites(isnet);
             if (result >= 0) {
                 new DataUploadTask().execute(favorite);
