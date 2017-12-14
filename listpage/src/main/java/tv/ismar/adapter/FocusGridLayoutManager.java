@@ -183,7 +183,7 @@ public class FocusGridLayoutManager extends GridLayoutManager {
 					if (specialPos != null) {
 						if (index <= getSpanCount()) {
 							if (specialPos.size() > 1) {
-								if (index < specialPos.get(0).startPosition) {
+								if (index <= specialPos.get(0).startPosition) {
 									YoYo.with(Techniques.VerticalShake).duration(1000).playOn(focused);
 								} else {
 									return null;

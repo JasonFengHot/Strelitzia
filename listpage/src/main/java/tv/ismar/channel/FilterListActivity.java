@@ -1583,7 +1583,7 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
 /*add by dragontec for bug 4310 end*/
                     v.getLocationOnScreen(location);
                     if(event.getAction()==KeyEvent.ACTION_DOWN) {
-                        if (keyCode == 20) {
+                        if (keyCode == KeyEvent.KEYCODE_DPAD_DOWN) {
                             if(finalI == sectionSize - 1 ){
                                 YoYo.with(Techniques.VerticalShake).duration(1000).playOn(v);
                                 return true;
@@ -1591,12 +1591,12 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
                                 tab_scroll.scrollBy(0, getResources().getDimensionPixelOffset(R.dimen.list_scroll_arrow_down_lenth));
                             }
 
-                        } else if (keyCode == 19) {
+                        } else if (keyCode == KeyEvent.KEYCODE_DPAD_UP) {
                             if(location[1]==tab_scroll.getTop()){
                                 tab_scroll.scrollBy(0, getResources().getDimensionPixelOffset(R.dimen.list_scroll_arrow_up_lenth));
                             }
 
-                        }else if (keyCode == 22 ) {
+                        }else if (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT ) {
                             if (lastFocusedView != null) {
                                 lastFocusedView.requestFocus();
                             } else {
@@ -1604,7 +1604,7 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
                                 if(finalI==sectionSize-1&&mAllSectionItemList.getCount()-specialPos.get(finalI).startPosition-1<=spanCount){
                                     firstView=mFocusGridLayoutManager.findViewByPosition(specialPos.get(finalI).startPosition+1);
                                 }else if(list_poster_recyclerview.getChildCount()>spanCount) {
-                                    firstView = list_poster_recyclerview.getChildAt(spanCount);
+                                    firstView = list_poster_recyclerview.getChildAt(0);
                                     if(mFocusGridLayoutManager.findViewByPosition(mFocusGridLayoutManager.findFirstCompletelyVisibleItemPosition()) instanceof TextView){
                                         firstView=mFocusGridLayoutManager.findViewByPosition(mFocusGridLayoutManager.findFirstCompletelyVisibleItemPosition()+1);
                                     }
