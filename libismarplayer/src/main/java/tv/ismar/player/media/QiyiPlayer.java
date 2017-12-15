@@ -9,10 +9,12 @@ import com.qiyi.sdk.player.PlayerSdk;
 import com.qiyi.sdk.player.SdkVideo;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import tv.ismar.app.entity.ClipEntity;
 import tv.ismar.library.util.DateUtils;
+import tv.ismar.library.util.DeviceUtils;
 import tv.ismar.library.util.LogUtils;
 import tv.ismar.player.IsmartvPlayer;
 import tv.ismar.player.event.PlayerEvent;
@@ -375,11 +377,48 @@ public class QiyiPlayer extends IsmartvPlayer {
             if (mPlayer == null) {
                 return;
             }
+/*add by dragontec for bug 4496 start*/
+            int[] outputSize = computeVideoSize(width, height);
+            LogUtils.i(TAG, "outSize:" + Arrays.toString(outputSize));
+            if (mSurfaceView != null && mSurfaceView.getHolder() != null
+                    && mSurfaceView.getHolder().getSurface() != null
+                    && mSurfaceView.getHolder().getSurface().isValid()) {
+                mSurfaceView.getHolder().setFixedSize(outputSize[0], outputSize[1]);
+                mSurfaceView.requestLayout();
+            }
+/*add by dragontec for bug 4496 end*/
             if (onStateChangedListener != null) {
                 onStateChangedListener.onVideoSizeChanged(width, height);
             }
         }
     };
+
+/*add by dragontec for bug 4496 start*/
+    protected int[] computeVideoSize(int videoWidth, int videoHeight) {
+        if (mSurfaceView == null || mSurfaceView.getContext() == null) {
+            return null;
+        }
+        int[] size = new int[2];
+        int screenWidth = DeviceUtils.getDisplayPixelWidth(mSurfaceView.getContext().getApplicationContext());
+        int screenHeight = DeviceUtils.getDisplayPixelHeight(mSurfaceView.getContext().getApplicationContext());
+        LogUtils.i(TAG, "screen width = " + screenWidth + ", screen height = " + screenHeight);
+        float scaleWidth = (float)screenWidth / videoWidth;
+        float scaleHeight = (float)screenHeight / videoHeight;
+        if (scaleWidth > scaleHeight){
+            //fix height
+            float adjustVideoWidth = videoWidth * scaleHeight;
+            size[0] = (int) Math.ceil(adjustVideoWidth);
+            size[1] = (int) Math.ceil(screenHeight);
+        }else{
+            //fix width
+            float adjustVideoHeight = videoHeight * scaleWidth;
+            size[0] = (int) Math.ceil(screenWidth);
+            size[1] = (int) Math.ceil(adjustVideoHeight);
+        }
+        LogUtils.i(TAG, "calc width = " + size[0] + ", calc height = " + size[1]);
+        return size;
+    }
+/*add by dragontec for bug 4496 end*/
 
     private IMediaPlayer.OnSeekCompleteListener qiyiSeekCompleteListener = new IMediaPlayer.OnSeekCompleteListener() {
         @Override

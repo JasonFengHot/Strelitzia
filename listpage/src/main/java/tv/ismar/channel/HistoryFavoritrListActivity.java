@@ -289,24 +289,24 @@ public class HistoryFavoritrListActivity extends BaseActivity implements OnItemC
 		adapter.setItemOnhoverlistener(HistoryFavoritrListActivity.this);
 		recyclerView.setAdapter(adapter);
 		/*modify by dragontec for bug 4482 start*/
-		recyclerView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-			@Override
-			public void onGlobalLayout() {
-				if (onePageScrollY == -1) {
-					if (recyclerView.getAdapter().getItemCount() > 8) {
-						View outsideView = recyclerView.findViewWithTag(8);
-						if (outsideView != null) {
-							Rect rect = new Rect();
-							outsideView.getGlobalVisibleRect(rect);
-							Rect recycleRect = new Rect();
-							recyclerView.getGlobalVisibleRect(recycleRect);
-							onePageScrollY = rect.top - recycleRect.top - 19;
-							recyclerView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-						}
-					}
-				}
-			}
-		});
+//		recyclerView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+//			@Override
+//			public void onGlobalLayout() {
+//				if (onePageScrollY == -1) {
+//					if (recyclerView.getAdapter().getItemCount() > 8) {
+//						View outsideView = recyclerView.findViewWithTag(8);
+//						if (outsideView != null) {
+//							Rect rect = new Rect();
+//							outsideView.getGlobalVisibleRect(rect);
+//							Rect recycleRect = new Rect();
+//							recyclerView.getGlobalVisibleRect(recycleRect);
+//							onePageScrollY = rect.top - recycleRect.top - 19;
+//							recyclerView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+//						}
+//					}
+//				}
+//			}
+//		});
 		/*modify by dragontec for bug 4482 end*/
 		if (mlists.size() > 0) {
 			new Handler().postDelayed(new Runnable() {

@@ -1362,17 +1362,6 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
         if (historyManager == null) {
             historyManager = VodApplication.getModuleAppContext().getModuleHistoryManager();
         }
-        long time=0;
-        DateFormat format=new SimpleDateFormat("yyyy-MM-dd");
-        format.setTimeZone(TimeZone.getTimeZone("Asia/Shanghai"));
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(TrueTime.now().getTime());
-        String date=format.format(calendar.getTime());
-        try {
-            time= format.parse(date).getTime();
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
         History history = new History();
         history.title = mItemEntity.getTitle();
         ItemEntity.Expense expense = mItemEntity.getExpense();
@@ -1388,7 +1377,7 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
         history.content_model = mItemEntity.getContentModel();
         history.is_complex = mItemEntity.getIsComplex();
         history.last_position = last_position;
-        history.add_time=time;
+        history.add_time=System.currentTimeMillis();
         history.model_name=mItemEntity.getModel_name();
         ClipEntity.Quality quality = mCurrentQuality;
         if (quality != null) {

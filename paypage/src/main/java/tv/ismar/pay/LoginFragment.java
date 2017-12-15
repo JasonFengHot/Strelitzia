@@ -1,6 +1,7 @@
 package tv.ismar.pay;
 
 import android.app.Activity;
+import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -90,6 +91,10 @@ public class LoginFragment extends BaseFragment implements View.OnHoverListener 
     private int mRetryFetchHistoriesTimes = 0;
     /*add by dragontec for bug 4560 end*/
 
+    /*add by dragontec for bug 4560 start*/
+    private Context mAppContext;
+    /*add by dragontec for bug 4560 end*/
+
     public static LoginFragment newInstance() {
         return new LoginFragment();
     }
@@ -100,6 +105,14 @@ public class LoginFragment extends BaseFragment implements View.OnHoverListener 
         super.onAttach(activity);
         this.activity = (BaseActivity) activity;
     }
+
+    /*add by dragontec for bug 4560 start*/
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mAppContext = context.getApplicationContext();
+    }
+    /*add by dragontec for bug 4560 end*/
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -520,6 +533,7 @@ public class LoginFragment extends BaseFragment implements View.OnHoverListener 
                     @Override
                     public void onError(Throwable e) {
 /*add by dragontec for bug 4560 start*/
+                        Log.e("LoginFragment", "fetchFavorite onError e = " + e);
                         ++mRetryFetchFavoriteTimes;
                         if (mRetryFetchFavoriteTimes < RetryFetchFavoriteMaxTimes) {
                             Log.d("LoginFragment", "retry fetch favorite times = " + mRetryFetchFavoriteTimes);
@@ -557,7 +571,12 @@ public class LoginFragment extends BaseFragment implements View.OnHoverListener 
         favorite.is_complex = mItem.getIs_complex();
         favorite.isnet = "yes";
         favorite.time=mItem.getCreateTime();
-        DaisyUtils.getFavoriteManager(getActivity()).addFavorite(favorite, favorite.isnet);
+/*modify by dragontec for bug 4560 start*/
+        Log.d("LoginFragment", "addFavorite mAppContext = " + mAppContext);
+        if (mAppContext != null) {
+            DaisyUtils.getFavoriteManager(mAppContext).addFavorite(favorite, favorite.isnet);
+        }
+/*modify by dragontec for bug 4560 start*/
     }
     private void getHistoryByNet() {
         historySub = mSkyService.getHistoryByNetV3()
@@ -572,9 +591,10 @@ public class LoginFragment extends BaseFragment implements View.OnHoverListener 
                     @Override
                     public void onError(Throwable e) {
 /*add by dragontec for bug 4560 start*/
+                        Log.e("LoginFragment", "fetchHistory onError e = " + e);
                         ++mRetryFetchHistoriesTimes;
                         if (mRetryFetchHistoriesTimes < RetryFetchHistoriesMaxTimes) {
-                            Log.d("LoginFragment", "retry fetch history times = " + RetryFetchHistoriesMaxTimes);
+                            Log.d("LoginFragment", "retry fetch history times = " + mRetryFetchHistoriesTimes);
                             getHistoryByNet();
                         }
 /*add by dragontec for bug 4560 end*/
@@ -640,10 +660,14 @@ public class LoginFragment extends BaseFragment implements View.OnHoverListener 
         }
 
         history.is_continue = true;
-        if (IsmartvActivator.getInstance().isLogin())
-            DaisyUtils.getHistoryManager(getActivity()).addHistory(history, "yes", -1);
-        else
-            DaisyUtils.getHistoryManager(getActivity()).addHistory(history, "no", -1);
-
+/*modify by dragontec for bug 4560 start*/
+        Log.d("LoginFragment", "addHistory mAppContext = " + mAppContext);
+        if (mAppContext != null) {
+            if (IsmartvActivator.getInstance().isLogin())
+                DaisyUtils.getHistoryManager(mAppContext).addHistory(history, "yes", -1);
+            else
+                DaisyUtils.getHistoryManager(mAppContext).addHistory(history, "no", -1);
+        }
+/*modify by dragontec for bug 4560 end*/
     }
 }

@@ -2,6 +2,7 @@ package tv.ismar.player.media;
 
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -435,6 +436,13 @@ public class DaisyPlayer extends IsmartvPlayer implements SurfaceHelper.SurfaceC
             int[] outputSize = computeVideoSize(width, height);
             LogUtils.i(TAG, "outSize:" + Arrays.toString(outputSize));
             mSurfaceHelper.getSurfaceHolder().setFixedSize(outputSize[0], outputSize[1]);
+/*add by dragontec for bug 4496 start*/
+            if (mSurfaceView != null && mSurfaceView.getHolder() != null
+                    && mSurfaceView.getHolder().getSurface() != null
+                    && mSurfaceView.getHolder().getSurface().isValid()) {
+                mSurfaceView.requestLayout();
+            }
+/*add by dragontec for bug 4496 end*/
             smartPlayer.setDisplay(mSurfaceHelper.getSurfaceHolder());
 
             if (onStateChangedListener != null) {
@@ -769,27 +777,42 @@ public class DaisyPlayer extends IsmartvPlayer implements SurfaceHelper.SurfaceC
         int[] size = new int[2];
         int screenWidth = DeviceUtils.getDisplayPixelWidth(mSurfaceView.getContext().getApplicationContext());
         int screenHeight = DeviceUtils.getDisplayPixelHeight(mSurfaceView.getContext().getApplicationContext());
-        double dw = screenWidth;
-        double dh = screenHeight;
-        if (videoWidth == videoHeight) {
-            if (dw > dh) {
-                dw = screenHeight;
-            } else {
-                dh = screenWidth;
-            }
-        } else {
-            double dar = dw / dh;
-            double ar = videoWidth / videoHeight;
-            if (dar < ar) {
-                double widthScale = videoWidth / dw;
-                dh = videoHeight / widthScale;
-            } else {
-                double heightScale = videoHeight / dh;
-                dw = videoWidth / heightScale;
-            }
+/*modify by dragontec for bug 4496 start*/
+//        double dw = screenWidth;
+//        double dh = screenHeight;
+//        if (videoWidth == videoHeight) {
+//            if (dw > dh) {
+//                dw = screenHeight;
+//            } else {
+//                dh = screenWidth;
+//            }
+//        } else {
+//            double dar = dw / dh;
+//            double ar = videoWidth / videoHeight;
+//            if (dar < ar) {
+//                double widthScale = videoWidth / dw;
+//                dh = videoHeight / widthScale;
+//            } else {
+//                double heightScale = videoHeight / dh;
+//                dw = videoWidth / heightScale;
+//            }
+//        }
+//        size[0] = (int) Math.ceil(dw);
+//        size[1] = (int) Math.ceil(dh);
+        float scaleWidth = (float)screenWidth / videoWidth;
+        float scaleHeight = (float)screenHeight / videoHeight;
+        if (scaleWidth > scaleHeight){
+            //fix height
+            float adjustVideoWidth = videoWidth * scaleHeight;
+            size[0] = (int) Math.ceil(adjustVideoWidth);
+            size[1] = (int) Math.ceil(screenHeight);
+        }else{
+            //fix width
+            float adjustVideoHeight = videoHeight * scaleWidth;
+            size[0] = (int) Math.ceil(screenWidth);
+            size[1] = (int) Math.ceil(adjustVideoHeight);
         }
-        size[0] = (int) Math.ceil(dw);
-        size[1] = (int) Math.ceil(dh);
+/*modify by dragontec for bug 4496 end*/
         return size;
     }
 

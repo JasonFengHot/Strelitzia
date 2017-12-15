@@ -68,7 +68,7 @@ public class LocalHistoryManager implements HistoryManager {
             mHistories = new ArrayList<History>();
         } else {
             for (History h : mHistories) {
-                if (url.equals(h.url)) {
+                if (url.equals(h.url) && isnet.equals(h.isnet)) {
                     history = h;
                     break;
                 }

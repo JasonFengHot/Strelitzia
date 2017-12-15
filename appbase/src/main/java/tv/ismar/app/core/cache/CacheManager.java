@@ -3,7 +3,10 @@ package tv.ismar.app.core.cache;
 import android.util.Log;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.math.BigInteger;
+import java.security.MessageDigest;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
@@ -39,6 +42,29 @@ public class CacheManager {
         return instance;
     }
 
+	private static String getFileMD5(File file) {
+		if (!file.isFile()) {
+			return null;
+		}
+		MessageDigest digest = null;
+		FileInputStream in = null;
+		byte buffer[] = new byte[1024];
+		int len;
+		try {
+			digest = MessageDigest.getInstance("MD5");
+			in = new FileInputStream(file);
+			while ((len = in.read(buffer, 0, 1024)) != -1) {
+				digest.update(buffer, 0, len);
+			}
+			in.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+		BigInteger bigInt = new BigInteger(1, digest.digest());
+		return bigInt.toString(16);
+	}
+
     /**
      * @param url       网络地址
      * @param saveName  保存文件名
@@ -66,23 +92,29 @@ public class CacheManager {
 			if (downloadState.equals(DownloadClient.DownloadState.complete.name())) {
 				File file = new File(downloadTable.download_path);
 				if (file.exists()) {
-					if (downloadTable.download_path.equals(downloadFile.getAbsolutePath())) {
-						Log.i(TAG, "本地文件已存在，直接返回文件地址");
-						return "file://" + downloadTable.download_path;
-					} else {
-						Log.i(TAG, "本地文件已存在，但index不同，rename文件，直接返回文件地址");
-						//视频index已变更
-						if (downloadFile.exists()) {
-							DownloadTable existTable = new Select().from(DownloadTable.class).where(DownloadTable.DOWNLOAD_PATH + "=?" + downloadFile.getAbsolutePath()).executeSingle();
-							if (existTable != null) {
-								existTable.delete();
+					String fileMD5 = getFileMD5(file);
+					if (fileMD5 != null && fileMD5.equals(serverMD5)) {
+						if (downloadTable.download_path.equals(downloadFile.getAbsolutePath())) {
+							Log.i(TAG, "本地文件已存在，直接返回文件地址");
+							return "file://" + downloadTable.download_path;
+						} else {
+							Log.i(TAG, "本地文件已存在，但index不同，rename文件，直接返回文件地址");
+							//视频index已变更
+							if (downloadFile.exists()) {
+								DownloadTable existTable = new Select().from(DownloadTable.class).where(DownloadTable.DOWNLOAD_PATH + "=?" + downloadFile.getAbsolutePath()).executeSingle();
+								if (existTable != null) {
+									existTable.delete();
+								}
+								downloadFile.delete();
 							}
-							downloadFile.delete();
+							file.renameTo(downloadFile.getAbsoluteFile());
+							downloadTable.download_path = downloadFile.getAbsolutePath();
+							downloadTable.save();
+							return "file://" + downloadTable.download_path;
 						}
-						file.renameTo(downloadFile.getAbsoluteFile());
-						downloadTable.download_path = downloadFile.getAbsolutePath();
-						downloadTable.save();
-						return "file://" + downloadTable.download_path;
+					} else {
+						Log.i(TAG, "本地文件已存在，但文件MD5与服务器不一致，重新下载");
+						addRequestToThreadPool(null, url, downloadFile);
 					}
 				} else {
 					// 本地文件已经被删除，需重新下载
@@ -92,10 +124,12 @@ public class CacheManager {
 				}
 			} else if (downloadState.equals(DownloadClient.DownloadState.run.name())) {
 				// 当前url正在下载队列中，无需处理
-				Log.i(TAG, "当前url正在下载队列中，无需处理");
 				Future future = mFutureMap.get(url);
 				if (future == null || future.isCancelled()) {
+					Log.i(TAG, "当前url正在下载队列中，但已经被取消， 开始断点续传");
 					addRequestToThreadPool(downloadTable, url, downloadFile);
+				} else {
+					Log.i(TAG, "当前url正在下载队列中，无需处理");
 				}
 			} else if (downloadState.equals(DownloadClient.DownloadState.pause.name())) {
 				Log.i(TAG, "断点续传");

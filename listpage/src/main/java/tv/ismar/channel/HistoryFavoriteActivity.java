@@ -38,6 +38,7 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.TimeZone;
 
 import cn.ismartv.truetime.TrueTime;
@@ -1232,19 +1233,17 @@ public class HistoryFavoriteActivity extends BaseActivity implements View.OnClic
                     if (i == 0) {
                         item.setShowDate(true);
                     } else {
-//                        DateFormat format=new SimpleDateFormat("MM-dd");
-//                        format.setTimeZone(TimeZone.getTimeZone("Asia/Shanghai"));
-//                        long time=item.getDate();
-//                        Calendar calendar = Calendar.getInstance();
-//                        calendar.setTimeInMillis(time);
-//                         format.format(calendar.getTime());
-                        Log.i("favoriteTime",(int)(item.getDate()/100000)+"");
-                        if ((int)(item.getDate()/100000)==((int) (list.get(i - 1).getDate()/100000))) {
-                            item.setShowDate(false);
-                        } else {
-                            item.setShowDate(true);
-                            count++;
-                        }
+                    	Calendar calendar = Calendar.getInstance(Locale.CHINA);
+                    	calendar.setTimeInMillis(item.getDate());
+                    	Calendar lastCal = Calendar.getInstance(Locale.CHINA);
+                    	lastCal.setTimeInMillis(list.get(i - 1).getDate());
+                    	Log.i("favorite", String.format("%04d-%02d-%02d", calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.DAY_OF_MONTH)));
+                    	if (calendar.get(Calendar.YEAR) == lastCal.get(Calendar.YEAR) && calendar.get(Calendar.MONTH) == lastCal.get(Calendar.MONTH) && calendar.get(Calendar.DAY_OF_MONTH) == lastCal.get(Calendar.DAY_OF_MONTH)) {
+							item.setShowDate(false);
+						} else {
+							item.setShowDate(true);
+							count++;
+						}
                     }
                     if(count<3) {
                         list2.add(item);
