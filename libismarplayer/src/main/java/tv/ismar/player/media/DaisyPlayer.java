@@ -234,10 +234,18 @@ public class DaisyPlayer extends IsmartvPlayer implements SurfaceHelper.SurfaceC
             mPlayer.setOnM3u8IpListener(null);
             mPlayer.setOnCompletionListenerUrl(null);
             mPlayer.setOnPreloadCompleteListener(null);
-            mPlayer.stop();
+/*modify by dragontec for bug 4418 start*/
+//            mPlayer.stop();
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                mPlayer.stop();
+            }
+/*modify by dragontec for bug 4418 end*/
 /*modify by dragontec for bug 4418 start*/
 //            mPlayer.release();
             if (mPlayer.getPlayerType() == SmartPlayer.PlayerType.PlayerCodec) {
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+                    mPlayer.stop();
+                }
                 mPlayer.release();
             } else {
                 releaseMediaPlayerInRunnable(mPlayer);
@@ -271,6 +279,9 @@ public class DaisyPlayer extends IsmartvPlayer implements SurfaceHelper.SurfaceC
                 handler.removeCallbacks(this);
             }
             if (smartPlayer != null) {
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+                    smartPlayer.stop();
+                }
                 smartPlayer.release();
             }
         }
