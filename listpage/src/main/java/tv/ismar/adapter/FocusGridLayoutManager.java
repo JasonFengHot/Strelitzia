@@ -111,8 +111,11 @@ public class FocusGridLayoutManager extends GridLayoutManager {
 
     @Override
     public View onInterceptFocusSearch(View focused, int direction) {
-    	if (isFavorite) {
+    	if (isFavorite || specialPos == null) {
     		View nextFocus = null;
+    		if (!isFavorite && direction == View.FOCUS_LEFT) {
+				return super.onInterceptFocusSearch(focused, direction);
+			}
     		if (mRecyclerView != null) {
 				int fromPos = mRecyclerView.getChildAdapterPosition(focused);
 				if (fromPos != RecyclerView.NO_POSITION) {
@@ -229,7 +232,13 @@ public class FocusGridLayoutManager extends GridLayoutManager {
 
     @Override
     public View onFocusSearchFailed(View focused, int focusDirection, RecyclerView.Recycler recycler, RecyclerView.State state) {
-		if (isFavorite) {
+		if (isFavorite  || specialPos == null) {
+			if (!isFavorite) {
+				View nextFocus = super.onFocusSearchFailed(focused, focusDirection, recycler, state);
+				if (nextFocus == null && focusDirection == View.FOCUS_LEFT) {
+					return leftFocusView;
+				}
+			}
 			return onInterceptFocusSearch(focused, focusDirection);
 		} else {
 			// Need to be called in order to layout new row/column
