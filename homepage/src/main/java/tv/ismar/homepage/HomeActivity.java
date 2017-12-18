@@ -282,10 +282,12 @@ public class HomeActivity extends BaseActivity
     protected void onPause() {
 		isPaused = true;
 		currentFocus = getCurrentFocus();
-		Object tag = currentFocus.getTag(mChannelTab.getId());
-		if (tag != null && tag instanceof String && tag.equals("tab")) {
-			currentFocus = null;
-		}
+		if (currentFocus != null && mChannelTab != null) {
+            Object tag = currentFocus.getTag(mChannelTab.getId());
+            if (tag != null && tag instanceof String && tag.equals("tab")) {
+                currentFocus = null;
+            }
+        }
 		mFetchDataControl.stop();
 		super.onPause();
     }
