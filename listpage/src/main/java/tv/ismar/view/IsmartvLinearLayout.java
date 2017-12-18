@@ -16,12 +16,11 @@ public class IsmartvLinearLayout extends LinearLayout {
     private Drawable foreground;
 
     public IsmartvLinearLayout(Context context) {
-        super(context, null);
+    	this(context, null);
     }
 
     public IsmartvLinearLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
-
         TypedArray a = context.obtainStyledAttributes(attrs, com.example.foregroundimageview.R.styleable.ForegroundImageView);
         Drawable foreground = a.getDrawable(com.example.foregroundimageview.R.styleable.ForegroundImageView_android_foreground);
         if (foreground != null) {
@@ -30,12 +29,11 @@ public class IsmartvLinearLayout extends LinearLayout {
         a.recycle();
     }
 
-
     public void setForegroundResource(int drawableResId) {
         setForeground(getContext().getResources().getDrawable(drawableResId));
     }
 
-    /**
+	/**
      * Supply a Drawable that is to be rendered on top of all of the child
      * views in the frame layout.
      *

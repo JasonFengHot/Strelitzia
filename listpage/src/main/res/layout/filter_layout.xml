@@ -85,8 +85,8 @@
             android:id="@+id/poster_recyclerview"
             android:layout_width="match_parent"
             android:layout_height="@dimen/filter_layout_poster_recyclerview_h"
-            android:clipToPadding="true"
-            android:clipChildren="true"
+            android:clipToPadding="false"
+            android:clipChildren="false"
             android:paddingRight="@dimen/filter_layout_poster_recyclerview_mr"
             />
 
