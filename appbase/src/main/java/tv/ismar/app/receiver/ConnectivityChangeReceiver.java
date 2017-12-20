@@ -45,15 +45,12 @@ public class ConnectivityChangeReceiver extends BroadcastReceiver {
             String apiDomain = mSharedPreferences.getString("api_domain", "");
 
 /*add by dragontec for bug 4513 start*/
-            final boolean isActive = IsmartvActivator.isactive;
-            if (!isActive) {
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        IsmartvActivator.getInstance().execute();
-                    }
-                }).start();
-            }
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    IsmartvActivator.getInstance().execute();
+                }
+            }).start();
 /*add by dragontec for bug 4513 end*/
 
             if (TextUtils.isEmpty(apiDomain)){

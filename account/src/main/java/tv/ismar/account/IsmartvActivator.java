@@ -236,13 +236,15 @@ public final class IsmartvActivator {
 
     public static boolean isactive = false;
 
-    public ResultEntity active() {
+    private ResultEntity active() {
         Log.d(TAG, "active    " + "isactive: " + isactive);
         String sign = "ismartv=201415&kind=" + kind + "&sn=" + sn;
         String rsaEncryptResult = encryptWithPublic(sign);
         if (!isactive) {
             try {
-                isactive = true;
+/*modify by dragontec for bug 4513 start*/
+//                isactive = true;
+/*modify by dragontec for bug 4513 false*/
                 Response<ResultEntity> resultResponse = SKY_Retrofit.create(HttpService.class).
                         trustSecurityActive(sn, manufacture, kind, version, rsaEncryptResult,
                                 fingerprint, "v5_0", getAndroidDevicesInfo(), DeviceUtils.getLocalwlanAddress(), DeviceUtils.getLocalHardwareAddress())
@@ -252,6 +254,9 @@ public final class IsmartvActivator {
                     mResult = resultResponse.body();
                     saveAccountInfo(mResult);
                     reportIp(mResult.getSn_Token());
+/*modify by dragontec for bug 4513 start*/
+                    isactive = true;
+/*modify by dragontec for bug 4513 false*/
                     return mResult;
                 } else if (resultResponse.code() == 424) {
                     isactive = false;
