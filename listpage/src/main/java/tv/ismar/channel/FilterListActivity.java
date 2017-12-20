@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.TypedValue;
@@ -1199,6 +1200,7 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
             }
             filterPosterAdapter.setmItemList(itemList);
             filterPosterAdapter.notifyDataSetChanged();
+            updateArrowState();
         }
     }
 
@@ -1307,16 +1309,16 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
                 }
             } else if (id == R.id.poster_arrow_up) {
                 if (filter_tab.isChecked()) {
-                    int firstVisible = mFocusGridLayoutManager.findFirstCompletelyVisibleItemPosition();
+                    int firstVisible = mFilterFocusGridLayoutManager.findFirstCompletelyVisibleItemPosition();
                     int spaceV = poster_recyclerview.getSpaceV();
                     if(itemHeight == -1){
-                        View view = mFocusGridLayoutManager.findViewByPosition(firstVisible);
-                        Rect rect = new Rect();
-                        view.getGlobalVisibleRect(rect);
-                        itemHeight = rect.height();
+						RecyclerView.ViewHolder viewHolder = poster_recyclerview.findViewHolderForAdapterPosition(firstVisible);
+						if (viewHolder != null && viewHolder.itemView != null) {
+							itemHeight = viewHolder.itemView.getHeight();
+						}
                     }
                     int scrollOffset = -(itemHeight + spaceV/2) * 2;
-                    if(firstVisible <= mFocusGridLayoutManager.getDefaultSpanCount()*2){
+                    if(firstVisible <= mFilterFocusGridLayoutManager.getDefaultSpanCount()*2){
                         scrollOffset -= spaceV;
                     }
                     poster_recyclerview.directSmoothScrollBy(0, scrollOffset);
@@ -1328,10 +1330,10 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
                     }
                     int titleOffset = list_poster_recyclerview.getScrollOffset();
                     if(itemHeight == -1){
-                        View view = mFocusGridLayoutManager.findViewByPosition(firstVisible);
-                        Rect rect = new Rect();
-                        view.getGlobalVisibleRect(rect);
-                        itemHeight = rect.height();
+						RecyclerView.ViewHolder viewHolder = list_poster_recyclerview.findViewHolderForAdapterPosition(firstVisible);
+						if (viewHolder != null && viewHolder.itemView != null) {
+							itemHeight = viewHolder.itemView.getHeight();
+						}
                     }
                     int spaceV = list_poster_recyclerview.getSpaceV();
                     int belongSection = -1;
@@ -1380,13 +1382,13 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
             } else if (id == R.id.poster_arrow_down) {
                 if (filter_tab.isChecked()) {
 //                    poster_recyclerview.directSmoothScrollBy(0, onePageScrollY);
-                    int firstVisible = mFocusGridLayoutManager.findFirstCompletelyVisibleItemPosition();
+                    int firstVisible = mFilterFocusGridLayoutManager.findFirstCompletelyVisibleItemPosition();
                     int spaceV = poster_recyclerview.getSpaceV();
                     if(itemHeight == -1){
-                        View view = mFocusGridLayoutManager.findViewByPosition(firstVisible);
-                        Rect rect = new Rect();
-                        view.getGlobalVisibleRect(rect);
-                        itemHeight = rect.height();
+						RecyclerView.ViewHolder viewHolder = poster_recyclerview.findViewHolderForAdapterPosition(firstVisible);
+						if (viewHolder != null && viewHolder.itemView != null) {
+							itemHeight = viewHolder.itemView.getHeight();
+						}
                     }
                     int scrollOffset = (itemHeight + spaceV) * 2;
                     poster_recyclerview.directSmoothScrollBy(0, scrollOffset);
@@ -1398,10 +1400,10 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
                        return;
                     }
                     if(itemHeight == -1){
-                        View view = mFocusGridLayoutManager.findViewByPosition(firstVisible);
-                        Rect rect = new Rect();
-                        view.getGlobalVisibleRect(rect);
-                        itemHeight = rect.height();
+						RecyclerView.ViewHolder viewHolder = list_poster_recyclerview.findViewHolderForAdapterPosition(firstVisible);
+						if (viewHolder != null && viewHolder.itemView != null) {
+							itemHeight = viewHolder.itemView.getHeight();
+						}
                     }
                     int titleOffset = list_poster_recyclerview.getScrollOffset();
                     View view = mFocusGridLayoutManager.findViewByPosition(nextPos);
@@ -1441,14 +1443,14 @@ public class FilterListActivity extends BaseActivity implements View.OnClickList
     public boolean onHover(View v, MotionEvent event) {
         if(event.getAction()==MotionEvent.ACTION_HOVER_ENTER||event.getAction()==MotionEvent.ACTION_HOVER_MOVE){
             if(v.getId() == R.id.poster_recyclerview ){
-                if(poster_recyclerview != null && mFocusGridLayoutManager != null) {
+                if(poster_recyclerview != null && mFilterFocusGridLayoutManager != null) {
                     poster_recyclerview.setBlockFocusScrollWhenManualScroll(true);
-                    mFocusGridLayoutManager.setCanScroll(false);
+					mFilterFocusGridLayoutManager.setCanScroll(false);
                 }
             }else if(v.getId() == R.id.list_poster_recyclerview){
-                if(list_poster_recyclerview != null && mFilterFocusGridLayoutManager != null) {
+                if(list_poster_recyclerview != null && mFocusGridLayoutManager != null) {
                     list_poster_recyclerview.setBlockFocusScrollWhenManualScroll(true);
-                    mFilterFocusGridLayoutManager.setCanScroll(false);
+                    mFocusGridLayoutManager.setCanScroll(false);
                 }
             }else{
                 v.requestFocus();
