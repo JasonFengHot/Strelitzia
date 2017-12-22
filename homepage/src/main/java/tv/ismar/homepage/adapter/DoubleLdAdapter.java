@@ -97,7 +97,6 @@ public class DoubleLdAdapter extends BaseRecycleAdapter<DoubleLdAdapter.DoubleLd
 						holder.imageUrl = mBigImage.poster_url;
 						Picasso.with(mContext).
 								load(mBigImage.poster_url).
-								memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE).
 								error(R.drawable.template_title_item_horizontal_preview).
 								placeholder(R.drawable.template_title_item_horizontal_preview).
 								tag("banner").
@@ -139,7 +138,6 @@ public class DoubleLdAdapter extends BaseRecycleAdapter<DoubleLdAdapter.DoubleLd
 						} else {
 							holder.imageUrl = poster.poster_url;
 							Picasso.with(mContext).load(poster.poster_url).
-									memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE).
 									error(R.drawable.template_title_item_horizontal_preview).
 									placeholder(R.drawable.template_title_item_horizontal_preview).
 									tag("banner").
@@ -240,7 +238,6 @@ public class DoubleLdAdapter extends BaseRecycleAdapter<DoubleLdAdapter.DoubleLd
 					//do nothing
 				} else if (imageUrl != null) {
 					Picasso.with(mContext).load(imageUrl).
-							memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE).
 							error(R.drawable.template_title_item_horizontal_preview).
 							placeholder(R.drawable.template_title_item_horizontal_preview).
 							tag("banner").

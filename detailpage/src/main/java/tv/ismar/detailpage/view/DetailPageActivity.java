@@ -469,4 +469,12 @@ public class DetailPageActivity extends BaseActivity implements PlaybackService.
         }
     }
 
+    @Override
+    public void onExpireAccessTokenPopDismiss() {
+        super.onExpireAccessTokenPopDismiss();
+        if (getSupportFragmentManager().findFragmentById(R.id.activity_detail_container) instanceof PackageDetailFragment){
+            PackageDetailFragment packageDetailFragment = (PackageDetailFragment) getSupportFragmentManager().findFragmentById(R.id.activity_detail_container);
+            packageDetailFragment.requestPlayCheck(String.valueOf(mItemEntity.getPk()));
+        }
+    }
 }

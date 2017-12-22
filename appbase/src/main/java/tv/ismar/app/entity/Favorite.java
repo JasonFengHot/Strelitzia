@@ -66,6 +66,11 @@ public class Favorite implements Serializable,Comparable<Favorite>{
 
     @Override
     public int compareTo(@NonNull Favorite another) {
-        return (int) (another.time-this.time);
+		if (another.time > this.time) {
+			return 1;
+		} else if (another.time < this.time) {
+			return -1;
+		}
+		return 0;
     }
 }

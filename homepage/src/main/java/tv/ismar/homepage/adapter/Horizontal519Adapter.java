@@ -88,7 +88,6 @@ public class Horizontal519Adapter extends BaseRecycleAdapter<Horizontal519Adapte
 				if (!TextUtils.isEmpty(poster.poster_url)) {
 					holder.imageUrl = poster.poster_url;
 					Picasso.with(mContext).load(poster.poster_url).
-							memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE).
 							placeholder(R.drawable.template_title_item_horizontal_preview).
 							error(R.drawable.template_title_item_horizontal_preview).
 							tag("banner").
@@ -98,7 +97,6 @@ public class Horizontal519Adapter extends BaseRecycleAdapter<Horizontal519Adapte
 					}
 				} else {
 					Picasso.with(mContext).load(R.drawable.template_title_item_horizontal_preview).
-							memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE).
 							into(holder.mImageView);
 				}
 			}
@@ -193,7 +191,6 @@ public class Horizontal519Adapter extends BaseRecycleAdapter<Horizontal519Adapte
 				if (mImageView != null) {
 					Picasso.with(mContext).
 							load(imageUrl).
-							memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE).
 							placeholder(R.drawable.template_title_item_horizontal_preview).
 							error(R.drawable.template_title_item_horizontal_preview).
 							tag("banner").

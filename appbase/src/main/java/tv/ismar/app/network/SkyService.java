@@ -88,6 +88,7 @@ import tv.ismar.app.network.entity.ChatMsgEntity;
 import tv.ismar.app.network.entity.DpiEntity;
 import tv.ismar.app.network.entity.Empty;
 import tv.ismar.app.network.entity.ExplainEntity;
+import tv.ismar.app.network.entity.ExtraPaymentChannelEntity;
 import tv.ismar.app.network.entity.GoodsRenewStatusEntity;
 import tv.ismar.app.network.entity.IpLookUpEntity;
 import tv.ismar.app.network.entity.ItemEntity;
@@ -754,6 +755,12 @@ public interface SkyService {
             @Query("item_id") int item_id,
             @Query("channel") String channel,
             @Query("play_scale") int play_scale
+    );
+
+    @GET("api/paymentway/{type}/{pk}/")
+    Observable<ExtraPaymentChannelEntity> apiExtraPaymentChannel(
+            @Path("type") String type,
+            @Path("pk") int pk
     );
 
     @GET("accounts/item/subscribe/")

@@ -190,6 +190,7 @@ public class BalancePayFragment extends Fragment implements View.OnClickListener
                             submitBtn.setEnabled(false);
                             submitBtn.setFocusable(false);
                             submitBtn.setFocusableInTouchMode(false);
+                            cancleBtn.setNextFocusLeftId(R.id.balance_pay);
                         }
                         balanceTv.setText(String.format(getString(R.string.pay_card_balance_title_label), entity.getBalance()));
                     }

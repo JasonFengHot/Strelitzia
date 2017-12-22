@@ -89,9 +89,6 @@ public class CenterAdapter extends BaseRecycleAdapter<CenterAdapter.CenterViewHo
 				holder.imageUrl = carousels.video_image;
 /*modify by dragontec for bug 4336 start*/
 				Picasso.with(mContext).load(carousels.video_image).
-/*add by dragontec for bug 4205 start*/
-                        memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE).
-/*add by dragontec for bug 4205 end*/
                         placeholder(R.drawable.template_center_item_preview).
                         error(R.drawable.template_center_item_preview).
 						tag("banner").
@@ -177,7 +174,6 @@ public class CenterAdapter extends BaseRecycleAdapter<CenterAdapter.CenterViewHo
 				if (imageUrl != null) {
 					Picasso.with(mContext).
 							load(imageUrl).
-							memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE).
 							placeholder(R.drawable.template_center_item_preview).
 							error(R.drawable.template_center_item_preview).
 							tag("banner").

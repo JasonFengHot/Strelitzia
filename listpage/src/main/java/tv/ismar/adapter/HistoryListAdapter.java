@@ -14,7 +14,7 @@ import android.widget.TextView;
 
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
-import com.squareup.picasso.MemoryPolicy;
+//import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
 
 import java.text.DateFormat;
@@ -81,9 +81,6 @@ public class HistoryListAdapter extends RecyclerView.Adapter<HistoryListAdapter.
 			if (item.getAdlet_url() != null && !item.getAdlet_url().isEmpty()) {
 /*modify by dragontec for bug 4336 start*/
 				Picasso.with(mContext).load(item.getAdlet_url()).
-/*add by dragontec for bug 4205 start*/
-						memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE).
-/*add by dragontec for bug 4205 end*/
 						placeholder(R.drawable.item_horizontal_preview).
 						error(R.drawable.item_horizontal_preview).
 						into(holder.item_detail_image);

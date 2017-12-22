@@ -15,11 +15,11 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     >
-    <tv.ismar.app.widget.RecyclerImageView
-        android:layout_width="@dimen/item_vertical_poster_img_w"
-        android:layout_height="@dimen/item_vertical_poster_img_h"
-        android:src="@drawable/item_vertical_preview"
-        />
+    <!--<tv.ismar.app.widget.RecyclerImageView-->
+        <!--android:layout_width="@dimen/item_vertical_poster_img_w"-->
+        <!--android:layout_height="@dimen/item_vertical_poster_img_h"-->
+        <!--android:src="@drawable/item_vertical_preview"-->
+        <!--/>-->
 
     <tv.ismar.app.widget.RecyclerImageView
         android:id="@+id/item_vertical_poster_img"

@@ -89,7 +89,14 @@ public class LocalHistoryManager implements HistoryManager {
             mHistories = new ArrayList<History>();
         }
         mHistories = mDBHelper.getAllHistories(isnet);
-        return mHistories;
+		for (History history :
+				mHistories) {
+			if (history.add_time == 0) {
+				history.add_time = TrueTime.now().getTime();
+				mDBHelper.updateHistory(history);
+			}
+		}
+		return mHistories;
     }
     @Override
     public ArrayList<History> getAllHistories() {
@@ -97,6 +104,13 @@ public class LocalHistoryManager implements HistoryManager {
             mHistories = new ArrayList<History>();
         }
         mHistories = mDBHelper.getAllHistories();
+		for (History history :
+				mHistories) {
+			if (history.add_time == 0) {
+				history.add_time = TrueTime.now().getTime();
+				mDBHelper.updateHistory(history);
+			}
+		}
         return mHistories;
     }
 

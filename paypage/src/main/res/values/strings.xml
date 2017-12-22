@@ -31,4 +31,6 @@
     <string name="ykt_renewal_duration">·有效期：%1$d天</string>
     <string name="yktmm_price">·尊享超低价%1$.2f元/月（原价%2$.2f元/月）</string>
     <string name="alipay_renew_line2_text">&#160;自动延长1个月</string>
+    <string name="unipay_text">银联支付</string>
+    <string name="access_token_expire">当前账户正在其他设备上使用，请您重新登录</string>
 </resources>

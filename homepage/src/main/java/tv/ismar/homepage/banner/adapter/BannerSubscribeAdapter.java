@@ -133,7 +133,7 @@ public class BannerSubscribeAdapter
                     placeholder(R.drawable.template_title_item_horizontal_preview).
                     error(R.drawable.template_title_item_horizontal_preview).
                     into(holder.mImageView);
-/*modify by dragontec for bug 4336 start*/
+/*modify by dragontec for bug 4336 end*/
         }
         if (position == 0) {
             RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) holder.mTimeLine.getLayoutParams();

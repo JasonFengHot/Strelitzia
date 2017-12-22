@@ -1,6 +1,7 @@
 package tv.ismar.homepage.fragment;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -13,10 +14,14 @@ import android.view.ViewGroup;
 /*add by dragontec for bug 4065 start*/
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 /*add by dragontec for bug 4065 end*/
 
 import com.orhanobut.logger.Logger;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
@@ -40,6 +45,7 @@ import tv.ismar.homepage.template.TemplateMovie;
 import tv.ismar.homepage.template.TemplateOrder;
 import tv.ismar.homepage.template.TemplateRecommend;
 import tv.ismar.homepage.template.TemplateTvPlay;
+import tv.ismar.homepage.view.FrameAnimation;
 import tv.ismar.homepage.widget.HomeRootRelativeLayout;
 import tv.ismar.homepage.widget.RecycleLinearLayout;
 import tv.ismar.library.util.StringUtils;
@@ -108,6 +114,10 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
 
 	private ArrayBlockingQueue<List<String>> mFetchCallBannerQueue = null;
 
+	private RelativeLayout loading_layout = null;
+	private ImageView loading_progress = null;
+	private FrameAnimation mFrameAnimation = null;
+
 	@Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -150,7 +160,6 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
 	@Override
     public void onResume() {
         super.onResume();
-
 		synchronized (templateDataLock) {
 			if (mTemplates != null) {
 				for (Template template : mTemplates) {
@@ -222,6 +231,14 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
 //			mControl.clear();
 //		}
 		/*delete by dragontec for bug 4362 send*/
+		if (mFrameAnimation != null) {
+			mFrameAnimation.setAnimationListener(null);
+			mFrameAnimation.release();
+			mFrameAnimation = null;
+		}
+		loading_progress = null;
+		loading_layout = null;
+
 		if (mLinearContainer != null){
 			mLinearContainer.resetArrowUp();
 			mLinearContainer.resetArrowDown();
@@ -264,8 +281,39 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
             mLinearContainer.setArrow_down(((HomeActivity) getActivity()).banner_arrow_down);
 			homeRootRelativeLayout = ((HomeActivity) getActivity()).mHoverView;
 			mLinearContainer.setHomeRootRelativeLayout(homeRootRelativeLayout);
-        }
+			loading_layout = ((HomeActivity) getActivity()).loading_layout;
+			loading_progress = ((HomeActivity) getActivity()).loading_progress;
+			mFrameAnimation = new FrameAnimation(loading_progress, getRes(), 25, true);
+			mFrameAnimation.setAnimationListener(new FrameAnimation.AnimationListener() {
+				@Override
+				public void onAnimationStart() {
+
+				}
+
+				@Override
+				public void onAnimationEnd() {
+
+				}
+
+				@Override
+				public void onAnimationRepeat() {
+
+				}
+			});
+			mFrameAnimation.pauseAnimation();
+		}
     }
+
+	private int[] getRes() {
+		TypedArray typedArray = getResources().obtainTypedArray(R.array.loading);
+		int len = typedArray.length();
+		int[] resId = new int[len];
+		for (int i = 0; i < len; i++) {
+			resId[i] = typedArray.getResourceId(i, -1);
+		}
+		typedArray.recycle();
+		return resId;
+	}
 
 	/*add by dragontec for bug 4338 start*/
     private void initListener() {
@@ -343,6 +391,10 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
 
     private void initData() {
         if (!StringUtils.isEmpty(mChannel)) {
+			if (loading_layout != null) {
+				mFrameAnimation.restartAnimation();
+				loading_layout.setVisibility(View.VISIBLE);
+			}
             if (mChannel.equals(HomeActivity.HOME_PAGE_CHANNEL_TAG)) { // 首页数据
                 mControl.fetchHomeBanners();
             } else { // 其他频道数据
@@ -388,8 +440,13 @@ public class ChannelFragment extends BaseFragment implements BaseControl.Control
 				}
 			}
 			break;
-			case BaseControl.FETCH_BANNERS_LIST_FLAG:
-			case BaseControl.FETCH_M_BANNERS_LIST_FLAG: {
+			case BaseControl.FETCH_M_BANNERS_LIST_FLAG:{
+				if (loading_layout != null) {
+					loading_layout.setVisibility(View.GONE);
+					mFrameAnimation.pauseAnimation();
+				}
+			}
+			case BaseControl.FETCH_BANNERS_LIST_FLAG: {
 				if (args != null) {
 					List<String> list = new ArrayList<>();
 					for (Object arg : args) {

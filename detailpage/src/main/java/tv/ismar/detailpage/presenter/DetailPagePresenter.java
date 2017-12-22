@@ -456,7 +456,7 @@ public class DetailPagePresenter implements DetailPageContract.Presenter {
                 e.printStackTrace();
             }
             Favorite favorite = new Favorite();
-            favorite.time=time;
+            favorite.time=TrueTime.now().getTime();
             favorite.title = mItemEntity.getTitle();
             favorite.adlet_url = mItemEntity.getAdletUrl();
             favorite.content_model = mItemEntity.getContentModel();

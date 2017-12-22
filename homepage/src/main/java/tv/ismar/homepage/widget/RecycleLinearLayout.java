@@ -395,7 +395,7 @@ public class RecycleLinearLayout extends LinearLayout {
         Log.i(TAG, "action:"+event.getAction()+" keyCode:"+keyCode);
         if(longPress || event.getAction() == KeyEvent.ACTION_UP){
             if(keyCode==KeyEvent.KEYCODE_DPAD_DOWN || keyCode==KeyEvent.KEYCODE_DPAD_UP
-                    || keyCode==KeyEvent.KEYCODE_DPAD_LEFT || keyCode==KeyEvent.KEYCODE_DPAD_RIGHT){
+                    /*|| keyCode==KeyEvent.KEYCODE_DPAD_LEFT || keyCode==KeyEvent.KEYCODE_DPAD_RIGHT*/){
                 View view = getFocusedChild();
                 View view1 = findFocus();
                 Log.i(TAG, "debug1"+" view:"+view+" view1:"+view1);

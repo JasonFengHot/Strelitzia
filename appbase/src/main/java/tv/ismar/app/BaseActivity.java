@@ -37,6 +37,7 @@ import tv.ismar.app.player.OnNoNetConfirmListener;
 import tv.ismar.app.ui.ToastTip;
 import tv.ismar.app.update.UpdateService;
 import tv.ismar.app.util.NetworkUtils;
+import tv.ismar.app.widget.ExpireAccessTokenPop;
 import tv.ismar.app.widget.ItemOffLinePopWindow;
 import tv.ismar.app.widget.LoadingDialog;
 import tv.ismar.app.widget.Login_hint_dialog;
@@ -56,6 +57,7 @@ public class BaseActivity extends AppCompatActivity {
     private UpdatePopupWindow updatePopupWindow;
     private LoadingDialog mLoadingDialog;
     private ModuleMessagePopWindow netErrorPopWindow;
+//    private ModuleMessagePopWindow expireAccessTokenPop;
     private ModuleMessagePopWindow itemOffLinePop;
     private ModuleMessagePopWindow dialog;
     public SkyService mSkyService;
@@ -166,6 +168,10 @@ public class BaseActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         activityIsAlive = false;
+//        if (expireAccessTokenPop != null) {
+//            expireAccessTokenPop.dismiss();
+//            expireAccessTokenPop = null;
+//        }
         try {
             unregisterConnectionReceiver();
         } catch (Exception e) {
@@ -369,7 +375,7 @@ public class BaseActivity extends AppCompatActivity {
                 	/*add by dragontec for bug 4364 start*/
                         IsmartvActivator.getInstance().removeUserInfo(false);
                 	/*add by dragontec for bug 4364 end*/
-                        showExpireAccessTokenPop();
+                        onAuthAccountFailed();
                     }else if(httpException.code() == 504){
                         ToastTip.showToast(BaseActivity.this,"网络连接超时，请重试");
                     }else{
@@ -385,7 +391,10 @@ public class BaseActivity extends AppCompatActivity {
         }
     }
     public void showExpireAccessTokenPop() {
-        ToastTip.showToast(this,getString(R.string.access_token_expire));
+    }
+
+    public void onExpireAccessTokenPopDismiss(){
+
     }
 
     public void showItemOffLinePop() {
@@ -650,5 +659,9 @@ public class BaseActivity extends AppCompatActivity {
 
     public void setmOnNetConnectListener(OnNetConnectListener mOnNetConnectListener) {
         this.mOnNetConnectListener = mOnNetConnectListener;
+    }
+
+    protected void onAuthAccountFailed() {
+
     }
 }

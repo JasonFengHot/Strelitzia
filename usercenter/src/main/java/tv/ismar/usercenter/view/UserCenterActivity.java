@@ -399,8 +399,10 @@ public class UserCenterActivity extends BaseActivity implements LoginFragment.Lo
         indicatorView.get(1).requestFocus();
         changeViewState(indicatorView.get(1), ViewState.Select);
         indicatorView.get(6).setVisibility(View.VISIBLE);
-        fetchFavorite();
-        getHistoryByNet();
+/*modify by dragontec for bug 4568 start*/
+//        fetchFavorite();
+//        getHistoryByNet();
+/*modify by dragontec for bug 4568 end*/
     }
 
     private View.OnFocusChangeListener indicatorOnFocusListener = new View.OnFocusChangeListener() {

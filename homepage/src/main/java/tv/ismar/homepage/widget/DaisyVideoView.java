@@ -250,7 +250,9 @@ public class DaisyVideoView extends SurfaceView implements MediaPlayerControl {
 			player.setOnSeekCompleteListener(mSeekCompleteChangedListener);
 			player.setOnCompletionListener(mCompletionListener);
 			player.setOnErrorListener(mErrorListener);
-			//player.setOnInfoListener(mInfoChangedListener);
+/*modify by dragontec for bug 4650 start*/
+			player.setOnInfoListener(mInfoChangedListener);
+/*modify by dragontec for bug 4650 end*/
 			player.setOnBufferingUpdateListener(mBufferingUpdateListener);
 			mCurrentBufferPercentage = 0;
 			mHeaders = new HashMap<>();
@@ -478,6 +480,20 @@ public class DaisyVideoView extends SurfaceView implements MediaPlayerControl {
 		@Override
 		public boolean onInfo(MediaPlayer arg0, int arg1, int arg2) {
 			//mOnInfoListener.onInfo(arg0, arg1, arg2);
+/*add by dragontec for bug 4650 start*/
+			if (arg1 == MediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START) {
+				try {
+					mVideoWidth = arg0.getVideoWidth();
+					mVideoHeight = arg0.getVideoHeight();
+					if (mVideoWidth != 0 && mVideoHeight != 0) {
+						getHolder().setFixedSize(mVideoWidth, mVideoHeight);
+						requestLayout();
+					}
+				} catch (Exception e) {
+					Log.e("Catch Exception", "onInfo(MEDIA_INFO_VIDEO_RENDERING_START) catch exception " + e.toString());
+				}
+			}
+/*add by dragontec for bug 4650 end*/
 			return false;
 		}
 	};

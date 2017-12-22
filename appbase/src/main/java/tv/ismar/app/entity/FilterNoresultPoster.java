@@ -14,19 +14,22 @@ public class FilterNoresultPoster {
     private String url;
     private int corner;
     private String model_name;
+/*add by dragontec for 列表页栏目的海报图关键字修改 start*/
+    private String list_url;
+/*add by dragontec for 列表页栏目的海报图关键字修改 end*/
     private String vertical_url;
     private int clip_id;
     private int pk;
 
-    public int getBean_score() {
+    public String getBean_score() {
         return bean_score;
     }
 
-    public void setBean_score(int bean_score) {
+    public void setBean_score(String bean_score) {
         this.bean_score = bean_score;
     }
 
-    private int bean_score;
+    private String bean_score;
     private String introduction;
     private int order;
     private ExpenseInfoBean expense_info;
@@ -86,6 +89,16 @@ public class FilterNoresultPoster {
     public void setModel_name(String model_name) {
         this.model_name = model_name;
     }
+
+/*add by dragontec for 列表页栏目的海报图关键字修改 start*/
+    public String getList_url() {
+        return list_url;
+    }
+
+    public void setList_url(String list_url) {
+        this.list_url = list_url;
+    }
+/*add by dragontec for 列表页栏目的海报图关键字修改 end*/
 
     public String getVertical_url() {
         return vertical_url;

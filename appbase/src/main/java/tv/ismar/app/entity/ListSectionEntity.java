@@ -49,6 +49,10 @@ public class ListSectionEntity {
         private String focus;
         private float bean_score;
         private String poster_url;
+        /*add by dragontec for 列表页栏目的海报图关键字修改 start*/
+        private String list_url;
+        private String adlet_url;
+        /*add by dragontec for 列表页栏目的海报图关键字修改 end*/
         private int pk;
         private ExpenseInfoBean expense;
         private String model_name;
@@ -133,6 +137,24 @@ public class ListSectionEntity {
         public void setPoster_url(String poster_url) {
             this.poster_url = poster_url;
         }
+
+/*add by dragontec for 列表页栏目的海报图关键字修改 start*/
+        public String getList_url() {
+            return list_url;
+        }
+
+        public void setList_url(String list_url) {
+            this.list_url = list_url;
+        }
+
+        public String getAdlet_url() {
+            return adlet_url;
+        }
+
+        public void setAdlet_url(String adlet_url) {
+            this.adlet_url = adlet_url;
+        }
+/*add by dragontec for 列表页栏目的海报图关键字修改 end*/
 
         public int getPk() {
             return pk;

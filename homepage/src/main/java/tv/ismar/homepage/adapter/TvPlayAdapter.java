@@ -88,7 +88,6 @@ public class TvPlayAdapter extends BaseRecycleAdapter<TvPlayAdapter.TvPlayerView
 				holder.imageUrl = poster.poster_url;
 /*modify by dragontec for bug 4336 start*/
 				Picasso.with(mContext).load(poster.poster_url).
-						memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE).
 						error(R.drawable.template_title_item_horizontal_preview).
 						placeholder(R.drawable.template_title_item_horizontal_preview).
 						tag("banner").
@@ -187,7 +186,6 @@ public class TvPlayAdapter extends BaseRecycleAdapter<TvPlayAdapter.TvPlayerView
 				} else if (imageUrl != null) {
 					Picasso.with(mContext).
 							load(imageUrl).
-							memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE).
 							error(R.drawable.template_title_item_horizontal_preview).
 							placeholder(R.drawable.template_title_item_horizontal_preview).
 							tag("banner").

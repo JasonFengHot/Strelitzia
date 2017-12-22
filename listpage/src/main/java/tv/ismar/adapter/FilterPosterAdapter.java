@@ -18,7 +18,7 @@ import android.view.ViewGroup;
 //import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.squareup.picasso.MemoryPolicy;
+//import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
 
 import tv.ismar.app.core.VipMark;
@@ -130,17 +130,17 @@ public class FilterPosterAdapter extends RecyclerView.Adapter<FilterPosterAdapte
                     }
                     if (!TextUtils.isEmpty(item.list_url)) {
 /*modify by dragontec for bug 4336 start*/
-                        Picasso.with(mContext).load(item.list_url).tag(PICASSO_TAG).error(R.drawable.item_vertical_preview).placeholder(R.drawable.item_vertical_preview).memoryPolicy(MemoryPolicy.NO_STORE).memoryPolicy(MemoryPolicy.NO_CACHE).config(Bitmap.Config.RGB_565).
+                        Picasso.with(mContext).load(item.list_url).tag(PICASSO_TAG).error(R.drawable.item_vertical_preview).placeholder(R.drawable.item_vertical_preview).config(Bitmap.Config.RGB_565).
                                 into(holder.item_vertical_poster_img);
 /*modify by dragontec for bug 4336 end*/
                     } else {
 /*modify by dragontec for bug 4336 start*/
-                        Picasso.with(mContext).load(R.drawable.item_vertical_preview).tag(PICASSO_TAG).memoryPolicy(MemoryPolicy.NO_STORE).memoryPolicy(MemoryPolicy.NO_CACHE).config(Bitmap.Config.RGB_565).
+                        Picasso.with(mContext).load(R.drawable.item_vertical_preview).tag(PICASSO_TAG).config(Bitmap.Config.RGB_565).
                                 into(holder.item_vertical_poster_img);
 /*modify by dragontec for bug 4336 end*/
                     }
                     if (item.expense != null) {
-                        Picasso.with(mContext).load(VipMark.getInstance().getImage((Activity) mContext, item.expense.pay_type, item.expense.cpid)).tag(PICASSO_TAG).memoryPolicy(MemoryPolicy.NO_STORE).memoryPolicy(MemoryPolicy.NO_CACHE).into(holder.item_vertical_poster_vip);
+                        Picasso.with(mContext).load(VipMark.getInstance().getImage((Activity) mContext, item.expense.pay_type, item.expense.cpid)).tag(PICASSO_TAG).into(holder.item_vertical_poster_vip);
                         holder.item_vertical_poster_vip.setVisibility(View.VISIBLE);
                     } else {
                         holder.item_vertical_poster_vip.setVisibility(View.GONE);
@@ -186,14 +186,14 @@ public class FilterPosterAdapter extends RecyclerView.Adapter<FilterPosterAdapte
                         holder.item_horizontal_poster_des.setVisibility(View.INVISIBLE);
                     }
                     if (!TextUtils.isEmpty(item.poster_url)) {
-                        Picasso.with(mContext).load(item.poster_url).tag(PICASSO_TAG).error(R.drawable.item_horizontal_preview).placeholder(R.drawable.item_horizontal_preview).memoryPolicy(MemoryPolicy.NO_STORE).memoryPolicy(MemoryPolicy.NO_CACHE).config(Bitmap.Config.RGB_565)
+                        Picasso.with(mContext).load(item.poster_url).tag(PICASSO_TAG).error(R.drawable.item_horizontal_preview).placeholder(R.drawable.item_horizontal_preview).config(Bitmap.Config.RGB_565)
                                 .into(holder.item_horizontal_poster_img);
                     }else{
-                        Picasso.with(mContext).load(R.drawable.item_horizontal_preview).tag(PICASSO_TAG).error(R.drawable.item_horizontal_preview).placeholder(R.drawable.item_horizontal_preview).memoryPolicy(MemoryPolicy.NO_STORE).memoryPolicy(MemoryPolicy.NO_CACHE).config(Bitmap.Config.RGB_565)
+                        Picasso.with(mContext).load(R.drawable.item_horizontal_preview).tag(PICASSO_TAG).error(R.drawable.item_horizontal_preview).placeholder(R.drawable.item_horizontal_preview).config(Bitmap.Config.RGB_565)
                                 .into(holder.item_horizontal_poster_img);
                     }
                     if (item.expense != null) {
-                        Picasso.with(mContext).load(VipMark.getInstance().getImage((Activity) mContext, item.expense.pay_type, item.expense.cpid)).tag(PICASSO_TAG).memoryPolicy(MemoryPolicy.NO_STORE).memoryPolicy(MemoryPolicy.NO_CACHE).into(holder.item_horizontal_poster_vip);
+                        Picasso.with(mContext).load(VipMark.getInstance().getImage((Activity) mContext, item.expense.pay_type, item.expense.cpid)).tag(PICASSO_TAG).into(holder.item_horizontal_poster_vip);
                         holder.item_horizontal_poster_vip.setVisibility(View.VISIBLE);
                     } else {
                         holder.item_horizontal_poster_vip.setVisibility(View.GONE);

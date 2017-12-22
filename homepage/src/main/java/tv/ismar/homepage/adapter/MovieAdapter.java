@@ -96,7 +96,6 @@ public class MovieAdapter extends BaseRecycleAdapter<MovieAdapter.MovieViewHolde
 				if (!TextUtils.isEmpty(entity.vertical_url)) {
 					holder.imageUrl = entity.vertical_url;
 					Picasso.with(mContext).load(entity.vertical_url).
-							memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE).
 							placeholder(R.drawable.template_title_item_vertical_preview).
 							error(R.drawable.template_title_item_vertical_preview).
 							tag("banner").
@@ -193,7 +192,6 @@ public class MovieAdapter extends BaseRecycleAdapter<MovieAdapter.MovieViewHolde
 				if (mImageView != null) {
 					if (imageUrl != null) {
 						Picasso.with(mContext).load(imageUrl).
-								memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE).
 								placeholder(R.drawable.template_title_item_vertical_preview).
 								error(R.drawable.template_title_item_vertical_preview).
 								tag("banner").

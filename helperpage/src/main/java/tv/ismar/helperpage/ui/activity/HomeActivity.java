@@ -71,7 +71,6 @@ public class HomeActivity extends BaseActivity {
 				IsmartvActivator.getInstance().removeUserInfo(false);
 				/*modify by dragontec for bug 4393 end*/
 				/*add by dragontec for bug 4364 end*/
-                showExpireAccessTokenPop();
             } else if (httpException.code() == 408) {
                 ToastTip.showToast(this, "网络连接超时，请重试");
             } else if (httpException.code() == 504) {

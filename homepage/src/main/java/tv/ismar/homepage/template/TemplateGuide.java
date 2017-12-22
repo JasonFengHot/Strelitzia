@@ -1076,7 +1076,10 @@ public class TemplateGuide extends Template
 			public boolean onError(MediaPlayer mp, int what, int extra) {
 
 				Log.e(TAG, "play video error!!!");
-				playCarousel();
+/*modify by dragontec for bug 4507 start*/
+//                playCarousel();
+                playImage();
+/*modify by dragontec for bug 4507 end*/
 
 				return true;
 			}

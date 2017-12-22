@@ -385,7 +385,7 @@ public class MovieTVSubjectFragment extends Fragment implements View.OnClickList
                         e.printStackTrace();
                     }
                     Favorite favorite = new Favorite();
-                    favorite.time=time;
+                    favorite.time=TrueTime.now().getTime();
                     favorite.title = mSubjectEntity.getTitle();
                     String adlet_url = mSubjectEntity.getAdlet_url();
                     if (adlet_url != null) {

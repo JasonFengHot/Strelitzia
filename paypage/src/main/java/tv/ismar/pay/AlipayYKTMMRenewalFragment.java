@@ -95,7 +95,7 @@ public class AlipayYKTMMRenewalFragment extends Fragment implements View.OnClick
             }
 
         }  else if (i == R.id.agreement_ytkmmrenewal) {
-            mActivity.aliPayBtn.requestFocus();
+//            mActivity.aliPayBtn.requestFocus();
             Intent intent = new Intent();
             intent.setClass(getContext(), RenewalAgreementActivity.class);
             startActivity(intent);
@@ -121,7 +121,16 @@ public class AlipayYKTMMRenewalFragment extends Fragment implements View.OnClick
 
                     @Override
                     public void onNext(ResponseBody responseBody) {
-
+//                        String json = null;
+//                        try {
+//                            json = responseBody.string();
+//                        } catch (IOException e) {
+//                            e.printStackTrace();
+//                        }
+//                        mActivity.setResult(PAYMENT_SUCCESS_CODE);
+//                        Message message = new Message();
+//                        message.what = 0;
+//                        handler.sendMessageDelayed(message, 1000);
                     }
                 });
 

@@ -79,16 +79,22 @@ public class LogQueue {
     }
 
     public void put(LogEntity entity) {
-        if (mLogQueue.size() < 100) {
-            try {
-                mLogQueue.put(entity);
-            } catch (InterruptedException e) {
-                Log.e(TAG, e.getMessage());
-                e.printStackTrace();
+/*add by dragontec for bug 4516 start*/
+        if (C.isReportLog == 1) {
+/*add by dragontec for bug 4516 end*/
+            if (mLogQueue.size() < 100) {
+                try {
+                    mLogQueue.put(entity);
+                } catch (InterruptedException e) {
+                    Log.e(TAG, e.getMessage());
+                    e.printStackTrace();
+                }
+            } else {
+                Log.e(TAG, "log queue is full !");
             }
-        } else {
-            Log.e(TAG, "log queue is full !");
+/*add by dragontec for bug 4516 start*/
         }
+/*add by dragontec for bug 4516 end*/
     }
 
     private LogEntity take() {

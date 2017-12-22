@@ -20,7 +20,7 @@ import android.view.ViewGroup;
 //import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.squareup.picasso.MemoryPolicy;
+//import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -160,19 +160,26 @@ public class ListPosterAdapter extends RecyclerView.Adapter<ListPosterAdapter.Fi
                         holder.item_vertical_poster_title.setText("");
                         holder.item_vertical_title_bg.setVisibility(View.INVISIBLE);
                     }
-                    if (!TextUtils.isEmpty(item.getVertical_url())) {
+/*modify by dragontec for 列表页栏目的海报图关键字修改 start*/
+//                    if (!TextUtils.isEmpty(item.getVertical_url())) {
+                    if (!TextUtils.isEmpty(item.getList_url())) {
+/*modify by dragontec for 列表页栏目的海报图关键字修改 end*/
+/*modify by dragontec for 列表页栏目的海报图关键字修改 start*/
 /*modify by dragontec for bug 4336 start*/
-                        Picasso.with(mContext).load(item.getVertical_url()).tag(PICASSO_TAG).error(R.drawable.item_vertical_preview).placeholder(R.drawable.item_vertical_preview).memoryPolicy(MemoryPolicy.NO_STORE).memoryPolicy(MemoryPolicy.NO_CACHE).config(Bitmap.Config.RGB_565).
+//                        Picasso.with(mContext).load(item.getVertical_url()).tag(PICASSO_TAG).error(R.drawable.item_vertical_preview).placeholder(R.drawable.item_vertical_preview).config(Bitmap.Config.RGB_565).
+//                                into(holder.item_vertical_poster_img);
+                        Picasso.with(mContext).load(item.getList_url()).tag(PICASSO_TAG).error(R.drawable.item_vertical_preview).placeholder(R.drawable.item_vertical_preview).config(Bitmap.Config.RGB_565).
                                 into(holder.item_vertical_poster_img);
 /*modify by dragontec for bug 4336 end*/
+/*modify by dragontec for 列表页栏目的海报图关键字修改 end*/
                     } else {
 /*modify by dragontec for bug 4336 start*/
-                        Picasso.with(mContext).load(R.drawable.item_vertical_preview).tag(PICASSO_TAG).memoryPolicy(MemoryPolicy.NO_STORE).memoryPolicy(MemoryPolicy.NO_CACHE).config(Bitmap.Config.RGB_565).
+                        Picasso.with(mContext).load(R.drawable.item_vertical_preview).tag(PICASSO_TAG).config(Bitmap.Config.RGB_565).
                                 into(holder.item_vertical_poster_img);
 /*modify by dragontec for bug 4336 end*/
                     }
                     if (item.getExpense() != null) {
-                        Picasso.with(mContext).load(VipMark.getInstance().getImage((Activity) mContext, item.getExpense().getPay_type(), item.getExpense().getCpid())).tag(PICASSO_TAG).memoryPolicy(MemoryPolicy.NO_STORE).memoryPolicy(MemoryPolicy.NO_CACHE).into(holder.item_vertical_poster_vip);
+                        Picasso.with(mContext).load(VipMark.getInstance().getImage((Activity) mContext, item.getExpense().getPay_type(), item.getExpense().getCpid())).tag(PICASSO_TAG).into(holder.item_vertical_poster_vip);
                         holder.item_vertical_poster_vip.setVisibility(View.VISIBLE);
                     } else {
                         holder.item_vertical_poster_vip.setVisibility(View.GONE);
@@ -217,19 +224,26 @@ public class ListPosterAdapter extends RecyclerView.Adapter<ListPosterAdapter.Fi
                     }else {
                         holder.item_horizontal_poster_des.setVisibility(View.INVISIBLE);
                     }
-                    if (!TextUtils.isEmpty(item.getPoster_url())) {
+/*modify by dragontec for 列表页栏目的海报图关键字修改 start*/
+//                    if (!TextUtils.isEmpty(item.getPoster_url())) {
+                    if (!TextUtils.isEmpty(item.getAdlet_url())) {
+/*modify by dragontec for 列表页栏目的海报图关键字修改 end*/
+/*modify by dragontec for 列表页栏目的海报图关键字修改 start*/
 /*modify by dragontec for bug 4336 start*/
-                        Picasso.with(mContext).load(item.getPoster_url()).tag(PICASSO_TAG).error(R.drawable.item_horizontal_preview).placeholder(R.drawable.item_horizontal_preview).memoryPolicy(MemoryPolicy.NO_STORE).memoryPolicy(MemoryPolicy.NO_CACHE).config(Bitmap.Config.RGB_565)
+//                        Picasso.with(mContext).load(item.getPoster_url()).tag(PICASSO_TAG).error(R.drawable.item_horizontal_preview).placeholder(R.drawable.item_horizontal_preview).config(Bitmap.Config.RGB_565)
+//                                .into(holder.item_horizontal_poster_img);
+                        Picasso.with(mContext).load(item.getAdlet_url()).tag(PICASSO_TAG).error(R.drawable.item_horizontal_preview).placeholder(R.drawable.item_horizontal_preview).config(Bitmap.Config.RGB_565)
                                 .into(holder.item_horizontal_poster_img);
 /*modify by dragontec for bug 4336 end*/
+/*modify by dragontec for 列表页栏目的海报图关键字修改 end*/
                     }else{
 /*modify by dragontec for bug 4336 start*/
-                        Picasso.with(mContext).load(R.drawable.item_horizontal_preview).tag(PICASSO_TAG).memoryPolicy(MemoryPolicy.NO_STORE).memoryPolicy(MemoryPolicy.NO_CACHE).config(Bitmap.Config.RGB_565)
+                        Picasso.with(mContext).load(R.drawable.item_horizontal_preview).tag(PICASSO_TAG).config(Bitmap.Config.RGB_565)
                                 .into(holder.item_horizontal_poster_img);
 /*modify by dragontec for bug 4336 end*/
                     }
                     if (item.getExpense() != null) {
-                        Picasso.with(mContext).load(VipMark.getInstance().getImage((Activity) mContext, item.getExpense().getPay_type(), item.getExpense().getCpid())).tag(PICASSO_TAG).memoryPolicy(MemoryPolicy.NO_STORE).memoryPolicy(MemoryPolicy.NO_CACHE).into(holder.item_horizontal_poster_vip);
+                        Picasso.with(mContext).load(VipMark.getInstance().getImage((Activity) mContext, item.getExpense().getPay_type(), item.getExpense().getCpid())).tag(PICASSO_TAG).into(holder.item_horizontal_poster_vip);
                         holder.item_horizontal_poster_vip.setVisibility(View.VISIBLE);
                     } else {
                         holder.item_horizontal_poster_vip.setVisibility(View.GONE);

@@ -20,6 +20,7 @@ import com.ismartv.lion.custom.ICallLog;
 import com.ismartv.lion.custom.Parse;
 import com.orhanobut.logger.LogLevel;
 import com.orhanobut.logger.Logger;
+import com.squareup.picasso.LruCache;
 import com.squareup.picasso.OkHttp3Downloader;
 import com.squareup.picasso.Picasso;
 
@@ -248,10 +249,12 @@ public class VodApplication extends Application {
                 .cache(cache)
                 .build();
 
+        LruCache lruCache = new LruCache(10 * 1024 * 1024);    //10MB
         Picasso picasso = new Picasso.Builder(this)
                 .executor(executorService)
                 .downloader(new OkHttp3Downloader(client))
                 .defaultBitmapConfig(Bitmap.Config.RGB_565)
+                .memoryCache(lruCache)
                 .build();
         Picasso.setSingletonInstance(picasso);
 

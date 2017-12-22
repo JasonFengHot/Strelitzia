@@ -12,7 +12,7 @@ import android.view.ViewGroup;
 //import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.squareup.picasso.MemoryPolicy;
+//import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -95,10 +95,9 @@ public class HistoryFavoriteListAdapter extends RecyclerView.Adapter<HistoryFavo
             if (!TextUtils.isEmpty(item.getAdlet_url())) {
 /*modify by dragontec for bug 4336 start*/
                 Picasso.with(mContext).load(item.getAdlet_url()).
-/*modify by dragontec for bug 4205 start*/
-                        tag(PICASSO_TAG).
-                        memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE).
 /*modify by dragontec for bug 4205 end*/
+                        tag(PICASSO_TAG).
+/*modify by dragontec for bug 4205 start*/
                         error(R.drawable.item_horizontal_preview).
                         placeholder(R.drawable.item_horizontal_preview).
                         into(holder.item_detail_image);
@@ -109,7 +108,7 @@ public class HistoryFavoriteListAdapter extends RecyclerView.Adapter<HistoryFavo
 /*modify by dragontec for bug 4336 end*/
             }
             if (item.getExpense() != null) {
-                Picasso.with(mContext).load(VipMark.getInstance().getImage((Activity) mContext, item.getExpense().pay_type, item.getExpense().cpid)).tag(PICASSO_TAG).memoryPolicy(MemoryPolicy.NO_STORE).memoryPolicy(MemoryPolicy.NO_CACHE).into(holder.vip_image);
+                Picasso.with(mContext).load(VipMark.getInstance().getImage((Activity) mContext, item.getExpense().pay_type, item.getExpense().cpid)).tag(PICASSO_TAG).into(holder.vip_image);
                 holder.vip_image.setVisibility(View.VISIBLE);
             } else {
                 holder.vip_image.setVisibility(View.GONE);

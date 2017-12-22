@@ -8,6 +8,7 @@ import android.text.TextUtils;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import cn.ismartv.truetime.TrueTime;
 import tv.ismar.account.IsmartvActivator;
 import tv.ismar.app.VodApplication;
 import tv.ismar.app.core.client.NetworkUtils;
@@ -83,7 +84,14 @@ public class LocalFavoriteManager implements FavoriteManager {
             mFavorites = new ArrayList<Favorite>();
         }
         mFavorites = mDBHelper.getAllFavorites(isent);
-        return mFavorites;
+		for (Favorite favorite :
+				mFavorites) {
+			if (favorite.time == 0) {
+				favorite.time = TrueTime.now().getTime();
+				mDBHelper.updateFavorite(favorite);
+			}
+		}
+		return mFavorites;
     }
     @Override
     public ArrayList<Favorite> getAllFavorites() {
@@ -91,6 +99,13 @@ public class LocalFavoriteManager implements FavoriteManager {
             mFavorites = new ArrayList<Favorite>();
         }
         mFavorites = mDBHelper.getAllFavorites();
+		for (Favorite favorite :
+				mFavorites) {
+			if (favorite.time == 0) {
+				favorite.time = TrueTime.now().getTime();
+				mDBHelper.updateFavorite(favorite);
+			}
+		}
         return mFavorites;
     }
 

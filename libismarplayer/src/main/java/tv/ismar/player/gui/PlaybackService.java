@@ -1377,7 +1377,7 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
         history.content_model = mItemEntity.getContentModel();
         history.is_complex = mItemEntity.getIsComplex();
         history.last_position = last_position;
-        history.add_time=System.currentTimeMillis();
+        history.add_time=TrueTime.now().getTime();
         history.model_name=mItemEntity.getModel_name();
         ClipEntity.Quality quality = mCurrentQuality;
         if (quality != null) {

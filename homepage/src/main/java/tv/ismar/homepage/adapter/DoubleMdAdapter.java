@@ -100,7 +100,6 @@ public class DoubleMdAdapter extends BaseRecycleAdapter<DoubleMdAdapter.DoubleMd
 					holder.imageUrl = mBigImage.vertical_url;
 					Picasso.with(mContext).
 							load(mBigImage.vertical_url).
-							memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE).
 							error(R.drawable.template_title_item_vertical_preview).
 							placeholder(R.drawable.template_title_item_vertical_preview).
 							tag("banner").
@@ -138,7 +137,6 @@ public class DoubleMdAdapter extends BaseRecycleAdapter<DoubleMdAdapter.DoubleMd
 						} else {
 							holder.imageUrl = poster.vertical_url;
 							Picasso.with(mContext).load(poster.vertical_url).
-									memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE).
 									error(R.drawable.template_title_item_vertical_preview).
 									placeholder(R.drawable.template_title_item_vertical_preview).
 									tag("banner").
@@ -234,7 +232,6 @@ public class DoubleMdAdapter extends BaseRecycleAdapter<DoubleMdAdapter.DoubleMd
 					//do nothing
 				} else if (imageUrl != null) {
 					Picasso.with(mContext).load(imageUrl).
-							memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE).
 							error(R.drawable.template_title_item_vertical_preview).
 							placeholder(R.drawable.template_title_item_vertical_preview).
 							tag("banner").

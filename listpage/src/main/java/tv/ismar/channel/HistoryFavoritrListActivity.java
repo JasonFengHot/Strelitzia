@@ -111,6 +111,14 @@ public class HistoryFavoritrListActivity extends BaseActivity implements OnItemC
 		super.onPause();
 	}
 
+	@Override
+	protected void onDestroy() {
+		if (recyclerView != null) {
+			recyclerView.setOnHoverStateChangedListener(null);
+		}
+		super.onDestroy();
+	}
+
 	private void initView() {
 		title = (TextView) findViewById(R.id.title);
 		clearAll = (TextView) findViewById(R.id.clear_all);
@@ -120,6 +128,14 @@ public class HistoryFavoritrListActivity extends BaseActivity implements OnItemC
 		arrow_up = (Button) findViewById(R.id.poster_arrow_up);
 		HistorySpaceItemDecoration mSpaceItemDecoration = new HistorySpaceItemDecoration(getResources().getDimensionPixelSize(R.dimen.history_30), getResources().getDimensionPixelSize(R.dimen.history_30), getResources().getDimensionPixelSize(R.dimen.history_44), getResources().getDimensionPixelOffset(R.dimen.history_44));
 		recyclerView = findView(R.id.history_favorite_list);
+		recyclerView.setOnHoverStateChangedListener(new MyRecyclerView.OnHoverStateChangedListener() {
+			@Override
+			public void onHoverStateChanged(boolean hovered) {
+				if (!recyclerView.isScrolling()) {
+					arrowState();
+				}
+			}
+		});
 		recyclerView.addItemDecoration(mSpaceItemDecoration);
 		focusGridLayoutManager = new FocusGridLayoutManager(this, 4);
 		focusGridLayoutManager.setFavorite(true);
@@ -344,26 +360,34 @@ public class HistoryFavoritrListActivity extends BaseActivity implements OnItemC
 			@Override
 			public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
 				if (newState == SCROLL_STATE_IDLE) {
-					if (focusGridLayoutManager != null) {
-						int pos = focusGridLayoutManager.findFirstCompletelyVisibleItemPosition();
-						int endPos = focusGridLayoutManager.findLastCompletelyVisibleItemPosition();
-						if (pos != 0) {
-							arrow_up.setVisibility(View.VISIBLE);
-						} else {
-							arrow_up.setVisibility(View.GONE);
-						}
-						if (endPos != mlists.size() - 1) {
-							arrow_down.setVisibility(View.VISIBLE);
-						} else {
-							arrow_down.setVisibility(View.GONE);
-						}
-
-					}
+					arrowState();
 				}
 				super.onScrollStateChanged(recyclerView, newState);
 			}
 		};
 		recyclerView.addOnScrollListener(mOnScrollListener);
+	}
+
+	private void arrowState() {
+		if (recyclerView != null && recyclerView.isHovered()) {
+			if (focusGridLayoutManager != null) {
+				int pos = focusGridLayoutManager.findFirstCompletelyVisibleItemPosition();
+				int endPos = focusGridLayoutManager.findLastCompletelyVisibleItemPosition();
+				if (pos != 0) {
+					arrow_up.setVisibility(View.VISIBLE);
+				} else {
+					arrow_up.setVisibility(View.GONE);
+				}
+				if (endPos != mlists.size() - 1) {
+					arrow_down.setVisibility(View.VISIBLE);
+				} else {
+					arrow_down.setVisibility(View.GONE);
+				}
+			}
+		} else {
+			arrow_up.setVisibility(View.GONE);
+			arrow_down.setVisibility(View.GONE);
+		}
 	}
 
 	private void unloadData() {

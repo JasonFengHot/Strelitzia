@@ -287,10 +287,16 @@ public class UpdateService extends Service implements Loader.OnLoadCompleteListe
     }
 
     private int getLocalApkVersionCode(String path) {
-        PackageManager pm = getPackageManager();
-        PackageInfo info = pm.getPackageArchiveInfo(path, 0);
+/*modify by dragontec for bug 4504 start*/
+//        PackageManager pm = getPackageManager();
+//        PackageInfo info = pm.getPackageArchiveInfo(path, 0);
+/*modify by dragontec for bug 4504 end*/
         int versionCode;
         try {
+/*add by dragontec for bug 4504 start*/
+            PackageManager pm = getPackageManager();
+            PackageInfo info = pm.getPackageArchiveInfo(path, 0);
+/*add by dragontec for bug 4504 end*/
             versionCode = info.versionCode;
         } catch (Exception e) {
             versionCode = 0;
@@ -362,18 +368,24 @@ public class UpdateService extends Service implements Loader.OnLoadCompleteListe
     private void checkRemaindUpdateFile() {
         List<DownloadEntity> downloadEntities = new Select().from(DownloadEntity.class).execute();
         for (DownloadEntity entity : downloadEntities) {
-            VersionInfoV2Entity.ApplicationEntity applicationEntity = new GsonBuilder().create().fromJson(entity.json, VersionInfoV2Entity.ApplicationEntity.class);
-            int versionCode = AppUtils.getAppVersionCode(applicationEntity.getProduct());
-            int saveFileVersionCode = getLocalApkVersionCode(entity.savePath);
-            Log.d(TAG, "checkRemaindUpdateFile: versionCode " + versionCode);
-            Log.d(TAG, "checkRemaindUpdateFile: saveFileVersionCode " + saveFileVersionCode);
-            if (versionCode >= saveFileVersionCode){
-                File file = new File(entity.savePath);
-                if (file.exists()){
-                    file.delete();
+/*add by dragontec for bug 4504 start*/
+            if (entity != null && entity.status != DownloadStatus.DOWNLOADING) {
+/*add by dragontec for bug 4504 end*/
+                VersionInfoV2Entity.ApplicationEntity applicationEntity = new GsonBuilder().create().fromJson(entity.json, VersionInfoV2Entity.ApplicationEntity.class);
+                int versionCode = AppUtils.getAppVersionCode(applicationEntity.getProduct());
+                int saveFileVersionCode = getLocalApkVersionCode(entity.savePath);
+                Log.d(TAG, "checkRemaindUpdateFile: versionCode " + versionCode);
+                Log.d(TAG, "checkRemaindUpdateFile: saveFileVersionCode " + saveFileVersionCode);
+                if (versionCode >= saveFileVersionCode) {
+                    File file = new File(entity.savePath);
+                    if (file.exists()) {
+                        file.delete();
+                    }
+                    entity.delete();
                 }
-                entity.delete();
+/*add by dragontec for bug 4504 start*/
             }
+/*add by dragontec for bug 4504 end*/
         }
     }
 }

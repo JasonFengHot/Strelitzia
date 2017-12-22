@@ -824,6 +824,7 @@ public class HistoryRecyclerViewTV extends RecyclerView{
 
     @Override
     protected boolean dispatchHoverEvent(MotionEvent event) {
+		setHovered(true);
         if(event.getAction()== MotionEvent.ACTION_HOVER_ENTER||event.getAction()==MotionEvent.ACTION_HOVER_MOVE){
             if(getLayoutManager() instanceof LinearLayoutManagerTV){
                 ((LinearLayoutManagerTV) getLayoutManager()).setCanScroll(false);
@@ -848,4 +849,22 @@ public class HistoryRecyclerViewTV extends RecyclerView{
     	return mScrollState == SCROLL_STATE_IDLE;
 	}
 	/*add by dragontec for bug 4265 end*/
+
+	@Override
+	public void setHovered(boolean hovered) {
+		super.setHovered(hovered);
+		if (mOnHoverStateChangedListener != null) {
+			mOnHoverStateChangedListener.onHoverStateChanged(hovered);
+		}
+	}
+
+	public interface OnHoverStateChangedListener {
+		void onHoverStateChanged(boolean hovered);
+	}
+
+	private OnHoverStateChangedListener mOnHoverStateChangedListener = null;
+
+	public void setOnHoverStateChangedListener(OnHoverStateChangedListener onHoverStateChangedListener) {
+		mOnHoverStateChangedListener = onHoverStateChangedListener;
+	}
 }

@@ -86,7 +86,6 @@ public class SubscribeAdapter extends BaseRecycleAdapter<SubscribeAdapter.Subscr
 					holder.imageUrl = entity.poster_url;
 					Picasso.with(mContext).load(entity.poster_url).
 							placeholder(R.drawable.template_title_item_horizontal_preview).
-							memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE).
 							error(R.drawable.template_title_item_horizontal_preview).
 							tag("banner").
 							into(holder.mImageView);
@@ -211,7 +210,6 @@ public class SubscribeAdapter extends BaseRecycleAdapter<SubscribeAdapter.Subscr
 						Picasso.with(mContext).
 								load(imageUrl).
 								placeholder(R.drawable.template_title_item_horizontal_preview).
-								memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE).
 								error(R.drawable.template_title_item_horizontal_preview).
 								tag("banner").
 								into(mImageView);

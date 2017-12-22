@@ -6,9 +6,11 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.graphics.drawable.BitmapDrawable;
+import android.media.Image;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
@@ -53,6 +55,7 @@ import tv.ismar.homepage.control.HomeControl;
 import tv.ismar.homepage.fragment.ChannelFragment;
 import tv.ismar.homepage.view.AdvertiseActivity;
 /*add by dragontec for bug 4350 start*/
+import tv.ismar.homepage.view.FrameAnimation;
 import tv.ismar.homepage.view.HomePageArrowButton;
 /*add by dragontec for bug 4350 end*/
 import tv.ismar.homepage.widget.DaisyVideoView;
@@ -175,6 +178,9 @@ public class HomeActivity extends BaseActivity
     private RelativeLayout ad_layout;
     private LinearLayout home_layout;
 
+    public RelativeLayout loading_layout;
+    public ImageView loading_progress;
+
     private View currentFocus;
 
     private boolean isPaused;
@@ -224,6 +230,7 @@ public class HomeActivity extends BaseActivity
             }
         }
     };
+
     private String homepageTemplate;
     private String homepageUrl;
 	/*add by dragontec for bug 4294 start*/
@@ -424,6 +431,9 @@ public class HomeActivity extends BaseActivity
         mHoverView.setDownArrow(banner_arrow_down);
         mHoverView.setShowUp(false);
         mHoverView.setShowDown(false);
+
+		loading_layout = (RelativeLayout) findViewById(R.id.loading_layout);
+		loading_progress = (ImageView) findViewById(R.id.loading_progress);
     }
 
     private void setBackground(int id) {

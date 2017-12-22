@@ -163,7 +163,6 @@ public class MovieMixAdapter extends BaseRecycleAdapter<MovieMixAdapter.MovieMix
 					if (!TextUtils.isEmpty(poster.vertical_url)) {
 						holder.imageUrl = poster.vertical_url;
 						Picasso.with(mContext).load(poster.vertical_url).
-								memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE).
 								placeholder(R.drawable.template_title_item_vertical_preview).
 								error(R.drawable.template_title_item_vertical_preview).
 								tag("banner").
@@ -280,7 +279,6 @@ public class MovieMixAdapter extends BaseRecycleAdapter<MovieMixAdapter.MovieMix
 					if (isBig) {
 						if (imageUrl != null) {
 							Picasso.with(mContext).load(imageUrl).
-									memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE).
 									placeholder(R.drawable.template_title_item_horizontal_preview).
 									error(R.drawable.template_title_item_horizontal_preview).
 									tag("banner").
@@ -292,7 +290,6 @@ public class MovieMixAdapter extends BaseRecycleAdapter<MovieMixAdapter.MovieMix
 					} else {
 						if (imageUrl != null) {
 							Picasso.with(mContext).load(imageUrl).
-									memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE).
 									placeholder(R.drawable.template_title_item_vertical_preview).
 									error(R.drawable.template_title_item_vertical_preview).
 									tag("banner").

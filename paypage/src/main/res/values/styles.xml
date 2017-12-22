@@ -4,7 +4,7 @@
     <style name="ActivityDialog" parent="Theme.AppCompat.Dialog">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
-        <item name="android:windowBackground">@drawable/transparent</item>
+        <item name="android:background">@drawable/transparent</item>
         <item name="android:textColor">@android:color/white</item>
     </style>
 

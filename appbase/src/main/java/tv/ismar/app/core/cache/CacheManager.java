@@ -101,7 +101,7 @@ public class CacheManager {
 							Log.i(TAG, "本地文件已存在，但index不同，rename文件，直接返回文件地址");
 							//视频index已变更
 							if (downloadFile.exists()) {
-								DownloadTable existTable = new Select().from(DownloadTable.class).where(DownloadTable.DOWNLOAD_PATH + "=?" + downloadFile.getAbsolutePath()).executeSingle();
+								DownloadTable existTable = new Select().from(DownloadTable.class).where(DownloadTable.DOWNLOAD_PATH + "=?" , downloadFile.getAbsolutePath()).executeSingle();
 								if (existTable != null) {
 									existTable.delete();
 								}

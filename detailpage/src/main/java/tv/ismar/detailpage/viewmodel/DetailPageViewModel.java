@@ -515,6 +515,15 @@ public class DetailPageViewModel extends BaseObservable {
                                 }
                             }
                         }
+/*add by dragontec for bug 4509 start*/
+                        else {
+                            if (mItemEntity.getExpense() == null && subItems.length > 0) {
+                                if (subItems[0] != null) {
+                                    subitem_title = subItems[0].getSubtitle();
+                                }
+                            }
+                        }
+/*add by dragontec for bug 4509 end*/
                         if (subItems == null || subItems.length == 0) {
                             return mItemEntity.getExpense() != null && mRemandDay <= 0 ? (mItemEntity.is_order() ? mContext.getString(R.string.detail_prevue) :
                                     mContext.getString(R.string.video_preview)) :

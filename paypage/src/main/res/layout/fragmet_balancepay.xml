@@ -57,7 +57,7 @@
             android:nextFocusLeft="@+id/balance_pay"
             android:nextFocusUp="@id/card_balance_submit"
             android:text="@string/card_balance_submit"
-            android:textColor="#FFF8F8FF"
+            android:textColor="@color/selector_balance_pay_text_color"
             android:textSize="@dimen/pay_guanyingcard_card_balance_submit_textsize" />
 
         <Button

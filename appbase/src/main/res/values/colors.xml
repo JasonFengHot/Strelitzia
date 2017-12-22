@@ -108,6 +108,8 @@
     <color name="_ff9c3c">#ff9c3c</color>
     <drawable name="exit_focus_bg_color">#ff9c3c</drawable>
     <drawable name="_000000000">#00000000</drawable>
+    <color name="_4E4E4E">#4E4E4E</color>
+    <color name="_FFF8F8FF">#FFF8F8FF</color>
     <color name="_333333">#333333</color>
     <color name="_cccccc">#cccccc</color>
     <color name="_999999">#999999</color>

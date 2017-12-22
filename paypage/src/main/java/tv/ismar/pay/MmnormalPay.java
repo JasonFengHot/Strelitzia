@@ -74,6 +74,13 @@ public class MmnormalPay extends Fragment implements View.OnClickListener,View.O
         confirm.setNextFocusUpId(R.id.confirm_normal);
         confirm.setOnClickListener(this);
         confirm.setOnHoverListener(this);
+
+        if (activity!= null){
+            View aliPayBtn =   activity.findViewById(R.id.alipay);
+            if (aliPayBtn != null){
+                aliPayBtn.setNextFocusRightId(R.id.confirm_normal);
+            }
+        }
     }
 
     @Override

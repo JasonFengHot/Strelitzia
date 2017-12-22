@@ -32,7 +32,10 @@ public class PosterUtil {
             String posterUrl="";
             int previewId;
             if(orientation==VERTICAL){
-                posterUrl=item.getVertical_url();
+/*modify by dragontec for 列表页栏目的海报图关键字修改 start*/
+//                posterUrl=item.getVertical_url();
+                posterUrl=item.getList_url();
+/*modify by dragontec for 列表页栏目的海报图关键字修改 end*/
 /*modify by dragontec for bug 4336 start*/
                 previewId=R.drawable.item_vertical_preview;
 /*modify by dragontec for bug 4336 end*/
@@ -42,14 +45,14 @@ public class PosterUtil {
                 previewId=R.drawable.item_horizontal_preview;
 /*modify by dragontec for bug 4336 end*/
             }
-            if (!TextUtils.isEmpty(posterUrl) && posterUrl != null)
+            if (!TextUtils.isEmpty(posterUrl))
                 Picasso.with(context).load(posterUrl).error(previewId).placeholder(previewId).memoryPolicy(MemoryPolicy.NO_STORE).memoryPolicy(MemoryPolicy.NO_CACHE).config(Bitmap.Config.RGB_565).
                         into(poster);
             if (item.isExpense()) {
                 Picasso.with(context).load(VipMark.getInstance().getImage(context, item.getExpense_info().getPay_type(), item.getExpense_info().getCpid())).memoryPolicy(MemoryPolicy.NO_STORE).memoryPolicy(MemoryPolicy.NO_CACHE).into(vipmark);
             }
-            if (item.getBean_score() > 0) {
-                beanscore.setText(item.getBean_score() + "");
+            if (item.getBean_score() != null && Float.parseFloat(item.getBean_score()) > 0) {
+                beanscore.setText(Float.parseFloat(item.getBean_score()) + "");
                 beanscore.setVisibility(View.VISIBLE);
             } else {
                 beanscore.setVisibility(View.INVISIBLE);

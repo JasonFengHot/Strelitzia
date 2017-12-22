@@ -83,9 +83,6 @@ public class ConlumnAdapter extends BaseRecycleAdapter<ConlumnAdapter.ConlumnVie
 				holder.imageUrl = poster.image_url;
 /*modify by dragontec for bug 4336 start*/
 				Picasso.with(mContext).load(poster.image_url).
-/*add by dragontec for bug 4205 start*/
-                        memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE).
-/*add by dragontec for bug 4205 end*/
                         error(R.drawable.template_item_horizontal_preview).
                         placeholder(R.drawable.template_item_horizontal_preview).
 						tag("banner").
@@ -157,7 +154,6 @@ public class ConlumnAdapter extends BaseRecycleAdapter<ConlumnAdapter.ConlumnVie
         		if (imageUrl != null) {
 					Picasso.with(mContext).
 							load(imageUrl).
-							memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE).
 							error(R.drawable.template_item_horizontal_preview).
 							placeholder(R.drawable.template_item_horizontal_preview).
 							tag("banner").

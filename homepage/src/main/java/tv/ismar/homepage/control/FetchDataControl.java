@@ -81,14 +81,19 @@ public class FetchDataControl extends BaseControl{
             fetchHomeBanners = SkyService.ServiceManager.getService().getGuideBanners()
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(((BaseActivity)mContext).new BaseObserver<GuideBanner[]>() {
+/*modify by dragontec for bug 4474 start*/
+//                    .subscribe(((BaseActivity)mContext).new BaseObserver<GuideBanner[]>() {
+                    .subscribe(new Observer<GuideBanner[]>() {
+/*modify by dragontec for bug 4474 end*/
                         @Override
                         public void onCompleted() {
                         }
 
                         @Override
                         public void onError(Throwable e) {
-                            super.onError(e);
+/*modify by dragontec for bug 4474 start*/
+//                            super.onError(e);
+/*modify by dragontec for bug 4474 end*/
                             forceFetchHomeBanners();
                         }
 
@@ -109,13 +114,19 @@ public class FetchDataControl extends BaseControl{
         fetchHomeBanners = SkyService.ServiceManager.getForceCacheService().getGuideBanners()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<GuideBanner[]>() {
+/*modify by dragontec for bug 4474 start*/
+//                .subscribe(new Observer<GuideBanner[]>() {
+                .subscribe(((BaseActivity)mContext).new BaseObserver<GuideBanner[]>() {
+/*modify by dragontec for bug 4474 end*/
                     @Override
                     public void onCompleted() {
                     }
 
                     @Override
                     public void onError(Throwable e) {
+/*add by dragontec for bug 4474 start*/
+                            super.onError(e);
+/*add by dragontec for bug 4474 end*/
                         e.printStackTrace();
                     }
 
@@ -134,7 +145,10 @@ public class FetchDataControl extends BaseControl{
         fetchChannelBanners = SkyService.ServiceManager.getService().getChannelBanners(channel)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(((BaseActivity)mContext).new BaseObserver<GuideBanner[]>() {
+/*modify by dragontec for bug 4474 start*/
+//                .subscribe(((BaseActivity)mContext).new BaseObserver<GuideBanner[]>() {
+                .subscribe(new Observer<GuideBanner[]>() {
+/*modify by dragontec for bug 4474 end*/
                     @Override
                     public void onCompleted() {
 
@@ -142,7 +156,9 @@ public class FetchDataControl extends BaseControl{
 
                     @Override
                     public void onError(Throwable e) {
-                        super.onError(e);
+/*modify by dragontec for bug 4474 start*/
+//                        super.onError(e);
+/*modify by dragontec for bug 4474 end*/
                         forceFetchChannelBanners(channel);
                     }
 
@@ -160,7 +176,10 @@ public class FetchDataControl extends BaseControl{
         fetchChannelBanners = SkyService.ServiceManager.getForceCacheService().getChannelBanners(channel)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<GuideBanner[]>() {
+/*modify by dragontec for bug 4474 start*/
+//                .subscribe(new Observer<GuideBanner[]>() {
+                .subscribe(((BaseActivity)mContext).new BaseObserver<GuideBanner[]>() {
+/*modify by dragontec for bug 4474 end*/
                     @Override
                     public void onCompleted() {
 
@@ -168,6 +187,9 @@ public class FetchDataControl extends BaseControl{
 
                     @Override
                     public void onError(Throwable e) {
+/*modify by dragontec for bug 4474 start*/
+                        super.onError(e);
+/*modify by dragontec for bug 4474 end*/
                         e.printStackTrace();
                     }
 
@@ -219,7 +241,10 @@ public class FetchDataControl extends BaseControl{
         fetchChannels = SkyService.ServiceManager.getForceCacheService().apiTvChannels()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<ChannelEntity[]>() {
+/*modify by dragontec for bug 4474 start*/
+//                .subscribe(new Observer<ChannelEntity[]>() {
+                .subscribe(((BaseActivity)mContext).new BaseObserver<ChannelEntity[]>() {
+/*modify by dragontec for bug 4474 end*/
                     @Override
                     public void onCompleted() {
 
@@ -227,6 +252,9 @@ public class FetchDataControl extends BaseControl{
 
                     @Override
                     public void onError(Throwable e) {
+/*add by dragontec for bug 4474 start*/
+                        super.onError(e);
+/*add by dragontec for bug 4474 end*/
                         e.printStackTrace();
                     }
 

@@ -40,6 +40,8 @@
 <dimen name="pay_channel_weixin_marginleft">13.33dp</dimen>
 <dimen name="pay_channel_weixin_marginright">60.00dp</dimen>
 <dimen name="pay_channel_weixin_textsize">23.33sp</dimen>
+<dimen name="pay_channel_saoma_marginTop">36.67dp</dimen>
+<dimen name="pay_channel_yue_marginTop">36.67dp</dimen>
 
 <dimen name="pay_guanyingcard_margintop">66.67dp</dimen>
 <dimen name="pay_guanyingcard_card_balance_submit_textsize">21.33sp</dimen>
@@ -214,8 +216,6 @@
 <dimen name="agreement_layout_width">1006.00dp</dimen>
 
 <dimen name="alipay_pay_layout_mt">90.00dp</dimen>
-<dimen name="pay_channel_saoma_marginTop">129.33dp</dimen>
-<dimen name="pay_channel_yue_marginTop">44.67dp</dimen>
 
 <dimen name="pay_27">18.00dp</dimen>
 <dimen name="pay_250">166.67dp</dimen>
@@ -251,4 +251,8 @@
 <dimen name="pay_109">72.67dp</dimen>
 <dimen name="pay_410">273.33dp</dimen>
 <dimen name="pay_96">64.00dp</dimen>
+<dimen name="unipay_webview_w">773.33dp</dimen>
+<dimen name="unipay_webview_h">425.33dp</dimen>
+<dimen name="payment_channel_arrow_w">173.33dp</dimen>
+<dimen name="payment_channel_arrow_h">28.67dp</dimen>
 </resources>
