@@ -32,10 +32,10 @@ public class PosterUtil {
             String posterUrl="";
             int previewId;
             if(orientation==VERTICAL){
-/*modify by dragontec for 列表页栏目的海报图关键字修改 start*/
+/*modify by dragontec for  start*/
 //                posterUrl=item.getVertical_url();
                 posterUrl=item.getList_url();
-/*modify by dragontec for 列表页栏目的海报图关键字修改 end*/
+/*modify by dragontec for  end*/
 /*modify by dragontec for bug 4336 start*/
                 previewId=R.drawable.item_vertical_preview;
 /*modify by dragontec for bug 4336 end*/

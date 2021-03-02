@@ -1,5 +1,5 @@
 apply plugin: 'com.android.library'
-apply plugin: 'plugin.transfer'
+
 
 
 android {
@@ -25,8 +25,8 @@ android {
 
 dependencies {
     Map<String, String> dependencies = rootProject.ext.dependencies
-    compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile dependencies.appCompat
-    compile dependencies.recyclerView
-    compile dependencies.gridlayout
+    api fileTree(include: ['*.jar'], dir: 'libs')
+    api dependencies.appCompat
+    api dependencies.recyclerView
+    api dependencies.gridlayout
 }

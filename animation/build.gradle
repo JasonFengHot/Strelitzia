@@ -1,5 +1,5 @@
 apply plugin: 'com.android.library'
-apply plugin: 'plugin.transfer'
+
 
 android {
     compileSdkVersion rootProject.ext.androidCompileSdkVersion
@@ -25,7 +25,7 @@ android {
 
 dependencies {
     Map<String, String> dependencies = rootProject.ext.dependencies
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.daimajia.easing:library:2.0@aar'
-    compile dependencies.appCompat
+    api fileTree(dir: 'libs', include: ['*.jar'])
+    api 'com.daimajia.easing:library:2.0@aar'
+    api dependencies.appCompat
 }

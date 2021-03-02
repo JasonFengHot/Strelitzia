@@ -14,9 +14,9 @@ public class FilterNoresultPoster {
     private String url;
     private int corner;
     private String model_name;
-/*add by dragontec for 列表页栏目的海报图关键字修改 start*/
+/*add by dragontec for  start*/
     private String list_url;
-/*add by dragontec for 列表页栏目的海报图关键字修改 end*/
+/*add by dragontec for  end*/
     private String vertical_url;
     private int clip_id;
     private int pk;
@@ -90,7 +90,7 @@ public class FilterNoresultPoster {
         this.model_name = model_name;
     }
 
-/*add by dragontec for 列表页栏目的海报图关键字修改 start*/
+/*add by dragontec for  start*/
     public String getList_url() {
         return list_url;
     }
@@ -98,7 +98,7 @@ public class FilterNoresultPoster {
     public void setList_url(String list_url) {
         this.list_url = list_url;
     }
-/*add by dragontec for 列表页栏目的海报图关键字修改 end*/
+/*add by dragontec for  end*/
 
     public String getVertical_url() {
         return vertical_url;

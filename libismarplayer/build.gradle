@@ -1,5 +1,5 @@
 apply plugin: 'com.android.library'
-apply plugin: 'plugin.transfer'
+
 
 android {
     compileSdkVersion rootProject.ext.androidCompileSdkVersion
@@ -29,15 +29,15 @@ android {
 Map<String, String> rootDependence = rootProject.ext.dependencies
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
+    api fileTree(include: ['*.jar'], dir: 'libs')
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     testCompile 'junit:junit:4.12'
-    compile rootDependence.support_v4
-    compile project(':appbase')
-    compile project(':statistics')
-    compile project(':bestvframework')
+    api rootDependence.support_v4
+    api project(':appbase')
+    api project(':statistics')
+    api project(':bestvframework')
 }
 
 tasks.withType(JavaCompile) {

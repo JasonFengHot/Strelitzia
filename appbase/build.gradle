@@ -1,5 +1,5 @@
 apply plugin: 'com.android.library'
-apply plugin: 'plugin.transfer'
+
 
 
 android {
@@ -26,18 +26,19 @@ android {
 
 dependencies {
     Map<String, String> dependencies = rootProject.ext.dependencies
-    compile project(':account')
-    compile project(':ismartv_downloader')
-    compile project(':ismartv_imagereflection')
-    compile project(':androidtvwidget')
-    compile project(':ismartv_foregroundimageview')
-    compile project(':ismartv_tvhorizontalscrollview')
-    compile project(':calligraphy-2.2.0')
-    compile project(':animation')
-    compile project(':bestvframework')
-    compile dependencies.appCompat
-    compile dependencies.recyclerView
-    compile 'com.squareup.leakcanary:leakcanary-android:1.5.4'
+    api project(':account')
+    api project(':ismartv_downloader')
+    api project(':ismartv_imagereflection')
+    api project(':androidtvwidget')
+    api project(':ismartv_foregroundimageview')
+    api project(':ismartv_tvhorizontalscrollview')
+    api project(':calligraphy-2.2.0')
+    api project(':animation')
+    api project(':bestvframework')
+    api dependencies.appCompat
+    api dependencies.recyclerView
+    api 'com.squareup.leakcanary:leakcanary-android:1.5.4'
+
 }
 
 tasks.withType(JavaCompile) {

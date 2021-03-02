@@ -1,5 +1,5 @@
 apply plugin: 'com.android.library'
-apply plugin: 'plugin.transfer'
+
 android {
     compileSdkVersion rootProject.ext.androidCompileSdkVersion
     buildToolsVersion rootProject.ext.androidBuildToolsVersion
@@ -20,12 +20,12 @@ android {
 }
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile project(':appbase')
-    compile project(':searchpage')
-    compile project(path: ':searchpage')
-    compile project(path: ':statistics')
-    compile project(path: ':homepage')
-    compile project(':homepage')
-    compile project(':libverticalpagerview-release')
+    api fileTree(include: ['*.jar'], dir: 'libs')
+    api project(':appbase')
+    api project(':searchpage')
+    api project(path: ':searchpage')
+    api project(path: ':statistics')
+    api project(path: ':homepage')
+    api project(':homepage')
+    api project(':libverticalpagerview-release')
 }

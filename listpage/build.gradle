@@ -1,5 +1,5 @@
 apply plugin: 'com.android.library'
-apply plugin: 'plugin.transfer'
+
 
 android {
     compileSdkVersion rootProject.ext.androidCompileSdkVersion
@@ -26,7 +26,7 @@ android {
 }
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile project(':appbase')
-    compile project(':searchpage')
+    api fileTree(include: ['*.jar'], dir: 'libs')
+    api project(':appbase')
+    api project(':searchpage')
 }

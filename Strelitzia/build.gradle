@@ -1,7 +1,11 @@
 apply plugin: 'com.android.application'
-apply plugin: 'plugin.transfer'
+
 
 android {
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 
     dexOptions {
         preDexLibraries = false
@@ -72,15 +76,15 @@ android {
 }
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile project(':usercenter')
-    compile project(':detailpage')
-    compile project(':account')
-    compile project(':listpage')
-    compile project(':homepage')
-    compile project(':searchpage')
-    compile project(':subject')
-    compile project(path: ':appbase')
+    api fileTree(include: ['*.jar'], dir: 'libs')
+    api project(':usercenter')
+    api project(':detailpage')
+    api project(':account')
+    api project(':listpage')
+    api project(':homepage')
+    api project(':searchpage')
+    api project(':subject')
+    api project(path: ':appbase')
 }
 tasks.withType(JavaCompile) {
     options.encoding = "UTF-8"

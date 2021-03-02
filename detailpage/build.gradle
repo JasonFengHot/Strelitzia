@@ -1,5 +1,5 @@
 apply plugin: 'com.android.library'
-apply plugin: 'plugin.transfer'
+
 
 android {
     compileSdkVersion rootProject.ext.androidCompileSdkVersion
@@ -29,12 +29,12 @@ android {
 }
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile project(':appbase')
-    compile project(':paypage')
-    compile project(':listpage')
-    compile project(':statistics')
-    compile project(':libismarplayer')
+    api fileTree(include: ['*.jar'], dir: 'libs')
+    api project(':appbase')
+    api project(':paypage')
+    api project(':listpage')
+    api project(':statistics')
+    api project(':libismarplayer')
 }
 
 tasks.withType(JavaCompile) {
