@@ -17,25 +17,17 @@ import android.view.SurfaceView;
 import android.view.ViewGroup;
 
 import com.google.gson.GsonBuilder;
-import com.qiyi.sdk.player.IMediaPlayer;
 
 import java.io.IOException;
-import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TimeZone;
 
 import cn.ismartv.truetime.TrueTime;
 import okhttp3.ResponseBody;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -44,7 +36,6 @@ import tv.ismar.account.IsmartvActivator;
 import tv.ismar.app.BaseActivity;
 import tv.ismar.app.VodApplication;
 import tv.ismar.app.ad.Advertisement;
-import tv.ismar.app.core.DaisyUtils;
 import tv.ismar.app.db.HistoryManager;
 import tv.ismar.app.entity.ClipEntity;
 import tv.ismar.app.entity.DBQuality;
@@ -1179,18 +1170,6 @@ public class PlaybackService extends Service implements Advertisement.OnVideoPla
             }
             LogUtils.i(TAG, "onInfo:" + what + " extra:" + extra);
             switch (what) {
-                case IMediaPlayer.MEDIA_INFO_MIDDLE_AD_COMING:
-                    // 即将进入爱奇艺广告,不可快进操作
-                    if (serviceCallback != null) {
-                        serviceCallback.tipsToShowMiddleAd(false);
-                    }
-                    break;
-                case IMediaPlayer.MEDIA_INFO_MIDDLE_AD_SKIPPED:
-                    // 爱奇艺中插广告播放结束
-                    if (serviceCallback != null) {
-                        serviceCallback.tipsToShowMiddleAd(true);
-                    }
-                    break;
             }
         }
 

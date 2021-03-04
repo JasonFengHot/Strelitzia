@@ -24,8 +24,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.RandomAccessFile;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -33,10 +31,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import okhttp3.Dns;
 import okhttp3.OkHttpClient;
 import okhttp3.ResponseBody;
-import okhttp3.internal.platform.Platform;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -304,7 +300,7 @@ public final class IsmartvActivator {
     private void writeToSign(byte[] bytes) {
         FileOutputStream fs;
         try {
-            fs = mContext.openFileOutput(SIGN_FILE_NAME, Context.MODE_WORLD_READABLE);
+            fs = mContext.openFileOutput(SIGN_FILE_NAME, Context.MODE_PRIVATE);
             fs.write(bytes);
             fs.flush();
             fs.close();

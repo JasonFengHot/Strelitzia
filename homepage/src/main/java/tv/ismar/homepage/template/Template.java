@@ -2,57 +2,57 @@ package tv.ismar.homepage.template;
 
 import android.content.Context;
 import android.content.Intent;
-/*add by dragontec for bug 4200 start*/
 import android.graphics.Rect;
-/*add by dragontec for bug 4200 end*/
 import android.os.Bundle;
-	/*add by dragontec for bug 4077 start*/
 import android.os.Handler;
-	/*add by dragontec for bug 4077 end*/
-/*add by dragontec for bug 4332 start*/
 import android.support.v7.widget.RecyclerView;
-/*add by dragontec for bug 4332 end*/
 import android.text.TextUtils;
-/*add by dragontec for bug 4332 start*/
 import android.view.MotionEvent;
-/*add by dragontec for bug 4332 end*/
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-	/*add by dragontec for bug 4077 start*/
 import com.open.androidtvwidget.leanback.recycle.RecyclerViewTV;
-import com.qiyi.speedrunner.speedrunner.IFailureCallback;
 import com.squareup.picasso.Picasso;
-	/*add by dragontec for bug 4077 end*/
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import tv.ismar.app.BaseActivity;
-/*add by dragontec for bug 4362 start*/
 import tv.ismar.app.BaseControl;
-/*add by dragontec for bug 4362 end*/
 import tv.ismar.app.core.PageIntent;
 import tv.ismar.app.core.Source;
 import tv.ismar.app.entity.banner.BannerCarousels;
 import tv.ismar.app.entity.banner.BannerEntity;
-	/*add by dragontec for bug 4077 start*/
-/*add by dragontec for bug 4338 start*/
 import tv.ismar.homepage.R;
-/*add by dragontec for bug 4338 end*/
-/*add by dragontec for bug 4362 start*/
 import tv.ismar.homepage.adapter.BaseRecycleAdapter;
 import tv.ismar.homepage.adapter.BaseViewHolder;
 import tv.ismar.homepage.control.FetchDataControl;
-/*add by dragontec for bug 4362 end*/
-import tv.ismar.homepage.fragment.ChannelFragment;
 import tv.ismar.homepage.view.BannerLinearLayout;
 import tv.ismar.homepage.widget.RecycleLinearLayout;
 
-/*add by dragontec for bug 4332 start*/
 import static android.view.MotionEvent.BUTTON_PRIMARY;
+
+/*add by dragontec for bug 4200 start*/
+/*add by dragontec for bug 4200 end*/
+/*add by dragontec for bug 4077 start*/
+/*add by dragontec for bug 4077 end*/
+/*add by dragontec for bug 4332 start*/
+/*add by dragontec for bug 4332 end*/
+/*add by dragontec for bug 4332 start*/
+/*add by dragontec for bug 4332 end*/
+/*add by dragontec for bug 4077 start*/
+/*add by dragontec for bug 4077 end*/
+/*add by dragontec for bug 4362 start*/
+/*add by dragontec for bug 4362 end*/
+/*add by dragontec for bug 4077 start*/
+/*add by dragontec for bug 4338 start*/
+/*add by dragontec for bug 4338 end*/
+/*add by dragontec for bug 4362 start*/
+/*add by dragontec for bug 4362 end*/
+/*add by dragontec for bug 4332 start*/
 /*add by dragontec for bug 4332 end*/
 	/*add by dragontec for bug 4077 end*/
 

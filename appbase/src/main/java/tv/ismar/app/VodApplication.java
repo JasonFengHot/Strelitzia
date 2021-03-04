@@ -132,7 +132,7 @@ public class VodApplication extends Application {
         BaseActivity.wasLoadSmartPlayerSo = false;
         Log.i("LH/", "applicationOnCreateEnd:" + TrueTime.now().getTime());
         Intent ootStartIntent = new Intent(this, HttpProxyService.class);
-        this.startService(ootStartIntent);
+//        this.startService(ootStartIntent);
         IsmartvActivator.initialize(this);
         initLogCallback();
         initConstants();

@@ -7,9 +7,6 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.support.annotation.NonNull;
-import android.util.Log;
-
-import com.qiyi.sdk.player.IAdController;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -371,10 +368,6 @@ public class DaisyPlayer extends IsmartvPlayer implements SurfaceHelper.SurfaceC
                 && mCurrentState != STATE_COMPLETED);
     }
 
-    @Override
-    public IAdController getAdController() {
-        return null;
-    }
 
     private SmartPlayer.OnPreloadCompleteListener smartPreloadCompleteListener = new SmartPlayer.OnPreloadCompleteListener() {
         @Override

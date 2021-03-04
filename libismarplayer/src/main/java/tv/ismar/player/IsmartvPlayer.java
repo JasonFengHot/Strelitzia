@@ -6,12 +6,6 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.qiyi.sdk.player.IAdController;
-import com.qiyi.sdk.player.Parameter;
-import com.qiyi.sdk.player.PlayerSdk;
-import com.qiyi.sdk.player.SdkVideo;
-import com.qiyi.tvapi.type.DrmType;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -26,7 +20,6 @@ import tv.ismar.library.util.StringUtils;
 import tv.ismar.player.event.PlayerEvent;
 import tv.ismar.player.gui.PlaybackService;
 import tv.ismar.player.media.DaisyPlayer;
-import tv.ismar.player.media.QiyiPlayer;
 import tv.ismar.player.model.MediaEntity;
 import tv.ismar.player.model.MediaMeta;
 
@@ -127,42 +120,11 @@ public abstract class IsmartvPlayer implements IPlayer {
                 }
                 logPlayerFlag = "qiyi";
                 if (isQiyiSdkInit) {
-                    createPlayer(qiyiUserInit());
                     break;
                 }
                 if (TextUtils.isEmpty(versionCode) || TextUtils.isEmpty(snToken) || TextUtils.isEmpty(modelName)) {
                     throw new IllegalArgumentException("versionCode or snToken or modelName null.");
                 }
-                Parameter extraParams = new Parameter();
-                extraParams.setInitPlayerSdkAfter(0);  //SDK初始化在调用initialize之后delay一定时间开始执行, 单位为毫秒.
-                extraParams.setCustomerAppVersion(versionCode);      //传入客户App版本号
-                extraParams.setDeviceId(snToken);   //传入deviceId, VIP项目必传, 登录和鉴权使用
-                extraParams.setDeviceInfo(modelName);
-                extraParams.setShowAdCountDown(false);
-                extraParams.addAdsHint(Parameter.HINT_TYPE_SKIP_AD, "下"); // 跳过悦享看广告
-                extraParams.addAdsHint(Parameter.HINT_TYPE_HIDE_PAUSE_AD, "下"); // 消除暂停广告
-                extraParams.addAdsHint(Parameter.HINT_TYPE_SHOW_CLICK_THROUGH_AD, "右"); // 前贴,中插广告跳转页面
-                PlayerSdk.getInstance().initialize(mQiyiContainer.getContext().getApplicationContext(), extraParams,
-                        new PlayerSdk.OnInitializedListener() {
-                            @Override
-                            public void onSuccess() {
-                                Log.d(TAG, "QiYiSdk init success.");
-                                if (mQiyiContainer != null) {
-                                    isQiyiSdkInit = true;
-                                    createPlayer(qiyiUserInit());
-                                }
-                            }
-
-                            @Override
-                            public void onFailed(int what, int extra) {
-                                Log.e(TAG, "QiYiSdk init fail what = " + what + " extra = " + extra);
-                                isQiyiSdkInit = false;
-                                if (onStateChangedListener != null) {
-                                    onStateChangedListener.onError("播放器初始化失败");
-                                }
-                            }
-                        });
-                break;
         }
 
     }
@@ -235,7 +197,6 @@ public abstract class IsmartvPlayer implements IPlayer {
                 logSpeed, logMediaIp, logPlayerFlag);
     }
 
-    public abstract IAdController getAdController();
 
     public String getPlayerType() {
         return logPlayerFlag;
@@ -312,36 +273,10 @@ public abstract class IsmartvPlayer implements IPlayer {
         return mediaMeta;
     }
 
-    private SdkVideo qiyiUserInit() {
-        String zdevice_token = zDeviceToken;
-        String zuser_token = zUserToken;
-        if (!TextUtils.isEmpty(qiyiUserType)) {
-            if (qiyiUserType.equals("device") && !TextUtils.isEmpty(zdevice_token)) {
-                PlayerSdk.getInstance().login(zdevice_token);
-            } else if (qiyiUserType.equals("account") && !TextUtils.isEmpty(zuser_token)) {
-                PlayerSdk.getInstance().login(zuser_token);
-            }
-        } else {
-            if (!TextUtils.isEmpty(zuser_token)) {
-                PlayerSdk.getInstance().login(zuser_token);
-            } else if (!TextUtils.isEmpty(zdevice_token)) {
-                PlayerSdk.getInstance().login(zdevice_token);
-            }
-        }
-        ClipEntity clipEntity = mMediaEntity.getClipEntity();
-        String[] array = clipEntity.getIqiyi_4_0().split(":");
-        int drmType = DrmType.DRM_NONE;
-        if (clipEntity.getDrm() != null && clipEntity.getDrm().equals("2")) {
-            drmType = DrmType.DRM_INTERTRUST;
-        }
-        return new SdkVideo(array[0], array[1], clipEntity.is_vip(), drmType, mMediaEntity.getStartPosition(), null);
-    }
 
     protected void createPlayer(MediaMeta mediaMeta, boolean hasPreload) {
     }
 
-    protected void createPlayer(SdkVideo sdkVideo) {
-    }
 
     protected void createPreloadPlayer(MediaMeta mediaMeta) {
     }
@@ -441,17 +376,6 @@ public abstract class IsmartvPlayer implements IPlayer {
                     tvPlayer.setSurfaceView(surfaceView);
                     break;
                 case MODE_QIYI_PLAYER:
-                    if (TextUtils.isEmpty(snToken) || TextUtils.isEmpty(modelName)
-                            || TextUtils.isEmpty(versionCode) || qiyiContainer == null) {
-                        throw new IllegalArgumentException("Must set qiyi variable first.");
-                    }
-                    tvPlayer = new QiyiPlayer();
-                    tvPlayer.setQiyiContainer(qiyiContainer);
-                    tvPlayer.setModelName(modelName);
-                    tvPlayer.setVersionCode(versionCode);
-                    tvPlayer.setQiyiUserType(qiyiUserType);
-                    tvPlayer.setzDeviceToken(zDeviceToken);
-                    tvPlayer.setzUserToken(zUserToken);
                     break;
             }
             if (tvPlayer == null) {

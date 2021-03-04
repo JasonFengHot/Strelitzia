@@ -26,15 +26,12 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
-//import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import com.qiyi.sdk.player.AdItem;
-import com.qiyi.sdk.player.IAdController;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
@@ -70,6 +67,8 @@ import tv.ismar.player.listener.EpisodeOnclickListener;
 import tv.ismar.player.listener.OnMenuListItmeClickListener;
 import tv.ismar.player.model.QuailtyEntity;
 import tv.ismar.player.widget.AdImageDialog;
+
+//import android.widget.ImageView;
 
 public class PlaybackFragment extends Fragment implements PlaybackService.Client.Callback,
         PlayerMenu.OnCreateMenuListener, Advertisement.OnPauseVideoAdListener, PlaybackService.ServiceCallback ,EpisodeOnclickListener,OnMenuListItmeClickListener{
@@ -1043,7 +1042,6 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
         if (isMenuShow()) {
             return true;
         }
-        IAdController adController = mPlaybackService.getMediaPlayer().getAdController();
         switch (keyCode) {
             case KeyEvent.KEYCODE_DPAD_UP:
                 if (mPlaybackService.isPlayingAd()) {
@@ -1055,17 +1053,8 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
             case KeyEvent.KEYCODE_DPAD_DOWN:
                 // TODO 暂停广告按下消除
                 // TODO 悦享看广告一定时间后可以消除
-                LogUtils.d(TAG, "DOWN:" + adController + " onPaused:" + mIsOnPaused);
                 //隐藏暂停广告
-                if (adController != null && mIsOnPaused) {
-                    LogUtils.d(TAG, "Invisible pause ad.");
-                    adController.hideAd(AdItem.AdType.PAUSE);
-                }
                 //跳过悦享看广告
-                else if (adController != null && adController.isEnableSkipAd()) {
-                    LogUtils.d(TAG, "Jump over ad.");
-                    adController.skipAd();
-                }
                 showMenu(0);
                 return true;
             case KeyEvent.KEYCODE_BACK:
@@ -1104,17 +1093,6 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
 //                if (isPopWindowShow()) {
 //                    return true;
 //                }
-                    LogUtils.d(TAG, "BACK:" + adController);
-                    if (adController != null && mIsInAdDetail) {
-                        // TODO 广告详情页面返回键后继续播放视频
-                        LogUtils.d(TAG, "From ad detail to player.");
-                        mIsInAdDetail = false;
-                        adController.hideAd(AdItem.AdType.CLICKTHROUGH);
-                        ad_vip_layout.setVisibility(View.VISIBLE);
-                        ad_vip_text.setFocusable(true);
-                        ad_vip_text.requestFocus();
-                        return true;
-                    }
                     if (mHandler.hasMessages(MSG_AD_COUNTDOWN)) {
                         mHandler.removeMessages(MSG_AD_COUNTDOWN);
                     }
@@ -1165,14 +1143,7 @@ public class PlaybackFragment extends Fragment implements PlaybackService.Client
                 if (mPlaybackService.isPlayingAd()) {
                     if (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT) {
                         // TODO 前贴片,中插广告按右键跳转至图片或H5,需要指明类型
-                        LogUtils.d(TAG, "RIGHT:" + adController);
                         // 从前贴/中插广告跳转到图片或H5
-                        if (adController != null && adController.isEnableClickThroughAd()) {
-                            LogUtils.d(TAG, "Jump to ad detail.");
-                            mIsInAdDetail = true;
-                            ad_vip_layout.setVisibility(View.GONE);
-                            adController.showAd(AdItem.AdType.CLICKTHROUGH);
-                        }
                     }
                     return true;
                 }
